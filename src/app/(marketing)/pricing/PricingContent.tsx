@@ -17,44 +17,38 @@ const OFFER_FACTORS = [1, 2, 3] as const;
 function CollaborationVisual({ locale }: { locale: "hu" | "en" }) {
   return (
     <div
-      aria-hidden="true"
       className="relative min-h-[390px] overflow-hidden rounded-[28px] border border-sand bg-[var(--color-layer-team-hero-from)] p-5 shadow-[0_28px_80px_rgba(26,26,46,0.16)] sm:p-7"
     >
-      <div className="absolute -right-20 -top-24 size-72 rounded-full border border-white/10" />
-      <div className="absolute -right-8 -top-12 size-48 rounded-full border border-white/10" />
-      <div className="absolute bottom-7 left-8 size-2 rounded-full bg-[var(--color-layer-team-glow)]" />
-      <div className="absolute bottom-16 right-12 size-1.5 rounded-full bg-[var(--color-text-on-inverse)]/40" />
+      <div aria-hidden="true" className="absolute -right-20 -top-24 size-72 rounded-full border border-white/10" />
+      <div aria-hidden="true" className="absolute -right-8 -top-12 size-48 rounded-full border border-white/10" />
+      <div aria-hidden="true" className="absolute bottom-7 left-8 size-2 rounded-full bg-[var(--color-layer-team-glow)]" />
+      <div aria-hidden="true" className="absolute bottom-16 right-12 size-1.5 rounded-full bg-[var(--color-text-on-inverse)]/40" />
 
       <div className="relative flex h-full min-h-[334px] flex-col justify-between">
         <div className="flex items-center justify-between">
           <p className="text-label uppercase text-[var(--color-text-on-inverse-muted)]">
-            {t("pricing.workflowEyebrow", locale)}
+            {t("pricing.outcomeVisualEyebrow", locale)}
           </p>
           <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-note text-[var(--color-text-on-inverse-muted)]">
-            01–03
+            {t("pricing.outcomeVisualBadge", locale)}
           </span>
         </div>
 
-        <div className="relative mx-auto my-6 w-full max-w-[330px]">
-          <div className="absolute bottom-7 left-8 top-7 w-px bg-gradient-to-b from-white/15 via-[var(--color-layer-team-glow)] to-white/15" />
-          {WORKFLOW_STEPS.map((step, index) => (
+        <div className="mx-auto my-6 w-full max-w-[330px]">
+          {WORKFLOW_STEPS.map((outcome) => (
             <div
-              key={step}
-              className={`relative mb-3 flex items-center gap-4 rounded-2xl border px-4 py-4 backdrop-blur-sm ${
-                index === 1
-                  ? "ml-6 border-[var(--color-layer-team-glow)]/50 bg-white/15 shadow-lg"
-                  : "border-white/15 bg-white/[0.08]"
-              }`}
+              key={outcome}
+              className="relative mb-3 flex items-center gap-4 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-4 backdrop-blur-sm"
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)]">
-                {step}
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] text-[var(--color-layer-team-hero-to)]">
+                <CheckIcon className="h-4 w-4" />
               </span>
               <div>
                 <p className="text-sm font-semibold text-[var(--color-text-on-inverse)]">
-                  {t(`pricing.workflow${step}Title`, locale)}
+                  {t(`pricing.outcome${outcome}Title`, locale)}
                 </p>
-                <p className="mt-0.5 text-note text-[var(--color-text-on-inverse-muted)]">
-                  {t(`pricing.offerFactor${step}`, locale)}
+                <p className="mt-0.5 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                  {t(`pricing.outcome${outcome}Body`, locale)}
                 </p>
               </div>
             </div>
@@ -62,15 +56,15 @@ function CollaborationVisual({ locale }: { locale: "hu" | "en" }) {
         </div>
 
         <div className="flex items-center gap-3 border-t border-white/10 pt-4">
-          <div className="flex -space-x-2">
+          <div aria-hidden="true" className="flex -space-x-2">
             {["bg-sage", "bg-[var(--color-layer-team-bright)]", "bg-[var(--color-layer-team-glow)]"].map(
               (color, index) => (
                 <span key={index} className={`size-7 rounded-full border-2 border-[var(--color-layer-team-hero-from)] ${color}`} />
               ),
             )}
           </div>
-          <p className="text-note text-[var(--color-text-on-inverse-muted)]">
-            {locale === "hu" ? "Közös kép, közös következő lépés" : "A shared picture and a shared next step"}
+          <p className="text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+            {t("pricing.outcomeVisualFooter", locale)}
           </p>
         </div>
       </div>
@@ -136,7 +130,7 @@ export function PricingContent() {
           <div className="mx-auto max-w-2xl text-center">
             <SectionEyebrow>{t("pricing.workflowEyebrow", locale)}</SectionEyebrow>
             <h2 className="mt-4 font-fraunces text-fluid-title tracking-tight text-ink">
-              {locale === "hu" ? "Egy beszélgetéstől a használható csapatképig." : "From one conversation to an actionable team picture."}
+              {locale === "hu" ? "Három lépés a tisztább csapatképig." : "Three steps to a clearer team picture."}
             </h2>
           </div>
           <Workflow locale={locale} />

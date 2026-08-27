@@ -11,8 +11,8 @@ import {
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { t, type Locale } from "@/lib/i18n/public";
-import { ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
 
 const INPUT_CLASS = "w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
@@ -43,6 +43,126 @@ const PILOT_VALIDATION_COPY: Record<
 
 const PILOT_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function PartnerVisual({ locale }: { locale: Locale }) {
+  return (
+    <aside
+      aria-label={t("pilot.partnerVisualA11y", locale)}
+      className="relative overflow-hidden rounded-[28px] bg-[var(--color-layer-team-hero-to)] p-5 text-white shadow-[0_28px_80px_rgba(26,26,46,0.17)] md:p-6"
+    >
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-10 -left-8 h-28 w-44 opacity-20"
+      >
+        <svg viewBox="0 0 176 112" className="size-full">
+          <path
+            d="M5 88 C36 8 65 112 102 40 C126 -5 151 49 171 10"
+            fill="none"
+            stroke="var(--color-layer-team-badge)"
+            strokeLinecap="round"
+            strokeWidth="2"
+          />
+        </svg>
+      </div>
+
+      <div aria-hidden="true" className="relative">
+        <div className="mb-5 flex items-center justify-between gap-4">
+          <p className="text-label uppercase tracking-[0.12em] text-white/65">
+            {t("pilot.partnerVisualEyebrow", locale)}
+          </p>
+          <span className="inline-flex items-center gap-2 text-note text-white/70">
+            <span className="size-2 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_4px_rgba(232,178,118,0.12)]" />
+            {t("pilot.metaChip2", locale)}
+          </span>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
+              <span className="font-fraunces text-lg text-white">Ti</span>
+            </div>
+            <div className="min-w-0">
+              <p className="text-label uppercase text-white/75">
+                {t("pilot.partnerTeamTitle", locale)}
+              </p>
+              <p className="mt-1 text-sm leading-snug text-white/85">
+                {t("pilot.partnerTeamBody", locale)}
+              </p>
+            </div>
+          </article>
+
+          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
+              <TritaWordmark className="text-[1.15rem] text-white" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-label uppercase text-white/75">
+                {t("pilot.partnerTritaTitle", locale)}
+              </p>
+              <p className="mt-1 text-sm leading-snug text-white/85">
+                {t("pilot.partnerTritaBody", locale)}
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <article className="relative mt-4 overflow-hidden rounded-[24px] border border-white/10 bg-cream p-5 text-ink shadow-[0_22px_48px_rgba(0,0,0,0.20)] md:p-6">
+          <div aria-hidden="true" className="absolute -right-8 -top-10 size-28 rotate-12 rounded-[46%_54%_39%_61%] bg-[var(--color-layer-team-soft)]/45" />
+
+          <div className="relative flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-label uppercase text-[var(--color-layer-team-accent)]">
+                {t("pilot.partnerResultBody", locale)}
+              </p>
+              <h3 className="mt-2 max-w-[16ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+                {t("pilot.partnerResultTitle", locale)}
+              </h3>
+            </div>
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-[13px_20px_14px_18px] bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)]">
+              ✦
+            </span>
+          </div>
+
+          <svg
+            viewBox="0 0 420 78"
+            preserveAspectRatio="none"
+            className="relative my-4 h-[74px] w-full overflow-visible"
+          >
+            <path
+              d="M4 51 C41 51 44 17 83 17 C122 17 125 64 164 64 C181 64 191 50 210 41"
+              fill="none"
+              stroke="var(--color-layer-self-hero-from)"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="5"
+            />
+            <path
+              d="M416 51 C379 51 376 23 337 23 C298 23 295 61 256 61 C239 61 228 49 210 41"
+              fill="none"
+              stroke="var(--color-layer-team-hero-from)"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="5"
+            />
+            <path
+              d="M210 41 C237 8 269 10 294 40 C319 69 349 66 376 44 C391 32 404 37 416 37"
+              fill="none"
+              stroke="var(--color-layer-team-badge)"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="7"
+            />
+            <circle cx="210" cy="41" r="7" fill="var(--color-layer-team-badge)" />
+          </svg>
+
+          <p className="relative max-w-[38rem] text-sm leading-relaxed text-ink-body">
+            {t("pilot.partnerVisualNote", locale)}
+          </p>
+        </article>
+      </div>
+    </aside>
+  );
+}
+
 export function PilotContent() {
   const { locale } = useLocale();
   const fieldIdPrefix = useId().replaceAll(":", "");
@@ -71,33 +191,10 @@ export function PilotContent() {
     track("form.start", { form_id: "pilot_apply" });
   };
 
-  const benefitGroups = [
-    [
-      { number: "01", title: t("pilot.benefit1Title", locale), desc: t("pilot.benefit1Desc", locale) },
-      { number: "02", title: t("pilot.benefit2Title", locale), desc: t("pilot.benefit2Desc", locale) },
-    ],
-    [
-      { number: "03", title: t("pilot.benefit5Title", locale), desc: t("pilot.benefit5Desc", locale) },
-      { number: "04", title: t("pilot.benefit6Title", locale), desc: t("pilot.benefit6Desc", locale) },
-    ],
-  ];
-
-  const steps = [
-    { step: "01", title: t("pilot.step1Title", locale), desc: t("pilot.step1Desc", locale) },
-    { step: "02", title: t("pilot.step2Title", locale), desc: t("pilot.step2Desc", locale) },
-    { step: "03", title: t("pilot.step3Title", locale), desc: t("pilot.step3Desc", locale) },
-  ];
-
-  const commitments = [
-    { title: t("pilot.commitment1Title", locale), desc: t("pilot.commitment1Desc", locale) },
-    { title: t("pilot.commitment2Title", locale), desc: t("pilot.commitment2Desc", locale) },
-    { title: t("pilot.commitment3Title", locale), desc: t("pilot.commitment3Desc", locale) },
-  ];
-
-  const signals = [
-    { value: t("pilot.signal1Value", locale), label: t("pilot.signal1Label", locale) },
-    { value: t("pilot.signal2Value", locale), label: t("pilot.signal2Label", locale) },
-    { value: t("pilot.signal3Value", locale), label: t("pilot.signal3Label", locale) },
+  const partnerBenefits = [
+    { number: "01", title: t("pilot.partnerBenefit1Title", locale), desc: t("pilot.partnerBenefit1Desc", locale) },
+    { number: "02", title: t("pilot.partnerBenefit2Title", locale), desc: t("pilot.partnerBenefit2Desc", locale) },
+    { number: "03", title: t("pilot.partnerBenefit3Title", locale), desc: t("pilot.partnerBenefit3Desc", locale) },
   ];
 
   const handleSubmit = async (e: FormEvent) => {
@@ -152,34 +249,32 @@ export function PilotContent() {
       <section className="relative overflow-hidden bg-cream">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[6%] top-[10%] h-[72%] w-[46%] rounded-full bg-[var(--color-layer-team-soft)]/55 blur-3xl"
+          className="pointer-events-none absolute right-[4%] top-[4%] h-[78%] w-[48%] rounded-full bg-[var(--color-layer-team-soft)]/75 blur-3xl"
         />
         <div className="relative mx-auto max-w-[1120px] px-7 pb-20 pt-12 md:pb-28 md:pt-20">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_410px] lg:items-center">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_480px] lg:items-center">
             <div>
               <div className="mb-6 flex flex-wrap items-center gap-3">
                 <SectionEyebrow tone="team">{t("pilot.eyebrow", locale)}</SectionEyebrow>
-                <span className="inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-surface-card/70 px-4 py-1.5 text-caption font-medium text-[var(--color-layer-team-accent)] backdrop-blur-sm">
+                <span className="inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-surface-card/75 px-4 py-1.5 text-caption font-medium text-[var(--color-layer-team-accent)] backdrop-blur-sm">
                   {t("pilot.badge", locale)}
                 </span>
               </div>
 
-              <h1 className="max-w-[12ch] font-fraunces text-fluid-display tracking-tight text-ink">
-                {t("pilot.heroTitle", locale)}<em className="not-italic text-[var(--color-layer-team-accent)]">{t("pilot.heroTitleEm", locale)}</em>
+              <h1 className="max-w-[13ch] font-fraunces text-fluid-display tracking-tight text-ink">
+                {t("pilot.heroTitle", locale)}
+                <em className="text-[var(--color-layer-team-accent)]">
+                  {t("pilot.heroTitleEm", locale)}
+                </em>
               </h1>
 
-              <p className="mt-6 max-w-[620px] text-base leading-relaxed text-ink-body">
+              <p className="mt-6 max-w-[610px] text-base leading-relaxed text-ink-body">
                 {t("pilot.heroBody", locale)}
               </p>
 
               <MarketingActions
                 className="mt-8"
                 primary={{ href: "#jelentkezes", label: t("pilot.heroCta", locale) }}
-                secondary={{
-                  href: "#mit-kapsz",
-                  label: t("pilot.heroCtaSecondary", locale),
-                  iconRight: <ChevronRightIcon />,
-                }}
               />
 
               <div className="mt-6 flex flex-wrap gap-2.5">
@@ -189,81 +284,48 @@ export function PilotContent() {
               </div>
             </div>
 
-            <aside className="relative overflow-hidden rounded-[28px] bg-[var(--color-layer-team-hero-from)] p-6 text-[var(--color-text-on-inverse)] shadow-[0_28px_80px_rgba(26,26,46,0.16)] md:p-7">
-              <div className="absolute -right-20 -top-24 size-72 rounded-full border border-white/10" />
-              <div className="absolute -right-8 -top-12 size-48 rounded-full border border-white/10" />
-              <div className="relative border-b border-white/10 pb-5">
-                <p className="text-label uppercase text-[var(--color-text-on-inverse)]">
-                  {t("pilot.asideEyebrow", locale)}
-                </p>
-                <p className="mt-3 font-fraunces text-title leading-tight">
-                  {t("pilot.asideTitle", locale)}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-on-inverse)]">
-                  {t("pilot.asideBody", locale)}
-                </p>
-              </div>
-
-              <div className="relative grid gap-4 pt-5">
-                <div className="grid grid-cols-3 gap-2.5">
-                  {signals.map((signal) => (
-                    <div key={signal.label} className="rounded-2xl border border-white/15 bg-white/[0.08] px-3 py-4">
-                      <div className="font-fraunces text-3xl leading-none text-[var(--color-text-on-inverse)]">{signal.value}</div>
-                      <div className="mt-2 text-note leading-relaxed text-[var(--color-text-on-inverse)]">{signal.label}</div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="rounded-2xl border border-[var(--color-layer-team-glow)]/35 bg-white/10 px-5 py-5">
-                  <p className="text-label uppercase text-[var(--color-text-on-inverse)]">
-                    {t("pilot.aside90Eyebrow", locale)}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-on-inverse)]">
-                    {t("pilot.aside90Body", locale)}
-                  </p>
-                </div>
-              </div>
-            </aside>
+            <PartnerVisual locale={locale} />
           </div>
         </div>
       </section>
 
       <EditorialSection
-        id="mit-kapsz"
-        eyebrow={t("pilot.benefitsEyebrow", locale)}
-        title={t("pilot.benefitsTitle", locale)}
+        id="mit-jelent"
+        eyebrow={t("pilot.partnerBenefitsEyebrow", locale)}
+        title={t("pilot.partnerBenefitsTitle", locale)}
       >
-        <div className="grid gap-5 lg:grid-cols-2">
-          {benefitGroups.map((group, columnIndex) => (
-            <div key={columnIndex} className="grid gap-5">
-              {group.map((item) => (
-                <FeatureCard key={item.number} {...item} />
-              ))}
-            </div>
+        <div className="grid gap-5 lg:grid-cols-3">
+          {partnerBenefits.map((item) => (
+            <FeatureCard key={item.number} {...item} />
           ))}
         </div>
       </EditorialSection>
 
       <EditorialSection
-        eyebrow={t("pilot.stepsEyebrow", locale)}
-        title={t("pilot.stepsTitle", locale)}
+        eyebrow={t("pilot.exchangeEyebrow", locale)}
+        title={t("pilot.exchangeTitle", locale)}
         tone="warm"
       >
-        <div className="grid gap-5">
-          {steps.map((item) => (
-            <StepCard key={item.step} {...item} />
-          ))}
-        </div>
-      </EditorialSection>
-
-      <EditorialSection
-        eyebrow={t("pilot.commitmentsEyebrow", locale)}
-        title={t("pilot.commitmentsTitle", locale)}
-      >
-        <div className="grid gap-4 lg:grid-cols-3">
-          {commitments.map((item) => (
-            <CommitmentCard key={item.title} {...item} commitmentLabel={t("pilot.commitmentLabel", locale)} />
-          ))}
+        <div className="grid gap-5 md:grid-cols-2">
+          <ExchangeCard
+            label={t("pilot.exchangeGiveLabel", locale)}
+            title={t("pilot.exchangeGiveTitle", locale)}
+            items={[
+              t("pilot.exchangeGive1", locale),
+              t("pilot.exchangeGive2", locale),
+              t("pilot.exchangeGive3", locale),
+            ]}
+          />
+          <ExchangeCard
+            label={t("pilot.exchangeAskLabel", locale)}
+            title={t("pilot.exchangeAskTitle", locale)}
+            items={[
+              t("pilot.exchangeAsk1", locale),
+              t("pilot.exchangeAsk2", locale),
+              t("pilot.exchangeAsk3", locale),
+            ]}
+            tone="soft"
+          />
         </div>
       </EditorialSection>
 
@@ -601,28 +663,57 @@ function FeatureCard({ number, title, desc }: { number: string; title: string; d
   );
 }
 
-function StepCard({ step, title, desc }: { step: string; title: string; desc: string }) {
+function ExchangeCard({
+  label,
+  title,
+  items,
+  tone = "team",
+}: {
+  label: string;
+  title: string;
+  items: string[];
+  tone?: "team" | "soft";
+}) {
   return (
-    <article className="grid gap-5 rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:grid-cols-[88px_minmax(0,1fr)] md:items-start">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-[var(--color-layer-team-soft)] font-fraunces text-2xl text-[var(--color-layer-team-accent)]">
-        {step}
-      </div>
-      <div>
-        <h3 className="font-fraunces text-title leading-tight text-ink">{title}</h3>
-        <p className="mt-3 max-w-[56rem] text-base leading-8 text-ink-body">{desc}</p>
-      </div>
-    </article>
-  );
-}
-
-function CommitmentCard({ title, desc, commitmentLabel }: { title: string; desc: string; commitmentLabel: string }) {
-  return (
-    <article className="rounded-[24px] border border-[var(--color-layer-team-accent)]/15 bg-[var(--color-layer-team-soft)] px-6 py-6">
-      <p className="text-label uppercase text-[var(--color-layer-team-accent)]">
-        {commitmentLabel}
+    <article
+      className={
+        tone === "team"
+          ? "rounded-[24px] bg-[var(--color-layer-team-hero-from)] p-6 text-[var(--color-text-on-inverse)] shadow-[0_18px_45px_rgba(26,26,46,0.10)] md:p-7"
+          : "rounded-[24px] border border-sand bg-surface-card p-6 text-ink shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:p-7"
+      }
+    >
+      <p
+        className={
+          tone === "team"
+            ? "text-label uppercase text-[var(--color-layer-team-badge)]"
+            : "text-label uppercase text-[var(--color-layer-team-accent)]"
+        }
+      >
+        {label}
       </p>
-      <h3 className="mt-2 break-words font-fraunces text-heading leading-tight text-ink [hyphens:auto]">{title}</h3>
-      <p className="mt-3 text-base leading-8 text-ink-body">{desc}</p>
+      <h3 className="mt-3 font-fraunces text-title leading-tight">{title}</h3>
+      <ul className="mt-5 space-y-3">
+        {items.map((item) => (
+          <li
+            key={item}
+            className={
+              tone === "team"
+                ? "flex gap-3 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]"
+                : "flex gap-3 text-sm leading-relaxed text-ink-body"
+            }
+          >
+            <span
+              aria-hidden="true"
+              className={
+                tone === "team"
+                  ? "mt-2 size-1.5 shrink-0 rounded-full bg-[var(--color-layer-team-glow)]"
+                  : "mt-2 size-1.5 shrink-0 rounded-full bg-bronze"
+              }
+            />
+            {item}
+          </li>
+        ))}
+      </ul>
     </article>
   );
 }

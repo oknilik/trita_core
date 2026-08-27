@@ -48,7 +48,7 @@ export const landingTranslations = {
     selfEyebrow: { hu: "ÖNISMERET ÉS CSAPATMŰKÖDÉS", en: "SELF-AWARENESS AND TEAMWORK" },
     selfHeadlineBefore: { hu: "Értsd meg, hogyan működsz – és mit viszel a ", en: "Understand how you work – and what you bring to the " },
     selfHeadlineEm: { hu: "csapatba.", en: "team." },
-    selfSub: { hu: "Megmutatjuk, milyen mintázatok mozgatnak, miben lehetsz erős, és mit vihetsz a csapatba – érthetően, egy helyen.", en: "See which patterns drive you, where your strengths may lie, and what you can bring to a team – clearly, in one place." },
+    selfSub: { hu: "Megmutatjuk, milyen mintázatok mozgatnak, miben lehetsz erős, és mit vihetsz egy csapatba – érthetően, egy helyen.", en: "See which patterns drive you, where your strengths may lie, and what you can bring to a team – clearly, in one place." },
     selfCta: { hu: "Ingyenes teszt indítása", en: "Start free assessment" },
     selfCtaContinue: { hu: "Folytasd a tesztet", en: "Continue assessment" },
     selfCtaContinueShort: { hu: "Folytatom", en: "Continue" },
@@ -221,57 +221,81 @@ export const landingTranslations = {
       en: "The individual personality assessment is free; team and organizational program pricing depends on headcount and depth – an individual quote instead of list prices.",
     },
     heroEyebrow: { hu: "Együttműködés", en: "How we work" },
-    heroHeading: { hu: "Előbb értsük meg, ", en: "First, let's understand " },
-    heroHeadingEm: { hu: "mire van szükségetek.", en: "what you need." },
+    heroHeading: { hu: "Minden csapat más – ezért a közös munka is ", en: "Every team is different – so the way we work together " },
+    heroHeadingEm: { hu: "hozzátok igazodik.", en: "is tailored to you." },
     heroSub: {
-      hu: "Nincs dobozos csomag és rejtett árlista. Egy rövid egyeztetés után pontosan látjátok, mit mérünk, mi készül el és mitől függ az ajánlat.",
-      en: "There is no off-the-shelf package or hidden price list. After a short conversation, you will know exactly what we measure, what you receive, and what shapes the quote.",
+      hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd átlátható keretet kaptok: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül.",
+      en: "In a short conversation, we clarify the goal, then give you a transparent scope: who takes part, what we measure, what you receive, and what it costs.",
     },
-    workflowEyebrow: { hu: "Az együttműködés menete", en: "How the engagement works" },
-    workflow1Title: { hu: "Rövid egyeztetés", en: "Short conversation" },
+    outcomeVisualEyebrow: { hu: "Amivel továbbmentek", en: "What you leave with" },
+    outcomeVisualBadge: { hu: "3 eredmény", en: "3 outcomes" },
+    outcome1Title: { hu: "Tisztább csapatkép", en: "A clearer team picture" },
+    outcome1Body: {
+      hu: "Látható erősségek és feszültségpontok",
+      en: "Visible strengths and points of tension",
+    },
+    outcome2Title: { hu: "Közös megértés", en: "Shared understanding" },
+    outcome2Body: {
+      hu: "Érthető keret a fontos beszélgetésekhez",
+      en: "A clear framework for important conversations",
+    },
+    outcome3Title: { hu: "Konkrét következő lépés", en: "A concrete next step" },
+    outcome3Body: {
+      hu: "Kipróbálható akció, amelynek hatása visszamérhető",
+      en: "A practical action whose impact can be measured",
+    },
+    outcomeVisualFooter: {
+      hu: "Nemcsak eredményt kaptok, hanem közös irányt is.",
+      en: "You leave not only with results, but with a shared direction.",
+    },
+    workflowEyebrow: { hu: "Így dolgozunk együtt", en: "How we work together" },
+    workflow1Title: { hu: "Tisztázzuk a célt", en: "Clarify the goal" },
     workflow1Body: {
-      hu: "Megismerjük a csapatot, a helyzetet és azt, milyen döntéshez kell tisztább kép.",
-      en: "We learn about the team, the situation, and the decision that needs a clearer picture.",
+      hu: "Átbeszéljük, mi foglalkoztatja most a csapatot, és milyen döntéshez kerestek kapaszkodót.",
+      en: "We discuss what is currently on the team's mind and which decision you need clarity to make.",
     },
-    workflow2Title: { hu: "Pilotkeret", en: "Pilot scope" },
+    workflow2Title: { hu: "Kialakítjuk a keretet", en: "Shape the scope" },
     workflow2Body: {
-      hu: "Közösen kijelöljük a résztvevőket, a mérési rétegeket és a közös értelmezés keretét.",
-      en: "Together we define participants, measurement layers, and the scope of the joint debrief.",
+      hu: "Közösen meghatározzuk, kik vesznek részt, mit mérünk, és hogyan dolgozzuk fel az eredményeket.",
+      en: "Together we decide who takes part, what we measure, and how we will make sense of the results.",
     },
-    workflow3Title: { hu: "Első csapatkép", en: "First team picture" },
+    workflow3Title: { hu: "Közösen értelmezzük", en: "Make sense of it together" },
     workflow3Body: {
-      hu: "A kitöltésekből tanácsadó által validált összkép és következő lépés készül.",
-      en: "The assessments become a consultant-validated team picture and a clear next step.",
+      hu: "A kitöltésekből ellenőrzött csapatkép készül, majd kijelöljük a következő lépést.",
+      en: "The responses become a reviewed team picture, then we identify the next step together.",
     },
-    offerEyebrow: { hu: "Egyedi ajánlat", en: "Individual quote" },
-    offerTitle: { hu: "A keret mindig a helyzetetekhez igazodik.", en: "The scope always fits your situation." },
+    offerEyebrow: { hu: "Hogyan vághatsz bele", en: "How to get started" },
+    offerTitle: { hu: "Egyénileg ingyenes. Csapatra szabva.", en: "Free for individuals. Tailored for teams." },
     offerBody: {
-      hu: "Az első beszélgetés után konkrét, átlátható ajánlatot kaptok. Ezek alakítják:",
-      en: "After the first conversation you receive a concrete, transparent quote. It is shaped by:",
+      hu: "Az egyéni felmérést azonnal elkezdheted. A csapatprogram keretét a célotokhoz, a létszámhoz és a választott mérésekhez igazítjuk.",
+      en: "You can start the individual assessment right away. We tailor the team program to your goals, headcount, and selected measurements.",
     },
     offerFactor1: { hu: "Csapatok és résztvevők", en: "Teams and participants" },
-    offerFactor2: { hu: "Kiválasztott mérési rétegek", en: "Selected measurement layers" },
-    offerFactor3: { hu: "Közös értelmezés", en: "Joint debrief" },
-    offerCta: { hu: "Beszéljünk", en: "Let's talk" },
-    offerPilotCta: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
+    offerFactor2: { hu: "A célhoz illő mérések", en: "Measurements that fit the goal" },
+    offerFactor3: { hu: "Közös értelmezés és következő lépés", en: "Joint debrief and next step" },
+    offerCta: { hu: "Egyeztessünk", en: "Start a conversation" },
+    offerPilotCta: { hu: "Így működik a pilotprogramunk", en: "See how the pilot works" },
     selfEyebrow: { hu: "egyéni · ingyenes", en: "individual · free" },
-    selfTitle: { hu: "Ismerd meg magad – ingyen", en: "Get to know yourself – for free" },
+    selfTitle: { hu: "Ismerd meg, hogyan működsz", en: "Understand how you operate" },
     selfBody: {
-      hu: "Teljes személyiségfelmérés (~10 perc), dimenziószintű riport, munkastílus- és csapatszerep-elemzés, observer-visszajelzések. Nincs rejtett fizetős szint – az egyéni út ingyenes.",
-      en: "Full personality assessment (~10 minutes), dimension-level report, work style and team-role analysis, plus observer feedback. No hidden paid tier – the individual path is free.",
+      hu: "Töltsd ki a körülbelül 10 perces személyiségfelmérést, és kapj részletes képet a jellemző mintázataidról, a munkastílusodról és a csapatban betöltött szerepeidről. Az eredményt később mások visszajelzéseivel is árnyalhatod.",
+      en: "Complete the approximately 10-minute personality assessment to get a detailed picture of your characteristic patterns, work style, and roles in a team. Later, you can add nuance with feedback from others.",
     },
-    selfCta: { hu: "Kipróbálom most – regisztráció nélkül", en: "Try it now – no sign-up needed" },
-    teamEyebrow: { hu: "csapat és szervezet · program", en: "team & organization · program" },
-    teamTitle: { hu: "Csapatprogram tanácsadói kísérettel", en: "Team program with consultant guidance" },
-    teamBody: TEAM_SCAN_CONTRACT.summary,
-    teamHow1: { hu: "Mérések – self, bizalmi háló, pszichológiai biztonság pulse", en: "Measurements – self, trust network, psychological safety pulse" },
-    teamHow2: { hu: "Forrásjelölt, tanácsadó által ellenőrzött csapatkép", en: "Source-labelled, consultant-reviewed team picture" },
-    teamHow3: { hu: "Akció és kapuzott visszamérés", en: "Action and gated remeasurement" },
+    selfCta: { hu: "Elindítom az ingyenes felmérést", en: "Start the free assessment" },
+    teamEyebrow: { hu: "csapat és szervezet · egyedi program", en: "team & organization · tailored program" },
+    teamTitle: { hu: "Tisztább csapatkép, közös következő lépéssel", en: "A clearer team picture, with a shared next step" },
+    teamBody: {
+      hu: "A csapattagok kitöltéseiből és a három közös mérési területből tanácsadó által ellenőrzött csapatkép készül. Együtt értelmezzük az eredményeket, majd konkrét következő lépést választunk, amelynek hatását később visszamérjük.",
+      en: "Team members' responses across three shared measurement areas become a consultant-reviewed team picture. Together we interpret the results, choose a concrete next step, and later measure its impact.",
+    },
+    teamHow1: { hu: "Személyes mintázatok; igény szerint csapatszerepek", en: "Individual patterns; team roles when needed" },
+    teamHow2: { hu: "Bizalmi kapcsolatok és pszichológiai biztonság", en: "Trust relationships and psychological safety" },
+    teamHow3: { hu: "Közös értelmezés, akció és visszamérés", en: "Joint debrief, action, and remeasurement" },
     teamPriceNote: {
-      hu: "Az árról őszintén: a csapat méretétől és a program mélységétől függ, ezért nem találsz itt ártáblát. Az első beszélgetés után konkrét ajánlatot kapsz – meglepetések nélkül. Az aktiválást mi intézzük, a számlázás átutalással megy.",
-      en: "Honestly about pricing: it depends on team size and program depth, which is why there is no price table here. After the first conversation you get a concrete quote – no surprises. We handle activation; invoicing is by bank transfer.",
+      hu: "Mitől függ az ajánlat? A résztvevők számától, a választott mérésektől és a közös feldolgozás mélységétől. Az első beszélgetés után pontos keretet és árat kaptok.",
+      en: "What shapes the quote? The number of participants, the selected measurements, and the depth of the joint debrief. After the first conversation, you receive a precise scope and price.",
     },
-    teamCta: { hu: "Mesélj a csapatodról – mi meséljük a többit", en: "Tell us about your team – we'll take it from there" },
+    teamCta: { hu: "Egyeztessünk a csapatotokról", en: "Talk to us about your team" },
     pilotEyebrow: { hu: "pilotprogram", en: "pilot program" },
     pilotTitle: { hu: "Pilotprogram – az első partnercsapatainknak", en: "Pilot program – for our first partner teams" },
     pilotBody: {
@@ -484,20 +508,46 @@ export const landingTranslations = {
     articleNavigation: { hu: "További cikkek", en: "More articles" },
   },
   pilot: {
-    // Hero
+    // Hero – partneri meghívás
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
     badge: { hu: "Az első partnercsapatoknak", en: "For our first partner teams" },
-    heroTitle: { hu: "Tedd láthatóvá, hogyan ", en: "Make visible how your " },
-    heroTitleEm: { hu: "működik a csapatod.", en: "team really works." },
+    heroTitle: { hu: "Ne csak próbáljátok ki. ", en: "Don’t just try it. " },
+    heroTitleEm: { hu: "Alakítsátok velünk.", en: "Shape it with us." },
     heroBody: {
-      hu: "A 90 napos pilotban közös, mérhető képet készítünk a csapat működéséről. Megnézzük, mire lehet építeni, hol érdemes változtatni, majd kijelölünk és visszamérünk egy konkrét vezetői lépést. Végig személyesen dolgozunk veletek.",
-      en: "During the 90-day pilot, we build a shared, measurable picture of how your team works. We identify what to build on, where change would help, then choose and remeasure one concrete leadership action. We work with you personally throughout.",
+      hu: "A pilotban szorosabban dolgozunk együtt. Ti valódi csapathelyzetben használjátok a tritát, mi pedig figyelünk, kérdezünk, és a tapasztalataitok alapján fejlesztjük tovább.",
+      en: "In the pilot, we work more closely together. You use trita in real team situations; we listen, ask questions, and develop it further based on what you learn.",
     },
-    heroCta: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
-    heroCtaSecondary: { hu: "Mit kapsz pontosan?", en: "What do you get exactly?" },
-    metaChip1: { hu: "90 nap teljes hozzáférés", en: "90 days full access" },
-    metaChip2: { hu: "Közös értelmező workshop", en: "Joint interpretation workshop" },
-    metaChip3: { hu: "Konkrét akció és visszamérés", en: "Concrete action and follow-up" },
+    heroCta: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
+    heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
+    metaChip1: { hu: "Közvetlen kapcsolat", en: "Direct contact" },
+    metaChip2: { hu: "Nyitott visszajelzés", en: "Open feedback" },
+    metaChip3: { hu: "Közös fejlesztés", en: "Shared development" },
+
+    // Partneri hero-vizuál
+    partnerVisualA11y: {
+      hu: "A csapat tapasztalatai és a trita módszere közösen formálják a programot.",
+      en: "The team’s experience and trita’s method shape the program together.",
+    },
+    partnerVisualEyebrow: { hu: "Partneri pilot", en: "Partner pilot" },
+    partnerTeamTitle: { hu: "A csapatotok", en: "Your team" },
+    partnerTeamBody: {
+      hu: "Valós használat és őszinte tapasztalatok",
+      en: "Real use and honest experience",
+    },
+    partnerTritaTitle: { hu: "A trita", en: "trita" },
+    partnerTritaBody: {
+      hu: "Figyelem és nyitottság a fejlesztésre",
+      en: "Attention and openness to improve",
+    },
+    partnerResultTitle: { hu: "Közösen formált program", en: "A program shaped together" },
+    partnerResultBody: {
+      hu: "Ami valódi csapathelyzetekben is működik",
+      en: "Built to work in real team situations",
+    },
+    partnerVisualNote: {
+      hu: "A javaslataitokat együtt mérlegeljük, és ami valódi értéket ad, beépítjük.",
+      en: "We consider your suggestions together and build in what creates genuine value.",
+    },
 
     // Aside – "Miért most"
     asideEyebrow: { hu: "Kinek szól", en: "Who it is for" },
@@ -523,6 +573,75 @@ export const landingTranslations = {
     aside90Body: {
       hu: "Feltérképezzük a csapat kapcsolatait és azt, mennyire biztonságos kérdezni, hibázni vagy ellentmondani. Ezután választunk egy vezetői lépést, amelynek hatását a program végén újra megmérjük.",
       en: "We map the team's relationships and how safe it feels to ask, make mistakes, or disagree. We then choose one leadership action and measure its effect again at the end of the program.",
+    },
+
+    // Rövid partneri értékajánlat
+    partnerBenefitsEyebrow: {
+      hu: "Mit jelent partnercsapatnak lenni",
+      en: "What being a partner team means",
+    },
+    partnerBenefitsTitle: {
+      hu: "Valódi használat. Közvetlen párbeszéd. Közös fejlesztés.",
+      en: "Real use. Direct dialogue. Shared development.",
+    },
+    partnerBenefit1Title: { hu: "Valódi csapathelyzet", en: "A real team setting" },
+    partnerBenefit1Desc: {
+      hu: "Nem bemutatókörnyezetben próbáljátok ki a tritát, hanem a saját csapatotok mindennapi működésében.",
+      en: "You don’t try trita in a demo environment, but in the day-to-day work of your own team.",
+    },
+    partnerBenefit2Title: { hu: "Közvetlen párbeszéd", en: "Direct dialogue" },
+    partnerBenefit2Desc: {
+      hu: "Rendszeresen átbeszéljük, mi működik, hol akadtatok el, és min lenne érdemes változtatnunk.",
+      en: "We regularly discuss what works, where you got stuck, and what may be worth changing.",
+    },
+    partnerBenefit3Title: {
+      hu: "Javaslatok, amelyek számítanak",
+      en: "Suggestions that matter",
+    },
+    partnerBenefit3Desc: {
+      hu: "Nyitottan fogadjuk a tapasztalataitokat, és együtt döntjük el, mely ötletek adnak valódi értéket a programhoz.",
+      en: "We welcome your experience and decide together which ideas add genuine value to the program.",
+    },
+
+    // Kölcsönös vállalás
+    exchangeEyebrow: { hu: "A közös munka alapja", en: "The basis of our work together" },
+    exchangeTitle: {
+      hu: "Amit adunk, és amit tőletek kérünk.",
+      en: "What we give, and what we ask from you.",
+    },
+    exchangeGiveLabel: { hu: "Amit mi adunk", en: "What we provide" },
+    exchangeGiveTitle: {
+      hu: "Teljes program, közvetlen figyelemmel",
+      en: "The full program, with direct attention",
+    },
+    exchangeGive1: {
+      hu: "Mérésekből készülő, ellenőrzött csapatkép",
+      en: "A reviewed team picture built from measurement",
+    },
+    exchangeGive2: {
+      hu: "Közös értelmezés és konkrét következő lépés",
+      en: "Joint interpretation and a concrete next step",
+    },
+    exchangeGive3: {
+      hu: "Visszamérés és közvetlen kapcsolat a program során",
+      en: "Follow-up measurement and direct contact throughout",
+    },
+    exchangeAskLabel: { hu: "Amit tőletek kérünk", en: "What we ask from you" },
+    exchangeAskTitle: {
+      hu: "Valódi használat, őszinte visszajelzés",
+      en: "Real use and honest feedback",
+    },
+    exchangeAsk1: {
+      hu: "A csapat végigmegy a felméréseken",
+      en: "The team completes the assessments",
+    },
+    exchangeAsk2: {
+      hu: "Két rövid beszélgetésen megosztjátok a tapasztalataitokat",
+      en: "You share your experience in two short conversations",
+    },
+    exchangeAsk3: {
+      hu: "Kipróbáltok egy közösen választott változtatást",
+      en: "You try one change we select together",
     },
 
     // Benefits section
@@ -589,16 +708,19 @@ export const landingTranslations = {
     },
 
     // Application form section
-    formEyebrow: { hu: "Jelentkezés", en: "Apply" },
-    formTitle: { hu: "Beszéljünk a csapatodról.", en: "Let's talk about your team." },
-    formBody: {
-      hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Először kötelezettség nélkül átbeszéljük, mire van szükségetek.",
-      en: "Complete the short form and we will get back to you within one business day. We begin with a no-obligation conversation about what your team needs.",
+    formEyebrow: { hu: "Partneri jelentkezés", en: "Partner application" },
+    formTitle: {
+      hu: "Lehettek ti a következő partnercsapat.",
+      en: "You could be our next partner team.",
     },
-    fitEyebrow: { hu: "Nektek való, ha", en: "Good fit if" },
+    formBody: {
+      hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Először kötelezettség nélkül átbeszéljük, mit szeretnétek kipróbálni, és hogyan tudnánk együtt dolgozni.",
+      en: "Complete the short form and we’ll get back to you within one business day. We’ll first discuss, with no obligation, what you would like to try and how we could work together.",
+    },
+    fitEyebrow: { hu: "Nektek való, ha", en: "A good fit if" },
     fitBody: {
-      hu: "van egy együtt dolgozó csapatotok, szeretnétek tisztábban látni a működését, és készek vagytok egy közösen választott változtatást kipróbálni.",
-      en: "you have a team that works together, want a clearer picture of how it operates, and are ready to try one jointly selected change.",
+      hu: "van egy együtt dolgozó csapatotok, szívesen kipróbáljátok a tritát valódi helyzetben, és nyitottan megosztjátok velünk a tapasztalataitokat.",
+      en: "you have a team that works together, want to try trita in a real setting, and are open to sharing your experience with us.",
     },
 
     // Form fields
@@ -607,7 +729,7 @@ export const landingTranslations = {
       hu: "Két perc alatt kitölthető. A csapatról szóló kérdéshez egy mondat is elég.",
       en: "It takes two minutes. One sentence about your team is enough.",
     },
-    formSpotsLabel: { hu: "Első kör", en: "Early cohort" },
+    formSpotsLabel: { hu: "Partneri pilot", en: "Partner pilot" },
     labelName: { hu: "Név", en: "Name" },
     placeholderName: { hu: "Teljes neved", en: "Full name" },
     labelEmail: { hu: "Email", en: "Email" },
@@ -630,7 +752,7 @@ export const landingTranslations = {
       en: "Optional, but it helps a lot for the first conversation.",
     },
     submitSending: { hu: "Küldés...", en: "Sending..." },
-    submitDefault: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
+    submitDefault: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
     preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
     errorMessage: {
       hu: "Nem sikerült elküldeni. Próbáld újra, vagy írj a hello@trita.io címre.",
@@ -638,7 +760,7 @@ export const landingTranslations = {
     },
 
     // Success state
-    successTitle: { hu: "Köszönjük a jelentkezést.", en: "Thank you for applying." },
+    successTitle: { hu: "Köszönjük, hogy jelentkeztetek.", en: "Thank you for applying." },
     successBody: {
       hu: "Egy munkanapon belül személyesen jelentkezünk a megadott email-címen.",
       en: "We will contact you personally at the provided email address within one business day.",

@@ -169,7 +169,9 @@ describe("MobileMenuShell accessibility contract", () => {
 
     expect(dialog).toHaveAttribute("aria-modal", "true");
     expect(document.body.style.overflow).toBe("hidden");
-    expect(close).toHaveFocus();
+    // Érintéses megnyitáskor maga a dialog kap kezdeti fókuszt, így az
+    // első menüponton iOS Safari alatt sem ragad ott a focus-visible keret.
+    expect(dialog).toHaveFocus();
 
     lastLink.focus();
     fireEvent.keyDown(document, { key: "Tab" });
