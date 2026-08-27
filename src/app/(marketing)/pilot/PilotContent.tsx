@@ -54,35 +54,35 @@ function PartnerVisual({ locale }: { locale: Locale }) {
 
       <div
         aria-hidden="true"
-        className="relative mx-auto mt-6 h-[230px] w-full max-w-[350px] md:h-[260px] md:max-w-[400px]"
+        className="relative mx-auto mt-6 h-[440px] w-full max-w-[320px] lg:h-[300px] lg:max-w-[480px]"
       >
-        <div className="absolute left-0 top-0 size-[230px] rounded-full border border-white/15 bg-[var(--color-layer-self-hero-from)] md:size-[260px]">
-          <div className="absolute inset-y-0 left-3 flex w-[92px] flex-col items-center justify-center text-center md:left-5 md:w-[108px]">
-            <p className="text-sm font-semibold leading-tight text-white md:text-base">
+        <div className="absolute left-1/2 top-0 size-[270px] -translate-x-1/2 rounded-full border border-white/15 bg-[var(--color-layer-self-hero-from)] lg:left-0 lg:size-[300px] lg:translate-x-0">
+          <div className="absolute left-1/2 top-9 w-[210px] -translate-x-1/2 text-center lg:inset-y-0 lg:left-5 lg:top-0 lg:flex lg:w-[130px] lg:translate-x-0 lg:flex-col lg:justify-center">
+            <p className="text-base font-semibold leading-tight text-white">
               {t("pilot.partnerTeamTitle", locale)}
             </p>
-            <p className="mt-2 text-xs leading-snug text-white/90 md:text-sm">
+            <p className="mt-2 text-sm leading-snug text-white/90">
               {t("pilot.partnerTeamBody", locale)}
             </p>
           </div>
         </div>
 
-        <div className="absolute right-0 top-0 size-[230px] rounded-full border border-white/15 bg-[var(--color-layer-team-hero-from)] md:size-[260px]">
-          <div className="absolute inset-y-0 right-3 flex w-[92px] flex-col items-center justify-center text-center md:right-5 md:w-[108px]">
-            <p className="text-sm font-semibold leading-tight text-white md:text-base">
+        <div className="absolute bottom-0 left-1/2 size-[270px] -translate-x-1/2 rounded-full border border-white/15 bg-[var(--color-layer-team-hero-from)] lg:bottom-auto lg:left-auto lg:right-0 lg:top-0 lg:size-[300px] lg:translate-x-0">
+          <div className="absolute bottom-9 left-1/2 w-[210px] -translate-x-1/2 text-center lg:inset-y-0 lg:left-auto lg:right-5 lg:flex lg:w-[130px] lg:translate-x-0 lg:flex-col lg:justify-center">
+            <p className="text-base font-semibold leading-tight text-white">
               {t("pilot.partnerTritaTitle", locale)}
             </p>
-            <p className="mt-2 text-xs leading-snug text-white/90 md:text-sm">
+            <p className="mt-2 text-sm leading-snug text-white/90">
               {t("pilot.partnerTritaBody", locale)}
             </p>
           </div>
         </div>
 
-        <div className="absolute left-1/2 top-1/2 z-10 w-[116px] -translate-x-1/2 -translate-y-1/2 text-center md:w-[132px]">
-          <span className="mx-auto mb-3 flex size-8 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)] shadow-[0_5px_18px_rgba(26,26,46,0.18)]">
+        <div className="absolute left-1/2 top-1/2 z-10 flex h-[100px] w-[210px] -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-3 rounded-[50%] bg-[var(--color-layer-team-hero-to)] px-5 text-center shadow-[0_8px_24px_rgba(26,26,46,0.16)] lg:h-[240px] lg:w-[120px] lg:flex-col lg:gap-4 lg:px-3">
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)]">
             ✦
           </span>
-          <p className="text-xs font-semibold leading-tight text-white md:text-sm">
+          <p className="text-sm font-semibold leading-tight text-white">
             {t("pilot.partnerResultTitle", locale)}
           </p>
         </div>
@@ -180,7 +180,7 @@ export function PilotContent() {
           className="pointer-events-none absolute right-[4%] top-[4%] h-[78%] w-[48%] rounded-full bg-[var(--color-layer-team-soft)]/75 blur-3xl"
         />
         <div className="relative mx-auto max-w-[1120px] px-7 pb-20 pt-12 md:pb-28 md:pt-20">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.08fr)_420px] lg:items-center">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_480px] lg:items-center">
             <div>
               <div className="mb-6 flex flex-wrap items-center gap-3">
                 <SectionEyebrow tone="team">{t("pilot.eyebrow", locale)}</SectionEyebrow>
