@@ -81,7 +81,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
               <span className="font-fraunces text-lg text-white">Ti</span>
             </div>
             <div className="min-w-0">
-              <p className="text-label uppercase text-white/55">
+              <p className="text-label uppercase text-white/75">
                 {t("pilot.partnerTeamTitle", locale)}
               </p>
               <p className="mt-1 text-sm leading-snug text-white/85">
@@ -95,7 +95,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
               <TritaWordmark className="text-[1.15rem] text-white" />
             </div>
             <div className="min-w-0">
-              <p className="text-label uppercase text-white/55">
+              <p className="text-label uppercase text-white/75">
                 {t("pilot.partnerTritaTitle", locale)}
               </p>
               <p className="mt-1 text-sm leading-snug text-white/85">
