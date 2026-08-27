@@ -70,12 +70,11 @@ export const landingTranslations = {
     selfDim5: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
     selfDim6: { hu: "Nyitottság", en: "Openness" },
     selfStrLabel: { hu: "Erősségeid", en: "Your strengths" },
-    // A kanonikus 9 szerepes riport profil-alapú, becsült top 3 teaserje.
+    // A kanonikus 9 szerepes riport profil-alapú, két legerősebb becsült szerepe.
     selfTeamRolesEyebrow: { hu: "Valószínű csapatszerepeid", en: "Your likely team roles" },
     selfTeamRolesSource: { hu: "Profil alapján becsült", en: "Profile-based estimate" },
     selfTeamRoleRank1: { hu: "Elsődleges", en: "Primary" },
     selfTeamRoleRank2: { hu: "Másodlagos", en: "Secondary" },
-    selfTeamRoleRank3: { hu: "Harmadik", en: "Third" },
     selfTeamRolesNote: { hu: "A pontos képhez külön csapatszerep-kérdőív tartozik.", en: "A separate team-role questionnaire provides the precise picture." },
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
     // HeroSection – team

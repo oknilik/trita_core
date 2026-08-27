@@ -42,21 +42,19 @@ function SelfPanel() {
     { code: "A", name: t("landing.selfDim4", locale) },
     { code: "H", name: t("landing.selfDim1", locale) },
   ];
-  // Ugyanezen profil kanonikus team-role-estimate rangsora: CS 69, KO 68,
-  // KE 57. Nem munkaterületeket nevezünk csapatszerepnek, hanem a tényleges
-  // riport 9 szerepes modelljének top 3 becslését mutatjuk.
-  const likelyRoles: TeamRoleCode[] = ["CS", "KO", "KE"];
+  // Ugyanezen profil kanonikus team-role-estimate rangsorának két legerősebb
+  // eleme: CS 69, KO 68. Nem munkaterületeket nevezünk csapatszerepnek,
+  // hanem a tényleges riport 9 szerepes modelljének becslését mutatjuk.
+  const likelyRoles: TeamRoleCode[] = ["CS", "KO"];
   const roleRanks = [
     t("landing.selfTeamRoleRank1", locale),
     t("landing.selfTeamRoleRank2", locale),
-    t("landing.selfTeamRoleRank3", locale),
   ];
   // A sávok a rangsor vizuális hierarchiáját mutatják, nem százalékos
   // pontszámok: a becslésnél a riport sem kommunikál álprecizitást.
   const roleRankVisuals = [
     { color: "var(--color-layer-team-accent)", width: "92%" },
     { color: "var(--color-sage)", width: "79%" },
-    { color: "var(--color-bronze-dark)", width: "66%" },
   ];
 
   return (
@@ -164,16 +162,16 @@ function SelfPanel() {
                   >
                     {index + 1}
                   </span>
-                  <div className="min-w-0">
+                  <div className="flex min-w-0 flex-col">
+                    <p className="order-1 truncate font-fraunces text-note font-semibold leading-tight text-[var(--color-text-primary)]">
+                      {TEAM_ROLES[role][locale]}
+                    </p>
                     <span
-                      className="block truncate text-micro font-bold uppercase tracking-wide"
+                      className="order-2 mt-0.5 block truncate text-micro font-semibold uppercase tracking-wide opacity-60"
                       style={{ color: rankVisual.color }}
                     >
                       {roleRanks[index]}
                     </span>
-                    <p className="truncate font-fraunces text-note font-semibold leading-tight text-[var(--color-text-primary)]">
-                      {TEAM_ROLES[role][locale]}
-                    </p>
                   </div>
                   <div
                     aria-hidden
@@ -353,10 +351,12 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[1120px] px-7 pb-6 pt-12">
         <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start md:gap-10">
 
+          <div className="contents md:col-start-1 md:row-start-1 md:flex md:flex-col md:gap-6">
+
           {/* 1. Switcher + Eyebrow + Headline. A H1 az LCP-elem, ezért statikus
               és az első festéskor teljesen látható; csak a kísérőelemek
               animálnak. */}
-          <div className="order-1 flex flex-col">
+          <div className="order-1 flex flex-col md:order-none">
             <div className={`${riseIn} mb-4 lg:mb-5`}>
               <ModeSwitcher mode={mode} />
             </div>
@@ -374,7 +374,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               </span>
             </div>
 
-            <h1 className="font-fraunces text-fluid-display font-medium tracking-tight text-ink">
+            <h1 className="text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink">
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
               <em className="italic" style={{ color: headlineAccentColor }}>
                 {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
@@ -382,25 +382,10 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             </h1>
           </div>
 
-          {/* 2. Preview panel */}
-          {isSelf ? (
-            <div className="order-2 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-8 md:self-stretch">
-              <div className="mx-auto w-full max-w-[460px] md:flex md:h-full md:flex-col">
-                <SelfPanel />
-              </div>
-            </div>
-          ) : (
-            <div className="order-2 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-8 md:self-stretch">
-              <div className="mx-auto w-full max-w-[460px] md:flex md:h-full md:flex-col">
-                <TeamPanel />
-              </div>
-            </div>
-          )}
-
           {/* 3. Sub + CTA + Microcopy – a H1 alatt, itt megmarad a 0.1s-os
               lépcsőzés (nem az LCP-elem, nem késleltet festést). */}
-          <div className="order-3 flex flex-col md:col-start-1 md:row-start-2">
-            <p className={`${riseIn} mb-7 text-base font-light leading-relaxed text-ink-body`}>
+          <div className="order-3 flex flex-col md:order-none">
+            <p className={`${riseIn} mb-7 text-balance text-base font-light leading-relaxed text-ink-body`}>
               {isSelf ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
             </p>
 
@@ -481,6 +466,24 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               </div>
             )}
           </div>
+
+          </div>
+
+          {/* 2. Preview panel – mobilon a cím és a CTA-k közé, asztali nézetben
+              a teljes, önálló bal oszlop mellé kerül. */}
+          {isSelf ? (
+            <div className="order-2 md:col-start-2 md:row-start-1 md:mt-8 md:order-none">
+              <div className="mx-auto w-full max-w-[460px]">
+                <SelfPanel />
+              </div>
+            </div>
+          ) : (
+            <div className="order-2 md:col-start-2 md:row-start-1 md:mt-8 md:order-none">
+              <div className="mx-auto w-full max-w-[460px]">
+                <TeamPanel />
+              </div>
+            </div>
+          )}
 
         </div>
 
