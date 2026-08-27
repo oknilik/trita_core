@@ -85,7 +85,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ DIMENZIÓ-SÁV ═══ */}
-      <div className="bg-surface-card px-5 pt-5 md:flex-1">
+      <div className="bg-surface-card px-5 pb-4 pt-5">
         <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
           <div className="grid grid-cols-3">
             {dims.map((dim, i) => {
@@ -144,43 +144,43 @@ function SelfPanel() {
               {t("landing.selfTeamRolesSource", locale)}
             </span>
           </div>
-          <div className="space-y-1.5">
+          <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-surface-card">
             {likelyRoles.map((role, index) => {
               const rankVisual = roleRankVisuals[index];
               return (
                 <div
                   key={role}
-                  className="relative grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-2.5 overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-surface-card py-2 pl-3 pr-3 sm:grid-cols-[2rem_minmax(7rem,0.8fr)_minmax(5rem,1fr)]"
+                  className={`relative grid min-w-0 grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-x-2.5 px-3 py-2 pl-3.5 sm:grid-cols-[1.75rem_minmax(7rem,0.8fr)_minmax(5rem,1fr)] ${index < likelyRoles.length - 1 ? "border-b border-[var(--color-border-soft)]" : ""} ${index === 0 ? "bg-[var(--color-surface-subtle)]/45" : ""}`}
                 >
                   <span
                     aria-hidden
-                    className="absolute inset-y-0 left-0 w-1"
+                    className="absolute inset-y-0 left-0 w-[3px] opacity-70"
                     style={{ backgroundColor: rankVisual.color }}
                   />
                   <span
                     aria-hidden
-                    className="flex h-7 w-7 items-center justify-center rounded-full text-note font-bold text-white"
+                    className="flex h-6 w-6 items-center justify-center rounded-full text-micro font-bold text-white opacity-90"
                     style={{ backgroundColor: rankVisual.color }}
                   >
                     {index + 1}
                   </span>
-                  <div className="min-w-0 py-0.5">
+                  <div className="min-w-0">
                     <span
                       className="block truncate text-micro font-bold uppercase tracking-wide"
                       style={{ color: rankVisual.color }}
                     >
                       {roleRanks[index]}
                     </span>
-                    <p className="truncate font-fraunces text-body font-semibold leading-tight text-[var(--color-text-primary)]">
+                    <p className="truncate font-fraunces text-note font-semibold leading-tight text-[var(--color-text-primary)]">
                       {TEAM_ROLES[role][locale]}
                     </p>
                   </div>
                   <div
                     aria-hidden
-                    className="col-start-2 mt-1.5 h-1.5 overflow-hidden rounded-full bg-[var(--color-surface-subtle)] sm:col-start-3 sm:row-start-1 sm:mt-0"
+                    className="col-start-2 mt-1.5 h-1 overflow-hidden rounded-full bg-[var(--color-surface-subtle)] sm:col-start-3 sm:row-start-1 sm:mt-0"
                   >
                     <div
-                      className="h-full rounded-full"
+                      className="h-full rounded-full opacity-70"
                       style={{ backgroundColor: rankVisual.color, width: rankVisual.width }}
                     />
                   </div>
@@ -188,14 +188,28 @@ function SelfPanel() {
               );
             })}
           </div>
-          <p className="mt-2 text-micro leading-relaxed text-[var(--color-text-muted)]">
-            {t("landing.selfTeamRolesNote", locale)}
+          <p className="mt-2.5 flex items-start gap-1.5 text-micro leading-relaxed text-[var(--color-text-muted)]">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mt-px h-3.5 w-3.5 shrink-0"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 11v5" />
+              <path d="M12 8h.01" />
+            </svg>
+            <span>{t("landing.selfTeamRolesNote", locale)}</span>
           </p>
         </div>
       </div>
 
-      {/* ═══ FADE-OUT CTA ═══ */}
-      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
+      {/* ═══ VISSZAFOGOTT PANEL-LÁBLÉC ═══ */}
+      <div className="flex h-10 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
         <span className="text-note font-medium text-[var(--color-action-primary-bg)]">
           {t("landing.selfFadeCta", locale)}
         </span>
