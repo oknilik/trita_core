@@ -221,8 +221,8 @@ export const landingTranslations = {
       en: "The individual personality assessment is free; team and organizational program pricing depends on headcount and depth – an individual quote instead of list prices.",
     },
     heroEyebrow: { hu: "Együttműködés", en: "How we work" },
-    heroHeading: { hu: "A csapatotokból indulunk, ", en: "We start with your team, " },
-    heroHeadingEm: { hu: "nem egy kész csomagból.", en: "not a ready-made package." },
+    heroHeading: { hu: "Minden csapat más – ezért a közös munka is ", en: "Every team is different – so the way we work together " },
+    heroHeadingEm: { hu: "hozzátok igazodik.", en: "is tailored to you." },
     heroSub: {
       hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd átlátható keretet kaptok: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül.",
       en: "In a short conversation, we clarify the goal, then give you a transparent scope: who takes part, what we measure, what you receive, and what it costs.",
