@@ -83,7 +83,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ DIMENZIÓ-SÁV ═══ */}
-      <div className="bg-surface-card px-5 pb-4 pt-5">
+      <div className="bg-surface-card px-5 pb-5 pt-6">
         <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
           <div className="grid grid-cols-3">
             {dims.map((dim, i) => {
@@ -91,7 +91,7 @@ function SelfPanel() {
               return (
                 <div
                   key={dim.name}
-                  className={`min-w-0 px-1 py-3.5 text-center md:px-2 ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
+                  className={`min-w-0 px-1 py-4 text-center md:px-2 ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
                 >
                   <p className="mb-1 truncate text-micro text-[var(--color-text-muted)]">{dim.name}</p>
                   <p
@@ -114,7 +114,7 @@ function SelfPanel() {
 
         {/* A prototípushoz ténylegesen rendelt két erősség. A négy 50-es
             dimenzió semleges, ezért nem gyártunk melléjük „figyelendő” címkét. */}
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-5 flex flex-wrap items-center gap-2">
           <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
@@ -132,9 +132,9 @@ function SelfPanel() {
           })}
         </div>
 
-        {/* A tényleges riport csapatszerep-modelljének profil-alapú top 3-a. */}
-        <div className="mb-1 mt-4">
-          <div className="mb-2 flex flex-wrap items-center gap-2">
+        {/* A tényleges riport csapatszerep-modelljének két legerősebb becslése. */}
+        <div className="mb-1 mt-5">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
             <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
               {t("landing.selfTeamRolesEyebrow", locale)}
             </p>
@@ -148,7 +148,7 @@ function SelfPanel() {
               return (
                 <div
                   key={role}
-                  className={`relative grid min-w-0 grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-x-2.5 px-3 py-2 pl-3.5 sm:grid-cols-[1.75rem_minmax(7rem,0.8fr)_minmax(5rem,1fr)] ${index < likelyRoles.length - 1 ? "border-b border-[var(--color-border-soft)]" : ""} ${index === 0 ? "bg-[var(--color-surface-subtle)]/45" : ""}`}
+                  className={`relative grid min-w-0 grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-x-2.5 px-3 py-2.5 pl-3.5 sm:grid-cols-[1.75rem_minmax(7rem,0.8fr)_minmax(5rem,1fr)] ${index < likelyRoles.length - 1 ? "border-b border-[var(--color-border-soft)]" : ""} ${index === 0 ? "bg-[var(--color-surface-subtle)]/45" : ""}`}
                 >
                   <span
                     aria-hidden
@@ -186,7 +186,7 @@ function SelfPanel() {
               );
             })}
           </div>
-          <p className="mt-2.5 flex items-start gap-1.5 text-micro leading-relaxed text-[var(--color-text-muted)]">
+          <p className="mt-3 flex items-start gap-1.5 text-micro leading-relaxed text-[var(--color-text-muted)]">
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
@@ -207,7 +207,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ VISSZAFOGOTT PANEL-LÁBLÉC ═══ */}
-      <div className="flex h-10 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
+      <div className="flex h-11 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
         <span className="text-note font-medium text-[var(--color-action-primary-bg)]">
           {t("landing.selfFadeCta", locale)}
         </span>
