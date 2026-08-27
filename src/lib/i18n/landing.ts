@@ -72,7 +72,7 @@ export const landingTranslations = {
     selfStrLabel: { hu: "Erősségeid", en: "Your strengths" },
     // A kanonikus 9 szerepes riport profil-alapú, becsült top 3 teaserje.
     selfTeamRolesEyebrow: { hu: "Valószínű csapatszerepeid", en: "Your likely team roles" },
-    selfTeamRolesSource: { hu: "Profil alapján becsült", en: "Estimated from profile" },
+    selfTeamRolesSource: { hu: "Profil alapján becsült", en: "Profile-based estimate" },
     selfTeamRoleRank1: { hu: "Elsődleges", en: "Primary" },
     selfTeamRoleRank2: { hu: "Másodlagos", en: "Secondary" },
     selfTeamRoleRank3: { hu: "Harmadik", en: "Third" },

@@ -7,7 +7,7 @@ import { t } from "@/lib/i18n/public";
 import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionLabel } from "@/lib/dimension-utils";
-import { dimColorsCss, teamRoleColors } from "@/lib/color-system";
+import { dimColorsCss } from "@/lib/color-system";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
@@ -50,6 +50,13 @@ function SelfPanel() {
     t("landing.selfTeamRoleRank1", locale),
     t("landing.selfTeamRoleRank2", locale),
     t("landing.selfTeamRoleRank3", locale),
+  ];
+  // A sávok a rangsor vizuális hierarchiáját mutatják, nem százalékos
+  // pontszámok: a becslésnél a riport sem kommunikál álprecizitást.
+  const roleRankVisuals = [
+    { color: "var(--color-layer-team-accent)", width: "92%" },
+    { color: "var(--color-sage)", width: "79%" },
+    { color: "var(--color-bronze-dark)", width: "66%" },
   ];
 
   return (
@@ -137,31 +144,46 @@ function SelfPanel() {
               {t("landing.selfTeamRolesSource", locale)}
             </span>
           </div>
-          <div className="grid grid-cols-3 gap-1.5">
+          <div className="space-y-1.5">
             {likelyRoles.map((role, index) => {
-              const colors = teamRoleColors(role);
+              const rankVisual = roleRankVisuals[index];
               return (
                 <div
                   key={role}
-                  className="min-w-0 rounded-xl border px-2.5 py-2.5"
-                  style={{ backgroundColor: colors.chipBg, borderColor: colors.mark }}
+                  className="relative grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] items-center gap-x-2.5 overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-surface-card py-2 pl-3 pr-3 sm:grid-cols-[2rem_minmax(7rem,0.8fr)_minmax(5rem,1fr)]"
                 >
-                  <div className="mb-1 flex items-center gap-1.5">
+                  <span
+                    aria-hidden
+                    className="absolute inset-y-0 left-0 w-1"
+                    style={{ backgroundColor: rankVisual.color }}
+                  />
+                  <span
+                    aria-hidden
+                    className="flex h-7 w-7 items-center justify-center rounded-full text-note font-bold text-white"
+                    style={{ backgroundColor: rankVisual.color }}
+                  >
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 py-0.5">
                     <span
-                      aria-hidden
-                      className="h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: colors.mark }}
-                    />
-                    <span
-                      className="truncate text-micro font-bold uppercase tracking-wide"
-                      style={{ color: colors.chipText }}
+                      className="block truncate text-micro font-bold uppercase tracking-wide"
+                      style={{ color: rankVisual.color }}
                     >
                       {roleRanks[index]}
                     </span>
+                    <p className="truncate font-fraunces text-body font-semibold leading-tight text-[var(--color-text-primary)]">
+                      {TEAM_ROLES[role][locale]}
+                    </p>
                   </div>
-                  <p className="text-note font-semibold leading-tight" style={{ color: colors.chipText }}>
-                    {TEAM_ROLES[role][locale]}
-                  </p>
+                  <div
+                    aria-hidden
+                    className="col-start-2 mt-1.5 h-1.5 overflow-hidden rounded-full bg-[var(--color-surface-subtle)] sm:col-start-3 sm:row-start-1 sm:mt-0"
+                  >
+                    <div
+                      className="h-full rounded-full"
+                      style={{ backgroundColor: rankVisual.color, width: rankVisual.width }}
+                    />
+                  </div>
                 </div>
               );
             })}
