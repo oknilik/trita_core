@@ -8,6 +8,8 @@ import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionLabel } from "@/lib/dimension-utils";
 import { dimColorsCss } from "@/lib/color-system";
+import { teamRoleColors } from "@/lib/color-system";
+import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
@@ -19,7 +21,7 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 // blokkokon marad meg, így a hero karaktere nem változik.
 const riseIn = "animate-rise-in";
 
-// ─── Self panel — a valódi eredménynézet kicsinyített mása ──────────────────
+// ─── Self panel – a valódi eredménynézet kicsinyített mása ──────────────────
 
 function SelfPanel() {
   const { locale } = useLocale();
@@ -37,7 +39,19 @@ function SelfPanel() {
     { code: "O", name: t("landing.selfDim6", locale), value: 50 },
   ];
 
-  const strengths = [t("landing.selfDim4", locale), t("landing.selfDim1", locale)];
+  const strengths = [
+    { code: "A", name: t("landing.selfDim4", locale) },
+    { code: "H", name: t("landing.selfDim1", locale) },
+  ];
+  // Ugyanezen profil kanonikus team-role-estimate rangsora: CS 69, KO 68,
+  // KE 57. Nem munkaterületeket nevezünk csapatszerepnek, hanem a tényleges
+  // riport 9 szerepes modelljének top 3 becslését mutatjuk.
+  const likelyRoles: TeamRoleCode[] = ["CS", "KO", "KE"];
+  const roleRanks = [
+    t("landing.selfTeamRoleRank1", locale),
+    t("landing.selfTeamRoleRank2", locale),
+    t("landing.selfTeamRoleRank3", locale),
+  ];
 
   return (
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
@@ -53,7 +67,7 @@ function SelfPanel() {
           <p className="font-fraunces text-heading font-medium italic text-[var(--color-accent-primary-soft)]">
             {t("landing.selfPanelType", locale)}
           </p>
-          {/* Valós riport-állítás: elsődleges csapatszerep-hajlam chip —
+          {/* Valós riport-állítás: elsődleges csapatszerep-hajlam chip –
               az ál-percentilis („Top 25%") badge kivezetve (B17). */}
           <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
             {t("landing.selfPanelRole", locale)}
@@ -100,36 +114,62 @@ function SelfPanel() {
           <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
-          {strengths.map((d) => (
-            <span key={d} className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-micro font-medium text-[var(--color-accent-self-deep)]">
-              {d}
-            </span>
-          ))}
+          {strengths.map((dim) => {
+            const colors = dimColorsCss(dim.code);
+            return (
+              <span
+                key={dim.code}
+                className="rounded px-2 py-0.5 text-micro font-medium"
+                style={{ backgroundColor: colors.soft, color: colors.strong }}
+              >
+                {dim.name}
+              </span>
+            );
+          })}
         </div>
 
-        {/* Szerepkör-illeszkedés — a valódi RoleFitSection "erős" sora */}
+        {/* A tényleges riport csapatszerep-modelljének profil-alapú top 3-a. */}
         <div className="mb-1 mt-4">
-          <p className="mb-2 text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-            {t("landing.selfRoleFitEyebrow", locale)}
-          </p>
-          <div
-            className="rounded-r-[14px] bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4"
-            style={{ borderLeft: "4px solid var(--color-action-primary-bg)" }}
-          >
-            <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
-              {t("content.roleFitStrong", locale)}
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+              {t("landing.selfTeamRolesEyebrow", locale)}
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {[t("landing.selfRole1", locale), t("landing.selfRole2", locale), t("landing.selfRole3", locale)].map((role) => (
-                <span
-                  key={role}
-                  className="rounded-full bg-[var(--color-action-primary-bg)]/[0.15] px-2.5 py-1 text-micro text-[var(--color-action-primary-bg)]"
-                >
-                  {role}
-                </span>
-              ))}
-            </div>
+            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro font-semibold text-[var(--color-text-muted)]">
+              {t("landing.selfTeamRolesSource", locale)}
+            </span>
           </div>
+          <div className="grid grid-cols-3 gap-1.5">
+            {likelyRoles.map((role, index) => {
+              const colors = teamRoleColors(role);
+              return (
+                <div
+                  key={role}
+                  className="min-w-0 rounded-xl border px-2.5 py-2.5"
+                  style={{ backgroundColor: colors.chipBg, borderColor: colors.mark }}
+                >
+                  <div className="mb-1 flex items-center gap-1.5">
+                    <span
+                      aria-hidden
+                      className="h-1.5 w-1.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: colors.mark }}
+                    />
+                    <span
+                      className="truncate text-micro font-bold uppercase tracking-wide"
+                      style={{ color: colors.chipText }}
+                    >
+                      {roleRanks[index]}
+                    </span>
+                  </div>
+                  <p className="text-note font-semibold leading-tight" style={{ color: colors.chipText }}>
+                    {TEAM_ROLES[role][locale]}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-micro leading-relaxed text-[var(--color-text-muted)]">
+            {t("landing.selfTeamRolesNote", locale)}
+          </p>
         </div>
       </div>
 
@@ -143,7 +183,7 @@ function SelfPanel() {
   );
 }
 
-// ─── Team panel — a valódi publikált riport kicsinyített mása ───────────────
+// ─── Team panel – a valódi publikált riport kicsinyített mása ───────────────
 
 function TeamPanel() {
   const { locale } = useLocale();
@@ -255,11 +295,11 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
   const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-layer-team-accent)";
-  // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 — nagy szövegnek épp
+  // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 – nagy szövegnek épp
   // a határon, 11px-es feliratnak bukó. Szöveghez ezért a bronz-skála
   // sötétebb fokait használjuk; team módban a kanonikus réteg-akcent dolgozik:
-  //   eyebrow (11px)  → accent-primary-strong (bronze-700) — 5.5:1
-  //   H1 em (nagy)    → accent-primary-mid                 — 3.9:1
+  //   eyebrow (11px)  → accent-primary-strong (bronze-700) – 5.5:1
+  //   H1 em (nagy)    → accent-primary-mid                 – 3.9:1
   const eyebrowColor = isSelf ? "var(--color-accent-primary-strong)" : accentColor;
   const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
   // Tömör CTA-felület fehér szöveggel: self módban bronze-dark, team módban
@@ -287,7 +327,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             </div>
 
             <div className={`${riseIn} mb-4 flex items-center gap-3`}>
-              {/* A vonalka és a felirat EGY tipográfiai egység — ugyanabból a
+              {/* A vonalka és a felirat EGY tipográfiai egység – ugyanabból a
                   bronz-fokból kell jönniük, különben a sötétebb szöveg mellett
                   a világosabb vonal elszíneződésnek látszik. */}
               <div className="h-[1.5px] w-5 shrink-0" style={{ background: eyebrowColor }} />
@@ -322,7 +362,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             </div>
           )}
 
-          {/* 3. Sub + CTA + Microcopy — a H1 alatt, itt megmarad a 0.1s-os
+          {/* 3. Sub + CTA + Microcopy – a H1 alatt, itt megmarad a 0.1s-os
               lépcsőzés (nem az LCP-elem, nem késleltet festést). */}
           <div className="order-3 flex flex-col md:col-start-1 md:row-start-2">
             <p className={`${riseIn} mb-7 text-base font-light leading-relaxed text-ink-body`}>
@@ -335,7 +375,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             >
               <Link
                 href={isSelf ? "/try" : "/pilot"}
-                // P2: a hero elsődleges CTA-ja módonként külön mérve — ebből
+                // P2: a hero elsődleges CTA-ja módonként külön mérve – ebből
                 // derül ki, melyik ígéret működik.
                 onClick={() =>
                   track("cta.click", {
