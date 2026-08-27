@@ -56,23 +56,23 @@ function PartnerVisual({ locale }: { locale: Locale }) {
         aria-hidden="true"
         className="relative mx-auto mt-6 h-[230px] w-full max-w-[350px] md:h-[260px] md:max-w-[400px]"
       >
-        <div className="absolute left-0 top-0 size-[230px] rounded-full border border-sage/30 bg-sage md:size-[260px]">
+        <div className="absolute left-0 top-0 size-[230px] rounded-full border border-white/15 bg-[var(--color-layer-self-hero-from)] md:size-[260px]">
           <div className="absolute inset-y-0 left-3 flex w-[92px] flex-col items-center justify-center text-center md:left-5 md:w-[108px]">
             <p className="text-sm font-semibold leading-tight text-white md:text-base">
               {t("pilot.partnerTeamTitle", locale)}
             </p>
-            <p className="mt-2 text-xs leading-snug text-white/75 md:text-sm">
+            <p className="mt-2 text-xs leading-snug text-white/90 md:text-sm">
               {t("pilot.partnerTeamBody", locale)}
             </p>
           </div>
         </div>
 
-        <div className="absolute right-0 top-0 size-[230px] rounded-full border border-[var(--color-layer-team-bright)]/35 bg-[var(--color-layer-team-bright)] md:size-[260px]">
+        <div className="absolute right-0 top-0 size-[230px] rounded-full border border-white/15 bg-[var(--color-layer-team-hero-from)] md:size-[260px]">
           <div className="absolute inset-y-0 right-3 flex w-[92px] flex-col items-center justify-center text-center md:right-5 md:w-[108px]">
             <p className="text-sm font-semibold leading-tight text-white md:text-base">
               {t("pilot.partnerTritaTitle", locale)}
             </p>
-            <p className="mt-2 text-xs leading-snug text-white/75 md:text-sm">
+            <p className="mt-2 text-xs leading-snug text-white/90 md:text-sm">
               {t("pilot.partnerTritaBody", locale)}
             </p>
           </div>
