@@ -136,7 +136,7 @@ export const landingTranslations = {
     selfFeat3Desc: { hu: "Kapaszkodót kapsz ahhoz, hogy min érdemes tovább dolgoznod.", en: "Get a starting point for what's worth working on." },
     teamFeat1Badge: { hu: "Dinamika", en: "Dynamics" },
     teamFeat1Title: { hu: "Mért bizalmi háló", en: "Measured trust network" },
-    teamFeat1Desc: { hu: "Páronkénti kapcsolati adatokból látszik, hol erős a bizalom, hol szakad a háló, és hol kevés még az evidencia.", en: "Pairwise relationship data shows where trust is strong, where the network breaks, and where evidence is still limited." },
+    teamFeat1Desc: { hu: "Az egymásról adott visszajelzésekből kirajzolódik, hol erős a bizalom, hol vannak gyengébb kapcsolódások, és hol kell még több visszajelzés a biztos képhez.", en: "Pairwise relationship data shows where trust is strong, where the network breaks, and where evidence is still limited." },
     teamFeat2Badge: { hu: "Biztonság", en: "Safety" },
     teamFeat2Title: { hu: "Pszichológiai biztonság", en: "Psychological Safety" },
     teamFeat2Desc: { hu: "Névtelen pulzusmérés arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
