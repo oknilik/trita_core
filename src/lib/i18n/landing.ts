@@ -227,6 +227,27 @@ export const landingTranslations = {
       hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd átlátható keretet kaptok: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül.",
       en: "In a short conversation, we clarify the goal, then give you a transparent scope: who takes part, what we measure, what you receive, and what it costs.",
     },
+    outcomeVisualEyebrow: { hu: "Amivel továbbmentek", en: "What you leave with" },
+    outcomeVisualBadge: { hu: "3 eredmény", en: "3 outcomes" },
+    outcome1Title: { hu: "Tisztább csapatkép", en: "A clearer team picture" },
+    outcome1Body: {
+      hu: "Látható erősségek és feszültségpontok",
+      en: "Visible strengths and points of tension",
+    },
+    outcome2Title: { hu: "Közös megértés", en: "Shared understanding" },
+    outcome2Body: {
+      hu: "Érthető keret a fontos beszélgetésekhez",
+      en: "A clear framework for important conversations",
+    },
+    outcome3Title: { hu: "Konkrét következő lépés", en: "A concrete next step" },
+    outcome3Body: {
+      hu: "Kipróbálható akció, amelynek hatása visszamérhető",
+      en: "A practical action whose impact can be measured",
+    },
+    outcomeVisualFooter: {
+      hu: "Nemcsak eredményt kaptok, hanem közös irányt is.",
+      en: "You leave not only with results, but with a shared direction.",
+    },
     workflowEyebrow: { hu: "Így dolgozunk együtt", en: "How we work together" },
     workflow1Title: { hu: "Tisztázzuk a célt", en: "Clarify the goal" },
     workflow1Body: {
