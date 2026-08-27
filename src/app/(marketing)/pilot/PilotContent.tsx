@@ -46,55 +46,44 @@ function PartnerVisual({ locale }: { locale: Locale }) {
   return (
     <aside
       aria-label={t("pilot.partnerVisualA11y", locale)}
-      className="relative min-h-[410px] overflow-hidden rounded-[28px] border border-[var(--color-layer-team-badge)]/20 bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] p-6 text-[var(--color-text-on-inverse)] shadow-[0_28px_80px_rgba(26,26,46,0.17)] md:p-7"
+      className="relative py-3"
     >
-      <div aria-hidden="true" className="absolute -right-24 -top-28 size-72 rounded-full border border-white/10" />
-      <div aria-hidden="true" className="absolute -right-10 -top-16 size-48 rounded-full border border-white/10" />
+      <p className="text-center text-label uppercase tracking-[0.12em] text-[var(--color-layer-team-accent)]">
+        {t("pilot.partnerVisualEyebrow", locale)}
+      </p>
 
-      <div className="relative">
-        <p className="text-label uppercase tracking-[0.12em] text-[var(--color-text-on-inverse-muted)]">
-          {t("pilot.partnerVisualEyebrow", locale)}
-        </p>
-
-        <div
-          aria-hidden="true"
-          className="relative mx-auto mt-7 h-[190px] w-full max-w-[340px]"
-        >
-          <div className="absolute left-[6%] top-0 size-44 rounded-full border border-white/15 bg-sage/75" />
-          <div className="absolute right-[6%] top-0 size-44 rounded-full border border-white/15 bg-[var(--color-layer-team-bright)]/70" />
-
-          <p className="absolute left-[4%] top-[72px] z-10 w-[32%] text-center text-sm font-semibold leading-tight">
-            {t("pilot.partnerTeamTitle", locale)}
-          </p>
-          <p className="absolute right-[4%] top-[72px] z-10 w-[32%] text-center text-sm font-semibold leading-tight">
-            {t("pilot.partnerTritaTitle", locale)}
-          </p>
-
-          <div className="absolute left-1/2 top-[58px] z-20 w-28 -translate-x-1/2 text-center">
-            <span className="mx-auto mb-6 flex size-7 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-xs text-[var(--color-layer-team-hero-to)] shadow-[0_4px_14px_rgba(26,26,46,0.16)]">
-              ✦
-            </span>
-            <p className="text-xs font-semibold leading-tight text-white">
-              {t("pilot.partnerResultTitle", locale)}
+      <div
+        aria-hidden="true"
+        className="relative mx-auto mt-6 h-[230px] w-full max-w-[350px] md:h-[260px] md:max-w-[400px]"
+      >
+        <div className="absolute left-0 top-0 size-[230px] rounded-full border border-sage/30 bg-sage md:size-[260px]">
+          <div className="absolute inset-y-0 left-3 flex w-[92px] flex-col items-center justify-center text-center md:left-5 md:w-[108px]">
+            <p className="text-sm font-semibold leading-tight text-white md:text-base">
+              {t("pilot.partnerTeamTitle", locale)}
+            </p>
+            <p className="mt-2 text-xs leading-snug text-white/75 md:text-sm">
+              {t("pilot.partnerTeamBody", locale)}
             </p>
           </div>
         </div>
 
-        <div aria-hidden="true" className="-mt-1 mb-4 grid grid-cols-2 gap-5 text-center">
-          <p className="text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
-            {t("pilot.partnerTeamBody", locale)}
-          </p>
-          <p className="text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
-            {t("pilot.partnerTritaBody", locale)}
-          </p>
+        <div className="absolute right-0 top-0 size-[230px] rounded-full border border-[var(--color-layer-team-bright)]/35 bg-[var(--color-layer-team-bright)] md:size-[260px]">
+          <div className="absolute inset-y-0 right-3 flex w-[92px] flex-col items-center justify-center text-center md:right-5 md:w-[108px]">
+            <p className="text-sm font-semibold leading-tight text-white md:text-base">
+              {t("pilot.partnerTritaTitle", locale)}
+            </p>
+            <p className="mt-2 text-xs leading-snug text-white/75 md:text-sm">
+              {t("pilot.partnerTritaBody", locale)}
+            </p>
+          </div>
         </div>
 
-        <div className="border-t border-white/10 pt-4">
-          <p className="text-sm font-medium text-[var(--color-text-on-inverse)]">
-            {t("pilot.partnerResultBody", locale)}
-          </p>
-          <p className="mt-2 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-            {t("pilot.partnerVisualNote", locale)}
+        <div className="absolute left-1/2 top-1/2 z-10 w-[116px] -translate-x-1/2 -translate-y-1/2 text-center md:w-[132px]">
+          <span className="mx-auto mb-3 flex size-8 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)] shadow-[0_5px_18px_rgba(26,26,46,0.18)]">
+            ✦
+          </span>
+          <p className="text-xs font-semibold leading-tight text-white md:text-sm">
+            {t("pilot.partnerResultTitle", locale)}
           </p>
         </div>
       </div>
