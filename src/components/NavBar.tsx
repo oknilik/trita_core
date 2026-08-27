@@ -20,7 +20,9 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 function isLinkActive(pathname: string, href: string): boolean {
   const normalizedHref = href.split("?")[0] ?? href;
-  if (href === "/") return pathname === "/";
+  if (href === "/") {
+    return pathname === "/" || pathname === "/self-awareness" || pathname === "/team-dynamics";
+  }
   return pathname.startsWith(normalizedHref);
 }
 
@@ -121,7 +123,7 @@ export function NavBar({
   // adja — így a marketing-fa nem szállít clerk-js bundle-t.
   const { isSignedIn } = useAuthState();
   const currentPath = usePathname();
-  const siteMode = useSiteMode();
+  const siteMode = useSiteMode(currentPath === "/team-dynamics" ? "team" : "self");
   const [drawerOpen, setDrawerOpen] = useState(false);
   // UX-A18: localStorage-t nem olvasunk render közben (hydration mismatch:
   // a szerver "Kipróbálom"-ot, a kliens "Folytatom"-ot adott) — a landing
@@ -139,7 +141,8 @@ export function NavBar({
     currentPath.startsWith("/observe")
   ) return null;
 
-  const isTeamLanding = currentPath === "/" && siteMode === "team";
+  const isTeamLanding =
+    (currentPath === "/" || currentPath === "/team-dynamics") && siteMode === "team";
   const publicCtaHref = isTeamLanding ? "/pilot" : "/try";
   const publicCtaLabel = isTeamLanding
     ? t("nav.ctaTeam", locale)

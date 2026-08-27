@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NavBar } from "@/components/NavBar";
-import { setSiteMode } from "@/components/landing/site-mode";
+import { setSiteModePreview } from "@/components/landing/site-mode";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/",
@@ -28,6 +28,7 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
   });
 
   afterEach(() => {
+    act(() => setSiteModePreview(null));
     window.history.replaceState({}, "", "/");
   });
 
@@ -37,7 +38,7 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
     const selfCtas = screen.getAllByRole("link", { name: "Kipróbálom" });
     expect(selfCtas.every((link) => link.getAttribute("href") === "/try")).toBe(true);
 
-    act(() => setSiteMode("team"));
+    act(() => setSiteModePreview("team"));
 
     const teamCtas = screen.getAllByRole("link", { name: "Pilotprogram" });
     expect(teamCtas.every((link) => link.getAttribute("href") === "/pilot")).toBe(true);

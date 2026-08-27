@@ -283,7 +283,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               animálnak. */}
           <div className="order-1 flex flex-col">
             <div className={`${riseIn} mb-4 lg:mb-5`}>
-              <ModeSwitcher />
+              <ModeSwitcher mode={mode} />
             </div>
 
             <div className={`${riseIn} mb-4 flex items-center gap-3`}>

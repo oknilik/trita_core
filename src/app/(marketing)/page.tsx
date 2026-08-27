@@ -24,10 +24,9 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey
-// handoffra, a ?mode= paramétert a LandingContent kezeli kliens-oldalon.
-// A LandingContent már NEM használ useSearchParams-t (ld. site-mode.ts), ezért
-// nem kell Suspense-határ: a teljes landing — a hero H1-gyel, ami az LCP-elem —
-// bekerül a prerenderelt HTML-be.
+// handoffra. A LandingContent nem használ useSearchParams-t (ld. site-mode.ts),
+// ezért nem kell Suspense-határ: a teljes landing — a hero H1-gyel, ami az
+// LCP-elem — bekerül a prerenderelt HTML-be.
 export default function Home() {
   // A gyökér-lapon él a márka- és site-entitás (`@id` horgonyokkal); az összes
   // többi lap ezekre HIVATKOZIK ahelyett, hogy újra kihirdetné őket.

@@ -7,16 +7,13 @@ import { ProofSection } from "@/components/landing/ProofSection";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
-import { useSiteMode } from "@/components/landing/site-mode";
+import { useSiteMode, type SiteMode } from "@/components/landing/site-mode";
 
-// A ?mode= paramétert az URL-ből olvassuk, de NEM useSearchParams-szal:
-// az a statikus prerendert CSR-re bájtolta (BAILOUT_TO_CLIENT_SIDE_RENDERING),
-// ezért a build-elt HTML <main>-je üres volt és a hero H1 (LCP-elem) csak
-// hidratálás után jelent meg. A useSiteMode() szerver-snapshotja "self", így
-// a teljes landing bekerül a statikus HTML-be; a "team" mód a switcherre /
-// mélylinkre vált (részletek: site-mode.ts).
-export function LandingContent() {
-  const mode = useSiteMode();
+// A szerver-snapshotot az útvonal adja át, ezért mindkét indexelhető landing
+// a helyes H1-gyel kerül a statikus HTML-be. A kliens-snapshot az URL-ből
+// olvas, így a főoldali tab-bemutató hidratációs eltérés nélkül működik.
+export function LandingContent({ initialMode = "self" }: { initialMode?: SiteMode }) {
+  const mode = useSiteMode(initialMode);
 
   return (
     <>
