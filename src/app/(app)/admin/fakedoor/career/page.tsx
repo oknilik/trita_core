@@ -43,7 +43,7 @@ const REASON_LABEL: Record<string, string> = {
 };
 
 function pct(value: number | null): string {
-  return value == null ? "—" : `${value}%`;
+  return value == null ? "–" : `${value}%`;
 }
 
 function CellRow({ label, cell }: { label: string; cell: FakeDoorCell }) {
@@ -134,7 +134,7 @@ export default async function CareerFakeDoorReportPage() {
           href="/admin?tab=feedback"
           backLabel="Vissza az adminhoz"
           eyebrow="kereslet-mérés"
-          title="Karrier-iránytű — fake door"
+          title="Karrier-iránytű – fake door"
           description="A funkció nem létezik. Ezek a számok azt mérik, érdemes-e megépíteni. A kimondott szándék nem fizetés: a tényleges vásárlási arány jellemzően ennél jóval alacsonyabb, ezért a számok irányt mutatnak, nem bevételt."
         />
         <div className="mt-3 flex gap-4 text-sm">
@@ -151,7 +151,7 @@ export default async function CareerFakeDoorReportPage() {
         <h2 className="font-fraunces text-lg text-ink">Közönség szerint</h2>
         <p className="mt-1 text-xs text-muted">
           A tanácsadói válasz más terméket értékel (ügyfélnek venné, nem
-          magának) — ezért külön sor, nem beolvasztva. Minden szám
+          magának) – ezért külön sor, nem beolvasztva. Minden szám
           profil-szinten deduplikált: fiókonként az utolsó válasz és az első
           megtekintés számít (új sessionId-vel nem lehet szavazatot halmozni).
         </p>
@@ -175,7 +175,7 @@ export default async function CareerFakeDoorReportPage() {
         <h2 className="font-fraunces text-lg text-ink">Ársávok</h2>
         <p className="mt-1 text-xs text-muted">
           A sáv munkamenetenként sorsolódik, és visszatéréskor sem változik.
-          Az „egyéni” metszet a döntéshez a lényeg — a keresleti görbe töréspontja.
+          Az „egyéni” metszet a döntéshez a lényeg – a keresleti görbe töréspontja.
         </p>
         <div className="mt-4">
           <Table>
@@ -200,31 +200,31 @@ export default async function CareerFakeDoorReportPage() {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Distribution
-          title={'Mit oldana meg — „igen” ág'}
+          title={'Mit oldana meg – „igen” ág'}
           rows={report.valueGoals}
           labels={GOAL_LABEL}
           total={goalTotal}
         />
         <Distribution
-          title={'Mi tartja vissza — „nem” ág'}
+          title={'Mi tartja vissza – „nem” ág'}
           rows={report.noReasons}
           labels={REASON_LABEL}
           total={reasonTotal}
         />
       </div>
 
-      {/* Fizetési hajlandóság: az „ár" ok önmagában nem termékdöntés — az
+      {/* Fizetési hajlandóság: az „ár" ok önmagában nem termékdöntés – az
           összeg az. A csúszka mindig a LÁTOTT árról indul, ezért a „hányad
           része" oszlop az, ami az ársávok között összemérhető. KÖZÖNSÉGENKÉNT
           (2026-08-11): a tanácsadói és az egyéni összeg nem ugyanarra a
-          termékre vonatkozik — összevont medián nincs. */}
+          termékre vonatkozik – összevont medián nincs. */}
       {report.willingnessByAudience.map(({ audience, summary }) => (
         <section
           key={audience}
           className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm"
         >
           <h2 className="font-fraunces text-lg text-ink">
-            Mennyit adnának érte — {AUDIENCE_LABEL[audience] ?? audience},
+            Mennyit adnának érte – {AUDIENCE_LABEL[audience] ?? audience},
             akiknek drága ({summary.count})
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -233,7 +233,7 @@ export default async function CareerFakeDoorReportPage() {
                 Medián
               </p>
               <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
-                {summary.median == null ? "—" : formatPrice(summary.median, "hu")}
+                {summary.median == null ? "–" : formatPrice(summary.median, "hu")}
               </p>
             </div>
             <div className="rounded-lg border border-sand bg-cream p-4">
@@ -241,7 +241,7 @@ export default async function CareerFakeDoorReportPage() {
                 Átlag
               </p>
               <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
-                {summary.average == null ? "—" : formatPrice(summary.average, "hu")}
+                {summary.average == null ? "–" : formatPrice(summary.average, "hu")}
               </p>
             </div>
             <div className="rounded-lg border border-sand bg-cream p-4">
@@ -250,7 +250,7 @@ export default async function CareerFakeDoorReportPage() {
               </p>
               <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {summary.medianShareOfShownPrice == null
-                  ? "—"
+                  ? "–"
                   : `${summary.medianShareOfShownPrice}%`}
               </p>
             </div>

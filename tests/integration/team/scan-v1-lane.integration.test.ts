@@ -49,13 +49,13 @@ function makeId(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 12)}`;
 }
 
-/** Teljes, érvényes pulse-válaszkészlet — minden itemre ugyanaz az érték. */
+/** Teljes, érvényes pulse-válaszkészlet – minden itemre ugyanaz az érték. */
 function pulseAnswers(value: number): PsychSafetyAnswers {
   return Object.fromEntries(PSYCH_SAFETY_ITEMS.map((item) => [item.id, value]));
 }
 
 /**
- * Nap pontosságúra csonkolt beküldési dátum — a route is így ír.
+ * Nap pontosságúra csonkolt beküldési dátum – a route is így ír.
  * Ez az anonimitás második rétege: pontos időbélyeggel a pulse-válasz
  * párosítható volna a `CampaignParticipant.completedAt` értékkel.
  */
@@ -139,7 +139,7 @@ async function createScanV1Fixture(memberCount: number) {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// 1. Pulse — anonimitás a perzisztencia szintjén
+// 1. Pulse – anonimitás a perzisztencia szintjén
 // ─────────────────────────────────────────────────────────────────────
 
 test("a pulse-válasz user-referencia NÉLKÜL kerül a táblába", async () => {
@@ -167,7 +167,7 @@ test("a pulse-válasz user-referencia NÉLKÜL kerül a táblába", async () => 
   assert.deepEqual(
     Object.keys(stored).sort(),
     ["answers", "campaignId", "id", "submittedOn", "teamId"],
-    "a pulse-rekord mezőkészlete bővült — minden új mező azonosíthatóságot vihet be",
+    "a pulse-rekord mezőkészlete bővült – minden új mező azonosíthatóságot vihet be",
   );
   assert.equal(stored.teamId, teamId, "a pulse-rekord csapat-határa hiányzik");
 
@@ -265,7 +265,7 @@ test("az anonimitás-padló a valódi adatbázis-adatból is áll", async () => 
   assert.equal(aggregate.count, PSYCH_SAFETY_MIN_RESPONSES);
 });
 
-test("a pulse-aggregátum kampányonként külön áll — másik kör adata nem szivárog be", async () => {
+test("a pulse-aggregátum kampányonként külön áll – másik kör adata nem szivárog be", async () => {
   const first = await createScanV1Fixture(4);
 
   const second = await prisma.campaign.create({
@@ -299,7 +299,7 @@ test("a pulse-aggregátum kampányonként külön áll — másik kör adata nem
     select: { answers: true },
   });
 
-  // Ha a hatókör szivárogna, a második kör 4 válasszal aggregátumot adna —
+  // Ha a hatókör szivárogna, a második kör 4 válasszal aggregátumot adna –
   // és a visszamérés „előtte–utána" állítása hamis alapra épülne.
   assert.equal(secondRound.length, 1);
   assert.equal(
@@ -309,7 +309,7 @@ test("a pulse-aggregátum kampányonként külön áll — másik kör adata nem
 });
 
 // ─────────────────────────────────────────────────────────────────────
-// 2. Bizalmi háló — egyediség, padló, lefedettség
+// 2. Bizalmi háló – egyediség, padló, lefedettség
 // ─────────────────────────────────────────────────────────────────────
 
 test("ugyanaz az értékelő ugyanarról a tagról FELÜLÍR, nem duplázik", async () => {
@@ -382,7 +382,7 @@ test("a TRUST_360 lépés csak a TELJES csapat-lefedettségtől számít teljes�
   const { campaign, teamId, members } = await createScanV1Fixture(4);
   const [rater, ...others] = members;
 
-  // Egy hiányzó társ — a lépés még nem teljesült.
+  // Egy hiányzó társ – a lépés még nem teljesült.
   for (const other of others.slice(0, others.length - 1)) {
     await prisma.trustObservation.create({
       data: {
@@ -490,7 +490,7 @@ test("kilépett tag stale sora nem pótolhat hiányzó aktuális célt egyik pee
 });
 
 // ─────────────────────────────────────────────────────────────────────
-// 3. Lépés-léptetés — a playbook sorrendje a valós rekordon
+// 3. Lépés-léptetés – a playbook sorrendje a valós rekordon
 // ─────────────────────────────────────────────────────────────────────
 
 test("a résztvevő SELF → TRUST → PULSE sorrendben halad a Scan v1-en", async () => {
@@ -573,7 +573,7 @@ test("egy lépésteljesítés nem léptet másik aktív kampányt", async () => 
 });
 
 // ─────────────────────────────────────────────────────────────────────
-// 4. Riport — a publikált pillanatkép befagy
+// 4. Riport – a publikált pillanatkép befagy
 // ─────────────────────────────────────────────────────────────────────
 
 test("a publikált riport aggregátuma nem mozdul az utólagos adatváltozástól", async () => {
@@ -611,7 +611,7 @@ test("a publikált riport aggregátuma nem mozdul az utólagos adatváltozástó
   });
 
   // A publikálás UTÁN érkező (rosszabb) válaszok nem írhatják át a validált
-  // képet — a debrief és a visszamérés erre a pillanatképre hivatkozik.
+  // képet – a debrief és a visszamérés erre a pillanatképre hivatkozik.
   for (let index = 0; index < 3; index += 1) {
     await prisma.psychSafetyResponse.create({
       data: { campaignId: campaign.id, submittedOn: dayTruncated(), answers: pulseAnswers(1) },
@@ -637,7 +637,7 @@ test("a publikált riport aggregátuma nem mozdul az utólagos adatváltozástó
   assert.notEqual(
     liveAggregate.index,
     snapshot.index,
-    "a fixture nem is változtatta meg az élő képet — a teszt nem bizonyít semmit",
+    "a fixture nem is változtatta meg az élő képet – a teszt nem bizonyít semmit",
   );
 });
 

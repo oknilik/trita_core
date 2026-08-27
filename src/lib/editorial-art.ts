@@ -218,7 +218,7 @@ export function buildConstellation(
       y: r2(height * (quiet ? 0.36 : 0.2)),
       r: r2(base * (quiet ? 0.11 : 0.17)),
     },
-    // Csillag nélkül az átkötő nem „jelöl" semmit — csak levegőt ad.
+    // Csillag nélkül az átkötő nem „jelöl" semmit – csak levegőt ad.
     star: quiet
       ? null
       : {

@@ -18,7 +18,7 @@ function member(overrides: Partial<Record<HexacoCode, number>>) {
   return { scores: { ...scores, ...overrides } };
 }
 
-describe("TEAM_PRESSURE_CONTENT — tartalmi teljesség", () => {
+describe("TEAM_PRESSURE_CONTENT – tartalmi teljesség", () => {
   it("mind a 6 dimenzióra, mindkét pólusra, mindkét nyelven van tartalom", () => {
     for (const dim of DIMS) {
       for (const pole of ["high", "low"] as const) {
@@ -52,7 +52,7 @@ describe("TEAM_PRESSURE_CONTENT — tartalmi teljesség", () => {
   });
 });
 
-describe("computeTeamPressure — pólus-koncentrációk", () => {
+describe("computeTeamPressure – pólus-koncentrációk", () => {
   it("az értékelt tagok felénél kisebb koncentrációt nem emel ki", () => {
     const result = computeTeamPressure([
       member({ C: 80 }),
@@ -142,7 +142,7 @@ describe("computeTeamPressure — pólus-koncentrációk", () => {
 
   it("páratlan létszámú kétpólusú csapat: a kisebbik pólus a share-küszöb alatt marad → egyoldalú találat (szándékos szűk definíció)", () => {
     // 5 főből 3 magas + 2 alacsony: a low pólus eléri a MIN_COUNT-ot, de a
-    // 2/5 arány a küszöb alatt van — a polarizált címke csak akkor jár, ha
+    // 2/5 arány a küszöb alatt van – a polarizált címke csak akkor jár, ha
     // MINDKÉT pólus önállóan koncentráció (gyakorlatban páros, 50–50-es
     // megoszlás, üres középsávval).
     const result = computeTeamPressure([
@@ -161,8 +161,8 @@ describe("computeTeamPressure — pólus-koncentrációk", () => {
     });
   });
 
-  it("a pontosan küszöbön álló érték (65/35) nem pólus-tag — a profile-engine categorize vágásával azonos", () => {
-    // Egyénileg a 65 „medium" (categorize: > 65 a high) — a csapat-nyomás
+  it("a pontosan küszöbön álló érték (65/35) nem pólus-tag – a profile-engine categorize vágásával azonos", () => {
+    // Egyénileg a 65 „medium" (categorize: > 65 a high) – a csapat-nyomás
     // korábban ≥ 65-tel már magas-pólusú koncentráció-tagnak számolta.
     const result = computeTeamPressure([
       member({ C: 65, A: 35 }),

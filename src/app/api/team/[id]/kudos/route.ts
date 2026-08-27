@@ -68,8 +68,8 @@ function serializeKudos(
   return {
     id: item.id,
     direction: item.toUserId === meId ? "received" : "sent",
-    fromName: item.from.username ?? item.from.email ?? "—",
-    toName: item.to.username ?? item.to.email ?? "—",
+    fromName: item.from.username ?? item.from.email ?? "–",
+    toName: item.to.username ?? item.to.email ?? "–",
     message: payload.message ?? "",
     emoji: payload.emoji ?? null,
     teamVisible: item.teamVisible && item.teamHiddenAt === null,
@@ -176,7 +176,7 @@ export async function POST(
     handlePeerKudosReceived({
       itemId: item.id,
       toUserId: body.data.toUserId,
-      fromName: me.username ?? me.email ?? "—",
+      fromName: me.username ?? me.email ?? "–",
       teamId,
       teamName: team.name,
     }).catch((err) => log.error({ event: "team.peer_kudos_error", err: err }, "Peer kudos error")),

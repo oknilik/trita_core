@@ -85,7 +85,7 @@ export function CrmInboxPanel({
       if (!res.ok) throw new Error("PATCH_FAILED");
       router.refresh();
     } catch {
-      setError("A lezárás nem sikerült — próbáld újra.");
+      setError("A lezárás nem sikerült – próbáld újra.");
     } finally {
       setBusyId(null);
     }
@@ -150,7 +150,7 @@ export function CrmInboxPanel({
       </h2>
       <p className="mt-1 text-xs text-ink-body">
         Új, dealhez még nem kötött megkeresések. A pipeline-ba kerülés döntés:
-        ami nem sales, azt zárd le itt — nem torzítja a win-rate-et.
+        ami nem sales, azt zárd le itt – nem torzítja a win-rate-et.
       </p>
 
       {error && (
@@ -197,7 +197,7 @@ export function CrmInboxPanel({
                     >
                       {row.openDealMatch.title}
                     </Link>{" "}
-                    — valószínűleg oda tartozik.
+                    – valószínűleg oda tartozik.
                   </p>
                 )}
 
@@ -268,7 +268,7 @@ export function CrmInboxPanel({
                     onClick={() => void closeAsNotSales(row.id)}
                     className="ml-auto"
                   >
-                    Nem sales — lezárás
+                    Nem sales – lezárás
                   </Button>
                 </div>
               </div>
@@ -277,13 +277,13 @@ export function CrmInboxPanel({
         </div>
       )}
 
-      {/* Deal-létrehozó modal — előtöltve az inquiry-ből */}
+      {/* Deal-létrehozó modal – előtöltve az inquiry-ből */}
       <Modal
         isOpen={draft !== null}
         onClose={() => setDraft(null)}
         eyebrow="pipeline-ba"
         title="Deal létrehozása"
-        description="A kontakt-adatok a megkeresésből jönnek — az üzenet a deal idővonalára kerül."
+        description="A kontakt-adatok a megkeresésből jönnek – az üzenet a deal idővonalára kerül."
       >
         {draft && (
           <form

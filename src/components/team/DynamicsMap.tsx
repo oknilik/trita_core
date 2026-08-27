@@ -214,7 +214,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                   </button>
 
                   {/* Hiányzó profil-adatnál a bontás helyett jelöljük az okot
-                      — nem számolunk gap-et kitalált 50-esek ellen. */}
+                      – nem számolunk gap-et kitalált 50-esek ellen. */}
                   {isExpanded && !hasPairProfiles && (
                     <div className="mb-2 ml-5 mt-1 rounded-lg border border-dashed border-sand bg-cream/60 p-3">
                       <p className="text-micro leading-snug text-muted">
@@ -294,7 +294,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   }
 
   const positions = getCircularPositions(members, 180, 180, 130);
-  // Van-e mért (trust) él a térképen — a jelmagyarázat „hasonló profil"
+  // Van-e mért (trust) él a térképen – a jelmagyarázat „hasonló profil"
   // címkéje csak tisztán profil-becslés képre igaz; mért él mellett az
   // aligned szín semleges címkét kap (a mért aligned = erős bizalom).
   const hasMeasuredEdges = edges.some((e) => isMeasuredDynamicsSource(e.source));
@@ -302,14 +302,14 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   // mért trust-pár, a trust-háló hub-jai (isTrustHub, szerveren számolva)
   // karikázódnak; csak tiszta profil-becslés képen fut a computeAlignedHubIds
   // (aligned-fok ≥ 3, mindkét végpont számít). Korábban a térkép a KEVERT
-  // él-listán becsült hubot — a riport és a térkép más embert emelhetett ki.
+  // él-listán becsült hubot – a riport és a térkép más embert emelhetett ki.
   const hubIds = hasMeasuredEdges
     ? members.filter((m) => m.isTrustHub).map((m) => m.id)
     : computeAlignedHubIds(edges);
 
   return (
     <div className="flex flex-col gap-4 md:flex-row">
-      {/* SVG — mobilon a beágyazás ~230–290px-re nyomná össze a 360-as
+      {/* SVG – mobilon a beágyazás ~230–290px-re nyomná össze a 360-as
           viewBoxot (olvashatatlan nevek, 44px alatti tap-célok), ezért alsó
           szélesség-korlát + vízszintesen görgethető konténer. */}
       <div className="min-w-0 flex-1 overflow-x-auto">
@@ -424,7 +424,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
 
         {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés.
             A "mért" definíció közös (isMeasuredDynamicsSource): trust_round ∪
-            observer — az intelligence-data/cockpit/riport számlálóival azonos. */}
+            observer – az intelligence-data/cockpit/riport számlálóival azonos. */}
         {hasMeasuredEdges ? (
           <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
@@ -434,8 +434,8 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
         ) : (
           <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
-              ? "A kapcsolat-jelzések profil-alapú becslések — bizalmi kör indításával mért adatra cserélhetők."
-              : "Connection markers are profile-based estimates — run a trust round to replace them with measured data."}
+              ? "A kapcsolat-jelzések profil-alapú becslések – bizalmi kör indításával mért adatra cserélhetők."
+              : "Connection markers are profile-based estimates – run a trust round to replace them with measured data."}
           </p>
         )}
       </div>

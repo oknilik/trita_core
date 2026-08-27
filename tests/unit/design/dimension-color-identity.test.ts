@@ -30,7 +30,7 @@ const readCode = (relative: string) =>
     .replace(/\/\*[\s\S]*?\*\//g, " ")
     .replace(/\/\/.*$/gm, " ");
 
-test("a tier-küszöb a mérési hibán belül vágott — ezért nem színez többé", () => {
+test("a tier-küszöb a mérési hibán belül vágott – ezért nem színez többé", () => {
   // A vágópont (70) és a szomszédos sáv távolsága kisebb, mint a dimenzió
   // mérési hibája az ALAPÉRTELMEZETT rövid formán. Vagyis egy 68-as és egy
   // 72-es érték kategorikusan más színt kapott volna, miközben a két igazi
@@ -38,13 +38,13 @@ test("a tier-küszöb a mérési hibán belül vágott — ezért nem színez t�
   const sem = dimStandardError("short");
   assert.ok(sem > 4, `a dimenzió-SEM váratlanul kicsi (${sem.toFixed(2)})`);
 
-  // Konkrét eset a bejelentésből: 68 vs 82 — egy tier-lépés.
+  // Konkrét eset a bejelentésből: 68 vs 82 – egy tier-lépés.
   assert.equal(getDimensionTier(68), "mid");
   assert.equal(getDimensionTier(82), "high");
   // A 68 hibasávja átfedi a 70-es vágást, tehát a határ nem állítható.
   assert.ok(
     68 + sem > 70,
-    `a 68 hibasávja (±${sem.toFixed(2)}) nem éri el a 70-es vágást — ` +
+    `a 68 hibasávja (±${sem.toFixed(2)}) nem éri el a 70-es vágást – ` +
       "az indoklás számszerű alapja megdőlt, a teszt frissítendő",
   );
 });
@@ -64,7 +64,7 @@ test("a dimenzió-paletta és az értékelő ramp nem fedi egymást", () => {
       assert.equal(
         evalColors.has(value),
         false,
-        `${code}.${key} (${value}) az értékelő ramp színe is — a jelentés-osztályok összemosódnak`,
+        `${code}.${key} (${value}) az értékelő ramp színe is – a jelentés-osztályok összemosódnak`,
       );
     }
   }
@@ -87,7 +87,7 @@ test("minden fő dimenzió külön identitás-színt kap", () => {
 
 test("a fordított skálájú E ugyanolyan semleges kezelést kap, mint a többi", () => {
   // A valencia-mentesség szerkezeti garanciája: az E színe a pontszámtól
-  // FÜGGETLEN — nincs az az érték, amelyre „figyelendő" tintet kapna.
+  // FÜGGETLEN – nincs az az érték, amelyre „figyelendő" tintet kapna.
   const low = dimColorsCss("E");
   const high = dimColorsCss("E");
   assert.deepEqual(low, high);
@@ -137,7 +137,7 @@ test("a kivezetett tierColors nem születik újra", () => {
   assert.equal(
     /export\s+const\s+tierColors/.test(source),
     false,
-    "a tierColors export visszakerült — a színezés újra értékelő rámpán futna",
+    "a tierColors export visszakerült – a színezés újra értékelő rámpán futna",
   );
   // A szöveges tier-címke ELLENBEN szándékosan megmarad.
   assert.ok(source.includes("export function getDimensionTier"));

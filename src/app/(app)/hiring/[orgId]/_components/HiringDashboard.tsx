@@ -268,7 +268,7 @@ export function HiringDashboard({
 
   return (
     <div className="flex flex-col gap-6">
-      {/* ═══ HERO — candidate (terrakotta) variáns ═══ */}
+      {/* ═══ HERO – candidate (terrakotta) variáns ═══ */}
       <SurfaceHero
         variant="candidate"
         eyebrow={(
@@ -397,7 +397,7 @@ export function HiringDashboard({
         )}
       />
 
-      {/* Kredit-állapot — kompakt sáv */}
+      {/* Kredit-állapot – kompakt sáv */}
       {creditBalance && (
         <DashboardPanel className="flex flex-wrap items-center justify-between gap-3 px-5 py-3">
           <div className="flex flex-wrap items-center gap-3">

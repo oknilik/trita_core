@@ -58,11 +58,11 @@ export const TEAM_PRESSURE_CONTENT: Record<
   E: {
     high: {
       hu: "Ha a többség érzelmileg fogékonyabb, a feszültség gyorsan átterjedhet egyik tagról a másikra, és az egész csapat túlpöröghet. Segít, ha korán nevén nevezitek a feszültséget, még mielőtt a döntéseket is befolyásolná.",
-      en: "With an emotionally attuned majority, tension can spread quickly from one member to another — the team may over-rev together. It helps to name the tension early, before it turns into a decision problem.",
+      en: "With an emotionally attuned majority, tension can spread quickly from one member to another – the team may over-rev together. It helps to name the tension early, before it turns into a decision problem.",
     },
     low: {
       hu: "Kiegyensúlyozottabb, tárgyilagos többségnél a terhelés jelei sokáig láthatatlanok maradhatnak, és csak későn válhatnak egyértelművé. Egy rövid terheltségi körkérdés, amelyben mindenki mond egy számot, már korán felszínre hozhatja azt, amit a napi működés elfed.",
-      en: "With a calm, matter-of-fact majority, signs of overload can stay invisible for a long time — by the time they show, they run deep. An explicit load check-in (everyone gives a number) surfaces early what day-to-day behavior hides.",
+      en: "With a calm, matter-of-fact majority, signs of overload can stay invisible for a long time – by the time they show, they run deep. An explicit load check-in (everyone gives a number) surfaces early what day-to-day behavior hides.",
     },
   },
   H: {
@@ -78,10 +78,10 @@ export const TEAM_PRESSURE_CONTENT: Record<
   A: {
     high: {
       hu: "Harmóniára törekvő többségnél nyomás alatt az indokolt vita is elmaradhat: látszólagos egyetértés alakulhat ki, a konfliktus pedig a felszín alá szorulhat. Egy vezetett kör, amelyben egy kijelölt tag tudatosan képviseli az ellenvéleményt, elfogadottá teheti a vitát.",
-      en: "With a harmony-seeking majority, even legitimate debate may vanish under pressure — surface agreement forms while conflict moves underground. A structured dissent round (someone always argues the other side) legitimizes debate.",
+      en: "With a harmony-seeking majority, even legitimate debate may vanish under pressure – surface agreement forms while conflict moves underground. A structured dissent round (someone always argues the other side) legitimizes debate.",
     },
     low: {
-      hu: "Konfrontatívabb többségnél nyomás alatt élesebbé válhat a kritika, a szakmai vita pedig könnyebben fordulhat személyeskedésbe. Az előre rögzített vitaszabályok — a témáról beszélünk, nem az emberről — segítenek mederben tartani a beszélgetést.",
+      hu: "Konfrontatívabb többségnél nyomás alatt élesebbé válhat a kritika, a szakmai vita pedig könnyebben fordulhat személyeskedésbe. Az előre rögzített vitaszabályok – a témáról beszélünk, nem az emberről – segítenek mederben tartani a beszélgetést.",
       en: "With a more confrontational majority, criticism sharpens under pressure and professional debate slips into the personal more easily. Pre-agreed debate rules (we discuss the topic, not the person) keep the energy in its channel.",
     },
   },
@@ -91,18 +91,18 @@ export const TEAM_PRESSURE_CONTENT: Record<
       en: "With a high Conscientiousness concentration, the need for control can compound under pressure: more checks, slower handoffs, a micromanagement spiral. Deliberately dropping checkpoints and pre-agreeing what \"good enough\" means helps.",
     },
     low: {
-      hu: "Ha a csapatban többségben vannak az alacsonyabb lelkiismeretességű tagok, nyomás alatt tovább lazulhat a struktúra: megszokottá válhatnak a csúszó határidők, a felelősség pedig elmosódhat. Egy minimális közös keret — ki, mit és mikorra vállal, egyetlen listán — többet segíthet, mint a részletes folyamatszabályozás.",
-      en: "With low Conscientiousness dominant, structure can loosen further under pressure: deadline slips normalize and ownership blurs. A minimal frame (who, what, by when — one single list) protects more than a full process would.",
+      hu: "Ha a csapatban többségben vannak az alacsonyabb lelkiismeretességű tagok, nyomás alatt tovább lazulhat a struktúra: megszokottá válhatnak a csúszó határidők, a felelősség pedig elmosódhat. Egy minimális közös keret – ki, mit és mikorra vállal, egyetlen listán – többet segíthet, mint a részletes folyamatszabályozás.",
+      en: "With low Conscientiousness dominant, structure can loosen further under pressure: deadline slips normalize and ownership blurs. A minimal frame (who, what, by when – one single list) protects more than a full process would.",
     },
   },
   O: {
     high: {
-      hu: "Ha a többség szívesen keresi az újdonságot, nyomás alatt az új ötlet menekülőúttá válhat a nehéz végrehajtás elől: a csapat nagy lendülettel dolgozik, de kevés feladatot zár le. Egy közös ötletlista és egyértelmű vállalás — „most ezt visszük végig” — segíthet megőrizni a fókuszt.",
-      en: "With a novelty-seeking majority, new ideas can become an escape from hard execution under pressure — the team spins but doesn't close. An idea parking lot and a shared focus commitment (we finish this one now) protect completion.",
+      hu: "Ha a többség szívesen keresi az újdonságot, nyomás alatt az új ötlet menekülőúttá válhat a nehéz végrehajtás elől: a csapat nagy lendülettel dolgozik, de kevés feladatot zár le. Egy közös ötletlista és egyértelmű vállalás – „most ezt visszük végig” – segíthet megőrizni a fókuszt.",
+      en: "With a novelty-seeking majority, new ideas can become an escape from hard execution under pressure – the team spins but doesn't close. An idea parking lot and a shared focus commitment (we finish this one now) protect completion.",
     },
     low: {
-      hu: "Bevált módszerekhez ragaszkodó többségnél nyomás alatt a szükséges irányváltás is elmaradhat — a stabilitás merevséggé válhat. A kis léptékű, alacsony kockázatú kísérletek biztonságosabbá tehetik a változtatást.",
-      en: "With a proven-methods majority, even a necessary course change may not happen under pressure — stability can turn into rigidity. A frame of small, low-risk experiments makes change safe.",
+      hu: "Bevált módszerekhez ragaszkodó többségnél nyomás alatt a szükséges irányváltás is elmaradhat – a stabilitás merevséggé válhat. A kis léptékű, alacsony kockázatú kísérletek biztonságosabbá tehetik a változtatást.",
+      en: "With a proven-methods majority, even a necessary course change may not happen under pressure – stability can turn into rigidity. A frame of small, low-risk experiments makes change safe.",
     },
   },
 };
@@ -112,8 +112,8 @@ export const TEAM_PRESSURE_CONTENT: Record<
  * dinamikája (két csoport, két reakciómód) minden dimenzióra azonos.
  */
 export const TEAM_PRESSURE_POLARIZED_TEXT: PressureText = {
-  hu: "Ebben a dimenzióban a csapat két ellentétes pólusra oszlik: nyomás alatt a két csoport eltérő — akár egymásnak feszülő — módon reagálhat, és a különbség tovább mélyülhet. Segít, ha a kétféle működést nyíltan kimondjátok, és előre megállapodtok, melyik helyzetben melyik kapjon teret.",
-  en: "On this dimension the team splits into two opposite poles: under pressure the two groups may react in different — even clashing — ways, and the gap can widen further. It helps to name the two styles openly and agree in advance which one leads in which situation.",
+  hu: "Ebben a dimenzióban a csapat két ellentétes pólusra oszlik: nyomás alatt a két csoport eltérő – akár egymásnak feszülő – módon reagálhat, és a különbség tovább mélyülhet. Segít, ha a kétféle működést nyíltan kimondjátok, és előre megállapodtok, melyik helyzetben melyik kapjon teret.",
+  en: "On this dimension the team splits into two opposite poles: under pressure the two groups may react in different – even clashing – ways, and the gap can widen further. It helps to name the two styles openly and agree in advance which one leads in which situation.",
 };
 
 export interface PressureConcentration {

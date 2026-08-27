@@ -339,14 +339,14 @@ export function createTeamDashboardIA(input: TeamDashboardIAInput): DashboardIAV
     heroSummary: {
       eyebrow: txt(input.locale, "Csapat cockpit", "Team cockpit"),
       title: input.teamName,
-      // Teljes kitöltésnél kvalitatív összefoglaló — a számok az Élő
+      // Teljes kitöltésnél kvalitatív összefoglaló – a számok az Élő
       // pillanatkép gyűrűkben élnek, itt nem ismételjük (akciólista #14).
       summary:
         input.completedCount === input.memberCount && input.memberCount > 0
           ? txt(
               input.locale,
-              "Mindenki kitöltötte az önértékelést — a csapatkép él.",
-              "Everyone has completed the assessment — the team picture is live.",
+              "Mindenki kitöltötte az önértékelést – a csapatkép él.",
+              "Everyone has completed the assessment – the team picture is live.",
             )
           : txt(
               input.locale,
@@ -355,7 +355,7 @@ export function createTeamDashboardIA(input: TeamDashboardIAInput): DashboardIAV
             ),
       // Állapot-chip csak zárolt mintázatnál (UX-audit #2): elérhető
       // csapatképnél a hero badge-e („CSAPATKÉP ELÉRHETŐ") már közli az
-      // állapotot — a chip ugyanazt duplikálta közvetlenül alatta.
+      // állapotot – a chip ugyanazt duplikálta közvetlenül alatta.
       chips: input.hasPattern
         ? []
         : [txt(input.locale, "csapatkép zárolt", "pattern locked")],

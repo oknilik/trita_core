@@ -55,7 +55,7 @@ const NAIH_LINE_EN = `${SUPERVISORY_AUTHORITY.nameEn} · ${SUPERVISORY_AUTHORITY
 
 const HU: PolicyDocument = {
   title: "Adatvédelmi tájékoztató",
-  lead: "Ez a tájékoztató azt írja le, milyen személyes adatokat kezelünk, miért, milyen jogalapon, meddig, kivel osztjuk meg — és mit tehetsz, ha nem értesz egyet valamivel. Röviden: a felmérési eredményed a tiéd, egyéni válaszod soha nem jelenik meg csapatszintű nézetben, és a profilodat bármikor törölheted.",
+  lead: "Ez a tájékoztató azt írja le, milyen személyes adatokat kezelünk, miért, milyen jogalapon, meddig, kivel osztjuk meg – és mit tehetsz, ha nem értesz egyet valamivel. Röviden: a felmérési eredményed a tiéd, egyéni válaszod soha nem jelenik meg csapatszintű nézetben, és a profilodat bármikor törölheted.",
   lastUpdated: "Utoljára frissítve: 2026. augusztus 25.",
   effectiveFrom: "Hatályos: 2026. augusztus 25-től",
   tocLabel: "Tartalom",
@@ -99,17 +99,17 @@ const HU: PolicyDocument = {
           kind: "dl",
           items: [
             {
-              term: "Egyéni használat — mi vagyunk az adatkezelő",
+              term: "Egyéni használat – mi vagyunk az adatkezelő",
               description:
                 "Ha magadtól regisztrálsz vagy kitöltöd az ingyenes felmérést, a saját adataid kezeléséről mi döntünk. Ilyenkor ez a tájékoztató az irányadó, és a jogaidat velünk szemben gyakorolhatod.",
             },
             {
-              term: "Szervezeti megrendelés — a munkáltatód az adatkezelő, mi adatfeldolgozók vagyunk",
+              term: "Szervezeti megrendelés – a munkáltatód az adatkezelő, mi adatfeldolgozók vagyunk",
               description:
-                "Ha a felmérésen a munkáltatód vagy egy megbízó szervezet felkérésére veszel részt (csapatfelmérés, 360°-os kampány, jelölti folyamat), az adatkezelés céljáról az a szervezet dönt — mi az ő megbízásából, adatfeldolgozói szerződés alapján járunk el. Ilyenkor elsősorban a szervezet saját adatkezelési tájékoztatója irányadó, és a törlési vagy hozzáférési kérésedet a szervezet felé is jelezheted. Ha hozzánk fordulsz, továbbítjuk a megrendelőnek.",
+                "Ha a felmérésen a munkáltatód vagy egy megbízó szervezet felkérésére veszel részt (csapatfelmérés, 360°-os kampány, jelölti folyamat), az adatkezelés céljáról az a szervezet dönt – mi az ő megbízásából, adatfeldolgozói szerződés alapján járunk el. Ilyenkor elsősorban a szervezet saját adatkezelési tájékoztatója irányadó, és a törlési vagy hozzáférési kérésedet a szervezet felé is jelezheted. Ha hozzánk fordulsz, továbbítjuk a megrendelőnek.",
             },
             {
-              term: "Megfigyelői (observer) visszajelzés — vegyes",
+              term: "Megfigyelői (observer) visszajelzés – vegyes",
               description:
                 "Ha valakinek a meghívására töltesz ki róla visszajelzést, a te válaszaidat a meghívó személy eredményéhez rendeljük. A megadott e-mail-címedet kizárólag a meghívó kézbesítéséhez használjuk.",
             },
@@ -168,7 +168,7 @@ const HU: PolicyDocument = {
         },
         {
           kind: "note",
-          text: "Amit NEM kezelünk: a GDPR 9. cikke szerinti különleges adatot (egészségügyi adat, vallási vagy politikai meggyőződés, szexuális irányultság, biometrikus adat) nem gyűjtünk. A személyiség-felmérés eredménye nem egészségügyi adat és nem diagnózis: viselkedési preferenciák önbevalláson alapuló mérése. Bankkártya- és fizetési adatot sem kezelünk — a számlázás a platformon kívül történik.",
+          text: "Amit NEM kezelünk: a GDPR 9. cikke szerinti különleges adatot (egészségügyi adat, vallási vagy politikai meggyőződés, szexuális irányultság, biometrikus adat) nem gyűjtünk. A személyiség-felmérés eredménye nem egészségügyi adat és nem diagnózis: viselkedési preferenciák önbevalláson alapuló mérése. Bankkártya- és fizetési adatot sem kezelünk – a számlázás a platformon kívül történik.",
         },
       ],
     },
@@ -187,57 +187,57 @@ const HU: PolicyDocument = {
             [
               "Fiók létrehozása és működtetése, bejelentkezés",
               "Fiókadatok",
-              "Szerződés teljesítése — GDPR 6. cikk (1) b)",
+              "Szerződés teljesítése – GDPR 6. cikk (1) b)",
             ],
             [
               "A felmérés kiszolgálása, pontszámítás, eredmények megjelenítése",
               "Felmérési és profiladatok",
-              "Szerződés teljesítése — 6. cikk (1) b)",
+              "Szerződés teljesítése – 6. cikk (1) b)",
             ],
             [
               "Observer-meghívó kiküldése és a visszajelzés összevetése az önértékeléssel",
               "Meghívott e-mail-címe, visszajelzési adatok",
-              "Jogos érdek — 6. cikk (1) f): a felhasználó kifejezett kérésére küldünk meghívót; a címzett bármikor kérheti a törlést",
+              "Jogos érdek – 6. cikk (1) f): a felhasználó kifejezett kérésére küldünk meghívót; a címzett bármikor kérheti a törlést",
             ],
             [
               "Csapat- és szervezeti szintű mérések, riportok, kampánykezelés",
               "Felmérési, visszajelzési és szervezeti adatok",
-              "A megrendelő szervezet utasítása alapján, adatfeldolgozóként — a szervezet jogalapja (jellemzően jogos érdek vagy szerződés)",
+              "A megrendelő szervezet utasítása alapján, adatfeldolgozóként – a szervezet jogalapja (jellemzően jogos érdek vagy szerződés)",
             ],
             [
               "Kapcsolatfelvétel megválaszolása, ajánlatadás",
               "Kapcsolatfelvételi adatok",
-              "Szerződéskötést megelőző lépések / jogos érdek — 6. cikk (1) b) és f)",
+              "Szerződéskötést megelőző lépések / jogos érdek – 6. cikk (1) b) és f)",
             ],
             [
               "Hírlevél és új blogbejegyzés-értesítő küldése",
               "Feliratkozási adatok",
-              "Hozzájárulás — 6. cikk (1) a); kétlépcsős feliratkozás, bármikor visszavonható",
+              "Hozzájárulás – 6. cikk (1) a); kétlépcsős feliratkozás, bármikor visszavonható",
             ],
             [
               "Hírlevél-kézbesíthetőség ellenőrzése, linkkérések mérése és feliratkozói kontextus megjelenítése a beérkező megkeresés mellett",
               "Kiküldési/kézbesítési állapot, első linkkérés, normalizált e-mail-egyezés",
-              "Jogos érdek — 6. cikk (1) f): a feladói hírnév védelme, hibák feltárása és a tartalom hasznosságának megértése; nyitópixelt nem használunk, a jel bizonytalanságát feltüntetjük, az adatkezelés ellen tiltakozhatsz",
+              "Jogos érdek – 6. cikk (1) f): a feladói hírnév védelme, hibák feltárása és a tartalom hasznosságának megértése; nyitópixelt nem használunk, a jel bizonytalanságát feltüntetjük, az adatkezelés ellen tiltakozhatsz",
             ],
             [
               "Szolgáltatás- és módszertan-fejlesztés összesített adatokon",
               "Felmérési adatok, anonimizálás után",
-              "Jogos érdek — 6. cikk (1) f); az anonimizált, aggregált eredmény már nem személyes adat",
+              "Jogos érdek – 6. cikk (1) f); az anonimizált, aggregált eredmény már nem személyes adat",
             ],
             [
               "Üzemeltetés, biztonság, visszaélés-megelőzés, hibakeresés",
               "Technikai adatok, naplók",
-              "Jogos érdek — 6. cikk (1) f)",
+              "Jogos érdek – 6. cikk (1) f)",
             ],
             [
               "A felület használatának mérése (mely oldalak, hol akad el a folyamat)",
               "Felületi események: megnyitott oldal, gombkattintás, a kitöltés hányadik kérdésénél tart",
-              "Jogos érdek — 6. cikk (1) f); saját, first-party mérés, külső szolgáltató nélkül",
+              "Jogos érdek – 6. cikk (1) f); saját, first-party mérés, külső szolgáltató nélkül",
             ],
             [
               "Számviteli kötelezettségek teljesítése",
               "Számlázási és kapcsolattartói adatok",
-              "Jogi kötelezettség — 6. cikk (1) c), a számvitelről szóló 2000. évi C. törvény alapján",
+              "Jogi kötelezettség – 6. cikk (1) c), a számvitelről szóló 2000. évi C. törvény alapján",
             ],
           ],
         },
@@ -254,16 +254,16 @@ const HU: PolicyDocument = {
         {
           kind: "ul",
           items: [
-            "Egyéni válasz soha nem jelenik meg csapat- vagy szervezeti nézetben — kizárólag összesített formában.",
+            "Egyéni válasz soha nem jelenik meg csapat- vagy szervezeti nézetben – kizárólag összesített formában.",
             "Összesített eredmény is csak akkor jelenik meg, ha legalább 3 értékelő, illetve kitöltő válasza rendelkezésre áll. A küszöb alatt a felület nem mutat eredményt.",
-            "A pszichológiai biztonság pulzusválaszait eleve felhasználói azonosító nélkül rögzítjük — ezeket utólag sem tudjuk személyhez kötni.",
+            "A pszichológiai biztonság pulzusválaszait eleve felhasználói azonosító nélkül rögzítjük – ezeket utólag sem tudjuk személyhez kötni.",
             "Az összesített csapatképet a csapat vezetője, a szervezeti adminisztrátor és a szervezethez rendelt tanácsadó látja; te a rólad szóló, összesített visszajelzést látod.",
-            "A bizalmi kör eredménye páronkénti, két irány átlagából képzett formában jelenik meg — az egyes irányított válaszok ott sem láthatók.",
+            "A bizalmi kör eredménye páronkénti, két irány átlagából képzett formában jelenik meg – az egyes irányított válaszok ott sem láthatók.",
           ],
         },
         {
           kind: "p",
-          text: "A profilod törlésével a hozzád köthető válaszok is törlődnek. A már anonimizált, összesített eredmények személyhez nem vezethetők vissza, ezért azok nem törölhetők — ez a GDPR szerint már nem személyesadat-kezelés.",
+          text: "A profilod törlésével a hozzád köthető válaszok is törlődnek. A már anonimizált, összesített eredmények személyhez nem vezethetők vissza, ezért azok nem törölhetők – ez a GDPR szerint már nem személyesadat-kezelés.",
         },
       ],
     },
@@ -273,7 +273,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "A pontszámokat és az illeszkedési mutatókat algoritmus számolja ki — ez profilalkotásnak minősül. Ugyanakkor a GDPR 22. cikke szerinti, KIZÁRÓLAG automatizált, rád nézve joghatással járó vagy hasonlóan jelentős döntést nem hozunk és nem hozunk létre.",
+          text: "A pontszámokat és az illeszkedési mutatókat algoritmus számolja ki – ez profilalkotásnak minősül. Ugyanakkor a GDPR 22. cikke szerinti, KIZÁRÓLAG automatizált, rád nézve joghatással járó vagy hasonlóan jelentős döntést nem hozunk és nem hozunk létre.",
         },
         {
           kind: "ul",
@@ -301,7 +301,7 @@ const HU: PolicyDocument = {
             [
               "Clerk (clerk.com)",
               "Hitelesítés, munkamenet-kezelés",
-              "USA — EU–U.S. Data Privacy Framework, illetve általános szerződési feltételek (SCC)",
+              "USA – EU–U.S. Data Privacy Framework, illetve általános szerződési feltételek (SCC)",
             ],
             [
               "Neon (neon.tech)",
@@ -311,18 +311,18 @@ const HU: PolicyDocument = {
             [
               "Vercel (vercel.com)",
               "Alkalmazás-üzemeltetés, süti nélküli látogatottsági és teljesítmény-statisztika",
-              "EU/USA — DPA és SCC alapján",
+              "EU/USA – DPA és SCC alapján",
             ],
             [
               "Resend (resend.com)",
               "Tranzakciós e-mailek kézbesítése (meghívók, értesítők)",
-              "USA — SCC alapján",
+              "USA – SCC alapján",
             ],
           ],
         },
         {
           kind: "p",
-          text: "Ezen felül hozzáférhet az adatodhoz a szervezeted arra jogosult munkatársa (vezető, adminisztrátor) és a szervezethez rendelt tanácsadónk — a fenti anonimitási szabályok keretei között. Hatóság felé kizárólag jogszabályi kötelezettség esetén adunk ki adatot.",
+          text: "Ezen felül hozzáférhet az adatodhoz a szervezeted arra jogosult munkatársa (vezető, adminisztrátor) és a szervezethez rendelt tanácsadónk – a fenti anonimitási szabályok keretei között. Hatóság felé kizárólag jogszabályi kötelezettség esetén adunk ki adatot.",
         },
       ],
     },
@@ -358,7 +358,7 @@ const HU: PolicyDocument = {
             ],
             [
               "Csapat- és szervezeti mérési adatok",
-              "A megrendelő szervezettel fennálló szerződés végéig, azt követően 90 napon belüli törlés vagy visszaadás — a szervezet utasítása szerint.",
+              "A megrendelő szervezettel fennálló szerződés végéig, azt követően 90 napon belüli törlés vagy visszaadás – a szervezet utasítása szerint.",
             ],
             [
               "Kapcsolatfelvételi üzenetek",
@@ -386,7 +386,7 @@ const HU: PolicyDocument = {
             ],
             [
               "Anonimizált, összesített statisztikák",
-              "Időbeli korlát nélkül — ezek már nem személyes adatok.",
+              "Időbeli korlát nélkül – ezek már nem személyes adatok.",
             ],
           ],
         },
@@ -398,7 +398,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "Kizárólag a működéshez szükséges sütiket használunk. Marketing- és nyomkövető sütit nem helyezünk el, és nem osztunk meg adatot hirdetési hálózatokkal — ezért nem is jelenítünk meg süti-elfogadó felugrót.",
+          text: "Kizárólag a működéshez szükséges sütiket használunk. Marketing- és nyomkövető sütit nem helyezünk el, és nem osztunk meg adatot hirdetési hálózatokkal – ezért nem is jelenítünk meg süti-elfogadó felugrót.",
         },
         {
           kind: "table",
@@ -415,7 +415,7 @@ const HU: PolicyDocument = {
         },
         {
           kind: "p",
-          text: "A saját használat-mérésünk sem tesz le sütit, és semmilyen más azonosítót nem tárol az eszközödön: a látogató azonosítója NAPONTA ROTÁLÓ álnév, amit az IP-címből és a böngésző-azonosítóból számolt visszafejthetetlen kivonat ad — magát az IP-címet nem tároljuk, és másnap ugyanaz a látogató már más álnév alatt jelenik meg. Az események a mi szervereinkre érkeznek és a mi adatbázisunkban maradnak; nincs mögötte külső analitikai szolgáltató, és semmilyen adat nem megy ki reklámhálózathoz. Ha a böngésződ nyomkövetés-tiltást jelez (Global Privacy Control vagy Do Not Track), semmit nem mérünk. Esemény-tulajdonságban nincs név, e-mail-cím, szabad szöveg, kérdőív-válasz, pontszám vagy meghívó-token. Ezért nincs süti-elfogadó felugró sem.",
+          text: "A saját használat-mérésünk sem tesz le sütit, és semmilyen más azonosítót nem tárol az eszközödön: a látogató azonosítója NAPONTA ROTÁLÓ álnév, amit az IP-címből és a böngésző-azonosítóból számolt visszafejthetetlen kivonat ad – magát az IP-címet nem tároljuk, és másnap ugyanaz a látogató már más álnév alatt jelenik meg. Az események a mi szervereinkre érkeznek és a mi adatbázisunkban maradnak; nincs mögötte külső analitikai szolgáltató, és semmilyen adat nem megy ki reklámhálózathoz. Ha a böngésződ nyomkövetés-tiltást jelez (Global Privacy Control vagy Do Not Track), semmit nem mérünk. Esemény-tulajdonságban nincs név, e-mail-cím, szabad szöveg, kérdőív-válasz, pontszám vagy meghívó-token. Ezért nincs süti-elfogadó felugró sem.",
         },
       ],
     },
@@ -458,7 +458,7 @@ const HU: PolicyDocument = {
             {
               term: "Törlés",
               description:
-                "Bármikor törölheted a profilodat a profiloldalon — ezzel a hozzád köthető felmérési és visszajelzési adatok is törlődnek. Kivétel: amit jogszabály alapján meg kell őriznünk (pl. számviteli bizonylat).",
+                "Bármikor törölheted a profilodat a profiloldalon – ezzel a hozzád köthető felmérési és visszajelzési adatok is törlődnek. Kivétel: amit jogszabály alapján meg kell őriznünk (pl. számviteli bizonylat).",
             },
             {
               term: "Az adatkezelés korlátozása",
@@ -468,7 +468,7 @@ const HU: PolicyDocument = {
             {
               term: "Adathordozhatóság",
               description:
-                "Kérheted, hogy a megadott és a mért adataidat géppel olvasható formátumban add ki, vagy — ha technikailag megvalósítható — továbbítsuk másik szolgáltatónak.",
+                "Kérheted, hogy a megadott és a mért adataidat géppel olvasható formátumban add ki, vagy – ha technikailag megvalósítható – továbbítsuk másik szolgáltatónak.",
             },
             {
               term: "Tiltakozás",
@@ -494,12 +494,12 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "Ha úgy látod, hogy az adatkezelésünk jogszabályba ütközik, először érdemes közvetlenül nekünk írni — a legtöbb ügy így rendeződik a leggyorsabban. Ettől függetlenül panaszt tehetsz a felügyeleti hatóságnál:",
+          text: "Ha úgy látod, hogy az adatkezelésünk jogszabályba ütközik, először érdemes közvetlenül nekünk írni – a legtöbb ügy így rendeződik a leggyorsabban. Ettől függetlenül panaszt tehetsz a felügyeleti hatóságnál:",
         },
         { kind: "note", text: NAIH_LINE_HU },
         {
           kind: "p",
-          text: "Jogaid megsértése esetén bírósághoz is fordulhatsz. A per — választásod szerint — a lakóhelyed vagy tartózkodási helyed szerinti törvényszék előtt is megindítható.",
+          text: "Jogaid megsértése esetén bírósághoz is fordulhatsz. A per – választásod szerint – a lakóhelyed vagy tartózkodási helyed szerinti törvényszék előtt is megindítható.",
         },
       ],
     },
@@ -519,7 +519,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "A tájékoztatót időről időre frissítjük — például új funkció vagy új adatfeldolgozó bevezetésekor. A lap tetején mindig szerepel a legutóbbi frissítés dátuma. Ha a változás érdemben érinti a jogaidat vagy az adatkezelés célját, a változás hatálybalépése előtt e-mailben vagy a felületen külön értesítünk.",
+          text: "A tájékoztatót időről időre frissítjük – például új funkció vagy új adatfeldolgozó bevezetésekor. A lap tetején mindig szerepel a legutóbbi frissítés dátuma. Ha a változás érdemben érinti a jogaidat vagy az adatkezelés célját, a változás hatálybalépése előtt e-mailben vagy a felületen külön értesítünk.",
         },
       ],
     },
@@ -538,7 +538,7 @@ const HU: PolicyDocument = {
 
 const EN: PolicyDocument = {
   title: "Privacy Policy",
-  lead: "This policy explains what personal data we process, why, on what legal basis, for how long, and who we share it with — and what you can do if you disagree with something. In short: your assessment results are yours, your individual answers never appear in a team-level view, and you can delete your profile at any time.",
+  lead: "This policy explains what personal data we process, why, on what legal basis, for how long, and who we share it with – and what you can do if you disagree with something. In short: your assessment results are yours, your individual answers never appear in a team-level view, and you can delete your profile at any time.",
   lastUpdated: "Last updated: 25 August 2026",
   effectiveFrom: "Effective from: 25 August 2026",
   tocLabel: "Contents",
@@ -582,17 +582,17 @@ const EN: PolicyDocument = {
           kind: "dl",
           items: [
             {
-              term: "Individual use — we are the controller",
+              term: "Individual use – we are the controller",
               description:
                 "If you sign up on your own or take the free assessment, we decide how your data is processed. This policy applies, and you can exercise your rights against us.",
             },
             {
-              term: "Organizational engagement — your employer is the controller, we are a processor",
+              term: "Organizational engagement – your employer is the controller, we are a processor",
               description:
-                "If you take part at the request of your employer or a client organization (team assessment, 360° campaign, candidate process), that organization decides the purpose of the processing — we act on their instructions under a data processing agreement. In that case the organization's own privacy notice applies first, and you may also address deletion or access requests to them. If you contact us, we forward the request to the client.",
+                "If you take part at the request of your employer or a client organization (team assessment, 360° campaign, candidate process), that organization decides the purpose of the processing – we act on their instructions under a data processing agreement. In that case the organization's own privacy notice applies first, and you may also address deletion or access requests to them. If you contact us, we forward the request to the client.",
             },
             {
-              term: "Observer feedback — mixed",
+              term: "Observer feedback – mixed",
               description:
                 "If you rate someone at their invitation, your answers are linked to that person's results. Your email address is used solely to deliver the invitation.",
             },
@@ -651,7 +651,7 @@ const EN: PolicyDocument = {
         },
         {
           kind: "note",
-          text: "What we do NOT process: we collect no special category data under Article 9 GDPR (health data, religious or political beliefs, sexual orientation, biometric data). Personality assessment results are not health data and not a diagnosis: they are a self-reported measurement of behavioural preferences. We also process no card or payment data — invoicing happens outside the platform.",
+          text: "What we do NOT process: we collect no special category data under Article 9 GDPR (health data, religious or political beliefs, sexual orientation, biometric data). Personality assessment results are not health data and not a diagnosis: they are a self-reported measurement of behavioural preferences. We also process no card or payment data – invoicing happens outside the platform.",
         },
       ],
     },
@@ -670,57 +670,57 @@ const EN: PolicyDocument = {
             [
               "Creating and operating your account, signing in",
               "Account data",
-              "Performance of a contract — Art. 6(1)(b) GDPR",
+              "Performance of a contract – Art. 6(1)(b) GDPR",
             ],
             [
               "Delivering the assessment, scoring, displaying results",
               "Assessment and profile data",
-              "Performance of a contract — Art. 6(1)(b)",
+              "Performance of a contract – Art. 6(1)(b)",
             ],
             [
               "Sending observer invitations and comparing feedback with your self-assessment",
               "Invitee's email address, feedback data",
-              "Legitimate interest — Art. 6(1)(f): invitations are sent at the user's explicit request; recipients may request deletion at any time",
+              "Legitimate interest – Art. 6(1)(f): invitations are sent at the user's explicit request; recipients may request deletion at any time",
             ],
             [
               "Team and organization-level measurements, reports, campaign management",
               "Assessment, feedback and organizational data",
-              "On the client organization's instructions, as a processor — the organization's own legal basis (typically legitimate interest or contract)",
+              "On the client organization's instructions, as a processor – the organization's own legal basis (typically legitimate interest or contract)",
             ],
             [
               "Responding to enquiries and preparing quotes",
               "Contact data",
-              "Steps prior to entering into a contract / legitimate interest — Art. 6(1)(b) and (f)",
+              "Steps prior to entering into a contract / legitimate interest – Art. 6(1)(b) and (f)",
             ],
             [
               "Sending the newsletter and new-article updates",
               "Subscription data",
-              "Consent — Art. 6(1)(a); double opt-in subscription, withdrawable at any time",
+              "Consent – Art. 6(1)(a); double opt-in subscription, withdrawable at any time",
             ],
             [
               "Checking newsletter deliverability, measuring link requests and showing subscriber context beside an incoming enquiry",
               "Send/delivery state, first link request, normalized email match",
-              "Legitimate interest — Art. 6(1)(f): protecting sender reputation, diagnosing failures and understanding content usefulness; we use no open pixel, disclose the signal's uncertainty, and you may object",
+              "Legitimate interest – Art. 6(1)(f): protecting sender reputation, diagnosing failures and understanding content usefulness; we use no open pixel, disclose the signal's uncertainty, and you may object",
             ],
             [
               "Improving the service and the methodology on aggregated data",
               "Assessment data, after anonymization",
-              "Legitimate interest — Art. 6(1)(f); anonymized, aggregated results are no longer personal data",
+              "Legitimate interest – Art. 6(1)(f); anonymized, aggregated results are no longer personal data",
             ],
             [
               "Operations, security, abuse prevention, debugging",
               "Technical data, logs",
-              "Legitimate interest — Art. 6(1)(f)",
+              "Legitimate interest – Art. 6(1)(f)",
             ],
             [
               "Measuring interface usage (which pages, where the flow stalls)",
               "Interface events: page opened, button clicked, which question of the assessment you are on",
-              "Legitimate interest — Art. 6(1)(f); our own first-party measurement, with no third-party provider",
+              "Legitimate interest – Art. 6(1)(f); our own first-party measurement, with no third-party provider",
             ],
             [
               "Meeting accounting obligations",
               "Invoicing and contact data",
-              "Legal obligation — Art. 6(1)(c), under Hungarian Act C of 2000 on Accounting",
+              "Legal obligation – Art. 6(1)(c), under Hungarian Act C of 2000 on Accounting",
             ],
           ],
         },
@@ -737,16 +737,16 @@ const EN: PolicyDocument = {
         {
           kind: "ul",
           items: [
-            "Individual answers never appear in a team or organization view — only in aggregated form.",
+            "Individual answers never appear in a team or organization view – only in aggregated form.",
             "Even aggregated results appear only once responses from at least 3 raters or respondents exist. Below that threshold the interface shows no result.",
-            "Psychological safety pulse responses are recorded without any user identifier from the outset — we cannot link them to a person afterwards either.",
+            "Psychological safety pulse responses are recorded without any user identifier from the outset – we cannot link them to a person afterwards either.",
             "The aggregated team picture is visible to the team's manager, the organization admin and the consultant assigned to the organization; you see the aggregated feedback about yourself.",
-            "Trust circle results are shown pairwise, averaged across both directions — individual directed answers are never displayed there either.",
+            "Trust circle results are shown pairwise, averaged across both directions – individual directed answers are never displayed there either.",
           ],
         },
         {
           kind: "p",
-          text: "Deleting your profile also deletes the responses linked to you. Already anonymized, aggregated results cannot be traced back to a person and therefore cannot be deleted — under the GDPR that is no longer processing of personal data.",
+          text: "Deleting your profile also deletes the responses linked to you. Already anonymized, aggregated results cannot be traced back to a person and therefore cannot be deleted – under the GDPR that is no longer processing of personal data.",
         },
       ],
     },
@@ -756,7 +756,7 @@ const EN: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "Scores and fit indicators are calculated by an algorithm — this qualifies as profiling. However, we do not make and do not produce decisions based SOLELY on automated processing that produce legal effects concerning you or similarly significantly affect you within the meaning of Article 22 GDPR.",
+          text: "Scores and fit indicators are calculated by an algorithm – this qualifies as profiling. However, we do not make and do not produce decisions based SOLELY on automated processing that produce legal effects concerning you or similarly significantly affect you within the meaning of Article 22 GDPR.",
         },
         {
           kind: "ul",
@@ -784,7 +784,7 @@ const EN: PolicyDocument = {
             [
               "Clerk (clerk.com)",
               "Authentication and session management",
-              "USA — EU–U.S. Data Privacy Framework and/or standard contractual clauses (SCC)",
+              "USA – EU–U.S. Data Privacy Framework and/or standard contractual clauses (SCC)",
             ],
             [
               "Neon (neon.tech)",
@@ -794,18 +794,18 @@ const EN: PolicyDocument = {
             [
               "Vercel (vercel.com)",
               "Application hosting, cookie-free traffic and performance statistics",
-              "EU/USA — under a DPA and SCCs",
+              "EU/USA – under a DPA and SCCs",
             ],
             [
               "Resend (resend.com)",
               "Transactional email delivery (invitations, notifications)",
-              "USA — under SCCs",
+              "USA – under SCCs",
             ],
           ],
         },
         {
           kind: "p",
-          text: "In addition, authorized staff of your organization (manager, admin) and the consultant assigned to it may access your data — within the anonymity rules described above. We disclose data to authorities only where legally required.",
+          text: "In addition, authorized staff of your organization (manager, admin) and the consultant assigned to it may access your data – within the anonymity rules described above. We disclose data to authorities only where legally required.",
         },
       ],
     },
@@ -860,7 +860,7 @@ const EN: PolicyDocument = {
             ],
             [
               "Anonymized, aggregated statistics",
-              "No time limit — these are no longer personal data.",
+              "No time limit – these are no longer personal data.",
             ],
           ],
         },
@@ -872,7 +872,7 @@ const EN: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "We use strictly necessary cookies only. We set no marketing or tracking cookies and share no data with advertising networks — which is why there is no cookie consent banner.",
+          text: "We use strictly necessary cookies only. We set no marketing or tracking cookies and share no data with advertising networks – which is why there is no cookie consent banner.",
         },
         {
           kind: "table",
@@ -889,7 +889,7 @@ const EN: PolicyDocument = {
         },
         {
           kind: "p",
-          text: "Our own usage measurement also sets no cookie and stores no other identifier on your device: the visitor identifier is a DAILY ROTATING pseudonym derived as an irreversible digest of the IP address and browser identifier — we do not store the IP address itself, and the next day the same visitor appears under a different pseudonym. Events arrive at our servers and stay in our database; there is no third-party analytics provider behind it, and no data goes to advertising networks. If your browser signals a tracking opt-out (Global Privacy Control or Do Not Track), we measure nothing. Event properties contain no name, email address, free text, questionnaire answer, score or invitation token. This is why there is no cookie consent banner either.",
+          text: "Our own usage measurement also sets no cookie and stores no other identifier on your device: the visitor identifier is a DAILY ROTATING pseudonym derived as an irreversible digest of the IP address and browser identifier – we do not store the IP address itself, and the next day the same visitor appears under a different pseudonym. Events arrive at our servers and stay in our database; there is no third-party analytics provider behind it, and no data goes to advertising networks. If your browser signals a tracking opt-out (Global Privacy Control or Do Not Track), we measure nothing. Event properties contain no name, email address, free text, questionnaire answer, score or invitation token. This is why there is no cookie consent banner either.",
         },
       ],
     },
@@ -932,7 +932,7 @@ const EN: PolicyDocument = {
             {
               term: "Erasure",
               description:
-                "You can delete your profile at any time from the profile page — this also deletes the assessment and feedback data linked to you. Exception: data we must retain by law (e.g. accounting records).",
+                "You can delete your profile at any time from the profile page – this also deletes the assessment and feedback data linked to you. Exception: data we must retain by law (e.g. accounting records).",
             },
             {
               term: "Restriction of processing",
@@ -942,7 +942,7 @@ const EN: PolicyDocument = {
             {
               term: "Data portability",
               description:
-                "You can ask for the data you provided and the data we measured in a machine-readable format, or — where technically feasible — to have it transmitted to another provider.",
+                "You can ask for the data you provided and the data we measured in a machine-readable format, or – where technically feasible – to have it transmitted to another provider.",
             },
             {
               term: "Objection",
@@ -973,7 +973,7 @@ const EN: PolicyDocument = {
         { kind: "note", text: NAIH_LINE_EN },
         {
           kind: "p",
-          text: "You may also seek a judicial remedy. In Hungary, proceedings may be brought — at your choice — before the regional court of your place of residence or stay.",
+          text: "You may also seek a judicial remedy. In Hungary, proceedings may be brought – at your choice – before the regional court of your place of residence or stay.",
         },
       ],
     },
@@ -993,7 +993,7 @@ const EN: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "We update this policy from time to time — for example when we launch a feature or add a processor. The date of the latest update is always shown at the top of the page. If a change materially affects your rights or the purpose of processing, we will notify you by email or in the app before it takes effect.",
+          text: "We update this policy from time to time – for example when we launch a feature or add a processor. The date of the latest update is always shown at the top of the page. If a change materially affects your rights or the purpose of processing, we will notify you by email or in the app before it takes effect.",
         },
       ],
     },

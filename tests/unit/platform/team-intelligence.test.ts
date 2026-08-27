@@ -135,7 +135,7 @@ test("cohesion risk reason shows the average but no ± spread number (2026-08-11
 });
 
 test("priority engine adds leader-team mismatch trigger for large H/A delta", () => {
-  // A TeamMember.role kötött készlete: "member" | "manager" | "admin" —
+  // A TeamMember.role kötött készlete: "member" | "manager" | "admin" –
   // mindkét kezelő szerep vezetőnek számít.
   for (const leaderRole of ["manager", "admin"] as const) {
     const members: SerializedTeamMember[] = [
@@ -186,7 +186,7 @@ test("priority engine falls back to a dedicated healthy_baseline card", () => {
   assert.equal(priorities[0].id, "healthy_baseline");
 });
 
-// ─── buildTeamIntelligenceEvidence — dinamika-provenance ─────────────────────
+// ─── buildTeamIntelligenceEvidence – dinamika-provenance ─────────────────────
 
 test("dynamics evidence: purely estimated edges stay self-sourced, low confidence", () => {
   const evidence = buildTeamIntelligenceEvidence({
@@ -213,7 +213,7 @@ test("dynamics evidence: measured trust edges raise source and confidence", () =
 
   // A MÉRT él a BIZALMI KÖRBŐL jön (isMeasuredDynamicsSource), nem az
   // observer-körből. A korábbi `self_plus_observer` címke olyan forrást
-  // állított, ami nem járult hozzá — a bemenet neve is ezt mondja
+  // állított, ami nem járult hozzá – a bemenet neve is ezt mondja
   // (measuredDynamicsEdgeCount, trust-él).
   assert.equal(evidence.dynamics.source, "self_plus_trust");
   assert.equal(evidence.dynamics.confidence, "medium");
@@ -223,7 +223,7 @@ test("dynamics evidence: observer-kör NEM állítható forrásként", () => {
   // Szerkezeti garancia: a dinamika-evidencia bemenetei közt egyáltalán
   // nincs observer-jel, tehát semmilyen kombináció nem termelhet observer
   // forrás-címkét. Ha valaha lesz observer-alapú dinamika, az ÚJ forrás-
-  // értéket kap — ez a teszt akkor tudatosan frissítendő.
+  // értéket kap – ez a teszt akkor tudatosan frissítendő.
   for (const measured of [0, 1, 5]) {
     const evidence = buildTeamIntelligenceEvidence({
       assessedCount: 4,

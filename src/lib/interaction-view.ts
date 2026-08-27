@@ -177,22 +177,22 @@ export interface PairSimulationView {
   /** Vezetői kiegészítők, ha a MÁSIK fél vezet. */
   leaderNotesOther: InteractionLeaderNote[];
   /**
-   * Mind a hat dimenzió összevetése — ez a réteg akkor is nyilatkozik, ha
+   * Mind a hat dimenzió összevetése – ez a réteg akkor is nyilatkozik, ha
    * szöveges atom nem született róla („megnéztük mind a hatot").
    */
   dimensions: PairDimensionView[];
-  /** Facet-szintű nüanszok — üres, ha nincs facet-adat vagy küszöb. */
+  /** Facet-szintű nüanszok – üres, ha nincs facet-adat vagy küszöb. */
   facetNuances: PairFacetNuanceView[];
   sparse: boolean;
 }
 
 export interface PairSimulationOptions {
-  /** Facet-bontás a két félről — hiányában a nüansz-réteg kimarad. */
+  /** Facet-bontás a két félről – hiányában a nüansz-réteg kimarad. */
   selfFacets?: FacetScores | null;
   otherFacets?: FacetScores | null;
   /**
    * Facet-szintű különbség-küszöb (√2 · facet-SEM, kerekítve). A HÍVÓ
-   * számolja a kérdőív-formából — a motor nem húzza be a psychometrics
+   * számolja a kérdőív-formából – a motor nem húzza be a psychometrics
    * modult (az a teljes kérdésbankot importálná).
    */
   facetMinGap?: number | null;
@@ -202,7 +202,7 @@ export interface PairSimulationOptions {
  * Két VALÓDI, megosztott profil szimulációja (`level: "profile-profile"`).
  * Az atom-válogatást a mode nem érinti (csak a vezetői kiegészítőket),
  * ezért a blokkok az első futásból jönnek, és mindkét vezető-irány
- * kiegészítőit kiszámoljuk — a felület kapcsolója így hálózat nélkül vált.
+ * kiegészítőit kiszámoljuk – a felület kapcsolója így hálózat nélkül vált.
  *
  * A dimenzió-összevetés és a facet-nüansz a mode-tól FÜGGETLEN (a két
  * profil viszonya nem változik attól, ki vezet), ezért egyszer, az első
@@ -249,8 +249,8 @@ export function buildPairSimulation(
  * Mind a 30 archetípus szimulációja a megadott profilhoz, egy nyelven.
  *
  * Az atom-válogatást a mode nem érinti (csak a vezetői kiegészítőket), ezért
- * a blokkok az `other-leads` futásból jönnek, és — a valódi páros nézettel
- * azonos módon — mindkét vezető-irány kiegészítőit kiszámoljuk, hogy a
+ * a blokkok az `other-leads` futásból jönnek, és – a valódi páros nézettel
+ * azonos módon – mindkét vezető-irány kiegészítőit kiszámoljuk, hogy a
  * kapcsoló ott se járjon hálózattal. (A self-irány jegyzetei csak a saját
  * profiltól függnek, tehát mind a 30 archetípusra ugyanazok; a második futás
  * a szimmetria és az olvashatóság kedvéért marad archetípusonként.)

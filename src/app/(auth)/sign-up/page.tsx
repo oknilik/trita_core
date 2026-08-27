@@ -252,7 +252,7 @@ function SignUpContent() {
             </Button>
 
             {/* A Clerk ide mountolja a Turnstile-t, ha újra kell a bot-check
-                (pl. kód-újraküldés). Az oszlopON BELÜL kell lennie — flex-sor
+                (pl. kód-újraküldés). Az oszlopON BELÜL kell lennie – flex-sor
                 gyerekeként beékelődne a panel és az űrlap közé. */}
             <div id="clerk-captcha" className="mt-4" />
       </AuthPageShell>
@@ -271,7 +271,7 @@ function SignUpContent() {
             {t("auth.signUpSubtitle", locale)}
           </p>
 
-          {/* Intent selector — self-serve módban él; consulting-led alatt rejtve */}
+          {/* Intent selector – self-serve módban él; consulting-led alatt rejtve */}
           {!isConsultingLed() && (
             <div className="mb-5">
               <p className="mb-2 text-label uppercase text-[var(--color-text-muted)]">
@@ -291,9 +291,9 @@ function SignUpContent() {
             <AuthAlert message={t(error.translationKey, locale)} />
           ) : null}
 
-          {/* Form section — blurred until intent is chosen */}
+          {/* Form section – blurred until intent is chosen */}
           <div className={`transition-all duration-300 ${!intent ? "pointer-events-none select-none opacity-40 blur-[2px]" : ""}`}>
-            {/* Google — primary action */}
+            {/* Google – primary action */}
             <Button
               type="button"
               variant="secondary"
@@ -308,7 +308,7 @@ function SignUpContent() {
               {t("auth.googleContinue", locale)}
             </Button>
 
-            {/* Divider — compact */}
+            {/* Divider – compact */}
             <div className="mb-3 flex items-center gap-3">
               <div className="h-px flex-1 bg-[var(--color-border-default)]" />
               <span className="text-micro text-[var(--color-text-muted)]">{t("common.or", locale)}</span>
@@ -350,7 +350,7 @@ function SignUpContent() {
               {t("auth.codeNote", locale)}
             </p>
 
-            {/* Sign in link — close to CTA */}
+            {/* Sign in link – close to CTA */}
             <p className="text-center text-sm text-[var(--color-text-muted)]">
               {t("auth.hasAccount", locale)}{" "}
               <Link

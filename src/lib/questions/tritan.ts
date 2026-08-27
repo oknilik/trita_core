@@ -75,18 +75,18 @@ export const tritanConfig: TestConfig = {
       },
       insights: {
         low: "Az eredmény, az anyagi elismerés és a státusz erősen motivál. Érdekeid érvényesítésekor rugalmasan választasz eszközt, a szabályokat pedig inkább keretnek látod, mint korlátnak. Ez versengő közegben előny lehet, a bizalmi kapcsolatok viszont tudatosabb figyelmet igényelhetnek.",
-        mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között — többnyire méltányosan működsz, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
+        mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között – többnyire méltányosan működsz, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
         high: "A nyílt, közvetlen működést választod. Kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen taktikázol, így mások gyorsan tudják, hányadán állnak veled.",
       },
       insightsByLocale: {
         en: {
-          low: "Results, material recognition, and status are strong motivators for you, and you choose flexibly among tools when advancing your interests — rules read more as frames than limits. In competitive settings this is an advantage; trust-based relationships need more deliberate upkeep.",
-          mid: "You balance between the direct route and advancing your own interests depending on the situation — mostly operating fairly, while able to be tactical when the moment calls for it.",
-          high: "You choose open, direct operation: status and material accumulation motivate you little, and you're reluctant to use tactical tools — people quickly know where they stand with you.",
+          low: "Results, material recognition, and status are strong motivators for you, and you choose flexibly among tools when advancing your interests – rules read more as frames than limits. In competitive settings this is an advantage; trust-based relationships need more deliberate upkeep.",
+          mid: "You balance between the direct route and advancing your own interests depending on the situation – mostly operating fairly, while able to be tactical when the moment calls for it.",
+          high: "You choose open, direct operation: status and material accumulation motivate you little, and you're reluctant to use tactical tools – people quickly know where they stand with you.",
         },
         hu: {
           low: "Az eredmény, az anyagi elismerés és a státusz erősen motivál. Érdekeid érvényesítésekor rugalmasan választasz eszközt, a szabályokat pedig inkább keretnek látod, mint korlátnak. Ez versengő közegben előny lehet, a bizalmi kapcsolatok viszont tudatosabb figyelmet igényelhetnek.",
-          mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között — többnyire méltányosan működsz, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
+          mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között – többnyire méltányosan működsz, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
           high: "A nyílt, közvetlen működést választod. Kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen taktikázol, így mások gyorsan tudják, hányadán állnak veled.",
         },
       },
@@ -119,7 +119,7 @@ export const tritanConfig: TestConfig = {
         en: {
           low: "You are not deterred by physical danger, feel little worry even in stressful situations, and have little need to share your concerns with others. In exchange, others' emotional signals reach you less often, and your calm can be read as distance.",
           mid: "You experience moderate emotional intensity: you occasionally seek support in stressful situations and pick up the emotional signals around you, while generally managing challenges independently.",
-          high: "You are strongly emotionally connected: intensely affected by fears and stress, and you feel a real need to share your concerns with those close to you. A lot of early signal reaches you this way — and you carry a lot of it with you.",
+          high: "You are strongly emotionally connected: intensely affected by fears and stress, and you feel a real need to share your concerns with those close to you. A lot of early signal reaches you this way – and you carry a lot of it with you.",
         },
         hu: {
           low: "A fizikai veszélyek ritkán tántorítanak el, megterhelő helyzetekben is kevésbé aggódsz, és ritkán igényled mások érzelmi támogatását. Nyugalmadat ugyanakkor távolságtartásként is értelmezhetik.",
@@ -179,10 +179,10 @@ export const tritanConfig: TestConfig = {
         hu: "Barátságosság",
       },
       color: DIMENSION_COLORS.A.base,
-      description: "A barátságosság (A) dimenzió — a harag ellenpontjaként — azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően megítélni másokat, kompromisszumra törekedni és provokáció esetén is megőrizni a nyugalmát. Négy alskálája a Megbocsátás (a bizalom és a jóindulat helyreállítása az iránt, aki megbántotta), a Gyengédség (mások elnéző és türelmes megítélése), a Rugalmasság (alkalmazkodási és kompromisszumkészség), valamint a Türelem (a harag és az ingerültség visszafogása).",
+      description: "A barátságosság (A) dimenzió – a harag ellenpontjaként – azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően megítélni másokat, kompromisszumra törekedni és provokáció esetén is megőrizni a nyugalmát. Négy alskálája a Megbocsátás (a bizalom és a jóindulat helyreállítása az iránt, aki megbántotta), a Gyengédség (mások elnéző és türelmes megítélése), a Rugalmasság (alkalmazkodási és kompromisszumkészség), valamint a Türelem (a harag és az ingerültség visszafogása).",
       descriptionByLocale: {
         en: "The Agreeableness (A) dimension (versus Anger) reflects the tendency to forgive wrongs, judge others with leniency, willingness to compromise and cooperate, and the ability to keep one's temper even when mistreated. Its four facets are Forgivingness (restoring trust and goodwill toward those who have caused harm), Gentleness (mild and lenient judgment of others), Flexibility (willingness to adapt and compromise), and Patience (restraining anger and irritation).",
-        hu: "A barátságosság (A) dimenzió — a harag ellenpontjaként — azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően megítélni másokat, kompromisszumra törekedni és provokáció esetén is megőrizni a nyugalmát. Négy alskálája a Megbocsátás (a bizalom és a jóindulat helyreállítása az iránt, aki megbántotta), a Gyengédség (mások elnéző és türelmes megítélése), a Rugalmasság (alkalmazkodási és kompromisszumkészség), valamint a Türelem (a harag és az ingerültség visszafogása).",
+        hu: "A barátságosság (A) dimenzió – a harag ellenpontjaként – azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően megítélni másokat, kompromisszumra törekedni és provokáció esetén is megőrizni a nyugalmát. Négy alskálája a Megbocsátás (a bizalom és a jóindulat helyreállítása az iránt, aki megbántotta), a Gyengédség (mások elnéző és türelmes megítélése), a Rugalmasság (alkalmazkodási és kompromisszumkészség), valamint a Türelem (a harag és az ingerültség visszafogása).",
       },
       // 2026-08-11, valencia-revízió (a E-döntés kiterjesztése): a skála-LEÍRÁS
       // fent irodalom-hű marad (az a konstruktum definíciója), a VERDIKT-
@@ -197,7 +197,7 @@ export const tritanConfig: TestConfig = {
       },
       insightsByLocale: {
         en: {
-          low: "You find it hard to let a wrong go, judge others' shortcomings critically, defend your point of view tenaciously, and run out of patience quickly under provocation. In exchange, you name disagreement instead of storing it — your feedback stays honest and your boundaries are visible.",
+          low: "You find it hard to let a wrong go, judge others' shortcomings critically, defend your point of view tenaciously, and run out of patience quickly under provocation. In exchange, you name disagreement instead of storing it – your feedback stays honest and your boundaries are visible.",
           mid: "You are capable of forgiving and compromising while still defending your position when it matters. You generally stay calm, though significant provocation may still stir your temper.",
           high: "You readily forgive those who have wronged you, judge others' shortcomings with leniency, are willing to adapt flexibly and reach compromises, and rarely lose your temper. In exchange, your own grievance can stay unspoken for a long time, and you can easily become the one who always yields.",
         },
@@ -308,7 +308,7 @@ export const tritanConfig: TestConfig = {
       },
       insightsByLocale: {
         en: {
-          low: "You tend to approach others' difficulties rationally rather than with immediate emotional involvement — you decide thoughtfully when and how to help.",
+          low: "You tend to approach others' difficulties rationally rather than with immediate emotional involvement – you decide thoughtfully when and how to help.",
           mid: "You are willing to help others depending on the situation. You are guided by assessment of the circumstances rather than momentary emotion.",
           high: "You are deeply moved by others' situations and feel a natural drive to help. Empathy and action are naturally connected for you.",
         },

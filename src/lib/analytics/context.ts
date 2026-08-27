@@ -107,7 +107,7 @@ export const DEV_FALLBACK_SALT = "trita-dev-analytics-salt";
 /**
  * Be van-e állítva a valódi só (`ANALYTICS_SALT`)?
  *
- * A rendszer só nélkül is MŰKÖDIK — szándékosan: a mérés soha nem áll az
+ * A rendszer só nélkül is MŰKÖDIK – szándékosan: a mérés soha nem áll az
  * üzemeltetés útjába. De ilyenkor a fallback só publikus, tehát a napi
  * látogató-álnév KITALÁLHATÓ egy ismert IP + böngésző párból, és az
  * adatvédelmi tájékoztatóban vállalt pszeudonimitás nem tartható.
@@ -115,7 +115,7 @@ export const DEV_FALLBACK_SALT = "trita-dev-analytics-salt";
  * Ezért kell látnia valakinek:
  *   · szerver-log: egyszeri figyelmeztetés indulásonként (`server.ts`),
  *   · admin-felület: állandó, látható sáv az Analitika fülön.
- * A második a lényegesebb — egy logsort senki nem olvas el.
+ * A második a lényegesebb – egy logsort senki nem olvas el.
  *
  * Itt él, és nem a `server.ts`-ben, mert az `import "server-only"`-t hordoz,
  * amit unit-tesztből nem lehet betölteni; ez viszont tiszta env-olvasás.
@@ -136,11 +136,11 @@ export function isAnalyticsSaltConfigured(): boolean {
  * - **Naponta rotál** → holnap ugyanaz a látogató más ref alatt jelenik meg,
  *   így hosszú távú profil nem épül. Ára: több napon átívelő attribúció
  *   nincs (tudatos döntés, ld. analytics-plan-2026-08.md IV.2).
- * - **Az IP-t soha nem tároljuk**, csak a hash bemenete — a hash nem
+ * - **Az IP-t soha nem tároljuk**, csak a hash bemenete – a hash nem
  *   fordítható vissza a titok ismerete nélkül, és a titok nem kerül DB-be.
  *
  * A `salt` az `ANALYTICS_SALT` env. Ha hiányzik, dev-fallback lép be (a
- * hívó figyelmeztet) — élesben beállítandó, mert enélkül a hash kitalálható.
+ * hívó figyelmeztet) – élesben beállítandó, mert enélkül a hash kitalálható.
  */
 export function computeVisitorRef(input: {
   salt: string;
@@ -155,7 +155,7 @@ export function computeVisitorRef(input: {
     .slice(0, 32);
 }
 
-/** UTC nap (YYYY-MM-DD) — a visitorRef rotációs kulcsa. */
+/** UTC nap (YYYY-MM-DD) – a visitorRef rotációs kulcsa. */
 export function utcDay(now: Date): string {
   return now.toISOString().slice(0, 10);
 }
@@ -179,7 +179,7 @@ export function classifyDevice(userAgent: string | null | undefined): DeviceClas
 }
 
 /**
- * Ismert bot/crawler? A botok forgalma torzítja a tölcsért — nem mérjük.
+ * Ismert bot/crawler? A botok forgalma torzítja a tölcsért – nem mérjük.
  * (A lista nem teljes és nem is lehet az; a cél a nagy tömeg kiszűrése.)
  */
 export function isBotUserAgent(userAgent: string | null | undefined): boolean {
@@ -190,7 +190,7 @@ export function isBotUserAgent(userAgent: string | null | undefined): boolean {
   );
 }
 
-/** Csak a hivatkozó HOST — teljes URL soha (az query-t is hordozhatna). */
+/** Csak a hivatkozó HOST – teljes URL soha (az query-t is hordozhatna). */
 export function referrerHost(referrer: string | null | undefined, selfHost?: string): string | null {
   if (!referrer) return null;
   try {
@@ -238,7 +238,7 @@ export function extractUtm(rawUrl: string | null | undefined): {
 /**
  * Kliens IP kinyerése a proxy-fejlécekből.
  *
- * Csak a `visitorRef` hash bemenete — sehol nem tárolódik.
+ * Csak a `visitorRef` hash bemenete – sehol nem tárolódik.
  */
 export function clientIpFromHeaders(get: (name: string) => string | null): string {
   const forwarded = get("x-forwarded-for");

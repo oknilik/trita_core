@@ -117,7 +117,7 @@ function AccordionItem({
         <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">
           {name}
         </span>
-        {/* A SÁV hordozza az értéket (a szín csak azonosít) — ezért kapott
+        {/* A SÁV hordozza az értéket (a szín csak azonosít) – ezért kapott
             valamivel több súlyt, mint a korábbi 1px-es vonal. */}
         <div className="h-1.5 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
           <div
@@ -158,7 +158,7 @@ function AccordionItem({
                 {insight}
               </p>
 
-              {/* 2. Munkahelyi helyzetekben — csak Plus+ */}
+              {/* 2. Munkahelyi helyzetekben – csak Plus+ */}
               {!showUpsell && description && (
                 <>
                   <div className="my-3 h-px bg-[var(--color-border-default)]" />
@@ -171,7 +171,7 @@ function AccordionItem({
                 </>
               )}
 
-              {/* 3. Részletes bontás — alskálák, vizuálisan leválasztva */}
+              {/* 3. Részletes bontás – alskálák, vizuálisan leválasztva */}
               {hasFacetData && (
                 <>
                   <div className="my-3 h-px bg-[var(--color-border-default)]" />
@@ -179,9 +179,9 @@ function AccordionItem({
                     {t("content.accFacetDetail", locale)}
                   </p>
                   <div className="rounded-lg bg-[var(--color-surface-card)]/60 p-3">
-                    {/* Mobilon egy oszlop — két oszlopban a skála+szám összecsúszna */}
+                    {/* Mobilon egy oszlop – két oszlopban a skála+szám összecsúszna */}
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                      {/* A facet a SAJÁT dimenziójához tartozik — annak a
+                      {/* A facet a SAJÁT dimenziójához tartozik – annak a
                           hue-ját viseli, nem külön értékelő színt. */}
                       {facets.map((f) => {
                         return (
@@ -226,7 +226,7 @@ function AccordionItem({
                 </>
               )}
 
-              {/* Percentilis-sor — CSAK aktív norma-tábla mellett (ma null →
+              {/* Percentilis-sor – CSAK aktív norma-tábla mellett (ma null →
                   nem renderel). A ±SEM-jegyzet kivezetve (ld. fájl-fejkomment). */}
               {percentile !== null && (
                 <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
@@ -234,7 +234,7 @@ function AccordionItem({
                 </p>
               )}
 
-              {/* Upsell teaser — Self Start only */}
+              {/* Upsell teaser – Self Start only */}
               {showUpsell && facetNames.length > 0 && (
                 <div className="mt-4 flex items-center gap-3 rounded-[10px] bg-[var(--color-surface-inverse)] px-4 py-3">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-[var(--color-accent-primary)]/[0.12] font-fraunces text-sm font-medium text-[var(--color-accent-primary-soft)]">
@@ -265,7 +265,7 @@ export function DimensionAccordion({
   defaultOpenIdx = 0,
   onDimensionOpen,
 }: DimensionAccordionProps) {
-  // Alapból egy elem nyitva (default: az első) — a tartalom ne legyen
+  // Alapból egy elem nyitva (default: az első) – a tartalom ne legyen
   // teljesen rejtve az első ránézésre.
   const [openIdx, setOpenIdx] = useState<number | null>(defaultOpenIdx);
   const { locale } = useLocale();

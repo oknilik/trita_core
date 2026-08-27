@@ -57,8 +57,8 @@ export function OrgCandidatesTab({
           </h2>
           <p className="mt-1 text-xs text-ink-body">
             {isHu
-              ? "Személyiség-felmérés (opcionális csapatszerep-kérdőívvel) a szervezeten kívüli jelölteknek — kitöltés után szabadon illeszthető bármely csapathoz."
-              : "Personality assessment (with optional team-role questionnaire) for external candidates — freely matched to any team after completion."}
+              ? "Személyiség-felmérés (opcionális csapatszerep-kérdőívvel) a szervezeten kívüli jelölteknek – kitöltés után szabadon illeszthető bármely csapathoz."
+              : "Personality assessment (with optional team-role questionnaire) for external candidates – freely matched to any team after completion."}
           </p>
         </div>
         <Link
@@ -95,7 +95,7 @@ export function OrgCandidatesTab({
         <div className="mt-4 flex flex-col gap-2">
           {recent.map((c) => {
             const meta = statusMeta(c.status);
-            const display = c.name ?? c.email ?? "—";
+            const display = c.name ?? c.email ?? "–";
             return (
               <div
                 key={c.id}
@@ -125,7 +125,7 @@ export function OrgCandidatesTab({
         </div>
       )}
 
-      {/* A kanonikus jelölt-munkafelület a /hiring — innen mindig egy link visz oda. */}
+      {/* A kanonikus jelölt-munkafelület a /hiring – innen mindig egy link visz oda. */}
       <Link
         href={`/hiring/${orgId}`}
         className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"

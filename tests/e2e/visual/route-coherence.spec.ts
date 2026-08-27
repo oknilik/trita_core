@@ -43,10 +43,10 @@ for (const route of ROUTES) {
     for (const [viewportName, viewport] of Object.entries(VIEWPORTS)) {
       const snapshotName = `${route.name}-${theme}-${viewportName}`;
 
-      test.describe(`${route.path} — ${theme} — ${viewportName}`, () => {
+      test.describe(`${route.path} – ${theme} – ${viewportName}`, () => {
         test.skip(
           !UPDATING && !hasBaseline(snapshotName),
-          "nincs commitolt route-baseline — generáld a CI platformján UPDATE_VISUAL_BASELINE=1 értékkel",
+          "nincs commitolt route-baseline – generáld a CI platformján UPDATE_VISUAL_BASELINE=1 értékkel",
         );
 
         test("vizuálisan stabil", async ({ page, context, baseURL }) => {

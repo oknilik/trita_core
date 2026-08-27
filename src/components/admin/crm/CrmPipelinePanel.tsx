@@ -44,7 +44,7 @@ export function CrmPipelinePanel({
         <DashboardMetricCard
           accent="var(--color-state-success-solid)"
           title="Win-rate (30 nap)"
-          value={metrics.winRate30d != null ? `${metrics.winRate30d}%` : "—"}
+          value={metrics.winRate30d != null ? `${metrics.winRate30d}%` : "–"}
           sub={
             metrics.winRate30d != null
               ? "Az utolsó 30 napban lezárt dealek nyerési aránya"

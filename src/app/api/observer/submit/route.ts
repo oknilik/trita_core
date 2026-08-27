@@ -233,7 +233,7 @@ export async function POST(req: Request) {
       const { handleObserverSubmitted } = await import("@/lib/notifications");
       await handleObserverSubmitted({
         observerUserId,
-        inviterName: inviter.username ?? inviter.email ?? "—",
+        inviterName: inviter.username ?? inviter.email ?? "–",
         invitationId: invitation.id,
       });
     })().catch((err) => log.error({ event: "observer.observer_submitted_error", err: err }, "Observer submitted error"));

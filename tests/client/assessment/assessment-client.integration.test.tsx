@@ -114,7 +114,7 @@ function renderAssessmentClient(
   overrides: Partial<ComponentProps<typeof AssessmentClient>> = {},
 ) {
   // A ThemeProvider a gyökér-layoutban él; itt izoláltan renderelünk,
-  // ezért a héjnak ezt a darabját kézzel adjuk hozzá — a nav
+  // ezért a héjnak ezt a darabját kézzel adjuk hozzá – a nav
   // séma-választója enélkül provider nélkül hívná a useTheme-et.
   return render(
     <ThemeProvider>
@@ -159,7 +159,7 @@ async function expectCurrentQuestionNumber(expected: number) {
  *
  * A komponens `runStepTransition`-je 120 ms-os záron engedi át a lépést, és a
  * záron BELÜL érkező kattintást SZÁNDÉKOSAN eldobja (ez védi a dupla-lépés
- * ellen — épp ezt méri a „next/back spam" eset). Egy fix `setTimeout(140)`
+ * ellen – épp ezt méri a „next/back spam" eset). Egy fix `setTimeout(140)`
  * ezért versenyhelyzet volt: 20 ms tartalék egy 120 ms-os valós idejű timerhez.
  * Terhelt gépen a felszabadító timer később fut le, a kattintás némán elveszik,
  * és a teszt olyan képernyőn állít, ahova el sem jutott. Így bukott a CI
@@ -167,13 +167,13 @@ async function expectCurrentQuestionNumber(expected: number) {
  * futott. Helyben 10/10 zöld volt, CPU-terhelés alatt 6-ból 1 bukás.
  *
  * Ezért nem időre várunk, hanem a KIMENETRE: addig kattintunk, amíg a lépés
- * tényleg megtörtént. Egy eldobott kattintás így egy újabb kör, nem bukás — a
+ * tényleg megtörtént. Egy eldobott kattintás így egy újabb kör, nem bukás – a
  * valódi regressziót (a lépés SOHA nem történik meg) a timeout elkapja, és
  * túllépés sem lehet, mert a cél elérése után már nem kattintunk.
  */
 async function stepUntilQuestion(
   // `unknown`, mert a `fireEvent.click` boolean-t ad vissza, a `user.click`
-  // Promise-t — a visszatérési érték itt egyikből sem érdekes.
+  // Promise-t – a visszatérési érték itt egyikből sem érdekes.
   clickStep: () => unknown,
   expected: number,
 ): Promise<void> {
@@ -372,7 +372,7 @@ describe("AssessmentClient integration behavior", () => {
     });
 
     // A resume az első ténylegesen megválaszolatlan formán belüli kérdésnél
-    // (10.) áll meg — nem esik vissza „kész"-be a formán kívüli id-k miatt.
+    // (10.) áll meg – nem esik vissza „kész"-be a formán kívüli id-k miatt.
     await expectCurrentQuestionNumber(10);
 
     const evaluateLabel = t("assessment.evaluateCta", "en");

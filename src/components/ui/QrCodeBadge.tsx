@@ -46,7 +46,7 @@ export function QrCodeBadge({ value, alt, hint, onError, className }: QrCodeBadg
       margin: 1,
       // SZÁNDÉKOSAN nem témázott: a QR mindig sötét modul / világos alap.
       // Az invertált (világos modul sötét alapon) QR-t a szkennerek jelentős
-      // része nem olvassa — a sötét mód kedvéért nem kockáztatjuk a
+      // része nem olvassa – a sötét mód kedvéért nem kockáztatjuk a
       // működését. A kód a saját világos lapján ül a sötét felületen is.
       color: { dark: COLORS.ink, light: COLORS.cream },
     })

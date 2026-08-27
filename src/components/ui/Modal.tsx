@@ -55,7 +55,7 @@ export function Modal({
   // Az onClose-t a hívók jellemzően inline arrow-ként adják át, így minden
   // szülő-render új identitást jelent. Ha ez a billentyű-kezelőn át a
   // fókusz-effect dep-jébe szivárog, a nyitott modal minden szülő-renderre
-  // újra a legelső elemre ugrik (gépelés közben elveszik a mező fókusza) —
+  // újra a legelső elemre ugrik (gépelés közben elveszik a mező fókusza) –
   // ezért refen keresztül olvassuk, és a handler identitása állandó marad.
   const onCloseRef = useRef(onClose);
   useEffect(() => {
@@ -353,7 +353,7 @@ export function ConfirmModal({
           <p className="mt-4 text-base font-semibold text-ink">{loadingNote}</p>
           <div className="mt-5 h-2 w-64 overflow-hidden rounded-full bg-cream md:w-80">
             {/* Lineáris telítődés a globals.css `trita-grow-x` keyframe-jével
-                (scaleX 0→1) — a korábbi framer-motion width-tween helyett. */}
+                (scaleX 0→1) – a korábbi framer-motion width-tween helyett. */}
             <div
               style={{
                 animation: `trita-grow-x ${loadingDurationMs}ms linear both`,

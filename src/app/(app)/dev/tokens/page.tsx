@@ -89,7 +89,7 @@ function Swatch({ label, bg, fg }: { label: string; bg: string; fg: string }) {
 }
 
 export default function TokenGalleryPage() {
-  // Élesben nincs ilyen útvonal — a lap csak fejlesztéshez és teszthez van.
+  // Élesben nincs ilyen útvonal – a lap csak fejlesztéshez és teszthez van.
   if (process.env.NODE_ENV === "production") notFound();
 
   return (
@@ -102,7 +102,7 @@ export default function TokenGalleryPage() {
       </h1>
       <p className="mt-2 max-w-2xl text-body text-[var(--color-text-secondary)]">
         A szerep-token készlet mindkét színsémán. Ez a lap a képi regressziós
-        háló célpontja — szándékosan nincs benne adat, dátum és animáció.
+        háló célpontja – szándékosan nincs benne adat, dátum és animáció.
       </p>
 
       <Section title="Felület × szöveg">

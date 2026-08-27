@@ -41,7 +41,7 @@ export const AXIS_META: AxisMeta[] = [
     highDetail:
       "A csapatot élénk társas jelenlét, gyors kommunikáció és látható aktivitás jellemzi. Gyakran maga kezdeményezi és gyorsítja az eseményeket.",
     midDetail:
-      "Változó energiaszint — a csapat néha aktívan kezdeményez, máskor visszahúzódik. A helyzet határozza meg, melyik oldal kerül előtérbe.",
+      "Változó energiaszint – a csapat néha aktívan kezdeményez, máskor visszahúzódik. A helyzet határozza meg, melyik oldal kerül előtérbe.",
   },
   {
     key: "cohesion",
@@ -53,7 +53,7 @@ export const AXIS_META: AxisMeta[] = [
     highDetail:
       "Erős összetartás, kölcsönös támogatás és a méltányosságra való törekvés jellemzi. A csapat egységben gondolkodik.",
     midDetail:
-      "Vegyes dinamika — az együttműködés és az egyéni verseny egyaránt jelen van. A helyzettől függ, melyik kerül előtérbe.",
+      "Vegyes dinamika – az együttműködés és az egyéni verseny egyaránt jelen van. A helyzettől függ, melyik kerül előtérbe.",
   },
   {
     key: "discipline",
@@ -65,7 +65,7 @@ export const AXIS_META: AxisMeta[] = [
     highDetail:
       "Tervezett, dokumentált, szervezett. A csapat előre meghatározott keretek között dolgozik.",
     midDetail:
-      "Részben szervezett, részben improvizáló működés. Vannak keretek, de nem mindenre — a csapat gyakorlatiasan ötvözi a két megközelítést.",
+      "Részben szervezett, részben improvizáló működés. Vannak keretek, de nem mindenre – a csapat gyakorlatiasan ötvözi a két megközelítést.",
   },
   {
     key: "openness",
@@ -77,7 +77,7 @@ export const AXIS_META: AxisMeta[] = [
     highDetail:
       "Kíváncsi, kísérletező, nyitott az ismeretlenre. A csapat szeret új utakat járni.",
     midDetail:
-      "Szelektíven nyitott — bizonyos területeken kísérletezik, máshol ragaszkodik a bevált megoldásokhoz.",
+      "Szelektíven nyitott – bizonyos területeken kísérletezik, máshol ragaszkodik a bevált megoldásokhoz.",
   },
 ];
 

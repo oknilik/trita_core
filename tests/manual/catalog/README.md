@@ -18,7 +18,7 @@ ezekből állítja elő a tesztelőknek átadható Excel-t
   preconditions: "…",      // előfeltételek (állapot, korábbi esetek)
   steps: "1. … 2. …",      // számozott lépések
   expected: "…",           // ellenőrizhető várt kimenet
-  automated: "none",       // none | partial | full — automata lefedettség
+  automated: "none",       // none | partial | full – automata lefedettség
   coveredBy: "",           // mely tesztfájl fedi (ha automated != none)
   priority: "P1",          // P1 = pilot-kritikus · P2 = fontos · P3 = polish
 }
@@ -27,7 +27,7 @@ ezekből állítja elő a tesztelőknek átadható Excel-t
 ## Teszt-email konvenció
 
 A generátor a `--mailbox` kapcsolóból (alap: `trita.qa@gmail.com`)
-+címkés címeket képez: `trita.qa+try-01@gmail.com` — így minden eset
++címkés címeket képez: `trita.qa+try-01@gmail.com` – így minden eset
 külön „felhasználó", de egyetlen valós postafiókba érkezik minden levél.
 Több szereplős eseteknél az `emails` map minden szerephez külön címkét
 kap (`trita.qa+obs-03-observer@gmail.com`). Konkrét címet (pl. admin
@@ -36,6 +36,6 @@ fiók) az `emails` értékébe írva az AUTO-generálás kihagyható.
 ## Frissítés
 
 1. Bővítsd/módosítsd a terület-fájlt.
-2. `pnpm manual-tests` — validál + újragenerálja az Excelt.
+2. `pnpm manual-tests` – validál + újragenerálja az Excelt.
 3. A katalógus-integritást a `tests/unit/manual/catalog.test.ts` őrzi
-   (unique ID-k, kötelező mezők, enum-értékek) — a unit-körben fut.
+   (unique ID-k, kötelező mezők, enum-értékek) – a unit-körben fut.

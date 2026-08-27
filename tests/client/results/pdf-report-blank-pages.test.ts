@@ -44,7 +44,7 @@ describe("riport-PDF tördelés", () => {
   });
 
   it.each(scenarios.map((s) => [s.id, s] as const))(
-    "%s — nincs üres, lebegő lap",
+    "%s – nincs üres, lebegő lap",
     async (_id, scenario) => {
       const buffer = await renderReportBuffer(scenario.input);
       expect(findBlankPages(buffer)).toEqual([]);

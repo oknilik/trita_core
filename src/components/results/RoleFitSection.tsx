@@ -123,7 +123,7 @@ export function RoleFitSection({
         })}
       </div>
 
-      {/* Módszertani disclaimer — a PDF-fel (PdfRoleFit) közös kulcs: a
+      {/* Módszertani disclaimer – a PDF-fel (PdfRoleFit) közös kulcs: a
           szerep-illeszkedés profil-alapú becslés, a személyiség csak egy
           tényező. A képernyő és a publikus share-oldal korábban disclaimer
           nélkül mutatta ugyanezeket a pozíció-pilleket. */}

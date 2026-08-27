@@ -20,7 +20,9 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 function isLinkActive(pathname: string, href: string): boolean {
   const normalizedHref = href.split("?")[0] ?? href;
-  if (href === "/") return pathname === "/";
+  if (href === "/") {
+    return pathname === "/" || pathname === "/self-awareness" || pathname === "/team-dynamics";
+  }
   return pathname.startsWith(normalizedHref);
 }
 
@@ -121,7 +123,7 @@ export function NavBar({
   // adja — így a marketing-fa nem szállít clerk-js bundle-t.
   const { isSignedIn } = useAuthState();
   const currentPath = usePathname();
-  const siteMode = useSiteMode();
+  const siteMode = useSiteMode(currentPath === "/team-dynamics" ? "team" : "self");
   const [drawerOpen, setDrawerOpen] = useState(false);
   // UX-A18: localStorage-t nem olvasunk render közben (hydration mismatch:
   // a szerver "Kipróbálom"-ot, a kliens "Folytatom"-ot adott) — a landing
@@ -139,7 +141,8 @@ export function NavBar({
     currentPath.startsWith("/observe")
   ) return null;
 
-  const isTeamLanding = currentPath === "/" && siteMode === "team";
+  const isTeamLanding =
+    (currentPath === "/" || currentPath === "/team-dynamics") && siteMode === "team";
   const publicCtaHref = isTeamLanding ? "/pilot" : "/try";
   const publicCtaLabel = isTeamLanding
     ? t("nav.ctaTeam", locale)
@@ -184,7 +187,7 @@ export function NavBar({
   ];
 
   const authLinks = [
-    // Bejelentkezve a link az appba (journey handoff) visz — a címke is
+    // Bejelentkezve a link az appba (journey handoff) visz – a címke is
     // ezt mondja, ne 'Főoldal'-t (design-akciólista #18).
     { id: "dashboard", href: signedInHomeHref, label: t("nav.dashboard", locale) },
     ...(isPortfolioSurfaceActive("blog")
@@ -250,7 +253,7 @@ export function NavBar({
             <TritaWordmark className="text-heading tracking-[-0.04em]" />
           </Link>
 
-          {/* ═══ CENTER LINKS — desktop only ═══ */}
+          {/* ═══ CENTER LINKS – desktop only ═══ */}
           <nav
             aria-label={t("nav.menu", locale)}
             className="pointer-events-auto hidden items-center gap-1 rounded-[15px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-1 shadow-[0_1px_2px_rgba(26,26,46,0.04)] lg:flex lg:justify-self-center"
@@ -293,7 +296,7 @@ export function NavBar({
 
             {isSignedIn && <UserMenu />}
 
-            {/* Hamburger — mobile */}
+            {/* Hamburger – mobile */}
             <button
               type="button"
               onClick={() => {
@@ -329,7 +332,7 @@ export function NavBar({
         </div>
       ) : null}
 
-      {/* ═══ MOBIL MENÜ — közös kártya-panel (menü-konvergencia): ugyanaz a
+      {/* ═══ MOBIL MENÜ – közös kártya-panel (menü-konvergencia): ugyanaz a
           váz, mint a belépett NavHeaderUI menüje. ═══ */}
       <MobileMenuShell
         open={drawerOpen}
@@ -354,7 +357,7 @@ export function NavBar({
 
           {isSignedIn ? (
             <div className="mt-3 border-t border-[var(--color-border-soft)] pt-3">
-              {/* Kijelentkezés — a „Belépés" gombbal azonos stílusban és
+              {/* Kijelentkezés – a „Belépés" gombbal azonos stílusban és
                   pozícióban. A /sign-out route-on fut (ott van ClerkProvider). */}
               <Link
                 href="/sign-out"

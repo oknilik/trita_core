@@ -4,6 +4,9 @@ import { useSyncExternalStore } from "react";
 
 export type SiteMode = "self" | "team";
 
+export const SELF_LANDING_PATH = "/self-awareness";
+export const TEAM_LANDING_PATH = "/team-dynamics";
+
 /**
  * Landing self/team mód — URL-alapú, de `useSearchParams()` NÉLKÜL.
  *
@@ -13,13 +16,14 @@ export type SiteMode = "self" | "team";
  * `<main>`-je ÜRES volt, a hero H1 (az LCP-elem) csak a JS letöltése +
  * hidratálás után született meg → 7.0 s LCP.
  *
- * A `useSyncExternalStore` szerver-snapshotja "self" (ez kerül a statikus
- * HTML-be), a kliens-snapshot az URL-ből olvas. Így a landing prerenderelhető
- * marad, a `?mode=team` mélylink pedig hidratálás után áll be — React által
- * támogatott módon, hydration-mismatch nélkül.
+ * A `useSyncExternalStore` szerver-snapshotját az oldal adja át, a kliens-
+ * snapshot pedig az útvonalból olvas. Így a /self-awareness és a
+ * /team-dynamics is a saját H1-ével kerül a statikus HTML-be, miközben a
+ * főoldali egyszeri tab-bemutató RSC-kérés nélkül tud módot váltani.
  */
 
 const listeners = new Set<() => void>();
+let previewMode: SiteMode | null = null;
 
 function subscribe(onStoreChange: () => void): () => void {
   listeners.add(onStoreChange);
@@ -31,30 +35,29 @@ function subscribe(onStoreChange: () => void): () => void {
 }
 
 function getSnapshot(): SiteMode {
-  return new URLSearchParams(window.location.search).get("mode") === "team"
-    ? "team"
-    : "self";
+  if (previewMode) return previewMode;
+  if (window.location.pathname === TEAM_LANDING_PATH) return "team";
+  if (window.location.pathname === SELF_LANDING_PATH) return "self";
+  return new URLSearchParams(window.location.search).get("mode") === "team" ? "team" : "self";
 }
 
-function getServerSnapshot(): SiteMode {
-  return "self";
-}
+const getSelfServerSnapshot = (): SiteMode => "self";
+const getTeamServerSnapshot = (): SiteMode => "team";
 
-export function useSiteMode(): SiteMode {
-  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+export function useSiteMode(initialMode: SiteMode = "self"): SiteMode {
+  return useSyncExternalStore(
+    subscribe,
+    getSnapshot,
+    initialMode === "team" ? getTeamServerSnapshot : getSelfServerSnapshot,
+  );
 }
 
 /**
- * Módváltás: az URL-t natív `history.replaceState`-tel frissítjük (a Next
- * router ezt hivatalosan támogatja, és nem indít RSC-kérést), majd értesítjük
- * a feliratkozókat. `replace` — a korábbi `router.replace` viselkedés:
- * a váltás nem hagy history-bejegyzést.
+ * A főoldali automatikus tab-bemutató átmeneti módja. Nem ír URL-t, így nem
+ * generál hamis oldalmegtekintést az analitikában. A kézi váltás valódi Next
+ * Linket használ, hogy mindkét landing URL bejárható és indexelhető maradjon.
  */
-export function setSiteMode(mode: SiteMode): void {
-  const url = new URL(window.location.href);
-  url.searchParams.set("mode", mode);
-  window.history.replaceState(window.history.state, "", url);
+export function setSiteModePreview(mode: SiteMode | null): void {
+  previewMode = mode;
   for (const listener of listeners) listener();
-  // A korábbi `router.replace(..., { scroll: true })` a lap tetejére ugrott.
-  window.scrollTo({ top: 0 });
 }

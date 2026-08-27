@@ -302,7 +302,7 @@ export function CandidateClient({
         throw new Error("SUBMIT_ERROR");
       }
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
-      // Opcionális 2. lépés: csapatszerep-kérdőív (átugorható) — a
+      // Opcionális 2. lépés: csapatszerep-kérdőív (átugorható) – a
       // nextPath-redirect előtt, hogy a válasz még ehhez a tokenhez kösse.
       if (includeTeamRole) {
         setPhase("teamRole");
@@ -321,7 +321,7 @@ export function CandidateClient({
     }
   };
 
-  // Intro screen — a /try kitöltő-intróval azonos vizuális szint,
+  // Intro screen – a /try kitöltő-intróval azonos vizuális szint,
   // terrakotta (jelölt) akcenttel. A logika változatlan: a CTA a phase-t
   // állítja.
   if (phase === "intro") {
@@ -356,7 +356,7 @@ export function CandidateClient({
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto max-w-4xl px-5 lg:px-10">
           <div className="grid grid-cols-1 items-start gap-8 py-10 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:py-14">
-            {/* Bal oszlop — cím, kontextus, CTA */}
+            {/* Bal oszlop – cím, kontextus, CTA */}
             <div>
               <SectionEyebrow tone="bronze" className="mb-2.5">
                 {t("candidate.introEyebrow", locale)}
@@ -393,7 +393,7 @@ export function CandidateClient({
               </button>
             </div>
 
-            {/* Jobb oszlop — lépéskártyák */}
+            {/* Jobb oszlop – lépéskártyák */}
             <div className="flex flex-col gap-2.5">
               <SectionEyebrow tone="muted" className="mb-0.5">
                 {t("candidate.introStepsLabel", locale)}
@@ -429,7 +429,7 @@ export function CandidateClient({
     );
   }
 
-  // Opcionális csapatszerep-kérdőív (2. lépés) — átugorható
+  // Opcionális csapatszerep-kérdőív (2. lépés) – átugorható
   if (phase === "teamRole") {
     const submitTeamRole = async (selections: Record<string, 1 | 2>) => {
       setTeamRoleSubmitting(true);
@@ -441,7 +441,7 @@ export function CandidateClient({
         });
         if (!res.ok) {
           const data = (await res.json()) as { error?: string };
-          // Már beküldött / visszavont állapotnál csendben zárunk —
+          // Már beküldött / visszavont állapotnál csendben zárunk –
           // a jelölt szempontjából a folyamat kész.
           if (data.error !== "ALREADY_USED" && data.error !== "REVOKED") {
             throw new Error("SUBMIT_ERROR");
@@ -500,7 +500,7 @@ export function CandidateClient({
     );
   }
 
-  // Assessment screen — /try-szintű, egysoros haladás-fejléc terrakotta
+  // Assessment screen – /try-szintű, egysoros haladás-fejléc terrakotta
   // sávval; a kitöltés-logika érintetlen.
   const remainingQuestions = Math.max(totalQuestions - answeredCount, 0);
   // UX-A4-minta: a landinggel/intróval azonos becslő-konstans (9 mp/item).
@@ -512,9 +512,9 @@ export function CandidateClient({
     <div className="min-h-dvh bg-cream">
       <div className="mx-auto max-w-3xl px-4 pt-6 pb-20 md:pt-10">
 
-        {/* Sticky progress — számláló + terrakotta sáv + ETA */}
+        {/* Sticky progress – számláló + terrakotta sáv + ETA */}
         {/* Az /apply nincs a nav rejtő-/fókusz-listáin: fölötte mindig egy
-            sticky fejléc ül (h-14 = 56px) — a kártya ez alá tapad. */}
+            sticky fejléc ül (h-14 = 56px) – a kártya ez alá tapad. */}
         <div className="sticky top-16 z-20 mb-5 rounded-2xl border border-sand bg-[var(--color-surface-card)]/95 px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.05)] backdrop-blur">
           <div className="flex items-center gap-3">
             <div className="flex items-baseline gap-1 whitespace-nowrap">
@@ -602,7 +602,7 @@ export function CandidateClient({
           </AnimatePresence>
         </div>
 
-        {/* Navigation — terrakotta fő CTA */}
+        {/* Navigation – terrakotta fő CTA */}
         <div className="mt-8 flex items-center justify-between gap-4">
           <motion.button
             onClick={handlePrevStep}

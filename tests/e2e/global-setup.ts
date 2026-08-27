@@ -51,7 +51,7 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
   const startedAt = Date.now();
 
   // SORBAN, nem párhuzamosan: a dev-szerver fordítója amúgy is sorosít, a
-  // párhuzamos kérések csak egymásra várnának — és a naplót olvashatatlanná
+  // párhuzamos kérések csak egymásra várnának – és a naplót olvashatatlanná
   // tennék.
   for (const path of WARMUP_PATHS) {
     const controller = new AbortController();
@@ -63,7 +63,7 @@ export default async function globalSetup(config: FullConfig): Promise<void> {
       });
     } catch {
       // Szándékosan néma: a bemelegítés best effort. Ha egy útvonal nem jön
-      // össze, a hozzá tartozó teszt majd rendesen elbukik — ott a hibaüzenet
+      // össze, a hozzá tartozó teszt majd rendesen elbukik – ott a hibaüzenet
       // is beszédesebb lesz, mint itt.
     } finally {
       clearTimeout(timer);

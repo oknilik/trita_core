@@ -13,7 +13,7 @@ import { rankDimensionScores } from "@/lib/hexaco";
 const dims = (scores: Record<string, number>) =>
   Object.entries(scores).map(([code, score]) => ({ code, score }));
 
-describe("resolveGlyphPair — interp S2: ábra és címke azonos top-2", () => {
+describe("resolveGlyphPair – interp S2: ábra és címke azonos top-2", () => {
   it("holtversenynél a HEXACO_ORDER dönt, nem a bemenet sorrendje", () => {
     // H és O a csúcson holtversenyben; a bemenet O-t adja előbb.
     const scores = dims({ O: 70, H: 70, X: 40, C: 30, A: 20, E: 10 });

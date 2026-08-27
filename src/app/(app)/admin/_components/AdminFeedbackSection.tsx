@@ -100,7 +100,7 @@ export function AdminFeedbackSection({
 
         <div className="mt-6">
           <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted">
-            Dimenzió-pontosság — HEXACO
+            Dimenzió-pontosság – HEXACO
           </h3>
           <div className="space-y-2">
             {dimensionAverages.length > 0 ? (
@@ -132,7 +132,7 @@ export function AdminFeedbackSection({
             Karrier-iránytű visszajelzések ({totalVotes} szavazat)
           </h2>
           <p className="mt-1 text-xs text-ink-body">
-            „Dolgoztál hasonló szerepben — találó?” válaszok foglalkozásonként. Ahol a
+            „Dolgoztál hasonló szerepben – találó?” válaszok foglalkozásonként. Ahol a
             nem-találó arány magas, ott a katalógus cél-profilját érdemes
             felülvizsgálni (src/lib/career/catalog/). A „régi katalógus” jelölésű
             sorok a v1 motor idejéből valók, más azonosító-térrel.
@@ -168,9 +168,9 @@ export function AdminFeedbackSection({
                       </td>
                       <td
                         className="py-2 pr-4 font-mono text-ink-body"
-                        title="A találati arány 95%-os alsó korlátja — kis mintánál ez a becsületes szám."
+                        title="A találati arány 95%-os alsó korlátja – kis mintánál ez a becsületes szám."
                       >
-                        {row.wilsonLow === null ? "—" : `${row.wilsonLow}%`}
+                        {row.wilsonLow === null ? "–" : `${row.wilsonLow}%`}
                       </td>
                       <td className="py-2 font-mono text-ink-body">{row.avgFitScore}%</td>
                     </tr>
@@ -194,7 +194,7 @@ export function AdminFeedbackSection({
           </h2>
           <p className="mt-1 text-xs text-ink-body">
             A szöveges üzenetek emailben mentek ({process.env.CONTACT_FORM_TO ?? "info@trita.io"})
-            — itt a ki/mit/mikor látszik.
+            – itt a ki/mit/mikor látszik.
           </p>
 
           {interests.length === 0 ? (
@@ -224,7 +224,7 @@ export function AdminFeedbackSection({
                       </span>
                     </td>
                     <td className="py-2 pr-4 text-ink">
-                      {row.username ?? "—"}
+                      {row.username ?? "–"}
                       <span className="ml-2 text-xs text-muted">{row.email ?? ""}</span>
                     </td>
                     <td className="py-2 text-xs text-ink-body">

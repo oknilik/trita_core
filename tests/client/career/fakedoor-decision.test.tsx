@@ -65,7 +65,7 @@ describe("fake door döntési panel", () => {
     expect(screen.getByText(t("fakeDoor.reasonTitle", "hu"))).toBeTruthy();
   });
 
-  it("az átugrás is rögzül — mindkét ágon", async () => {
+  it("az átugrás is rögzül – mindkét ágon", async () => {
     const user = userEvent.setup();
     renderPanel();
 

@@ -132,7 +132,7 @@ export function PdfComparisonOverview({
   );
 }
 
-// ─── Comparison bars — sorted by gap, with delta indicator ────────────────────
+// ─── Comparison bars – sorted by gap, with delta indicator ────────────────────
 
 export function PdfComparisonBars({ dimensions, locale = "hu" }: { dimensions: CompDim[]; locale?: Locale }) {
   // Sort by largest gap first
@@ -211,7 +211,7 @@ function getBlindspotLabel(self: number, observer: number, locale: Locale): stri
       ? t("pdf.blindspotSignificantSelfHigher", locale)
       : t("pdf.blindspotSignificantObsHigher", locale);
   }
-  // A „mérsékelt" sáv alja a kapu maga — a vakfolt-lista a ReflectPage-en
+  // A „mérsékelt" sáv alja a kapu maga – a vakfolt-lista a ReflectPage-en
   // DIFF_MIN_GAP-nél vág, így a "slight" ág oda már nem jut el (defenzív).
   if (gap >= DIFF_MIN_GAP) {
     return selfHigher
@@ -248,7 +248,7 @@ export function PdfBlindspots({
             {getBlindspotLabel(bs.self, bs.observer, locale)}
           </Text>
           <Text style={{ fontFamily: "Fraunces", fontSize: 9.5, color: colors.ink }}>
-            {bs.name} — {bs.observer > bs.self
+            {bs.name} – {bs.observer > bs.self
               ? t("pdf.othersRateHigher", locale)
               : t("pdf.othersRateLower", locale)}
           </Text>

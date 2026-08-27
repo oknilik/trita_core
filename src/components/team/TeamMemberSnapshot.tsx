@@ -131,10 +131,10 @@ export function TeamMemberSnapshot({
         lockedRoles: "A szerepegyensúly a jóváhagyott, aggregált csapatkép része.",
         lockedPattern: "A közös mintázat a riport publikálása után válik láthatóvá.",
         nextLabel: "Következő lépés",
-        nextTask: "Van nyitott teendőd — a részleteket a fenti teendőkártyán találod.",
+        nextTask: "Van nyitott teendőd – a részleteket a fenti teendőkártyán találod.",
         nextReady: reportReady
-          ? "A csapatriport elkészült — nézd meg a közös felismeréseket."
-          : "Minden saját feladatod kész — a riport publikálására vársz.",
+          ? "A csapatriport elkészült – nézd meg a közös felismeréseket."
+          : "Minden saját feladatod kész – a riport publikálására vársz.",
         taskCta: "Feladataim",
         reportCta: "Riport megnyitása",
         statusLabel: reportReady ? "Riport elérhető" : "Riport készül",
@@ -164,10 +164,10 @@ export function TeamMemberSnapshot({
         lockedRoles: "Role balance is part of the approved, aggregate team picture.",
         lockedPattern: "The shared pattern becomes visible after the report is published.",
         nextLabel: "Next step",
-        nextTask: "You have an open task — find the details in the action card above.",
+        nextTask: "You have an open task – find the details in the action card above.",
         nextReady: reportReady
-          ? "The team report is ready — explore the shared insights."
-          : "Your tasks are complete — you are waiting for the report to be published.",
+          ? "The team report is ready – explore the shared insights."
+          : "Your tasks are complete – you are waiting for the report to be published.",
         taskCta: "My tasks",
         reportCta: "Open report",
         statusLabel: reportReady ? "Report available" : "Report in progress",

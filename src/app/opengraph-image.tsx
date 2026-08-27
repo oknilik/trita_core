@@ -3,7 +3,7 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 import { COLORS } from "@/lib/design-tokens";
 
-export const alt = "trita — személyiség- és csapatintelligencia platform";
+export const alt = "trita – személyiség- és csapatintelligencia platform";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

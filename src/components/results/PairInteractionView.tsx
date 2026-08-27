@@ -120,7 +120,7 @@ export function PairInteractionView({
                     className="h-full w-full"
                   />
                 </div>
-                {/* A név azonosít — nem címke: ezért nem 10px-es, nem
+                {/* A név azonosít – nem címke: ezért nem 10px-es, nem
                     verzálos (a „KATALIN" felirat úgy olvas, mint egy tag). */}
                 <p className="mx-auto mt-1.5 max-w-[12rem] break-words text-center text-caption font-semibold text-[var(--color-accent-primary)]">
                   {eyebrow}
@@ -171,7 +171,7 @@ export function PairInteractionView({
       />
 
       {/* A próza a legmarkánsabb néhány pontot mondja el, tehát válogat. A
-          sáv utána mind a hat dimenzióról nyilatkozik — enélkül a „megnéztük,
+          sáv utána mind a hat dimenzióról nyilatkozik – enélkül a „megnéztük,
           és nincs róla mit mondani" eset megkülönböztethetetlen volna a
           „nem néztük meg"-től. */}
       <PairDimensionBand rows={sim.dimensions} otherName={otherName} />

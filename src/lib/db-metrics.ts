@@ -148,12 +148,12 @@ function flush(key: string): void {
       waves,
       /** Az első query kezdetétől az utolsó végéig eltelt idő. */
       dbSpanMs: Math.round(spanMs),
-      /** dbMs / dbSpanMs — a tényleges párhuzamossági fok. */
+      /** dbMs / dbSpanMs – a tényleges párhuzamossági fok. */
       parallelism,
       topOperations,
       duplicateSignatures: topSignatures,
     },
-    `${bucket.path} — ${bucket.count} query, ${waves} hullám (${duplicates} duplikátum)`,
+    `${bucket.path} – ${bucket.count} query, ${waves} hullám (${duplicates} duplikátum)`,
   );
 }
 
@@ -197,7 +197,7 @@ function record(
 
 /**
  * Kérés-azonosító a proxy fejlécéből. Kérés-kontextuson kívül (cron,
- * seed, fire-and-forget) null — ilyenkor nem gyűjtünk.
+ * seed, fire-and-forget) null – ilyenkor nem gyűjtünk.
  */
 async function readRequestContext(): Promise<{ id: string; path: string } | null> {
   try {

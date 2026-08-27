@@ -319,7 +319,7 @@ export async function buildMemberDossier(
     .map((f) => ({
       kind: f.kind,
       message: messageOf(f.payload),
-      fromName: f.from.username ?? f.from.email ?? "—",
+      fromName: f.from.username ?? f.from.email ?? "–",
       teamName: f.team.name,
       createdAt: f.createdAt.toISOString(),
     }));

@@ -11,7 +11,7 @@ export const cases = [
   {
     id: "CAND-01",
     area: "Jelölt-flow",
-    name: "Jelölt-meghívó létrehozása tanácsadóként — link + email, 30 napos lejárat",
+    name: "Jelölt-meghívó létrehozása tanácsadóként – link + email, 30 napos lejárat",
     persona: "tanácsadó",
     emails: { "tanácsadó": "AUTO", "jelölt": "AUTO" },
     preconditions:
@@ -36,7 +36,7 @@ export const cases = [
     steps:
       "1. Mindhárom szereppel nyisd meg közvetlen URL-lel a /hiring/[orgId] oldalt, és nézd a fejléc-menüt. 2. API-val próbálj jelölt-meghívót létrehozni nem-tanácsadó szereppel. 3. Tanácsadóként próbálj meghívót létrehozni egy IDEGEN org csapatára.",
     expected:
-      "A /hiring nem-tanácsadónak 404-et ad (a Jelöltek menüpont sem jelenik meg — a sima ORG_ADMIN-nak sem); az API nem-tanácsadónak 403 FORBIDDEN; idegen org csapatára a tanácsadó kérése is FORBIDDEN — az org/csapat-kontextus szerver-oldalon ellenőrzött.",
+      "A /hiring nem-tanácsadónak 404-et ad (a Jelöltek menüpont sem jelenik meg – a sima ORG_ADMIN-nak sem); az API nem-tanácsadónak 403 FORBIDDEN; idegen org csapatára a tanácsadó kérése is FORBIDDEN – az org/csapat-kontextus szerver-oldalon ellenőrzött.",
     automated: "partial",
     coveredBy:
       "tests/integration/apply/apply-flow.integration.test.ts (role gate + idegen csapat)",
@@ -61,13 +61,13 @@ export const cases = [
   {
     id: "CAND-04",
     area: "Jelölt-flow",
-    name: "Opcionális csapatszerep-lépés a jelölt-kitöltésben — átugorható, egyszer beadható",
+    name: "Opcionális csapatszerep-lépés a jelölt-kitöltésben – átugorható, egyszer beadható",
     persona: "jelölt (vendég) + tanácsadó",
     emails: { "tanácsadó": "AUTO", "jelölt-a": "AUTO", "jelölt-b": "AUTO" },
     preconditions:
       "Két meghívó: az egyik bekapcsolt csapatszerep-lépéssel (includeTeamRole), a másik nélküle.",
     steps:
-      "1. A jelölt-a a szerep-lépéses meghívón adja be a fő tesztet — figyeld a felajánlott 2. lépést. 2. Töltse ki a szerep-kérdőívet (8–12 jelölés + 3 kiemelés), add be, majd próbáld újra beadni. 3. A jelölt-b a szerep-lépés NÉLKÜLI meghívón adja be a fő tesztet — figyeld, kap-e szerep-lépést; API-val próbálj szerep-választ küldeni a tokenjére. 4. Egy harmadik, fő teszt előtti tokenre is próbálj szerep-választ küldeni API-val.",
+      "1. A jelölt-a a szerep-lépéses meghívón adja be a fő tesztet – figyeld a felajánlott 2. lépést. 2. Töltse ki a szerep-kérdőívet (8–12 jelölés + 3 kiemelés), add be, majd próbáld újra beadni. 3. A jelölt-b a szerep-lépés NÉLKÜLI meghívón adja be a fő tesztet – figyeld, kap-e szerep-lépést; API-val próbálj szerep-választ küldeni a tokenjére. 4. Egy harmadik, fő teszt előtti tokenre is próbálj szerep-választ küldeni API-val.",
     expected:
       "A szerep-lépés csak bekapcsolt meghívón jelenik meg, és átugorható (a kitöltés e nélkül is COMPLETED marad); ismételt szerep-beadás ALREADY_USED; nem engedélyezett meghívón NOT_ENABLED; a fő teszt beadása előtt MAIN_ASSESSMENT_MISSING; az eredmény-nézeten a szerep-blokk csak tényleges kitöltésnél jelenik meg.",
     automated: "none",
@@ -101,7 +101,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a lejárt meghívó linkjét, és próbálj beadni API-val is. 2. Tanácsadóként vond vissza a PENDING meghívót, majd nyisd meg a linkjét. 3. Nyisd meg a COMPLETED linket. 4. Nyiss meg egy kitalált tokent.",
     expected:
-      "Lejártnál lejárt-nézet, beadás INVITE_EXPIRED; visszavontnál visszavont-nézet, beadás INVITE_REVOKED; késznél már-kitöltve nézet, beadás ALREADY_USED; kitalált token 404 — egyik ág sem enged kitöltő-felületet.",
+      "Lejártnál lejárt-nézet, beadás INVITE_EXPIRED; visszavontnál visszavont-nézet, beadás INVITE_REVOKED; késznél már-kitöltve nézet, beadás ALREADY_USED; kitalált token 404 – egyik ág sem enged kitöltő-felületet.",
     automated: "partial",
     coveredBy:
       "tests/integration/acceptance/service.integration.test.ts (expired apply model) · tests/integration/join/join-acceptance-matrix.integration.test.ts (invalid/expired/completed endpoint-ágak)",
@@ -136,7 +136,7 @@ export const cases = [
     steps:
       "1. A nem-listázott fiókkal írd be kézzel a /admin URL-t. 2. A listázott fiókkal nyisd meg a /admin-t, majd a ?tab=orgs fület. 3. Nézd végig mindkét fiók fejléc-navját admin-linket keresve. 4. Kijelentkezve is nyisd meg a /admin-t.",
     expected:
-      "A nem-listázott user csendben a journey-home-ra kerül (nincs 403-oldal, nincs információ-szivárgás); kijelentkezve sign-in-re; a listázott admin látja a füleket (Áttekintés · Szervezetek · Emlékeztetők · ...); a navigációban egyik fióknál sincs admin-link — a felület csak beírt URL-lel érhető el.",
+      "A nem-listázott user csendben a journey-home-ra kerül (nincs 403-oldal, nincs információ-szivárgás); kijelentkezve sign-in-re; a listázott admin látja a füleket (Áttekintés · Szervezetek · Emlékeztetők · ...); a navigációban egyik fióknál sincs admin-link – a felület csak beírt URL-lel érhető el.",
     automated: "none",
     coveredBy: "",
     priority: "P1",
@@ -167,7 +167,7 @@ export const cases = [
     preconditions:
       "Két org: egy subscription nélküli (trialhoz) és egy aktív, jövőbeli periódus-végű (extendhez).",
     steps:
-      "1. Adj trialt az első orgnak, és nézd meg a lejáratot. 2. Hosszabbítsd meg (extend) a második orgot N hónappal — nézd meg az új periódus-véget. 3. Járasd le (deactivate), majd extendeld újra, és nézd meg a bázis-dátumot. 4. A trial-os orgot aktiváld.",
+      "1. Adj trialt az első orgnak, és nézd meg a lejáratot. 2. Hosszabbítsd meg (extend) a második orgot N hónappal – nézd meg az új periódus-véget. 3. Járasd le (deactivate), majd extendeld újra, és nézd meg a bázis-dátumot. 4. A trial-os orgot aktiváld.",
     expected:
       "Trial: trialing státusz a TRIAL_DAYS szerinti lejárattal, aktív-szerű capability-kkel; extend jövőbeli periódus-végnél ATTÓL számol tovább, lejárt/leállított orgnál a mai naptól; activate a trialEndsAt-ot törli és active-ra vált.",
     automated: "partial",
@@ -201,7 +201,7 @@ export const cases = [
     steps:
       "1. Állíts be kredit-számot az orgnak a /admin?tab=orgs felületen. 2. Nézd meg az admin-lista kredit-oszlopát. 3. Tanácsadóként hozz létre jelölt-meghívót, majd nézd meg újra a kreditet.",
     expected:
-      "A candidateCredits mentődik (subscription nélküli orgnál none státuszú subscription-sor jön létre hozzá); a gating kikapcsolt állapotában a jelölt-meghívó ettől függetlenül létrehozható és a kredit NEM fogy — a szám változatlan marad.",
+      "A candidateCredits mentődik (subscription nélküli orgnál none státuszú subscription-sor jön létre hozzá); a gating kikapcsolt állapotában a jelölt-meghívó ettől függetlenül létrehozható és a kredit NEM fogy – a szám változatlan marad.",
     automated: "none",
     coveredBy: "",
     priority: "P3",
@@ -209,7 +209,7 @@ export const cases = [
   {
     id: "ADMIN-06",
     area: "Platform-admin org-access",
-    name: "assign_consultant: tanácsadó kiosztása emaillel — valódi tagság nem konvertálódik",
+    name: "assign_consultant: tanácsadó kiosztása emaillel – valódi tagság nem konvertálódik",
     persona: "trita admin",
     emails: { fő: "AUTO", "tanácsadó": "AUTO" },
     preconditions:
@@ -217,7 +217,7 @@ export const cases = [
     steps:
       "1. A /admin?tab=orgs org-kártyáján add meg a tanácsadó emailjét és oszd ki. 2. Próbáld kiosztani (a) egy nem-létező emailre, (b) az org meglévő valódi tagjának emailjére is. 3. Nézd meg az org-kártya tanácsadó-listáját és tag-számát.",
     expected:
-      "Sikeres kiosztásnál ORG_CONSULTANT tagság jön létre és a tanácsadó megjelenik a kártya listáján; nem-létező email USER_NOT_FOUND; meglévő (nem-consultant) tag emailje 409 ALREADY_MEMBER — valódi tagság nem konvertálódik csendben tanácsadóivá; az org tag-száma a kiosztástól NEM nő.",
+      "Sikeres kiosztásnál ORG_CONSULTANT tagság jön létre és a tanácsadó megjelenik a kártya listáján; nem-létező email USER_NOT_FOUND; meglévő (nem-consultant) tag emailje 409 ALREADY_MEMBER – valódi tagság nem konvertálódik csendben tanácsadóivá; az org tag-száma a kiosztástól NEM nő.",
     automated: "partial",
     coveredBy:
       "tests/unit/policy/policy-engine.test.ts (consultant admin-paritás capability-oldala)",
@@ -233,7 +233,7 @@ export const cases = [
     steps:
       "1. Vedd el a tanácsadót az org-kártyán. 2. A volt tanácsadó lépjen be, és próbálja megnyitni az org-oldalt. 3. Próbáld az elvételt az org egy valódi (nem-consultant) tagjának emailjével is.",
     expected:
-      "A tanácsadó tagság-sora törlődik, a kártya-listából eltűnik; a volt tanácsadó az orgot nem éri el (self-only vagy másik-org felületre kerül, org-menük nélkül); valódi tag emailjére NOT_FOUND — ez az út valódi tagságot nem távolít el.",
+      "A tanácsadó tagság-sora törlődik, a kártya-listából eltűnik; a volt tanácsadó az orgot nem éri el (self-only vagy másik-org felületre kerül, org-menük nélkül); valódi tag emailjére NOT_FOUND – ez az út valódi tagságot nem távolít el.",
     automated: "none",
     coveredBy: "",
     priority: "P2",

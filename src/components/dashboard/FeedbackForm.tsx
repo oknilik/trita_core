@@ -143,7 +143,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
     </>
   );
 
-  // Köszönő állapot — csak közvetlenül a beküldés után, majd pár mp múlva eltűnik
+  // Köszönő állapot – csak közvetlenül a beküldés után, majd pár mp múlva eltűnik
   if (submitted && !thanksHidden) {
     return (
       <div className="animate-fade-in rounded-[22px] border border-sage/30 bg-sage-ghost/70 p-6 md:p-8">

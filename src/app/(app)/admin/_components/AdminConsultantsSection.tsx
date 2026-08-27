@@ -107,7 +107,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
     } catch (err) {
       setError(
         err instanceof Error && err.message === "HAS_REAL_MEMBERSHIP"
-          ? "Ez a felhasználó valódi (admin/tag) tagsággal van az org-ban — tanácsadóként nem osztható ki."
+          ? "Ez a felhasználó valódi (admin/tag) tagsággal van az org-ban – tanácsadóként nem osztható ki."
           : "A művelet nem sikerült.",
       );
     } finally {
@@ -135,8 +135,8 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
       const data = await res.json();
       setInviteMessage(
         data.appliedNow
-          ? "Kész — a fiók már létezett, azonnal tanácsadó lett."
-          : "Meghívó rögzítve — regisztrációkor automatikusan tanácsadó lesz.",
+          ? "Kész – a fiók már létezett, azonnal tanácsadó lett."
+          : "Meghívó rögzítve – regisztrációkor automatikusan tanácsadó lesz.",
       );
       setInviteEmail("");
       setInviteNote("");
@@ -157,7 +157,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
         </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">Onboardolás a tritára</h2>
         <p className="mt-1 max-w-2xl text-sm text-ink-body">
-          Add meg az emailt — ha a fiók már létezik, azonnal tanácsadó lesz; ha még
+          Add meg az emailt – ha a fiók már létezik, azonnal tanácsadó lesz; ha még
           nincs, regisztrációkor automatikusan az lesz. A tanácsadó nem kényszerül
           tesztre, és szervezetekhez innen tudod kiosztani.
         </p>
@@ -232,7 +232,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
           <p className="py-6 text-center text-sm text-muted">Betöltés…</p>
         ) : consultants.length === 0 ? (
           <p className="py-6 text-center text-sm text-muted">
-            Még nincs tanácsadó a platformon — hívd meg az elsőt fent.
+            Még nincs tanácsadó a platformon – hívd meg az elsőt fent.
           </p>
         ) : (
           <>
@@ -276,7 +276,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold text-ink">
-                        {c.username ?? c.email ?? "—"}
+                        {c.username ?? c.email ?? "–"}
                       </span>
                       <span className="block truncate text-xs text-muted">
                         {c.username && c.email ? `${c.email} · ` : ""}
@@ -320,7 +320,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                           {o.name}
                           <button
                             type="button"
-                            aria-label={`${o.name} — kiosztás visszavonása`}
+                            aria-label={`${o.name} – kiosztás visszavonása`}
                             disabled={busyKey === `unassign-${c.id}-${o.id}`}
                             onClick={() =>
                               action(

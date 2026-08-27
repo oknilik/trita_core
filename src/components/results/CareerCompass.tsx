@@ -124,11 +124,11 @@ function OptionCard({
   );
 }
 
-/** Mért érdeklődés-kérdőív (Mini-IP mintájára) — 30 gyors item, egyenként,
+/** Mért érdeklődés-kérdőív (Mini-IP mintájára) – 30 gyors item, egyenként,
  *  1-5 skálán, auto-advance-szel. A wizard vizuális nyelvét követi.
  *
  *  A NYERS válaszokat is felfelé adja (2026-08-11, fix): a mért Holland-kódot
- *  a SZERVER pontozza a válaszokból — a kliens-oldali pontszám csak azonnali
+ *  a SZERVER pontozza a válaszokból – a kliens-oldali pontszám csak azonnali
  *  megjelenítésre való, a mentett „measured" forrás a szerveré. */
 function RiasecProfiler({
   onComplete,
@@ -267,7 +267,7 @@ function Chip({
 
 // Kérdés-audit (2026-07-30): kivezetve a KOR (a profilban van születési év, nem
 // kérdezzük újra), a KÉPZÉSI TERÜLET (a v2 motor nem számol vele) és az
-// ÉRDEKLŐDÉS-CÍMKÉK (ugyanazt méri, amit a Holland-kérdőív, csak gyengébben —
+// ÉRDEKLŐDÉS-CÍMKÉK (ugyanazt méri, amit a Holland-kérdőív, csak gyengébben –
 // aki nem tölti ki a kérdőívet, annál a személyiség-alapú becslés lép be).
 type Step =
   | "intro"
@@ -283,7 +283,7 @@ type Step =
   | "result";
 
 // Vétó-chipek: kizárható munka-tulajdonságok. A bejelölt vétó KEMÉNY szűrő a
-// motorban (a címkézés O*NET-adatból jön, ld. step11_veto_tags.py) — pl. a
+// motorban (a címkézés O*NET-adatból jön, ld. step11_veto_tags.py) – pl. a
 // „gyerekekkel foglalkozás" vétója mellett dadus/tanító sosem jelenik meg.
 const VETO_OPTIONS: Array<{ value: string; key: string; emoji: string }> = [
   { value: "children", key: "results.ccVetoChildren", emoji: "🧒" },
@@ -322,20 +322,20 @@ export function CareerCompass({
   /** A szerveren előre kiszámolt eredmény (első render, a PDF-fel azonos forrás) */
   initialResult?: CareerResultView | null;
   initialBackground?: CareerBackground | null;
-  /** Facet-szintű fejlődési elemek — a fejlődési terv blokk alapja */
+  /** Facet-szintű fejlődési elemek – a fejlődési terv blokk alapja */
   growthFocusItems?: CompassGrowthItem[];
-  /** Observer-pontosítás CTA — átvált a meghívások tabra */
+  /** Observer-pontosítás CTA – átvált a meghívások tabra */
   onRequestObserver?: () => void;
   /**
    * Van-e kitöltött személyiségprofil. A modul BEMENETE a profil: enélkül a
-   * wizard elindítható lenne, de a végén nem tudnánk illeszkedést számolni —
+   * wizard elindítható lenne, de a végén nem tudnánk illeszkedést számolni –
    * ezért a belépő gomb a kitöltésre visz, nem az első kérdésre.
    */
   hasSelfResult?: boolean;
 }) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
-  // Teljes mentett háttérnél (van status — a wizardot már végigvitte) egyből
+  // Teljes mentett háttérnél (van status – a wizardot már végigvitte) egyből
   // az eredmény jön; az onboardingból származó RÉSZLEGES háttér (edu/iparág,
   // status nélkül) a wizardot előtöltve indítja.
   const hasCompleteBackground = Boolean(
@@ -347,10 +347,10 @@ export function CareerCompass({
   );
   // A mentett preferenciákból indulunk, NEM üresről. Enélkül a „válaszok
   // módosítása" úgy indulna, hogy a beállított tengelyek eltűntek a
-  // felületről — és mivel mentéskor `{ ...background, prefs }` megy ki, az
+  // felületről – és mivel mentéskor `{ ...background, prefs }` megy ki, az
   // üres `prefs` felül is írná a szerveren tárolt beállítást. A preferencia
   // a rangsor legerősebb jele, ezt elveszíteni a legdrágább hiba.
-  // Teljes visszaállításnál (`resetAll`) ürül — ott ez a szándék.
+  // Teljes visszaállításnál (`resetAll`) ürül – ott ez a szándék.
   const [prefs, setPrefs] = useState<UserPrefs>(initialBackground?.prefs ?? {});
   const [leadIntent, setLeadIntent] = useState<"lead" | "expert" | "unsure">(
     initialBackground?.leadIntent ?? "unsure",
@@ -360,7 +360,7 @@ export function CareerCompass({
   const [methodOpen, setMethodOpen] = useState(false);
   // Vezetői kérdés látható kijelöléshez (a leadFocus boolean ebből származik).
   // A mentett szándékból induljon, hogy módosításkor látszódjon a korábbi
-  // válasz — `null` csak akkor, ha a user még sosem válaszolt.
+  // válasz – `null` csak akkor, ha a user még sosem válaszolt.
   const [leadChoice, setLeadChoice] = useState<"yes" | "expert" | "unsure" | null>(
     initialBackground?.leadIntent
       ? initialBackground.leadIntent === "lead"
@@ -368,11 +368,11 @@ export function CareerCompass({
         : initialBackground.leadIntent
       : null,
   );
-  // Wizard-zárás ünneplés — csak tényleges kitöltés után, betöltéskor nem
+  // Wizard-zárás ünneplés – csak tényleges kitöltés után, betöltéskor nem
   const [celebrate, setCelebrate] = useState(false);
   // Mért érdeklődés-kérdőív (Mini-IP) nyitva-e az eredmény-nézetben
   const [profilerOpen, setProfilerOpen] = useState(false);
-  // A kérdőív NYERS válaszai — a szerver ebből pontoz („measured" forrás csak
+  // A kérdőív NYERS válaszai – a szerver ebből pontoz („measured" forrás csak
   // szerver-oldali pontozásból születhet). A kliens-oldali scores csak UI.
   const [riasecAnswers, setRiasecAnswers] = useState<Record<number, number> | null>(
     null,
@@ -389,7 +389,7 @@ export function CareerCompass({
     }, 320);
   }
 
-  // A kérdőív a leghosszabb lépés, és az eredménye a DB-ben marad — ha egyszer
+  // A kérdőív a leghosszabb lépés, és az eredménye a DB-ben marad – ha egyszer
   // kitöltötte, a wizard újrafuttatásakor NE kérdezzük meg újra. Csak a teljes
   // újrakezdés (DELETE) törli, ott a lépés visszajön.
   //
@@ -400,7 +400,7 @@ export function CareerCompass({
     () => Object.keys(initialBackground?.riasecScores ?? {}).length > 0,
   );
 
-  // A wizard lépéssorrendje — tanulóknál a „jelenlegi terület" kimarad.
+  // A wizard lépéssorrendje – tanulóknál a „jelenlegi terület" kimarad.
   const flow: Step[] = [
     "status",
     "edu",
@@ -433,9 +433,9 @@ export function CareerCompass({
   function finish() {
     setStep("result");
     setCelebrate(true);
-    // A preferenciák és a vezetői szándék IS mentődik — enélkül újratöltés
+    // A preferenciák és a vezetői szándék IS mentődik – enélkül újratöltés
     // után más rangsor jött, mint amit a user a wizard végén látott. A mért
-    // Holland-kódhoz a NYERS válaszok mennek (riasecAnswers) — a pontozás a
+    // Holland-kódhoz a NYERS válaszok mennek (riasecAnswers) – a pontozás a
     // szerveré, a kliens-oldali riasecScores-t a végpont nem fogadja el.
     void fetch("/api/profile/career-background", {
       method: "POST",
@@ -539,7 +539,7 @@ export function CareerCompass({
   /**
    * Teljes visszaállítás: a szerveren törli a mentett hátteret (a kitöltött
    * érdeklődés-kérdőívvel együtt), és a wizardot alaphelyzetbe hozza. A
-   * személyiség-eredmény érintetlen — a user azzal kezd újra.
+   * személyiség-eredmény érintetlen – a user azzal kezd újra.
    */
   const resetAll = useCallback(async () => {
     try {
@@ -634,7 +634,7 @@ export function CareerCompass({
 
       {step === "intro" && (
         <div style={{ animation: "cc-step-in 0.35s ease-out both" }}>
-          {/* Hero — mit ígér a modul és mit nem */}
+          {/* Hero – mit ígér a modul és mit nem */}
           <div className="overflow-hidden rounded-[16px] border border-sage/40 bg-gradient-to-br from-sage/12 via-[var(--color-surface-card)] to-[var(--color-surface-subtle)] p-5 sm:p-6">
             <span
               className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-card text-2xl shadow-sm ring-1 ring-sage/30"
@@ -663,7 +663,7 @@ export function CareerCompass({
                 </span>
               ))}
             </div>
-            {/* Opcionális érdeklődés-teszt (Holland-kód) — a pontosítás útja.
+            {/* Opcionális érdeklődés-teszt (Holland-kód) – a pontosítás útja.
                 A magyarázó-link külön sávot kap: korábban egy aláhúzott szó
                 volt a bekezdés végén, és észrevétlen maradt. */}
             <div className="mt-4 rounded-[12px] border border-dashed border-sage/50 bg-[var(--color-surface-card)]/70 px-4 py-3">
@@ -676,7 +676,7 @@ export function CareerCompass({
               </p>
             </div>
             {/* Profil nélkül a modul nem tud illeszkedést számolni, ezért a
-                belépő gomb a kitöltésre visz — nem külön üzenőképernyő, csak
+                belépő gomb a kitöltésre visz – nem külön üzenőképernyő, csak
                 más cél és felirat. */}
             {hasSelfResult ? (
               <button
@@ -739,7 +739,7 @@ export function CareerCompass({
             ))}
           </div>
 
-          {/* Őszinte keretezés — a becslés határai előre, nem az eredmény után */}
+          {/* Őszinte keretezés – a becslés határai előre, nem az eredmény után */}
           <div className="mt-4 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 p-4">
             <p className="text-caption font-semibold text-accent-earth-strong">
               ⚖️ {t("results.ccIntroCaveatTitle", locale)}
@@ -961,7 +961,7 @@ export function CareerCompass({
               onCancel={() => setProfilerOpen(false)}
               onComplete={(scores, answers) => {
                 setProfilerOpen(false);
-                // A kliens-pontszám csak a helyi UI-hoz — a mentéskor a nyers
+                // A kliens-pontszám csak a helyi UI-hoz – a mentéskor a nyers
                 // válaszok (riasecAnswers) mennek, a szerver pontoz.
                 patch({ riasecScores: scores as CareerBackground["riasecScores"] });
                 setRiasecAnswers(answers);
@@ -1144,7 +1144,7 @@ export function CareerCompass({
                           setBackground(nextBackground);
                           setRiasecAnswers(answers);
                           // A mért kódot a szerver pontozza a nyers válaszokból
-                          // (riasecAnswers) — a kliens-scores csak azonnali UI.
+                          // (riasecAnswers) – a kliens-scores csak azonnali UI.
                           void fetch("/api/profile/career-background", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
@@ -1177,7 +1177,7 @@ export function CareerCompass({
                     )
                   )}
 
-                  {/* Observer-pontosítás — ha még csak önértékelésen áll a kép */}
+                  {/* Observer-pontosítás – ha még csak önértékelésen áll a kép */}
                   {fitResult.observerWeight === 0 && onRequestObserver && (
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
                       <p className="max-w-xl text-xs leading-relaxed text-[var(--color-text-secondary)]">
@@ -1197,10 +1197,10 @@ export function CareerCompass({
             />
           )}
 
-          {/* Fejlődési irányok — a cél alatti komponensekhez kötve, IRÁNY-TUDATOSAN */}
+          {/* Fejlődési irányok – a cél alatti komponensekhez kötve, IRÁNY-TUDATOSAN */}
           {fitResult && <CareerGrowthPlan result={fitResult} items={growthFocusItems} />}
 
-          {/* Jelenlegi foglalkozás — a known-groups validáció adatforrása */}
+          {/* Jelenlegi foglalkozás – a known-groups validáció adatforrása */}
           {fitResult && (
             <CurrentRolePicker
               value={background.currentOccupationId ?? null}
@@ -1252,7 +1252,7 @@ export function CareerCompass({
       )}
 
 
-      {/* Módszertani lap — mire épül a becslés */}
+      {/* Módszertani lap – mire épül a becslés */}
       <div className="mt-4 border-t border-[var(--color-border-soft)] pt-3">
         <button
           type="button"

@@ -27,7 +27,7 @@ test("padló alatti dimenzió KIMARAD az aggregátumból", () => {
   );
 });
 
-test("két értékelő dimenziója sem elég — a padló per-dimenzió, nem per-kitöltés", () => {
+test("két értékelő dimenziója sem elég – a padló per-dimenzió, nem per-kitöltés", () => {
   const { dims, raterCount } = aggregateObserverDims([
     { X: 60, O: 30 },
     { X: 70, O: 50 },

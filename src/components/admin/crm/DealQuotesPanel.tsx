@@ -86,7 +86,7 @@ export function DealQuotesPanel({
 
       {quotes.length === 0 ? (
         <p className="mt-3 text-sm text-muted">
-          Még nincs ajánlat. Az „Új ajánlat” a kalkulátort nyitja — mentéskor
+          Még nincs ajánlat. Az „Új ajánlat” a kalkulátort nyitja – mentéskor
           piszkozatként ide kerül, sorszámmal.
         </p>
       ) : (
@@ -247,7 +247,7 @@ export function DealQuotesPanel({
         }}
         title="Ajánlat elfogadva?"
         description="Az elfogadással a deal automatikusan megnyertre zárul, és lekerül a napi teendők közül."
-        confirmText="Elfogadva — deal megnyerve"
+        confirmText="Elfogadva – deal megnyerve"
         cancelText="Mégse"
         isLoading={busyId === acceptId}
       />
@@ -265,7 +265,7 @@ export function DealQuotesPanel({
           });
         }}
         title="Piszkozat törlése?"
-        description="Csak piszkozat törölhető — kiküldött ajánlatnak nyoma marad. Ez a művelet nem vonható vissza."
+        description="Csak piszkozat törölhető – kiküldött ajánlatnak nyoma marad. Ez a művelet nem vonható vissza."
         confirmText="Törlés"
         cancelText="Mégse"
         variant="danger"

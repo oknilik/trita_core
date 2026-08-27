@@ -162,7 +162,7 @@ test("üres és bankon kívüli válaszsor: nem értékelhető, nem gyanús", ()
   assert.equal(unknownOnly.suspect, false);
 });
 
-test("reverseGap null, ha nincs mindkét irányú item — inconsistent nem élhet", () => {
+test("reverseGap null, ha nincs mindkét irányú item – inconsistent nem élhet", () => {
   const forwardOnlyMeta = buildRaterQualityItemMeta(
     Array.from({ length: 12 }, (_, i) => ({ id: i + 1, dimension: "A" })),
   );

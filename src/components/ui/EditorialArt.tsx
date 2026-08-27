@@ -52,14 +52,14 @@ function Shape({ shape, p, strokeWidth }: { shape: PlacedShape; p: ArtPalette; s
 }
 
 export function EditorialArt({
-  /** Determinisztikus mag — ugyanaz a kulcs mindig ugyanazt a kompozíciót adja. */
+  /** Determinisztikus mag – ugyanaz a kulcs mindig ugyanazt a kompozíciót adja. */
   artKey,
   width = 400,
   height = 160,
   /** Mindkét színsémán sötét panelen (hero) más színkészlet kell. */
   onInverse = false,
   /**
-   * Ha szöveg ül a kompozíción, a bal alsó negyed szabadon marad —
+   * Ha szöveg ül a kompozíción, a bal alsó negyed szabadon marad –
    * enélkül a formák ráfutnak a feliratra.
    */
   textSafeCorner = false,
@@ -101,7 +101,7 @@ export function EditorialArt({
       className={className} role="img" aria-hidden
       style={{ display: "block", width: "100%", height: "100%" }}
     >
-      {/* Gerinc — a vékony ív fűzi kompozícióvá a különálló formákat. */}
+      {/* Gerinc – a vékony ív fűzi kompozícióvá a különálló formákat. */}
       <path
         d={c.spine} fill="none" stroke={p.line}
         strokeWidth={r2(strokeWidth * 0.6)} strokeLinecap="round" opacity={0.7}
@@ -123,7 +123,7 @@ export function EditorialArt({
 
 /**
  * Szekció-átkötő: a formanyelv hármasa két landing-szekció között.
- * `aria-hidden` — dekoráció, nem tartalom.
+ * `aria-hidden` – dekoráció, nem tartalom.
  *
  * 2026-08-09: két lépésben állt be. Először a szabad konstellációt (két
  * forma + gerinc) váltotta le a töltő-jel kísérete; aztán a végigfutó
@@ -133,13 +133,13 @@ export function EditorialArt({
  *    ezért a jel a sáv közepén elveszett a körülötte lévő szöveg mellett:
  *    a szem a vonalat követte, nem a hármast.
  *  – Ezért a sáv KOMPAKT, középre zárt jellé vált. Nem a szélességet tölti
- *    ki, hanem a saját méretével van jelen — így nagyobb lehet anélkül,
+ *    ki, hanem a saját méretével van jelen – így nagyobb lehet anélkül,
  *    hogy hangosabb lenne.
  *  – Egy nyelv: ugyanaz a csillag-nap-ellensúly hármas, ami a
  *    töltőképernyőn is fut, csak álló változatban.
  *
  * A szabad konstelláció (`EditorialArt`) megmarad a NAGY felületekre, ahol
- * egyetlen kép visz mindent — ott továbbra is az a helyes eszköz.
+ * egyetlen kép visz mindent – ott továbbra is az a helyes eszköz.
  */
 const TRANSITION_VIEWBOX = { width: 190, height: 76 } as const;
 
@@ -152,7 +152,7 @@ export function SectionTransition({ artKey, className }: { artKey: string; class
   const cy = height / 2;
   const starR = 23;
 
-  // A nap és az ellensúly ellentétes oldalra kerül, a kulcsból eldöntve —
+  // A nap és az ellensúly ellentétes oldalra kerül, a kulcsból eldöntve –
   // így a self és a team nézet tükörképet kap, nem ugyanazt a jelet. A
   // távolságok a csillag sugarához mérve élnek, hogy a hármas egyben
   // maradjon: külön-külön lebegő pöttyök szétesnének.

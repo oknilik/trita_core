@@ -396,7 +396,7 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
           </div>
 
           {dirty ? (
-            <p className="text-xs text-state-warning-fg">Nem mentett módosítás — az előnézet és a küldés le van tiltva.</p>
+            <p className="text-xs text-state-warning-fg">Nem mentett módosítás – az előnézet és a küldés le van tiltva.</p>
           ) : null}
 
           {previewData ? (

@@ -141,7 +141,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
           <h2 className="font-fraunces text-3xl text-ink md:text-4xl">
             {data.patternName}
             <span className="ml-3 text-lg font-normal text-muted">
-              — {data.diversitySuffix}
+              – {data.diversitySuffix}
             </span>
           </h2>
           {/* Confidence badge */}
@@ -211,7 +211,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
           </div>
         )}
 
-        {/* Next steps — 3 timed action cards */}
+        {/* Next steps – 3 timed action cards */}
         {content && content.leaderActions.length >= 3 && (
           <div className="mb-5">
             <SectionEyebrow className="mb-3 text-micro">

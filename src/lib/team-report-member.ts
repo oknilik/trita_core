@@ -34,28 +34,28 @@ export const MEMBER_DIM_LABELS: Record<string, { hu: string; en: string }> = {
 // Tag-szemszögű „hogyan kamatoztasd" tipp dimenziónként — pozitív keret.
 const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
   C: {
-    hu: "Építs a lelkiismeretességedre: sokat tehetsz azért, hogy a csapat ötleteiből határidőre kézzelfogható eredmény szülessen — vállald tudatosan ezt a szerepet.",
-    en: "Use your conscientiousness: you can turn the team's ideas into on-time, finished results — deliberately take on that role.",
+    hu: "Építs a lelkiismeretességedre: sokat tehetsz azért, hogy a csapat ötleteiből határidőre kézzelfogható eredmény szülessen – vállald tudatosan ezt a szerepet.",
+    en: "Use your conscientiousness: you can turn the team's ideas into on-time, finished results – deliberately take on that role.",
   },
   H: {
-    hu: "Az egyenes, kiszámítható működésed bizalmat épít — támaszkodj rá a nehéz beszélgetéseknél és a döntéseknél.",
-    en: "Your straightforward, dependable style builds trust — lean on it in tough conversations and decisions.",
+    hu: "Az egyenes, kiszámítható működésed bizalmat épít – támaszkodj rá a nehéz beszélgetéseknél és a döntéseknél.",
+    en: "Your straightforward, dependable style builds trust – lean on it in tough conversations and decisions.",
   },
   A: {
-    hu: "A rugalmasságod hidat épít az eltérő stílusok között — vállalj közvetítő szerepet, ahol feszül a helyzet.",
-    en: "Your agreeableness bridges different styles — take a connecting role where things get tense.",
+    hu: "A rugalmasságod hidat épít az eltérő stílusok között – vállalj közvetítő szerepet, ahol feszül a helyzet.",
+    en: "Your agreeableness bridges different styles – take a connecting role where things get tense.",
   },
   E: {
-    hu: "Érzékenyen reagálsz a feszültebb helyzetekre — korán észlelheted, ha valaki elakad; ilyenkor érdemes megszólalnod.",
-    en: "You sense how others are doing — you often notice first when someone is stuck; speak up then.",
+    hu: "Érzékenyen reagálsz a feszültebb helyzetekre – korán észlelheted, ha valaki elakad; ilyenkor érdemes megszólalnod.",
+    en: "You sense how others are doing – you often notice first when someone is stuck; speak up then.",
   },
   X: {
-    hu: "A lendületed viszi a csapatot — te tudod beindítani a közös munkát és tartani a tempót.",
-    en: "Your energy drives the team — you can kick off shared work and keep up the pace.",
+    hu: "A lendületed viszi a csapatot – te tudod beindítani a közös munkát és tartani a tempót.",
+    en: "Your energy drives the team – you can kick off shared work and keep up the pace.",
   },
   O: {
-    hu: "Az új iránti nyitottságod új lendületet adhat a csapat működésének — hozz be tudatosan külső nézőpontokat és új ötleteket.",
-    en: "Your openness to new things refreshes the team — deliberately bring in outside perspectives and ideas.",
+    hu: "Az új iránti nyitottságod új lendületet adhat a csapat működésének – hozz be tudatosan külső nézőpontokat és új ötleteket.",
+    en: "Your openness to new things refreshes the team – deliberately bring in outside perspectives and ideas.",
   },
 };
 
@@ -176,14 +176,14 @@ export function buildMemberReportViewModel(
   if (primaryRole && roleFit === "rare") {
     tips.push(
       loc === "hu"
-        ? `A csapatban ${withHuArticle(primaryRole.label)} szerep ritka — rád ebben különösen számítanak, vállald fel tudatosan.`
-        : `The ${primaryRole.label} role is rare in this team — they especially rely on you here; own it deliberately.`,
+        ? `A csapatban ${withHuArticle(primaryRole.label)} szerep ritka – rád ebben különösen számítanak, vállald fel tudatosan.`
+        : `The ${primaryRole.label} role is rare in this team – they especially rely on you here; own it deliberately.`,
     );
   } else if (primaryRole && roleFit === "shared") {
     tips.push(
       loc === "hu"
-        ? `${withHuArticle(primaryRole.label, { capitalize: true })} szerepet többen is viszitek — osszátok meg a tudást és a terhet, támogassátok egymást.`
-        : `Several of you carry the ${primaryRole.label} role — share the knowledge and the load, support each other.`,
+        ? `${withHuArticle(primaryRole.label, { capitalize: true })} szerepet többen is viszitek – osszátok meg a tudást és a terhet, támogassátok egymást.`
+        : `Several of you carry the ${primaryRole.label} role – share the knowledge and the load, support each other.`,
     );
   }
   tips.push(

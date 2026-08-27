@@ -87,7 +87,7 @@ function alertEmailFailure(template: string, code: string, message: string): voi
  * A `family` kötelező, mert a levél-eszközök (szójel, formanyelvi jel) `cid:`
  * INLINE csatolmányként utaznak, és a család dönti el, melyik kell. Ez a kapu
  * teszi szerkezetileg lehetetlenné, hogy egy sablon csatolmány nélkül menjen
- * ki — abból ugyanis törött kép lesz minden fogadónál, némán.
+ * ki – abból ugyanis törött kép lesz minden fogadónál, némán.
  *
  * (Az első kör hosztolt URL-eket használt; élesben nem töltődtek be. Ld.
  * `email-layout.ts` → `emailArtAttachments`.)
@@ -205,8 +205,8 @@ async function sendEmailOrThrow(params: EmailSendParams): Promise<EmailSendResul
 /**
  * Kanonikus aláírás (2026-08-19).
  *
- * Négy variáns élt párhuzamosan — „a trita csapata" · „a trita csapat" ·
- * „a trita csapata" · „a trita rendszer" —, ami sablononként más hangot adott
+ * Négy variáns élt párhuzamosan – „a trita csapata" · „a trita csapat" ·
+ * „a trita csapata" · „a trita rendszer" –, ami sablononként más hangot adott
  * ugyanannak a feladónak. A szójel kisbetűs, az aláírás ezt követi.
  *
  * Egyetlen dokumentált kivétel a `Leinad · trita` a pilot- és advisory-
@@ -220,14 +220,14 @@ const SIGN_OFF: Record<Locale, { thanks: string; team: string }> = {
 
 /**
  * A dokumentált kivétel: SZEMÉLYES követő levél aláírása. Ld. a `SIGN_OFF`
- * megjegyzését — a pilot- és advisory-visszaigazolás nem rendszerüzenet.
+ * megjegyzését – a pilot- és advisory-visszaigazolás nem rendszerüzenet.
  */
 const PERSONAL_SIGN_OFF: Record<Locale, { thanks: string; team: string }> = {
   hu: { thanks: "Üdvözlettel,", team: "Leinad · trita" },
   en: { thanks: "Best regards,", team: "Leinad · trita" },
 };
 
-/** Életciklus-levelek leiratkozó-linkje — a láblécbe kerül, nem a törzsbe. */
+/** Életciklus-levelek leiratkozó-linkje – a láblécbe kerül, nem a törzsbe. */
 const OPT_OUT: Record<Locale, { href: string; label: string }> = {
   hu: { href: `${APP_URL}/email-preferences`, label: "Levélbeállítások" },
   en: { href: `${APP_URL}/email-preferences`, label: "Email preferences" },
@@ -350,28 +350,28 @@ const translations = {
   },
   reflectionPrompt: {
     hu: {
-      subject: "Egy hét telt el — mit láttál magadból?",
+      subject: "Egy hét telt el – mit láttál magadból?",
       kind: "Emlékeztető",
       eyebrow: "Egy hét telt el",
       heading: "Mit láttál magadból ezen a héten?",
       preheader: "Figyeld meg a legerősebb dimenziódat egy konkrét helyzetben.",
       greeting: "Szia,",
       body: (dimLabel: string) =>
-        `Egy hete készült el a személyiségprofilod. A legerősebb dimenziód ${withHuArticle(dimLabel)} volt — figyeld meg tudatosan egy konkrét helyzetben ezen a héten: mikor segített, és mikor pörgött túl?`,
+        `Egy hete készült el a személyiségprofilod. A legerősebb dimenziód ${withHuArticle(dimLabel)} volt – figyeld meg tudatosan egy konkrét helyzetben ezen a héten: mikor segített, és mikor pörgött túl?`,
       body2:
         "Ha kíváncsi vagy, hogyan működnétek együtt valakivel, a páros összehasonlítással meg is nézhetitek.",
       cta: "Páros összehasonlítás megnyitása",
       optOut: "Nem kérsz több ilyen emailt? Leiratkozás itt:",
     },
     en: {
-      subject: "A week has passed — what did you notice?",
+      subject: "A week has passed – what did you notice?",
       kind: "Reminder",
       eyebrow: "One week on",
       heading: "What did you notice about yourself?",
       preheader: "Watch your strongest dimension in one concrete situation.",
       greeting: "Hi,",
       body: (dimLabel: string) =>
-        `Your personality profile was completed a week ago. Your strongest dimension was ${dimLabel} — observe it deliberately in one concrete situation this week: when did it help, and when did it over-rev?`,
+        `Your personality profile was completed a week ago. Your strongest dimension was ${dimLabel} – observe it deliberately in one concrete situation this week: when did it help, and when did it over-rev?`,
       body2:
         "If you're curious how you'd work with someone, the pair comparison will show you.",
       cta: "Open the pair comparison",
@@ -503,7 +503,7 @@ const translations = {
       preheader: "A few more questions and your detailed results are ready.",
       greeting: (name: string) => `Hi ${name}!`,
       body: (testName: string, answeredCount: number, totalCount: number) =>
-        `We noticed you started the ${testName} personality assessment but haven't finished yet. You're already ${answeredCount} questions in out of ${totalCount} — you're almost there!\n\nYour results will show how you see yourself across the ${testName} dimensions, and you'll also get the chance to invite observers to compare their view with yours. Click below to pick up where you left off.`,
+        `We noticed you started the ${testName} personality assessment but haven't finished yet. You're already ${answeredCount} questions in out of ${totalCount} – you're almost there!\n\nYour results will show how you see yourself across the ${testName} dimensions, and you'll also get the chance to invite observers to compare their view with yours. Click below to pick up where you left off.`,
       cta: "Continue my assessment",
       footer: "If you've already completed the test, feel free to ignore this email.",
     },
@@ -640,12 +640,12 @@ export async function sendCandidateCompletedEmail(params: {
   });
 }
 
-/** A megosztott profil publikus URL-je — a levél CTA-ja és a QR ugyanezt kódolja. */
+/** A megosztott profil publikus URL-je – a levél CTA-ja és a QR ugyanezt kódolja. */
 export function profileShareUrl(token: string): string {
   return `${APP_URL}/share/${token}`;
 }
 
-/** A csatolt QR inline content-id-je — a HTML `cid:` hivatkozása erre mutat. */
+/** A csatolt QR inline content-id-je – a HTML `cid:` hivatkozása erre mutat. */
 const PROFILE_SHARE_QR_CID = "share-qr";
 
 /**
@@ -656,7 +656,7 @@ export function buildProfileShareHtml(params: {
   locale: Locale;
   senderName: string;
   token: string;
-  /** Inline QR content-id — csak akkor kerül QR-blokk a levélbe, ha van. */
+  /** Inline QR content-id – csak akkor kerül QR-blokk a levélbe, ha van. */
   qrCid?: string;
 }): string {
   const t = translations.profileShare[params.locale];
@@ -667,7 +667,7 @@ export function buildProfileShareHtml(params: {
 
   // QR-blokk a CTA alatt: FEHÉR dobozban, hogy sötét módú kliensben is
   // biztosan beolvasható maradjon (a kód kontrasztja a beolvashatóság
-  // feltétele — itt a krém felület sem elég). A fehér a `card` tokenből jön,
+  // feltétele – itt a krém felület sem elég). A fehér a `card` tokenből jön,
   // nem beégetett hexből.
   const qrBlock = params.qrCid
     ? `
@@ -707,7 +707,7 @@ export async function sendProfileShareEmail(params: {
   senderName: string;
   token: string;
   locale?: Locale;
-  /** Szerver-oldalon generált QR PNG (best-effort) — null/undefined: QR nélkül. */
+  /** Szerver-oldalon generált QR PNG (best-effort) – null/undefined: QR nélkül. */
   qrPng?: Buffer | null;
 }): Promise<void> {
   const locale = normalizeLocale(params.locale);
@@ -740,7 +740,7 @@ export async function sendProfileShareEmail(params: {
       qrCid: params.qrPng ? PROFILE_SHARE_QR_CID : undefined,
     }),
     text,
-    // Resend 6.x: content base64 stringként, contentId-vel inline (cid:) kép —
+    // Resend 6.x: content base64 stringként, contentId-vel inline (cid:) kép –
     // a kliens csatolmányként is eléri (qrFilename), ha a cid-et nem rendereli.
     ...(params.qrPng
       ? {
@@ -791,7 +791,7 @@ function buildCompareInviteHtml(params: {
   });
 }
 
-// Reflexiós utókövetés (D1 follow-up) — ÉLETCIKLUS-email: kizárólag
+// Reflexiós utókövetés (D1 follow-up) – ÉLETCIKLUS-email: kizárólag
 // lifecycleEmailsOptOut=false mellett küldhető, leiratkozó-linkkel.
 export async function sendReflectionPromptEmail(params: {
   to: string;
@@ -844,7 +844,7 @@ export async function sendReflectionPromptEmail(params: {
   if (!ok) throw new Error("EMAIL_SEND_FAILED");
 }
 
-// Páros összehasonlítás meghívó (B1 follow-up) — a profil-megosztó email
+// Páros összehasonlítás meghívó (B1 follow-up) – a profil-megosztó email
 // mintájára; a link a consent-oldalra visz.
 export async function sendCompareInviteEmail(params: {
   to: string;
@@ -1345,7 +1345,7 @@ export async function sendOrgInviteEmail(params: {
 // ─── Consultant invite email ─────────────────────────────────────────────────
 // Az admin tanácsadó-meghívójához (ConsultantInvite). Két eset: a profil már
 // létezik (a hozzáférés azonnal aktív) vs. még nincs fiók (regisztrációra
-// hívunk — a meghívó email-egyezéssel aktiválódik). Korábban SEMMILYEN email
+// hívunk – a meghívó email-egyezéssel aktiválódik). Korábban SEMMILYEN email
 // nem ment ki: az admin csak remélhette, hogy a meghívott magától regisztrál.
 
 const consultantInviteTranslations = {
@@ -1430,11 +1430,11 @@ const measurementStepTranslations = {
     reminderEyebrow: "Emlékeztető",
     openedHeading: "Kinyílt a következő lépésed",
     openedBody: (campaignName: string) =>
-      `A(z) „${campaignName}" mérésben kinyílt a következő lépésed. Néhány perc az egész — a többiek eredménye is akkor áll össze, ha mindenki kitölt.`,
+      `A(z) „${campaignName}" mérésben kinyílt a következő lépésed. Néhány perc az egész – a többiek eredménye is akkor áll össze, ha mindenki kitölt.`,
     reminderSubject: (campaignName: string) => `Emlékeztető: kitöltés vár rád – ${campaignName}`,
     reminderHeading: "Egy kitöltés még vár rád",
     reminderBody: (campaignName: string) =>
-      `A(z) „${campaignName}" mérésben még nyitott lépésed van. Néhány perc az egész — a csapat eredménye csak akkor áll össze, ha mindenki kitölt.`,
+      `A(z) „${campaignName}" mérésben még nyitott lépésed van. Néhány perc az egész – a csapat eredménye csak akkor áll össze, ha mindenki kitölt.`,
     cta: "Kitöltés megnyitása",
     footer:
       "Ezt az emailt azért kaptad, mert a szervezeted mérési körének résztvevője vagy.",
@@ -1446,11 +1446,11 @@ const measurementStepTranslations = {
     reminderEyebrow: "Reminder",
     openedHeading: "Your next step is open",
     openedBody: (campaignName: string) =>
-      `Your next step in the "${campaignName}" measurement is now open. It only takes a few minutes — the team's results come together once everyone completes it.`,
+      `Your next step in the "${campaignName}" measurement is now open. It only takes a few minutes – the team's results come together once everyone completes it.`,
     reminderSubject: (campaignName: string) => `Reminder: a step is waiting for you – ${campaignName}`,
     reminderHeading: "One step is still waiting for you",
     reminderBody: (campaignName: string) =>
-      `You still have an open step in the "${campaignName}" measurement. It only takes a few minutes — the team's results come together once everyone completes it.`,
+      `You still have an open step in the "${campaignName}" measurement. It only takes a few minutes – the team's results come together once everyone completes it.`,
     cta: "Open the step",
     footer:
       "You received this email because you are a participant in your organization's measurement round.",
@@ -1516,10 +1516,10 @@ const welcomeTranslations = {
     subject: "Üdvözlünk a tritán!",
     kind: "Üdvözlet",
     eyebrow: "Első lépés",
-    preheader: "Az első lépés egy ~9 perces kitöltés — utána azonnal látod az eredményed.",
+    preheader: "Az első lépés egy ~9 perces kitöltés – utána azonnal látod az eredményed.",
     heading: "Üdvözlünk a tritán!",
     body1:
-      "Örülünk, hogy itt vagy. A trita hat személyiségdimenzió mentén mutatja meg, hogyan működsz — és ha csapatban dolgozol, azt is, hogyan működtök együtt.",
+      "Örülünk, hogy itt vagy. A trita hat személyiségdimenzió mentén mutatja meg, hogyan működsz – és ha csapatban dolgozol, azt is, hogyan működtök együtt.",
     body2:
       "Az első lépés egy rövid, ~9 perces kitöltés. A válaszaid alapján azonnal megkapod a részletes eredményedet.",
     cta: "Kezdés",
@@ -1529,10 +1529,10 @@ const welcomeTranslations = {
     subject: "Welcome to trita!",
     kind: "Welcome",
     eyebrow: "First step",
-    preheader: "The first step is a ~9-minute assessment — you'll see your results right away.",
+    preheader: "The first step is a ~9-minute assessment – you'll see your results right away.",
     heading: "Welcome to trita!",
     body1:
-      "We're glad you're here. trita shows how you work along six personality dimensions — and if you work in a team, how you work together.",
+      "We're glad you're here. trita shows how you work along six personality dimensions – and if you work in a team, how you work together.",
     body2:
       "The first step is a short, ~9-minute assessment. You'll get your detailed results immediately based on your answers.",
     cta: "Get started",
@@ -1575,7 +1575,7 @@ export async function sendWelcomeEmail(params: {
 
 // ─── Team report published email ─────────────────────────────────────────────
 // A tanácsadó által validált csapatriport publikálásakor megy a riport
-// címzettjeinek (csapattagok + org vezetők) — a TEAM_REPORT_PUBLISHED in-app
+// címzettjeinek (csapattagok + org vezetők) – a TEAM_REPORT_PUBLISHED in-app
 // értesítés email-párja. MŰKÖDÉSI email (eredmény-értesítő): az
 // email-preferences ígérete szerint a lifecycle-kapcsoló nem érinti.
 
@@ -1700,7 +1700,7 @@ export async function sendPilotApplyConfirmationEmail(params: {
 
 const advisoryConfirmationTranslations = {
   hu: {
-    subject: "Megkaptuk a konzultáció-igényed — trita Advisory",
+    subject: "Megkaptuk a konzultáció-igényed – trita Advisory",
     kind: "Visszaigazolás",
     eyebrow: "trita Advisory",
     heading: "Megkaptuk a konzultáció-igényed",
@@ -1709,10 +1709,10 @@ const advisoryConfirmationTranslations = {
     body1:
       "Megkaptuk a jelentkezésedet a tanácsadói konzultációra! 24 órán belül személyesen kereslek az időpont-egyeztetéssel.",
     body2:
-      "A konzultáción a csapataid aktuális mintázataiból indulunk ki — nem kell semmit előkészítened.",
+      "A konzultáción a csapataid aktuális mintázataiból indulunk ki – nem kell semmit előkészítened.",
   },
   en: {
-    subject: "We received your consultation request — trita Advisory",
+    subject: "We received your consultation request – trita Advisory",
     kind: "Confirmation",
     eyebrow: "trita Advisory",
     heading: "We received your consultation request",
@@ -1721,7 +1721,7 @@ const advisoryConfirmationTranslations = {
     body1:
       "We received your request for an advisory consultation! I will personally reach out within 24 hours to schedule a time.",
     body2:
-      "The consultation starts from your teams' current patterns — no preparation needed on your side.",
+      "The consultation starts from your teams' current patterns – no preparation needed on your side.",
   },
 };
 
@@ -1758,7 +1758,7 @@ export async function sendAdvisoryConfirmationEmail(params: {
 }
 
 // ─── Jelölt-kredit igénylés (org adminnak) ───────────────────────────────────
-// Korábban a `/api/hiring/request-credits` route-ban komponálódott inline — ez
+// Korábban a `/api/hiring/request-credits` route-ban komponálódott inline – ez
 // volt az EGYETLEN sablon az email-modulon kívül, saját (rossz domainre mutató)
 // APP_URL-fallbackkel. RENDSZER-levél: admin-értesítő, textúra-jel nélkül.
 
@@ -1805,7 +1805,7 @@ export async function sendHiringCreditsRequestEmail(params: {
 //
 // KÉT SABLON, KÉT SZEREP:
 //   · a MEGERŐSÍTŐ levél tranzakcionális (a látogató kérte, egy gombja van),
-//   · az ÚJ CIKK és a SZERKESZTETT SZÁM tömeges — ez a levélcsalád
+//   · az ÚJ CIKK és a SZERKESZTETT SZÁM tömeges – ez a levélcsalád
 //     `List-Unsubscribe` fejlécet visz és leiratkozó linket tesz a láblécbe.
 //
 // A leiratkozó link SOSEM a `/email-preferences`-re megy (az belépést kér, a
@@ -1816,7 +1816,7 @@ export async function sendHiringCreditsRequestEmail(params: {
  * Egykattintásos leiratkozás fejlécei (RFC 8058).
  *
  * A `List-Unsubscribe-Post` jelenti be, hogy a levelező ELŐZETES megerősítés
- * nélkül POST-olhat a linkre — ezért kell a POST-végpontnak idempotensnek
+ * nélkül POST-olhat a linkre – ezért kell a POST-végpontnak idempotensnek
  * lennie. A GET szándékosan csak emberi megerősítő oldalt nyit.
  */
 function newsletterUnsubHeaders(unsubPostUrl: string): Record<string, string> {
@@ -1834,10 +1834,10 @@ const newsletterConfirmTranslations = {
     heading: "Erősítsd meg a kérésed",
     preheader: "Nyisd meg a megerősítő oldalt, és hagyd jóvá a feliratkozást.",
     greeting: "Szia,",
-    body: "Valaki (feltehetően te) feliratkozott a trita értesítőjére ezzel az email címmel. Az alábbi gomb megnyitja a megerősítő oldalt, ahol jóváhagyhatod a kérést — enélkül nem küldünk semmit.",
+    body: "Valaki (feltehetően te) feliratkozott a trita értesítőjére ezzel az email címmel. Az alábbi gomb megnyitja a megerősítő oldalt, ahol jóváhagyhatod a kérést – enélkül nem küldünk semmit.",
     what: "Ezután új blogbejegyzésnél és időnként egy-egy gyakorlati összefoglalónál keresünk meg. Nem gyakran, és bármikor leiratkozhatsz.",
     cta: "Megerősítő oldal megnyitása",
-    quiet: "Ha nem te kérted, nincs teendőd — a link 7 nap múlva magától lejár, és addig sem küldünk semmit.",
+    quiet: "Ha nem te kérted, nincs teendőd – a link 7 nap múlva magától lejár, és addig sem küldünk semmit.",
   },
   en: {
     subject: "Confirm your subscription – trita",
@@ -1846,10 +1846,10 @@ const newsletterConfirmTranslations = {
     heading: "Confirm your request",
     preheader: "Open the confirmation page and approve your subscription.",
     greeting: "Hi,",
-    body: "Someone (probably you) subscribed to trita updates with this email address. The button below opens a confirmation page where you can approve the request — without it we won't send anything.",
+    body: "Someone (probably you) subscribed to trita updates with this email address. The button below opens a confirmation page where you can approve the request – without it we won't send anything.",
     what: "After that we'll write when a new article goes live, plus the occasional practical summary. Not often, and you can unsubscribe any time.",
     cta: "Open confirmation page",
-    quiet: "If this wasn't you, there's nothing to do — the link expires on its own in 7 days, and we won't send anything in the meantime.",
+    quiet: "If this wasn't you, there's nothing to do – the link expires on its own in 7 days, and we won't send anything in the meantime.",
   },
 };
 
@@ -1857,7 +1857,7 @@ const newsletterConfirmTranslations = {
  * Double opt-in megerősítő levél.
  *
  * Nincs benne leiratkozó link és `List-Unsubscribe` fejléc: még nincs mihez
- * képest leiratkozni — a nem-megerősített feliratkozás magától elévül.
+ * képest leiratkozni – a nem-megerősített feliratkozás magától elévül.
  */
 export async function sendNewsletterConfirmEmail(params: {
   to: string;
@@ -1919,7 +1919,7 @@ const newBlogPostTranslations = {
 };
 
 /**
- * Új blogbejegyzés értesítő — az EGYETLEN tömeges levelünk.
+ * Új blogbejegyzés értesítő – az EGYETLEN tömeges levelünk.
  *
  * Amit a tranzakcionális sablonoktól eltérően kötelezően visz:
  *   · `List-Unsubscribe` + `List-Unsubscribe-Post` fejléc,
@@ -2015,7 +2015,7 @@ export interface NewsletterIssueItem {
 
 export interface NewsletterIssueRenderParams {
   subject: string;
-  /** A szerkesztő nyitó szövege — SIMA szöveg, üres sorral tagolt bekezdések. */
+  /** A szerkesztő nyitó szövege – SIMA szöveg, üres sorral tagolt bekezdések. */
   intro: string;
   items: NewsletterIssueItem[];
   unsubUrl: string;

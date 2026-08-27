@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     "",
     teamsSummary.length > 0
       ? `Csapatok:\n${teamsSummary.map((t) => `- ${t.name}: ${t.pattern}`).join("\n")}`
-      : "Csapatok: —",
+      : "Csapatok: –",
   ].join("\n");
 
   try {

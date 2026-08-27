@@ -62,7 +62,7 @@ test("az „igen” ág katalógusa tartalmazza az átugrást", () => {
 });
 
 test("a „nem” ág elkülöníti az ár- és a bizonyíték-problémát", () => {
-  // A kettő teljesen más fejlesztést indokol — ha egy kalap alá kerülnének,
+  // A kettő teljesen más fejlesztést indokol – ha egy kalap alá kerülnének,
   // a válasz nem mondana semmit arról, mit kell csinálni.
   assert.ok(CAREER_NO_REASONS.includes("price"));
   assert.ok(CAREER_NO_REASONS.includes("accuracy"));

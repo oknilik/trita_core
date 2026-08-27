@@ -139,7 +139,7 @@ export function computeBankHash(
 export const SCORING_BANK_HASH = computeBankHash(
   getTestConfig("TRITAN" as TestType).questions.filter(isLikertQuestion),
 );
-// Ennyi beadott item fölött a kitöltés a teljes bank ("full") — a pecsét
+// Ennyi beadott item fölött a kitöltés a teljes bank ("full") – a pecsét
 // és az örökség-sorok questionCount-heurisztikája ugyanehhez köt.
 export const SCORING_FULL_FORM_MIN_ITEMS = 100;
 
@@ -147,12 +147,12 @@ export type ScoreResult = {
   type: "likert";
   dimensions: Record<string, number>;
   facets?: Record<string, Record<string, number>>;
-  /** Örökség: a korábbi motor üres aspects-et tárolt — olvasáskor tolerált. */
+  /** Örökség: a korábbi motor üres aspects-et tárolt – olvasáskor tolerált. */
   aspects?: Record<string, Record<string, number>>;
-  // Provenance-mezők — a pecsét bevezetése előtt tárolt sorokban hiányoznak.
+  // Provenance-mezők – a pecsét bevezetése előtt tárolt sorokban hiányoznak.
   form?: AssessmentForm;
   bankVersion?: string;
-  /** A bank item-kulcsolásának ujjlenyomata (computeBankHash) — a kézi
+  /** A bank item-kulcsolásának ujjlenyomata (computeBankHash) – a kézi
    *  bankVersion mellett a szerkesztés-driftet is detektálja. */
   bankHash?: string;
   engineVersion?: number;
@@ -181,7 +181,7 @@ export function calculateScores(
  * - lapos örökség-formátumot: `{ X: 62, E: 45, … }`
  *
  * ÖRÖKSÉG-KULCSOK (2026-08-11): a belső dimenziókódok kivezetése előtt mentett
- * sorok az INTE/RESO/TEMP/ADAP/THOR/OPEN kulcsokat használják — ezeket a
+ * sorok az INTE/RESO/TEMP/ADAP/THOR/OPEN kulcsokat használják – ezeket a
  * `normalizeDimensionKeys` fordítja HEXACO-betűre, hogy a régi eredmények
  * változatlanul olvashatók maradjanak (migráció nélkül). Minden dimenzió-
  * olvasásnak ezen a függvényen kell átmennie; nyers `scores.dimensions`
@@ -197,14 +197,14 @@ export function extractDimensionScores(
     return Object.keys(normalized).length > 0 ? normalized : null;
   }
   // Lapos örökség-formátum: csak az ismert dim-kódok (kanonikus VAGY örökség)
-  // kerülnek vissza — a tárolt JSON kísérő kulcsai (answers, questionCount, …)
+  // kerülnek vissza – a tárolt JSON kísérő kulcsai (answers, questionCount, …)
   // nem szivárognak.
   const flat = normalizeDimensionKeys(obj);
   return Object.keys(flat).length > 0 ? flat : null;
 }
 
 /**
- * A tárolt score-JSON facet-bontásának kanonikus olvasója — ugyanaz az
+ * A tárolt score-JSON facet-bontásának kanonikus olvasója – ugyanaz az
  * örökség-kulcs normalizálás, mint a dimenzió-oldalon (a KÜLSŐ kulcs fordul,
  * a facet-kódok változatlanok). Nincs facet-bontás → null.
  */

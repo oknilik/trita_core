@@ -149,7 +149,7 @@ export async function POST(req: Request) {
           handlePeerKudosReceived({
             itemId: k.itemId,
             toUserId: k.toUserId,
-            fromName: profile.username ?? profile.email ?? "—",
+            fromName: profile.username ?? profile.email ?? "–",
             teamId,
             teamName: team?.name ?? "",
           }),

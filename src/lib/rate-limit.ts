@@ -66,7 +66,7 @@ function getLimiter(tier: RateLimitTier): Ratelimit | null {
     // semleges hangú.
     newsletter: { requests: 3, window: "60 s", prefix: "rl:newsletter" },
     // Diagnosztika (CSP-sértés, kliens-oldali hibajelentés): egy hibás oldal
-    // sok jelentést szül, ezért bőkezű keret — de a végpont akkor sem válhat
+    // sok jelentést szül, ezért bőkezű keret – de a végpont akkor sem válhat
     // erősítővé. A tier SZÁNDÉKOSAN fail-open: pont akkor kell működnie,
     // amikor a rendszerben baj van, és a hasznos terhe egy 204-es no-op.
     diagnostics: { requests: 60, window: "60 s", prefix: "rl:diag" },
@@ -97,21 +97,21 @@ export type RateLimitTier =
  *
  * Ezért a besorolás a valós kockázat mentén megy:
  *
- * · `true` (fail-closed) — BELÉPÉS NÉLKÜL hívható vagy ERŐSÍTŐ végpontok:
+ * · `true` (fail-closed) – BELÉPÉS NÉLKÜL hívható vagy ERŐSÍTŐ végpontok:
  *   idegen postafiókba levelet küldenek, vagy korlátlan írást engednének.
- *   Itt a néma lyuk rosszabb, mint a hangos 503 — és a 503 pont azt a
+ *   Itt a néma lyuk rosszabb, mint a hangos 503 – és a 503 pont azt a
  *   konfigurációs hiányt teszi észrevehetővé, ami eddig rejtve maradt.
  *
- * · `false` (fail-open) — belépéshez kötött, „normál" mutációk. Ezeknél a
+ * · `false` (fail-open) – belépéshez kötött, „normál" mutációk. Ezeknél a
  *   visszaélés felülete eleve korlátos (kell hozzá fiók), a leállás viszont
  *   az egész appot használhatatlanná tenné.
  *
  * Ops-következmény: az `UPSTASH_REDIS_REST_URL`/`_TOKEN` NEM csak a
- * hírlevélhez kell — a teljes publikus felület előfeltétele.
+ * hírlevélhez kell – a teljes publikus felület előfeltétele.
  * Ld. `docs/development/launch-checklist.md`.
  */
 export const FAIL_CLOSED_IN_PRODUCTION: Record<RateLimitTier, boolean> = {
-  // Belépett felhasználó általános mutációi — a leállás aránytalan volna.
+  // Belépett felhasználó általános mutációi – a leállás aránytalan volna.
   api: false,
   // Parkolt billing-réteg; nincs élő hívója.
   billing: false,
@@ -119,17 +119,17 @@ export const FAIL_CLOSED_IN_PRODUCTION: Record<RateLimitTier, boolean> = {
   auth: true,
   // Auth nélküli token-végpontok közös IP-védelme.
   public: true,
-  // Levelet küld (admin-értesítő, megosztás) — erősítő.
+  // Levelet küld (admin-értesítő, megosztás) – erősítő.
   contact: true,
   // Belépett, jogosult admin/tanácsadó küldi, de kérésenként 25 levél lehet.
   invite: true,
   // Auth nélküli írás az AnalyticsEvent táblába. Egy elveszett esemény
   // olcsóbb, mint egy korlátlan író-csatorna.
   analytics: true,
-  // Idegen címre küld megerősítő levelet — a legrégebb óta fail-closed.
+  // Idegen címre küld megerősítő levelet – a legrégebb óta fail-closed.
   newsletter: true,
   // Hibajelentés és CSP-sértés. Fail-OPEN: a rendszer akkor jelent, amikor
-  // baj van — ha a Redis is elesett, pont a látásunkat veszítenénk el.
+  // baj van – ha a Redis is elesett, pont a látásunkat veszítenénk el.
   // A kockázat kicsi: mindkét végpont 204-et ad, korlátozott törzsmérettel,
   // és felhasználói tartalmat nem tárol.
   diagnostics: false,
@@ -137,7 +137,7 @@ export const FAIL_CLOSED_IN_PRODUCTION: Record<RateLimitTier, boolean> = {
 
 /**
  * Tierenként EGYSZER naplózunk hiányzó konfigurációt. Enélkül egy
- * analitika-beacon minden kérése egy-egy sort írna — a valódi jelzést pont
+ * analitika-beacon minden kérése egy-egy sort írna – a valódi jelzést pont
  * az fojtaná el, amiért naplózunk.
  */
 const missingConfigLogged = new Set<RateLimitTier>();
@@ -162,13 +162,13 @@ function logMissingConfigOnce(tier: RateLimitTier, failClosed: boolean): void {
   if (failClosed) {
     log.error(
       { event: "rate_limit.required_but_missing", tier },
-      "Rate limit is not configured (UPSTASH_REDIS_REST_URL) — requests on this tier are rejected",
+      "Rate limit is not configured (UPSTASH_REDIS_REST_URL) – requests on this tier are rejected",
     );
     return;
   }
   log.warn(
     { event: "rate_limit.not_configured", tier },
-    "UPSTASH_REDIS_REST_URL not configured — check skipped",
+    "UPSTASH_REDIS_REST_URL not configured – check skipped",
   );
 }
 
@@ -254,9 +254,9 @@ function handleRuntimeFailure(
     runtimeFailureLogged.add(tier);
     const context = { event: "rate_limit.runtime_failure", tier, reason, err };
     if (failClosed) {
-      log.error(context, "Rate limit backend unavailable — request rejected");
+      log.error(context, "Rate limit backend unavailable – request rejected");
     } else {
-      log.warn(context, "Rate limit backend unavailable — check skipped");
+      log.warn(context, "Rate limit backend unavailable – check skipped");
     }
   }
 

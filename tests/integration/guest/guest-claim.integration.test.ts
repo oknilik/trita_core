@@ -24,7 +24,7 @@ function makeId(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 10)}`;
 }
 
-// A vendég-flow a TSFI-S (rövid) formát tölti ki — a claimnek ez a
+// A vendég-flow a TSFI-S (rövid) formát tölti ki – a claimnek ez a
 // hiánytalan készlet érvényes (a teljes forma szintén az lenne).
 const SHORT_FORM_QUESTIONS = getTestConfig("TRITAN", "hu", "short").questions;
 
@@ -138,7 +138,7 @@ test("A1 Guest claim (vendég-eredmény fiókhoz kapcsolása)", async (t) => {
 
   await t.test("duplikált claim (ugyanaz a válaszkészlet) → nem duplikálódik", async () => {
     const clerkId = makeId("clerk_dupe");
-    // Vegyes értékek — a kanonikalizálás (sorrendfüggetlenség) is tesztelt.
+    // Vegyes értékek – a kanonikalizálás (sorrendfüggetlenség) is tesztelt.
     const answers = buildShortAnswers((_, index) => (index % 5) + 1);
 
     const first = await callClaim(clerkId, { answers });
@@ -212,7 +212,7 @@ test("A1 Guest claim (vendég-eredmény fiókhoz kapcsolása)", async (t) => {
     const clerkId = makeId("clerk_stale");
     const answers = [
       ...buildShortAnswers(3),
-      // Régi kérdésbank-verzióból ottmaradt (nem TSFI) item — a szerver dobja.
+      // Régi kérdésbank-verzióból ottmaradt (nem TSFI) item – a szerver dobja.
       { questionId: 99999, value: 4 },
     ];
 

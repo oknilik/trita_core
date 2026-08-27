@@ -10,10 +10,10 @@ import { AboutContent } from "./AboutContent";
 //
 export const metadata: Metadata = buildPageMetadata({
   path: "/about",
-  title: "Rólunk — a trita mögött álló műhely | trita",
+  title: "Rólunk – a trita mögött álló műhely | trita",
   description:
     "A trita tanácsadói műhely és csapatdiagnosztikai platform. Megmutatjuk, miért építjük, milyen szakmai keretek között dolgozunk, és hogyan lesz a mérésből közös változás.",
-  ogTitle: "Rólunk — a trita mögött álló műhely",
+  ogTitle: "Rólunk – a trita mögött álló műhely",
   ogDescription:
     "Tanácsadó vezette csapatdiagnosztika: mérés, közös értelmezés és visszamérés egy folyamatban.",
 });
@@ -24,7 +24,7 @@ export default function AboutPage() {
       <JsonLd
         data={buildWebPageJsonLd({
           path: "/about",
-          title: "Rólunk — a trita mögött álló műhely",
+          title: "Rólunk – a trita mögött álló műhely",
           description:
             "A trita tanácsadó vezette csapatdiagnosztikai folyamatban kapcsolja össze a mérést, az emberi értelmezést és a változás követését.",
           about: ["Csapatdiagnosztika", "Személyiségfelmérés", "Csapatintelligencia"],

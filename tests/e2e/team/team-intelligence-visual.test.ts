@@ -139,7 +139,7 @@ async function createFixture() {
     data: [
       {
         // Tanácsadói szerep: a nyers csapat-adat fülek (intelligence/profile/
-        // teamRole) a riport-kapuzás óta CSAK a tanácsadói körnek élnek — a
+        // teamRole) a riport-kapuzás óta CSAK a tanácsadói körnek élnek – a
         // sima ORG_ADMIN a ?tab=overview-ra kerül vissza (team/[id]/page.tsx,
         // canViewRawTeamResults).
         orgId: FIXTURE.orgId,
@@ -326,14 +326,14 @@ test.describe("Team intelligence structural snapshots", () => {
 
     // Motor-audit v7 (user-kérés): a felületen NINCS ±N mérési-hiba jelölés, és a
     // resource-map dimenzió-chip HEXACO-betűt mutat, nem kivezetett belső kódot.
-    // 2026-08-11: a belső kódok kivezetve — a kanonikus kód MAGA a HEXACO-betű,
+    // 2026-08-11: a belső kódok kivezetve – a kanonikus kód MAGA a HEXACO-betű,
     // amit a chip szándékosan meg is jelenít („C 62%"), ezért az őrszem a
     // KIVEZETETT örökség-kódokra fut. (A korábbi regex ezeket sorolta fel; az
     // átnevezéskor betűkre fordult, amivel a saját állítását tagadta volna.)
     await expect(page.locator("main")).not.toContainText("±");
     await expect(resourceSection).not.toContainText(/\b(INTE|RESO|TEMP|THOR|ADAP)\b/);
 
-    // Deep-dive CTA szekció — a részletes elemzés a Csapatszerepek fülön él.
+    // Deep-dive CTA szekció – a részletes elemzés a Csapatszerepek fülön él.
     const deepDiveSection = page.locator("section").filter({
       has: page.locator("p").filter({ hasText: /^Részletes csapatszerep elemzés$/ }),
     });

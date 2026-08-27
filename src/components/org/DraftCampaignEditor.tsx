@@ -303,7 +303,7 @@ export function DraftCampaignEditor({
         </span>
       )}
 
-      {/* Vázlat elvetése — vizuálisan elválasztva a mentéstől; a
+      {/* Vázlat elvetése – vizuálisan elválasztva a mentéstől; a
           megerősítés inline (nincs natív browser-dialog) */}
       <div className="mt-5 border-t border-sand pt-4">
         {confirmingDiscard ? (

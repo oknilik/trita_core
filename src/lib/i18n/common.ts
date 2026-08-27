@@ -20,8 +20,8 @@ export const commonTranslations = {
       en: "Error loading the assessment",
     },
     body: {
-      hu: "Próbáld újra — ha a hiba megmarad, írj nekünk a Kapcsolat oldalról.",
-      en: "Try again — if the problem persists, reach us via the Contact page.",
+      hu: "Próbáld újra – ha a hiba megmarad, írj nekünk a Kapcsolat oldalról.",
+      en: "Try again – if the problem persists, reach us via the Contact page.",
     },
     retry: { hu: "Újrapróbálás", en: "Try again" },
     errorCode: { hu: "Hibakód", en: "Error code" },
@@ -117,8 +117,8 @@ export const commonTranslations = {
       en: "Take the test | trita",
     },
     tryTitle: {
-      hu: "Ingyenes személyiségteszt — 60 kérdés, kb. 10 perc | trita",
-      en: "Free personality test — 60 questions, about 10 minutes | trita",
+      hu: "Ingyenes személyiségteszt – 60 kérdés, kb. 10 perc | trita",
+      en: "Free personality test – 60 questions, about 10 minutes | trita",
     },
     tryDescription: {
       hu: "Töltsd ki a trita személyiségtesztet regisztráció nélkül: 60 kérdés, körülbelül 10 perc, azonnali visszajelzés a hat személyiségdimenzió mentén.",
@@ -157,8 +157,8 @@ export const commonTranslations = {
     /** A megosztott profil (/share/[token]) minimál fejlécének egyetlen CTA-ja. */
     ctaSharedOwnProfile: { hu: "Saját profil készítése", en: "Create my profile" },
     ctaTeam: { hu: "Pilotprogram", en: "Pilot program" },
-    modeSelf: { hu: "Egyéneknek", en: "For individuals" },
-    modeTeam: { hu: "Csapatoknak", en: "For teams" },
+    modeSelf: { hu: "Önismeret", en: "Self-awareness" },
+    modeTeam: { hu: "Csapatműködés", en: "Team dynamics" },
     dropdownProfile: { hu: "Profilom", en: "My profile" },
     dropdownSignOut: { hu: "Kijelentkezés", en: "Sign out" },
   },
@@ -263,7 +263,7 @@ export const commonTranslations = {
       en: "No test type assigned yet. Complete the test first.",
     },
     INVITE_LIMIT_REACHED: {
-      hu: "Egyszerre legfeljebb 5 aktív meghívód lehet — ezt most elérted.",
+      hu: "Egyszerre legfeljebb 5 aktív meghívód lehet – ezt most elérted.",
       en: "You reached the maximum (5) invite limit.",
     },
     SELF_INVITE: {
@@ -358,8 +358,8 @@ export const commonTranslations = {
     },
     feature3Title: { hu: "Önismeret vs. mások képe", en: "Self-image vs. how others see them" },
     feature3Body: {
-      hu: "Az ügyfeleid a platformon keresztül kérhetnek visszajelzést az ismerőseiktől — az eredményt te is látod.",
-      en: "Your clients can request feedback from people they know through the platform — and you see the results too.",
+      hu: "Az ügyfeleid a platformon keresztül kérhetnek visszajelzést az ismerőseiktől – az eredményt te is látod.",
+      en: "Your clients can request feedback from people they know through the platform – and you see the results too.",
     },
     forTitle: { hu: "Kinek szól?", en: "Who is it for?" },
     forItems: {
@@ -409,8 +409,8 @@ export const commonTranslations = {
     eyebrow: { hu: "Kapcsolat", en: "Contact" },
     title: { hu: "Beszéljünk arról, miben tud segíteni a trita.", en: "Let's talk about how trita can help." },
     subtitle: {
-      hu: "Demó, árazás, partneri együttműködés vagy támogatás — írj nekünk itt, és egy munkanapon belül válaszolunk.",
-      en: "Demo, pricing, partnerships, or support — send us a note and we'll reply within one business day.",
+      hu: "Demó, árazás, partneri együttműködés vagy támogatás – írj nekünk itt, és egy munkanapon belül válaszolunk.",
+      en: "Demo, pricing, partnerships, or support – send us a note and we'll reply within one business day.",
     },
     heroCta: { hu: "Írok nektek", en: "Send a message" },
     chipResponseTime: { hu: "24 órás válaszidő", en: "24h response time" },

@@ -39,7 +39,7 @@ function daysAgo(days: number): Date {
   return new Date(Date.now() - days * DAY_MS);
 }
 
-// O a legerősebb — a személyre szabott szöveg dimenziója egyértelmű.
+// O a legerősebb – a személyre szabott szöveg dimenziója egyértelmű.
 const OPEN_TOP_DIMS = {
   H: 40,
   E: 45,
@@ -197,7 +197,7 @@ test("D1 Reflection sweep", async (t) => {
     assert.equal((await reflectionNotificationsFor(user.id)).length, 1);
 
     // A második körben már email-kísérlet sincs erre a userre (a skip a
-    // persist ELŐTT történik) — a hibalista sem említheti.
+    // persist ELŐTT történik) – a hibalista sem említheti.
     assert.ok(
       !second.errors.some((e) => e.includes(user.id)),
       `second sweep must skip already-notified user, errors: ${second.errors.join(" | ")}`,
@@ -222,7 +222,7 @@ test("D1 Reflection sweep", async (t) => {
     const user = await createUserWithSelfResult("refl_retake", {
       resultCreatedAt: daysAgo(8),
     });
-    // Frissebb self-eredmény — a distinct a legfrissebbet nézi, az pedig
+    // Frissebb self-eredmény – a distinct a legfrissebbet nézi, az pedig
     // az ablakon kívül (túl friss) van.
     await prisma.assessmentResult.create({
       data: {
@@ -262,7 +262,7 @@ test("D1 Reflection sweep", async (t) => {
         locale: null,
       });
 
-      // A kimenő levelet a Resend fetch-hívásának elkapásával olvassuk —
+      // A kimenő levelet a Resend fetch-hívásának elkapásával olvassuk –
       // hálózat és kulcs nélkül. A modul-szintű üres kulcsot csak erre az
       // esetre írjuk felül, és utána visszaállítjuk.
       const originalKey = process.env.RESEND_API_KEY;
@@ -314,7 +314,7 @@ test("D1 Reflection sweep", async (t) => {
 
     const result = await runNotificationSweep();
 
-    // Az in-app érintést az opt-out NEM érinti — mindkét user megkapja.
+    // Az in-app érintést az opt-out NEM érinti – mindkét user megkapja.
     assert.equal((await reflectionNotificationsFor(mailed.id)).length, 1);
     assert.equal((await reflectionNotificationsFor(optedOut.id)).length, 1);
 

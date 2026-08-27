@@ -41,7 +41,7 @@ const GAP_INSIGHTS: Record<string, { hu: string; en: string }> = {
   A_higher: { hu: "Mások barátságosabbnak értékelnek, mint ahogy magad látod. Lehet, hogy a belső feszültséged kevésbé látszik kifelé.", en: "Others rate you as more agreeable than you see yourself. Your internal tension may be less visible." },
   A_lower: { hu: "Az egyenességed erősebben jön át kifelé, mint amennyire azt érzékeled.", en: "Your directness comes across more strongly than you realize." },
   C_higher: { hu: "Mások szervezettebbnek és megbízhatóbbnak látnak.", en: "Others see you as more organized and reliable." },
-  C_lower: { hu: "A belső rendszered kevésbé látszik kifelé — lehet, hogy többet is kommunikálhatnál a módszertanodból.", en: "Your internal structure is less visible — you could communicate more about your methods." },
+  C_lower: { hu: "A belső rendszered kevésbé látszik kifelé – lehet, hogy többet is kommunikálhatnál a módszertanodból.", en: "Your internal structure is less visible – you could communicate more about your methods." },
   O_higher: { hu: "Mások nyitottabbnak látnak az új ötletekre és tapasztalatokra.", en: "Others see you as more open to new ideas and experiences." },
   O_lower: { hu: "A belső kíváncsiságod kevésbé nyilvánvaló kifelé.", en: "Your inner curiosity is less obvious to others." },
 };
@@ -270,7 +270,7 @@ function FacetComparisonSection({
         </div>
       )}
 
-      {/* Váltó: tömör (csak eltérések) ↔ teljes lista — csak ha van különbség */}
+      {/* Váltó: tömör (csak eltérések) ↔ teljes lista – csak ha van különbség */}
       {gapCount < totalRows && (
         <button
           type="button"
@@ -283,8 +283,8 @@ function FacetComparisonSection({
         </button>
       )}
 
-      {/* Módszertani mikro-jegyzet — a becsült vs mért jelölés alapelve.
-          A facetSem BELSŐ küszöbként él tovább (isGap) — számként nem
+      {/* Módszertani mikro-jegyzet – a becsült vs mért jelölés alapelve.
+          A facetSem BELSŐ küszöbként él tovább (isGap) – számként nem
           jelenik meg (2026-08-11 termékdöntés). */}
       <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
         {t("comparison.facetMethodNote", locale)}
@@ -308,7 +308,7 @@ export function ComparisonTab({
 
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
-  // observer: null = az adott dimenzióra nincs (elég) külső adat — az ilyen
+  // observer: null = az adott dimenzióra nincs (elég) külső adat – az ilyen
   // sor a gap-számításokból és a számlálókból kimarad, a kártyán jelzést kap.
   const dimData = mainDims.map((d) => ({
     code: d.code,
@@ -336,7 +336,7 @@ export function ComparisonTab({
     const gap = Math.abs(self - observer);
     if (gap < DIFF_MIN_GAP) return null;
     const dir = observer > self ? "higher" : "lower";
-    // A tábla HEXACO-betűkkel kulcsol — a belső dimenziókódot betűre képezzük.
+    // A tábla HEXACO-betűkkel kulcsol – a belső dimenziókódot betűre képezzük.
     const letter = hexLetter(code);
     if (!letter) return null;
     const key = `${letter}_${dir}`;
@@ -360,7 +360,7 @@ export function ComparisonTab({
             : "Next step: request observer feedback or connect to a team to build a shared picture."}
         </p>
         <div className="mt-4 flex justify-center">
-          {/* UX-B15: a meghívó-blokk ugyanezen a tabon, lejjebb van — link
+          {/* UX-B15: a meghívó-blokk ugyanezen a tabon, lejjebb van – link
               helyett görgetünk, nem navigálunk önmagunkra. */}
           <button
             type="button"
@@ -454,7 +454,7 @@ export function ComparisonTab({
           </div>
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
             {/* Skála-PONT, nem százalék: az átlagos |önkép−külső| gap 0–100-as
-                skálapontban értendő — a korábbi „%" suffix hamis mértékegység
+                skálapontban értendő – a korábbi „%" suffix hamis mértékegység
                 volt (a kártya-szintű gap-ek is „pont"-ban jelennek meg). */}
             <p className="font-fraunces text-heading leading-none text-[var(--color-text-primary)]">
               {avgGapPct} {t("comparison.pointsUnitShort", locale)}
@@ -495,12 +495,12 @@ export function ComparisonTab({
                 <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-caption font-semibold text-[var(--color-text-primary)]">{dim.name}</span>
                   {gap !== null && (
-                    // Sima eltérés-szám, ± nélkül — a ± mérési-hiba jelölésnek
+                    // Sima eltérés-szám, ± nélkül – a ± mérési-hiba jelölésnek
                     // olvasható, az pedig nem jelenik meg a felületen
                     // (2026-08-11 termékdöntés); az irány a sávokból látszik.
                     // Bronz magnitúdó-rámpa a PDF DeltaIndicatorral egyezően
                     // (zsálya egyezés → bronz → mély bronz): a nagy eltérés
-                    // „figyelemre érdemes vakfolt", nem hiba — a korábbi piros
+                    // „figyelemre érdemes vakfolt", nem hiba – a korábbi piros
                     // (state-error) szégyen-jelzés kivezetve.
                     <span
                       className="rounded px-2 py-0.5 text-note font-medium"
@@ -509,7 +509,7 @@ export function ComparisonTab({
                         color: gap < DIFF_MIN_GAP ? "var(--color-accent-self-deep)" : gap < 20 ? "var(--color-bronze-dark)" : "var(--color-accent-primary-strong)",
                       }}
                     >
-                      {gap} {t("comparison.pointsUnitShort", locale)} — {gap < DIFF_MIN_GAP ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
+                      {gap} {t("comparison.pointsUnitShort", locale)} – {gap < DIFF_MIN_GAP ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
                     </span>
                   )}
                 </div>
@@ -551,7 +551,7 @@ export function ComparisonTab({
         </div>
       </div>
 
-      {/* 3.5 Facet-szintű összevetés — a ténylegesen akcionálható szint;
+      {/* 3.5 Facet-szintű összevetés – a ténylegesen akcionálható szint;
           csak a mindkét oldalról lefedett alskálák, facet-SEM küszöbbel */}
       <FacetComparisonSection
         dims={mainDims}
@@ -586,7 +586,7 @@ export function ComparisonTab({
                   {t("comparison.possibleBlindSpot", locale)}
                 </p>
                 <p className="font-fraunces text-body text-[var(--color-text-primary)]">
-                  {bs.name} — {dir
+                  {bs.name} – {dir
                     ? t("comparison.blindSpotStronger", locale)
                     : t("comparison.blindSpotWeaker", locale)}
                 </p>

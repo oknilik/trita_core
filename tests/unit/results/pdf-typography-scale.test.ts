@@ -66,7 +66,7 @@ test("a riport-komponensekben nincs 8 pt alatti inline betűméret", () => {
 });
 
 test("a tipográfiai skála tokenjei a megbeszélt sávban maradnak", () => {
-  // A sávok az audit elfogadási feltételeiből jönnek — a tokenek elmozdulhatnak
+  // A sávok az audit elfogadási feltételeiből jönnek – a tokenek elmozdulhatnak
   // finomhangoláskor, de nem eshetnek vissza a korábbi mikro-méretekre.
   assert.ok(type.chapter >= 22 && type.chapter <= 26, "fejezetcím: 22–26 pt");
   assert.ok(type.section >= 14 && type.section <= 17, "szekciócím: 14–17 pt");
@@ -86,7 +86,7 @@ test("a tipográfiai skála tokenjei a megbeszélt sávban maradnak", () => {
 // forrásban leírt karakterre EGYIKBEN sincs glyph, a böngészőben tofu jelenik
 // meg, node-ban (persona-dosszié, snapshot-készlet) pedig a szöveg-mérés
 // elszáll rajta („Cannot read properties of null (reading 'unitsPerEm')").
-// Pontosan ez történt a korábbi „✓ / ⚠" állapotjelekkel — a helyes minta a
+// Pontosan ez történt a korábbi „✓ / ⚠" állapotjelekkel – a helyes minta a
 // View-alapú jel (ld. PdfAltruism info-jele).
 
 const FONT_FILES = [
@@ -98,7 +98,7 @@ const FONT_FILES = [
   "public/fonts/DMSans-SemiBold.ttf",
 ];
 
-/** A TTF `cmap` (format 4) kódpont-halmaza — külső függőség nélkül. */
+/** A TTF `cmap` (format 4) kódpont-halmaza – külső függőség nélkül. */
 function readCodepoints(file: string): Set<number> {
   const buf = readFileSync(path.join(ROOT, file));
   const tableCount = buf.readUInt16BE(4);
@@ -160,14 +160,14 @@ test("a riport minden leírt karakterére van glyph a regisztrált fontokban", (
     for (const cp of readCodepoints(file)) covered.add(cp);
   }
   // Épeszűségi horgony: a magyar ő/ű és a tipográfiai gondolatjel mind megvan.
-  for (const ch of ["ő", "ű", "—", "·"]) {
+  for (const ch of ["ő", "ű", "–", "·"]) {
     assert.ok(covered.has(ch.codePointAt(0)!), `a horgony-karakter (${ch}) hiányzik a fontokból`);
   }
 
   const violations: string[] = [];
   for (const file of FILES) {
     const source = readFileSync(path.join(ROOT, file), "utf8");
-    // A kommentek nem kerülnek a kimenetre — csak a kódtörzset nézzük.
+    // A kommentek nem kerülnek a kimenetre – csak a kódtörzset nézzük.
     const code = source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
     code.split("\n").forEach((line, index) => {
       for (const ch of line) {

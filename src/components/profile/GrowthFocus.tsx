@@ -37,8 +37,8 @@ const GROWTH_HINT: Record<string, Record<"hu" | "en", string>> = {
     en: "Value-aligned decision-making and transparent communication.",
   },
   E: {
-    hu: "A támogatás és elismerés kimondása — pl. hetente egy beszélgetés zárása kimondott visszajelzéssel.",
-    en: "Expressing support and acknowledgement — e.g. closing one conversation a week with explicit appreciation.",
+    hu: "A támogatás és elismerés kimondása – pl. hetente egy beszélgetés zárása kimondott visszajelzéssel.",
+    en: "Expressing support and acknowledgement – e.g. closing one conversation a week with explicit appreciation.",
   },
   X: {
     hu: "Társas jelenlét és láthatóság tudatos növelése.",
@@ -69,8 +69,8 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
     return (
       <p className="text-sm text-ink-body">
         {isHu
-          ? "Kiváló eredmények — nincs kiemelt fejlődési terület."
-          : "Excellent results — no highlighted growth areas."}
+          ? "Kiváló eredmények – nincs kiemelt fejlődési terület."
+          : "Excellent results – no highlighted growth areas."}
       </p>
     );
   }

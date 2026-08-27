@@ -146,7 +146,7 @@ export function PdfTypeGlyph({
   const isPure = primaryCode === secondaryCode;
   const parts = accompaniment(primaryCode, secondaryCode);
 
-  // A webes "card" kivágás — a talajvonalat tartalmazza, a felirat sávját nem.
+  // A webes "card" kivágás – a talajvonalat tartalmazza, a felirat sávját nem.
   const viewBox = "96 118 616 682";
   const formFill = style.formFill === "none" ? "none" : formColor;
   const strokeProps = style.formStroke
@@ -171,7 +171,7 @@ export function PdfTypeGlyph({
         </G>
       ) : null}
 
-      {/* Alapforma — a domináns dimenzió */}
+      {/* Alapforma – a domináns dimenzió */}
       {geometry.path ? (
         <Path
           d={geometry.path}
@@ -207,7 +207,7 @@ export function PdfTypeGlyph({
         />
       )}
 
-      {/* Vonalmotívum — a második legerősebb dimenzió; tiszta típusnál duplázva. */}
+      {/* Vonalmotívum – a második legerősebb dimenzió; tiszta típusnál duplázva. */}
       {isPure ? (
         <G>
           <MotifElements

@@ -137,7 +137,7 @@ export function PrivacyContent() {
           {/* min-w-0 a rács-elemeken: a grid-item alapértelmezett
               `min-width: auto` a TARTALOM min-content méretét veszi, és a
               jogalap-táblázat `min-w-[520px]`-je így 520px-re feszítette a
-              sávot — 390px-es kijelzőn az egész lap 586px széles lett és
+              sávot – 390px-es kijelzőn az egész lap 586px széles lett és
               oldalra csúszott. A táblázat saját vízszintes görgetője csak
               akkor tud dolgozni, ha a sáv szűkebb lehet nála.
               (A `lg:grid-cols-[240px_minmax(0,1fr)]` ugyanezt teszi a

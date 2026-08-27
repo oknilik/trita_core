@@ -39,35 +39,35 @@ export function generateTeamSummary(scores: Record<string, number>): string {
   const h2 = dimNames[secondHighest[0]] ?? secondHighest[0];
   const l = dimNames[lowest[0]] ?? lowest[0];
 
-  return `A csapatprofil két legmagasabb átlagú dimenziója ${withHuArticle(h)} (${highest[1]}%) és ${withHuArticle(h2)} (${secondHighest[1]}%). A legalacsonyabb csapatátlagot ${withHuArticle(l)} területén mértük (${lowest[1]}%) — érdemes megvizsgálni, hogy ez mennyire felel meg a csapat feladatainak.`;
+  return `A csapatprofil két legmagasabb átlagú dimenziója ${withHuArticle(h)} (${highest[1]}%) és ${withHuArticle(h2)} (${secondHighest[1]}%). A legalacsonyabb csapatátlagot ${withHuArticle(l)} területén mértük (${lowest[1]}%) – érdemes megvizsgálni, hogy ez mennyire felel meg a csapat feladatainak.`;
 }
 
 // ── Kulcs jellemzők actionable insight-ok ─────────────────
 
-// A E-sor a valencia-kapun (strengthSlotEligible "evaluative" —
+// A E-sor a valencia-kapun (strengthSlotEligible "evaluative" –
 // team-report.ts) NEM jut el az erősség-slotba: egy Félelem/Szorongás
-// átlagból „empatikus csapat — különösen erős" erény-állítást csinálni
+// átlagból „empatikus csapat – különösen erős" erény-állítást csinálni
 // kétszeresen hibás volt (2026-08-11 valencia-döntés). A sor a térkép
 // teljessége miatt marad, jellemző-keretezésben, hozadékkal ÉS árral.
 export function getStrengthInsight(dimension: string): string {
   const insights: Record<string, string> = {
-    H: "A csapat jellemzően méltányosságra törekszik a döntésekben — építs erre a nehezebb egyeztetéseknél is.",
-    E: "Érzelmileg ráhangolódó csapat — a feszültséget korán érzik, és tartós nyomás alatt gyorsabban is fáradnak.",
-    X: "A csapat társas helyzetekben gyorsan lendületbe jön — műhelymunkákon és prezentációknál ez különösen hasznos lehet.",
-    A: "A csapat erősen törekszik az együttműködésre — ez összetett projekteknél csökkentheti az egyeztetési terhet.",
-    C: "Fegyelmezett végrehajtás — határidős projekteknél ez jellemzően erőforrás.",
-    O: "A csapat nyitott az újra — a rövid kísérleti szakaszok és az új megoldások kipróbálása természetes közeget jelenthetnek számára.",
+    H: "A csapat jellemzően méltányosságra törekszik a döntésekben – építs erre a nehezebb egyeztetéseknél is.",
+    E: "Érzelmileg ráhangolódó csapat – a feszültséget korán érzik, és tartós nyomás alatt gyorsabban is fáradnak.",
+    X: "A csapat társas helyzetekben gyorsan lendületbe jön – műhelymunkákon és prezentációknál ez különösen hasznos lehet.",
+    A: "A csapat erősen törekszik az együttműködésre – ez összetett projekteknél csökkentheti az egyeztetési terhet.",
+    C: "Fegyelmezett végrehajtás – határidős projekteknél ez jellemzően erőforrás.",
+    O: "A csapat nyitott az újra – a rövid kísérleti szakaszok és az új megoldások kipróbálása természetes közeget jelenthetnek számára.",
   };
   return insights[dimension] ?? "";
 }
 
 export function getWatchAreaInsight(dimension: string): string {
   const insights: Record<string, string> = {
-    H: "Figyelj a csapaton belüli méltányosságérzetre — érdemes rendszeres visszajelző kört tartani.",
-    E: "Érzelmileg ráhangolódóbb dinamika — konfliktushelyzetben érdemes lassabb tempót tartani.",
-    X: "A csapat visszafogottabb — a megbeszéléseken tudatos bevonás és az egyeztetések egyértelmű indítása segíthet.",
+    H: "Figyelj a csapaton belüli méltányosságérzetre – érdemes rendszeres visszajelző kört tartani.",
+    E: "Érzelmileg ráhangolódóbb dinamika – konfliktushelyzetben érdemes lassabb tempót tartani.",
+    X: "A csapat visszafogottabb – a megbeszéléseken tudatos bevonás és az egyeztetések egyértelmű indítása segíthet.",
     A: "A közvetlen kommunikáció miatt a konfliktusok gyorsabban kiéleződhetnek. Egy előre kialakított vitakeret segíthet.",
-    C: "A csapat rugalmas, de könnyen széttartóvá válhat — egyszerű közös keretekkel javítható a kiszámíthatóság.",
+    C: "A csapat rugalmas, de könnyen széttartóvá válhat – egyszerű közös keretekkel javítható a kiszámíthatóság.",
     O: "A gyakorlatias szemlélet mellett külső nézőpont adhat lendületet az újításnak, például műhelymunka vagy vendégelőadó bevonása.",
   };
   return insights[dimension] ?? "";
@@ -75,12 +75,12 @@ export function getWatchAreaInsight(dimension: string): string {
 
 export function getDiversityInsight(dimension: string): string {
   const insights: Record<string, string> = {
-    H: "Eltérő igazságérzet — érdemes tudatosan tisztázni a csapat normáit.",
-    E: "Eltérő érzelmi ráhangolódás — érdemes személyre szabottan támogatnod a tagokat.",
-    X: "A csapaton belül eltérnek az energiaszintek — a visszafogottabb és az energikusabb tagok igényeit is érdemes figyelembe venni a megbeszélések kialakításakor.",
-    A: "A csapaton belül eltérnek az együttműködési stílusok — páros munkában érdemes tudatosan különböző működésű tagokat összekapcsolni.",
-    C: "A csapaton belül eltér a tagok szervezettsége — a koordinációhoz néhány közös alapszabályra van szükség.",
-    O: "Eltérő nyitottság új megközelítésekre — az innováció és a stabilitás igénye egyaránt jelen van.",
+    H: "Eltérő igazságérzet – érdemes tudatosan tisztázni a csapat normáit.",
+    E: "Eltérő érzelmi ráhangolódás – érdemes személyre szabottan támogatnod a tagokat.",
+    X: "A csapaton belül eltérnek az energiaszintek – a visszafogottabb és az energikusabb tagok igényeit is érdemes figyelembe venni a megbeszélések kialakításakor.",
+    A: "A csapaton belül eltérnek az együttműködési stílusok – páros munkában érdemes tudatosan különböző működésű tagokat összekapcsolni.",
+    C: "A csapaton belül eltér a tagok szervezettsége – a koordinációhoz néhány közös alapszabályra van szükség.",
+    O: "Eltérő nyitottság új megközelítésekre – az innováció és a stabilitás igénye egyaránt jelen van.",
   };
   return insights[dimension] ?? "";
 }

@@ -238,7 +238,7 @@ test("organization join page keeps the public token for the submit handoff", asy
 test("api.team.join email mismatch: named invite rejects a different account", async () => {
   const { team } = await createOrgGraph();
   const invite = await createTeamInvite(team.id, "invited-person@integration.trita.app");
-  // A belépő user MÁS email-lel — a named meghívó nem fogadható el.
+  // A belépő user MÁS email-lel – a named meghívó nem fogadható el.
   const intruder = await createProfile({
     clerkId: makeId("clerk_join_mismatch_team"),
     email: "someone-else@integration.trita.app",

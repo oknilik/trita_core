@@ -93,7 +93,7 @@ test("org member with completed self can land on team home", () => {
   assert.equal(result.home.destination, "/team/team42");
 });
 
-test("org member with completed self but no team goes to personal home (nem az org-cockpitra — redirect-loop guard)", () => {
+test("org member with completed self but no team goes to personal home (nem az org-cockpitra – redirect-loop guard)", () => {
   const context = buildJourneyContext({
     currentContext: "org-member",
     orgId: "org_1",

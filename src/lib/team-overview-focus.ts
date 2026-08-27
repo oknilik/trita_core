@@ -148,8 +148,8 @@ export function resolveTeamOverviewFocus(input: {
       description:
         feedbackRequest.answered > 0
           ? hu
-            ? `${feedbackRequest.answered}/${feedbackRequest.total} kérdés kész — folytasd ott, ahol abbahagytad.`
-            : `${feedbackRequest.answered}/${feedbackRequest.total} questions complete — continue where you left off.`
+            ? `${feedbackRequest.answered}/${feedbackRequest.total} kérdés kész – folytasd ott, ahol abbahagytad.`
+            : `${feedbackRequest.answered}/${feedbackRequest.total} questions complete – continue where you left off.`
           : hu
             ? "Egy csapattársad rövid visszajelzést kért tőled."
             : "A teammate asked you for a short piece of feedback.",

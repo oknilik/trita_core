@@ -66,12 +66,12 @@ ${enPosts
 
 > Személyiség- és csapatintelligencia platform magyar csapatoknak. Önértékelő
 > személyiségfelmérés hat dimenzió mentén (TSFI kérdőív), 360°-os ismerősi/
-> kollégai visszajelzés és csapatszintű diagnosztika — tanácsadói
+> kollégai visszajelzés és csapatszintű diagnosztika – tanácsadói
 > értelmezéssel. Az egyéni felmérés ingyenes; a csapat- és szervezeti
 > programok tanácsadói együttműködés keretében futnak, egyedi ajánlattal.
 
 > English: trita is a personality and team intelligence platform for Hungarian
-> teams — a six-dimension personality self-assessment, 360° observer feedback
+> teams – a six-dimension personality self-assessment, 360° observer feedback
 > and team diagnostics, delivered consulting-led.
 
 ## Amit érdemes tudni rólunk
@@ -82,7 +82,7 @@ ${enPosts
 - Módszertan (a felületen NEM így kommunikáljuk, itt a pontosság kedvéért):
   a hat dimenzió a szakirodalomban HEXACO néven ismert hatfaktoros modellt
   követi (Ashton & Lee, 2007); az itemek az IPIP (International Personality
-  Item Pool) közkincs készletéből származnak — kereskedelmi használatra is
+  Item Pool) közkincs készletéből származnak – kereskedelmi használatra is
   szabadon, engedélydíj nélkül.
 - Minden becsült (nem mért) adat forrás- és megbízhatóság-jelöléssel jelenik
   meg a felületen; ez a termék hitelességi alapelve.
@@ -104,10 +104,10 @@ ${blogSections}
 
 ## Amit NE indexelj / ne idézz
 
-- \`/profile\`, \`/dashboard\`, \`/org\`, \`/team\`, \`/manager\`, \`/admin\` — bejelentkezés
+- \`/profile\`, \`/dashboard\`, \`/org\`, \`/team\`, \`/manager\`, \`/admin\` – bejelentkezés
   mögötti felületek, személyes és szervezeti adatokkal.
-- \`/observe/*\`, \`/join/*\`, \`/share/*\` — token-alapú, egyszemélyes linkek.
-- \`/api/*\` — nem tartalom.
+- \`/observe/*\`, \`/join/*\`, \`/share/*\` – token-alapú, egyszemélyes linkek.
+- \`/api/*\` – nem tartalom.
 `;
 
   return new Response(body, {

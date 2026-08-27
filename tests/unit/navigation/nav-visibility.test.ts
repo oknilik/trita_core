@@ -73,7 +73,7 @@ test("admin teams menu keeps the team list short and never loses the escape", ()
   const navItems = buildWorkspaceNavigation("org_admin", { ...baseContext, teams: many });
   const teamsItem = navItems.find((item) => item.id === "teams");
 
-  // Adminnál a lista a szervezet ÖSSZES csapata — 12 tétel hosszabb lenne a
+  // Adminnál a lista a szervezet ÖSSZES csapata – 12 tétel hosszabb lenne a
   // képernyőnél, ezért vágjuk. Az „Összes csapat" tétel a levágottak útja.
   assert.equal(teamsItem?.items?.length, 9);
   assert.equal(teamsItem?.items?.at(-1)?.href, "/org/org_1?tab=teams");
@@ -96,7 +96,7 @@ test("manager topnav omits admin-only organization menu", () => {
 });
 
 // 2026-08-09: a menüpont MINDIG listát nyit. Korábban egy csapatnál közvetlen
-// link volt (UX-audit #25) — a használatban ez kiszámíthatatlanná tette a
+// link volt (UX-audit #25) – a használatban ez kiszámíthatatlanná tette a
 // gombot: ugyanaz a „Csapatok" hol listát nyitott, hol elnavigált.
 test("teams menu opens a list even with a single team, for every role", () => {
   for (const role of ["self", "org_manager"] as const) {
@@ -212,13 +212,13 @@ test("admin org dropdown no longer contains the dead billing entry", () => {
 });
 
 // A karrier-iránytű önálló oldal (`/career`), de a modul MÉG NEM KÉSZ: addig
-// az oldalon a kereslet-mérő ajánló áll, és a menüpont nem jelenik meg — az
+// az oldalon a kereslet-mérő ajánló áll, és a menüpont nem jelenik meg – az
 // ajánlóhoz egyetlen út vezet (riport-oldali CTA), különben a mérés tölcsére
 // olvashatatlan lenne. Ha a `CAREER_MODULE_READY` true-ra vált, ez a teszt
 // bukik: akkor az alábbi állítást kell megfordítani, nem a kapcsolót.
 test("karrier menüpont: amíg a modul nem kész, nincs a menüben", () => {
   assert.equal(isPortfolioSurfaceActive("career"), false, "a P2.2 parkolás feloldódott");
-  assert.equal(CAREER_MODULE_READY, false, "a modul kész lett — ld. a teszt kommentjét");
+  assert.equal(CAREER_MODULE_READY, false, "a modul kész lett – ld. a teszt kommentjét");
 
   const visible = buildWorkspaceNavigation("self", {
     homeHref: "/dashboard",
@@ -234,7 +234,7 @@ test("karrier menüpont: amíg a modul nem kész, nincs a menüben", () => {
     "a készületlen modul menüpontja megjelent",
   );
 
-  // Az org-szintű kapcsoló önmagában is elrejti — ez a szabály a modul
+  // Az org-szintű kapcsoló önmagában is elrejti – ez a szabály a modul
   // élesítése után is érvényben marad.
   const hidden = buildWorkspaceNavigation("self", {
     homeHref: "/dashboard",

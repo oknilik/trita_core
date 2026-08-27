@@ -47,13 +47,13 @@ function subscriptionLabel(sub: OrgRow["subscription"]): {
   if (sub.status === "active") {
     const until = sub.currentPeriodEnd
       ? new Date(sub.currentPeriodEnd).toLocaleDateString("hu-HU")
-      : "—";
+      : "–";
     return { text: `aktív · ${sub.planType ?? "?"} · ${until}-ig`, tone: "active" };
   }
   if (sub.status === "trialing") {
     const until = sub.trialEndsAt
       ? new Date(sub.trialEndsAt).toLocaleDateString("hu-HU")
-      : "—";
+      : "–";
     return { text: `trial · ${until}-ig`, tone: "trial" };
   }
   return { text: sub.status, tone: "off" };
@@ -184,7 +184,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
       </div>
 
       <p className="mb-4 text-xs text-muted">
-        Kézi aktiválás — a fizetés a platformon kívül történik (tanácsadói számlázás).
+        Kézi aktiválás – a fizetés a platformon kívül történik (tanácsadói számlázás).
       </p>
 
       {orgs.length === 0 ? (
@@ -405,7 +405,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                         </button>
                       </div>
                     </div>
-                    {/* ── Modul-kapcsolók — csak trita admin ── */}
+                    {/* ── Modul-kapcsolók – csak trita admin ── */}
                     <div className="mt-3 border-t border-sand pt-3">
                       <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-muted">
                         Modulok
@@ -437,7 +437,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                       <p className="mt-2 text-xs text-state-error-fg">{state.error}</p>
                     )}
 
-                    {/* ── Cégadatok (számlázás) — csak itt, az admin nézetben ── */}
+                    {/* ── Cégadatok (számlázás) – csak itt, az admin nézetben ── */}
                     <div className="mt-3 border-t border-sand pt-3">
                       <button
                         type="button"

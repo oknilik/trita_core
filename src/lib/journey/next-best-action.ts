@@ -326,7 +326,7 @@ function resolveCtaIdsWithLocale(
         secondary: "LAUNCH_ORG_CAMPAIGN",
         explanation: txt(
           locale,
-          "A szervezeti nézet készen áll — innen már az eredmények alapján tudtok lépni.",
+          "A szervezeti nézet készen áll – innen már az eredmények alapján tudtok lépni.",
           "Your org cockpit is ready. Next, run actions based on the insights.",
         ),
       };
@@ -351,7 +351,7 @@ export function resolveNextBestAction(
   let resolved = resolveCtaIdsWithLocale(state, safeLocale);
 
   // Consulting-led módban a CREATE_TEAM (self-serve csapat-létrehozás)
-  // nem ajánlható — observer/eredmény irányra képezzük át; a team-irányú
+  // nem ajánlható – observer/eredmény irányra képezzük át; a team-irányú
   // terelést az eredmény-oldali érdeklődés-banner végzi.
   if (isConsultingLed()) {
     if (resolved.primary === "CREATE_TEAM") {
@@ -363,8 +363,8 @@ export function resolveNextBestAction(
             : resolved.secondary,
         explanation: txt(
           safeLocale,
-          "A személyes eredményed elkészült. Kérj kollégai visszajelzést, vagy mélyítsd el az eredményeidet — csapatelemzéshez a lap alján tudsz érdeklődni.",
-          "Your self insight is ready. Collect observer feedback or deepen your results — for team analysis, express interest at the bottom of the page.",
+          "A személyes eredményed elkészült. Kérj kollégai visszajelzést, vagy mélyítsd el az eredményeidet – csapatelemzéshez a lap alján tudsz érdeklődni.",
+          "Your self insight is ready. Collect observer feedback or deepen your results – for team analysis, express interest at the bottom of the page.",
         ),
       };
     } else if (resolved.secondary === "CREATE_TEAM") {

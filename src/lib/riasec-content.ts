@@ -25,11 +25,11 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     letter: "R",
     emoji: "🔧",
     color: "#8B5CF6",
-    name: { hu: "Realistic — Megvalósító", en: "Realistic — Doer" },
+    name: { hu: "Realistic – Megvalósító", en: "Realistic – Doer" },
     tagline: { hu: "Kézzel fogható dolgokkal dolgozni", en: "Working with tangible things" },
     description: {
-      hu: "A Megvalósító típus szereti a gyakorlati, kézzelfogható munkát: építeni, szerelni, működtetni. Gépek, szerszámok, növények, járművek — az számít, aminek látható eredménye van. Kevésbé vonzza a hosszas egyeztetés és a papírmunka.",
-      en: "The Doer type enjoys practical, hands-on work: building, fixing, operating. Machines, tools, plants, vehicles — what matters is a visible result. Long meetings and paperwork appeal less.",
+      hu: "A Megvalósító típus szereti a gyakorlati, kézzelfogható munkát: építeni, szerelni, működtetni. Gépek, szerszámok, növények, járművek – az számít, aminek látható eredménye van. Kevésbé vonzza a hosszas egyeztetés és a papírmunka.",
+      en: "The Doer type enjoys practical, hands-on work: building, fixing, operating. Machines, tools, plants, vehicles – what matters is a visible result. Long meetings and paperwork appeal less.",
     },
     activities: {
       hu: ["szerelés, javítás", "építés, kivitelezés", "gépek kezelése", "kültéri munka"],
@@ -44,11 +44,11 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     letter: "I",
     emoji: "🔬",
     color: "#06B6D4",
-    name: { hu: "Investigative — Elemző", en: "Investigative — Thinker" },
+    name: { hu: "Investigative – Elemző", en: "Investigative – Thinker" },
     tagline: { hu: "Megérteni, hogyan működnek a dolgok", en: "Understanding how things work" },
     description: {
-      hu: "Az Elemző típus kérdez, vizsgál, összefüggéseket keres. Adatok, kísérletek, elméletek — a motivációja a megértés, nem feltétlenül a gyors eredmény. Önálló, elmélyült munkában a legerősebb.",
-      en: "The Thinker type asks, investigates, looks for patterns. Data, experiments, theories — the drive is understanding, not necessarily quick results. Strongest in independent, deep work.",
+      hu: "Az Elemző típus kérdez, vizsgál, összefüggéseket keres. Adatok, kísérletek, elméletek – a motivációja a megértés, nem feltétlenül a gyors eredmény. Önálló, elmélyült munkában a legerősebb.",
+      en: "The Thinker type asks, investigates, looks for patterns. Data, experiments, theories – the drive is understanding, not necessarily quick results. Strongest in independent, deep work.",
     },
     activities: {
       hu: ["kutatás, elemzés", "problémamegoldás", "adatokkal dolgozás", "kísérletezés"],
@@ -63,7 +63,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     letter: "A",
     emoji: "🎨",
     color: "#EC4899",
-    name: { hu: "Artistic — Alkotó", en: "Artistic — Creator" },
+    name: { hu: "Artistic – Alkotó", en: "Artistic – Creator" },
     tagline: { hu: "Létrehozni valamit, ami előtte nem volt", en: "Creating something new" },
     description: {
       hu: "Az Alkotó típus önkifejezésre és eredetiségre vágyik: írás, design, zene, vizuális világok. Rugalmas kereteket szeret, a szigorú szabályrendszerek fárasztják. Az az eleme, ahol a saját ízlése formálhatja a végeredményt.",
@@ -82,11 +82,11 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     letter: "S",
     emoji: "🤝",
     color: "#10B981",
-    name: { hu: "Social — Segítő", en: "Social — Helper" },
+    name: { hu: "Social – Segítő", en: "Social – Helper" },
     tagline: { hu: "Emberekkel, emberekért dolgozni", en: "Working with and for people" },
     description: {
       hu: "A Segítő típus akkor van elemében, ha másokon segíthet: tanít, gondoz, fejleszt, meghallgat. Az emberi kapcsolat számára nem a munka mellékterméke, hanem a lényege. A tisztán tárgy- vagy adatközpontú munka kevésbé tölti fel.",
-      en: "The Helper type thrives on helping others: teaching, caring, developing, listening. Human connection isn't a by-product of the work — it's the point. Purely object- or data-centred work is less fulfilling.",
+      en: "The Helper type thrives on helping others: teaching, caring, developing, listening. Human connection isn't a by-product of the work – it's the point. Purely object- or data-centred work is less fulfilling.",
     },
     activities: {
       hu: ["tanítás, fejlesztés", "gondozás, ápolás", "tanácsadás", "közösségi munka"],
@@ -101,11 +101,11 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     letter: "E",
     emoji: "🚀",
     color: "#F59E0B",
-    name: { hu: "Enterprising — Meggyőző", en: "Enterprising — Persuader" },
+    name: { hu: "Enterprising – Meggyőző", en: "Enterprising – Persuader" },
     tagline: { hu: "Meggyőzni, vezetni, elérni", en: "Persuading, leading, achieving" },
     description: {
-      hu: "A Meggyőző típus célokat hajt: elad, tárgyal, szervez, vezet. Energiát ad neki a verseny és a látható eredmény. Szeret dönteni és felelősséget vinni — a hosszú, magányos elemzés kevésbé az ő terepe.",
-      en: "The Persuader type chases goals: selling, negotiating, organizing, leading. Competition and visible wins energize them. They like deciding and owning outcomes — long solitary analysis is less their turf.",
+      hu: "A Meggyőző típus célokat hajt: elad, tárgyal, szervez, vezet. Energiát ad neki a verseny és a látható eredmény. Szeret dönteni és felelősséget vinni – a hosszú, magányos elemzés kevésbé az ő terepe.",
+      en: "The Persuader type chases goals: selling, negotiating, organizing, leading. Competition and visible wins energize them. They like deciding and owning outcomes – long solitary analysis is less their turf.",
     },
     activities: {
       hu: ["értékesítés, tárgyalás", "vezetés, szervezés", "vállalkozás", "prezentálás"],
@@ -120,7 +120,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     letter: "C",
     emoji: "📋",
     color: "#6366F1",
-    name: { hu: "Conventional — Rendszerező", en: "Conventional — Organizer" },
+    name: { hu: "Conventional – Rendszerező", en: "Conventional – Organizer" },
     tagline: { hu: "Rendet tenni és rendben tartani", en: "Creating and keeping order" },
     description: {
       hu: "A Rendszerező típus a pontosságban és a jól definiált folyamatokban erős: nyilvántartások, számok, szabályok, határidők. Ő az, akinél nem vész el semmi. A kiszámíthatatlan, folyton változó közeg fárasztja.",

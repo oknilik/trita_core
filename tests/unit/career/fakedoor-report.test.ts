@@ -48,12 +48,12 @@ function view(overrides: Partial<FakeDoorViewRow>): FakeDoorViewRow {
   };
 }
 
-test("willingness közönségenként szegmentált — nincs összevont medián", () => {
+test("willingness közönségenként szegmentált – nincs összevont medián", () => {
   const rows = [
     // Egyéni ár-elutasítók: 2 000 és 4 000 → medián 3 000.
     response({ audience: "individual", reasonNo: "price", maxPriceHuf: 2000 }),
     response({ audience: "individual", reasonNo: "price", maxPriceHuf: 4000 }),
-    // Tanácsadói ár-elutasító: 50 000 — összevonva a mediánt felrántaná.
+    // Tanácsadói ár-elutasító: 50 000 – összevonva a mediánt felrántaná.
     response({ audience: "consultant", reasonNo: "price", maxPriceHuf: 50000 }),
     // Nem ár-okú elutasítás nem számít bele.
     response({ audience: "individual", reasonNo: "accuracy" }),
@@ -128,7 +128,7 @@ test("dedup-kulcs létra: profileId > userId > sessionId", () => {
     // Ugyanaz a user profil nélkül, két munkamenettel → egy sor.
     response({ userId: "user-1", sessionId: "session-a" }),
     response({ userId: "user-1", sessionId: "session-b" }),
-    // Történeti (auth előtti) sorok: csak sessionId — külön maradnak.
+    // Történeti (auth előtti) sorok: csak sessionId – külön maradnak.
     response({ sessionId: "anon-1" }),
     response({ sessionId: "anon-2" }),
   ];

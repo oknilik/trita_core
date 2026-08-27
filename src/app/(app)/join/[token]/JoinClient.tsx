@@ -342,7 +342,7 @@ export function JoinClient({
             </div>
           )}
 
-          {/* ── New user: Step 1 — Személyes adatok ───────────────────────── */}
+          {/* ── New user: Step 1 – Személyes adatok ───────────────────────── */}
           {isNewUser && step === 1 && (
             <div className="flex flex-col gap-6">
               <div>
@@ -426,7 +426,7 @@ export function JoinClient({
             </div>
           )}
 
-          {/* ── New user: Step 2 — Kész ────────────────────────────────────── */}
+          {/* ── New user: Step 2 – Kész ────────────────────────────────────── */}
           {isNewUser && step === 2 && (
             <div className="flex flex-col gap-6">
               <div>

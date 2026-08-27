@@ -28,7 +28,7 @@ async function createObserverFixture(options: {
   const inviterId = makeId("obs_inviter");
   const invitationCount = options.invitationCount ?? 1;
   // A /observe/[token] a mindenkori alapértelmezett formát szolgálja ki
-  // (TSFI-S, 60 item) — a fixture UGYANAZT a kérdéslistát használja, hogy az
+  // (TSFI-S, 60 item) – a fixture UGYANAZT a kérdéslistát használja, hogy az
   // "utolsó kérdés kivételével kitöltött draft" tényleg egyetlen kattintásra
   // hagyja a kitöltőt.
   const config = getTestConfig("TRITAN", "en", DEFAULT_ASSESSMENT_FORM);
@@ -65,7 +65,7 @@ async function createObserverFixture(options: {
   });
 
   // Relatív lejárat: a token-életciklus a VALÓS órához mérten dől el
-  // (resolveObserverTokenLifecycle) — fix dátummal a fixture elévülne.
+  // (resolveObserverTokenLifecycle) – fix dátummal a fixture elévülne.
   const invitations = await Promise.all(
     Array.from({ length: invitationCount }).map(() =>
       prisma.observerInvitation.create({

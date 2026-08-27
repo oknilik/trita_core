@@ -136,7 +136,7 @@ export function Picker({
   // Scroll to selected item when opening.
   // A ref-ellenőrzés a késleltetésen BELÜL van: a panel a nyitást követő
   // festéskor kerül a DOM-ba, tehát a hatás lefutásakor a ref még üres
-  // lehetne — korábban ez a feltétel a render-fázisból adódóan mindig
+  // lehetne – korábban ez a feltétel a render-fázisból adódóan mindig
   // teljesült.
   useEffect(() => {
     if (!isOpen) return;
@@ -219,7 +219,7 @@ export function Picker({
         >
           {filtered.length === 0 ? (
             <div className="px-3 py-6 text-center text-sm text-ink-body/40">
-              —
+              –
             </div>
           ) : (
             filtered.map((option) => {
@@ -264,7 +264,7 @@ export function Picker({
   );
 }
 
-/* Trigger button — consistent with the onboarding design */
+/* Trigger button – consistent with the onboarding design */
 interface PickerTriggerProps {
   label: string;
   value?: string;

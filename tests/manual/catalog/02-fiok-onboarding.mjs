@@ -44,7 +44,7 @@ export const cases = [
     steps:
       "1. Írj be szándékosan hibás 6 jegyű kódot, küldd el. 2. Nézd meg a hibaüzenetet. 3. Írd be a helyes kódot, küldd el újra.",
     expected:
-      "Hibás kódnál hibaüzenet jelenik meg (érvénytelen kód), a képernyő nem lép tovább és a mező újra szerkeszthető. A helyes kóddal a folyamat rögtön továbbmegy az onboardingra — nem kell újratölteni.",
+      "Hibás kódnál hibaüzenet jelenik meg (érvénytelen kód), a képernyő nem lép tovább és a mező újra szerkeszthető. A helyes kóddal a folyamat rögtön továbbmegy az onboardingra – nem kell újratölteni.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -90,7 +90,7 @@ export const cases = [
     steps:
       "1. A /sign-up oldalon kattints a Google-gombra. 2. Vidd végig a Google-választót a teszt-fiókkal. 3. Figyeld a visszairányítást.",
     expected:
-      "A gombon töltés-spinner fut a redirect alatt; a Google-engedély után a /sign-up/sso-callback köztes oldalon át az /onboarding?intent=explore oldalra érkezel bejelentkezve — email-kód lépés nélkül.",
+      "A gombon töltés-spinner fut a redirect alatt; a Google-engedély után a /sign-up/sso-callback köztes oldalon át az /onboarding?intent=explore oldalra érkezel bejelentkezve – email-kód lépés nélkül.",
     automated: "none",
     coveredBy: "",
     priority: "P1",
@@ -163,7 +163,7 @@ export const cases = [
     emails: { fő: "AUTO" },
     preconditions: "Kijelentkezett állapot.",
     steps:
-      "1. Nyisd meg a /sign-up?redirect_url=/try/claim URL-t. 2. A lap alján kattints a bejelentkezés linkre, majd vissza a regisztrációra — figyeld az URL-t. 3. Vidd végig az email-kódos regisztrációt.",
+      "1. Nyisd meg a /sign-up?redirect_url=/try/claim URL-t. 2. A lap alján kattints a bejelentkezés linkre, majd vissza a regisztrációra – figyeld az URL-t. 3. Vidd végig az email-kódos regisztrációt.",
     expected:
       "A sign-up↔sign-in linkek megőrzik a redirect_url paramétert. A sikeres megerősítés után NEM az onboardingra, hanem a /try/claim célra kerülsz (a vendég-eredmény mentése azonnal indul).",
     automated: "partial",
@@ -180,7 +180,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a /sign-in?redirect_url=https://example.com URL-t. 2. Jelentkezz be email-kóddal.",
     expected:
-      "A belépés után NEM külső oldalra, hanem az alapértelmezett /dashboard journey-elosztóra kerülsz — a nem „/”-rel kezdődő redirect_url figyelmen kívül marad.",
+      "A belépés után NEM külső oldalra, hanem az alapértelmezett /dashboard journey-elosztóra kerülsz – a nem „/”-rel kezdődő redirect_url figyelmen kívül marad.",
     automated: "none",
     coveredBy: "",
     priority: "P3",
@@ -195,7 +195,7 @@ export const cases = [
     steps:
       "1. Kattints a fejlécben a kijelentkezésre (vagy nyisd meg a /sign-out URL-t). 2. A landing betöltése után próbáld megnyitni a /profile/results oldalt.",
     expected:
-      "Rövid spinner után a főoldalra (/) kerülsz kijelentkezve; a védett oldal ezután a /sign-in-re irányít — a munkamenet ténylegesen megszűnt.",
+      "Rövid spinner után a főoldalra (/) kerülsz kijelentkezve; a védett oldal ezután a /sign-in-re irányít – a munkamenet ténylegesen megszűnt.",
     automated: "partial",
     coveredBy: "tests/e2e/journey/journey-entrypoints-smoke.test.ts",
     priority: "P2",
@@ -223,7 +223,7 @@ export const cases = [
     emails: { fő: "AUTO" },
     preconditions: "Az /onboarding 1. lépésén állsz.",
     steps:
-      "1. Üres űrlappal kattints a Tovább gombra — figyeld, hova ugrik a fókusz. 2. Írj be 1 karakteres felhasználónevet, lépj ki a mezőből. 3. Írj be érvénytelen születési évet (pl. a tárgyév, vagy 3 számjegy). 4. Töltsd ki a nevet és az évet helyesen, de ne válassz nemet/országot, kattints a Tovább gombra.",
+      "1. Üres űrlappal kattints a Tovább gombra – figyeld, hova ugrik a fókusz. 2. Írj be 1 karakteres felhasználónevet, lépj ki a mezőből. 3. Írj be érvénytelen születési évet (pl. a tárgyév, vagy 3 számjegy). 4. Töltsd ki a nevet és az évet helyesen, de ne válassz nemet/országot, kattints a Tovább gombra.",
     expected:
       "A Tovább mindig az ELSŐ hibás mezőhöz görget és fókuszál, a mező körül rövid kiemelés villan. A rövid név és az érvénytelen év alatt mező-szintű hibaszöveg jelenik meg (az évnél a megengedett tartománnyal). Hiányzó nem/ország esetén a megfelelő blokk kap kiemelést; a 2. lépésre csak teljes, érvényes űrlappal lehet átjutni.",
     automated: "none",
@@ -270,7 +270,7 @@ export const cases = [
     preconditions: "Onboardolt fiók bejelentkezve.",
     steps: "1. Írd be kézzel az /onboarding URL-t.",
     expected:
-      "Az űrlap nem jelenik meg újra: automatikus átirányítás a journey szerinti oldalra (eredménnyel a /profile/results, enélkül az /assessment irányba) — az onboarding nem tölthető ki kétszer.",
+      "Az űrlap nem jelenik meg újra: automatikus átirányítás a journey szerinti oldalra (eredménnyel a /profile/results, enélkül az /assessment irányba) – az onboarding nem tölthető ki kétszer.",
     automated: "none",
     coveredBy: "",
     priority: "P2",

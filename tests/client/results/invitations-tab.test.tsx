@@ -41,7 +41,7 @@ const SENT: SerializedSentInvitation[] = [
 
 const RECEIVED: SerializedReceivedInvitation[] = [];
 
-describe("InvitationsTab — új observer design", () => {
+describe("InvitationsTab – új observer design", () => {
   beforeEach(() => {
     showToast.mockReset();
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(

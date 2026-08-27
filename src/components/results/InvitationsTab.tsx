@@ -237,7 +237,7 @@ export function InvitationsTab({
   const pending = active.filter(
     (i) => i.status === "PENDING" || i.status === "AWAITING_APPROVAL",
   );
-  // A kvóta CSAK a függő (PENDING/AWAITING_APPROVAL) meghívókra vonatkozik —
+  // A kvóta CSAK a függő (PENDING/AWAITING_APPROVAL) meghívókra vonatkozik –
   // ugyanaz, amit a szerver számol (invite/route.ts): a KITÖLTÖTT nem fogyaszt
   // keretet. A korábbi `active.length` a completed-et is beleszámolta, így 5
   // kitöltött után a felhasználó nem tudott új visszajelzést kérni, holott a
@@ -315,7 +315,7 @@ export function InvitationsTab({
         </div>
       </div>
 
-      {/* 4a. Kolléga-picker (org-tagoknál) — B14: org-kontextusban a fetch
+      {/* 4a. Kolléga-picker (org-tagoknál) – B14: org-kontextusban a fetch
           alatt skeleton tartja a helyét, hogy a lenti form ne ugorjon el;
           nem org-tagnál (hasColleagueDirectory=false) skeleton sincs. */}
       <div className="grid items-start gap-4 lg:grid-cols-2">
@@ -394,7 +394,7 @@ export function InvitationsTab({
         </div>
       ) : null}
 
-      {/* 4. Create form — B14: a cím a szerver-oldalon ismert org-kontextusból
+      {/* 4. Create form – B14: a cím a szerver-oldalon ismert org-kontextusból
           jön (hasColleagueDirectory prop), nem a kolléga-fetch kimenetelétől,
           így a szekció nem címkézi át magát menet közben. */}
       <div className={`rounded-[18px] border border-[var(--color-border-default)] bg-surface-card p-5 shadow-sm sm:p-6 ${showColleaguePicker ? "" : "lg:col-span-2"}`}>
@@ -484,7 +484,7 @@ export function InvitationsTab({
         <div className="grid gap-5 lg:grid-cols-2">
           {/* Completed group.
               W1 (differencia-támadás maradék felülete): ez a lista a meghívó
-              (értékelt) SAJÁT meghívóit mutatja névvel + nap-pontos dátummal —
+              (értékelt) SAJÁT meghívóit mutatja névvel + nap-pontos dátummal –
               ez szándékos (tudnod kell, kit hívtál és ki válaszolt). A
               maradék kockázat NEM itt van, hanem az összevetés-nézet futó
               observer-átlagában, ami minden betöltéskor újraszámol: egy
@@ -492,7 +492,7 @@ export function InvitationsTab({
               az utolsó értékelő vektorát, és a nevesített listával névhez kötheti.
               Mitigáció (kész): a completion-értesítés anonim (submit/route.ts),
               a reveal csak n≥3-nál nyílik, a dátum nap-pontos (nincs sorrendi
-              idő-finomság). Teljes zárás = zajos/kvantált aggregátum — ez
+              idő-finomság). Teljes zárás = zajos/kvantált aggregátum – ez
               pilot-kalibrációt igényel (ld. results reveal-küszöb jegyzet). */}
           {completed.length > 0 && (
             <div className="rounded-[18px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-4 sm:p-5">
@@ -557,7 +557,7 @@ export function InvitationsTab({
                       >
                         {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
                       </button>
-                      {/* QR — workshop-helyzet: a meghívott a teremben, a
+                      {/* QR – workshop-helyzet: a meghívott a teremben, a
                           telefonjával olvassa be a linket. */}
                       <button
                         type="button"

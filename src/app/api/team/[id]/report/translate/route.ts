@@ -144,7 +144,7 @@ ${actionsBlock}`;
     };
     const text = data.content?.find((c) => c.type === "text")?.text ?? "";
 
-    // Tag-kinyerés — újsor/idézőjel-biztos (a korábbi JSON-parse törékeny volt).
+    // Tag-kinyerés – újsor/idézőjel-biztos (a korábbi JSON-parse törékeny volt).
     const tag = (name: string): string | null => {
       const m = text.match(new RegExp(`<${name}>([\\s\\S]*?)</${name}>`));
       const value = m?.[1]?.trim() ?? "";

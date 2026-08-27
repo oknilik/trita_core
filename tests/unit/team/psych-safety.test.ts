@@ -61,7 +61,7 @@ describe("isCompletePsychSafetyAnswerSet", () => {
   });
 });
 
-describe("aggregatePsychSafety — anonimitás-küszöb", () => {
+describe("aggregatePsychSafety – anonimitás-küszöb", () => {
   it("returns null below the minimum response count", () => {
     assert.equal(aggregatePsychSafety([]), null);
     assert.equal(
@@ -76,7 +76,7 @@ describe("aggregatePsychSafety — anonimitás-küszöb", () => {
   });
 });
 
-describe("aggregatePsychSafety — pontozás", () => {
+describe("aggregatePsychSafety – pontozás", () => {
   it("scores uniform max-safety answers as 100", () => {
     // Minden pozitív itemre 5, minden fordítottra 1 → maximális biztonság
     const best: PsychSafetyAnswers = Object.fromEntries(

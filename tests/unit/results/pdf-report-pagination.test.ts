@@ -44,7 +44,7 @@ test("a lap-törzs gap-pel tartja a kártya-közöket, nem alsó margóval", () 
   assert.doesNotMatch(
     cardBlock,
     /marginBottom/,
-    "a kártya visszakapta az alsó margót — ez szüli az üresen lebegő lapot",
+    "a kártya visszakapta az alsó margót – ez szüli az üresen lebegő lapot",
   );
 });
 

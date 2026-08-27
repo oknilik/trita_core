@@ -49,7 +49,7 @@ test("a query string sosem kerül tárolásra", () => {
   assert.equal(normalizePath("/blog/valami#szakasz"), "/blog/valami");
 });
 
-test("a blog-slug megmarad — az tartalom-azonosító, nem személyes adat", () => {
+test("a blog-slug megmarad – az tartalom-azonosító, nem személyes adat", () => {
   assert.equal(
     normalizePath("/blog/miert-nem-eleg-az-onertekeles"),
     "/blog/miert-nem-eleg-az-onertekeles",
@@ -67,14 +67,14 @@ test("a látogató-azonosító naponta rotál, és nem tartalmazza a bemenetet",
   const today = computeVisitorRef({ ...base, day: "2026-08-06" });
   const tomorrow = computeVisitorRef({ ...base, day: "2026-08-07" });
 
-  assert.notEqual(today, tomorrow, "a ref nem rotál naponta — hosszú távú profil épülne");
+  assert.notEqual(today, tomorrow, "a ref nem rotál naponta – hosszú távú profil épülne");
   assert.equal(today, computeVisitorRef({ ...base, day: "2026-08-06" }), "nem determinisztikus");
   assert.equal(today.length, 32);
   assert.match(today, /^[0-9a-f]{32}$/);
   assert.ok(!today.includes("203.0.113.7"), "az IP megjelenik a refben");
 });
 
-test("más só más azonosítót ad — a hash nem kitalálható a titok nélkül", () => {
+test("más só más azonosítót ad – a hash nem kitalálható a titok nélkül", () => {
   const base = { day: "2026-08-06", ip: "203.0.113.7", userAgent: "UA" };
   assert.notEqual(
     computeVisitorRef({ ...base, salt: "a" }),
@@ -135,7 +135,7 @@ test("a megőrzési határ a dokumentált hónapszámot követi", () => {
 // ─────────────────────────────────────────────────────────────────────
 // Só-konfiguráció: a rendszer só NÉLKÜL is működik (a mérés soha nem áll
 // az üzemeltetés útjába), de ilyenkor a pszeudonimitás ígérete nem
-// tartható — ezért kell látható figyelmeztetés. Ez a teszt azt őrzi, hogy
+// tartható – ezért kell látható figyelmeztetés. Ez a teszt azt őrzi, hogy
 // a felület egyáltalán MEG TUDJA mondani, hiányzik-e a só.
 // ─────────────────────────────────────────────────────────────────────
 
@@ -158,7 +158,7 @@ test("a hiányzó ANALYTICS_SALT felismerhető (ebből jön az admin-figyelmezte
 });
 
 test("só nélkül is képződik látogató-azonosító (a mérés nem áll le)", () => {
-  // A dev-fallback só publikus, tehát a ref kitalálható — de LÉTEZIK.
+  // A dev-fallback só publikus, tehát a ref kitalálható – de LÉTEZIK.
   // A rendszer nem hal el tőle, csak figyelmeztet.
   const ref = computeVisitorRef({
     salt: DEV_FALLBACK_SALT,

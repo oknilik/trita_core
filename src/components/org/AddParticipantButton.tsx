@@ -101,7 +101,7 @@ export function AddParticipantButton({
                 />
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-ink">
-                    {m.username ?? m.email ?? "—"}
+                    {m.username ?? m.email ?? "–"}
                   </p>
                   {m.username && m.email && (
                     <p className="truncate text-xs text-ink-body/60">{m.email}</p>

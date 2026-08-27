@@ -191,7 +191,7 @@ export function CampaignWizard({
         : nextSteps[0]
           ? t(TYPE_NAME_KEYS[nextSteps[0]], locale)
           : "";
-    return `${teamName ? `${teamName} — ` : ""}${label} · ${monthYear}`.slice(0, 100);
+    return `${teamName ? `${teamName} – ` : ""}${label} · ${monthYear}`.slice(0, 100);
   }
 
   function selectCampaignPackage(nextPackage: CampaignPackage) {
@@ -347,7 +347,7 @@ export function CampaignWizard({
         if (createdRef.current) createdRef.current.participantsAdded = true;
       }
 
-      // Azonnali aktiválás — a meglévő PATCH útvonalon, hogy minden
+      // Azonnali aktiválás – a meglévő PATCH útvonalon, hogy minden
       // mellékhatás (lépés-inicializálás, értesítések, szerep-kör flag)
       // ugyanúgy fusson, mint a kampány-oldali aktiválásnál.
       if (willActivateNow) {
@@ -382,7 +382,7 @@ export function CampaignWizard({
       : type
         ? t(TYPE_NAME_KEYS[type], locale)
         : "";
-  // Résztvevő nélkül is mehet tovább (később hozzáadható) — kivéve a
+  // Résztvevő nélkül is mehet tovább (később hozzáadható) – kivéve a
   // szerep-kört, ahol kötelező a cél-csapat.
   // Csapathoz kötött mérések: a szerep-kör és a pszich. biztonság pulse
   // egyetlen cél-csapaton él (az anonim aggregátum is csapatszintű).
@@ -568,8 +568,8 @@ export function CampaignWizard({
             </div>
           )}
 
-          {/* Élő sorrend-előnézet (UX-audit #24): a lényeg — a tagoknak
-              EBBEN a sorrendben nyílnak a lépések — ne fejben álljon össze. */}
+          {/* Élő sorrend-előnézet (UX-audit #24): a lényeg – a tagoknak
+              EBBEN a sorrendben nyílnak a lépések – ne fejben álljon össze. */}
           <div className="mt-5 flex flex-col gap-3 border-t border-sand pt-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="min-w-0 text-caption text-ink-body">
               {chosenSteps.length === 0 ? (
@@ -752,7 +752,7 @@ export function CampaignWizard({
         </Card>
       )}
 
-      {/* Step 3: Targeting — teams first */}
+      {/* Step 3: Targeting – teams first */}
       {step === 3 && (
         <Card spacing="lg">
           <div className="mb-5 flex items-center justify-between gap-4">

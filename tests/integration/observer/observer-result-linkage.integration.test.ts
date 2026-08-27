@@ -352,7 +352,7 @@ test("C5.4 Observer → result linkage", async (t) => {
   // ── Entitlement: observerInvite capability ─────────────────────────────
 
   // Billing-korszak utáni szabály (2026-07, Stripe-réteg eltávolítva):
-  // nincs Plus/self_plus vásárlási kapu — az observerInvite org- vagy
+  // nincs Plus/self_plus vásárlási kapu – az observerInvite org- vagy
   // csapat-tagsághoz kötött, tagság nélkül CAPABILITY_NOT_GRANTED.
   await t.test("observerInvite denied for self-only user (no org/team membership)", () => {
     const decision = can(
@@ -464,7 +464,7 @@ test("C5.4 Observer → result linkage", async (t) => {
     const { profile } = await createInviterWithResult();
     const inv1 = await createInvitation(profile.id);
     const inv2 = await createInvitation(profile.id);
-    await createInvitation(profile.id); // 3. aktív meghívó — beadás nélkül
+    await createInvitation(profile.id); // 3. aktív meghívó – beadás nélkül
 
     await submitObserver(inv1.token, 3);
     await submitObserver(inv2.token, 4);

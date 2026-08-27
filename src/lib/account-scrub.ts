@@ -128,7 +128,7 @@ export async function scrubProfileData(
             ],
           }
         : { userProfileId: profileId },
-      data: { name: "—", email: "", company: null, message: "", userProfileId: null },
+      data: { name: "–", email: "", company: null, message: "", userProfileId: null },
     }),
     // Jelölt-meghívó (CandidateInvite): ha a törölt fél JELÖLTKÉNT (email
     // szerint) szerepelt egy org hiring-folyamatában, a közvetlen azonosítóit
@@ -264,7 +264,7 @@ async function redactScrubbedIdentityFromNotifications(
       for (const key of ["inviterName", "targetLabel"] as const) {
         const value = next[key];
         if (typeof value === "string" && matchesScrubbedIdentity(value, name, email)) {
-          next[key] = "—";
+          next[key] = "–";
           changed = true;
         }
       }
@@ -283,7 +283,7 @@ async function redactScrubbedIdentityFromNotifications(
   } catch (err) {
     log.warn(
       { event: "account_scrub.notification_redact_failed", err },
-      "Notification-vars redakció nem futott le — a fő scrub ettől még teljes",
+      "Notification-vars redakció nem futott le – a fő scrub ettől még teljes",
     );
   }
 }

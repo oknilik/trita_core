@@ -65,7 +65,7 @@ test("minden forgatókönyv a kanonikus fejezetsorrendben épül", () => {
       `${scenario.id}: a 03 fejezet nincs a 02 után`,
     );
 
-    // A mellékletek KIZÁRÓLAG a 03 fejezet UTÁN futhatnak — a „Csapatban
+    // A mellékletek KIZÁRÓLAG a 03 fejezet UTÁN futhatnak – a „Csapatban
     // működve" / „Vakfoltok" blokk nem ékelődhet vissza főfejezetként.
     const appendixNames = names.slice(4 + dimensionPages);
     const allowed = ["AppendixObserverPage", "AppendixCareerPage", "AppendixRelationalPage"];
@@ -134,7 +134,7 @@ test("a kiegészítő skála csak valódi, mért értékkel jelenik meg", () => 
   assert.equal(
     buildProfileReportViewModel(without.input).dimensionsChapter.altruism,
     null,
-    "hiányzó „I” értékből kiegészítő skála készült — ez lenne a 0%-os sor",
+    "hiányzó „I” értékből kiegészítő skála készült – ez lenne a 0%-os sor",
   );
   assert.deepEqual(
     buildProfileReportViewModel(with_.input).dimensionsChapter.altruism?.value,
@@ -229,7 +229,7 @@ test("a Karrier-iránytű melléklet a felület parkolását követi", () => {
   // A karrier-felület jelenleg parkolva van (portfolio-parking), ezért a riport
   // akkor sem generálja le a mellékletet, ha a hívó átad karrier-adatot. Ez a
   // teszt ÖNMAGÁT állítja át: ha a felület `active`-ra vált, a melléklet
-  // visszatérését várja el — nem kell hozzá a tesztet átírni.
+  // visszatérését várja el – nem kell hozzá a tesztet átírni.
   const expected = isPortfolioSurfaceActive("career");
   assert.equal(careerAppendixEnabled(), expected, "a riport-kapu eltér a parkolási állapottól");
 

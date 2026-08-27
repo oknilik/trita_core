@@ -111,10 +111,10 @@ export function TeamReportComparison({
   const compositionComparable = comparison.composition.status === "comparable";
   const currentDate = current.publishedAt
     ? new Date(current.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB")
-    : "—";
+    : "–";
   const previousDate = previous.publishedAt
     ? new Date(previous.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB")
-    : "—";
+    : "–";
 
   return (
     <section aria-labelledby="round-comparison-title">
@@ -420,7 +420,7 @@ export function TeamReportComparison({
           </p>
           <p className="mt-1 font-fraunces text-2xl text-ink">
             {comparison.completionDelta === null
-              ? "—"
+              ? "–"
               : `${deltaLabel(comparison.completionDelta)} pp`}
           </p>
         </DashboardPanel>

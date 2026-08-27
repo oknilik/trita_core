@@ -231,7 +231,7 @@ test("prefill: MIXED-source dynamics claims neither homogeneity nor measured-tru
   assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
 });
 
-test("prefill: E legalacsonyabb átlagnál sem kerül a figyelendő (deficit) slotba — score-valence kapu", () => {
+test("prefill: E legalacsonyabb átlagnál sem kerül a figyelendő (deficit) slotba – score-valence kapu", () => {
   const resoLowest: TeamReportAggregates = {
     ...richAggregates,
     dimensionAverages: { H: 62, E: 30, X: 58, A: 51, C: 70, O: 45 },

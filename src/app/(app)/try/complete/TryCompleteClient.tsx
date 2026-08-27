@@ -125,7 +125,7 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
           <TritaWordmark className="text-2xl tracking-tight" />
         </Link>
 
-        {/* UX-A14: ünneplés csak TELJES kitöltésnél — félkész draftnál
+        {/* UX-A14: ünneplés csak TELJES kitöltésnél – félkész draftnál
             folytatásra hívunk, nem regisztrációra "semmiért". */}
         {teaser ? (
           <div className="mb-6">
@@ -154,7 +154,7 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
           </div>
         )}
 
-        {/* Azonnali eredmény-ízelítő — az érték egy szelete a regisztrációs
+        {/* Azonnali eredmény-ízelítő – az érték egy szelete a regisztrációs
             fal ELŐTT; a teljes riport a claim után nyílik meg. */}
         {teaser ? (
           <div className="mb-6">
@@ -170,7 +170,7 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
           </div>
         ) : null}
 
-        {/* CTA buttons — csak teljes kitöltésnél: félkész drafttal a claim
+        {/* CTA buttons – csak teljes kitöltésnél: félkész drafttal a claim
             úgyis elutasítaná a hiányos válaszkészletet. */}
         {teaser ? (
           <>
@@ -203,7 +203,7 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
               {t("tryComplete.teaserBrowserNote", locale)}
             </p>
 
-            {/* Feliratkozás — aki kitöltötte a vendég-tesztet, de nem
+            {/* Feliratkozás – aki kitöltötte a vendég-tesztet, de nem
                 regisztrál, ma nyomtalanul elveszik. Ez a legértékesebb
                 lista, ezért van itt, közvetlenül a regisztrációs CTA-k
                 alatt (nem helyettük). */}

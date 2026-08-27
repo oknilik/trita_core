@@ -22,7 +22,7 @@ test("a régi blog-slugok az új cikkoldalon kötnek ki", async ({ page }) => {
 
 test("a hírlevél-borító régi slugja is permanens redirectet ad", async ({ request }) => {
   for (const [from, to] of RENAMED_SLUGS) {
-    // maxRedirects: 0 — csak a redirect-válasz a szerződés, a cél-route
+    // maxRedirects: 0 – csak a redirect-válasz a szerződés, a cél-route
     // borítórenderelését nem ez a teszt fedi.
     const response = await request.get(`/api/newsletter/cover/${from}`, { maxRedirects: 0 });
     expect(response.status(), `/api/newsletter/cover/${from}`).toBe(308);

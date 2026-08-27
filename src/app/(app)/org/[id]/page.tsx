@@ -407,8 +407,8 @@ export default async function OrgDetailPage({
         summary={
           isConsultantView
             ? isHu
-              ? "Mérések indítása és kísérése, csapatképek validálása — minden csapat egy helyen."
-              : "Launch and guide measurements, validate team pictures — every team in one place."
+              ? "Mérések indítása és kísérése, csapatképek validálása – minden csapat egy helyen."
+              : "Launch and guide measurements, validate team pictures – every team in one place."
             : isHu
               ? "A csapataid és a publikált csapatképek egy helyen."
               : "Your teams and published team pictures in one place."

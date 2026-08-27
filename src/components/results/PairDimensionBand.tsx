@@ -77,7 +77,7 @@ export function PairDimensionBand({ rows, otherName }: PairDimensionBandProps) {
       </ul>
 
       {/* A magyar ragozás miatt a sor nem a nevet mondja („Katalinnál"),
-          hanem a semleges „nála" alakot — a feloldás itt áll egyszer. */}
+          hanem a semleges „nála" alakot – a feloldás itt áll egyszer. */}
       <p className="mt-3 text-micro text-[var(--color-text-muted)]">
         {tf("results.pairBandLegend", locale, { name: otherName })}
       </p>

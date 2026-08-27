@@ -98,7 +98,7 @@ function fingerprint(alert: ErrorAlert): string {
 
 /**
  * Átengedjük-e ezt a riasztást? Ablakonként legfeljebb `MAX_ALERTS_PER_WINDOW`
- * megy ki, és egy ujjlenyomat ablakonként csak egyszer — így egy ismétlődő
+ * megy ki, és egy ujjlenyomat ablakonként csak egyszer – így egy ismétlődő
  * hiba egy sort ad, nem ezret.
  */
 function shouldSend(alert: ErrorAlert, now: number): boolean {
@@ -143,7 +143,7 @@ function buildBody(alert: ErrorAlert, appUrl: string | undefined) {
   const safePath = sanitizeDiagnosticPath(alert.path);
   const safeMessage = sanitizeDiagnosticText(alert.message);
   const where = safePath ? ` @ ${safePath}` : "";
-  const summary = `🔴 trita ${alert.origin} hiba${where}: ${alert.name ?? "Error"} — ${
+  const summary = `🔴 trita ${alert.origin} hiba${where}: ${alert.name ?? "Error"} – ${
     safeMessage ?? "(nincs üzenet)"
   }`;
 
@@ -165,7 +165,7 @@ function buildBody(alert: ErrorAlert, appUrl: string | undefined) {
 }
 
 /**
- * Riasztás küldése — fire-and-forget. A hívó `void sendErrorAlert(...)`-tal
+ * Riasztás küldése – fire-and-forget. A hívó `void sendErrorAlert(...)`-tal
  * indítja; a visszatérő Promise sosem utasít el.
  */
 export async function sendErrorAlert(alert: ErrorAlert): Promise<void> {

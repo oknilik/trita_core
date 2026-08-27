@@ -388,7 +388,7 @@ export function buildProfileReportViewModel(
       : undefined;
 
   // Kiegészítő skála: KIZÁRÓLAG valódi, kitöltésből származó „I" értékre.
-  // A hívó nem mért dimenziót nem ad át — így hiányzó adatból soha nem lesz
+  // A hívó nem mért dimenziót nem ad át – így hiányzó adatból soha nem lesz
   // 0%-os „Segítőkészség" sor (PDF-audit 2026-08-18, P0/7).
   const altruismDim = input.dimensions.find(
     (d) => d.code === ALTRUISM_CODE && typeof d.score === "number",
@@ -415,7 +415,7 @@ export function buildProfileReportViewModel(
         subtitle: i === 0 ? sourceLabel : "",
         score: r.score,
         rank: i,
-        // Indoklás csak a becsült elsődleges szerephez — mért eredménynél a
+        // Indoklás csak a becsült elsődleges szerephez – mért eredménynél a
         // pontszám maga a bizonyíték.
         why: i === 0 && !measured ? TEAM_ROLE_WHY[r.role][locale] : undefined,
       })),
@@ -427,7 +427,7 @@ export function buildProfileReportViewModel(
 
   // Kapcsolati dinamika melléklet: a „Csapatban működve" + a „Vakfoltok és
   // nyomás alatt" blokk EGYÜTT, a riport végén, profil-alapú becslésként
-  // megnevezve — nem ékelődik önálló főfejezetként a webes szerkezetbe.
+  // megnevezve – nem ékelődik önálló főfejezetként a webes szerkezetbe.
   const pressureItems = (pc?.pressure ?? []).map((text, idx) => ({
     text,
     source: pc?.pressureParts?.[idx]?.source,
@@ -514,7 +514,7 @@ export function buildProfileReportViewModel(
 
 // A `buildInsightBullets` („Erősségeid" / „Figyelendő" bullet-listák)
 // 2026-08-18-án KIVEZETVE. Két oka volt:
-//  1. HALOTT VOLT — sem a web, sem a PDF nem hívta (a hozzá tartozó i18n
+//  1. HALOTT VOLT – sem a web, sem a PDF nem hívta (a hozzá tartozó i18n
 //     kulcsok, results.insightStrengths/insightWatch és pdf.yourStrengths/
 //     watchAreas/summaryStrengths, szintén sehol nem renderelődtek);
 //  2. a keretezése a pontszámhoz kötött valencia volt („≥70 → erősség,
@@ -523,4 +523,4 @@ export function buildProfileReportViewModel(
 //     kockázata, hogy egy jövőbeli felület a RÉGI keretezéssel köti vissza.
 // A „mi visz előre / mire figyelj" ítélet helye a NARRATÍV slot marad
 // (workstyle-content HowYouWork mintázat-kártyái, a score-valence.ts
-// kapuján át) — az nem pontszám-sávból, hanem mintázatból következik.
+// kapuján át) – az nem pontszám-sávból, hanem mintázatból következik.

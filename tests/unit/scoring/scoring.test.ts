@@ -66,7 +66,7 @@ describe("calculateScores", () => {
     for (const code of HEXACO_ORDER) {
       assert.equal(code in result.dimensions, false, `${code} nem lehet a JSON-ban`);
     }
-    // Üres facet-map sem kerül be — a `{}` ugyanúgy „megmért, de üres".
+    // Üres facet-map sem kerül be – a `{}` ugyanúgy „megmért, de üres".
     assert.deepEqual(result.facets, {});
   });
 
@@ -79,7 +79,7 @@ describe("calculateScores", () => {
 
     assert.deepEqual(Object.keys(result.dimensions), [straight.dimension]);
     assert.equal(result.dimensions[straight.dimension], 100);
-    // A többi öt dimenzió kulcsa hiányzik — nem 0.
+    // A többi öt dimenzió kulcsa hiányzik – nem 0.
     for (const code of HEXACO_ORDER) {
       if (code === straight.dimension) continue;
       assert.equal(code in result.dimensions, false);
@@ -95,7 +95,7 @@ describe("calculateScores", () => {
 
   it("a rövid forma pontozásában NINCS kiegészítő altruizmus-skála (I)", () => {
     // A rövid forma 2026-08-11 óta egyetlen `I` itemet sem szolgál ki, így a
-    // tárolt score-JSON-ban sem jelenhet meg — sem dimenzióként, sem facetként.
+    // tárolt score-JSON-ban sem jelenhet meg – sem dimenzióként, sem facetként.
     const result = calculateScores(
       "TRITAN",
       answersAtEffective(shortQuestions, 4),
@@ -169,7 +169,7 @@ describe("calculateScores", () => {
 
   it("bank-ujjlenyomat: egy reversed-flip megváltoztatja a hash-t", () => {
     // Ez a bankVersion-literál vakfoltja: egy item-kulcsolási szerkesztés
-    // (reversed, dimenzió, facet) a verzió-string alatt észrevétlen maradna —
+    // (reversed, dimenzió, facet) a verzió-string alatt észrevétlen maradna –
     // a hash-nek tüzelnie kell rá.
     const bank = [
       { id: 1, reversed: false, dimension: "C", facet: "organization" },

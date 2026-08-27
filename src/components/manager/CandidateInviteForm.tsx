@@ -107,7 +107,7 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
 
   const labelClass =
     "font-dm-sans text-micro font-semibold uppercase tracking-widest text-muted";
-  // Terrakotta (jelölt-felület) fókusz-akcent — 2026-08-05 vizuális frissítés.
+  // Terrakotta (jelölt-felület) fókusz-akcent – 2026-08-05 vizuális frissítés.
   const inputClass =
     // Mobilon 16px-es mező-font: az iOS Safari 16px alatt fókuszkor
     // rázoomol és elugrik a layout. md-től marad az eredeti 13px.
@@ -116,7 +116,7 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
   return (
     <div className="flex flex-col gap-5">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* A cím/leírás a HiringDashboard panel-fejlécében él — itt nem
+        {/* A cím/leírás a HiringDashboard panel-fejlécében él – itt nem
             duplikáljuk. */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="flex flex-col gap-2">
@@ -183,8 +183,8 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
             </span>
             <span className="mt-0.5 block text-xs leading-relaxed text-ink-body">
               {isHu
-                ? "A teszt után a jelölt egy rövid (~3 perces) csapatszerep-kérdőívet is kap — átugorhatja."
-                : "After the assessment the candidate also gets a short (~3 min) team-role questionnaire — they can skip it."}
+                ? "A teszt után a jelölt egy rövid (~3 perces) csapatszerep-kérdőívet is kap – átugorhatja."
+                : "After the assessment the candidate also gets a short (~3 min) team-role questionnaire – they can skip it."}
             </span>
           </span>
         </label>

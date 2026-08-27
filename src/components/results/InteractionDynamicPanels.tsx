@@ -135,8 +135,8 @@ function InsightPanel({
  * (valódi páros és karakter-szimuláció). Amíg két külön prezentáció volt, a
  * user ugyanazt a mondatot két különböző címke alatt látta („Ami összeköt"
  * vs. „Ami magától megy"), és úgy tűnt, mintha két különböző állítás lenne.
- * A tartalmi eltérés a két út között így ott marad, ahol valódi — a motor
- * bemenetében (típus-prototípus: 2 pólusos dimenzió; valódi profil: 2–6) —,
+ * A tartalmi eltérés a két út között így ott marad, ahol valódi – a motor
+ * bemenetében (típus-prototípus: 2 pólusos dimenzió; valódi profil: 2–6) –,
  * nem a megjelenítésben.
  */
 export function InteractionDynamicPanels({
@@ -155,7 +155,7 @@ export function InteractionDynamicPanels({
   // A motor legfeljebb `DEFAULT_MAX_ATOMS` atomot választ, és a „Közös kép"
   // már kimondja az
   // első erősség- és súrlódásjelzést. A panelek ezért csak azt hozzák, ami
-  // AZON TÚL van — különben a nyitott első panel szó szerint megismételné a
+  // AZON TÚL van – különben a nyitott első panel szó szerint megismételné a
   // fentebb olvasott mondatot. A `discuss` külön szövegblokk, az egészben jön.
   const panels = (
     [
@@ -209,7 +209,7 @@ export function InteractionDynamicPanels({
   return (
     <div className="flex flex-col gap-7">
       {/* A részletek előtt egyetlen, azonnal használható közös kép. Ha csak
-          az egyik oldal van meg, azt mutatjuk — nem tüntetjük el az egész
+          az egyik oldal van meg, azt mutatjuk – nem tüntetjük el az egész
           blokkot a hiányzó másik fél miatt. */}
       {hasSummary ? (
         <section>
@@ -230,7 +230,7 @@ export function InteractionDynamicPanels({
                   {summaryEasy.text}
                 </p>
                 {/* A legkiemeltebb mondat sem maradhat jelöletlen, ha
-                    rés-alapon áll — épp ezt olvassa el mindenki. */}
+                    rés-alapon áll – épp ezt olvassa el mindenki. */}
                 <BasisNote
                   line={summaryEasy}
                   className="mt-2 text-micro uppercase tracking-wide text-[var(--color-accent-self-deep)]/70"

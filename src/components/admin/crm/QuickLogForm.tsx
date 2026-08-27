@@ -142,7 +142,7 @@ export function QuickLogForm({
           type="text"
           value={summary}
           onChange={(event) => setSummary(event.target.value)}
-          placeholder="Mi történt? (egy sor — Enter = mentés)"
+          placeholder="Mi történt? (egy sor – Enter = mentés)"
           aria-label="Összefoglaló"
           maxLength={300}
           data-testid="quick-log-summary"
@@ -218,8 +218,8 @@ export function QuickLogForm({
             </div>
             <p className="mt-1.5 text-xs text-muted">
               {clearNextActionWhenEmpty
-                ? "Dátum nélkül az elintézett lépés törlődik — jobb, ha rögtön kitűzöd a következőt."
-                : "Dátum nélkül a deal következő lépése nem változik — a naplózás és a kitűzés egy mentés."}
+                ? "Dátum nélkül az elintézett lépés törlődik – jobb, ha rögtön kitűzöd a következőt."
+                : "Dátum nélkül a deal következő lépése nem változik – a naplózás és a kitűzés egy mentés."}
             </p>
           </div>
         </div>

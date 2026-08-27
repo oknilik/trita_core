@@ -91,7 +91,7 @@ export function LinearReport({
             >
               <button
                 type="button"
-                aria-label={`${String(index + 1).padStart(2, "0")}. ${section.title} — ${actionLabel}`}
+                aria-label={`${String(index + 1).padStart(2, "0")}. ${section.title} – ${actionLabel}`}
                 aria-expanded={isOpen}
                 aria-controls={`report-${section.id}-content`}
                 onClick={(event) => {

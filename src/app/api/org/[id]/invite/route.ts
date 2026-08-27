@@ -116,7 +116,7 @@ export async function POST(
   /**
    * Egy cím feldolgozása. A visszatérő státusz és a korábbi egyelemű
    * hibakódok (`SELF_INVITE`, `ALREADY_MEMBER`) egy az egyben megfeleltethetők
-   * — az egyelemű ág ebből képezi a régi választ.
+   * – az egyelemű ág ebből képezi a régi választ.
    */
   async function inviteOne(rawEmail: string): Promise<{
     status: BulkInviteStatus;
@@ -132,7 +132,7 @@ export async function POST(
     });
 
     if (!targetUser) {
-      // User doesn't exist — create pending invite + send email
+      // User doesn't exist – create pending invite + send email
       const existing = await prisma.organizationPendingInvite.findUnique({
         where: { orgId_email: { orgId, email } },
       });
@@ -148,7 +148,7 @@ export async function POST(
         orgName: org!.name,
         role,
         signUpUrl: `${APP_URL}/join/org/${invite.token}`,
-        // A meghívott még nem tag, tárolt nyelve nincs — a meghívó nyelvét vesszük.
+        // A meghívott még nem tag, tárolt nyelve nincs – a meghívó nyelvét vesszük.
         locale,
       });
 
@@ -181,7 +181,7 @@ export async function POST(
     return { status: "added", member };
   }
 
-  // ── Egyelemű ág — a válasz-szerződés VÁLTOZATLAN ────────────────────
+  // ── Egyelemű ág – a válasz-szerződés VÁLTOZATLAN ────────────────────
   if (single.success) {
     const outcome = await inviteOne(single.data.email);
     if (outcome.status === "self_invite") {
@@ -202,7 +202,7 @@ export async function POST(
   // ── Kötegelt ág ─────────────────────────────────────────────────────
   // Sorban, nem párhuzamosan: a levélküldés a szűk keresztmetszet, és a
   // párhuzamos Resend-hívások a rate limitbe futnának. Egy cím hibája nem
-  // állítja meg a köteget — a hívó cím-szinten látja, mi történt.
+  // állítja meg a köteget – a hívó cím-szinten látja, mi történt.
   const results: BulkInviteResult[] = [];
   for (const email of bulk!.data!.emails) {
     try {

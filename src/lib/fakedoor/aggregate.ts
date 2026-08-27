@@ -114,7 +114,7 @@ function dedupKey(row: {
   return `s:${row.sessionId}`;
 }
 
-/** Profilonként a LEGUTOLSÓ válasz — a meggondolás felülírás, nem új szavazat. */
+/** Profilonként a LEGUTOLSÓ válasz – a meggondolás felülírás, nem új szavazat. */
 export function dedupeResponses(rows: FakeDoorResponseRow[]): FakeDoorResponseRow[] {
   const byKey = new Map<string, FakeDoorResponseRow>();
   for (const row of rows) {
@@ -125,7 +125,7 @@ export function dedupeResponses(rows: FakeDoorResponseRow[]): FakeDoorResponseRo
   return [...byKey.values()];
 }
 
-/** Profilonként az ELSŐ megtekintés — az újranyitás nem hígít(hat)ja a nevezőt. */
+/** Profilonként az ELSŐ megtekintés – az újranyitás nem hígít(hat)ja a nevezőt. */
 export function dedupeViews(rows: FakeDoorViewRow[]): FakeDoorViewRow[] {
   const byKey = new Map<string, FakeDoorViewRow>();
   for (const row of rows) {
@@ -248,7 +248,7 @@ export function aggregateFakeDoorReport(
     })),
     valueGoals: countBy(CAREER_VALUE_GOALS, (row) => row.valueGoal),
     noReasons: countBy(CAREER_NO_REASONS, (row) => row.reasonNo),
-    // Fizetési hajlandóság KÖZÖNSÉGENKÉNT — üres szegmens kimarad, összevont
+    // Fizetési hajlandóság KÖZÖNSÉGENKÉNT – üres szegmens kimarad, összevont
     // szám nincs (a modul-invariáns a willingness-re is áll).
     willingnessByAudience: FAKE_DOOR_AUDIENCES.map((audience) => ({
       audience,

@@ -173,7 +173,7 @@ function renderObserver(
   overrides: Partial<ComponentProps<typeof ObserverClient>> = {},
 ) {
   // A ThemeProvider a gyökér-layoutban él; itt izoláltan renderelünk,
-  // ezért a héjnak ezt a darabját kézzel adjuk hozzá — a nav
+  // ezért a héjnak ezt a darabját kézzel adjuk hozzá – a nav
   // séma-választója enélkül provider nélkül hívná a useTheme-et.
   return render(
     <ThemeProvider>
@@ -575,7 +575,7 @@ describe("C5.5 ObserverClient integration", () => {
 
       renderObserver();
 
-      // Should fall back to intro — check for the start button
+      // Should fall back to intro – check for the start button
       expect(screen.getByText(START_CTA)).toBeInTheDocument();
     });
   });

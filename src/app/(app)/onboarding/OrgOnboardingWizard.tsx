@@ -696,7 +696,7 @@ export function OrgOnboardingWizard() {
                           ? t("orgOnboarding.copiedBtn", locale)
                           : t("orgOnboarding.copyBtn", locale)}
                       </button>
-                      {/* QR — ha a csapat egy teremben ül: a tagok a
+                      {/* QR – ha a csapat egy teremben ül: a tagok a
                           telefonjukkal olvassák be a csatlakozó linket. */}
                       <button
                         type="button"

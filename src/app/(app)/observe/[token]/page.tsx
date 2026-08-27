@@ -149,10 +149,10 @@ export default async function ObservePage({ params }: ObservePageProps) {
   //      viewer garantáltan ő), VAGY
   //  (b) külső meghívónál az a böngésző, amelyik a draft-mentéskor kapott
   //      HMAC-cookie-t hordozza (részletek + trade-off: observer/draft-cookie.ts).
-  // Enélkül a token bármely (akár kijelentkezett) birtokosa — tipikusan maga
-  // az ÉRTÉKELT, aki a linket küldte — elolvashatná a folyamatban lévő
+  // Enélkül a token bármely (akár kijelentkezett) birtokosa – tipikusan maga
+  // az ÉRTÉKELT, aki a linket küldte – elolvashatná a folyamatban lévő
   // válaszokat (motor-audit: logged-out draft leak). Cookie nélkül a kitöltő
-  // egyszerűen elölről kezdi — a draft NEM törlődik, csak nem jelenik meg.
+  // egyszerűen elölről kezdi – a draft NEM törlődik, csak nem jelenik meg.
   const cookieStore = await cookies();
   const canReceiveDraft = isInternalInvite
     ? true

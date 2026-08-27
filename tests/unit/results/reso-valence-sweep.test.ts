@@ -64,7 +64,7 @@ const read = (relative: string) =>
 
 // ── 1. A kanonikus kapu ─────────────────────────────────────────────────
 
-test("score-valence: a E egyik slotba sem kerülhet — mindkét felület-típuson", () => {
+test("score-valence: a E egyik slotba sem kerülhet – mindkét felület-típuson", () => {
   assert.equal(strengthSlotEligible("E", "self"), false);
   assert.equal(strengthSlotEligible("E", "evaluative"), false);
   assert.equal(deficitSlotEligible("E"), false);
@@ -82,7 +82,7 @@ test("score-valence: a többi dimenzió mindkét slotba kerülhet", () => {
 // ── 2. Copy-guard: a magas E-hoz nem tapadhat empátia-ígéret ──────────
 // Grep-jellegű őr a tartalom-térképek E-sorain (mindkét pólus, HU+EN).
 
-/** E-hoz tartozó, felületre kimenő szövegek — minden térképből. */
+/** E-hoz tartozó, felületre kimenő szövegek – minden térképből. */
 function resoCopyStrings(): { where: string; text: string }[] {
   const out: { where: string; text: string }[] = [];
   const push = (where: string, value: unknown) => {
@@ -189,7 +189,7 @@ test("pólus-próza: a magas E minden fő szövegében ott az ára is", () => {
     ["SOLO_DIM_NARRATIVES.E_high.en", SOLO_DIM_NARRATIVES.E_high.en],
   ];
   for (const [where, text] of highTexts) {
-    assert.ok(HIGH_COST_RE.test(text), `${where}: hiányzik a magas pólus ára — "${text}"`);
+    assert.ok(HIGH_COST_RE.test(text), `${where}: hiányzik a magas pólus ára – "${text}"`);
   }
 });
 
@@ -203,7 +203,7 @@ test("pólus-próza: az alacsony E nincs hiányként keretezve, de az ára kimon
     ["SOLO_DIM_NARRATIVES.E_low.en", SOLO_DIM_NARRATIVES.E_low.en],
   ];
   for (const [where, text] of lowTexts) {
-    assert.ok(LOW_COST_RE.test(text), `${where}: hiányzik az alacsony pólus ára — "${text}"`);
+    assert.ok(LOW_COST_RE.test(text), `${where}: hiányzik az alacsony pólus ára – "${text}"`);
   }
   // A kivezetett hiány-keretezés nem térhet vissza.
   const flat = JSON.stringify([
@@ -253,7 +253,7 @@ test("csapat-felület: a „Csapat erőssége” kártya a kanonikus kapun megy"
 test("jelölt-felület: a valencia-szűrés a kanonikus kapuból jön, nem kézi E-literálból", () => {
   const source = read("src/app/(app)/hiring/[orgId]/candidates/[inviteId]/page.tsx");
   // A sor-kommentek (köztük ez a döntés-indoklás) nem részei a viselkedésnek
-  // és nem mennek ki a felületre — a guard a kód-törzsre néz.
+  // és nem mennek ki a felületre – a guard a kód-törzsre néz.
   const code = source.replace(/\/\/.*$/gm, "");
   assert.ok(
     code.includes("strengthSlotEligible") && code.includes("deficitSlotEligible"),
@@ -354,7 +354,7 @@ function adapCopyStrings(): { where: string; text: string }[] {
     if (atom.viewB) push(`interaction-atoms.${atom.id}.viewB`, atom.viewB);
   }
 
-  // Kérdésbank: az akkordeon verdikt-hármasa (low/mid/high) — a description
+  // Kérdésbank: az akkordeon verdikt-hármasa (low/mid/high) – a description
   // SZÁNDÉKOSAN kimarad (irodalom-hű konstruktum-definíció).
   const adapDim = tritanConfig.dimensions.find((d) => d.code === "A");
   assert.ok(adapDim, "nincs A dimenzió a kérdésbankban");
@@ -369,7 +369,7 @@ test("A-szövegek: sehol nem ígérünk empátiát (2026-08-11 kiterjesztés)", 
   assert.deepEqual(
     offenders.map((o) => `${o.where}: ${o.text}`),
     [],
-    "empátia-keretezés került az A-szövegekbe — a skála (Megbocsátás/Gyengédség/Rugalmasság/Türelem) ezt nem méri",
+    "empátia-keretezés került az A-szövegekbe – a skála (Megbocsátás/Gyengédség/Rugalmasság/Türelem) ezt nem méri",
   );
 });
 
@@ -416,7 +416,7 @@ test("A akkordeon-verdikt: mindkét pólus kétoldalú (hozadék ÉS ár)", () =
     for (const band of ["low", "high"] as const) {
       assert.ok(
         both.test(bands[band]),
-        `tritan.A.insightsByLocale.${locale}.${band}: hiányzik a másik oldal — "${bands[band]}"`,
+        `tritan.A.insightsByLocale.${locale}.${band}: hiányzik a másik oldal – "${bands[band]}"`,
       );
     }
   }
@@ -424,7 +424,7 @@ test("A akkordeon-verdikt: mindkét pólus kétoldalú (hozadék ÉS ár)", () =
 
 test("csapat-felület: az A-sáv szövegeiben nincs empátia-ígéret", () => {
   // A sor-kommentek (köztük a döntés-indoklás, ami idézi a kivezetett
-  // mondatot) nem mennek ki a felületre — a guard a kód-törzsre néz.
+  // mondatot) nem mennek ki a felületre – a guard a kód-törzsre néz.
   const code = read("src/components/manager/TeamInsights.tsx").replace(/\/\/.*$/gm, "");
   assert.ok(
     !/erős harmónia és empátia|strong harmony and empathy/.test(code),

@@ -12,7 +12,7 @@ import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
  * tekinti és figyelmen kívül hagyja. Ezt a konstanst akkor bumpold, amikor a
  * marketing-oldalak tartalma érdemben változik.
  */
-const CONTENT_REVIEWED_AT = new Date("2026-08-25T00:00:00.000Z");
+const CONTENT_REVIEWED_AT = new Date("2026-08-27T00:00:00.000Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = getSiteUrl();
@@ -61,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // A bloglista frissessége a legfrissebb cikk dátuma (nem a build ideje, és
   // nem is a `reviewedAt`): ha `reviewedAt`-tel indítanánk a reduce-t, az
   // felső korlátként viselkedne, és a /blog lastmodja mindig a felülvizsgálat
-  // napját mondaná akkor is, ha a lista hetek óta változatlan — pont az a
+  // napját mondaná akkor is, ha a lista hetek óta változatlan – pont az a
   // „megbízhatatlan lastmod", amit a fenti konstans elkerülni hivatott.
   const newestPostAt =
     posts.reduce<Date | null>((acc, post) => {
@@ -71,6 +71,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: `${baseUrl}/`, lastModified: reviewedAt, changeFrequency: "weekly", priority: 1 },
+    { url: `${baseUrl}/self-awareness`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${baseUrl}/team-dynamics`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/how-we-work`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/about`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/try`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },

@@ -133,7 +133,7 @@ export function DealTimeline({
 
       {activities.length === 0 && inquiries.length === 0 ? (
         <p className="mt-3 text-sm text-muted">
-          Még nincs bejegyzés — az első hívás/email a fenti gyors-naplózóval
+          Még nincs bejegyzés – az első hívás/email a fenti gyors-naplózóval
           rögzíthető.
         </p>
       ) : (

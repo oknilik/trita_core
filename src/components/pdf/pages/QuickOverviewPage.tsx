@@ -136,7 +136,7 @@ export function QuickOverviewPage({ model, chapterStartPages }: Props) {
           ))}
         </View>
 
-        {/* Tartalomjegyzék — 01–03 oldalszámmal, alatta a mellékletek. */}
+        {/* Tartalomjegyzék – 01–03 oldalszámmal, alatta a mellékletek. */}
         <View
           wrap={false}
           style={{

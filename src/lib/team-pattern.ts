@@ -254,10 +254,10 @@ export function calculateTeamPattern(
 
   const stabilityNote =
     stability === "stabil"
-      ? "A csapat mintázata stabil — minden tengely egyértelműen az egyik pólus felé hajlik."
+      ? "A csapat mintázata stabil – minden tengely egyértelműen az egyik pólus felé hajlik."
       : stability === "közepes"
       ? `A csapat ${unstableAxes.length} tengelyen közel van a középértékhez. A mintázat változhat új tagokkal vagy idővel.`
-      : `A csapat ${unstableAxes.length} tengelyen közel van a középértékhez. A jelenlegi mintázat erősen kontextusfüggő — kisebb változások is más képet adhatnak.`;
+      : `A csapat ${unstableAxes.length} tengelyen közel van a középértékhez. A jelenlegi mintázat erősen kontextusfüggő – kisebb változások is más képet adhatnak.`;
 
   // ── 7. Konfidencia (összetett) ──────────────────────────
   const sizeConf:   "magas" | "közepes" | "alacsony" =
@@ -276,7 +276,7 @@ export function calculateTeamPattern(
   // ── 8. Egyén-minta távolság ─────────────────────────────
   const styleDistances: StyleDistance[] = members.map((m) => {
     // A tengely-eltérések csak a feszültség-tengelyek kiszűréséhez kellenek
-    // (a fogyasztó a tensionAxes darabszámát használja) — a deviations map és
+    // (a fogyasztó a tensionAxes darabszámát használja) – a deviations map és
     // a patternDistance nem hagyja el a függvényt.
     const deviations: Record<string, number> = {
       drive:      Math.abs(m.scores.X - rawAxes.drive),
@@ -305,7 +305,7 @@ export function calculateTeamPattern(
     patternCode,
     patternName,
     diversitySuffix: divSuffix,
-    fullLabel: `${patternName} — ${divSuffix}`,
+    fullLabel: `${patternName} – ${divSuffix}`,
 
     alternativeCode,
     alternativeName,
@@ -333,7 +333,7 @@ export function calculateTeamPattern(
 }
 
 // ============================================================
-// 16 CSAPATMINTA — TARTALOM
+// 16 CSAPATMINTA – TARTALOM
 // ============================================================
 
 export interface PatternContent {
@@ -350,13 +350,13 @@ export interface PatternContent {
 
 // ── Név-forrás egységesítés (2026-08-11) ────────────────────────────
 // A 16 mintázat MEGJELENŐ nevének egyetlen forrása a pattern-data.ts
-// (PATTERNS[bináris kulcs].alias) — a /patterns felfedező ugyanazt a
+// (PATTERNS[bináris kulcs].alias) – a /patterns felfedező ugyanazt a
 // név-családot mutatja elsődleges címkeként, így a riport és a marketing
 // egy nyelvet beszél. Az alábbi tartalom-táblában maradó `name` literál
 // csak VÉSZ-fallback (ha egy kód nem oldódna fel a pattern-data-ban);
 // a kanonikus PATTERN_NAMES export a nevet a pattern-data-ból veszi.
 
-/** Tengelyenkénti pólus-betűpárok [magas, alacsony] — drive/cohesion/discipline/openness. */
+/** Tengelyenkénti pólus-betűpárok [magas, alacsony] – drive/cohesion/discipline/openness. */
 const AXIS_POLE_LETTERS: ReadonlyArray<readonly [string, string]> = [
   ["E", "R"],
   ["C", "V"],
@@ -394,30 +394,30 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Gyors tempójú, jól szervezett csapat, amely szeret új utakat keresni, miközben a tagok számítanak egymásra. Az újítás és a fegyelmezett végrehajtás egyszerre van jelen a működésében.",
     strengths: [
       "Új ötleteket gyorsan, rendszeresen képes megvalósítani",
-      "Erős belső kohézió — a tagok egymást támogatják",
+      "Erős belső kohézió – a tagok egymást támogatják",
       "Strukturált munkavégzés, mégis nyitott a változásra",
       "Lendületes jelenlét, amely a külső partnereket is magával ragadhatja",
     ],
     blindSpots: [
-      "A tempó kiégéshez vezethet — a csapat nem mindig ismeri fel a saját korlátait",
+      "A tempó kiégéshez vezethet – a csapat nem mindig ismeri fel a saját korlátait",
       "Az újdonság iránti vonzalom elterelheti a fókuszt az alapfeladatokról",
       "A nagy összetartás csoportgondolkodáshoz vezethet: előfordulhat, hogy senki nem mond ellent",
       "A struktúra rugalmatlanná válhat, ha túl sok szabállyal terhelik a folyamatokat",
     ],
     communicationStyle:
-      // A kohézió-tengely a Barátságosság + Becsületesség-Alázat átlaga — az
+      // A kohézió-tengely a Barátságosság + Becsületesség-Alázat átlaga – az
       // „empatikus" ezen a tengelyen ugyanaz a túl-ígéret, amit a pattern-data
       // két sorából is kivezettünk (2026-08-11): a Barátságosság türelmet és
       // megbocsátást mér, nem empátiát.
       "Gyors, közvetlen, de türelmes. Szeretik a rövid napi egyeztetéseket és a vizuális terveket. Az ötletelés szabad, a döntés utáni végrehajtás viszont fegyelmezett.",
     idealTasks:
-      "Új termékek fejlesztése, rövid fejlesztési ciklusok, stratégiai irányváltás — minden olyan helyzet, ahol egyszerre kell kreativitás és megvalósítási képesség.",
+      "Új termékek fejlesztése, rövid fejlesztési ciklusok, stratégiai irányváltás – minden olyan helyzet, ahol egyszerre kell kreativitás és megvalósítási képesség.",
     riskSituations:
       "Hosszú, monoton projektek; konfliktuskerülés, ami elfojtott feszültséghez vezet; túl sok párhuzamos kezdeményezés.",
     leaderActions: [
       "Építs be rendszeres „lassító napokat” az intenzív munkaszakaszok közé, hogy legyen idő az áttekintésre és a tanulásra",
       "Jelölj ki egy „ördög ügyvédjét” a nagyobb döntéseknél a csoportgondolkodás ellen",
-      "Korlátozd a párhuzamos projektek számát — egyszerre legfeljebb két kezdeményezés legyen aktív",
+      "Korlátozd a párhuzamos projektek számát – egyszerre legfeljebb két kezdeményezés legyen aktív",
     ],
   },
 
@@ -427,13 +427,13 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     description:
       "Fegyelmezett, összetartó csapat, amely a bevált módszereket hatékonyan alkalmazza. A megbízhatóság és a kiszámíthatóság az erősségük.",
     strengths: [
-      "Megbízható végrehajtás — amit megígérnek, azt teljesítik",
+      "Megbízható végrehajtás – amit megígérnek, azt teljesítik",
       "Erős csapatszellem, alacsony belső súrlódás",
       "Jól működő folyamatok és rutinok",
       "Megbízható, kiszámítható teljesítmény",
     ],
     blindSpots: [
-      "Az új megközelítések ritkábban jelennek meg — a megszokott keretekből való kilépéshez külső ösztönzésre lehet szükség",
+      "Az új megközelítések ritkábban jelennek meg – a megszokott keretekből való kilépéshez külső ösztönzésre lehet szükség",
       "A gyakorlatias szemlélet mellett ellenállás alakulhat ki az új eszközökkel és módszerekkel szemben",
       "A harmonikus felszín alatt elfojtott feszültségek halmozódhatnak",
       "Külső változásokra lassabban reagálhatnak",
@@ -447,7 +447,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     leaderActions: [
       "Negyedévente tarts „mi lenne, ha?” műhelymunkát, és dolgozzatok ki több lehetséges forgatókönyvet",
       "Hozz be külső nézőpontot: vendégelőadót, csapatok közötti projektet vagy iparági összehasonlítást",
-      "Ismerj el láthatóan egy sikeres kísérletet — ezzel jelzed, hogy az újításnak értéke van",
+      "Ismerj el láthatóan egy sikeres kísérletet – ezzel jelzed, hogy az újításnak értéke van",
     ],
   },
 
@@ -457,26 +457,26 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     description:
       "Kötetlenül működő, újító csapat, amelyben erős az összetartás, és a tagok szívesen kísérleteznek. A kreativitás és az összetartozás ad lendületet a munkájuknak.",
     strengths: [
-      "Erős kreatív energia — könnyen elindul az ötletelés",
+      "Erős kreatív energia – könnyen elindul az ötletelés",
       "Erős bizalom és pszichológiai biztonság",
       "Gyorsan alkalmazkodnak változó körülményekhez",
-      "Vonzó kultúra — a tagok szívesen maradnak",
+      "Vonzó kultúra – a tagok szívesen maradnak",
     ],
     blindSpots: [
       "A struktúra hiánya kaotikus végrehajtáshoz vezethet",
-      "Nehéz lehet fontossági sorrendet kialakítani — minden ötlet egyformán vonzónak tűnhet",
+      "Nehéz lehet fontossági sorrendet kialakítani – minden ötlet egyformán vonzónak tűnhet",
       "A határidők jellemzően nem a legfontosabb értékük",
       "A harmonikus légkör miatt nehéz lehet kritikus visszajelzést adni",
     ],
     communicationStyle:
       "Informális, szabad asszociációkra épülő és gyakran spontán. Sok az ötletelés, kevés a formális megbeszélés.",
     idealTasks:
-      "Korai koncepcióalkotás, ötletelés, tervezési műhelyek és márkaépítés — minden olyan feladat, amely szerteágazó gondolkodást kíván.",
+      "Korai koncepcióalkotás, ötletelés, tervezési műhelyek és márkaépítés – minden olyan feladat, amely szerteágazó gondolkodást kíván.",
     riskSituations:
       "Összetett, többlépéses projekt szoros határidővel; szabályozott feladatok; olyan helyzetek, ahol a befejezés fontosabb az ötletelésnél.",
     leaderActions: [
       "Vezess be könnyű kereteket: hetente egyszer tekintsétek át a prioritásokat, de ne szabályozd túl a működést",
-      "Használj „ötletparkolót” — az ötleteket rögzítsd, de ne fusson mind egyszerre",
+      "Használj „ötletparkolót” – az ötleteket rögzítsd, de ne fusson mind egyszerre",
       "A megvalósítási szakaszban szervezz közös munkát egy szervezettebben működő csapattal",
     ],
   },
@@ -495,13 +495,13 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     blindSpots: [
       "A lojalitás akadályozhatja a szükséges változásokat",
       "A gyakorlatias szemlélet mellett háttérbe szorulhatnak a hosszabb távú szempontok",
-      "Kizárhatják a külső nézőpontokat — „mi tudjuk, hogyan kell”",
+      "Kizárhatják a külső nézőpontokat – „mi tudjuk, hogyan kell”",
       "A rugalmasság néha tervezetlenséget jelenthet",
     ],
     communicationStyle:
       "Közvetlen, személyes, néha informális a kelleténél. A döntések gyakran a folyosón születnek.",
     idealTasks:
-      "Ügyfélkapcsolat, értékesítés, operatív működés és gyors problémamegoldás — minden olyan feladat, ahol számít a személyes kapcsolat és a gyors reagálás.",
+      "Ügyfélkapcsolat, értékesítés, operatív működés és gyors problémamegoldás – minden olyan feladat, ahol számít a személyes kapcsolat és a gyors reagálás.",
     riskSituations:
       "Gyors növekedés; új tagok beillesztése; stratégiai tervezés; technológiai korszerűsítés.",
     leaderActions: [
@@ -539,7 +539,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     leaderActions: [
       "Az egyéni mutatók mellett vezess be közös, csapatszintű teljesítménymutatókat is",
       "Strukturálj páros feladatokat, ahol a siker kölcsönös",
-      "Figyelj a kiégés jeleire — a nagy energia mögött gyakran kimerülés van",
+      "Figyelj a kiégés jeleire – a nagy energia mögött gyakran kimerülés van",
     ],
   },
 
@@ -551,14 +551,14 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     strengths: [
       "Gyors végrehajtás",
       "Egyértelmű felelősségek és elvárások",
-      "Kevés a bizonytalanság az elvárások körül — a tagok tudják, mit várnak tőlük",
+      "Kevés a bizonytalanság az elvárások körül – a tagok tudják, mit várnak tőlük",
       "Kiszámítható, magas teljesítmény",
     ],
     blindSpots: [
-      "A profil alapján felmerülhet, hogy a hibák kimondása nehezebb — ezt a pszichológiai biztonság pulzusmérése tudja megerősíteni vagy cáfolni",
+      "A profil alapján felmerülhet, hogy a hibák kimondása nehezebb – ezt a pszichológiai biztonság pulzusmérése tudja megerősíteni vagy cáfolni",
       "A hierarchia elfojthatja az alulról jövő ötleteket",
       "Rövid távú gondolkodás",
-      "Nagyobb lehet a fluktuáció — aki nehezen tartja a tempót, könnyebben továbbállhat",
+      "Nagyobb lehet a fluktuáció – aki nehezen tartja a tempót, könnyebben továbbállhat",
     ],
     communicationStyle:
       "Felülről lefelé, tömör, utasításjellegű. A megbeszélések rövidek és döntésközpontúak.",
@@ -587,7 +587,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     blindSpots: [
       "A fontossági sorrend kialakítása jellemzően nehéz",
       "Kaotikus végrehajtás",
-      "Az összetartás hiányozhat — az egyéni ambíciók dominálhatnak",
+      "Az összetartás hiányozhat – az egyéni ambíciók dominálhatnak",
       "Döntések születnek, de a megvalósításuk elmaradhat",
     ],
     communicationStyle:
@@ -597,7 +597,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     riskSituations:
       "Minden olyan feladat, amely tartós, szervezett együttműködést és fegyelmezett végrehajtást igényel.",
     leaderActions: [
-      "Adj egyértelmű keretet: „ezen a héten ezt fejezzük be” — a megvalósítás módját bízd rájuk",
+      "Adj egyértelmű keretet: „ezen a héten ezt fejezzük be” – a megvalósítás módját bízd rájuk",
       "Párosíts minden projektet egy végrehajtó partnerrel",
       "Hetente kérdezzétek meg: „mi az az egy dolog, amelyet közösen eldöntöttünk és végig is vittünk?”",
     ],
@@ -627,7 +627,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     riskSituations:
       "Összetett együttműködés; csapatépítés; tudásmegosztás; vezetőváltás.",
     leaderActions: [
-      "Heti 30 perces tudásmegosztó kör — mindenki 5 percben elmondja, mit tanult",
+      "Heti 30 perces tudásmegosztó kör – mindenki 5 percben elmondja, mit tanult",
       "Jelöljetek ki 1–2 olyan közös csapatcélt, amelyet csak együtt érhettek el",
       "Tervezzétek meg tudatosan az új tagok beillesztését, és az első 30 napra jelöljetek ki melléjük mentort",
     ],
@@ -643,7 +643,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     strengths: [
       "Mély, alapos munkavégzés",
       "Erős belső bizalom és kölcsönös tisztelet",
-      "Módszeres újítás — átgondolt, nem kapkodó",
+      "Módszeres újítás – átgondolt, nem kapkodó",
       "Alacsony hibaarány, magas minőség",
     ],
     blindSpots: [
@@ -659,9 +659,9 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     riskSituations:
       "Szoros határidők; prezentációk; egyeztetés az érintettekkel; gyors kommunikáció.",
     leaderActions: [
-      "Adj elegendő időt a mélymunkához — védd meg a felesleges megbeszélésektől",
+      "Adj elegendő időt a mélymunkához – védd meg a felesleges megbeszélésektől",
       "Segíts a csapatnak érthetően bemutatni és láthatóvá tenni a munkáját",
-      "Tartsatok rendszeres bemutatót az elkészült munkáról — ez növeli a csapat láthatóságát",
+      "Tartsatok rendszeres bemutatót az elkészült munkáról – ez növeli a csapat láthatóságát",
     ],
   },
 
@@ -677,7 +677,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Jól kezelik a rutinfeladatokat",
     ],
     blindSpots: [
-      "Ellenállás a változással szemben — „eddig is így csináltuk”",
+      "Ellenállás a változással szemben – „eddig is így csináltuk”",
       "Kívülről könnyen láthatatlanok maradnak",
       "A csapat zárt lehet kívülállók felé",
       "Az innováció háttérbe szorulhat",
@@ -689,9 +689,9 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     riskSituations:
       "Hirtelen piaci változás; szervezeti átalakulás; „hangos” érdekképviselet.",
     leaderActions: [
-      "Tedd láthatóvá a csapat munkáját — küldjetek heti összefoglalót az érintetteknek",
+      "Tedd láthatóvá a csapat munkáját – küldjetek heti összefoglalót az érintetteknek",
       "Évente egyszer kérdezd meg: „Mi az az egy dolog, amelyen változtatnátok?”",
-      "Indíts apró, biztonságos kísérleteket — például: „Próbáljuk ki ezt az eszközt két hétig.”",
+      "Indíts apró, biztonságos kísérleteket – például: „Próbáljuk ki ezt az eszközt két hétig.”",
     ],
   },
 
@@ -707,7 +707,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "A tagok tartósan elköteleződnek",
     ],
     blindSpots: [
-      "Nehéz lehet a külvilággal kommunikálni — „saját nyelv”",
+      "Nehéz lehet a külvilággal kommunikálni – „saját nyelv”",
       "Lassú végrehajtás",
       "A belső harmónia fontosabb lehet, mint az eredmény",
       "A külső nyomást és a határidőket nehezebben kezelhetik",
@@ -720,7 +720,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Szoros határidők; nagy téttel járó prezentáció; nehéz egyeztetés az érintettekkel; gyors létszám- vagy feladatbővülés.",
     leaderActions: [
       "Havonta egyszer forduljatok kifelé: mutassátok be a munkátokat egy másik csapatnak",
-      "Jelöljetek ki néhány könnyen követhető mérföldkövet — ne ellenőrzésként, hanem a közös ritmust adó kapaszkodóként",
+      "Jelöljetek ki néhány könnyen követhető mérföldkövet – ne ellenőrzésként, hanem a közös ritmust adó kapaszkodóként",
       "Segíts üzleti szempontból is érthetően bemutatni a munkát az érintetteknek",
     ],
   },
@@ -731,13 +731,13 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     description:
       "Csendes, gondoskodó csapat, amely egymásra figyel, és gyakorlatias megoldásokat keres.",
     strengths: [
-      "Erős belső támogatás — a tagok számíthatnak egymásra",
+      "Erős belső támogatás – a tagok számíthatnak egymásra",
       "Gyakorlatias, kézzelfogható megoldásokra építő gondolkodás",
       "Kevés nyílt konfliktus és erős bizalom",
       "Jó alkalmazkodóképesség",
     ],
     blindSpots: [
-      "A csapat ritkábban keresi magától a kihívást — a nagyobb célok külső kijelölést igényelhetnek",
+      "A csapat ritkábban keresi magától a kihívást – a nagyobb célok külső kijelölést igényelhetnek",
       "A kemény döntések meghozatala nehezükre eshet",
       "A munkájuk kívülről könnyen láthatatlan maradhat",
       "Az újítás háttérbe szorulhat, ha a gyakorlatias szemlélet a megszokotthoz való ragaszkodássá válik",
@@ -749,8 +749,8 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     riskSituations:
       "Teljesítményértékelés; nehéz visszajelzés; nagyra törő célok; versengő környezet.",
     leaderActions: [
-      "Határozzatok meg mérhető célokat — a látható eredmények erősíthetik a csapat önbizalmát",
-      "Gyakoroljátok a konstruktív visszajelzést — kis, biztonságos témákkal",
+      "Határozzatok meg mérhető célokat – a látható eredmények erősíthetik a csapat önbizalmát",
+      "Gyakoroljátok a konstruktív visszajelzést – kis, biztonságos témákkal",
       "Keress valakit a csapatban, aki vállalja a nagyobb célok képviseletét",
     ],
   },
@@ -764,12 +764,12 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Elemző, stratégiai gondolkodású csapat, amelyben mindenki csendben, de intenzíven építi a saját területét.",
     strengths: [
       "Nagy szakmai mélység",
-      "Stratégiai gondolkodás — több lépéssel előre",
+      "Stratégiai gondolkodás – több lépéssel előre",
       "Adatokra épülő döntéshozatal",
       "Jelentős tér a szakterületen belüli újításra",
     ],
     blindSpots: [
-      "Silók alakulhatnak ki — a tudásmegosztás akadozhat",
+      "Silók alakulhatnak ki – a tudásmegosztás akadozhat",
       "Rejtett rivalizálás",
       "Nehéz lehet közös döntést hozni",
       "Kívülről hidegnek, elérhetetlennek tűnhetnek",
@@ -781,7 +781,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     riskSituations:
       "Csapatépítés; ügyfélkommunikáció; az „elég jó” és a „tökéletes” közötti döntési helyzetek.",
     leaderActions: [
-      "Tartsatok strukturált tudásmegosztást — például heti szakmai bemutatót vagy tanulságkört",
+      "Tartsatok strukturált tudásmegosztást – például heti szakmai bemutatót vagy tanulságkört",
       "Jelöljetek ki olyan közös csapatcélokat, amelyeket csak együttműködéssel érhettek el",
       "Négyszemközt kérdezd meg a tagokat, hogyan érzik magukat a csapatban",
     ],
@@ -799,7 +799,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Magas minőségű, megbízható eredmények",
     ],
     blindSpots: [
-      "Kevés tér maradhat az érzelmi kapcsolódásra — „csak a munka számít”",
+      "Kevés tér maradhat az érzelmi kapcsolódásra – „csak a munka számít”",
       "Kiégés veszélye",
       "Új ötletek nehezebben kaphatnak teret",
       "Inkább egymás mellett dolgozó szakértőkként működhetnek, mint összehangolt csapatként",
@@ -811,7 +811,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     riskSituations:
       "Csapatépítés; változások kezelése; ügyfélprezentáció; az emberi kapcsolatokra épülő helyzetek.",
     leaderActions: [
-      "Negyedévente szervezzetek kötetlen közös programot — például ebédet vagy sétát",
+      "Negyedévente szervezzetek kötetlen közös programot – például ebédet vagy sétát",
       "Kérdezd meg rendszeresen: „Miben segíthetek?” Itt a tagok ritkán kérnek maguktól segítséget",
       "Hetente biztosíts két órát a saját ötletekre és a kísérletezésre",
     ],
@@ -842,7 +842,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Csapatszintű összehangolás; szoros határidők; ügyfélkiszolgálás; a működés gyors bővítése.",
     leaderActions: [
       "Jelöljetek ki egyetlen közös iránytűt: legyen világos a cél, az odavezető út pedig maradjon szabad",
-      "Tartsatok heti 15 perces rövid egyeztetést — nem ellenőrzésként, hanem azért, hogy tudjatok egymás munkájáról",
+      "Tartsatok heti 15 perces rövid egyeztetést – nem ellenőrzésként, hanem azért, hogy tudjatok egymás munkájáról",
       "Párosítsd a tagokat közös projektekre, hogy természetes együttműködési helyzetek alakuljanak ki",
     ],
   },
@@ -860,27 +860,27 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     ],
     blindSpots: [
       "A közös csapatidentitás jelei gyengék",
-      "A tudásmegosztás jellemzően alkalomszerű — ha valaki elmegy, a tudása is vele mehet",
+      "A tudásmegosztás jellemzően alkalomszerű – ha valaki elmegy, a tudása is vele mehet",
       "Az elköteleződés inkább a feladathoz, mint a csapathoz kötődik",
       "A vezetői visszajelzés nehezebben épülhet be a működésükbe",
     ],
     communicationStyle:
       "Minimális és feladatközpontú. Csak a szükséges információt osztják meg egymással.",
     idealTasks:
-      "Egyéni feladatok párhuzamos végrehajtása — önálló szakértők működése szervezeti keretek között.",
+      "Egyéni feladatok párhuzamos végrehajtása – önálló szakértők működése szervezeti keretek között.",
     riskSituations:
       "Valódi csapatmunkát igénylő feladatok, kultúraépítés és hosszú távú tervezés.",
     leaderActions: [
-      "Tedd fel a kérdést: „Valóban csapatként kell működniük?” — ha igen, építsd tudatosan a közös kultúrát",
-      "Vezessetek be egy közös szokást — heti rövid egyeztetést vagy havi visszatekintést —, és tartsátok következetesen",
-      "Úgy osszátok ki a projekteket, hogy a tagok eredményei egymásra épüljenek — ez valódi egymásrautaltságot teremt",
+      "Tedd fel a kérdést: „Valóban csapatként kell működniük?” – ha igen, építsd tudatosan a közös kultúrát",
+      "Vezessetek be egy közös szokást – heti rövid egyeztetést vagy havi visszatekintést –, és tartsátok következetesen",
+      "Úgy osszátok ki a projekteket, hogy a tagok eredményei egymásra épüljenek – ez valódi egymásrautaltságot teremt",
     ],
   },
 };
 
 /**
  * Kanonikus mintázat-tábla: tartalom innen, NÉV a pattern-data-ból
- * (egy név-tábla elv — a literál `name` csak fallback).
+ * (egy név-tábla elv – a literál `name` csak fallback).
  */
 export const PATTERN_NAMES: Record<string, PatternContent> = Object.fromEntries(
   Object.entries(PATTERN_CONTENT).map(([code, content]) => [
@@ -890,7 +890,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = Object.fromEntries(
 );
 
 // ============================================================
-// UI LABELS — a frontend számára
+// UI LABELS – a frontend számára
 // ============================================================
 
 export const AXIS_LABELS = {

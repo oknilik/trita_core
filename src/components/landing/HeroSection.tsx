@@ -8,9 +8,11 @@ import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionLabel } from "@/lib/dimension-utils";
 import { dimColorsCss } from "@/lib/color-system";
-import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon, EyeIcon } from "@/components/landing/icons";
+import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
+import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 // A hajtás feletti kísérőelemek CSS-keyframe-mel úsznak be. A H1 szándékosan
 // NEM kapja meg: ez az oldal LCP-eleme, és az opacity: 0 kezdőállapot még
@@ -19,7 +21,7 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 // blokkokon marad meg, így a hero karaktere nem változik.
 const riseIn = "animate-rise-in";
 
-// ─── Self panel — a valódi eredménynézet kicsinyített mása ──────────────────
+// ─── Self panel – a valódi eredménynézet kicsinyített mása ──────────────────
 
 function SelfPanel() {
   const { locale } = useLocale();
@@ -37,10 +39,27 @@ function SelfPanel() {
     { code: "O", name: t("landing.selfDim6", locale), value: 50 },
   ];
 
-  const strengths = [t("landing.selfDim4", locale), t("landing.selfDim1", locale)];
+  const strengths = [
+    { code: "A", name: t("landing.selfDim4", locale) },
+    { code: "H", name: t("landing.selfDim1", locale) },
+  ];
+  // Ugyanezen profil kanonikus team-role-estimate rangsorának két legerősebb
+  // eleme: CS 69, KO 68. Nem munkaterületeket nevezünk csapatszerepnek,
+  // hanem a tényleges riport 9 szerepes modelljének becslését mutatjuk.
+  const likelyRoles: TeamRoleCode[] = ["CS", "KO"];
+  const roleRanks = [
+    t("landing.selfTeamRoleRank1", locale),
+    t("landing.selfTeamRoleRank2", locale),
+  ];
+  // A sávok a rangsor vizuális hierarchiáját mutatják, nem százalékos
+  // pontszámok: a becslésnél a riport sem kommunikál álprecizitást.
+  const roleRankVisuals = [
+    { color: "var(--color-layer-team-accent)", width: "92%" },
+    { color: "var(--color-sage)", width: "79%" },
+  ];
 
   return (
-    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
+    <div className="overflow-hidden rounded-2xl bg-surface-card shadow-lg shadow-black/[0.08] md:flex md:h-[674px] md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 pb-6 pt-6">
         <p className="text-micro uppercase tracking-widest text-white/70">
@@ -53,7 +72,7 @@ function SelfPanel() {
           <p className="font-fraunces text-heading font-medium italic text-[var(--color-accent-primary-soft)]">
             {t("landing.selfPanelType", locale)}
           </p>
-          {/* Valós riport-állítás: elsődleges csapatszerep-hajlam chip —
+          {/* Valós riport-állítás: elsődleges csapatszerep-hajlam chip –
               az ál-percentilis („Top 25%") badge kivezetve (B17). */}
           <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
             {t("landing.selfPanelRole", locale)}
@@ -65,7 +84,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ DIMENZIÓ-SÁV ═══ */}
-      <div className="bg-surface-card px-5 pt-5 md:flex-1">
+      <div className="bg-surface-card px-5 pb-5 pt-6">
         <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
           <div className="grid grid-cols-3">
             {dims.map((dim, i) => {
@@ -73,7 +92,7 @@ function SelfPanel() {
               return (
                 <div
                   key={dim.name}
-                  className={`min-w-0 px-1 py-3.5 text-center md:px-2 ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
+                  className={`min-w-0 px-1 py-4 text-center md:px-2 ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
                 >
                   <p className="mb-1 truncate text-micro text-[var(--color-text-muted)]">{dim.name}</p>
                   <p
@@ -96,45 +115,100 @@ function SelfPanel() {
 
         {/* A prototípushoz ténylegesen rendelt két erősség. A négy 50-es
             dimenzió semleges, ezért nem gyártunk melléjük „figyelendő” címkét. */}
-        <div className="mt-4 flex flex-wrap items-center gap-2">
+        <div className="mt-5 flex flex-wrap items-center gap-2">
           <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
-          {strengths.map((d) => (
-            <span key={d} className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-micro font-medium text-[var(--color-accent-self-deep)]">
-              {d}
-            </span>
-          ))}
+          {strengths.map((dim) => {
+            const colors = dimColorsCss(dim.code);
+            return (
+              <span
+                key={dim.code}
+                className="rounded px-2 py-0.5 text-micro font-medium"
+                style={{ backgroundColor: colors.soft, color: colors.strong }}
+              >
+                {dim.name}
+              </span>
+            );
+          })}
         </div>
 
-        {/* Szerepkör-illeszkedés — a valódi RoleFitSection "erős" sora */}
-        <div className="mb-1 mt-4">
-          <p className="mb-2 text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-            {t("landing.selfRoleFitEyebrow", locale)}
-          </p>
-          <div
-            className="rounded-r-[14px] bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4"
-            style={{ borderLeft: "4px solid var(--color-action-primary-bg)" }}
-          >
-            <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
-              {t("content.roleFitStrong", locale)}
+        {/* A tényleges riport csapatszerep-modelljének két legerősebb becslése. */}
+        <div className="mb-1 mt-5">
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+              {t("landing.selfTeamRolesEyebrow", locale)}
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {[t("landing.selfRole1", locale), t("landing.selfRole2", locale), t("landing.selfRole3", locale)].map((role) => (
-                <span
-                  key={role}
-                  className="rounded-full bg-[var(--color-action-primary-bg)]/[0.15] px-2.5 py-1 text-micro text-[var(--color-action-primary-bg)]"
-                >
-                  {role}
-                </span>
-              ))}
-            </div>
+            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro font-semibold text-[var(--color-text-muted)]">
+              {t("landing.selfTeamRolesSource", locale)}
+            </span>
           </div>
+          <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-surface-card">
+            {likelyRoles.map((role, index) => {
+              const rankVisual = roleRankVisuals[index];
+              return (
+                <div
+                  key={role}
+                  className={`relative grid min-w-0 grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-x-2.5 px-3 py-2.5 pl-3.5 sm:grid-cols-[1.75rem_minmax(7rem,0.8fr)_minmax(5rem,1fr)] ${index < likelyRoles.length - 1 ? "border-b border-[var(--color-border-soft)]" : ""} ${index === 0 ? "bg-[var(--color-surface-subtle)]/45" : ""}`}
+                >
+                  <span
+                    aria-hidden
+                    className="absolute inset-y-0 left-0 w-[3px] opacity-70"
+                    style={{ backgroundColor: rankVisual.color }}
+                  />
+                  <span
+                    aria-hidden
+                    className="flex h-6 w-6 items-center justify-center rounded-full text-micro font-bold text-white opacity-90"
+                    style={{ backgroundColor: rankVisual.color }}
+                  >
+                    {index + 1}
+                  </span>
+                  <div className="flex min-w-0 flex-col">
+                    <p className="order-1 truncate font-fraunces text-note font-semibold leading-tight text-[var(--color-text-primary)]">
+                      {TEAM_ROLES[role][locale]}
+                    </p>
+                    <span
+                      className="order-2 mt-0.5 block truncate text-micro font-semibold uppercase tracking-wide opacity-60"
+                      style={{ color: rankVisual.color }}
+                    >
+                      {roleRanks[index]}
+                    </span>
+                  </div>
+                  <div
+                    aria-hidden
+                    className="col-start-2 mt-1.5 h-1 overflow-hidden rounded-full bg-[var(--color-surface-subtle)] sm:col-start-3 sm:row-start-1 sm:mt-0"
+                  >
+                    <div
+                      className="h-full rounded-full opacity-70"
+                      style={{ backgroundColor: rankVisual.color, width: rankVisual.width }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-3 flex items-start gap-1.5 text-micro leading-relaxed text-[var(--color-text-muted)]">
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mt-px h-3.5 w-3.5 shrink-0"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 11v5" />
+              <path d="M12 8h.01" />
+            </svg>
+            <span>{t("landing.selfTeamRolesNote", locale)}</span>
+          </p>
         </div>
       </div>
 
-      {/* ═══ FADE-OUT CTA ═══ */}
-      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
+      {/* ═══ VISSZAFOGOTT PANEL-LÁBLÉC ═══ */}
+      <div className="mt-auto flex h-11 shrink-0 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
         <span className="text-note font-medium text-[var(--color-action-primary-bg)]">
           {t("landing.selfFadeCta", locale)}
         </span>
@@ -143,7 +217,7 @@ function SelfPanel() {
   );
 }
 
-// ─── Team panel — a valódi publikált riport kicsinyített mása ───────────────
+// ─── Team panel – a valódi publikált riport kicsinyített mása ───────────────
 
 function TeamPanel() {
   const { locale } = useLocale();
@@ -152,14 +226,14 @@ function TeamPanel() {
   // (scripts/seed-showcase-org.ts). A négy érték ugyanaz a mintázatmotor-
   // bemenet, amely ECFP-re, vagyis „Családi Vállalkozásra” értékelődik.
   const dims = [
-    { name: t("landing.teamAxisDrive", locale), mean: 81 },
-    { name: t("landing.teamAxisCohesion", locale), mean: 64 },
-    { name: t("landing.teamAxisDiscipline", locale), mean: 55 },
-    { name: t("landing.teamAxisOpenness", locale), mean: 56 },
+    { name: t("landing.teamAxisDrive", locale), mean: 81, color: "var(--color-layer-team-accent)" },
+    { name: t("landing.teamAxisCohesion", locale), mean: 64, color: "var(--color-sage)" },
+    { name: t("landing.teamAxisDiscipline", locale), mean: 55, color: "var(--color-bronze)" },
+    { name: t("landing.teamAxisOpenness", locale), mean: 56, color: "#555c9e" },
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
+    <div className="overflow-hidden rounded-2xl bg-surface-card shadow-lg shadow-black/[0.08] md:flex md:h-[674px] md:flex-col">
       {/* A valódi team hero szilva-gradiensét használó közös riportfejléc. */}
       <div className="bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] px-6 pb-6 pt-6 text-[var(--color-text-on-inverse)]">
         <p className="text-micro uppercase tracking-widest text-white/70">
@@ -182,50 +256,104 @@ function TeamPanel() {
       </div>
 
       <div className="bg-surface-card px-5 pb-5 pt-5 md:flex-1">
-        {/* Ugyanaz a keretezett adatblokk-anatómia, mint a self mintakártyán. */}
-        <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
-          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-3.5">
-            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
-              {t("landing.teamStatMembersLabel", locale)}
-            </p>
-            <p className="mt-1 font-fraunces text-heading leading-none text-ink">5</p>
-          </div>
-          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-3.5">
-            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
-              {t("landing.teamStatCompletionLabel", locale)}
-            </p>
-            <p className="mt-1 font-fraunces text-heading leading-none text-ink">100%</p>
-          </div>
-          <div className="min-w-0 px-2 py-3.5">
-            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
-              {t("landing.teamPatternLabel", locale)}
-            </p>
-            <p className="mt-1 font-fraunces text-caption leading-tight text-ink">
-              {t("landing.teamPatternName", locale)}
-            </p>
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-micro uppercase tracking-widest text-muted">
+            {t("landing.teamDualViewEyebrow", locale)}
+          </p>
+          <div className="flex shrink-0 gap-1.5">
+            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-1 text-micro text-muted">
+              5 {locale === "hu" ? "tag" : "members"}
+            </span>
+            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-1 text-micro text-muted">
+              100%
+            </span>
           </div>
         </div>
 
-        <div className="mt-4 flex flex-col gap-2.5">
-          {dims.map((d) => (
-            <div key={d.name} className="flex items-center gap-2 md:gap-3">
-              <span className="w-[92px] shrink-0 truncate text-note text-ink-body md:w-[118px]">{d.name}</span>
-              <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-sand">
-                <div
-                  className="h-full rounded-full bg-[var(--color-layer-team-accent)]"
-                  style={{ width: `${d.mean}%` }}
-                />
-              </div>
-              <span className="w-8 shrink-0 text-right font-mono text-note tabular-nums text-ink">
-                {d.mean}
-              </span>
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <div className="min-w-0 rounded-xl bg-[var(--color-surface-subtle)] p-3">
+            <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
+              {t("landing.teamPrinciplesTitle", locale)}
+            </p>
+            <div className="mt-4 flex flex-col gap-3.5">
+              {dims.map((d) => (
+                <div key={d.name} className="grid grid-cols-[3.5rem_minmax(0,1fr)_1.25rem] items-center gap-1.5">
+                  <span className="truncate text-micro text-ink-body">{d.name}</span>
+                  <div className="h-1.5 min-w-0 overflow-hidden rounded-full bg-sand">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${d.mean}%`, backgroundColor: d.color }}
+                    />
+                  </div>
+                  <span className="text-right font-mono text-micro tabular-nums text-ink">
+                    {d.mean}
+                  </span>
+                </div>
+              ))}
             </div>
-          ))}
-          <p className="mt-0.5 text-micro text-muted">{t("landing.teamPrivacyNote", locale)}</p>
+          </div>
+
+          <div className="min-w-0 rounded-xl bg-[var(--color-surface-subtle)] p-3">
+            <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
+              {t("landing.teamRelationshipsTitle", locale)}
+            </p>
+            <svg
+              className="mx-auto mt-1 h-[132px] w-full max-w-[172px]"
+              viewBox="0 0 180 145"
+              role="img"
+              aria-labelledby="team-network-title team-network-description"
+            >
+              <title id="team-network-title">{t("landing.teamRelationshipsA11yTitle", locale)}</title>
+              <desc id="team-network-description">{t("landing.teamRelationshipsA11yDescription", locale)}</desc>
+              <g fill="none" strokeLinecap="round">
+                <path d="M49 37 90 66 132 37 49 37" stroke="var(--color-sage)" strokeWidth="4" />
+                <path d="M49 37 32 112M132 37l16 75" stroke="var(--color-layer-team-accent)" strokeWidth="2.5" opacity=".5" />
+                <path d="M90 66l58 46M32 112h116" stroke="var(--color-bronze)" strokeWidth="2" strokeDasharray="6 5" />
+              </g>
+              {[
+                { x: 49, y: 37, label: "A", r: 16 },
+                { x: 132, y: 37, label: "C", r: 16 },
+                { x: 32, y: 112, label: "D", r: 15 },
+                { x: 148, y: 112, label: "E", r: 15 },
+              ].map((node) => (
+                <g key={node.label}>
+                  <circle cx={node.x} cy={node.y} r={node.r} fill="var(--color-surface-card)" stroke="var(--color-layer-team-accent)" strokeWidth="2" />
+                  <text x={node.x} y={node.y} dominantBaseline="middle" textAnchor="middle" className="fill-[var(--color-text-primary)] text-micro font-semibold">{node.label}</text>
+                </g>
+              ))}
+              <circle cx="90" cy="66" r="18" fill="var(--color-sage)" stroke="var(--color-surface-card)" strokeWidth="3" />
+              <text x="90" y="66" dominantBaseline="middle" textAnchor="middle" className="fill-white text-micro font-bold">B</text>
+            </svg>
+          </div>
+        </div>
+
+        <p className="mt-3 text-micro text-muted">
+          {t("landing.teamPrivacyNote", locale)}
+        </p>
+
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
+            <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-sage-dark)]">
+              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-sage)]" />
+              {t("landing.teamStrengthLabel", locale)}
+            </p>
+            <p className="mt-1.5 text-micro leading-relaxed text-ink-body">
+              {t("landing.teamStrengthText", locale)}
+            </p>
+          </div>
+          <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
+            <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-bronze-dark)]">
+              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-bronze)]" />
+              {t("landing.teamWatchLabel", locale)}
+            </p>
+            <p className="mt-1.5 text-micro leading-relaxed text-ink-body">
+              {t("landing.teamWatchText", locale)}
+            </p>
+          </div>
         </div>
 
         <div
-          className="mt-4 rounded-r-[14px] p-3.5 px-4"
+          className="mt-3 rounded-r-[14px] p-3.5"
           style={{
             borderLeft: "4px solid var(--color-layer-team-accent)",
             background: "color-mix(in srgb, var(--color-layer-team-accent) 10%, var(--color-surface-card))",
@@ -240,7 +368,7 @@ function TeamPanel() {
         </div>
       </div>
 
-      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
+      <div className="flex h-11 shrink-0 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
         <span className="text-note font-medium text-[var(--color-layer-team-accent)]">
           {t("landing.teamFadeCta", locale)}
         </span>
@@ -255,11 +383,11 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
   const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-layer-team-accent)";
-  // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 — nagy szövegnek épp
+  // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 – nagy szövegnek épp
   // a határon, 11px-es feliratnak bukó. Szöveghez ezért a bronz-skála
   // sötétebb fokait használjuk; team módban a kanonikus réteg-akcent dolgozik:
-  //   eyebrow (11px)  → accent-primary-strong (bronze-700) — 5.5:1
-  //   H1 em (nagy)    → accent-primary-mid                 — 3.9:1
+  //   eyebrow (11px)  → accent-primary-strong (bronze-700) – 5.5:1
+  //   H1 em (nagy)    → accent-primary-mid                 – 3.9:1
   const eyebrowColor = isSelf ? "var(--color-accent-primary-strong)" : accentColor;
   const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
   // Tömör CTA-felület fehér szöveggel: self módban bronze-dark, team módban
@@ -278,16 +406,18 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[1120px] px-7 pb-6 pt-12">
         <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start md:gap-10">
 
+          <div className="contents md:col-start-1 md:row-start-1 md:flex md:flex-col md:gap-6">
+
           {/* 1. Switcher + Eyebrow + Headline. A H1 az LCP-elem, ezért statikus
               és az első festéskor teljesen látható; csak a kísérőelemek
               animálnak. */}
-          <div className="order-1 flex flex-col">
+          <div className="order-1 flex flex-col md:order-none">
             <div className={`${riseIn} mb-4 lg:mb-5`}>
-              <ModeSwitcher />
+              <ModeSwitcher mode={mode} />
             </div>
 
             <div className={`${riseIn} mb-4 flex items-center gap-3`}>
-              {/* A vonalka és a felirat EGY tipográfiai egység — ugyanabból a
+              {/* A vonalka és a felirat EGY tipográfiai egység – ugyanabból a
                   bronz-fokból kell jönniük, különben a sötétebb szöveg mellett
                   a világosabb vonal elszíneződésnek látszik. */}
               <div className="h-[1.5px] w-5 shrink-0" style={{ background: eyebrowColor }} />
@@ -299,7 +429,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               </span>
             </div>
 
-            <h1 className="font-fraunces text-fluid-display font-medium tracking-tight text-ink">
+            <h1 className="text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink">
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
               <em className="italic" style={{ color: headlineAccentColor }}>
                 {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
@@ -307,25 +437,10 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             </h1>
           </div>
 
-          {/* 2. Preview panel */}
-          {isSelf ? (
-            <div className="order-2 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-8 md:self-stretch">
-              <div className="mx-auto w-full max-w-[460px] md:flex md:h-full md:flex-col">
-                <SelfPanel />
-              </div>
-            </div>
-          ) : (
-            <div className="order-2 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-8 md:self-stretch">
-              <div className="mx-auto w-full max-w-[460px] md:flex md:h-full md:flex-col">
-                <TeamPanel />
-              </div>
-            </div>
-          )}
-
-          {/* 3. Sub + CTA + Microcopy — a H1 alatt, itt megmarad a 0.1s-os
+          {/* 3. Sub + CTA + Microcopy – a H1 alatt, itt megmarad a 0.1s-os
               lépcsőzés (nem az LCP-elem, nem késleltet festést). */}
-          <div className="order-3 flex flex-col md:col-start-1 md:row-start-2">
-            <p className={`${riseIn} mb-7 text-base font-light leading-relaxed text-ink-body`}>
+          <div className="order-3 flex flex-col md:order-none">
+            <p className={`${riseIn} mb-7 text-balance text-base font-light leading-relaxed text-ink-body`}>
               {isSelf ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
             </p>
 
@@ -335,7 +450,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             >
               <Link
                 href={isSelf ? "/try" : "/pilot"}
-                // P2: a hero elsődleges CTA-ja módonként külön mérve — ebből
+                // P2: a hero elsődleges CTA-ja módonként külön mérve – ebből
                 // derül ki, melyik ígéret működik.
                 onClick={() =>
                   track("cta.click", {
@@ -368,9 +483,10 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                       mode: "team",
                     })
                   }
-                  className={`inline-flex min-h-11 items-center justify-center rounded-lg px-3 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-layer-team-accent)] ${FOCUS_RING_CLASS}`}
+                  className={`group inline-flex min-h-11 items-center justify-center rounded-lg px-3 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-layer-team-accent)] ${FOCUS_RING_CLASS}`}
                 >
                   {t("landing.teamSecondaryCta", locale)}
+                  <ChevronRightIcon className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               ) : null}
             </div>
@@ -382,7 +498,6 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   { Icon: FlaskIcon, text: t("landing.selfMetaMethod", locale) },
                   { Icon: BoltIcon, text: t("landing.selfMetaInstant", locale) },
                   { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
-                  { Icon: EyeIcon, text: t("landing.sampleBadge", locale) },
                 ].map((m) => (
                   <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]">
                     <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-accent-primary)]" />
@@ -397,7 +512,6 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
                     { Icon: ClockIcon, text: t("landing.teamMetaTiming", locale) },
                     { Icon: GiftIcon, text: t("landing.teamMetaOffer", locale) },
-                    { Icon: EyeIcon, text: t("landing.sampleBadge", locale) },
                   ].map((m) => (
                     <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]">
                       <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-layer-team-accent)]" />
@@ -408,6 +522,24 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               </div>
             )}
           </div>
+
+          </div>
+
+          {/* 2. Preview panel – mobilon a cím és a CTA-k közé, asztali nézetben
+              a teljes, önálló bal oszlop mellé kerül. */}
+          {isSelf ? (
+            <div className="order-2 md:col-start-2 md:row-start-1 md:mt-8 md:order-none">
+              <div className="mx-auto w-full max-w-[460px]">
+                <SelfPanel />
+              </div>
+            </div>
+          ) : (
+            <div className="order-2 md:col-start-2 md:row-start-1 md:mt-8 md:order-none">
+              <div className="mx-auto w-full max-w-[460px]">
+                <TeamPanel />
+              </div>
+            </div>
+          )}
 
         </div>
 

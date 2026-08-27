@@ -51,14 +51,14 @@ export const cases = [
   {
     id: "TRY-04",
     area: "Vendég-tölcsér",
-    name: "Landing team-mód: váltó + CTA a /contact-ra visz",
+    name: "Landing team-mód: önálló URL + pilot CTA",
     persona: "vendég",
     emails: { fő: "AUTO" },
     preconditions: "Inkognitó böngésző.",
     steps:
       "1. Nyisd meg a főoldalt. 2. Kattints a mód-váltó „csapat” gombjára. 3. Figyeld az URL-t és a tartalmat. 4. Kattints a hero CTA-ra, majd vissza; és az oldal alján a záró CTA-ra is.",
     expected:
-      "Az URL ?mode=team paramétert kap (replace — a Vissza gomb nem lépked a váltások közt), a hero/szekciók csapat-szövegre és sage-akcentre váltanak. Mind a hero, mind az oldal-alji CTA a /contact-ra visz (nem a /try-ra).",
+      "A /team-dynamics oldal nyílik meg, a hero és a szekciók csapatszövegre, illetve sage-akcentre váltanak. A hero és az oldal-alji elsődleges CTA is a /pilot oldalra visz; a hero másodlagos CTA-ja a /contact oldalra mutat.",
     automated: "none",
     coveredBy: "",
     priority: "P2",

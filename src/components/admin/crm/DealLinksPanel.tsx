@@ -140,7 +140,7 @@ export function DealLinksPanel({
         </p>
         {deal.inquiries.length === 0 ? (
           <p className="mt-1 text-xs text-muted">
-            Nincs csatolt megkeresés — a Beérkezőből csatolható.
+            Nincs csatolt megkeresés – a Beérkezőből csatolható.
           </p>
         ) : (
           <ul className="mt-1 flex flex-col gap-1.5">
@@ -187,7 +187,7 @@ export function DealLinksPanel({
               onChange={(event) => setNoteDraft(event.target.value)}
               rows={4}
               maxLength={4000}
-              placeholder="Döntéshozó, motiváció, kontextus — csak admin látja."
+              placeholder="Döntéshozó, motiváció, kontextus – csak admin látja."
               aria-label="Háttér-jegyzet"
               className="w-full rounded-lg border border-sand bg-cream px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
             />
@@ -213,7 +213,7 @@ export function DealLinksPanel({
           </p>
         ) : (
           <p className="mt-1 text-xs text-muted">
-            Döntéshozó, motiváció, kontextus — ide érdemes felírni.
+            Döntéshozó, motiváció, kontextus – ide érdemes felírni.
           </p>
         )}
       </div>

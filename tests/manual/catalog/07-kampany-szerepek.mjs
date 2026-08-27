@@ -27,7 +27,7 @@ export const cases = [
   {
     id: "CAMP-02",
     area: "Kampány-életciklus",
-    name: "DRAFT szerkesztése aktiválás előtt — csapat-kötött lépéshez cél-csapat kell",
+    name: "DRAFT szerkesztése aktiválás előtt – csapat-kötött lépéshez cél-csapat kell",
     persona: "tanácsadó",
     emails: { "tanácsadó": "AUTO" },
     preconditions: "CAMP-01 vázlat-kampánya.",
@@ -42,14 +42,14 @@ export const cases = [
   {
     id: "CAMP-03",
     area: "Kampány-életciklus",
-    name: "Vázlat nem zárható le — az elvetés útja a törlés",
+    name: "Vázlat nem zárható le – az elvetés útja a törlés",
     persona: "tanácsadó",
     emails: { "tanácsadó": "AUTO" },
     preconditions: "Egy DRAFT kampány.",
     steps:
       "1. Próbáld a vázlatot lezárni (ha a felület nem kínálja, API-val: PATCH status=CLOSED). 2. Töröld (vesd el) a vázlatot. 3. Nézd meg a Lezárt körök listát.",
     expected:
-      "DRAFT→CLOSED tiltott (409 DRAFT_CANNOT_CLOSE) — a Lezárt körök listába csak ténylegesen futott mérés kerülhet; a törölt vázlat sehol (a lezárt listában sem) jelenik meg többé.",
+      "DRAFT→CLOSED tiltott (409 DRAFT_CANNOT_CLOSE) – a Lezárt körök listába csak ténylegesen futott mérés kerülhet; a törölt vázlat sehol (a lezárt listában sem) jelenik meg többé.",
     automated: "none",
     coveredBy: "",
     priority: "P3",
@@ -65,7 +65,7 @@ export const cases = [
     steps:
       "1. Aktiváld a kampányt. 2. Nézd meg a két tag kampány-állapotát (melyik lépésük nyitott). 3. Nézd meg a cél-csapat oldalát (szerep-kör jelzés). 4. Próbáld az aktív kampány összetételét (mérések/cél-csapat) utólag szerkeszteni. 5. Keresd a felületen a DRAFT-ba visszaállítás lehetőségét.",
     expected:
-      "Státusz ACTIVE (activatedAt rögzül); a self-kész tag az OBSERVER_360 lépésen automatikusan túllép (fast-forward — nem ragad be), a self-nélkülinek az első lépése nyílik; CAMPAIGN_LAUNCHED értesítés megy ki; a csapatszerep-lépés miatt a csapat szerep-köre bekapcsol; az összetétel-szerkesztés CAMPAIGN_NOT_DRAFT hibával elutasítva, és a felület nem kínál visszaállítást — az indítás visszafordíthatatlan.",
+      "Státusz ACTIVE (activatedAt rögzül); a self-kész tag az OBSERVER_360 lépésen automatikusan túllép (fast-forward – nem ragad be), a self-nélkülinek az első lépése nyílik; CAMPAIGN_LAUNCHED értesítés megy ki; a csapatszerep-lépés miatt a csapat szerep-köre bekapcsol; az összetétel-szerkesztés CAMPAIGN_NOT_DRAFT hibával elutasítva, és a felület nem kínál visszaállítást – az indítás visszafordíthatatlan.",
     automated: "partial",
     coveredBy:
       "tests/unit/platform/campaign-steps.test.ts (lépés-teljesítés + fast-forward logika)",
@@ -74,7 +74,7 @@ export const cases = [
   {
     id: "CAMP-05",
     area: "Kampány-életciklus",
-    name: "Lépések felhasználónkénti, sorrendi nyitása — ütem-kapu és küldés-most",
+    name: "Lépések felhasználónkénti, sorrendi nyitása – ütem-kapu és küldés-most",
     persona: "csapattag + tanácsadó",
     emails: { tag1: "AUTO", tag2: "AUTO", "tanácsadó": "AUTO" },
     preconditions:
@@ -82,7 +82,7 @@ export const cases = [
     steps:
       "1. Tag1 teljesítse az aktuális lépését (pl. self-teszt beadás). 2. Nézd meg tag1 következő lépését közvetlenül utána (Feladataim / csapat-banner). 3. Tanácsadóként használd a küldés-most opciót. 4. Ellenőrizd tag2 állapotát (nem változhatott). 5. Ismételd meg a küldés-most-ot.",
     expected:
-      "A következő lépés a beadás után NEM nyílik azonnal — az ütem-kapu (24 h) zárja; a küldés-most (force release) azonnal nyitja, és MEASUREMENT_STEP_OPENED értesítés megy ki a lépés kitöltő-linkjével; 0 órás ütemnél a nyitás azonnali; a tagok egymástól függetlenül haladnak; az ismételt release a dedupe-kulcs miatt nem duplikál értesítést.",
+      "A következő lépés a beadás után NEM nyílik azonnal – az ütem-kapu (24 h) zárja; a küldés-most (force release) azonnal nyitja, és MEASUREMENT_STEP_OPENED értesítés megy ki a lépés kitöltő-linkjével; 0 órás ütemnél a nyitás azonnali; a tagok egymástól függetlenül haladnak; az ismételt release a dedupe-kulcs miatt nem duplikál értesítést.",
     automated: "partial",
     coveredBy:
       "tests/unit/platform/campaign-steps.test.ts · tests/unit/team/trust-network.test.ts (isStepGateOpen ütem-kapu)",
@@ -99,7 +99,7 @@ export const cases = [
     steps:
       "1. Indítsd el a kört, és nézd meg mindhárom szerep értesítés-panelét. 2. Teljesíts egy lépést és figyeld a következő-lépés értesítést. 3. Zárd le a kört, nézd meg újra a paneleket. 4. Zárd le még egyszer (ismételt PATCH), és számold az értesítéseket.",
     expected:
-      "Indításkor CAMPAIGN_LAUNCHED, lépés-nyitáskor MEASUREMENT_STEP_OPENED (a kitöltőnek), zárásnál CAMPAIGN_CLOSED érkezik — a címzett-kör a notification-policy minimum-szerepét követi; a dedupe-kulcs miatt ismétlés nem duplikál. Megjegyzés: a CAMPAIGN_MILESTONE típus definiált, de jelenleg nincs kibocsátója — mérföldkő-értesítés NEM várható (ismert rés).",
+      "Indításkor CAMPAIGN_LAUNCHED, lépés-nyitáskor MEASUREMENT_STEP_OPENED (a kitöltőnek), zárásnál CAMPAIGN_CLOSED érkezik – a címzett-kör a notification-policy minimum-szerepét követi; a dedupe-kulcs miatt ismétlés nem duplikál. Megjegyzés: a CAMPAIGN_MILESTONE típus definiált, de jelenleg nincs kibocsátója – mérföldkő-értesítés NEM várható (ismert rés).",
     automated: "partial",
     coveredBy:
       "tests/unit/notifications/notification-policy.test.ts · tests/unit/notifications/notification-dedupe.test.ts",
@@ -132,7 +132,7 @@ export const cases = [
     steps:
       "1. Mindhárom nem-tanácsadó szereppel keresd a mérés-indítás/aktiválás/zárás akciókat a felületen. 2. API-val is próbáld: PATCH státusz-váltás, résztvevő-hozzáadás, DELETE. 3. Ismételd tanácsadóként.",
     expected:
-      "A mérés-mutációk csak a tanácsadói körnek (ORG_CONSULTANT / platform-tanácsadó / ADMIN_EMAILS fiók) engedettek — másnak a felület nem kínálja, az API 403 CONSULTANT_ONLY hibát ad (a sima ORG_ADMIN-nak is!); a tanácsadó mindhárom műveletet el tudja végezni.",
+      "A mérés-mutációk csak a tanácsadói körnek (ORG_CONSULTANT / platform-tanácsadó / ADMIN_EMAILS fiók) engedettek – másnak a felület nem kínálja, az API 403 CONSULTANT_ONLY hibát ad (a sima ORG_ADMIN-nak is!); a tanácsadó mindhárom műveletet el tudja végezni.",
     automated: "partial",
     coveredBy:
       "tests/client/policy/page-action-gating.integration.test.tsx (create campaign gating)",
@@ -151,7 +151,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a kitöltőt (/assessment/team-roles, értesítés-linkről vagy Feladataimból). 2. Próbálj 8-nál kevesebb jelöléssel beadni. 3. Jelölj 8–12 jellemző állítást, próbáld 2 vagy 4 kiemeléssel beadni. 4. Emelj ki pontosan 3-at, add be. 5. Nézd meg az eredményt és a szövegezést.",
     expected:
-      "Érvénytelen készlet (8 alatt, 12 felett, nem pontosan 3 kiemelt) nem adható be; sikeres beadás után a 9 trita-szerep profilja + top-szerepek jelennek meg; a kampány-lépés teljesül, a következő lépés (ütem szerint) nyílik; a user-facing szövegben sehol nem szerepel a Belbin név — a mérés neve csapatszerep-kérdőív.",
+      "Érvénytelen készlet (8 alatt, 12 felett, nem pontosan 3 kiemelt) nem adható be; sikeres beadás után a 9 trita-szerep profilja + top-szerepek jelennek meg; a kampány-lépés teljesül, a következő lépés (ütem szerint) nyílik; a user-facing szövegben sehol nem szerepel a Belbin név – a mérés neve csapatszerep-kérdőív.",
     automated: "partial",
     coveredBy:
       "tests/unit/team/team-role-scoring.test.ts (itembank + validálás + pontozás)",
@@ -177,7 +177,7 @@ export const cases = [
   {
     id: "ROLE-03",
     area: "Csapatszerep-360",
-    name: "Forrás-badge: HEXACO-becslés vs valódi kitöltés — a mért mindig felülír",
+    name: "Forrás-badge: HEXACO-becslés vs valódi kitöltés – a mért mindig felülír",
     persona: "tanácsadó",
     emails: { "tanácsadó": "AUTO", "tag-kitöltés-nélkül": "AUTO" },
     preconditions:

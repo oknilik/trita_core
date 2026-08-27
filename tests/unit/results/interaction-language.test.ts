@@ -139,7 +139,7 @@ const BAND_KEYS = [
   "results.pairBasisGap",
 ] as const;
 
-/** Értékelő (rangsoroló) szótövek — a leíró „magasabb/alacsonyabb" helyett. */
+/** Értékelő (rangsoroló) szótövek – a leíró „magasabb/alacsonyabb" helyett. */
 const VALENCE_MARKERS: Record<Locale, RegExp[]> = {
   hu: [/erős/iu, /gyeng/iu, /\bjobb\b/iu, /rosszabb/iu, /kiválóbb/iu, /fejlettebb/iu],
   en: [/stronger/iu, /weaker/iu, /\bbetter\b/iu, /\bworse\b/iu, /superior/iu],
@@ -153,7 +153,7 @@ test("a pár-összevetés címkéi nem rangsorolják a két embert", () => {
       for (const marker of VALENCE_MARKERS[locale]) {
         const match = text.match(marker);
         // A módszertani jegyzet KIMONDJA a szabályt („egyik érték sem jobb a
-        // másiknál") — az a szabály idézése, nem megsértése. Szűk kivétel:
+        // másiknál") – az a szabály idézése, nem megsértése. Szűk kivétel:
         // csak erre a két konkrét fordulatra.
         const statesTheRule = /sem jobb a másiknál|neither value is better/iu.test(text);
         if (match && !statesTheRule) {

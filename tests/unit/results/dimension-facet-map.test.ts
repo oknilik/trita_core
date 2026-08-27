@@ -25,7 +25,7 @@ test("HEXACO_DIMENSION_FACETS a kérdésbank facet-kódjait tükrözi", () => {
 
 test("HEXACO_FACETS NEVEI a kérdésbank labeljeit tükrözik (hu+en)", () => {
   // A kódok egyezése kevés: a zárt teaser (tritan.ts nevek) és a feloldott
-  // akkordeon (bank-labelek) NÉV-driftjét is fogni kell — korábban a
+  // akkordeon (bank-labelek) NÉV-driftjét is fogni kell – korábban a
   // greed_avoidance („Kapzsiságkerülés" vs „Mohóságkerülés") és a
   // forgiveness („Forgivingness" vs „Forgiveness") némán széttartott.
   for (const dim of tritanConfig.dimensions) {

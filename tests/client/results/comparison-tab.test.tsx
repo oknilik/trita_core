@@ -69,7 +69,7 @@ function renderTab() {
   );
 }
 
-describe("ComparisonTab — mérési-hiba kapu (DIFF_MIN_GAP)", () => {
+describe("ComparisonTab – mérési-hiba kapu (DIFF_MIN_GAP)", () => {
   it("az új observer-fejléc mobilon egymás alá, asztalon két oszlopba rendeződik", () => {
     renderTab();
     expect(screen.getByTestId("observer-comparison-surface")).toBeInTheDocument();
@@ -87,7 +87,7 @@ describe("ComparisonTab — mérési-hiba kapu (DIFF_MIN_GAP)", () => {
   it("a kapu alatti (10 pontos) gap egyezésnek számít, nem eltérésnek", () => {
     renderTab();
     // A 10 pontos H-gap chipje „egyezik" címkét kap…
-    expect(screen.getByText("10 pont — egyezik")).toBeInTheDocument();
+    expect(screen.getByText("10 pont – egyezik")).toBeInTheDocument();
     // …és az H a „Nincs vakfolt" kártya felsorolásában áll.
     const noBlindspotList = screen.getByText(/Becsületesség-Alázat.*Emocionalitás/);
     expect(noBlindspotList).toBeInTheDocument();
@@ -95,8 +95,8 @@ describe("ComparisonTab — mérési-hiba kapu (DIFF_MIN_GAP)", () => {
 
   it("a kapu feletti gap-ek eltérésként és vakfoltként jelennek meg", () => {
     renderTab();
-    expect(screen.getByText("16 pont — eltérés")).toBeInTheDocument();
-    expect(screen.getByText("25 pont — eltérés")).toBeInTheDocument();
+    expect(screen.getByText("16 pont – eltérés")).toBeInTheDocument();
+    expect(screen.getByText("25 pont – eltérés")).toBeInTheDocument();
     // Vakfolt-kártya csak a két kapu feletti dimenzióra van.
     expect(screen.getAllByText("Lehetséges vakfolt")).toHaveLength(2);
   });
@@ -113,11 +113,11 @@ describe("ComparisonTab — mérési-hiba kapu (DIFF_MIN_GAP)", () => {
 
   it("a nagy (≥15) gap chipje a bronz rámpán él, nem a piros error-tokeneken", () => {
     renderTab();
-    const largeChip = screen.getByText("25 pont — eltérés");
+    const largeChip = screen.getByText("25 pont – eltérés");
     const style = largeChip.getAttribute("style") ?? "";
     expect(style).not.toContain("state-error");
     expect(style).toContain("surface-highlight-warm");
-    const mediumChip = screen.getByText("16 pont — eltérés");
+    const mediumChip = screen.getByText("16 pont – eltérés");
     expect(mediumChip.getAttribute("style") ?? "").not.toContain("state-error");
   });
 });

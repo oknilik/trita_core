@@ -266,7 +266,7 @@ export function TeamIntelligence({
                 </div>
 
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
-                  {/* HEXACO-betű a badge-en (H/E/X/A/C/O) — a belső kód
+                  {/* HEXACO-betű a badge-en (H/E/X/A/C/O) – a belső kód
                       (H/X/…) nem kerülhet a felületre. */}
                   {topDims.map(([dim, value]) => (
                     <span
@@ -341,7 +341,7 @@ export function TeamIntelligence({
             <div className="mt-2">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-state-success-border bg-state-success-bg px-2 py-0.5 text-note text-sage">
-                  {/* „Hasonló profil" CSAK tisztán profil-becslésnél igaz —
+                  {/* „Hasonló profil" CSAK tisztán profil-becslésnél igaz –
                       mért (trust) aligned él magas bizalmat jelent, nem
                       profil-hasonlóságot; vegyes/mért képnél semleges címke. */}
                   {measuredEdgeCount === 0

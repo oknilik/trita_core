@@ -60,7 +60,7 @@ async function createInvitation(data: {
   });
 }
 
-test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
+test("account-scrub – GDPR fiók-törlés (scrubProfileData)", async (t) => {
   await t.test("inviter-oldal: PENDING lezárva + PII nullázva, COMPLETED PII nullázva (score marad)", async () => {
     const target = await createProfile();
 
@@ -85,7 +85,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     assert.equal(p?.observerName, null);
 
     // A COMPLETED inviter-sor a harmadik fél (rater) PII-ját is elveszti
-    // (motor-audit F4 — a v5 csak a PENDING-et nullázta), de a státusza marad.
+    // (motor-audit F4 – a v5 csak a PENDING-et nullázta), de a státusza marad.
     const c = await prisma.observerInvitation.findUnique({ where: { id: completed.id } });
     assert.equal(c?.status, "COMPLETED");
     assert.equal(c?.observerEmail, null);
@@ -96,7 +96,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     const other = await createProfile();
     const target = await createProfile();
 
-    // A target mint ÉRTÉKELŐ egy MÁSIK user meghívóin — profil-kapcsolat alapján.
+    // A target mint ÉRTÉKELŐ egy MÁSIK user meghívóin – profil-kapcsolat alapján.
     const raterCompleted = await createInvitation({
       inviterId: other.id,
       status: "COMPLETED",
@@ -119,7 +119,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     assert.equal(rc?.observerEmail, null);
     assert.equal(rc?.observerName, null);
 
-    // CANCELED (nem PENDING) sor is nullázódik — minden státuszra.
+    // CANCELED (nem PENDING) sor is nullázódik – minden státuszra.
     const rx = await prisma.observerInvitation.findUnique({ where: { id: raterCanceled.id } });
     assert.equal(rx?.observerProfileId, null);
   });
@@ -187,13 +187,13 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     assert.equal(evAfter?.userProfileId, null);
     assert.equal(evAfter?.isAuthed, false);
     // Self-eredmény elárvul ÉS a publikus megosztó-link visszavonódik
-    // (motor-audit A1 HIGH — a /share/[token] különben a törölt user
+    // (motor-audit A1 HIGH – a /share/[token] különben a törölt user
     // eredményét publikusan szolgálná ki).
     const arAfter = await prisma.assessmentResult.findUnique({ where: { id: ar.id } });
     assert.equal(arAfter?.userProfileId, null);
     assert.equal(arAfter?.shareToken, null, "a törölt user megosztó-tokenje nullázódik");
 
-    // Tombstone: MINDEN közvetlen PII elvágva (motor-audit A2 — a korábbi scrub
+    // Tombstone: MINDEN közvetlen PII elvágva (motor-audit A2 – a korábbi scrub
     // a username-t és a demográfiát bent hagyta).
     const tomb = await prisma.userProfile.findUnique({ where: { id: target.id } });
     assert.equal(tomb?.deleted, true);
@@ -273,17 +273,17 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     const il = await prisma.inquiry.findUnique({ where: { id: inqLinked.id } });
     assert.equal(il?.userProfileId, null);
     assert.equal(il?.email, "");
-    assert.equal(il?.name, "—");
+    assert.equal(il?.name, "–");
     assert.equal(il?.message, "");
 
     const ie = await prisma.inquiry.findUnique({ where: { id: inqByEmail.id } });
     assert.equal(ie?.email, "", "case-variant email szerint is redaktál");
-    assert.equal(ie?.name, "—");
+    assert.equal(ie?.name, "–");
 
     const c = await prisma.candidateInvite.findUnique({ where: { id: cand.id } });
     assert.equal(c?.email, null, "a jelölt közvetlen emailje elvágva");
     assert.equal(c?.name, null);
-    // A manager-kötés marad (a folyamat az org rekordja) — csak az identitás megy.
+    // A manager-kötés marad (a folyamat az org rekordja) – csak az identitás megy.
     assert.equal(c?.managerId, manager.id);
   });
 
@@ -297,7 +297,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
       data: { name: "Scrub Team", ownerId: owner.id, orgId: org.id },
     });
 
-    // A törölt user emailjére szóló függő meghívók — MÁS betűzéssel tárolva.
+    // A törölt user emailjére szóló függő meghívók – MÁS betűzéssel tárolva.
     const teamInvite = await prisma.teamPendingInvite.create({
       data: { teamId: team.id, email: target.email!.toUpperCase() },
     });
@@ -317,7 +317,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     assert.equal(
       await prisma.teamPendingInvite.findUnique({ where: { id: teamInvite.id } }),
       null,
-      "a csapat-meghívó sor maga a PII — törlődik",
+      "a csapat-meghívó sor maga a PII – törlődik",
     );
     assert.equal(
       await prisma.organizationPendingInvite.findUnique({ where: { id: orgInvite.id } }),
@@ -394,7 +394,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
       },
     });
     // A törölt user EMAILJÉT (case-variant, „Név (email)" formában) hordozó
-    // targetLabel — az inviterName itt egy másik (élő) user, az marad.
+    // targetLabel – az inviterName itt egy másik (élő) user, az marad.
     const byLabel = await prisma.notification.create({
       data: {
         userId: recipient.id,
@@ -421,10 +421,10 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     await scrubProfileData(target.id, target.email);
 
     const n1 = await prisma.notification.findUnique({ where: { id: byName.id } });
-    assert.deepEqual(n1?.vars, { inviterName: "—" });
+    assert.deepEqual(n1?.vars, { inviterName: "–" });
 
     const n2 = await prisma.notification.findUnique({ where: { id: byLabel.id } });
-    assert.deepEqual(n2?.vars, { inviterName: "Élő Kolléga", targetLabel: "—" });
+    assert.deepEqual(n2?.vars, { inviterName: "Élő Kolléga", targetLabel: "–" });
 
     const n3 = await prisma.notification.findUnique({ where: { id: untouched.id } });
     assert.deepEqual(n3?.vars, { inviterName: "Élő Kolléga" });

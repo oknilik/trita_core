@@ -53,8 +53,8 @@ export default async function NewClientOrgPage() {
           title={isHu ? "Új ügyfél-szervezet" : "New client organization"}
           description={
             isHu
-              ? "A szervezetbe tanácsadóként lépsz be. Ezután te hívod meg a tagokat, sorolod őket csapatokba és indítod a méréseket — az ügyfél admin később is csatlakozhat."
-              : "You join the organization as its consultant. You then invite members, assign them to teams and launch measurements — the client admin can join later."
+              ? "A szervezetbe tanácsadóként lépsz be. Ezután te hívod meg a tagokat, sorolod őket csapatokba és indítod a méréseket – az ügyfél admin később is csatlakozhat."
+              : "You join the organization as its consultant. You then invite members, assign them to teams and launch measurements – the client admin can join later."
           }
           className="mb-8"
         />

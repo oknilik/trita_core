@@ -154,7 +154,7 @@ export function clearAssessmentDraftFromStorage(testType: string, scope?: string
 }
 
 export function hasAssessmentDraftInStorage(testType: string, scope?: string): boolean {
-  // UX-A19: a scope eddig némán elveszett — a belépett user scoped draftja
+  // UX-A19: a scope eddig némán elveszett – a belépett user scoped draftja
   // sosem volt detektálható, és egy stale vendég-draft rossz CTA-t vezérelt.
   return readAssessmentDraftFromStorage({ testType, scope }) !== null;
 }

@@ -119,7 +119,7 @@ test("H2.8: buildDedupeKeySet handles null dedupeKey", () => {
 
 // ── Orchestrator dedupeKey convention tests ──────────────────────────────────
 
-test("H2.9: dedupeKey convention — format is TYPE:sourceId", () => {
+test("H2.9: dedupeKey convention – format is TYPE:sourceId", () => {
   // Verify the convention used in orchestrator.ts
   const keys = [
     "OBSERVER_COMPLETED:inv_123",

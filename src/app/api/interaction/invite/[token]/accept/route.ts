@@ -86,7 +86,7 @@ export async function POST(
       type: "COMPARE_ACCEPTED",
       category: "assessment",
       priority: "normal",
-      vars: { name: partnerName?.username ?? "—" },
+      vars: { name: partnerName?.username ?? "–" },
       link: `/interaction?pair=${invite.id}`,
       sourceType: "compare_invite",
       sourceId: invite.id,
@@ -94,7 +94,7 @@ export async function POST(
       dedupeKey: `COMPARE_ACCEPTED:${invite.id}`,
     });
   } catch {
-    // szándékosan elnyelve — az accept sikeres, az értesítés best-effort
+    // szándékosan elnyelve – az accept sikeres, az értesítés best-effort
   }
 
   return NextResponse.json({ id: invite.id, ok: true });

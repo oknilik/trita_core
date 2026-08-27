@@ -17,7 +17,7 @@ const FULL_MEASURED = {
   OG: 83, KE: 17, KO: 33, HA: 0, ER: 50, CS: 67, MV: 100, MI: 33, SZ: 17,
 } as const;
 
-describe("resolveDisplayRoleScores — kitöltött kérdőív > becslés", () => {
+describe("resolveDisplayRoleScores – kitöltött kérdőív > becslés", () => {
   it("kitöltött kérdőívnél a mért pontszámokat adja questionnaire forrással", () => {
     const measured = { ...FULL_MEASURED };
     const resolved = resolveDisplayRoleScores(measured, NEUTRAL_TRITAN);
@@ -53,7 +53,7 @@ describe("resolveDisplayRoleScores — kitöltött kérdőív > becslés", () =>
     const measured = resolveDisplayRoleScores({ ...FULL_MEASURED }, NEUTRAL_TRITAN);
     assert.ok(measured);
     assert.equal(measured.source, "questionnaire");
-    assert.equal(measured.exact, undefined, "mért ágon nincs exact — a perzisztált pontszám a jel");
+    assert.equal(measured.exact, undefined, "mért ágon nincs exact – a perzisztált pontszám a jel");
   });
 
   it("csak legacy (ismeretlen) kulcsú mért sorra becslésre esik vissza", () => {
@@ -76,7 +76,7 @@ describe("resolveDisplayRoleScores — kitöltött kérdőív > becslés", () =>
     );
   });
 
-  it("RÉSZLEGES mért sor (pl. csak OG) NEM mérvadó — becslésre esik vissza", () => {
+  it("RÉSZLEGES mért sor (pl. csak OG) NEM mérvadó – becslésre esik vissza", () => {
     // Örökség/sérült sor: mértként elfogadva a többi 8 szerepre elnyomná a
     // becslést, és csonka profilt mutatna „kitöltött" badge-dzsel.
     const resolved = resolveDisplayRoleScores({ OG: 100 }, NEUTRAL_TRITAN);
@@ -91,7 +91,7 @@ describe("resolveDisplayRoleScores — kitöltött kérdőív > becslés", () =>
 
   it("prototípus-lánc kulcsok (constructor/toString) nem számítanak szerep-kódnak", () => {
     // Az `in`-alapú szűrő ezeket átengedné (a TEAM_ROLES prototípus-láncán
-    // léteznek) — own-key (Object.hasOwn) szűréssel becslésre esik vissza.
+    // léteznek) – own-key (Object.hasOwn) szűréssel becslésre esik vissza.
     const poisoned = { constructor: 90, toString: 80, hasOwnProperty: 70 };
     const resolved = resolveDisplayRoleScores(poisoned, NEUTRAL_TRITAN);
     assert.ok(resolved);
@@ -112,7 +112,7 @@ describe("resolveDisplayRoleScores — kitöltött kérdőív > becslés", () =>
     assert.ok(top.includes("HA"), `HA hiányzik a top2-ből: ${top.join(",")}`);
   });
 
-  it("részleges dimenzió-készletből NEM becsül — null, nem default-feltöltött szerep", () => {
+  it("részleges dimenzió-készletből NEM becsül – null, nem default-feltöltött szerep", () => {
     // Örökség/sérült sor: csak 2 dimenzió van meg a 6-ból.
     assert.equal(resolveDisplayRoleScores(null, { H: 80, X: 20 }), null);
     assert.equal(resolveDisplayRoleScores(null, null), null);
@@ -126,7 +126,7 @@ describe("resolveDisplayRoleScores — kitöltött kérdőív > becslés", () =>
   });
 });
 
-describe("hasCompleteTritanDims — becslés-teljességi kapu", () => {
+describe("hasCompleteTritanDims – becslés-teljességi kapu", () => {
   it("mind a 6 dimenzió számként → true; hiányzó vagy nem-szám kulcs → false", () => {
     assert.equal(hasCompleteTritanDims(NEUTRAL_TRITAN), true);
     assert.equal(hasCompleteTritanDims({ ...NEUTRAL_TRITAN, O: undefined }), false);

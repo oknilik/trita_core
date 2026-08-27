@@ -87,7 +87,7 @@ export function PdfCard({
   );
 }
 
-// Folytatólagos oldalak fejléce: fehér sáv sage akcentussal — a
+// Folytatólagos oldalak fejléce: fehér sáv sage akcentussal – a
 // borító hero-jának visszafogott ismétlése, a kanonikus szójellel.
 export function PdfMiniHeader({
   userName,
@@ -104,7 +104,7 @@ export function PdfMiniHeader({
   reportLabel?: string;
 }) {
   return (
-    // fixed + abszolút: minden lap tetején megjelenik, de NEM ül a flow-ban —
+    // fixed + abszolút: minden lap tetején megjelenik, de NEM ül a flow-ban –
     // a helyét a lap paddingTop-ja foglalja (styles.chrome.headerHeight), így
     // az áttört tartalom nem úszik be alá.
     <View fixed style={{ position: "absolute", top: 0, left: 0, right: 0 }}>

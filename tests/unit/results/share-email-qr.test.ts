@@ -12,7 +12,7 @@ import assert from "node:assert/strict";
 import { buildProfileShareHtml, profileShareUrl } from "@/lib/emails";
 import { generateShareQrPng } from "@/lib/share-qr";
 
-describe("buildProfileShareHtml — QR-blokk a levélben", () => {
+describe("buildProfileShareHtml – QR-blokk a levélben", () => {
   it("qrCid-del inline cid-kép és QR-magyarázat kerül a HTML-be (HU)", () => {
     const html = buildProfileShareHtml({
       locale: "hu",
@@ -44,7 +44,7 @@ describe("buildProfileShareHtml — QR-blokk a levélben", () => {
   });
 });
 
-describe("generateShareQrPng — best-effort szerver-oldali QR", () => {
+describe("generateShareQrPng – best-effort szerver-oldali QR", () => {
   it("a share URL-ből valódi PNG-buffert ad", async () => {
     const png = await generateShareQrPng(profileShareUrl("tok123"));
     assert.ok(png, "PNG buffer kell");

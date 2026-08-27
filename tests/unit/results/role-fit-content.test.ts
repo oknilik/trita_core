@@ -89,7 +89,7 @@ test("solo fallback profil (csak egy extrém dim): roleFit nem üres", () => {
 
 test("csak nem-feloldás pár profil: solo fallback ad roleFit tartalmat", () => {
   // E high + X high → supportedVisibility. A tábla „risk"-nek deklarálja, a
-  // valencia-kapu viszont „note"-ra szelídíti (fordított skála) — a
+  // valencia-kapu viszont „note"-ra szelídíti (fordított skála) – a
   // feloldás-slot (block6) így is üres, tehát a solo fallback fut.
   const engine = runProfileEngine(scores({ E: 80, X: 80 }), "TRITAN");
   assert.equal(engine.block6Pairs.length, 0);
@@ -170,7 +170,7 @@ test("Kultúra-sor rövid címkéje a kanonikus pólust adja, nem a semleges kö
   assert.equal(ENV_ROW_SHORT_LABELS.culture.high.hu, "Értékvezérelt");
   assert.equal(ENV_ROW_SHORT_LABELS.culture.high.en, "Values-driven");
 
-  // H low → pragmatikus (low pólus) — nem eshet a semleges középre.
+  // H low → pragmatikus (low pólus) – nem eshet a semleges középre.
   const pragmaticRow = getEnvRows(
     runProfileEngine(scores({ H: 10 }), "TRITAN").categories,
   ).find((r) => r.key === "culture");
@@ -194,7 +194,7 @@ test("Kultúra-sor rövid címkéje a kanonikus pólust adja, nem a semleges kö
 });
 
 test("minden kiadható env-sor kanonikusan visszafejthető, a rövid címke sehol nem üres", () => {
-  // Az öt vezérlő dimenzió összes kategória-kombinációja — minden getEnvRows-
+  // Az öt vezérlő dimenzió összes kategória-kombinációja – minden getEnvRows-
   // ág (és minden érték-változat) legalább egyszer kiadódik. A megjelenítő
   // pontosan ezt a visszafejtést futtatja (label→kulcs, érték→szint), tehát
   // ha itt minden feloldódik, a felületen nem lehet üres/rossz pólusú címke.

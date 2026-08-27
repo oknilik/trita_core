@@ -42,12 +42,12 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
   }
 
   // Kétlépcsős törlés + diszkrét trigger (UX-audit #16): korábban EGY katt
-  // eltávolította a tagot a szervezetből — most megerősítés kell, és a
+  // eltávolította a tagot a szervezetből – most megerősítés kell, és a
   // nyugalmi állapot halvány szöveg-link, nem piros gomb.
   if (confirm) {
     return (
       <div className="flex flex-col items-start gap-1 md:items-end">
-        {/* Destruktív megerősítés: 44px-es érintési célok és nagyobb térköz —
+        {/* Destruktív megerősítés: 44px-es érintési célok és nagyobb térköz –
             mobilon ne lehessen a „Mégse" helyett az „Eltávolítás"-t nyomni. */}
         <div className="flex flex-wrap items-center gap-3">
           <button
@@ -79,7 +79,7 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
 
   return (
     <div className="flex flex-col items-start gap-1 md:items-end">
-      {/* Láthatatlan 44px-es érintési sáv (before:-inset-y) — a diszkrét
+      {/* Láthatatlan 44px-es érintési sáv (before:-inset-y) – a diszkrét
           szöveg-trigger vizuális mérete nem nő, a sor nem feszül szét. */}
       <button
         type="button"

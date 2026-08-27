@@ -15,13 +15,13 @@ import {
 // megnyitná a sémát, a CI itt bukik el — MIELŐTT bármi adat keletkezne.
 // ─────────────────────────────────────────────────────────────────────
 
-test("minden esemény sémája zárt (.strict) — ismeretlen kulcs nem mehet át", () => {
+test("minden esemény sémája zárt (.strict) – ismeretlen kulcs nem mehet át", () => {
   for (const name of ANALYTICS_EVENT_NAMES) {
     const result = parseEventProps(name, { __szemet: "akarmi" });
     assert.equal(
       result.ok,
       false,
-      `a(z) "${name}" séma átengedett egy ismeretlen kulcsot — nyitott séma esetén PII szivároghatna be`,
+      `a(z) "${name}" séma átengedett egy ismeretlen kulcsot – nyitott séma esetén PII szivároghatna be`,
     );
   }
 });
@@ -65,7 +65,7 @@ test("a szerver-only események NEM fogadhatók el kliensről", () => {
   const serverOnly = ANALYTICS_EVENT_NAMES.filter(
     (name) => ANALYTICS_EVENTS[name].origin === "server",
   );
-  assert.ok(serverOnly.length > 0, "nincs egyetlen szerver-only esemény sem — gyanús");
+  assert.ok(serverOnly.length > 0, "nincs egyetlen szerver-only esemény sem – gyanús");
 
   for (const name of serverOnly) {
     assert.equal(acceptsOrigin(name, "client"), false, `kliensről elfogadható lenne: ${name}`);
@@ -74,7 +74,7 @@ test("a szerver-only események NEM fogadhatók el kliensről", () => {
 });
 
 test("az üzletileg kritikus események szerver-oldaliak", () => {
-  // Ezek adják a tölcsér ÜZLETI számait — ha kliens-oldaliak lennének,
+  // Ezek adják a tölcsér ÜZLETI számait – ha kliens-oldaliak lennének,
   // ad-blocker és hamisítás egyaránt torzítaná őket.
   for (const name of ["assessment.complete", "auth.signup", "inquiry.submit"] as const) {
     assert.equal(ANALYTICS_EVENTS[name].origin, "server", `${name} nem szerver-oldali`);

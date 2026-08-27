@@ -1,8 +1,15 @@
 "use client";
 
+import { useEffect } from "react";
+import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
-import { setSiteMode, useSiteMode, type SiteMode } from "@/components/landing/site-mode";
+import {
+  SELF_LANDING_PATH,
+  TEAM_LANDING_PATH,
+  setSiteModePreview,
+  type SiteMode,
+} from "@/components/landing/site-mode";
 import { track } from "@/lib/analytics/client";
 
 export type { SiteMode };
@@ -11,24 +18,68 @@ export type { SiteMode };
 // prerendert CSR-re kényszerítette, és ezzel az egész landinget kivette a
 // szerver-HTML-ből — ld. site-mode.ts). Így a switcher valódi állapota már
 // a prerenderelt HTML-ben benne van, Suspense-fallback nélkül.
-export function ModeSwitcher() {
+export function ModeSwitcher({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
-  const mode = useSiteMode();
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (
+      url.pathname !== "/" ||
+      url.searchParams.has("mode") ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      return;
+    }
+
+    const timeoutIds: number[] = [];
+    const removePreviewListeners = () => {
+      window.removeEventListener("pointerdown", cancelPreview);
+      window.removeEventListener("keydown", cancelPreview);
+      window.removeEventListener("scroll", cancelPreview);
+    };
+    const cancelPreview = () => {
+      timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      removePreviewListeners();
+    };
+
+    timeoutIds.push(
+      window.setTimeout(() => {
+        if (window.scrollY <= 8) {
+          setSiteModePreview("team");
+          timeoutIds.push(
+            window.setTimeout(() => {
+              removePreviewListeners();
+              if (window.scrollY <= 8) setSiteModePreview(null);
+            }, 2400),
+          );
+        }
+      }, 1800),
+    );
+
+    window.addEventListener("pointerdown", cancelPreview, { once: true });
+    window.addEventListener("keydown", cancelPreview, { once: true });
+    window.addEventListener("scroll", cancelPreview, { once: true, passive: true });
+
+    return () => {
+      timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      removePreviewListeners();
+      setSiteModePreview(null);
+    };
+  }, []);
 
   return (
     <div className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/80 p-1 backdrop-blur-sm">
       {(["self", "team"] as SiteMode[]).map((m) => {
         const isActive = mode === m;
         return (
-          <button
+          <Link
             key={m}
-            type="button"
+            href={m === "self" ? SELF_LANDING_PATH : TEAM_LANDING_PATH}
             onClick={() => {
               // P2: melyik módot választják, és váltanak-e egyáltalán.
               track("landing.mode_switch", { to: m });
-              setSiteMode(m);
             }}
-            aria-pressed={isActive}
+            aria-current={isActive ? "page" : undefined}
             className={[
               "flex min-h-[44px] items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium transition-all duration-200",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action-primary-bg)] focus-visible:ring-offset-2",
@@ -58,7 +109,7 @@ export function ModeSwitcher() {
               </svg>
             )}
             {m === "self" ? t("nav.modeSelf", locale) : t("nav.modeTeam", locale)}
-          </button>
+          </Link>
         );
       })}
     </div>

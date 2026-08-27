@@ -24,7 +24,7 @@ export function unsubscribePostUrl(appUrl: string, unsubToken: string): string {
 /**
  * Kattintás-követő link a levélbeli cikk-hivatkozásokhoz.
  *
- * A `to` a cikk SLUGJA, nem teljes URL — a cél-URL-t a végpont építi fel a
+ * A `to` a cikk SLUGJA, nem teljes URL – a cél-URL-t a végpont építi fel a
  * publikált cikkek közül. Így a paraméter nem tud nyílt átirányítássá válni.
  */
 export function clickUrl(appUrl: string, deliveryId: string, slug: string): string {
@@ -32,13 +32,13 @@ export function clickUrl(appUrl: string, deliveryId: string, slug: string): stri
   return `${base}/api/newsletter/click?d=${encodeURIComponent(deliveryId)}&to=${encodeURIComponent(slug)}`;
 }
 
-/** A megerősítő link — a double opt-in levél egyetlen gombja. */
+/** A megerősítő link – a double opt-in levél egyetlen gombja. */
 export function confirmUrl(appUrl: string, confirmToken: string): string {
   return `${appUrl.replace(/\/+$/, "")}/newsletter/confirm?token=${encodeURIComponent(confirmToken)}`;
 }
 
 /**
- * A cikk borítója a levélben — STABIL, nem build-hashelt route-ról.
+ * A cikk borítója a levélben – STABIL, nem build-hashelt route-ról.
  *
  * NE a blog `…/opengraph-image` útját használd: azt a Next build-generált
  * utótaggal szolgálja ki, az utótag nélküli alak 404 (mérve; a

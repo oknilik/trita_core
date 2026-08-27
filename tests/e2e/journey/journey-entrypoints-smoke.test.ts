@@ -39,7 +39,7 @@ async function expectFinalPathname(page: Page, expectedPathname: string) {
 /**
  * Védett mélylink vendégként: a /sign-in-en kell kikötni ÚGY, hogy az eredeti
  * cél (útvonal + query) megmaradjon a `redirect_url`-ben. A pathname önmagában
- * kevés lenne — pont a szándék megőrzése a szerződés lényege.
+ * kevés lenne – pont a szándék megőrzése a szerződés lényege.
  */
 async function expectSignInWithReturnTo(page: Page, sourcePath: string) {
   await page.goto(sourcePath, { waitUntil: "domcontentloaded" });
@@ -85,6 +85,14 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
     await expectFinalPathname(page, "/sign-up");
   });
 
+  test("the audience landing pages stay public for guests", async ({ page }) => {
+    for (const publicLanding of ["/self-awareness", "/team-dynamics"]) {
+      const response = await page.goto(publicLanding, { waitUntil: "domcontentloaded" });
+      expect(response?.status(), `${publicLanding} should be public`).toBe(200);
+      await expectFinalPathname(page, publicLanding);
+    }
+  });
+
   test("authenticated user is bounced from auth routes to the journey handoff", async ({
     page,
     context,
@@ -102,7 +110,7 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
 
     // A middleware-szerződést nyersen assertáljuk (maxRedirects: 0): a
     // bejelentkezett user auth-route-ról a journey-kapura (/dashboard)
-    // pattan. A teljes lánc követése itt nem cél — a kapu mögötti út a
+    // pattan. A teljes lánc követése itt nem cél – a kapu mögötti út a
     // user DB-állapotától függ (profil nélkül pl. /onboarding a vége).
     for (const authRoute of ["/sign-in", "/sign-up"]) {
       const response = await page.request.get(authRoute, { maxRedirects: 0 });

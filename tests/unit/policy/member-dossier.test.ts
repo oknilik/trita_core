@@ -15,7 +15,7 @@ import { diffStandardError } from "@/lib/psychometrics";
 
 // A tag-dossié hozzáférés KŐBE VÉSETT (2026-08-25): kizárólag tanácsadói
 // kör. Az org admin, a manager és a tag NEM fér hozzá.
-describe("canViewMemberDossier — hozzáférési allowlist", () => {
+describe("canViewMemberDossier – hozzáférési allowlist", () => {
   it("ORG_ADMIN → false", () => {
     assert.equal(canViewMemberDossier("ORG_ADMIN"), false);
   });
@@ -53,7 +53,7 @@ describe("canViewMemberDossier — hozzáférési allowlist", () => {
   });
 });
 
-describe("computeObserverAverage — observer-küszöb + átlag", () => {
+describe("computeObserverAverage – observer-küszöb + átlag", () => {
   const full = (v: number): Record<string, number> =>
     Object.fromEntries(HEXACO_ORDER.map((c) => [c, v]));
 
@@ -85,7 +85,7 @@ describe("computeObserverAverage — observer-küszöb + átlag", () => {
   });
 });
 
-describe("computeObserverFacetAverages — facet-szintű küszöb + listwise átlag", () => {
+describe("computeObserverFacetAverages – facet-szintű küszöb + listwise átlag", () => {
   const fullFacets = (v: number): Record<string, Record<string, number>> =>
     Object.fromEntries(
       HEXACO_ORDER.map((dim) => [
@@ -144,7 +144,7 @@ describe("computeObserverFacetAverages — facet-szintű küszöb + listwise át
     assert.equal(avg!["X"]["sociability"], 70); // (60+80+70)/3
   });
 
-  it("facets nélküli (örökség) készletet tolerál — minden facet küszöb alatt → üres objektum", () => {
+  it("facets nélküli (örökség) készletet tolerál – minden facet küszöb alatt → üres objektum", () => {
     // 3-elemű halmaz, egy örökség-sorral (facets nélkül): minden facetnek
     // csak 2 valódi lefedettsége van (< DOSSIER_OBSERVER_MIN) → mind kimarad.
     const avg = computeObserverFacetAverages(HEXACO_ORDER, [
@@ -165,7 +165,7 @@ describe("computeObserverFacetAverages — facet-szintű küszöb + listwise át
   });
 });
 
-describe("computeDimComparisons — sorrend, delta, üres self", () => {
+describe("computeDimComparisons – sorrend, delta, üres self", () => {
   it("HEXACO-sorrend + delta = observer − self", () => {
     const self: Record<string, number> = { X: 50, E: 40, H: 30, C: 20, A: 60, O: 70 };
     const obs: Record<string, number> = { X: 55, E: 30, H: 30, C: 25, A: 60, O: 90 };
@@ -206,7 +206,7 @@ describe("computeDimComparisons — sorrend, delta, üres self", () => {
   });
 });
 
-describe("computeFacetComparisons — sorrend, delta, hiányzó értékek", () => {
+describe("computeFacetComparisons – sorrend, delta, hiányzó értékek", () => {
   it("dimenzió- és facet-sorrendben adja vissza a mért self-faceteket", () => {
     const self = {
       H: { fairness: 70, sincerity: 61 },
@@ -240,14 +240,14 @@ describe("computeFacetComparisons — sorrend, delta, hiányzó értékek", () =
   });
 });
 
-describe("topGapDims — rangsor + SEM-alapú küszöb", () => {
+describe("topGapDims – rangsor + SEM-alapú küszöb", () => {
   it("a default küszöb a KÜLÖNBSÉG mérési hibája: √2·SEM", () => {
     // = Math.round(diffStandardError("short")): az önkép és a külső (observer)
-    // átlag KÉT független mérés, a különbségük hibája √2·SEM — a korábbi
+    // átlag KÉT független mérés, a különbségük hibája √2·SEM – a korábbi
     // 1×SEM ~40%-kal alul-becsülte, így a hibán belüli deltákat is felhozta.
     // A SZÁMÉRTÉK a bankból (rövid forma item/dimenzió) ÉS a mért
     // reliabilitás-konstansokból származik (2026-08-11 óta 14 → 11), ezért itt
-    // nem literálhoz kötjük — a numerikus invariáns helye:
+    // nem literálhoz kötjük – a numerikus invariáns helye:
     // tests/unit/scoring/psychometrics.test.ts.
     assert.equal(DOSSIER_GAP_MIN_DELTA, Math.round(diffStandardError("short")));
     assert.ok(DOSSIER_GAP_MIN_DELTA > 10);

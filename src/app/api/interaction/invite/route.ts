@@ -92,7 +92,7 @@ export async function POST(req: Request) {
     try {
       await sendCompareInviteEmail({
         to: parsed.data.email,
-        senderName: profile.username ?? "—",
+        senderName: profile.username ?? "–",
         token: invite.token,
         // A címzettnek nincs fiókja, tehát tárolt nyelve sincs — a küldő
         // felületi nyelve a legjobb elérhető tudás.
@@ -147,11 +147,11 @@ export async function GET() {
       const isInviter = inv.inviterId === profile.id;
       return {
         id: inv.id,
-        // A token csak a meghívónak jár (link-másoláshoz) — a partnernek nem.
+        // A token csak a meghívónak jár (link-másoláshoz) – a partnernek nem.
         token: isInviter ? inv.token : null,
         state: resolveCompareInviteState(inv, now),
         role: isInviter ? "inviter" : "partner",
-        // A másik fél megjelenített neve — elfogadott párnál értelmes.
+        // A másik fél megjelenített neve – elfogadott párnál értelmes.
         otherName: isInviter
           ? (inv.partner?.username ?? null)
           : (inv.inviter?.username ?? null),

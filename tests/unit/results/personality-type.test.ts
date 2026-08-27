@@ -18,7 +18,7 @@ import { diffStandardError } from "@/lib/psychometrics";
 const dims = (scores: Record<string, number>) =>
   Object.entries(scores).map(([code, score]) => ({ code, score }));
 
-describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
+describe("resolvePersonalityTypeFromScores – melléknév-óvatosság", () => {
   it("közeli 2-3. helyezett (gap < küszöb) → csak főnév, nagybetűsítve", () => {
     // O(80) domináns, X(60) vs C(55): gap 5 < küszöb → a melléknév bizonytalan.
     const scores = dims({ O: 80, X: 60, C: 55, A: 30, E: 25, H: 20 });
@@ -108,7 +108,7 @@ describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
     assert.equal(resolvePersonalityTypeFromScores(withI, "hu"), "Energikus újító");
   });
 
-  it("a küszöb a KÜLÖNBSÉG mérési hibájából jön (√2·SEM) — ld. psychometrics invariáns-teszt", () => {
+  it("a küszöb a KÜLÖNBSÉG mérési hibájából jön (√2·SEM) – ld. psychometrics invariáns-teszt", () => {
     // Két dimenzió KÜLÖNBSÉGE dönti el a sorrendet, ezért a kapu √2·SEM,
     // nem 1×SEM. A KONKRÉT érték a bankból (rövid forma item-száma) ÉS a
     // reliabilitás-konstansokból jön, ezért itt NEM literálhoz kötjük — a

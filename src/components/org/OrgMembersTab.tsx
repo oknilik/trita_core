@@ -130,7 +130,7 @@ export function OrgMembersTab({
         {members.length > 0 ? (
           <div className="grid gap-3 sm:grid-cols-2">
             {members.map((member) => {
-              const displayName = member.user.username ?? member.user.email ?? "—";
+              const displayName = member.user.username ?? member.user.email ?? "–";
               const badge = roleBadgeConfig(member.role);
 
               return (
@@ -153,7 +153,7 @@ export function OrgMembersTab({
                         className="mt-1 truncate text-note text-muted"
                         title={member.user.email ?? undefined}
                       >
-                        {member.user.email ?? "—"}
+                        {member.user.email ?? "–"}
                       </p>
                     </div>
                   </div>

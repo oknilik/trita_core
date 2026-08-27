@@ -19,7 +19,7 @@ describe("LinearReport", () => {
     expect(screen.getByText("Áttekintés tartalma")).toBeInTheDocument();
     expect(screen.queryByText("Dimenziók tartalma")).toBeNull();
     expect(screen.queryByText("Munkastílus tartalma")).toBeNull();
-    expect(screen.getByRole("button", { name: "02. Dimenziók — Megnyitás" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "02. Dimenziók – Megnyitás" })).toBeInTheDocument();
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
@@ -43,7 +43,7 @@ describe("LinearReport", () => {
         onSectionOpen={onSectionOpen}
       />,
     );
-    await userEvent.click(screen.getByRole("button", { name: "02. Dimenziók — Megnyitás" }));
+    await userEvent.click(screen.getByRole("button", { name: "02. Dimenziók – Megnyitás" }));
 
     expect(scrollIntoView).toHaveBeenCalledOnce();
     expect(onSectionOpen).toHaveBeenCalledWith("dimensions");

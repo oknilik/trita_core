@@ -131,7 +131,7 @@ export default async function ResultsExperiencePreviewPage({
           clarityFeedbackSubmitted
           personalityType="Újító"
           interactionEntry={{ state: "new" }}
-          heroInsight="Új összefüggéseket találsz és könnyen bevonsz másokat — a lehetőségek tudatos lezárása adhat még több fókuszt."
+          heroInsight="Új összefüggéseket találsz és könnyen bevonsz másokat – a lehetőségek tudatos lezárása adhat még több fókuszt."
           shareToken={null}
           plusContent={{
             introText: "",

@@ -222,7 +222,7 @@ export async function POST(req: Request) {
     log.error({ event: "assessment.step_notification_failed", err }, "Step notification failed"),
   );
 
-  // Analitika: a kitöltés BEFEJEZÉSE szerver-oldali igazság — a kliens
+  // Analitika: a kitöltés BEFEJEZÉSE szerver-oldali igazság – a kliens
   // oldali „kész" esemény ad-blockolható és hamisítható lenne, ez pedig a
   // tölcsér legfontosabb lépése.
   if (created) {

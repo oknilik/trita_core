@@ -260,7 +260,7 @@ export function DecisionPanel({
 
         {/* Feliratkozás: az „igen" ágon mindig, a „nem" ágon akkor, ha az ár
             a visszatartó ok ÉS állított be valamekkora összeget. Aki fizetne
-            érte valamennyit, az érdeklődő — csak drágállja. Aki nullára
+            érte valamennyit, az érdeklődő – csak drágállja. Aki nullára
             húzta, annak ez a kérdés tolakodó lenne. */}
         {(isYes || wantsPriceAlert) && (
           <div className="mt-5 rounded-xl border border-bronze-edge bg-bronze-soft/40 p-4">
@@ -307,7 +307,7 @@ export function DecisionPanel({
             {t("fakeDoor.submit", locale)}
           </button>
           {/* Az átugrás nem büntetett út: ha rontaná a konverziót, a döntés
-              maga is kevesebb lenne — de az átugrás ténye rögzül. */}
+              maga is kevesebb lenne – de az átugrás ténye rögzül. */}
           <button
             type="button"
             onClick={() => void submitFollowUp(true)}
@@ -345,7 +345,7 @@ export function DecisionPanel({
           {t("fakeDoor.yes", locale)}
         </button>
         {/* Vonalas, de azonos méretű és súlyú: a „nem" ugyanolyan hasznos
-            válasz — ha halkabb lenne, a minta felfelé torzulna. */}
+            válasz – ha halkabb lenne, a minta felfelé torzulna. */}
         <button
           type="button"
           onClick={() => void decide("no")}

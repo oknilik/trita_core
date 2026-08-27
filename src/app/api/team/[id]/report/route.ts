@@ -206,7 +206,7 @@ async function requireConsultant(teamId: string) {
   return { profileId: profile.id, orgId: team.orgId };
 }
 
-// GET /api/team/[id]/report?reportId=... — append-only akciótörténet.
+// GET /api/team/[id]/report?reportId=... – append-only akciótörténet.
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -230,7 +230,7 @@ export async function GET(
   return NextResponse.json({ events });
 }
 
-// POST /api/team/[id]/report — új riport-vázlat (aggregátum-előnézettel)
+// POST /api/team/[id]/report – új riport-vázlat (aggregátum-előnézettel)
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -278,7 +278,7 @@ export async function POST(
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
 
-  // A narratív mezőket generált javaslattal töltjük elő — a tanácsadó
+  // A narratív mezőket generált javaslattal töltjük elő – a tanácsadó
   // szerkeszthető kiindulópontot kap, nem üres űrlapot.
   const prefill = buildDraftNarrativePrefill(aggregates);
   const initialActions = normalizeActionIds(prefill?.actionItems ?? [], []);
@@ -323,7 +323,7 @@ export async function POST(
   });
 }
 
-// DELETE /api/team/[id]/report — vázlat (pl. visszavont riport) végleges törlése
+// DELETE /api/team/[id]/report – vázlat (pl. visszavont riport) végleges törlése
 export async function DELETE(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -365,7 +365,7 @@ export async function DELETE(
   return NextResponse.json({ ok: true });
 }
 
-// PATCH /api/team/[id]/report — narratíva mentése / publikálás
+// PATCH /api/team/[id]/report – narratíva mentése / publikálás
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> },
@@ -437,7 +437,7 @@ export async function PATCH(
   }
 
   if (existing.status === "PUBLISHED") {
-    // A publikált (validált) riport közvetlenül nem szerkeszthető —
+    // A publikált (validált) riport közvetlenül nem szerkeszthető –
     // előbb vissza kell vonni (unpublish), vagy új riportot nyitni.
     return NextResponse.json({ error: "ALREADY_PUBLISHED" }, { status: 409 });
   }
@@ -448,7 +448,7 @@ export async function PATCH(
     Object.entries(fields).filter(([, value]) => value !== undefined && value !== null),
   );
   // Fordítás-csomag mentése (a régi Prisma-kliens típusa még nem ismeri a
-  // translationsEn oszlopot — a migráció + generate után szükségtelen a cast).
+  // translationsEn oszlopot – a migráció + generate után szükségtelen a cast).
   if (translationsEn !== undefined && translationsEn !== null) {
     narrativeData.translationsEn = translationsEn as object;
   }
@@ -497,7 +497,7 @@ export async function PATCH(
     import("@/lib/notifications").then(({ handleTeamReportPublished }) =>
       handleTeamReportPublished({
         teamId,
-        teamName: team?.name ?? "—",
+        teamName: team?.name ?? "–",
         reportId: report.id,
         orgId: ctx.orgId,
       }).catch((err: unknown) => log.error({ event: "team-report.team_report_published_error", err: err }, "Team report published error")),

@@ -26,7 +26,7 @@ const GLYPH_DIMS = [
   { code: "O", score: 90 },
 ];
 
-describe("ProfileHero — elsődleges CTA a sötét herón", () => {
+describe("ProfileHero – elsődleges CTA a sötét herón", () => {
   it("a PDF-gomb világos akcent-töltést és sötét on-accent feliratot kap", () => {
     render(
       <ProfileHero

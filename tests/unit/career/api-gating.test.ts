@@ -50,7 +50,7 @@ test("minden karrier-végpont a modul-kapu mögött van (404 parkolt/rejtett mod
 });
 
 test("fake door: FORDÍTOTT modul-kapu + org-elrejtés (élő modulnál vagy rejtett tagnak 404)", () => {
-  // A fake door csak addig LÉTEZIK, amíg a modul parkolt — a kapu polaritása
+  // A fake door csak addig LÉTEZIK, amíg a modul parkolt – a kapu polaritása
   // ezért fordított: CAREER_MODULE_READY (kapcsoló ÁLLÍTVA) → 404. Az org-
   // szintű elrejtés viszont ugyanúgy érvényes, mint a többi karrier-végponton:
   // az elrejtett tag a /career-en notFound()-ot kap, a mérés sem rögzíthet róla.
@@ -66,7 +66,7 @@ test("fake door: FORDÍTOTT modul-kapu + org-elrejtés (élő modulnál vagy rej
     );
     assert.ok(
       !/!CAREER_MODULE_READY/.test(source),
-      `${route}: a fake door a NEM-parkolt kaput kapta — parkolt modulnál élnie kell`,
+      `${route}: a fake door a NEM-parkolt kaput kapta – parkolt modulnál élnie kell`,
     );
     assert.match(
       source,
@@ -85,7 +85,7 @@ test("fake door: FORDÍTOTT modul-kapu + org-elrejtés (élő modulnál vagy rej
 });
 
 test("careerBackground: a currentOccupationId csak létező katalógus-tétel lehet", () => {
-  // A known-groups validáció adatforrása — kitalált O*NET-kód a mintát mérgezné.
+  // A known-groups validáció adatforrása – kitalált O*NET-kód a mintát mérgezné.
   const source = read("src/app/api/profile/career-background/route.ts");
   assert.ok(
     source.includes("getOccupation"),
@@ -114,7 +114,7 @@ test("kalibrációs visszajelzés: a fitScore-t a szerver számolja, nem a klien
     "a mentett rating nem a szerver-oldali demandFit",
   );
 
-  // A kliens-oldali küldő sem próbálkozik pontszámmal (mező-szintű ellenőrzés —
+  // A kliens-oldali küldő sem próbálkozik pontszámmal (mező-szintű ellenőrzés –
   // a prózai komment említheti a fitScore-t, a POST-body nem).
   const client = read("src/components/results/career/CareerResults.tsx");
   assert.ok(
@@ -126,7 +126,7 @@ test("kalibrációs visszajelzés: a fitScore-t a szerver számolja, nem a klien
 test("observer-anonimitás: a person-építő a közös padlóra kapuz", () => {
   // A viselkedést az engine.test.ts fedi (a motor-oldali védőhálón át); ez a
   // kontraktus azt őrzi, hogy az ADAT-OLDALI kapu (person.ts) is a közös
-  // konstansra hivatkozik — ne lehessen a padlót csak az egyik rétegben emelni.
+  // konstansra hivatkozik – ne lehessen a padlót csak az egyik rétegben emelni.
   const person = read("src/lib/career/person.ts");
   assert.ok(
     person.includes("MIN_RATERS_FOR_ANONYMOUS_AGGREGATE"),

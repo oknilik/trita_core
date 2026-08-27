@@ -10,7 +10,7 @@ export const cases = [
   {
     id: "ORG-01",
     area: "Org-meghívó",
-    name: "Org-meghívó kijelentkezett (új) userként — sign-up → profil-kiegészítés → tagság",
+    name: "Org-meghívó kijelentkezett (új) userként – sign-up → profil-kiegészítés → tagság",
     persona: "új meghívott + org admin",
     emails: { admin: "AUTO", "meghívott": "AUTO" },
     preconditions:
@@ -27,7 +27,7 @@ export const cases = [
   {
     id: "ORG-02",
     area: "Org-meghívó",
-    name: "Org-meghívó bejelentkezett, onboardolt userrel — a meghívó szerepével jön létre a tagság",
+    name: "Org-meghívó bejelentkezett, onboardolt userrel – a meghívó szerepével jön létre a tagság",
     persona: "self-user + org admin",
     emails: { admin: "AUTO", "meghívott": "AUTO" },
     preconditions:
@@ -35,7 +35,7 @@ export const cases = [
     steps:
       "1. Adminként küldj meghívót ORG_MANAGER szereppel. 2. A meghívott bejelentkezve nyissa meg a /join/org/[token] linket. 3. Ellenőrizd, hogy a join-oldal a meglévő profilt ismeri fel (nem kér újra profil-mezőket). 4. Fogadd el a meghívót. 5. Nyisd meg újra ugyanazt a linket.",
     expected:
-      "A tagság a meghívóban rögzített szereppel (ORG_MANAGER) jön létre; elfogadás után a journey a szerep szerinti home-ra visz (manager: kezelt csapat híján org-oldal / 1 csapatnál csapatoldal); a meghívó-sor elfogyott — a link újra megnyitva 404-et ad.",
+      "A tagság a meghívóban rögzített szereppel (ORG_MANAGER) jön létre; elfogadás után a journey a szerep szerinti home-ra visz (manager: kezelt csapat híján org-oldal / 1 csapatnál csapatoldal); a meghívó-sor elfogyott – a link újra megnyitva 404-et ad.",
     automated: "partial",
     coveredBy:
       "tests/integration/join/join-acceptance-matrix.integration.test.ts (api.org.join valid token)",
@@ -52,7 +52,7 @@ export const cases = [
     steps:
       "1. Nyiss meg egy kitalált tokenű /join/org/... linket. 2. Nyisd meg egy már elfogadott meghívó linkjét egy HARMADIK fiókkal. 3. Adminként vonj vissza (törölj) egy függő meghívót, majd nyisd meg a linkjét.",
     expected:
-      "Mindhárom ágon a 404 not-found oldal jelenik meg, fél-kész join-nézet nélkül. Megjegyzés: az org-meghívónak NINCS idő-alapú lejárata — a link a felhasználásig/visszavonásig él; a lejárt-analóg állapot = törölt sor = 404.",
+      "Mindhárom ágon a 404 not-found oldal jelenik meg, fél-kész join-nézet nélkül. Megjegyzés: az org-meghívónak NINCS idő-alapú lejárata – a link a felhasználásig/visszavonásig él; a lejárt-analóg állapot = törölt sor = 404.",
     automated: "partial",
     coveredBy:
       "tests/e2e/journey/journey-entrypoints-smoke.test.ts (invalid token 404) · tests/integration/join/join-acceptance-matrix.integration.test.ts (INVITE_NOT_FOUND)",
@@ -61,7 +61,7 @@ export const cases = [
   {
     id: "ORG-04",
     area: "Org-meghívó",
-    name: "Már org-tag nyitja a saját függő meghívóját — nincs join↔dashboard redirect-hurok",
+    name: "Már org-tag nyitja a saját függő meghívóját – nincs join↔dashboard redirect-hurok",
     persona: "org tag",
     emails: { fő: "AUTO", admin: "AUTO" },
     preconditions:
@@ -78,7 +78,7 @@ export const cases = [
   {
     id: "ORG-05",
     area: "Org-meghívó",
-    name: "Névre szóló meghívó másik fiókkal — INVITE_EMAIL_MISMATCH",
+    name: "Névre szóló meghívó másik fiókkal – INVITE_EMAIL_MISMATCH",
     persona: "self-user (rossz címzett)",
     emails: { "címzett": "AUTO", "másik-fiók": "AUTO" },
     preconditions:
@@ -86,10 +86,10 @@ export const cases = [
     steps:
       "1. A másik fiókkal nyisd meg a címzettnek szóló /join/org/[token] linket. 2. Próbáld elfogadni a meghívót.",
     expected:
-      "Az elfogadás 403 INVITE_EMAIL_MISMATCH hibával elutasítva, lokalizált hibaüzenettel; tagság nem jön létre — a kapu szerver-oldali, a kliens-állapottól függetlenül véd. (Case-insensitive email-összevetés: eltérő kis/nagybetűs saját cím még átmegy.)",
+      "Az elfogadás 403 INVITE_EMAIL_MISMATCH hibával elutasítva, lokalizált hibaüzenettel; tagság nem jön létre – a kapu szerver-oldali, a kliens-állapottól függetlenül véd. (Case-insensitive email-összevetés: eltérő kis/nagybetűs saját cím még átmegy.)",
     automated: "partial",
     coveredBy:
-      "tests/integration/join/join-acceptance-matrix.integration.test.ts (email mismatch — közös runJoinTransaction kapu)",
+      "tests/integration/join/join-acceptance-matrix.integration.test.ts (email mismatch – közös runJoinTransaction kapu)",
     priority: "P1",
   },
 
@@ -121,7 +121,7 @@ export const cases = [
     steps:
       "1. Lépj be, figyeld a home-célt. 2. Nézd végig a fejléc-menüt. 3. (ORG-06 adminjával) adj a managernek egy második kezelt csapatot, és lépj be újra.",
     expected:
-      "A journey a /manager-re visz, de 1 kezelt csapatnál az azonnal a /team/[id]-ra irányít (nincs duplikált cockpit); 2+ csapatnál a cockpit-összegző marad. Nav: Vezérlő · Feladataim · Csapatom (1 csapatnál közvetlen link, többnél dropdown) — nincs Szervezet menü, Jelöltek csak tanácsadói körnek.",
+      "A journey a /manager-re visz, de 1 kezelt csapatnál az azonnal a /team/[id]-ra irányít (nincs duplikált cockpit); 2+ csapatnál a cockpit-összegző marad. Nav: Vezérlő · Feladataim · Csapatom (1 csapatnál közvetlen link, többnél dropdown) – nincs Szervezet menü, Jelöltek csak tanácsadói körnek.",
     automated: "partial",
     coveredBy:
       "tests/unit/journey/home.test.ts (manager cockpit) · tests/unit/navigation/nav-visibility.test.ts",
@@ -135,9 +135,9 @@ export const cases = [
     emails: { fő: "AUTO" },
     preconditions: "ORG_MEMBER szerepű fiók self-teszt NÉLKÜL; egy csapat-tagsággal.",
     steps:
-      "1. Lépj be kitöltetlen self-teszttel — figyeld a home-célt. 2. Töltsd ki a tesztet. 3. Nyisd meg a Vezérlőt csapattagként. 4. (Külön fiókkal) ismételd meg csapat-tagság nélküli org-taggal. 5. Nézd végig a fejléc-menüt.",
+      "1. Lépj be kitöltetlen self-teszttel – figyeld a home-célt. 2. Töltsd ki a tesztet. 3. Nyisd meg a Vezérlőt csapattagként. 4. (Külön fiókkal) ismételd meg csapat-tagság nélküli org-taggal. 5. Nézd végig a fejléc-menüt.",
     expected:
-      "Kitöltetlen selfnél a home az /assessment; kész selfnél csapattagként a /team/[id], csapat nélkül a /profile/results — plain tag SOHA nem kerül az /org/[id]-ra (redirect-loop guard). Nav: Vezérlő · Eredményeim · Interakció · Feladataim · saját csapat(ok); nincs Szervezet és nincs Jelöltek menü.",
+      "Kitöltetlen selfnél a home az /assessment; kész selfnél csapattagként a /team/[id], csapat nélkül a /profile/results – plain tag SOHA nem kerül az /org/[id]-ra (redirect-loop guard). Nav: Vezérlő · Eredményeim · Interakció · Feladataim · saját csapat(ok); nincs Szervezet és nincs Jelöltek menü.",
     automated: "partial",
     coveredBy:
       "tests/unit/journey/home.test.ts (org member ágak + loop-guard) · tests/unit/navigation/nav-visibility.test.ts",
@@ -152,9 +152,9 @@ export const cases = [
     preconditions:
       "ADMIN-06 szerint kiosztott ORG_CONSULTANT az orgban; az orgban van legalább 3 kitöltött tag (HEXACO-átlaghoz).",
     steps:
-      "1. Jegyezd fel az org tag-számát és HEXACO-átlagát a tanácsadó nélkül (admin nézet). 2. Lépj be tanácsadóként — figyeld a home-ot és a navot. 3. Nyisd meg a Tagok fület, keresd meg a tanácsadót. 4. Töltse ki a tanácsadó a self-tesztet, majd nézd meg újra az org-átlagot és tag-számot. 5. Adminként nyisd meg az org-meghívó szerep-választóját.",
+      "1. Jegyezd fel az org tag-számát és HEXACO-átlagát a tanácsadó nélkül (admin nézet). 2. Lépj be tanácsadóként – figyeld a home-ot és a navot. 3. Nyisd meg a Tagok fület, keresd meg a tanácsadót. 4. Töltse ki a tanácsadó a self-tesztet, majd nézd meg újra az org-átlagot és tag-számot. 5. Adminként nyisd meg az org-meghívó szerep-választóját.",
     expected:
-      "A tanácsadó home-ja az org-cockpit, navja admin-paritású (Csapatok · Szervezet · Jelöltek — a tanácsadói kör hiring-menüt is kap); a tag-listában »Tanácsadó« badge-dzsel jelenik meg; a tag-szám és az org HEXACO-átlag NEM változik a kitöltésétől; a meghívó szerep-választójában az ORG_CONSULTANT nem osztható ki.",
+      "A tanácsadó home-ja az org-cockpit, navja admin-paritású (Csapatok · Szervezet · Jelöltek – a tanácsadói kör hiring-menüt is kap); a tag-listában »Tanácsadó« badge-dzsel jelenik meg; a tag-szám és az org HEXACO-átlag NEM változik a kitöltésétől; a meghívó szerep-választójában az ORG_CONSULTANT nem osztható ki.",
     automated: "partial",
     coveredBy:
       "tests/unit/policy/policy-engine.test.ts (consultant admin-paritás) · tests/unit/journey/context.test.ts (szerep→kontextus) · tests/unit/policy/org-member-patch-authz.test.ts (PATCH-enum consultant nélkül)",
@@ -188,7 +188,7 @@ export const cases = [
     steps:
       "1. Adminként próbáld az egyetlen admint lefokozni. 2. Próbáld eltávolítani. 3. Ellenőrizd, hogy a tanácsadó szerepe közben változatlan.",
     expected:
-      "A védelem a tanácsadó jelenlétében is él: mindkét művelet LAST_ADMIN hibával elutasítva — az admin-darabszámba csak az ORG_ADMIN szerep számít, az ORG_CONSULTANT nem.",
+      "A védelem a tanácsadó jelenlétében is él: mindkét művelet LAST_ADMIN hibával elutasítva – az admin-darabszámba csak az ORG_ADMIN szerep számít, az ORG_CONSULTANT nem.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -202,9 +202,9 @@ export const cases = [
     preconditions:
       "Egy fiók két org tagja eltérő szereppel (A-ban ORG_ADMIN, B-ben ORG_MEMBER), kész self-teszttel.",
     steps:
-      "1. Lépj be, nyisd meg a fejléc org-váltóját, és nézd meg a felsorolt tagságokat. 2. Válts a B orgra. 3. Nézd a Vezérlő célját és a fejléc-menüt. 4. Válts vissza A-ra. 5. Jelentkezz ki és be — melyik org aktív?",
+      "1. Lépj be, nyisd meg a fejléc org-váltóját, és nézd meg a felsorolt tagságokat. 2. Válts a B orgra. 3. Nézd a Vezérlő célját és a fejléc-menüt. 4. Válts vissza A-ra. 5. Jelentkezz ki és be – melyik org aktív?",
     expected:
-      "A váltó minden aktív tagságot mutat org-névvel; váltás után a home és a nav a MINDENKORI aktív org szerepét tükrözi (A: org-cockpit + admin-nav; B: tag-home + tag-nav); a kijelölés perzisztens — új belépésnél az utoljára választott org az aktív. Idegen orgId-ra a váltás 403 FORBIDDEN.",
+      "A váltó minden aktív tagságot mutat org-névvel; váltás után a home és a nav a MINDENKORI aktív org szerepét tükrözi (A: org-cockpit + admin-nav; B: tag-home + tag-nav); a kijelölés perzisztens – új belépésnél az utoljára választott org az aktív. Idegen orgId-ra a váltás 403 FORBIDDEN.",
     automated: "none",
     coveredBy: "",
     priority: "P1",
@@ -230,7 +230,7 @@ export const cases = [
   {
     id: "TEAM-01",
     area: "Csapat-meghívó",
-    name: "Csapat-meghívó azonos org tagjának — csatlakozás duplikált org-tagság nélkül",
+    name: "Csapat-meghívó azonos org tagjának – csatlakozás duplikált org-tagság nélkül",
     persona: "org tag + manager",
     emails: { manager: "AUTO", "meghívott": "AUTO" },
     preconditions:
@@ -238,7 +238,7 @@ export const cases = [
     steps:
       "1. Managerként küldj csapat-meghívót a Tagok fülről a meghívott címére. 2. A meghívott bejelentkezve nyissa meg a /join/[token] linket. 3. Ellenőrizd a felkínált nézetet (csapat + org név). 4. Fogadd el. 5. Nyisd meg újra a linket.",
     expected:
-      "A join-oldal csapat-csatlakozás nézetet ad a csapat- és org-névvel; elfogadás után TeamMember-sor jön létre (az org-tagság NEM duplikálódik), az org az aktív kontextus, a journey a home-ra visz; a névre szóló meghívó-sor törlődik — a link újra 404.",
+      "A join-oldal csapat-csatlakozás nézetet ad a csapat- és org-névvel; elfogadás után TeamMember-sor jön létre (az org-tagság NEM duplikálódik), az org az aktív kontextus, a journey a home-ra visz; a névre szóló meghívó-sor törlődik – a link újra 404.",
     automated: "partial",
     coveredBy:
       "tests/integration/join/join-acceptance-matrix.integration.test.ts (api.team.join valid token)",
@@ -247,7 +247,7 @@ export const cases = [
   {
     id: "TEAM-02",
     area: "Csapat-meghívó",
-    name: "Csapat-meghívó másik org aktív tagjának — explicit org-váltás kell",
+    name: "Csapat-meghívó másik org aktív tagjának – explicit org-váltás kell",
     persona: "másik org tagja",
     emails: { fő: "AUTO", manager: "AUTO" },
     preconditions:
@@ -264,7 +264,7 @@ export const cases = [
   {
     id: "TEAM-03",
     area: "Csapat-meghívó",
-    name: "Már-csapattag nyitja a függő csapat-meghívót — takarítás, nincs hurok",
+    name: "Már-csapattag nyitja a függő csapat-meghívót – takarítás, nincs hurok",
     persona: "csapattag",
     emails: { fő: "AUTO" },
     preconditions:
@@ -281,7 +281,7 @@ export const cases = [
   {
     id: "TEAM-04",
     area: "Csapat-meghívó",
-    name: "Nyílt (többször használható) csapat-link — nem fogy el, email-kötés nélkül",
+    name: "Nyílt (többször használható) csapat-link – nem fogy el, email-kötés nélkül",
     persona: "két külön user",
     emails: { admin: "AUTO", user1: "AUTO", user2: "AUTO" },
     preconditions:
@@ -307,7 +307,7 @@ export const cases = [
     steps:
       "1. Tanácsadóként nyisd meg a /team/[id]?tab=intelligence fület. 2. Nézd meg a prioritás-kártyákat és az evidencia-jelzést. 3. Nyisd meg a ?tab=profile fület (csapat-mintázat).",
     expected:
-      "Gyűjtés-először állapot: hiányzó-kitöltések prioritás-kártya a hiányzók számával és meghívó/emlékeztető CTA-val; az evidencia-minőség jelölése részleges (nem sufficient); a csapat-mintázat (pattern-kód) 3 kitöltés alatt NEM áll össze — a felület a küszöböt kommunikálja, nem üres/hibás nézetet ad.",
+      "Gyűjtés-először állapot: hiányzó-kitöltések prioritás-kártya a hiányzók számával és meghívó/emlékeztető CTA-val; az evidencia-minőség jelölése részleges (nem sufficient); a csapat-mintázat (pattern-kód) 3 kitöltés alatt NEM áll össze – a felület a küszöböt kommunikálja, nem üres/hibás nézetet ad.",
     automated: "partial",
     coveredBy:
       "tests/unit/team/team-pattern.test.ts (3 alatt null) · tests/unit/platform/team-intelligence.test.ts (küszöb + prioritás) · tests/e2e/team/team-intelligence-visual.test.ts (low-data layout)",
@@ -341,7 +341,7 @@ export const cases = [
     steps:
       "1. Mindhárom szereppel nyisd meg közvetlen URL-lel: /team/[id]?tab=intelligence, ?tab=profile, ?tab=teamRole. 2. Nyisd meg a ?tab=report fület publikált riport nélkül. 3. Nézd meg, mit mutat az overview.",
     expected:
-      "A nyers egyéni/páros adatot hordozó fülek (intelligence, profile, teamRole) NEM-tanácsadónak nem nyílnak meg — átirányítás ?tab=overview-ra (a kör: ORG_CONSULTANT + platform-tanácsadó/admin); a report fül publikált riport nélkül szintén overview-ra irányít; az overview haladás-nézetet ad, publikálás után a validált riportot.",
+      "A nyers egyéni/páros adatot hordozó fülek (intelligence, profile, teamRole) NEM-tanácsadónak nem nyílnak meg – átirányítás ?tab=overview-ra (a kör: ORG_CONSULTANT + platform-tanácsadó/admin); a report fül publikált riport nélkül szintén overview-ra irányít; az overview haladás-nézetet ad, publikálás után a validált riportot.",
     automated: "partial",
     coveredBy:
       "tests/unit/platform/team-intelligence.test.ts (raw team results are consultant-only)",
@@ -376,7 +376,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a /manager cockpitot és nézd a javasolt-következő-lépés kártyát. 2. Hívj meg tagokat, hogy minden csapat 3+ tagú legyen (kitöltetlen self maradjon). 3. Nézd meg újra a kártyát.",
     expected:
-      "Amíg van 3 tag alatti csapat, a next-step »Csapat bővítése« (a 3-as küszöb indoklásával, tag-meghívó CTA a members fülre) — ez megelőzi a kitöltés-hiányt; utána »Kitöltések lezárása« a hiányzó kitöltők számával és a tag-státusz CTA-val.",
+      "Amíg van 3 tag alatti csapat, a next-step »Csapat bővítése« (a 3-as küszöb indoklásával, tag-meghívó CTA a members fülre) – ez megelőzi a kitöltés-hiányt; utána »Kitöltések lezárása« a hiányzó kitöltők számával és a tag-státusz CTA-val.",
     automated: "none",
     coveredBy: "",
     priority: "P1",

@@ -65,7 +65,7 @@ add("gomb", "text", "action-secondary-fg", "action-secondary-bg");
 add("gomb", "text", "action-destructive-fg", "action-destructive-bg");
 
 // Akcentek a kártyán. A bronz és a zsálya grafikus akcent (sáv, ikon,
-// keret) — szövegként a -strong / -deep fokozat megy.
+// keret) – szövegként a -strong / -deep fokozat megy.
 add("akcent", "graphic", "accent-primary", "surface-card");
 add("akcent", "graphic", "accent-self", "surface-card");
 add("akcent", "text", "accent-primary-strong", "surface-card");
@@ -79,7 +79,7 @@ for (const layer of ["self", "team", "org", "candidate"]) {
 }
 
 // Paper marketing-téma (founding / patterns). A hatókör globális, ezért ez
-// is átfordul — a háló ugyanúgy őrzi.
+// is átfordul – a háló ugyanúgy őrzi.
 add("paper", "text", "paper-text", "paper-bg");
 add("paper", "text", "paper-text", "paper-card");
 add("paper", "text", "paper-muted", "paper-bg");
@@ -89,18 +89,18 @@ add("paper", "text", "paper-text", "paper-elevated");
 add("paper", "text", "paper-muted", "paper-elevated");
 
 // Akcent-háttéren ülő felirat. A bronz és a zsálya MINDKÉT sémán világos,
-// ezért ott sötét tinta kell — a fehér AA alatt volt (UX-audit 2026-08-07).
+// ezért ott sötét tinta kell – a fehér AA alatt volt (UX-audit 2026-08-07).
 add("akcent-háttér", "text", "text-on-accent", "bronze");
 add("akcent-háttér", "text", "text-on-accent", "accent-primary");
 add("akcent-háttér", "text", "text-on-inverse", "surface-inverse");
 // MÉLY akcent: a bronze-dark / accent-primary-strong világosban SÖTÉT,
-// sötéten VILÁGOS — a felirat is fordul. A fix `text-on-accent` itt
+// sötéten VILÁGOS – a felirat is fordul. A fix `text-on-accent` itt
 // világosban 3,5:1-et adott (2026-08-07 regresszió).
 add("mély akcent", "text", "text-on-accent-deep", "bronze-dark");
 add("mély akcent", "text", "text-on-accent-deep", "accent-primary-strong");
 add("mély akcent", "text", "text-on-accent-deep", "action-primary-bg");
 
-// Réteg-herók. A panel mindkét sémán SÖTÉT, de nem ugyanaz a sötét — a
+// Réteg-herók. A panel mindkét sémán SÖTÉT, de nem ugyanaz a sötét – a
 // felirat és a halk másodlagos sor a legVILÁGOSABB stopon a legszorosabb,
 // ezért arra mérünk.
 for (const layer of ["self", "team", "org", "candidate"]) {
@@ -113,7 +113,7 @@ add("kiemelt self-felület hover", "text", "text-on-inverse", "surface-self-stro
 const key = (p: Pair) => `${p.fg}|${p.bg}`;
 
 /**
- * Nyilvántartott adósság — a 2026-08-07-i mérés a világos témán. Ezek a
+ * Nyilvántartott adósság – a 2026-08-07-i mérés a világos témán. Ezek a
  * párok a sötét mód ELŐTT is AA alatt voltak; a háló bevezetése hozta őket
  * felszínre. A szám a PADLÓ: alá menni hiba, fölé menni szabad (és cél).
  *
@@ -121,7 +121,7 @@ const key = (p: Pair) => `${p.fg}|${p.bg}`;
  * sötétítése (#6e6e80 → #6a6a7b) a text-muted két meleg felületét és az
  * eval-low-fg-t is a küszöb fölé vitte. Maradt a `text-faint` négyese: az
  * a leghalkabb szöveg-fokozat, AA-ra emelése a tipográfiai hierarchiát
- * lapítaná össze a `muted`-del — ez design-döntés, nem hozzáférhetőségi
+ * lapítaná össze a `muted`-del – ez design-döntés, nem hozzáférhetőségi
  * kényszer. Az `dim-x-base` grafikus mark szintén nyitva.
  *
  * Rendezés: ami a legmesszebb van a küszöbtől, az a legsürgősebb.
@@ -130,7 +130,7 @@ const KNOWN_DEBT: Record<ThemeName, Record<string, { floor: number; note: string
   light: {
     "dim-x-base|surface-card": {
       floor: 2.96,
-      note: "X (Extraverzió) okker mark fehéren — az egyetlen 3:1 alatti grafikus elem",
+      note: "X (Extraverzió) okker mark fehéren – az egyetlen 3:1 alatti grafikus elem",
     },
     "text-faint|cream-300": { floor: 3.78, note: "leghalkabb metaadat meleg felületen" },
     "text-faint|surface-muted": { floor: 3.8, note: "leghalkabb metaadat meleg felületen" },
@@ -161,17 +161,17 @@ function checkTheme(theme: ThemeName) {
 
     if (ratio + 0.005 < limit) {
       failures.push(
-        `  ${pair.group}: ${pair.fg} / ${pair.bg} — ${ratio.toFixed(2)}:1 ` +
+        `  ${pair.group}: ${pair.fg} / ${pair.bg} – ${ratio.toFixed(2)}:1 ` +
           `(elvárt ${limit.toFixed(2)}:1${known ? ", nyilvántartott adósság" : ""})`,
       );
     } else if (known && ratio >= threshold(pair.kind)) {
-      improved.push(`  ${pair.fg} / ${pair.bg} — ${ratio.toFixed(2)}:1`);
+      improved.push(`  ${pair.fg} / ${pair.bg} – ${ratio.toFixed(2)}:1`);
     }
   }
 
   if (improved.length > 0) {
     console.log(
-      `[${theme}] ${improved.length} adósság a küszöb fölé került — ` +
+      `[${theme}] ${improved.length} adósság a küszöb fölé került – ` +
         `vedd ki a KNOWN_DEBT listából:\n${improved.join("\n")}`,
     );
   }
@@ -186,7 +186,7 @@ function checkTheme(theme: ThemeName) {
 
 /**
  * Felület-elválás: egy panel/chip nem olvadhat bele a szülő felületébe.
- * A szöveg/háttér párok ezt NEM fogják meg — sötéten előfordult, hogy egy
+ * A szöveg/háttér párok ezt NEM fogják meg – sötéten előfordult, hogy egy
  * chip felirata olvasható volt, de a chip maga láthatatlan.
  *
  * A küszöb a világos téma saját padlójából jön (1.053): nem szigorúbb annál,
@@ -213,7 +213,7 @@ const SURFACE_PAIRS: Array<[string, string]> = [
 ];
 
 /**
- * Nyilvántartott felület-adósság — a világos témán MÁR a sötét mód előtt is
+ * Nyilvántartott felület-adósság – a világos témán MÁR a sötét mód előtt is
  * fennállt. Ugyanaz a racsni, mint a szöveg-kontrasztnál: a szám a padló.
  */
 const SURFACE_DEBT: Record<ThemeName, Record<string, number>> = {
@@ -223,7 +223,7 @@ const SURFACE_DEBT: Record<ThemeName, Record<string, number>> = {
 
 /**
  * A hero KÜLÖN, szigorúbb küszöbbel: teljes szélességű panel a lap saját
- * réteg-tónusa fölött. Az 1.05-ös általános padló itt nem elég — 2026-08-07
+ * réteg-tónusa fölött. Az 1.05-ös általános padló itt nem elég – 2026-08-07
  * előtt a sötét hero legsötétebb stopja 1,01:1-et adott a lap-tónushoz
  * képest, vagyis a panel alsó fele NEM LÉTEZETT, miközben a felület-teszt
  * ezt átengedte volna.
@@ -244,8 +244,8 @@ function checkHeroes(theme: ThemeName) {
       const ratio = contrast(hero, wash);
       if (ratio + 0.001 < HERO_MIN) {
         failures.push(
-          `  ${layer} hero-${stop} / lap-tónus — ${ratio.toFixed(2)} ` +
-            `(elvárt ${HERO_MIN}) — a panel beleolvad a lapba`,
+          `  ${layer} hero-${stop} / lap-tónus – ${ratio.toFixed(2)} ` +
+            `(elvárt ${HERO_MIN}) – a panel beleolvad a lapba`,
         );
       }
     }
@@ -263,18 +263,18 @@ function checkSurfaces(theme: ThemeName) {
     const floor = SURFACE_DEBT[theme][`${panel}|${parent}`] ?? SURFACE_MIN;
     if (ratio + 0.001 < floor) {
       failures.push(
-        `  ${panel} / ${parent} — ${ratio.toFixed(3)} (elvárt ${floor}) — beleolvad`,
+        `  ${panel} / ${parent} – ${ratio.toFixed(3)} (elvárt ${floor}) – beleolvad`,
       );
     }
   }
   assert.equal(failures.length, 0, `[${theme}] felület-elválás:\n${failures.join("\n")}`);
 }
 
-test("világos téma — a panelek elválnak a szülő felülettől", () => {
+test("világos téma – a panelek elválnak a szülő felülettől", () => {
   checkSurfaces("light");
 });
 
-test("sötét téma — a panelek elválnak a szülő felülettől", (t) => {
+test("sötét téma – a panelek elválnak a szülő felülettől", (t) => {
   if (!hasTheme("dark")) {
     t.skip("nincs sötét készlet a globals.css-ben");
     return;
@@ -282,11 +282,11 @@ test("sötét téma — a panelek elválnak a szülő felülettől", (t) => {
   checkSurfaces("dark");
 });
 
-test("világos téma — minden token-pár tartja a küszöböt vagy a padlóját", () => {
+test("világos téma – minden token-pár tartja a küszöböt vagy a padlóját", () => {
   checkTheme("light");
 });
 
-test("sötét téma — minden token-pár tartja a küszöböt vagy a padlóját", (t) => {
+test("sötét téma – minden token-pár tartja a küszöböt vagy a padlóját", (t) => {
   if (!hasTheme("dark")) {
     t.skip("nincs sötét készlet a globals.css-ben");
     return;
@@ -296,7 +296,7 @@ test("sötét téma — minden token-pár tartja a küszöböt vagy a padlóját
 
 test("a nyilvántartott adósság nem nő észrevétlenül", () => {
   // A lista hossza szándékos korlát: új adósságot csak tudatosan, a szám
-  // emelésével lehet felvenni — különben a háló magát üresíti ki.
+  // emelésével lehet felvenni – különben a háló magát üresíti ki.
   assert.ok(
     Object.keys(KNOWN_DEBT.light).length <= 5,
     "több nyilvántartott adósság van, mint amennyit a háló bevezetésekor rögzítettünk",
@@ -306,11 +306,11 @@ test("a nyilvántartott adósság nem nő észrevétlenül", () => {
   }
 });
 
-test("világos téma — a réteg-hero elválik a lap tónusától", () => {
+test("világos téma – a réteg-hero elválik a lap tónusától", () => {
   checkHeroes("light");
 });
 
-test("sötét téma — a réteg-hero elválik a lap tónusától", (t) => {
+test("sötét téma – a réteg-hero elválik a lap tónusától", (t) => {
   if (!hasTheme("dark")) {
     t.skip("nincs sötét készlet a globals.css-ben");
     return;

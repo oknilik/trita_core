@@ -71,7 +71,7 @@ export function webPageId(path: string): string {
  * azzal, amit a látogató megért: hat személyiségdimenzió. Ahol modellnevet
  * kell mondani, ott „hatfaktoros személyiségmodell". A HEXACO megnevezés a
  * módszertani/irodalmi hivatkozásokban marad (results.ts hivatkozás-jegyzet,
- * `docs/product/tsfi-item-provenance.md`, `/llms.txt` módszertani sora) — ott
+ * `docs/product/tsfi-item-provenance.md`, `/llms.txt` módszertani sora) – ott
  * hitelesít, a marketing-szövegben viszont csak zajt visz.
  */
 const ORG_DESCRIPTION: Record<Locale, string> = {
@@ -80,7 +80,7 @@ const ORG_DESCRIPTION: Record<Locale, string> = {
 };
 
 /**
- * `knowsAbout` — az entitás szakterületei.
+ * `knowsAbout` – az entitás szakterületei.
  *
  * Ez a mező az AI-keresőknek szól: a témakör-egyezés alapján dől el, hogy egy
  * magyar nyelvű kérdésnél („milyen személyiségteszt van magyarul csapatra?")
@@ -117,9 +117,9 @@ const ORG_KNOWS_ABOUT: Record<Locale, string[]> = {
 };
 
 /**
- * Organization — a márka-entitás.
+ * Organization – a márka-entitás.
  *
- * `areaServed: HU` + `availableLanguage` — a magyar piacra hegyezés explicit
+ * `areaServed: HU` + `availableLanguage` – a magyar piacra hegyezés explicit
  * jelzése. Nélküle a modellnek a szövegből kell kikövetkeztetnie, hogy magyar
  * ügyfeleket szolgálunk ki; ez a két mező kimondja.
  */
@@ -164,7 +164,7 @@ export function buildOrganizationJsonLd(locale: Locale = DEFAULT_LOCALE): JsonLd
   };
 }
 
-/** WebSite — a publikus site-entitás, az Organization-höz kötve. */
+/** WebSite – a publikus site-entitás, az Organization-höz kötve. */
 export function buildWebSiteJsonLd(locale: Locale = DEFAULT_LOCALE): JsonLdObject {
   const siteUrl = getSiteUrl();
   return {
@@ -189,7 +189,7 @@ export interface BreadcrumbItem {
 }
 
 /**
- * BreadcrumbList — a hierarchia kimondása.
+ * BreadcrumbList – a hierarchia kimondása.
  *
  * A crawler a linkstruktúrából csak sejti, hogy a `/blog/<slug>` a `/blog`
  * gyereke; a breadcrumb kimondja. AI-válaszokban ez adja a „hol vagyunk a
@@ -214,14 +214,14 @@ export interface WebPageInput {
   description: string;
   locale?: Locale;
   breadcrumb?: BreadcrumbItem[];
-  /** A lap fő témája — entitás-kapcsolat az AI-nak (pl. „csapatmintázat"). */
+  /** A lap fő témája – entitás-kapcsolat az AI-nak (pl. „csapatmintázat"). */
   about?: string | string[];
   /** ISO dátum, ha a laphoz értelmezhető tartalmi frissítés tartozik. */
   dateModified?: string;
 }
 
 /**
- * WebPage — az oldal maga, a site-hoz és a márkához kötve.
+ * WebPage – az oldal maga, a site-hoz és a márkához kötve.
  *
  * `primaryImageOfPage` és `isPartOf` nélkül minden lap „árva" csomópont; ezzel
  * a gráf bejárható, és egy AI-válasz a lapot a márkához tudja kötni.
@@ -263,13 +263,13 @@ export interface FaqItem {
 }
 
 /**
- * FAQPage — a legerősebb AI-idézhetőségi formátum.
+ * FAQPage – a legerősebb AI-idézhetőségi formátum.
  *
  * Egy válaszmotor kérdés–válasz párokat keres: a `Question` + `acceptedAnswer`
  * pontosan ez, előre kivonatolva, a mi megfogalmazásunkban. Ez az egyetlen
  * hely, ahol a saját szavainkkal írjuk le, mit válaszoljon rólunk egy modell.
  *
- * FELTÉTEL: a Q&A-nak LÁTHATÓNAK kell lennie az oldalon is (Google-irányelv) —
+ * FELTÉTEL: a Q&A-nak LÁTHATÓNAK kell lennie az oldalon is (Google-irányelv) –
  * ezért a hívók a felületen már megjelenő szövegből építik, nem külön SEO-
  * szövegből.
  */
@@ -297,7 +297,7 @@ export interface ArticleInput {
   dateModified?: string;
   locale: Locale;
   keywords?: string[];
-  /** Olvasási idő percben — ISO-8601 időtartammá alakítjuk. */
+  /** Olvasási idő percben – ISO-8601 időtartammá alakítjuk. */
   readingMinutes?: number;
   wordCount?: number;
   /** Rovat (a tag-lista első eleme), pl. „csapatdinamika". */
@@ -307,11 +307,11 @@ export interface ArticleInput {
 }
 
 /**
- * Article — blogcikk.
+ * Article – blogcikk.
  *
  * `wordCount` + `timeRequired` + `keywords`: a modellek ezekből becslik a
  * tartalom mélységét és témáját idézés előtt. `isAccessibleForFree: true`
- * kimondja, hogy nincs fizetőfal — a paywall-gyanús tartalmat több crawler
+ * kimondja, hogy nincs fizetőfal – a paywall-gyanús tartalmat több crawler
  * eleve kihagyja.
  */
 export function buildArticleJsonLd(input: ArticleInput): JsonLdObject {
@@ -345,11 +345,11 @@ export interface ServiceOffering {
 }
 
 /**
- * Service — a tanácsadás-vezérelt kínálat.
+ * Service – a tanácsadás-vezérelt kínálat.
  *
  * Ár NINCS benne, és ez szándékos: a platformon kívül, egyedi ajánlattal
  * számlázunk. Kitalált `price` mező hamis strukturált adat lenne; helyette a
- * `hasOfferCatalog` sorolja fel, MIT tartalmaz a program — pont ezt idézi
+ * `hasOfferCatalog` sorolja fel, MIT tartalmaz a program – pont ezt idézi
  * vissza egy „mit csinál a trita?" típusú AI-válasz.
  */
 export function buildServiceJsonLd(input: {
@@ -386,7 +386,7 @@ export function buildServiceJsonLd(input: {
 }
 
 /**
- * WebApplication — az ingyenes önkitöltős felmérés (`/try`).
+ * WebApplication – az ingyenes önkitöltős felmérés (`/try`).
  *
  * A `price: 0` itt IGAZ állítás (az egyéni felmérés ingyenes), és pont ez a
  * megkülönböztető tény, amit egy „ingyenes személyiségteszt magyarul" kérdésre
@@ -428,7 +428,7 @@ export interface DefinedTermInput {
 }
 
 /**
- * DefinedTermSet — fogalom-magyarázó oldalak.
+ * DefinedTermSet – fogalom-magyarázó oldalak.
  *
  * FIGYELEM: jelenleg NINCS fogyasztója. Az egyetlen ilyen lap (/holland-kod)
  * 2026-08-07-én kikerült, mert a karrier-réteg fagyasztva van. A builder
@@ -472,10 +472,10 @@ export interface ItemListEntry {
 }
 
 /**
- * ItemList — felsorolás-oldalak (16 csapatminta, cikklista).
+ * ItemList – felsorolás-oldalak (16 csapatminta, cikklista).
  *
  * A „16 X" típusú tartalom listás kérdésekre a legidézhetőbb, DE csak akkor,
- * ha a lista tételei gépi formában is megvannak — egy kliens-oldali explorer
+ * ha a lista tételei gépi formában is megvannak – egy kliens-oldali explorer
  * mögül a crawler nulla tételt lát.
  */
 export function buildItemListJsonLd(input: {
@@ -502,7 +502,7 @@ export function buildItemListJsonLd(input: {
   };
 }
 
-/** Blog (gyűjtő) — a cikklista-oldal entitása. */
+/** Blog (gyűjtő) – a cikklista-oldal entitása. */
 export function buildBlogJsonLd(input: {
   name: string;
   description: string;
@@ -532,7 +532,7 @@ export function buildBlogJsonLd(input: {
   };
 }
 
-/** ContactPage — kapcsolat-lap; a márka elérhetőségét köti az oldalhoz. */
+/** ContactPage – kapcsolat-lap; a márka elérhetőségét köti az oldalhoz. */
 export function buildContactPageJsonLd(input: {
   title: string;
   description: string;

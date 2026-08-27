@@ -97,7 +97,7 @@ export function ArchetypePicker({
         </div>
       </fieldset>
 
-      {/* MÁSODLAGOS — csak az első döntés után jelenik meg. Így a
+      {/* MÁSODLAGOS – csak az első döntés után jelenik meg. Így a
           felhasználó egyszerre egy kérdést old meg, és nem kap előre
           kitöltött, idegennek ható elemzést. */}
       {dominantSelected ? <fieldset>

@@ -51,7 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ManagerCockpitPage() {
   // getServerAuth (nem nyers Clerk auth()): a /dashboard elosztóval és a
-  // requireOrgContext-tel azonos auth-út — az e2e bypass is így működik itt.
+  // requireOrgContext-tel azonos auth-út – az e2e bypass is így működik itt.
   const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
   if (!userId) return redirectToSignIn();
 
@@ -76,7 +76,7 @@ export default async function ManagerCockpitPage() {
   }
 
   // Egyetlen kezelt csapatnál NINCS külön cockpit (UX-audit #10): a /manager
-  // tartalma a /team/[id] oldalt duplikálta — a manager közvetlenül a
+  // tartalma a /team/[id] oldalt duplikálta – a manager közvetlenül a
   // csapatoldalra kerül. A cockpit a TÖBB csapatot kezelő manager összegzője.
   if (data.teams.length === 1) {
     redirect(`/team/${data.teams[0].teamId}`);
@@ -289,7 +289,7 @@ export default async function ManagerCockpitPage() {
           <DashboardSectionHeader
             label={isSingleTeam
               ? (isHu ? "Csapattagok állapota" : "Team member status")
-              : (isHu ? `${data.primaryTeamData.teamName} — tagok` : `${data.primaryTeamData.teamName} — members`)}
+              : (isHu ? `${data.primaryTeamData.teamName} – tagok` : `${data.primaryTeamData.teamName} – members`)}
             className="mb-4"
           />
           <DashboardPanel className="divide-y divide-[var(--color-border-default)] p-0">
@@ -361,15 +361,15 @@ export default async function ManagerCockpitPage() {
           </div>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
             {/* Forrás-transzparencia (termék-alapelv): a fenti számok mért és
-                becsült éleket is tartalmaznak — a megoszlás itt jelenik meg. */}
+                becsült éleket is tartalmaznak – a megoszlás itt jelenik meg. */}
             <p className="text-micro text-muted">
               {(data.teams[0]?.measuredEdgeCount ?? 0) > 0
                 ? (isHu
                     ? `ebből mért (bizalmi körből): ${data.teams[0]?.measuredEdgeCount ?? 0} · profil-becslés: ${data.teams[0]?.estimatedEdgeCount ?? 0}`
                     : `measured (trust round): ${data.teams[0]?.measuredEdgeCount ?? 0} · profile estimate: ${data.teams[0]?.estimatedEdgeCount ?? 0}`)
                 : (isHu
-                    ? "profil-alapú becslés — még nincs mért bizalmi kör"
-                    : "profile-based estimate — no measured trust round yet")}
+                    ? "profil-alapú becslés – még nincs mért bizalmi kör"
+                    : "profile-based estimate – no measured trust round yet")}
             </p>
             <Link
               href={`/team/${data.teams[0].teamId}?tab=intelligence`}

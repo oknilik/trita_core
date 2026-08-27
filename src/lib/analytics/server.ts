@@ -59,7 +59,7 @@ export function resolveSalt(): string {
     saltWarningLogged = true;
     log.warn(
       { event: "analytics.salt_missing" },
-      "ANALYTICS_SALT nincs beállítva — a napi látogató-álnév publikus sóval képződik, tehát kitalálható. Beállítás: openssl rand -hex 32 (ld. docs/development/launch-checklist.md)",
+      "ANALYTICS_SALT nincs beállítva – a napi látogató-álnév publikus sóval képződik, tehát kitalálható. Beállítás: openssl rand -hex 32 (ld. docs/development/launch-checklist.md)",
     );
   }
   return DEV_FALLBACK_SALT;

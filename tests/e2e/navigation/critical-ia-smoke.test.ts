@@ -245,7 +245,7 @@ async function expectPathname(page: Page, pathname: string) {
     .toBe(pathname);
 }
 
-test.describe("WORKSTREAM G — critical IA smoke", () => {
+test.describe("WORKSTREAM G – critical IA smoke", () => {
   let fixture: CriticalIaFixture | undefined;
 
   test.beforeAll(async () => {
@@ -253,7 +253,7 @@ test.describe("WORKSTREAM G — critical IA smoke", () => {
   });
 
   test.afterAll(async () => {
-    // Ha a beforeAll dobott, nincs mit takarítani — a guard nélkül a cleanup
+    // Ha a beforeAll dobott, nincs mit takarítani – a guard nélkül a cleanup
     // maga is TypeError-ral halna el, és elfedné az eredeti hibát.
     if (!fixture) return;
     await cleanupCriticalIaFixture(fixture);
@@ -266,12 +266,12 @@ test.describe("WORKSTREAM G — critical IA smoke", () => {
   }) => {
     // Ez a teszt HÉT különböző útvonalat tölt be egymás után (org cockpit,
     // csapat, org settings, assessment-layers, profil, /tasks). A webServer
-    // `next dev`, tehát MINDEGYIK útvonal első betöltése fordítással jár —
+    // `next dev`, tehát MINDEGYIK útvonal első betöltése fordítással jár –
     // ez összeadódva rendszeresen átlépte a 30 s-os alap-timeoutot, miközben
     // meleg szerverrel ugyanez ~20 s alatt lefut.
     //
     // A CI-ben a `retries: 2` eddig elfedte a bukást (a második futásra a
-    // szerver már meleg volt) — csak a jelzés veszett el vele: egy VALÓDI
+    // szerver már meleg volt) – csak a jelzés veszett el vele: egy VALÓDI
     // lassulás is „flaky retry"-ként ment volna át.
     test.slow();
 
@@ -308,7 +308,7 @@ test.describe("WORKSTREAM G — critical IA smoke", () => {
     ).toBeVisible({ timeout: 15_000 });
 
     await page.goto(`/org/${fixture.orgId}`, { waitUntil: "domcontentloaded" });
-    // A menü kliens-oldali — hydration előtt a kattintás elveszhet, ezért
+    // A menü kliens-oldali – hydration előtt a kattintás elveszhet, ezért
     // addig próbálkozunk, amíg a menüelem tényleg megjelenik.
     await expect
       .poll(
@@ -326,7 +326,7 @@ test.describe("WORKSTREAM G — critical IA smoke", () => {
       .toBe("open");
     await page.getByTestId("nav-user-menu-profile").click();
     await expectPathname(page, "/profile");
-    // A profil-fejléc kliens-oldali API-ból tölt — dev-fordítással együtt is
+    // A profil-fejléc kliens-oldali API-ból tölt – dev-fordítással együtt is
     // beférő türelmi idő.
     await expect(
       page.getByRole("heading", { name: /IA Admin/i }),

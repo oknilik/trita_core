@@ -50,7 +50,7 @@ const fetchMock = vi.fn();
 function makeDeal(overrides: Partial<CrmDealDetailData> = {}): CrmDealDetailData {
   return {
     id: "deal1",
-    title: "Acme Kft. — Demó igény",
+    title: "Acme Kft. – Demó igény",
     contactName: "Kovács Anna",
     contactEmail: "anna@acme.hu",
     contactPhone: "+36 30 123 4567",
@@ -83,7 +83,7 @@ beforeEach(() => {
   vi.stubGlobal("fetch", fetchMock);
 });
 
-describe("DealDetail — lezárás", () => {
+describe("DealDetail – lezárás", () => {
   it("LOST: outcomeKind nélkül kliens-oldali hibát ad, nem hív API-t", async () => {
     const user = userEvent.setup();
     render(<DealDetail deal={makeDeal()} orgs={[]} suggestedUser={null} />);

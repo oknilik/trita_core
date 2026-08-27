@@ -102,7 +102,7 @@ function NotifIcon({ type }: { type: string }) {
 export function NotificationPanel({ onClose }: NotificationPanelProps) {
   const { locale } = useLocale();
   const loc = locale as Locale;
-  // A lekérés a providerben él (a harang nyitáskor hívja az ensureList-et) —
+  // A lekérés a providerben él (a harang nyitáskor hívja az ensureList-et) –
   // így a duplikált panel-mount nem jelent duplikált API-hívást.
   const router = useRouter();
   const { markRead, items: cached, loading, markAllRead, dismiss } = useNotifications();
@@ -110,7 +110,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
 
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // A prop/context callbackok friss példányai ref-ben — a fókusz-csapda és az
+  // A prop/context callbackok friss példányai ref-ben – a fókusz-csapda és az
   // undo-timerek effectjei mount-onként egyszer futnak, de mindig az aktuális
   // függvényt hívják.
   const onCloseRef = useRef(onClose);
@@ -121,7 +121,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
   });
 
   // ── B16u: elvetés visszavonási ablakkal ───────────────────────────────────
-  // Elvetéskor a sor „Elvetve — Visszavonás" állapotba vált; a tényleges
+  // Elvetéskor a sor „Elvetve – Visszavonás" állapotba vált; a tényleges
   // API-törlést (provider.dismiss) csak a DISMISS_UNDO_MS lejárta indítja.
   // Visszavonásra a timer törlődik, és a sor változatlanul visszaáll.
   const [pendingDismiss, setPendingDismiss] = useState<ReadonlySet<string>>(
@@ -172,7 +172,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
     [focusInPanel],
   );
 
-  // Panelzáráskor (unmount) a még függő elvetések azonnal véglegesednek —
+  // Panelzáráskor (unmount) a még függő elvetések azonnal véglegesednek –
   // a visszavonási ablak a nyitott panelhez kötött, zárás után az elvetett
   // értesítés nem „ragadhat vissza".
   useEffect(() => {
@@ -191,7 +191,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
   // a teljes dialog-viselkedést adjuk: Tab/Shift+Tab körbejár a panelen belül,
   // Esc zár, ↑/↓ az értesítés-sorok közt lép, záráskor a fókusz visszatér a
   // megnyitó elemre (harang). A panel a desktop+mobil ágban egyszerre
-  // mountolódik — a CSS-sel rejtett példány (offsetParent === null) nem
+  // mountolódik – a CSS-sel rejtett példány (offsetParent === null) nem
   // fókuszál és nem kezel billentyűt.
   useEffect(() => {
     const panel = panelRef.current;
@@ -309,7 +309,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
             <p className="text-xs text-[var(--color-text-muted)]">
               {t("notifications.noNotifications", loc)}
             </p>
-            {/* UX-B16: az üres állapot ne zsákutca legyen — mutassuk a
+            {/* UX-B16: az üres állapot ne zsákutca legyen – mutassuk a
                 következő értelmes lépést. */}
             <p className="mx-auto mt-1.5 max-w-[260px] text-note leading-relaxed text-[var(--color-text-muted)] opacity-80">
               {t("notifications.emptyHint", loc)}
@@ -317,7 +317,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
           </div>
         ) : (
           items.map((item) => {
-            // B16u: függő elvetés — a sor helyén visszavonási állapot, amíg
+            // B16u: függő elvetés – a sor helyén visszavonási állapot, amíg
             // a timer le nem jár. role="status": a felolvasó bejelenti.
             if (pendingDismiss.has(item.id)) {
               return (

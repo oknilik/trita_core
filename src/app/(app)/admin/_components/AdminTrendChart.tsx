@@ -234,7 +234,7 @@ export function AdminTrendChart({
         </div>
       ) : null}
 
-      {/* Legenda (2 sorozat — szín + név, sosem csak szín) */}
+      {/* Legenda (2 sorozat – szín + név, sosem csak szín) */}
       <div className="mt-2 flex flex-wrap gap-4">
         {series.map((s) => (
           <span key={s.name} className="flex items-center gap-1.5 text-xs text-ink-body">

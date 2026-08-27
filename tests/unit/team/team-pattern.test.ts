@@ -50,7 +50,7 @@ function team(scores: TritanScores, size = 3) {
   }));
 }
 
-describe("calculateTeamPattern — mintakód és névfeloldás", () => {
+describe("calculateTeamPattern – mintakód és névfeloldás", () => {
   it("mind a 16 tengely-kombináció érvényes, PATTERN_NAMES-ben feloldódó kódot ad", () => {
     for (let bits = 0; bits < 16; bits++) {
       const axes = {
@@ -88,7 +88,7 @@ describe("calculateTeamPattern — mintakód és névfeloldás", () => {
   });
 
   // Név-tábla egységesítés: a riport-név forrása a pattern-data (a /patterns
-  // felfedező elsődleges címkéjével azonos név-család) — a két motor nem
+  // felfedező elsődleges címkéjével azonos név-család) – a két motor nem
   // hordozhat eltérő neveket.
   it("minden mintakód neve a pattern-data kanonikus név-táblájából oldódik fel", () => {
     for (const code of Object.keys(PATTERN_NAMES)) {
@@ -110,7 +110,7 @@ describe("calculateTeamPattern — mintakód és névfeloldás", () => {
   });
 });
 
-describe("calculateTeamPattern — alternatíva és stabilitás", () => {
+describe("calculateTeamPattern – alternatíva és stabilitás", () => {
   it("3 tag alatt null-t ad", () => {
     const scores = scoresFor({ drive: true, cohesion: true, discipline: true, openness: true });
     assert.equal(calculateTeamPattern(team(scores, 2)), null);
@@ -154,9 +154,9 @@ describe("calculateTeamPattern — alternatíva és stabilitás", () => {
     assert.equal(result.alternativeCode, "ECSX");
   });
 
-  it("a 'balanced' fokozatú tengely instabilnak számít — a fokozat, a betű és a jegyzet egyet mond", () => {
+  it("a 'balanced' fokozatú tengely instabilnak számít – a fokozat, a betű és a jegyzet egyet mond", () => {
     // A korábbi hibás zóna: distance 5 a BALANCED_BAND-en (6.25) BELÜL, de a
-    // régi külön stabilitás-küszöbön (3.75) KÍVÜL volt — a tengely fokozata
+    // régi külön stabilitás-küszöbön (3.75) KÍVÜL volt – a tengely fokozata
     // "balanced" lett, mégis „stabil" minősítés + „minden tengely egyértelműen
     // egy pólus felé hajlik" jegyzet készült hozzá.
     const scores = scoresFor({ drive: true, cohesion: true, discipline: true, openness: true });
@@ -202,7 +202,7 @@ describe("calculateTeamPattern — alternatíva és stabilitás", () => {
     assert.equal(result.confidenceFactors.sampleSize, "alacsony");
     assert.equal(result.confidenceFactors.thresholdProximity, "magas");
     assert.equal(result.confidenceFactors.patternClarity, "magas");
-    // RVFP a csupa-alacsony kód — a javítás előtt egyedül ez oldódott fel
+    // RVFP a csupa-alacsony kód – a javítás előtt egyedül ez oldódott fel
     assert.equal(result.patternCode, "RVFP");
   });
 });

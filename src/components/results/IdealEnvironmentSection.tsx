@@ -40,7 +40,7 @@ function levelPosition(level: EnvLevel | null): number {
 
 function getDescription(value: string): string {
   const dashIdx = value.indexOf(" – ");
-  const dashIdx2 = value.indexOf(" — ");
+  const dashIdx2 = value.indexOf(" – ");
   const idx = dashIdx2 >= 0 ? dashIdx2 : dashIdx;
   return idx >= 0 ? value.slice(idx + 3).trim() : value;
 }
@@ -118,7 +118,7 @@ export function IdealEnvironmentSection({
                 </div>
               </div>
               <span className="text-note text-[var(--color-text-muted)] sm:w-[180px] sm:shrink-0 sm:text-right">
-                <strong className="text-[var(--color-text-primary)]">{shortLabel}</strong> — {desc}
+                <strong className="text-[var(--color-text-primary)]">{shortLabel}</strong> – {desc}
               </span>
             </div>
           );

@@ -96,12 +96,12 @@ test("a kis családok küszöbe alatti családok azonosíthatók", () => {
     counts.set(occupation.family as string, (counts.get(occupation.family as string) ?? 0) + 1);
   }
   // Nem hibát jelez: a kis családok LÉTEZHETNEK, csak halkabban kell mutatni
-  // őket. A teszt azt őrzi, hogy a küszöb értelmes maradjon — ha egyszer
+  // őket. A teszt azt őrzi, hogy a küszöb értelmes maradjon – ha egyszer
   // MINDEN család kicsi lenne, a családosításnak nincs értelme.
   const small = [...counts.values()].filter((n) => n < SMALL_FAMILY_THRESHOLD).length;
   assert.ok(
     small < counts.size / 2,
-    `a családok több mint fele kicsi (${small}/${counts.size}) — a bontás túl finom`,
+    `a családok több mint fele kicsi (${small}/${counts.size}) – a bontás túl finom`,
   );
 });
 
@@ -109,13 +109,13 @@ test("a kis családok küszöbe alatti családok azonosíthatók", () => {
 
 test("a motor eredménye nem hordoz családszintű aggregátumot, a rangsor ép", () => {
   const result = computeCareerFit({ dims: balancedDims, form: "short" }, { limit: 10 });
-  // A `families` kulcs a holt ággal együtt tűnt el — ha visszakerül, annak
+  // A `families` kulcs a holt ággal együtt tűnt el – ha visszakerül, annak
   // tudatos (felület által olvasott) döntésnek kell lennie, nem maradványnak.
   assert.equal("families" in result, false, "a families holt ág visszakerült az eredménybe");
-  // A per-tétel family mező viszont él (diversify-sapka) — nem tűnhet el.
+  // A per-tétel family mező viszont él (diversify-sapka) – nem tűnhet el.
   assert.ok(result.ranked.length > 0);
   assert.ok(
     result.ranked.some((fit) => typeof fit.family === "string" && fit.family.length > 0),
-    "a per-tétel family mező eltűnt — a diversify() családonkénti sapkája erre épül",
+    "a per-tétel family mező eltűnt – a diversify() családonkénti sapkája erre épül",
   );
 });

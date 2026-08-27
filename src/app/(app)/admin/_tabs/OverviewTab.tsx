@@ -373,7 +373,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
               A saját HEXACO-profilod még nincs kitöltve
             </p>
             <p className="mt-1 text-xs leading-relaxed text-ink-body">
-              Nem kötelező — de ha szeretnéd látni a saját mintázatodat, ~10 perc.
+              Nem kötelező – de ha szeretnéd látni a saját mintázatodat, ~10 perc.
             </p>
           </div>
           <Link

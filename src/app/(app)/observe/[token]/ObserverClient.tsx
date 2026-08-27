@@ -240,7 +240,7 @@ export function ObserverClient({
         });
         if (!res.ok) {
           // P1.5: a szerver-oldali draft-mentés hibája eddig teljesen néma
-          // volt — localStorage a fallback, de eszközváltásnál adatvesztés.
+          // volt – localStorage a fallback, de eszközváltásnál adatvesztés.
           log.warn(
             { event: "observer.server_draft_save_failed", status: res.status },
             "Observer server draft save returned non-OK",
@@ -284,7 +284,7 @@ export function ObserverClient({
     const firstUnanswered = pageQuestions.findIndex((q) => answers[q.id] === undefined);
 
     if (firstUnanswered === -1 && currentPage < totalPages - 1) {
-      // Every question on this page is already answered — skip it.
+      // Every question on this page is already answered – skip it.
       setCurrentPage((prev) => prev + 1);
       return; // initializedFocusPage stays unset so the next page re-inits
     }
@@ -865,7 +865,7 @@ export function ObserverClient({
         </div>
       </AssessmentFocusHeader>
 
-      {/* Observer-emlékeztető — kire gondolj válasz közben */}
+      {/* Observer-emlékeztető – kire gondolj válasz közben */}
       <div data-testid="observer-think-of" className="mx-auto mt-2 w-[calc(100%-1.5rem)] max-w-[1180px] shrink-0 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-4 py-2.5 text-center text-xs text-[var(--color-accent-self-deep)] sm:px-7">
         {thinkOfParts.length > 1 ? (
           thinkOfParts.map((part, index) => (
@@ -965,7 +965,7 @@ export function ObserverClient({
         </p>
       </div>
 
-      {/* ═══ FLOATING CONTROL DOCK — a self-kitöltéssel azonos ═══ */}
+      {/* ═══ FLOATING CONTROL DOCK – a self-kitöltéssel azonos ═══ */}
       <div className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] grid shrink-0 grid-cols-2 items-center gap-2 rounded-[20px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 p-2 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:grid-cols-[1fr_auto_1fr] md:mx-auto md:mb-3 md:w-[calc(100%-1.5rem)] md:max-w-[1180px] md:px-3">
         <button
           type="button"

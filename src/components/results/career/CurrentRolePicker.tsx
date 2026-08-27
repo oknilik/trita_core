@@ -78,7 +78,7 @@ export function CurrentRolePicker({
         </div>
       ) : (
         <div className="mt-2.5">
-          {/* iOS Safari 16px alatti betűméretnél fókuszkor rázoomol az inputra —
+          {/* iOS Safari 16px alatti betűméretnél fókuszkor rázoomol az inputra –
               mobilon text-base, md:-től az eredeti 12px. */}
           <input
             type="text"

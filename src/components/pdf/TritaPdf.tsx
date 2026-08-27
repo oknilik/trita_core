@@ -59,14 +59,14 @@ export function TritaReportDocument({ data }: { data: PdfData }) {
 
   return (
     <Document
-      title={`${model.identity.userName} — ${t("pdf.personalityProfile", model.locale)}`}
+      title={`${model.identity.userName} – ${t("pdf.personalityProfile", model.locale)}`}
       author="trita"
       subject={t("pdf.footerTagline", model.locale)}
       creator="trita"
       producer="trita"
       language={model.locale}
     >
-      {/* Borító — számozáson kívül, a riport „arca" */}
+      {/* Borító – számozáson kívül, a riport „arca" */}
       <CoverPage
         model={model}
         bookmark={{ title: model.identity.personalityType || model.identity.userName, expanded: true }}
@@ -88,7 +88,7 @@ export function TritaReportDocument({ data }: { data: PdfData }) {
 
       <ChapterWorkStylePage model={model} />
 
-      {/* Opcionális mellékletek — a riport VÉGÉN, világosan megnevezve */}
+      {/* Opcionális mellékletek – a riport VÉGÉN, világosan megnevezve */}
       {hasAppendix("observer") ? <AppendixObserverPage model={model} /> : null}
       {hasAppendix("career") ? <AppendixCareerPage model={model} /> : null}
       {hasAppendix("relational") ? <AppendixRelationalPage model={model} /> : null}

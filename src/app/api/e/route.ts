@@ -154,7 +154,7 @@ export async function POST(req: Request) {
     if (!acceptsOrigin(event.name, "client")) {
       log.warn(
         { event: "analytics.origin_rejected", name: event.name },
-        "Szerver-only esemény érkezett kliensről — eldobva",
+        "Szerver-only esemény érkezett kliensről – eldobva",
       );
       continue;
     }
@@ -162,7 +162,7 @@ export async function POST(req: Request) {
     if (!props.ok) {
       log.warn(
         { event: "analytics.props_invalid", name: event.name, issue: props.issue },
-        "Érvénytelen tulajdonságok — esemény eldobva",
+        "Érvénytelen tulajdonságok – esemény eldobva",
       );
       continue;
     }

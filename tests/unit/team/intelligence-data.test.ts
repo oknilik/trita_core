@@ -66,7 +66,7 @@ function build(data: TeamPageData) {
 
 // ── FIX 6: nincs kitalált 50-es dimenzió-érték ──────────────────────────────
 
-describe("buildIntelligenceViewData — nincs fabrikált dimenzió-adat", () => {
+describe("buildIntelligenceViewData – nincs fabrikált dimenzió-adat", () => {
   it("kitöltetlen tag tritan-ja üres (nem csupa 50), hasAssessmentData false", () => {
     const vm = build(
       teamData({ members: [member("u1", null)], memberCount: 1 }),
@@ -111,7 +111,7 @@ describe("buildIntelligenceViewData — nincs fabrikált dimenzió-adat", () => 
 
 // ── FIX 7: mért trust-hub jelölés átadása a térképnek ───────────────────────
 
-describe("buildIntelligenceViewData — trust-hub jelölés", () => {
+describe("buildIntelligenceViewData – trust-hub jelölés", () => {
   it("a trustHubUserIds-ben szereplő tag isTrustHub jelölést kap", () => {
     const vm = build(
       teamData({

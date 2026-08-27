@@ -54,7 +54,7 @@ export function resolveHome(params: {
     };
   }
 
-  // 3a) Admin org cockpit — the org page is the cockpit.
+  // 3a) Admin org cockpit – the org page is the cockpit.
   if (context.currentContext === "org-admin") {
     return {
       activeSurface: "org",

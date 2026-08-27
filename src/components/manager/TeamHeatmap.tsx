@@ -41,35 +41,35 @@ function scoreZone(score: number | null, locale: Locale): { label: string; textC
 
 const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
   H: {
-    hu: "Becsületesség, igazságosság, szerénység — mennyire kerüli a manipulációt és az önérdek-érvényesítést",
-    en: "Honesty, fairness, modesty — tendency to avoid manipulation and self-promotion",
+    hu: "Becsületesség, igazságosság, szerénység – mennyire kerüli a manipulációt és az önérdek-érvényesítést",
+    en: "Honesty, fairness, modesty – tendency to avoid manipulation and self-promotion",
   },
   // A skála-leírás a MÉRT facetekhez igazodik (Félelem · Szorongás ·
-  // Dependencia · Érzelmi kötődés) — a korábbi „empátia mások iránt" olyat
+  // Dependencia · Érzelmi kötődés) – a korábbi „empátia mások iránt" olyat
   // ígért, amit ez a dimenzió nem mér (2026-08-11 valencia-döntés).
   E: {
     hu: "Érzelmi érzékenység, aggodalomra való hajlam, erős érzelmi kötődés",
     en: "Emotional sensitivity, tendency toward worry, strong emotional attachments",
   },
   X: {
-    hu: "Szociabilitás, magabiztosság, energikusság — mennyire tölt fel a társas közeg",
-    en: "Sociability, confidence, energy — degree to which social settings are energizing",
+    hu: "Szociabilitás, magabiztosság, energikusság – mennyire tölt fel a társas közeg",
+    en: "Sociability, confidence, energy – degree to which social settings are energizing",
   },
   A: {
-    hu: "Türelem, együttműködés, megbocsátás — mennyire kerüli a konfliktust és törekszik harmóniára",
-    en: "Patience, cooperation, forgiveness — tendency to avoid conflict and seek harmony",
+    hu: "Türelem, együttműködés, megbocsátás – mennyire kerüli a konfliktust és törekszik harmóniára",
+    en: "Patience, cooperation, forgiveness – tendency to avoid conflict and seek harmony",
   },
   C: {
-    hu: "Szervezettség, kitartás, fegyelmezettség — mennyire megbízható és célirányos a munkavégzés",
-    en: "Organization, diligence, self-discipline — reliability and goal-directedness at work",
+    hu: "Szervezettség, kitartás, fegyelmezettség – mennyire megbízható és célirányos a munkavégzés",
+    en: "Organization, diligence, self-discipline – reliability and goal-directedness at work",
   },
   O: {
-    hu: "Nyitottság, kreativitás, intellektuális kíváncsiság — mennyire keresi az újszerű megközelítéseket",
-    en: "Openness, creativity, intellectual curiosity — tendency to seek novel ideas and approaches",
+    hu: "Nyitottság, kreativitás, intellektuális kíváncsiság – mennyire keresi az újszerű megközelítéseket",
+    en: "Openness, creativity, intellectual curiosity – tendency to seek novel ideas and approaches",
   },
   N: {
-    hu: "Érzelmi instabilitás, stressz-érzékenység — reakció nyomáshelyzetre",
-    en: "Emotional instability, stress sensitivity — response to pressure situations",
+    hu: "Érzelmi instabilitás, stressz-érzékenység – reakció nyomáshelyzetre",
+    en: "Emotional instability, stress sensitivity – response to pressure situations",
   },
 };
 

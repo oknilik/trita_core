@@ -56,7 +56,7 @@ export function ProgressRing({
       height={size}
       viewBox={`0 0 ${size} ${size}`}
       role="img"
-      aria-label={label ? `${label}${sublabel ? ` — ${sublabel}` : ""}` : `${clamped}%`}
+      aria-label={label ? `${label}${sublabel ? ` – ${sublabel}` : ""}` : `${clamped}%`}
     >
       <circle
         cx={size / 2}

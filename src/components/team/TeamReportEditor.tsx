@@ -65,8 +65,8 @@ const TIMEFRAMES = ["30", "60", "90"] as const;
 
 const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
   DRAFT_EXISTS: {
-    hu: "Már van nyitott vázlat — előbb publikáld vagy fejezd be.",
-    en: "There is already an open draft — publish or finish it first.",
+    hu: "Már van nyitott vázlat – előbb publikáld vagy fejezd be.",
+    en: "There is already an open draft – publish or finish it first.",
   },
   NOT_LATEST: {
     hu: "Csak a legutolsó publikált riport vonható vissza.",
@@ -77,12 +77,12 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     en: "This report is not published.",
   },
   ALREADY_PUBLISHED: {
-    hu: "Az aktuális publikált riport nem szerkeszthető és nem törölhető közvetlenül — előbb vond vissza.",
-    en: "The current published report cannot be edited or deleted directly — unpublish it first.",
+    hu: "Az aktuális publikált riport nem szerkeszthető és nem törölhető közvetlenül – előbb vond vissza.",
+    en: "The current published report cannot be edited or deleted directly – unpublish it first.",
   },
   TRANSLATE_FAILED: {
-    hu: "A fordítás nem sikerült — próbáld újra kicsit később.",
-    en: "Translation failed — try again in a moment.",
+    hu: "A fordítás nem sikerült – próbáld újra kicsit később.",
+    en: "Translation failed – try again in a moment.",
   },
   TRANSLATE_NOT_CONFIGURED: {
     hu: "A fordítás most nem érhető el. Próbáld újra később.",
@@ -438,8 +438,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
         <DashboardPanel className="flex flex-wrap items-center justify-between gap-3 p-4">
           <p className="text-sm text-ink-body">
             {isHu
-              ? "Előnézet — pontosan így látják majd a vezetők a publikálás után."
-              : "Preview — exactly what managers will see after publishing."}
+              ? "Előnézet – pontosan így látják majd a vezetők a publikálás után."
+              : "Preview – exactly what managers will see after publishing."}
           </p>
           <div className="flex flex-wrap gap-2">
             <button
@@ -517,8 +517,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2.5">
               <p className="text-xs text-bronze-700">
                 {isHu
-                  ? "A riport kapcsolati adatalapja most csak becslés — nincs mért bizalmi kör."
-                  : "The report's relationship data basis is estimate-only — no measured trust round yet."}
+                  ? "A riport kapcsolati adatalapja most csak becslés – nincs mért bizalmi kör."
+                  : "The report's relationship data basis is estimate-only – no measured trust round yet."}
               </p>
               <Link
                 href={`/org/${orgId}/campaigns/new?team=${teamId}`}
@@ -531,8 +531,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
           )}
           <p className="text-xs text-muted">
             {isHu
-              ? "A narratív mezők a csapatadatokból generált javaslattal indulnak — szerkeszd és egészítsd ki a tanácsadói értékeléssel."
-              : "Narrative fields start with suggestions generated from team data — edit and extend them with your consultant assessment."}
+              ? "A narratív mezők a csapatadatokból generált javaslattal indulnak – szerkeszd és egészítsd ki a tanácsadói értékeléssel."
+              : "Narrative fields start with suggestions generated from team data – edit and extend them with your consultant assessment."}
           </p>
           {FIELDS.map((field) => (
             <label key={field.key} className="flex flex-col gap-1">
@@ -588,8 +588,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
             {actionItems.length === 0 && (
               <p className="text-xs text-muted">
                 {isHu
-                  ? "Strukturált, átadható lépések a vezetőknek — cím, leírás, időtáv."
-                  : "Structured, hand-off-ready steps for managers — title, description, timeframe."}
+                  ? "Strukturált, átadható lépések a vezetőknek – cím, leírás, időtáv."
+                  : "Structured, hand-off-ready steps for managers – title, description, timeframe."}
               </p>
             )}
             {actionItems.map((item, index) => (
@@ -638,7 +638,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
                 </div>
                 <textarea
                   value={item.description}
-                  placeholder={isHu ? "Mit és hogyan — átadható részletességgel" : "What and how — hand-off-ready detail"}
+                  placeholder={isHu ? "Mit és hogyan – átadható részletességgel" : "What and how – hand-off-ready detail"}
                   rows={2}
                   onChange={(e) =>
                     setActionItems((items) =>
@@ -755,7 +755,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
             ))}
           </div>
 
-          {/* ── Angol fordítás — gépi javaslat + tanácsadói jóváhagyás ── */}
+          {/* ── Angol fordítás – gépi javaslat + tanácsadói jóváhagyás ── */}
           <div className="flex flex-col gap-3 rounded-xl border border-sand bg-cream/40 p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -768,7 +768,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
                   </span>
                 ) : translation ? (
                   <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-warning-fg ring-1 ring-state-warning-border">
-                    {isHu ? "vázlat — jóváhagyásra vár" : "draft — awaiting approval"}
+                    {isHu ? "vázlat – jóváhagyásra vár" : "draft – awaiting approval"}
                   </span>
                 ) : (
                   <span className="rounded-full bg-sand px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-muted">
@@ -791,8 +791,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
             </div>
             <p className="text-xs text-muted">
               {isHu
-                ? "A gépi fordítást nézd át és szükség szerint javítsd — a felhasználó CSAK a jóváhagyott fordítást látja, amikor angolul nyitja meg a riportot. Jóváhagyás nélkül angol lekérésnél is a magyar eredeti jelenik meg."
-                : "Review and adjust the machine translation — users only ever see the APPROVED translation when opening the report in English. Without approval, the Hungarian original is shown even for English requests."}
+                ? "A gépi fordítást nézd át és szükség szerint javítsd – a felhasználó CSAK a jóváhagyott fordítást látja, amikor angolul nyitja meg a riportot. Jóváhagyás nélkül angol lekérésnél is a magyar eredeti jelenik meg."
+                : "Review and adjust the machine translation – users only ever see the APPROVED translation when opening the report in English. Without approval, the Hungarian original is shown even for English requests."}
             </p>
 
             {translation ? (
@@ -934,8 +934,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
         <div className="flex flex-wrap items-center justify-between gap-3">
           <SectionEyebrow tone="muted">
             {isHu
-              ? "aktuális publikált riport — ezt látja a szervezet"
-              : "current published report — this is what the organization sees"}
+              ? "aktuális publikált riport – ezt látja a szervezet"
+              : "current published report – this is what the organization sees"}
           </SectionEyebrow>
           <button
             type="button"
@@ -961,8 +961,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
       <section className="flex flex-col gap-2">
         <SectionEyebrow tone="muted">
           {isHu
-            ? "korábbi riportok — csak tanácsadói nézetben"
-            : "earlier reports — consultant view only"}
+            ? "korábbi riportok – csak tanácsadói nézetben"
+            : "earlier reports – consultant view only"}
         </SectionEyebrow>
         {olderPublished.map((r) => (
           <details key={r.id} className="rounded-[14px] border border-sand bg-surface-card">
@@ -974,7 +974,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
                 <span className="text-xs text-muted">
                   {r.publishedAt
                     ? new Date(r.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB")
-                    : "—"}
+                    : "–"}
                 </span>
                 <button
                   type="button"

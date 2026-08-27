@@ -48,7 +48,7 @@ export async function POST(
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
   const inviteOrgId = invite.orgId ?? invite.team?.orgId ?? null;
-  // leftAt: null — a szervezetből kilépett (volt) tag nem küldhet újra meghívót.
+  // leftAt: null – a szervezetből kilépett (volt) tag nem küldhet újra meghívót.
   const orgMembership = inviteOrgId
     ? await prisma.organizationMember.findFirst({
         where: { userId: profile.id, orgId: inviteOrgId, leftAt: null },

@@ -11,7 +11,7 @@ function edge(type: DynamicsEdgeType, source: string) {
   return { type, source };
 }
 
-describe("splitDynamicsEdges — él-típus és mért/becsült megoszlás", () => {
+describe("splitDynamicsEdges – él-típus és mért/becsült megoszlás", () => {
   it("üres bemenetre minden számláló nulla", () => {
     assert.deepEqual(splitDynamicsEdges([]), {
       alignedCount: 0,
@@ -49,7 +49,7 @@ describe("splitDynamicsEdges — él-típus és mért/becsült megoszlás", () =
     assert.equal(split.estimatedEdgeCount, 1);
   });
 
-  it("csak becsült élekre a mért nulla — a felület ilyenkor profil-becslés jelzést mutat", () => {
+  it("csak becsült élekre a mért nulla – a felület ilyenkor profil-becslés jelzést mutat", () => {
     const split = splitDynamicsEdges([
       edge("aligned", "profile_estimate"),
       edge("friction", "profile_estimate"),
@@ -74,7 +74,7 @@ describe("splitDynamicsEdges — él-típus és mért/becsült megoszlás", () =
   });
 });
 
-describe("sortTeamsByCompletion + pickPrimaryTeam — rendezés és primary-választás", () => {
+describe("sortTeamsByCompletion + pickPrimaryTeam – rendezés és primary-választás", () => {
   const team = (teamId: string, completionPct: number) => ({ teamId, completionPct });
 
   it("legalacsonyabb kitöltöttség kerül előre", () => {

@@ -14,10 +14,10 @@ export function StatsBar({ mode }: { mode: SiteMode }) {
         { value: t("landing.statSelfValue", locale), suffix: "", label: t("landing.statSelfLabel", locale), isText: true },
       ]
     : [
-        { value: t("landing.statMinValue", locale), suffix: t("landing.statMinSuffix", locale), label: t("landing.statTeamMinLabel", locale) },
+        { value: t("landing.statTeamMinValue", locale), suffix: t("landing.statMinSuffix", locale), label: t("landing.statTeamMinLabel", locale) },
         { value: "6", suffix: "", label: t("landing.statDimLabel", locale) },
         { value: t("landing.statTeamPictureValue", locale), suffix: "", label: t("landing.statTeamPictureLabel", locale), isText: true },
-        { value: "3", suffix: "", label: t("landing.statTeamLayersLabel", locale) },
+        { value: "3+", suffix: "", label: t("landing.statTeamLayersLabel", locale) },
       ];
 
   return (

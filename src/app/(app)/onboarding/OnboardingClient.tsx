@@ -182,7 +182,7 @@ export function OnboardingClient({
   const handleSubmit = async () => {
     if (isSubmitting) return;
 
-    // UX-A11: egyképernyős onboarding — a korábbi 1. lépés mezővalidációja
+    // UX-A11: egyképernyős onboarding – a korábbi 1. lépés mezővalidációja
     // a submitra került. A mentés + Clerk-szinkron logika változatlan.
     setUsernameTouched(true);
     if (!isClaimActivation) setBirthYearTouched(true);
@@ -235,7 +235,7 @@ export function OnboardingClient({
   };
 
   // ── Render ───────────────────────────────────────────────────────────────
-  // UX-A11: egyetlen képernyő — nincs lépés-szerkezet, se step-progress jelző;
+  // UX-A11: egyetlen képernyő – nincs lépés-szerkezet, se step-progress jelző;
   // a consent-checkbox közvetlenül a submit gomb felett van.
 
   return (
@@ -428,7 +428,7 @@ export function OnboardingClient({
                   ) : null}
                 </div>
 
-                {/* Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez */}
+                {/* Karrier-háttér (opcionális) – a Karrier-iránytű előtöltéséhez */}
                 <details className="group mt-2 border-t border-sand pt-4">
                   <summary className={`flex min-h-[44px] cursor-pointer list-none items-center justify-between rounded-lg text-xs font-semibold text-ink-body ${FOCUS_RING_CLASS}`}>
                     <span>
@@ -475,7 +475,7 @@ export function OnboardingClient({
 
               </div>
 
-              {/* Hozzájárulás — UX-A11: nem külön lépés, közvetlenül a
+              {/* Hozzájárulás – UX-A11: nem külön lépés, közvetlenül a
                   submit gomb felett. */}
               <label
                 ref={consentFieldRef}

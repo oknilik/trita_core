@@ -81,7 +81,7 @@ export function CampaignPacingTile({
         body: JSON.stringify(body),
       });
       if (!res.ok) throw new Error();
-      // Visszajelzés a beavatkozásról (UX-audit #19) — a kattintás élesben
+      // Visszajelzés a beavatkozásról (UX-audit #19) – a kattintás élesben
       // átütemezi a függő lépéseket, ezt ki is mondjuk.
       setSaved(confirmation);
       router.refresh();
@@ -106,20 +106,20 @@ export function CampaignPacingTile({
 
           {data.openCount > 0 && stepLabel ? (
             // Szám-definíció kimondva (UX-audit #14): a „teljes" itt a TELJES
-            // SOROZAT végigvitele — a kampánykártya lépés-számaival nem
+            // SOROZAT végigvitele – a kampánykártya lépés-számaival nem
             // keverendő, ezért a címke megnevezi, mire vonatkozik.
             <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
               {isHu ? (
-                <>Éppen kitölthető: <span className="font-semibold text-ink">{stepLabel}</span> — {data.openCount} tagnál nyitva. A teljes sorozattal {data.doneCount}/{data.totalParticipants} tag végzett.</>
+                <>Éppen kitölthető: <span className="font-semibold text-ink">{stepLabel}</span> – {data.openCount} tagnál nyitva. A teljes sorozattal {data.doneCount}/{data.totalParticipants} tag végzett.</>
               ) : (
-                <>Currently open: <span className="font-semibold text-ink">{stepLabel}</span> — open for {data.openCount} member(s). {data.doneCount}/{data.totalParticipants} members have finished the full series.</>
+                <>Currently open: <span className="font-semibold text-ink">{stepLabel}</span> – open for {data.openCount} member(s). {data.doneCount}/{data.totalParticipants} members have finished the full series.</>
               )}
             </p>
           ) : data.scheduledCount > 0 ? (
             <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
               {isHu
-                ? `Most nincs nyitott kérdőív — a következő ${data.scheduledCount} tagnak ütemezve.`
-                : `No questionnaire open right now — the next is scheduled for ${data.scheduledCount} member(s).`}
+                ? `Most nincs nyitott kérdőív – a következő ${data.scheduledCount} tagnak ütemezve.`
+                : `No questionnaire open right now – the next is scheduled for ${data.scheduledCount} member(s).`}
             </p>
           ) : (
             <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
@@ -148,7 +148,7 @@ export function CampaignPacingTile({
                   call(
                     { action: "release_now" },
                     "release",
-                    isHu ? "Kiküldve — a nyitott lépés mindenkinél elérhető." : "Sent — the open step is now available to everyone.",
+                    isHu ? "Kiküldve – a nyitott lépés mindenkinél elérhető." : "Sent – the open step is now available to everyone.",
                   )
                 }
                 className="inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110 disabled:opacity-50 md:min-h-[38px]"
@@ -172,8 +172,8 @@ export function CampaignPacingTile({
                       { action: "interval", stepIntervalHours: h },
                       `int${h}`,
                       isHu
-                        ? `Ütem átállítva (${h === 0 ? "azonnal" : `${h}h`}) — a függő lépések újraütemezve.`
-                        : `Pace updated (${h === 0 ? "immediate" : `${h}h`}) — pending steps rescheduled.`,
+                        ? `Ütem átállítva (${h === 0 ? "azonnal" : `${h}h`}) – a függő lépések újraütemezve.`
+                        : `Pace updated (${h === 0 ? "immediate" : `${h}h`}) – pending steps rescheduled.`,
                     )
                   }
                   className={[
@@ -199,7 +199,7 @@ export function CampaignPacingTile({
             ) : null}
             {error ? (
               <p className="text-label font-semibold tracking-normal text-state-warning-fg">
-                {isHu ? "Nem sikerült — próbáld újra." : "Failed — please retry."}
+                {isHu ? "Nem sikerült – próbáld újra." : "Failed – please retry."}
               </p>
             ) : null}
           </div>

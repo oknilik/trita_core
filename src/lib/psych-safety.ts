@@ -216,32 +216,32 @@ export function aggregatePsychSafety(
 
 export const PSYCH_SAFETY_ACTIONS: Record<string, { hu: string; en: string }> = {
   PS1: {
-    hu: "Teremts rendszeres, védett fórumot a kényes témáknak — például havi „mi nem működik?” kör, amit a vezető nyit a saját témájával. A nehéz témák akkor jönnek elő, ha van kijelölt helyük.",
-    en: "Create a regular, protected forum for sensitive topics — e.g. a monthly “what isn't working?” round that the leader opens with their own item. Hard topics surface when they have a designated place.",
+    hu: "Teremts rendszeres, védett fórumot a kényes témáknak – például havi „mi nem működik?” kör, amit a vezető nyit a saját témájával. A nehéz témák akkor jönnek elő, ha van kijelölt helyük.",
+    en: "Create a regular, protected forum for sensitive topics – e.g. a monthly “what isn't working?” round that the leader opens with their own item. Hard topics surface when they have a designated place.",
   },
   PS2: {
     hu: "Vezess be olyan hibamegbeszélést, amely a tanulságokra összpontosít: a „ki hibázott?” helyett azt kérdezzétek: „Mit tanultunk, és min változtatunk?” A vezető ossza meg elsőként a saját hibáját.",
-    en: "Introduce lesson-focused mistake reviews: replace “who failed?” with “what did we learn, what do we change?” — and have the leader share their own mistake first.",
+    en: "Introduce lesson-focused mistake reviews: replace “who failed?” with “what did we learn, what do we change?” – and have the leader share their own mistake first.",
   },
   PS3: {
-    hu: "Tedd természetessé a segítségkérést: legyen látható, ki min dolgozik és hol akadt el — például tartsatok külön elakadáskört a heti megbeszélésen. Így a kérdezés a munka része, nem a kudarc jele.",
-    en: "Normalize asking for help: make it visible who works on what and where they are stuck — e.g. a dedicated “blockers” round in the weekly meeting. Asking becomes routine, not a distress signal.",
+    hu: "Tedd természetessé a segítségkérést: legyen látható, ki min dolgozik és hol akadt el – például tartsatok külön elakadáskört a heti megbeszélésen. Így a kérdezés a munka része, nem a kudarc jele.",
+    en: "Normalize asking for help: make it visible who works on what and where they are stuck – e.g. a dedicated “blockers” round in the weekly meeting. Asking becomes routine, not a distress signal.",
   },
   PS4: {
-    hu: "Adj strukturált teret a kisebbségi véleménynek: döntések előtt kérj kifejezetten ellenvéleményt — például kijelölt vitapartnerrel vagy körkérdéssel. Így az eltérő nézet feladat lesz, nem személyes kockázat.",
-    en: "Give structured space to minority views: before decisions, explicitly ask for dissent (a designated challenger role, a round-robin) — differing views become a task, not a risk.",
+    hu: "Adj strukturált teret a kisebbségi véleménynek: döntések előtt kérj kifejezetten ellenvéleményt – például kijelölt vitapartnerrel vagy körkérdéssel. Így az eltérő nézet feladat lesz, nem személyes kockázat.",
+    en: "Give structured space to minority views: before decisions, explicitly ask for dissent (a designated challenger role, a round-robin) – differing views become a task, not a risk.",
   },
   PS5: {
-    hu: "Válaszd le az ötletelést az értékelésről: külön alkalom a nyers ötleteknek, és minden ötletre először a „mi jó benne?” kérdés — a szűrés csak utána jön.",
-    en: "Separate ideation from evaluation: hold sessions for raw ideas, and respond to every idea first with “what's good about it?” — filtering comes after.",
+    hu: "Válaszd le az ötletelést az értékelésről: külön alkalom a nyers ötleteknek, és minden ötletre először a „mi jó benne?” kérdés – a szűrés csak utána jön.",
+    en: "Separate ideation from evaluation: hold sessions for raw ideas, and respond to every idea first with “what's good about it?” – filtering comes after.",
   },
   PS6: {
     hu: "Tisztázd a szerepek és felelősségek határait, és kezeld nyíltan a rivalizálást. A vezető az egymás munkáját aláásó viselkedést négyszemközt, de következetesen tegye szóvá.",
     en: "Clarify role and responsibility boundaries, and address rivalry openly: the leader should handle signs of undermining privately but consistently.",
   },
   PS7: {
-    hu: "Kösd össze a feladatokat az erősségekkel: térképezzétek fel, ki miben erős — a trita-profilok ebben segítenek —, és a feladat kiosztásakor mondd ki, miért éppen ő kapja. A megbecsültség konkrét visszajelzésekből épül.",
-    en: "Connect tasks to strengths: map who is strong at what (trita profiles serve this), and when delegating, say why this person gets it — feeling valued is built from specifics.",
+    hu: "Kösd össze a feladatokat az erősségekkel: térképezzétek fel, ki miben erős – a trita-profilok ebben segítenek –, és a feladat kiosztásakor mondd ki, miért éppen ő kapja. A megbecsültség konkrét visszajelzésekből épül.",
+    en: "Connect tasks to strengths: map who is strong at what (trita profiles serve this), and when delegating, say why this person gets it – feeling valued is built from specifics.",
   },
   PS8: {
     hu: "Válaszd szét a vitát és a döntést: döntés előtt legyen kötelező az ellenvélemények ütköztetése, döntés után pedig közösen képviseljétek és hajtsátok végre a döntést.",
@@ -287,8 +287,8 @@ export const PSYCH_SAFETY_LEADER_TRAPS: PsychSafetyLeaderTrap[] = [
     id: "REACTIVITY",
     title: { hu: "Érzelmi reaktivitás", en: "Emotional reactivity" },
     trap: {
-      hu: "A vezető az ellenvéleményre vagy a kényes felvetésre azonnal, érzelemből reagál — védekezéssel, éllel vagy türelmetlenséggel. A csapat ebből azt tanulja: nehéz témát felhozni kockázatos.",
-      en: "The leader reacts to dissent or a sensitive point instantly and emotionally — with defensiveness, edge or impatience. The team learns: raising hard topics is risky.",
+      hu: "A vezető az ellenvéleményre vagy a kényes felvetésre azonnal, érzelemből reagál – védekezéssel, éllel vagy türelmetlenséggel. A csapat ebből azt tanulja: nehéz témát felhozni kockázatos.",
+      en: "The leader reacts to dissent or a sensitive point instantly and emotionally – with defensiveness, edge or impatience. The team learns: raising hard topics is risky.",
     },
     antidote: {
       hu: "Tarts tudatos szünetet, mielőtt reagálsz, és a vitában térj vissza a kölcsönös tisztelethez: először ismerd el, hogy a felvetésnek helye van, és csak utána vitatkozz a tartalmával. Első lépésként ismerd fel azokat a helyzeteket, amelyekben könnyen ösztönösen reagálsz.",
@@ -300,12 +300,12 @@ export const PSYCH_SAFETY_LEADER_TRAPS: PsychSafetyLeaderTrap[] = [
     id: "CERTAINTY",
     title: { hu: "Bizonyosság-csapda", en: "The certainty trap" },
     trap: {
-      hu: "A vezető annyira biztos a saját olvasatában, hogy az eltérő nézőpont zajnak tűnik. A csapat leszokik a másként gondolkodásról — minek, ha úgyis megvan a válasz.",
-      en: "The leader is so sure of their own read that differing viewpoints feel like noise. The team unlearns thinking differently — why bother, if the answer is already fixed.",
+      hu: "A vezető annyira biztos a saját olvasatában, hogy az eltérő nézőpont zajnak tűnik. A csapat leszokik a másként gondolkodásról – minek, ha úgyis megvan a válasz.",
+      en: "The leader is so sure of their own read that differing viewpoints feel like noise. The team unlearns thinking differently – why bother, if the answer is already fixed.",
     },
     antidote: {
-      hu: "Döntés előtt törekedj a teljes képre: kérdezz rá célzottan a hiányzó nézőpontokra — „mit nem látok?” —, és oszd meg a döntési felelősséget is. Ahol közös a felelősség, ott az eltérő nézet erőforrás lehet, nem támadás.",
-      en: "Before deciding, get the full story: explicitly ask for the missing perspectives (“what am I not seeing?”), and share ownership of the decision — where responsibility is shared, a differing view is a resource, not an attack.",
+      hu: "Döntés előtt törekedj a teljes képre: kérdezz rá célzottan a hiányzó nézőpontokra – „mit nem látok?” –, és oszd meg a döntési felelősséget is. Ahol közös a felelősség, ott az eltérő nézet erőforrás lehet, nem támadás.",
+      en: "Before deciding, get the full story: explicitly ask for the missing perspectives (“what am I not seeing?”), and share ownership of the decision – where responsibility is shared, a differing view is a resource, not an attack.",
     },
     itemIds: ["PS4", "PS5"],
   },
@@ -326,12 +326,12 @@ export const PSYCH_SAFETY_LEADER_TRAPS: PsychSafetyLeaderTrap[] = [
     id: "SELF_JUSTIFICATION",
     title: { hu: "Önigazolás", en: "Self-justification" },
     trap: {
-      hu: "A vezető a saját döntéseit magyarázza ahelyett, hogy tanulna belőlük — a kérdésekre indoklás jön, nem kíváncsiság. A csapat ezt tükrözi: segítséget kérni vagy bizonytalanságot vállalni gyengeségnek kezd számítani.",
-      en: "The leader explains their decisions instead of learning from them — questions get justification, not curiosity. The team mirrors this: asking for help or admitting uncertainty starts to count as weakness.",
+      hu: "A vezető a saját döntéseit magyarázza ahelyett, hogy tanulna belőlük – a kérdésekre indoklás jön, nem kíváncsiság. A csapat ezt tükrözi: segítséget kérni vagy bizonytalanságot vállalni gyengeségnek kezd számítani.",
+      en: "The leader explains their decisions instead of learning from them – questions get justification, not curiosity. The team mirrors this: asking for help or admitting uncertainty starts to count as weakness.",
     },
     antidote: {
-      hu: "Kommunikálj őszintén, szépítés nélkül — kezdve magadon: mondd ki, miben vagy bizonytalan, és kérj te magad segítséget a csapattól. A vezetői „nem tudom, nézzük meg együtt” az a mondat, ami a segítségkérést mindenki másnak is rutinná teszi.",
-      en: "Communicate with candor, starting with yourself: say what you are uncertain about, and ask the team for help yourself. A leader's “I don't know — let's find out together” is the sentence that makes asking for help routine for everyone else.",
+      hu: "Kommunikálj őszintén, szépítés nélkül – kezdve magadon: mondd ki, miben vagy bizonytalan, és kérj te magad segítséget a csapattól. A vezetői „nem tudom, nézzük meg együtt” az a mondat, ami a segítségkérést mindenki másnak is rutinná teszi.",
+      en: "Communicate with candor, starting with yourself: say what you are uncertain about, and ask the team for help yourself. A leader's “I don't know – let's find out together” is the sentence that makes asking for help routine for everyone else.",
     },
     itemIds: ["PS3", "PS2"],
   },

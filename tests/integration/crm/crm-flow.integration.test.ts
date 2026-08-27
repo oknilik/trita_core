@@ -102,7 +102,7 @@ test("CRM flow", async (t) => {
     const inquiry = await createTestInquiry();
     const deal = await createDealFromInquiry(inquiry.id);
 
-    assert.equal(deal.title, "Acme Kft. — Demó igény");
+    assert.equal(deal.title, "Acme Kft. – Demó igény");
     assert.equal(deal.contactName, "Kiss Anna");
     assert.equal(deal.contactEmail, inquiry.email.toLowerCase());
     assert.equal(deal.company, "Acme Kft.");
@@ -294,7 +294,7 @@ test("CRM flow", async (t) => {
 
   await t.test("inquiry auto-attach: nyitott dealhez linkel (case-insensitive)", async () => {
     // A submitInquiry ezt a service-hívást best-effort try/catch-ben süti el
-    // (lib/inquiries) — itt a szolgáltatás-szintű viselkedést fedjük, mert a
+    // (lib/inquiries) – itt a szolgáltatás-szintű viselkedést fedjük, mert a
     // lib/inquiries import-lánca (auth → next/navigation) a test-runnerben
     // nem tölthető be.
     const email = `${makeId("attach")}@test.trita.app`;

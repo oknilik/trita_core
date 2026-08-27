@@ -282,7 +282,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
 
   // EN lekérés jóváhagyott fordítás nélkül: a hívó (gomb) már a
   // localizeTeamReport-on átfuttatott riportot adja; ha nincs jóváhagyott EN,
-  // a narratíva HU marad — ezt jelezni kell (a nézet mintája).
+  // a narratíva HU marad – ezt jelezni kell (a nézet mintája).
   const showUnapprovedNote =
     !isHu && report.translationsEn?.en?.status !== "approved";
 

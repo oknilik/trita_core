@@ -92,7 +92,7 @@ export function ArticleToc({
     return (
       <details className="mb-6 rounded-xl border border-sand bg-surface-card md:hidden">
         {/* A padding a summary-n van, hogy a teljes kártyafelület legyen a
-            toggle érintőcélja (min. 44px) — nem csak a szövegsor */}
+            toggle érintőcélja (min. 44px) – nem csak a szövegsor */}
         <summary className="flex min-h-[44px] cursor-pointer list-none items-center px-5 py-3.5 text-caption font-semibold text-ink">
           {labels.inThisArticle}
         </summary>

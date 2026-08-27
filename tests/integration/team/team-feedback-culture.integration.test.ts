@@ -28,7 +28,7 @@ function makeId(prefix: string): string {
 const flatDims = (value: number): Record<string, number> =>
   Object.fromEntries(HEXACO_ORDER.map((code) => [code, value]));
 
-/** Örökség-kulcsú (2026-08-11 előtti) alak — a normalizálást hivatott bizonyítani. */
+/** Örökség-kulcsú (2026-08-11 előtti) alak – a normalizálást hivatott bizonyítani. */
 const legacyDims = (value: number): Record<string, number> => ({
   INTE: value, RESO: value, TEMP: value, ADAP: value, THOR: value, OPEN: value,
 });

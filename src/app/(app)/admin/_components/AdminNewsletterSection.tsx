@@ -65,7 +65,7 @@ export function AdminNewsletterSection({
         setConfirming(false);
       }
     } catch {
-      setMessage("A küldés nem sikerült — nézd meg a szerver-naplót.");
+      setMessage("A küldés nem sikerült – nézd meg a szerver-naplót.");
     } finally {
       setBusy(false);
     }
@@ -172,7 +172,7 @@ export function AdminNewsletterSection({
                   <td className="py-1.5 text-ink-body">
                     {row.accepted > 0
                       ? `${Math.round((row.clicked / row.accepted) * 100)}%`
-                      : "—"}
+                      : "–"}
                   </td>
                 </tr>
               ))}

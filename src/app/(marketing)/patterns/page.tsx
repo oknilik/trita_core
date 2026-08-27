@@ -12,9 +12,9 @@ export const metadata: Metadata = buildPageMetadata({
   title: "16 csapatminta mint értelmezési nyelv | trita",
   description:
     "Négy csapattengely 16 lehetséges olvasata erősségekkel és kockázatokkal. Értelmezési nyelv, nem validált csapattipológia vagy diagnózis.",
-  ogTitle: "16 csapatminta — értelmezési nyelv",
+  ogTitle: "16 csapatminta – értelmezési nyelv",
   ogDescription:
-    "Interaktív szemléltető négy tengellyel és 16 lehetséges olvasattal — nem diagnózis.",
+    "Interaktív szemléltető négy tengellyel és 16 lehetséges olvasattal – nem diagnózis.",
 });
 
 export default function PatternsPage() {
