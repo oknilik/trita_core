@@ -47,11 +47,11 @@ function PartnerVisual({ locale }: { locale: Locale }) {
   return (
     <aside
       aria-label={t("pilot.partnerVisualA11y", locale)}
-      className="relative overflow-hidden rounded-[28px] bg-[var(--color-layer-team-hero-to)] p-6 text-white shadow-[0_28px_80px_rgba(26,26,46,0.17)] md:p-7"
+      className="relative overflow-hidden rounded-[28px] bg-[var(--color-layer-team-hero-to)] p-5 text-white shadow-[0_28px_80px_rgba(26,26,46,0.17)] md:p-6"
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-8 -left-6 h-28 w-44 opacity-30"
+        className="pointer-events-none absolute -bottom-10 -left-8 h-28 w-44 opacity-20"
       >
         <svg viewBox="0 0 176 112" className="size-full">
           <path
@@ -65,7 +65,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
       </div>
 
       <div aria-hidden="true" className="relative">
-        <div className="mb-6 flex items-center justify-between gap-4">
+        <div className="mb-5 flex items-center justify-between gap-4">
           <p className="text-label uppercase tracking-[0.12em] text-white/65">
             {t("pilot.partnerVisualEyebrow", locale)}
           </p>
@@ -75,81 +75,89 @@ function PartnerVisual({ locale }: { locale: Locale }) {
           </span>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-[120px_minmax(0,1fr)_120px] md:items-center">
-          <article className="grid grid-cols-[96px_1fr] items-center gap-4 text-left md:block md:text-center">
-            <div className="flex size-24 items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_16px_34px_rgba(0,0,0,0.17)] md:mx-auto md:mb-4">
-              <span className="font-fraunces text-xl text-white">Ti</span>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
+              <span className="font-fraunces text-lg text-white">Ti</span>
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-label uppercase text-white/55">
                 {t("pilot.partnerTeamTitle", locale)}
               </p>
-              <p className="mt-1 font-fraunces text-lg leading-tight text-white">
+              <p className="mt-1 text-sm leading-snug text-white/85">
                 {t("pilot.partnerTeamBody", locale)}
               </p>
             </div>
           </article>
 
-          <article className="relative overflow-hidden rounded-[24px] border border-white/10 bg-cream p-5 text-ink shadow-[0_22px_48px_rgba(0,0,0,0.20)]">
-            <div aria-hidden="true" className="absolute -right-7 -top-8 size-24 rotate-12 rounded-[46%_54%_39%_61%] bg-[var(--color-layer-team-soft)]/55" />
-            <p className="relative text-label uppercase text-[var(--color-layer-team-accent)]">
-              {t("pilot.partnerVisualEyebrow", locale)}
-            </p>
-            <h3 className="relative mt-2 max-w-[13ch] font-fraunces text-2xl leading-tight text-ink">
-              {t("pilot.partnerResultTitle", locale)}
-            </h3>
-
-            <svg
-              viewBox="0 0 360 84"
-              preserveAspectRatio="none"
-              className="relative my-4 h-20 w-full overflow-visible"
-            >
-              <path
-                d="M4 54 C36 54 39 18 74 18 C109 18 112 67 146 67 C161 67 170 52 180 44"
-                fill="none"
-                stroke="var(--color-layer-self-hero-from)"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="5"
-              />
-              <path
-                d="M356 54 C324 54 321 25 286 25 C251 25 248 64 214 64 C198 64 190 51 180 44"
-                fill="none"
-                stroke="var(--color-layer-team-hero-from)"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="5"
-              />
-              <path
-                d="M180 44 C204 7 233 10 255 43 C277 75 304 72 328 47 C340 35 349 40 356 40"
-                fill="none"
-                stroke="var(--color-layer-team-badge)"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="7"
-              />
-              <circle cx="180" cy="44" r="7" fill="var(--color-layer-team-badge)" />
-            </svg>
-
-            <p className="relative text-note leading-relaxed text-ink-body">
-              {t("pilot.partnerVisualNote", locale)}
-            </p>
-          </article>
-
-          <article className="grid grid-cols-[96px_1fr] items-center gap-4 text-left md:block md:text-center">
-            <div className="flex size-24 items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_16px_34px_rgba(0,0,0,0.17)] md:mx-auto md:mb-4">
-              <TritaWordmark className="text-[1.4rem] text-white" />
+          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
+              <TritaWordmark className="text-[1.15rem] text-white" />
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-label uppercase text-white/55">
                 {t("pilot.partnerTritaTitle", locale)}
               </p>
-              <p className="mt-1 font-fraunces text-lg leading-tight text-white">
+              <p className="mt-1 text-sm leading-snug text-white/85">
                 {t("pilot.partnerTritaBody", locale)}
               </p>
             </div>
           </article>
         </div>
+
+        <article className="relative mt-4 overflow-hidden rounded-[24px] border border-white/10 bg-cream p-5 text-ink shadow-[0_22px_48px_rgba(0,0,0,0.20)] md:p-6">
+          <div aria-hidden="true" className="absolute -right-8 -top-10 size-28 rotate-12 rounded-[46%_54%_39%_61%] bg-[var(--color-layer-team-soft)]/45" />
+
+          <div className="relative flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-label uppercase text-[var(--color-layer-team-accent)]">
+                {t("pilot.partnerResultBody", locale)}
+              </p>
+              <h3 className="mt-2 max-w-[16ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+                {t("pilot.partnerResultTitle", locale)}
+              </h3>
+            </div>
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-[13px_20px_14px_18px] bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)]">
+              ✦
+            </span>
+          </div>
+
+          <svg
+            viewBox="0 0 420 78"
+            preserveAspectRatio="none"
+            className="relative my-4 h-[74px] w-full overflow-visible"
+          >
+            <path
+              d="M4 51 C41 51 44 17 83 17 C122 17 125 64 164 64 C181 64 191 50 210 41"
+              fill="none"
+              stroke="var(--color-layer-self-hero-from)"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="5"
+            />
+            <path
+              d="M416 51 C379 51 376 23 337 23 C298 23 295 61 256 61 C239 61 228 49 210 41"
+              fill="none"
+              stroke="var(--color-layer-team-hero-from)"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="5"
+            />
+            <path
+              d="M210 41 C237 8 269 10 294 40 C319 69 349 66 376 44 C391 32 404 37 416 37"
+              fill="none"
+              stroke="var(--color-layer-team-badge)"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="7"
+            />
+            <circle cx="210" cy="41" r="7" fill="var(--color-layer-team-badge)" />
+          </svg>
+
+          <p className="relative max-w-[38rem] text-sm leading-relaxed text-ink-body">
+            {t("pilot.partnerVisualNote", locale)}
+          </p>
+        </article>
       </div>
     </aside>
   );
