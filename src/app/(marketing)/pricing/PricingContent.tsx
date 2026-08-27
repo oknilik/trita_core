@@ -136,7 +136,7 @@ export function PricingContent() {
           <div className="mx-auto max-w-2xl text-center">
             <SectionEyebrow>{t("pricing.workflowEyebrow", locale)}</SectionEyebrow>
             <h2 className="mt-4 font-fraunces text-fluid-title tracking-tight text-ink">
-              {locale === "hu" ? "Egy beszélgetéstől a használható csapatképig." : "From one conversation to an actionable team picture."}
+              {locale === "hu" ? "Három lépés a tisztább csapatképig." : "Three steps to a clearer team picture."}
             </h2>
           </div>
           <Workflow locale={locale} />
