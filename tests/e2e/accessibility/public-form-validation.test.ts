@@ -93,7 +93,7 @@ test("pilot: EN keyboard validation, retained API error and successful retry", a
   const message = form.getByRole("textbox", {
     name: "What's the most important question about your team?",
   });
-  const submit = form.getByRole("button", { name: "Apply to the pilot program" });
+  const submit = form.getByRole("button", { name: "Apply as a partner team" });
 
   await submit.focus();
   await page.keyboard.press("Enter");
