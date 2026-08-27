@@ -181,7 +181,7 @@ export const landingTranslations = {
     // A korábbi „16 felismerhető csapatmintázat" stat kivezetve: a /patterns
     // felület parkolt, és a playbook szerint a minta „értelmezési nyelv, nem
     // validált csapattípus" — a stat a Scan v1 tényleges rétegeit mondja.
-    statTeamLayersLabel: { hu: "mérési réteg a Team Scan v1-ben", en: "measurement layers in Team Scan v1" },
+    statTeamLayersLabel: { hu: "mérési réteg", en: "measurement layers" },
     // CtaSection
     ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban érted, ", en: "In ~10 minutes, understand " },
     ctaSelfHeadlineEm: { hu: "mit viszel a csapatba.", en: "what you bring to the team." },
