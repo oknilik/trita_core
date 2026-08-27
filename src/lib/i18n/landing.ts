@@ -55,7 +55,7 @@ export const landingTranslations = {
     selfMetaTime: { hu: "~10 perc", en: "~10 minutes" },
     selfMetaMethod: { hu: "Tudományos modell", en: "Scientific model" },
     selfMetaInstant: { hu: "Azonnali eredmény", en: "Instant results" },
-    selfMetaFree: { hu: "Ingyenes indulás", en: "Free to start" },
+    selfMetaFree: { hu: "Ingyenes", en: "Free" },
     selfPanelEyebrow: { hu: "A te profilod", en: "Your profile" },
     selfPanelName: { hu: "Péter", en: "Peter" },
     selfPanelType: { hu: "Hídépítő", en: "Bridge-Builder" },
