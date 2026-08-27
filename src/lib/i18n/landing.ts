@@ -125,8 +125,8 @@ export const landingTranslations = {
     howSelf2Desc: { hu: "Azonnal látod a fő mintázataidat és az erősségeidet.", en: "See your key patterns and strengths right away." },
     howSelf3Title: { hu: "Látod, mit viszel a csapatba", en: "See what you bring to the team" },
     howSelf3Desc: { hu: "Kiderül, milyen csapatszerepek állnak közel hozzád, és milyen közegben működsz jól.", en: "Discover which team roles come naturally to you and what kind of environment helps you thrive." },
-    howTeam1Title: { hu: "Meghívjátok a csapatot", en: "Invite your team" },
-    howTeam1Desc: { hu: "Az első egyeztetés után egy linket küldtök, mindenki kitölti egyénileg.", en: "After the first conversation you send a link, and everyone fills it out individually." },
+    howTeam1Title: { hu: "Egyéni kitöltés", en: "Individual completion" },
+    howTeam1Desc: { hu: "Az első egyeztetés után minden csapattag személyes linket kap, és szakaszosan, önállóan tölti ki a kérdőíveket.", en: "After the initial consultation, each team member receives a personal link and completes the questionnaires independently, in stages." },
     howTeam2Title: { hu: "Tanácsadói ellenőrzés", en: "Consultant review" },
     howTeam2Desc: { hu: "Az összevetett profilokból néhány napon belül csapatkép készül – publikálás előtt tanácsadó ellenőrzi és értelmezi.", en: "Within days, the compared profiles become a team picture – reviewed and interpreted by a consultant before publishing." },
     howTeam3Title: { hu: "Közösen értelmezzük", en: "We interpret it together" },
@@ -185,6 +185,7 @@ export const landingTranslations = {
     statSelfValue: { hu: "önismerettől a csapatműködésig", en: "from self-awareness to teamwork" },
     statSelfLabel: { hu: "egy közös rendszerben", en: "in one connected system" },
     // StatsBar – team mód
+    statTeamMinValue: { hu: "~30", en: "~30" },
     statTeamMinLabel: { hu: "tagonkénti kitöltés", en: "per-member completion" },
     statTeamPictureValue: { hu: "néhány nap", en: "days" },
     statTeamPictureLabel: { hu: "a jóváhagyott csapatképig", en: "to a reviewed team picture" },
