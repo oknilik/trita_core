@@ -52,7 +52,10 @@ export function MobileMenuShell({
 
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) {
+    if (
+      event.shiftKey &&
+      (document.activeElement === first || document.activeElement === panelRef.current)
+    ) {
       event.preventDefault();
       last.focus();
     } else if (!event.shiftKey && document.activeElement === last) {
@@ -83,10 +86,11 @@ export function MobileMenuShell({
     document.body.style.overflow = "hidden";
 
     const frame = window.requestAnimationFrame(() => {
-      const firstFocusable = panelRef.current?.querySelector<HTMLElement>(
-        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-      );
-      (firstFocusable ?? panelRef.current)?.focus();
+      // A dialog kapja a kezdeti fókuszt, nem az első link. iOS Safari a
+      // programozott linkfókuszt érintés után is időnként focus-visible
+      // állapotként rajzolja ki, ezért ragadt zöld keret a „Főoldal” soron.
+      // A következő Tab továbbra is az első menüpontra lép.
+      panelRef.current?.focus({ preventScroll: true });
     });
 
     return () => {
@@ -115,7 +119,7 @@ export function MobileMenuShell({
           aria-modal="true"
           aria-label={label}
           tabIndex={-1}
-          className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-xl shadow-black/[0.07]"
+          className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-xl shadow-black/[0.07] outline-none"
         >
           {children}
         </div>
