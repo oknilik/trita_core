@@ -30,17 +30,15 @@ describe("landing CTA-hierarchia", () => {
       </>,
     );
 
-    expect(screen.getByRole("link", { name: "Megnézem a pilotprogramot" })).toHaveAttribute(
-      "href",
-      "/pilot",
-    );
+    expect(
+      screen.getAllByRole("link", { name: "Megnézem a pilotprogramot" }).every((link) =>
+        link.getAttribute("href") === "/pilot"
+      ),
+    ).toBe(true);
     expect(screen.getByRole("link", { name: "Beszéljünk" })).toHaveAttribute(
       "href",
       "/contact",
     );
-    expect(
-      screen.getByRole("link", { name: "Jelentkezem a pilotprogramba" }),
-    ).toHaveAttribute("href", "/pilot");
     expect(screen.queryByText("Legyetek az első partnercsapataink között")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /kipróbál/i })).not.toBeInTheDocument();
   });

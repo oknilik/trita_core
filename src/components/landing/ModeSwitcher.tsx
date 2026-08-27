@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import { setSiteMode, useSiteMode, type SiteMode } from "@/components/landing/site-mode";
@@ -14,6 +15,38 @@ export type { SiteMode };
 export function ModeSwitcher() {
   const { locale } = useLocale();
   const mode = useSiteMode();
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.has("mode") || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+
+    let timeoutId = 0;
+    const removePreviewListeners = () => {
+      window.removeEventListener("pointerdown", cancelPreview);
+      window.removeEventListener("keydown", cancelPreview);
+      window.removeEventListener("scroll", cancelPreview);
+    };
+    const cancelPreview = () => {
+      window.clearTimeout(timeoutId);
+      removePreviewListeners();
+    };
+
+    timeoutId = window.setTimeout(() => {
+      removePreviewListeners();
+      if (window.scrollY <= 8) setSiteMode("team");
+    }, 1800);
+
+    window.addEventListener("pointerdown", cancelPreview, { once: true });
+    window.addEventListener("keydown", cancelPreview, { once: true });
+    window.addEventListener("scroll", cancelPreview, { once: true, passive: true });
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      removePreviewListeners();
+    };
+  }, []);
 
   return (
     <div className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/80 p-1 backdrop-blur-sm">

@@ -157,8 +157,8 @@ export const commonTranslations = {
     /** A megosztott profil (/share/[token]) minimál fejlécének egyetlen CTA-ja. */
     ctaSharedOwnProfile: { hu: "Saját profil készítése", en: "Create my profile" },
     ctaTeam: { hu: "Pilotprogram", en: "Pilot program" },
-    modeSelf: { hu: "Egyéneknek", en: "For individuals" },
-    modeTeam: { hu: "Csapatoknak", en: "For teams" },
+    modeSelf: { hu: "Önismeret", en: "Self-awareness" },
+    modeTeam: { hu: "Csapatműködés", en: "Team dynamics" },
     dropdownProfile: { hu: "Profilom", en: "My profile" },
     dropdownSignOut: { hu: "Kijelentkezés", en: "Sign out" },
   },
