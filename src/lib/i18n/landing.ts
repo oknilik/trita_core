@@ -155,14 +155,14 @@ export const landingTranslations = {
     proofTestimonial: { hu: "Most értettem meg először, miért vállalom mindig ugyanazt a szerepet a csapatban.", en: "For the first time, I understood why I keep taking on the same role in a team." },
     proofTestimonialAuthor: { hu: "— Korai felhasználó, 31 éves termékmenedzser", en: "— Early user, 31-year-old Product Manager" },
     // ProofSection — team mód ("Miért más?" megkülönböztető történet)
-    proofTeamTitleBefore: { hu: "Miért más ez, mint egy ", en: "Why is this different from an " },
-    proofTeamTitleEm: { hu: "átlagos csapatfelmérés?", en: "average team survey?" },
-    proofTeam1Title: { hu: "Kapcsolatot is mér", en: "Measures relationships too" },
-    proofTeam1Desc: { hu: "Az engagement-átlag mellé páronkénti bizalmi háló kerül: nemcsak azt látjuk, mit gondol a csapat, hanem azt is, hogyan kapcsolódik.", en: "Pairwise trust data sits next to survey averages: we see not only what the team thinks, but how it connects." },
-    proofTeam2Title: { hu: "A változékony réteget méri vissza", en: "Remeasures what can change" },
-    proofTeam2Desc: { hu: "A pszichológiai biztonságot és a bizalmi hálót az akció után újramérjük; a stabil személyiségprofil kontroll, nem fejlődési címke.", en: "We remeasure psychological safety and the trust network after action; stable personality profiles are a control, not an improvement label." },
-    proofTeam3Title: { hu: "Tanácsadó ellenőrzi", en: "Consultant-reviewed" },
-    proofTeam3Desc: { hu: "A csapatképet nem algoritmus dobja ki: publikálás előtt tanácsadó ellenőrzi és értelmezi, a becsült adat pedig mindig jelölve van.", en: "The team picture isn't spit out by an algorithm: a consultant reviews and interprets it before publishing, and estimated data is always labeled." },
+    proofTeamTitleBefore: { hu: "Miért több ez egy ", en: "Why is this different from an " },
+    proofTeamTitleEm: { hu: "hagyományos csapatfelmérésnél?", en: "average team survey?" },
+    proofTeam1Title: { hu: "A szerepeket és a kapcsolatokat is megmutatja", en: "Measures relationships too" },
+    proofTeam1Desc: { hu: "Az egyéni profilokból kirajzolódnak a természetes csapatszerepek, a bizalmi hálóból pedig az, hogyan kapcsolódtok egymáshoz. Így az is látszik, mire építhettek, és hol érdemes változtatni.", en: "Pairwise trust data sits next to survey averages: we see not only what the team thinks, but how it connects." },
+    proofTeam2Title: { hu: "A változást is követi", en: "Remeasures what can change" },
+    proofTeam2Desc: { hu: "Az akciók után újramérjük a bizalmat és a pszichológiai biztonságot, így láthatjátok, mi változott, és hol van még teendő. A személyiségprofil közben stabil viszonyítási pont marad.", en: "We remeasure psychological safety and the trust network after action; stable personality profiles are a control, not an improvement label." },
+    proofTeam3Title: { hu: "Tanácsadó segít értelmezni", en: "Consultant-reviewed" },
+    proofTeam3Desc: { hu: "A csapatképet publikálás előtt tanácsadó ellenőrzi és értelmezi. Ahol még nincs elég adat a biztos következtetéshez, azt egyértelműen jelezzük.", en: "The team picture isn't spit out by an algorithm: a consultant reviews and interprets it before publishing, and estimated data is always labeled." },
     // StatsBar
     // Egységes kitöltési idő (design-akciólista #4): a hero chip, a
     // StatsBar és a marketing copy ugyanazt az értéket használja.
