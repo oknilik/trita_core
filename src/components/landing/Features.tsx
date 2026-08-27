@@ -25,7 +25,7 @@ export function Features({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[1120px]">
         <div className="mb-10 text-center md:mb-14">
           <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
-            {t("landing.featuresTitleBefore", locale)}
+            {t(mode === "self" ? "landing.featuresTitleBefore" : "landing.teamFeaturesTitleBefore", locale)}
             <em className="italic" style={{ color: accentColor }}>{t("landing.featuresTitleEm", locale)}</em>
           </h2>
         </div>
