@@ -142,7 +142,7 @@ export const landingTranslations = {
     teamFeat2Desc: { hu: "Névtelen pulzusmérés arról, mennyire biztonságos a csapatban hibázni, kérdezni vagy ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
     teamFeat3Badge: { hu: "Csapatkép", en: "Team picture" },
     teamFeat3Title: { hu: "Jóváhagyott csapatkép", en: "Reviewed team picture" },
-    teamFeat3Desc: { hu: "Vezetői összefoglaló: erősségek, kockázatok, javaslatok.", en: "Executive summary: strengths, risks, recommendations." },
+    teamFeat3Desc: { hu: "Egyéni profilok és közös csapatkép: erősségek, kockázatok és konkrét javaslatok.", en: "Executive summary: strengths, risks, recommendations." },
     // ProofSection
     proofTitleBefore: { hu: "Miért más ez, mint egy ", en: "Why is this different from an " },
     proofTitleEm: { hu: "átlagos személyiségteszt?", en: "average personality test?" },
