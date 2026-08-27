@@ -56,52 +56,46 @@ function PartnerVisual({ locale }: { locale: Locale }) {
           {t("pilot.partnerVisualEyebrow", locale)}
         </p>
 
-        <div className="mt-6 grid grid-cols-2 gap-3">
-          <div className="rounded-[20px] border border-white/15 bg-white/[0.08] p-4 backdrop-blur-sm">
-            <span className="flex size-9 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)]/15 font-fraunces text-sm text-[var(--color-layer-team-badge)]">
-              01
-            </span>
-            <p className="mt-4 font-semibold">{t("pilot.partnerTeamTitle", locale)}</p>
-            <p className="mt-1.5 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-              {t("pilot.partnerTeamBody", locale)}
-            </p>
+        <div
+          aria-hidden="true"
+          className="relative mx-auto mt-7 h-[230px] w-full max-w-[360px]"
+        >
+          <div className="absolute left-0 top-2 flex size-40 items-center justify-center rounded-full border border-white/15 bg-sage/75 p-5 sm:size-48">
+            <div className="-translate-x-4 text-center">
+              <p className="text-sm font-semibold">{t("pilot.partnerTeamTitle", locale)}</p>
+              <p className="mt-1 max-w-[7rem] text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
+                {t("pilot.partnerTeamBody", locale)}
+              </p>
+            </div>
           </div>
 
-          <div className="rounded-[20px] border border-white/15 bg-white/[0.08] p-4 backdrop-blur-sm">
-            <span className="flex size-9 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)]/15 font-fraunces text-sm text-[var(--color-layer-team-badge)]">
-              02
-            </span>
-            <p className="mt-4 font-semibold">{t("pilot.partnerTritaTitle", locale)}</p>
-            <p className="mt-1.5 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-              {t("pilot.partnerTritaBody", locale)}
-            </p>
+          <div className="absolute right-0 top-2 flex size-40 items-center justify-center rounded-full border border-white/15 bg-[var(--color-layer-team-bright)]/70 p-5 sm:size-48">
+            <div className="translate-x-4 text-center">
+              <p className="text-sm font-semibold">{t("pilot.partnerTritaTitle", locale)}</p>
+              <p className="mt-1 max-w-[7rem] text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
+                {t("pilot.partnerTritaBody", locale)}
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div aria-hidden="true" className="flex h-12 items-center justify-center text-[var(--color-layer-team-glow)]">
-          <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10 3v13" />
-            <path d="m5.5 11.5 4.5 4.5 4.5-4.5" />
-          </svg>
-        </div>
-
-        <div className="flex items-center gap-3 rounded-[20px] border border-[var(--color-layer-team-glow)]/55 bg-[var(--color-layer-team-badge)]/15 px-4 py-4">
-          <span aria-hidden="true" className="flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-xl text-[var(--color-layer-team-hero-to)]">
-            ✦
-          </span>
-          <div>
-            <p className="font-fraunces text-heading leading-tight">
+          <div className="absolute left-1/2 top-[72px] z-10 w-28 -translate-x-1/2 text-center sm:top-[84px]">
+            <span className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)]">
+              ✦
+            </span>
+            <p className="text-sm font-semibold leading-snug">
               {t("pilot.partnerResultTitle", locale)}
             </p>
-            <p className="mt-1 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-              {t("pilot.partnerResultBody", locale)}
-            </p>
           </div>
         </div>
 
-        <p className="mt-5 border-t border-white/10 pt-4 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-          {t("pilot.partnerVisualNote", locale)}
-        </p>
+        <div className="border-t border-white/10 pt-4">
+          <p className="text-sm font-medium text-[var(--color-text-on-inverse)]">
+            {t("pilot.partnerResultBody", locale)}
+          </p>
+          <p className="mt-2 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+            {t("pilot.partnerVisualNote", locale)}
+          </p>
+        </div>
       </div>
     </aside>
   );
