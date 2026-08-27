@@ -225,10 +225,10 @@ function TeamPanel() {
   // (scripts/seed-showcase-org.ts). A négy érték ugyanaz a mintázatmotor-
   // bemenet, amely ECFP-re, vagyis „Családi Vállalkozásra” értékelődik.
   const dims = [
-    { name: t("landing.teamAxisDrive", locale), mean: 81 },
-    { name: t("landing.teamAxisCohesion", locale), mean: 64 },
-    { name: t("landing.teamAxisDiscipline", locale), mean: 55 },
-    { name: t("landing.teamAxisOpenness", locale), mean: 56 },
+    { name: t("landing.teamAxisDrive", locale), mean: 81, color: "var(--color-layer-team-accent)" },
+    { name: t("landing.teamAxisCohesion", locale), mean: 64, color: "var(--color-sage)" },
+    { name: t("landing.teamAxisDiscipline", locale), mean: 55, color: "var(--color-bronze)" },
+    { name: t("landing.teamAxisOpenness", locale), mean: 56, color: "#555c9e" },
   ];
 
   return (
@@ -254,52 +254,83 @@ function TeamPanel() {
         </p>
       </div>
 
-      <div className="bg-surface-card px-5 pb-5 pt-6 md:flex-1">
-        {/* Ugyanaz a keretezett adatblokk-anatómia, mint a self mintakártyán. */}
-        <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
-          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-4">
-            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
-              {t("landing.teamStatMembersLabel", locale)}
-            </p>
-            <p className="mt-1 font-fraunces text-heading leading-none text-ink">5</p>
-          </div>
-          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-4">
-            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
-              {t("landing.teamStatCompletionLabel", locale)}
-            </p>
-            <p className="mt-1 font-fraunces text-heading leading-none text-ink">100%</p>
-          </div>
-          <div className="min-w-0 px-2 py-4">
-            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
-              {t("landing.teamPatternLabel", locale)}
-            </p>
-            <p className="mt-1 font-fraunces text-caption leading-tight text-ink">
-              {t("landing.teamPatternName", locale)}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-5 flex flex-col gap-3">
-          {dims.map((d) => (
-            <div key={d.name} className="flex items-center gap-2 md:gap-3">
-              <span className="w-[92px] shrink-0 truncate text-note text-ink-body md:w-[118px]">{d.name}</span>
-              <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-sand">
-                <div
-                  className="h-full rounded-full bg-[var(--color-layer-team-accent)]"
-                  style={{ width: `${d.mean}%` }}
-                />
-              </div>
-              <span className="w-8 shrink-0 text-right font-mono text-note tabular-nums text-ink">
-                {d.mean}
-              </span>
-            </div>
-          ))}
-          <p className="mt-0.5 text-micro text-muted">
-            {t("landing.teamPrivacyNote", locale)}
+      <div className="bg-surface-card px-5 pb-5 pt-5 md:flex-1">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-micro uppercase tracking-widest text-muted">
+            {t("landing.teamDualViewEyebrow", locale)}
           </p>
+          <div className="flex shrink-0 gap-1.5">
+            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-1 text-micro text-muted">
+              5 {locale === "hu" ? "tag" : "members"}
+            </span>
+            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-1 text-micro text-muted">
+              100%
+            </span>
+          </div>
         </div>
 
-        <div className="mt-5 grid grid-cols-2 gap-2">
+        <div className="mt-2 grid grid-cols-2 gap-2">
+          <div className="min-w-0 rounded-xl bg-[var(--color-surface-subtle)] p-3">
+            <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
+              {t("landing.teamPrinciplesTitle", locale)}
+            </p>
+            <div className="mt-4 flex flex-col gap-3.5">
+              {dims.map((d) => (
+                <div key={d.name} className="grid grid-cols-[3.5rem_minmax(0,1fr)_1.25rem] items-center gap-1.5">
+                  <span className="truncate text-micro text-ink-body">{d.name}</span>
+                  <div className="h-1.5 min-w-0 overflow-hidden rounded-full bg-sand">
+                    <div
+                      className="h-full rounded-full"
+                      style={{ width: `${d.mean}%`, backgroundColor: d.color }}
+                    />
+                  </div>
+                  <span className="text-right font-mono text-micro tabular-nums text-ink">
+                    {d.mean}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="min-w-0 rounded-xl bg-[var(--color-surface-subtle)] p-3">
+            <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
+              {t("landing.teamRelationshipsTitle", locale)}
+            </p>
+            <svg
+              className="mx-auto mt-1 h-[132px] w-full max-w-[172px]"
+              viewBox="0 0 180 145"
+              role="img"
+              aria-labelledby="team-network-title team-network-description"
+            >
+              <title id="team-network-title">{t("landing.teamRelationshipsA11yTitle", locale)}</title>
+              <desc id="team-network-description">{t("landing.teamRelationshipsA11yDescription", locale)}</desc>
+              <g fill="none" strokeLinecap="round">
+                <path d="M49 37 90 66 132 37 49 37" stroke="var(--color-sage)" strokeWidth="4" />
+                <path d="M49 37 32 112M132 37l16 75" stroke="var(--color-layer-team-accent)" strokeWidth="2.5" opacity=".5" />
+                <path d="M90 66l58 46M32 112h116" stroke="var(--color-bronze)" strokeWidth="2" strokeDasharray="6 5" />
+              </g>
+              {[
+                { x: 49, y: 37, label: "A", r: 16 },
+                { x: 132, y: 37, label: "C", r: 16 },
+                { x: 32, y: 112, label: "D", r: 15 },
+                { x: 148, y: 112, label: "E", r: 15 },
+              ].map((node) => (
+                <g key={node.label}>
+                  <circle cx={node.x} cy={node.y} r={node.r} fill="var(--color-surface-card)" stroke="var(--color-layer-team-accent)" strokeWidth="2" />
+                  <text x={node.x} y={node.y} dominantBaseline="middle" textAnchor="middle" className="fill-[var(--color-text-primary)] text-micro font-semibold">{node.label}</text>
+                </g>
+              ))}
+              <circle cx="90" cy="66" r="18" fill="var(--color-sage)" stroke="var(--color-surface-card)" strokeWidth="3" />
+              <text x="90" y="66" dominantBaseline="middle" textAnchor="middle" className="fill-white text-micro font-bold">B</text>
+            </svg>
+          </div>
+        </div>
+
+        <p className="mt-3 text-micro text-muted">
+          {t("landing.teamPrivacyNote", locale)}
+        </p>
+
+        <div className="mt-3 grid grid-cols-2 gap-2">
           <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
             <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-sage-dark)]">
               <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-sage)]" />
@@ -321,7 +352,7 @@ function TeamPanel() {
         </div>
 
         <div
-          className="mt-5 rounded-r-[14px] p-4"
+          className="mt-3 rounded-r-[14px] p-3.5"
           style={{
             borderLeft: "4px solid var(--color-layer-team-accent)",
             background: "color-mix(in srgb, var(--color-layer-team-accent) 10%, var(--color-surface-card))",
