@@ -253,7 +253,7 @@ export const landingTranslations = {
     offerFactor2: { hu: "A célhoz illő mérések", en: "Measurements that fit the goal" },
     offerFactor3: { hu: "Közös értelmezés és következő lépés", en: "Joint debrief and next step" },
     offerCta: { hu: "Egyeztessünk", en: "Start a conversation" },
-    offerPilotCta: { hu: "Így működik a pilot", en: "See how the pilot works" },
+    offerPilotCta: { hu: "Így működik a pilotprogramunk", en: "See how the pilot works" },
     selfEyebrow: { hu: "egyéni · ingyenes", en: "individual · free" },
     selfTitle: { hu: "Ismerd meg, hogyan működsz", en: "Understand how you operate" },
     selfBody: {
