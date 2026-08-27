@@ -58,7 +58,7 @@ function SelfPanel() {
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
+    <div className="overflow-hidden rounded-2xl bg-surface-card shadow-lg shadow-black/[0.08] md:flex md:h-[674px] md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 pb-6 pt-6">
         <p className="text-micro uppercase tracking-widest text-white/70">
@@ -207,7 +207,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ VISSZAFOGOTT PANEL-LÁBLÉC ═══ */}
-      <div className="flex h-11 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
+      <div className="mt-auto flex h-11 shrink-0 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
         <span className="text-note font-medium text-[var(--color-action-primary-bg)]">
           {t("landing.selfFadeCta", locale)}
         </span>
@@ -232,7 +232,7 @@ function TeamPanel() {
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
+    <div className="overflow-hidden rounded-2xl bg-surface-card shadow-lg shadow-black/[0.08] md:flex md:h-[674px] md:flex-col">
       {/* A valódi team hero szilva-gradiensét használó közös riportfejléc. */}
       <div className="bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] px-6 pb-6 pt-6 text-[var(--color-text-on-inverse)]">
         <p className="text-micro uppercase tracking-widest text-white/70">
@@ -254,22 +254,22 @@ function TeamPanel() {
         </p>
       </div>
 
-      <div className="bg-surface-card px-5 pb-5 pt-5 md:flex-1">
+      <div className="bg-surface-card px-5 pb-5 pt-6 md:flex-1">
         {/* Ugyanaz a keretezett adatblokk-anatómia, mint a self mintakártyán. */}
         <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
-          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-3.5">
+          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-4">
             <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatMembersLabel", locale)}
             </p>
             <p className="mt-1 font-fraunces text-heading leading-none text-ink">5</p>
           </div>
-          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-3.5">
+          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-4">
             <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatCompletionLabel", locale)}
             </p>
             <p className="mt-1 font-fraunces text-heading leading-none text-ink">100%</p>
           </div>
-          <div className="min-w-0 px-2 py-3.5">
+          <div className="min-w-0 px-2 py-4">
             <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamPatternLabel", locale)}
             </p>
@@ -279,7 +279,7 @@ function TeamPanel() {
           </div>
         </div>
 
-        <div className="mt-4 flex flex-col gap-2.5">
+        <div className="mt-5 flex flex-col gap-3">
           {dims.map((d) => (
             <div key={d.name} className="flex items-center gap-2 md:gap-3">
               <span className="w-[92px] shrink-0 truncate text-note text-ink-body md:w-[118px]">{d.name}</span>
@@ -294,11 +294,34 @@ function TeamPanel() {
               </span>
             </div>
           ))}
-          <p className="mt-0.5 text-micro text-muted">{t("landing.teamPrivacyNote", locale)}</p>
+          <p className="mt-0.5 text-micro text-muted">
+            {t("landing.teamPrivacyNote", locale)}
+          </p>
+        </div>
+
+        <div className="mt-5 grid grid-cols-2 gap-2">
+          <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
+            <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-sage-dark)]">
+              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-sage)]" />
+              {t("landing.teamStrengthLabel", locale)}
+            </p>
+            <p className="mt-1.5 text-micro leading-relaxed text-ink-body">
+              {t("landing.teamStrengthText", locale)}
+            </p>
+          </div>
+          <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
+            <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-bronze-dark)]">
+              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-bronze)]" />
+              {t("landing.teamWatchLabel", locale)}
+            </p>
+            <p className="mt-1.5 text-micro leading-relaxed text-ink-body">
+              {t("landing.teamWatchText", locale)}
+            </p>
+          </div>
         </div>
 
         <div
-          className="mt-4 rounded-r-[14px] p-3.5 px-4"
+          className="mt-5 rounded-r-[14px] p-4"
           style={{
             borderLeft: "4px solid var(--color-layer-team-accent)",
             background: "color-mix(in srgb, var(--color-layer-team-accent) 10%, var(--color-surface-card))",
@@ -313,7 +336,7 @@ function TeamPanel() {
         </div>
       </div>
 
-      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
+      <div className="flex h-11 shrink-0 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
         <span className="text-note font-medium text-[var(--color-layer-team-accent)]">
           {t("landing.teamFadeCta", locale)}
         </span>
