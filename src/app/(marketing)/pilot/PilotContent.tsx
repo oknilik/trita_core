@@ -58,10 +58,10 @@ function PartnerVisual({ locale }: { locale: Locale }) {
 
         <div
           aria-hidden="true"
-          className="relative mx-auto mt-7 h-[230px] w-full max-w-[360px]"
+          className="relative mx-auto mt-7 h-[215px] w-full max-w-[340px]"
         >
-          <div className="absolute left-0 top-2 flex size-40 items-center justify-center rounded-full border border-white/15 bg-sage/75 p-5 sm:size-48">
-            <div className="-translate-x-4 text-center">
+          <div className="absolute left-[10%] top-3 flex size-44 items-center justify-center rounded-full border border-white/15 bg-sage/75 p-5">
+            <div className="-translate-x-7 text-center">
               <p className="text-sm font-semibold">{t("pilot.partnerTeamTitle", locale)}</p>
               <p className="mt-1 max-w-[7rem] text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
                 {t("pilot.partnerTeamBody", locale)}
@@ -69,8 +69,8 @@ function PartnerVisual({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="absolute right-0 top-2 flex size-40 items-center justify-center rounded-full border border-white/15 bg-[var(--color-layer-team-bright)]/70 p-5 sm:size-48">
-            <div className="translate-x-4 text-center">
+          <div className="absolute right-[10%] top-3 flex size-44 items-center justify-center rounded-full border border-white/15 bg-[var(--color-layer-team-bright)]/70 p-5">
+            <div className="translate-x-7 text-center">
               <p className="text-sm font-semibold">{t("pilot.partnerTritaTitle", locale)}</p>
               <p className="mt-1 max-w-[7rem] text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
                 {t("pilot.partnerTritaBody", locale)}
@@ -78,11 +78,11 @@ function PartnerVisual({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="absolute left-1/2 top-[72px] z-10 w-28 -translate-x-1/2 text-center sm:top-[84px]">
-            <span className="mx-auto mb-2 flex size-8 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)]">
+          <div className="absolute left-1/2 top-[64px] z-10 w-24 -translate-x-1/2 text-center">
+            <span className="mx-auto mb-1.5 flex size-7 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-xs text-[var(--color-layer-team-hero-to)]">
               ✦
             </span>
-            <p className="text-sm font-semibold leading-snug">
+            <p className="text-xs font-semibold leading-tight">
               {t("pilot.partnerResultTitle", locale)}
             </p>
           </div>
