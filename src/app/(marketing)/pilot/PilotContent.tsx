@@ -12,6 +12,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { t, type Locale } from "@/lib/i18n/public";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
 
 const INPUT_CLASS = "w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
@@ -46,45 +47,108 @@ function PartnerVisual({ locale }: { locale: Locale }) {
   return (
     <aside
       aria-label={t("pilot.partnerVisualA11y", locale)}
-      className="relative py-3"
+      className="relative overflow-hidden rounded-[28px] bg-[var(--color-layer-team-hero-to)] p-6 text-white shadow-[0_28px_80px_rgba(26,26,46,0.17)] md:p-7"
     >
-      <p className="text-center text-label uppercase tracking-[0.12em] text-[var(--color-layer-team-accent)]">
-        {t("pilot.partnerVisualEyebrow", locale)}
-      </p>
-
       <div
         aria-hidden="true"
-        className="relative mx-auto mt-6 h-[440px] w-full max-w-[320px] lg:h-[300px] lg:max-w-[480px]"
+        className="pointer-events-none absolute -bottom-8 -left-6 h-28 w-44 opacity-30"
       >
-        <div className="absolute left-1/2 top-0 size-[270px] -translate-x-1/2 rounded-full border border-white/15 bg-[var(--color-layer-self-hero-from)] lg:left-0 lg:size-[300px] lg:translate-x-0">
-          <div className="absolute left-1/2 top-9 w-[210px] -translate-x-1/2 text-center lg:inset-y-0 lg:left-5 lg:top-0 lg:flex lg:w-[130px] lg:translate-x-0 lg:flex-col lg:justify-center">
-            <p className="text-base font-semibold leading-tight text-white">
-              {t("pilot.partnerTeamTitle", locale)}
-            </p>
-            <p className="mt-2 text-sm leading-snug text-white/90">
-              {t("pilot.partnerTeamBody", locale)}
-            </p>
-          </div>
-        </div>
+        <svg viewBox="0 0 176 112" className="size-full">
+          <path
+            d="M5 88 C36 8 65 112 102 40 C126 -5 151 49 171 10"
+            fill="none"
+            stroke="var(--color-layer-team-badge)"
+            strokeLinecap="round"
+            strokeWidth="2"
+          />
+        </svg>
+      </div>
 
-        <div className="absolute bottom-0 left-1/2 size-[270px] -translate-x-1/2 rounded-full border border-white/15 bg-[var(--color-layer-team-hero-from)] lg:bottom-auto lg:left-auto lg:right-0 lg:top-0 lg:size-[300px] lg:translate-x-0">
-          <div className="absolute bottom-9 left-1/2 w-[210px] -translate-x-1/2 text-center lg:inset-y-0 lg:left-auto lg:right-5 lg:flex lg:w-[130px] lg:translate-x-0 lg:flex-col lg:justify-center">
-            <p className="text-base font-semibold leading-tight text-white">
-              {t("pilot.partnerTritaTitle", locale)}
-            </p>
-            <p className="mt-2 text-sm leading-snug text-white/90">
-              {t("pilot.partnerTritaBody", locale)}
-            </p>
-          </div>
-        </div>
-
-        <div className="absolute left-1/2 top-1/2 z-10 flex h-[100px] w-[210px] -translate-x-1/2 -translate-y-1/2 items-center justify-center gap-3 rounded-[50%] bg-[var(--color-layer-team-hero-to)] px-5 text-center shadow-[0_8px_24px_rgba(26,26,46,0.16)] lg:h-[240px] lg:w-[120px] lg:flex-col lg:gap-4 lg:px-3">
-          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-sm text-[var(--color-layer-team-hero-to)]">
-            ✦
-          </span>
-          <p className="text-sm font-semibold leading-tight text-white">
-            {t("pilot.partnerResultTitle", locale)}
+      <div aria-hidden="true" className="relative">
+        <div className="mb-6 flex items-center justify-between gap-4">
+          <p className="text-label uppercase tracking-[0.12em] text-white/65">
+            {t("pilot.partnerVisualEyebrow", locale)}
           </p>
+          <span className="inline-flex items-center gap-2 text-note text-white/70">
+            <span className="size-2 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_4px_rgba(232,178,118,0.12)]" />
+            {t("pilot.metaChip2", locale)}
+          </span>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-[120px_minmax(0,1fr)_120px] md:items-center">
+          <article className="grid grid-cols-[96px_1fr] items-center gap-4 text-left md:block md:text-center">
+            <div className="flex size-24 items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_16px_34px_rgba(0,0,0,0.17)] md:mx-auto md:mb-4">
+              <span className="font-fraunces text-xl text-white">Ti</span>
+            </div>
+            <div>
+              <p className="text-label uppercase text-white/55">
+                {t("pilot.partnerTeamTitle", locale)}
+              </p>
+              <p className="mt-1 font-fraunces text-lg leading-tight text-white">
+                {t("pilot.partnerTeamBody", locale)}
+              </p>
+            </div>
+          </article>
+
+          <article className="relative overflow-hidden rounded-[24px] border border-white/10 bg-cream p-5 text-ink shadow-[0_22px_48px_rgba(0,0,0,0.20)]">
+            <div aria-hidden="true" className="absolute -right-7 -top-8 size-24 rotate-12 rounded-[46%_54%_39%_61%] bg-[var(--color-layer-team-soft)]/55" />
+            <p className="relative text-label uppercase text-[var(--color-layer-team-accent)]">
+              {t("pilot.partnerVisualEyebrow", locale)}
+            </p>
+            <h3 className="relative mt-2 max-w-[13ch] font-fraunces text-2xl leading-tight text-ink">
+              {t("pilot.partnerResultTitle", locale)}
+            </h3>
+
+            <svg
+              viewBox="0 0 360 84"
+              preserveAspectRatio="none"
+              className="relative my-4 h-20 w-full overflow-visible"
+            >
+              <path
+                d="M4 54 C36 54 39 18 74 18 C109 18 112 67 146 67 C161 67 170 52 180 44"
+                fill="none"
+                stroke="var(--color-layer-self-hero-from)"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="5"
+              />
+              <path
+                d="M356 54 C324 54 321 25 286 25 C251 25 248 64 214 64 C198 64 190 51 180 44"
+                fill="none"
+                stroke="var(--color-layer-team-hero-from)"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="5"
+              />
+              <path
+                d="M180 44 C204 7 233 10 255 43 C277 75 304 72 328 47 C340 35 349 40 356 40"
+                fill="none"
+                stroke="var(--color-layer-team-badge)"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="7"
+              />
+              <circle cx="180" cy="44" r="7" fill="var(--color-layer-team-badge)" />
+            </svg>
+
+            <p className="relative text-note leading-relaxed text-ink-body">
+              {t("pilot.partnerVisualNote", locale)}
+            </p>
+          </article>
+
+          <article className="grid grid-cols-[96px_1fr] items-center gap-4 text-left md:block md:text-center">
+            <div className="flex size-24 items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_16px_34px_rgba(0,0,0,0.17)] md:mx-auto md:mb-4">
+              <TritaWordmark className="text-[1.4rem] text-white" />
+            </div>
+            <div>
+              <p className="text-label uppercase text-white/55">
+                {t("pilot.partnerTritaTitle", locale)}
+              </p>
+              <p className="mt-1 font-fraunces text-lg leading-tight text-white">
+                {t("pilot.partnerTritaBody", locale)}
+              </p>
+            </div>
+          </article>
         </div>
       </div>
     </aside>
