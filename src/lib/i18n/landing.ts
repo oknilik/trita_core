@@ -139,7 +139,7 @@ export const landingTranslations = {
     teamFeat1Desc: { hu: "Az egymásról adott visszajelzésekből kirajzolódik, hol erős a bizalom, hol vannak gyengébb kapcsolódások, és hol kell még több visszajelzés a biztos képhez.", en: "Pairwise relationship data shows where trust is strong, where the network breaks, and where evidence is still limited." },
     teamFeat2Badge: { hu: "Biztonság", en: "Safety" },
     teamFeat2Title: { hu: "Pszichológiai biztonság", en: "Psychological Safety" },
-    teamFeat2Desc: { hu: "Névtelen pulzusmérés arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
+    teamFeat2Desc: { hu: "Névtelen pulzusmérés arról, mennyire biztonságos a csapatban hibázni, kérdezni vagy ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
     teamFeat3Badge: { hu: "Csapatkép", en: "Team picture" },
     teamFeat3Title: { hu: "Jóváhagyott csapatkép", en: "Reviewed team picture" },
     teamFeat3Desc: { hu: "Vezetői összefoglaló: erősségek, kockázatok, javaslatok.", en: "Executive summary: strengths, risks, recommendations." },
