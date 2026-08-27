@@ -12,6 +12,7 @@ import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 // A hajtás feletti kísérőelemek CSS-keyframe-mel úsznak be. A H1 szándékosan
 // NEM kapja meg: ez az oldal LCP-eleme, és az opacity: 0 kezdőállapot még
@@ -482,9 +483,10 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                       mode: "team",
                     })
                   }
-                  className={`inline-flex min-h-11 items-center justify-center rounded-lg px-3 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-layer-team-accent)] ${FOCUS_RING_CLASS}`}
+                  className={`group inline-flex min-h-11 items-center justify-center rounded-lg px-3 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-layer-team-accent)] ${FOCUS_RING_CLASS}`}
                 >
                   {t("landing.teamSecondaryCta", locale)}
+                  <ChevronRightIcon className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
               ) : null}
             </div>
