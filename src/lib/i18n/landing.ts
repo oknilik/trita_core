@@ -194,12 +194,12 @@ export const landingTranslations = {
     // validált csapattípus" – a stat a Scan v1 tényleges rétegeit mondja.
     statTeamLayersLabel: { hu: "mérési réteg", en: "measurement layers" },
     // CtaSection
-    ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban érted, ", en: "In ~10 minutes, understand " },
-    ctaSelfHeadlineEm: { hu: "mit viszel a csapatba.", en: "what you bring to the team." },
-    ctaSelfSub: { hu: "Indítsd el most a tesztet, és lásd, milyen mintázatok mozgatnak, és milyen szerepet veszel fel természetesen a közös munkában.", en: "Start the assessment and see which patterns drive you and which role you naturally take on when working with others." },
+    ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban megérted, ", en: "In ~10 minutes, better understand " },
+    ctaSelfHeadlineEm: { hu: "hogyan működsz.", en: "how you operate." },
+    ctaSelfSub: { hu: "Indítsd el a tesztet, és lásd tisztábban a rád jellemző mintázatokat, az erősségeidet és azt, milyen szerepek állhatnak közel hozzád egy csapatban.", en: "Start the assessment and see your characteristic patterns, strengths, and the roles that may suit you in a team more clearly." },
     ctaSelfCta: { hu: "Elindítom a tesztet", en: "Start the test" },
     ctaSelfSecondary: { hu: "Együttműködés részletei", en: "How we work" },
-    ctaSelfMicrocopy: { hu: "Ingyenes indulás · azonnali első eredmény", en: "Free start · instant first result" },
+    ctaSelfMicrocopy: { hu: "Ingyenes · azonnali első eredmény", en: "Free · instant first result" },
     ctaTeamHeadlineBefore: { hu: "Lássátok tisztábban, hogyan ", en: "Ready for your first " },
     ctaTeamHeadlineEm: { hu: "működtök együtt.", en: "shared picture?" },
     ctaTeamSub: { hu: "A pilotprogramot személyes egyeztetéssel indítjuk, és a teljes folyamat során kiemelt támogatást kaptok. A kitöltésekből néhány napon belül elkészül az első csapatképetek, amelyet tanácsadónk ellenőriz és segít értelmezni.", en: "The pilot starts with personal onboarding, and within days you'll receive your first consultant-reviewed team picture." },
