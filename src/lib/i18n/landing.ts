@@ -189,11 +189,11 @@ export const landingTranslations = {
     ctaSelfCta: { hu: "Elindítom a tesztet", en: "Start the test" },
     ctaSelfSecondary: { hu: "Együttműködés részletei", en: "How we work" },
     ctaSelfMicrocopy: { hu: "Ingyenes indulás · azonnali első eredmény", en: "Free start · instant first result" },
-    ctaTeamHeadlineBefore: { hu: "Készen álltok az első ", en: "Ready for your first " },
-    ctaTeamHeadlineEm: { hu: "közös képre?", en: "shared picture?" },
-    ctaTeamSub: { hu: "A pilotban személyes onboardinggal indulunk, és néhány napon belül megkapjátok az első tanácsadó által jóváhagyott csapatképet.", en: "The pilot starts with personal onboarding, and within days you'll receive your first consultant-reviewed team picture." },
-    ctaTeamCta: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
-    ctaTeamMicrocopy: { hu: "Személyes onboarding · néhány nap az első eredményig", en: "Personal onboarding · first result within days" },
+    ctaTeamHeadlineBefore: { hu: "Lássátok tisztábban, hogyan ", en: "Ready for your first " },
+    ctaTeamHeadlineEm: { hu: "működtök együtt.", en: "shared picture?" },
+    ctaTeamSub: { hu: "A pilotprogramot személyes egyeztetéssel indítjuk, és a teljes folyamat során kiemelt támogatást kaptok. A kitöltésekből néhány napon belül elkészül az első csapatképetek, amelyet tanácsadónk ellenőriz és segít értelmezni.", en: "The pilot starts with personal onboarding, and within days you'll receive your first consultant-reviewed team picture." },
+    ctaTeamCta: { hu: "Megnézem a pilotprogramot", en: "Apply to the pilot program" },
+    ctaTeamMicrocopy: { hu: "Kiemelt támogatás a pilot teljes ideje alatt · első csapatkép néhány napon belül", en: "Personal onboarding · first result within days" },
   },
   pricing: {
     // SEO: a cím a KERESETT szolgáltatás-megnevezéssel kezdődik
