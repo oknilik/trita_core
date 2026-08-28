@@ -43,6 +43,18 @@ describe("landing CTA-hierarchia", () => {
     expect(screen.queryByRole("link", { name: /kipróbál/i })).not.toBeInTheDocument();
   });
 
+  it("a hero CTA-ja a riport-előnézet előtt marad a mobil DOM-sorrendben", () => {
+    const { container } = render(<HeroSection mode="team" />);
+
+    const primaryCta = screen.getByRole("link", { name: "Megnézem a pilotprogramot" });
+    const preview = container.querySelector("[data-landing-hero-preview]");
+
+    expect(preview).not.toBeNull();
+    expect(primaryCta.compareDocumentPosition(preview as Node)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
   it("egyéni módban megtartja a teszt és az együttműködés útvonalát", () => {
     render(
       <>

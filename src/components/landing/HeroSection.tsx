@@ -11,8 +11,9 @@ import { dimColorsCss } from "@/lib/color-system";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
-import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { ChevronRightIcon } from "@/components/ui/icons";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 
 // A hajtás feletti kísérőelemek CSS-keyframe-mel úsznak be. A H1 szándékosan
 // NEM kapja meg: ez az oldal LCP-eleme, és az opacity: 0 kezdőállapot még
@@ -59,7 +60,7 @@ function SelfPanel() {
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-surface-card shadow-lg shadow-black/[0.08] md:flex md:h-[674px] md:flex-col">
+    <div className="overflow-hidden rounded-[28px] bg-surface-card shadow-[0_24px_64px_rgba(26,26,46,0.10)] md:flex md:h-[674px] md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 pb-6 pt-6">
         <p className="text-micro uppercase tracking-widest text-white/70">
@@ -115,7 +116,7 @@ function SelfPanel() {
 
         {/* A prototípushoz ténylegesen rendelt két erősség. A négy 50-es
             dimenzió semleges, ezért nem gyártunk melléjük „figyelendő” címkét. */}
-        <div className="mt-5 flex flex-wrap items-center gap-2">
+        <div className="mt-5 hidden flex-wrap items-center gap-2 md:flex">
           <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
@@ -134,7 +135,7 @@ function SelfPanel() {
         </div>
 
         {/* A tényleges riport csapatszerep-modelljének két legerősebb becslése. */}
-        <div className="mb-1 mt-5">
+        <div className="mb-1 mt-5 hidden md:block">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
               {t("landing.selfTeamRolesEyebrow", locale)}
@@ -233,7 +234,7 @@ function TeamPanel() {
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-surface-card shadow-lg shadow-black/[0.08] md:flex md:h-[674px] md:flex-col">
+    <div className="overflow-hidden rounded-[28px] bg-surface-card shadow-[0_24px_64px_rgba(26,26,46,0.10)] md:flex md:h-[674px] md:flex-col">
       {/* A valódi team hero szilva-gradiensét használó közös riportfejléc. */}
       <div className="bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] px-6 pb-6 pt-6 text-[var(--color-text-on-inverse)]">
         <p className="text-micro uppercase tracking-widest text-white/70">
@@ -353,7 +354,7 @@ function TeamPanel() {
         </div>
 
         <div
-          className="mt-3 rounded-r-[14px] p-3.5"
+          className="mt-3 hidden rounded-r-[14px] p-3.5 md:block"
           style={{
             borderLeft: "4px solid var(--color-layer-team-accent)",
             background: "color-mix(in srgb, var(--color-layer-team-accent) 10%, var(--color-surface-card))",
@@ -388,7 +389,6 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   // sötétebb fokait használjuk; team módban a kanonikus réteg-akcent dolgozik:
   //   eyebrow (11px)  → accent-primary-strong (bronze-700) – 5.5:1
   //   H1 em (nagy)    → accent-primary-mid                 – 3.9:1
-  const eyebrowColor = isSelf ? "var(--color-accent-primary-strong)" : accentColor;
   const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
   // Tömör CTA-felület fehér szöveggel: self módban bronze-dark, team módban
   // a valódi team hero első gradiens-stopja. Így a CTA a megfelelő réteghez
@@ -403,44 +403,30 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
 
   return (
     <section className="bg-cream">
-      <div className="mx-auto max-w-[1120px] px-7 pb-6 pt-12">
-        <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start md:gap-10">
-
-          <div className="contents md:col-start-1 md:row-start-1 md:flex md:flex-col md:gap-6">
-
-          {/* 1. Switcher + Eyebrow + Headline. A H1 az LCP-elem, ezért statikus
-              és az első festéskor teljesen látható; csak a kísérőelemek
-              animálnak. */}
-          <div className="order-1 flex flex-col md:order-none">
+      <div className="mx-auto max-w-[1120px] px-7 pb-20 pt-12 md:pb-28 md:pt-20">
+        <div className="grid gap-10 md:grid-cols-2 md:items-center md:gap-12">
+          {/* Mobilon a teljes ígéret és a CTA megelőzi az előnézetet. Így a
+              látogató nem kényszerül egy hosszú riportkártyán végiggörgetni,
+              mielőtt elérné az első döntési pontot. */}
+          <div data-landing-hero-copy className="flex min-w-0 flex-col">
             <div className={`${riseIn} mb-4 lg:mb-5`}>
               <ModeSwitcher mode={mode} />
             </div>
 
-            <div className={`${riseIn} mb-4 flex items-center gap-3`}>
-              {/* A vonalka és a felirat EGY tipográfiai egység – ugyanabból a
-                  bronz-fokból kell jönniük, különben a sötétebb szöveg mellett
-                  a világosabb vonal elszíneződésnek látszik. */}
-              <div className="h-[1.5px] w-5 shrink-0" style={{ background: eyebrowColor }} />
-              <span
-                className="font-dm-sans text-label uppercase"
-                style={{ color: eyebrowColor }}
-              >
+            <div className={`${riseIn} mb-4`}>
+              <SectionEyebrow tone={isSelf ? "bronze" : "team"}>
                 {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
-              </span>
+              </SectionEyebrow>
             </div>
 
-            <h1 className="text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink">
+            <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink">
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
               <em className="italic" style={{ color: headlineAccentColor }}>
                 {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
               </em>
             </h1>
-          </div>
 
-          {/* 3. Sub + CTA + Microcopy – a H1 alatt, itt megmarad a 0.1s-os
-              lépcsőzés (nem az LCP-elem, nem késleltet festést). */}
-          <div className="order-3 flex flex-col md:order-none">
-            <p className={`${riseIn} mb-7 text-balance text-base font-light leading-relaxed text-ink-body`}>
+            <p className={`${riseIn} mb-7 mt-6 max-w-[610px] text-balance text-base font-light leading-relaxed text-ink-body`}>
               {isSelf ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
             </p>
 
@@ -459,9 +445,15 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     mode: isSelf ? "self" : "team",
                   })
                 }
-                className={`inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-xl px-7 py-3 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto sm:min-w-[280px] ${FOCUS_RING_CLASS}`}
+                className={getButtonClassName({
+                  size: "lg",
+                  className: "min-h-[54px] w-full px-7 text-base shadow-md hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg sm:w-auto sm:min-w-[280px]",
+                })}
                 style={{
                   background: ctaBackground,
+                  color: isSelf
+                    ? "var(--color-text-on-accent-deep)"
+                    : "var(--color-text-on-inverse)",
                   boxShadow: isSelf
                     ? "0 4px 14px rgba(154,101,56,0.25)"
                     : "0 4px 14px color-mix(in srgb, var(--color-layer-team-hero-from) 28%, transparent)",
@@ -483,7 +475,12 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                       mode: "team",
                     })
                   }
-                  className={`group inline-flex min-h-11 items-center justify-center rounded-lg px-3 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-layer-team-accent)] ${FOCUS_RING_CLASS}`}
+                  className={getButtonClassName({
+                    variant: "ghost",
+                    size: "md",
+                    className: "group px-3",
+                  })}
+                  style={{ color: "var(--color-layer-team-accent)" }}
                 >
                   {t("landing.teamSecondaryCta", locale)}
                   <ChevronRightIcon className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -523,18 +520,16 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             )}
           </div>
 
-          </div>
-
-          {/* 2. Preview panel – mobilon a cím és a CTA-k közé, asztali nézetben
-              a teljes, önálló bal oszlop mellé kerül. */}
+          {/* A mobil előnézet tudatosan tömörebb: a részletes szerep- és
+              narratív blokkok közepes nézettől jelennek meg. */}
           {isSelf ? (
-            <div className="order-2 md:col-start-2 md:row-start-1 md:mt-8 md:order-none">
+            <div data-landing-hero-preview>
               <div className="mx-auto w-full max-w-[460px]">
                 <SelfPanel />
               </div>
             </div>
           ) : (
-            <div className="order-2 md:col-start-2 md:row-start-1 md:mt-8 md:order-none">
+            <div data-landing-hero-preview>
               <div className="mx-auto w-full max-w-[460px]">
                 <TeamPanel />
               </div>
@@ -542,7 +537,6 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
           )}
 
         </div>
-
       </div>
     </section>
   );

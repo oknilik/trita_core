@@ -20,7 +20,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
   if (!isSelf) {
     return (
       <section className="px-7 py-16 md:py-24">
-        <div className="mx-auto flex max-w-[960px] flex-col gap-6 rounded-2xl bg-[var(--color-surface-muted)] px-6 py-8 md:flex-row md:items-center md:justify-between md:px-9">
+        <div className="mx-auto flex max-w-[960px] flex-col gap-6 rounded-[28px] bg-[var(--color-surface-muted)] px-6 py-8 md:flex-row md:items-center md:justify-between md:px-9">
           <div className="max-w-[610px]">
             <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
               {t("landing.ctaTeamHeadlineBefore", locale)}
