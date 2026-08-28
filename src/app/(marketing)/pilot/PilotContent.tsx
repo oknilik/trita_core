@@ -548,17 +548,62 @@ function FounderSection({ locale }: { locale: Locale }) {
     <section className="bg-cream">
       <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
       <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
-        <div className="rounded-[28px] border border-sand bg-warm p-6 md:p-9">
-          <SectionEyebrow tone="team">{t("pilot.founderEyebrow", locale)}</SectionEyebrow>
-          <h2 className="mt-3 max-w-[22ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
-            {t("pilot.founderTitle", locale)}
-          </h2>
-          <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-body">
-            {t("pilot.founderBody", locale)}
-          </p>
-          <p className="mt-4 max-w-[62ch] text-sm leading-relaxed text-ink-body">
-            {t("pilot.founderMethod", locale)}
-          </p>
+        <div className="grid items-center gap-8 rounded-[28px] border border-sand bg-warm p-6 md:grid-cols-[minmax(0,1fr)_280px] md:p-9">
+          <div>
+            <SectionEyebrow tone="team">{t("pilot.founderEyebrow", locale)}</SectionEyebrow>
+            <h2 className="mt-3 max-w-[22ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+              {t("pilot.founderTitle", locale)}
+            </h2>
+            <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-body">
+              {t("pilot.founderBody", locale)}
+            </p>
+            <p className="mt-4 max-w-[62ch] text-sm leading-relaxed text-ink-body">
+              {t("pilot.founderMethod", locale)}
+            </p>
+          </div>
+          {/* Miró-ihletésű „rétegek" illusztráció: három áttetsző folt
+              (személyiség · csapatszerepek · pszichológiai biztonság), a
+              metszetükben csillag — a módszertani mondat vizuális párja.
+              Minden szín token, így sötét módban is ül. */}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 300 260"
+            className="mx-auto w-full max-w-[260px] md:max-w-none"
+          >
+            <path
+              d="M96 60 C150 26 214 52 216 108 C218 156 168 176 124 164 C78 152 58 86 96 60 Z"
+              fill="var(--color-layer-team-badge)"
+              opacity=".8"
+            />
+            <path
+              d="M150 108 C214 84 268 118 258 168 C249 212 186 224 146 202 C108 182 104 126 150 108 Z"
+              fill="var(--color-sage)"
+              opacity=".55"
+            />
+            <path
+              d="M62 128 C104 106 168 122 172 168 C176 210 124 236 84 220 C46 204 28 148 62 128 Z"
+              fill="var(--color-layer-team-accent)"
+              opacity=".5"
+            />
+            <path
+              d="M96 60 C150 26 214 52 216 108 C218 156 168 176 124 164 C78 152 58 86 96 60 Z"
+              fill="none"
+              stroke="var(--color-ink)"
+              strokeWidth="4"
+            />
+            <path
+              d="M150 152 l6 14 15 4 -15 6 -6 14 -6-14 -15-6 15-4 z"
+              fill="var(--color-ink)"
+            />
+            <circle cx="248" cy="52" r="7" fill="var(--color-ink)" />
+            <path
+              d="M34 70 Q48 56 66 66"
+              fill="none"
+              stroke="var(--color-ink)"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            />
+          </svg>
         </div>
       </div>
     </section>
