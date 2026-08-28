@@ -261,6 +261,8 @@ export function PilotContent() {
                 primary={{ href: "#jelentkezes", label: t("pilot.heroCta", locale) }}
               />
 
+              <SpotsIndicator locale={locale} />
+
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <MetaChip>{t("pilot.metaChip1", locale)}</MetaChip>
                 <MetaChip>{t("pilot.metaChip2", locale)}</MetaChip>
@@ -610,6 +612,36 @@ function FounderSection({ locale }: { locale: Locale }) {
   );
 }
 
+// Kapacitás-jelző a hero CTA alatt: 10 pötty — a szabad helyek világítanak
+// (badge-szín), a beteltek halványak. Információ, nem dekoráció: a számok a
+// pilot-config.ts-ből jönnek, betelt pilotnál a sor nem renderelődik.
+function SpotsIndicator({ locale }: { locale: Locale }) {
+  if (PILOT_SPOTS_LEFT <= 0) return null;
+  const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT };
+  return (
+    <p className="mt-5 flex flex-wrap items-center gap-3">
+      <span aria-hidden="true" className="flex items-center gap-1.5">
+        {Array.from({ length: PILOT_TOTAL_TEAMS }, (_, i) => (
+          <span
+            key={i}
+            className={
+              i < PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT
+                ? "size-2.5 rounded-full bg-sand"
+                : "size-2.5 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_3px_rgba(232,178,118,0.18)]"
+            }
+          />
+        ))}
+      </span>
+      <span
+        aria-label={tf("pilot.spotsA11y", locale, vars)}
+        className="text-sm font-semibold text-[var(--color-layer-team-accent)]"
+      >
+        {tf("pilot.spotsLeftShort", locale, vars)}
+      </span>
+    </p>
+  );
+}
+
 const PILOT_FACTS = [1, 2, 3, 4] as const;
 
 // Ténysáv a hero alatt (P0-1): a nagy szám tipográfiája a /how-we-work
@@ -625,7 +657,9 @@ function PilotFactBar({ locale }: { locale: Locale }) {
             return (
               <div
                 key={fact}
-                className="border-b border-l border-sand p-5 first:border-l-0 md:p-6 max-lg:odd:border-l-0 lg:border-b-0 max-lg:[&:nth-child(n+3)]:border-b-0"
+                className={`border-b border-l border-sand p-5 first:border-l-0 md:p-6 max-lg:odd:border-l-0 lg:border-b-0 max-lg:[&:nth-child(n+3)]:border-b-0 ${
+                  fact === 2 ? "bg-[var(--color-layer-team-soft)]/45" : ""
+                }`}
               >
                 <dd className="flex items-baseline gap-1.5">
                   <span className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-accent)] md:text-4xl">

@@ -584,6 +584,12 @@ export const landingTranslations = {
       en: "In the pilot, we work more closely together. You use trita in real team situations; we listen, ask questions, and develop it further based on what you learn.",
     },
     heroCta: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
+    // Kapacitás-jelző a hero CTA alatt: 10 pötty + ez a felirat.
+    spotsLeftShort: { hu: "Még {left} szabad hely", en: "{left} spots still open" },
+    spotsA11y: {
+      hu: "A {total} partnercsapat-helyből {left} szabad",
+      en: "{left} of {total} partner team spots are open",
+    },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
     metaChip1: { hu: "Közvetlen kapcsolat", en: "Direct contact" },
     metaChip2: { hu: "Egymásra figyelünk", en: "Open feedback" },
@@ -596,9 +602,10 @@ export const landingTranslations = {
     fact1Value: { hu: "90", en: "90" },
     fact1Unit: { hu: "nap", en: "days" },
     fact1Label: { hu: "teljes hozzáférés", en: "full access" },
-    fact2Value: { hu: "{total}", en: "{total}" },
-    fact2Unit: { hu: "csapat", en: "teams" },
-    fact2Label: { hu: "partnercsapat — még {left} szabad hely", en: "partner teams — {left} spots still open" },
+    // A nagy szám a SZABAD helyek száma (C-változat): ez a döntési tény.
+    fact2Value: { hu: "{left}", en: "{left}" },
+    fact2Unit: { hu: "/ {total}", en: "/ {total}" },
+    fact2Label: { hu: "szabad partnercsapat-hely", en: "open partner team spots" },
     fact3Value: { hu: "Egyedi", en: "Custom" },
     fact3Unit: { hu: "ár", en: "price" },
     fact3Label: {
