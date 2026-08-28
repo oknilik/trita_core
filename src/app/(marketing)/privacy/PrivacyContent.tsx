@@ -133,7 +133,7 @@ export function PrivacyContent() {
       <section>
         <PageWidthDivider />
         <div className="px-6 py-10 lg:px-16 lg:py-14">
-          <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-[1120px]">
           {/* min-w-0 a rács-elemeken: a grid-item alapértelmezett
               `min-width: auto` a TARTALOM min-content méretét veszi, és a
               jogalap-táblázat `min-w-[520px]`-je így 520px-re feszítette a

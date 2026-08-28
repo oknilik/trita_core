@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 
 /**
@@ -38,7 +39,7 @@ export function NewsletterStatusCard({
 
         <Link
           href="/blog"
-          className="mt-6 inline-block text-caption font-semibold text-[var(--color-action-primary-bg)] underline-offset-4 hover:underline"
+          className={`mt-6 inline-flex min-h-[44px] items-center rounded-lg text-caption font-semibold text-[var(--color-action-primary-bg)] underline-offset-4 hover:underline ${FOCUS_RING_CLASS}`}
         >
           {t("newsletter.backToBlog", locale)}
         </Link>

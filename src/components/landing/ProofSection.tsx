@@ -46,7 +46,7 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
             <Reveal
               key={card.title}
               delay={i * 0.1}
-              className="rounded-2xl border border-[var(--color-border-default)] bg-surface-card p-7 text-center"
+              className="rounded-[24px] border border-[var(--color-border-default)] bg-surface-card p-7 text-center"
             >
               <div className="mb-4 flex justify-center" style={{ color: accentColor }}>
                 <card.Icon className="h-8 w-8" />
@@ -59,7 +59,7 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
 
         {/* Testimonial — csak self módban; team módban nincs valós csapat-idézet */}
         {isSelf && (
-          <div className="relative mx-auto mt-10 max-w-[560px] rounded-2xl bg-[var(--color-surface-subtle)] p-8">
+          <div className="relative mx-auto mt-10 max-w-[560px] rounded-[24px] bg-[var(--color-surface-subtle)] p-8">
             <span className="font-fraunces absolute left-6 top-4 text-5xl leading-none text-[var(--color-border-default)]">&ldquo;</span>
             <p className="font-fraunces relative text-base italic leading-relaxed text-ink-body">
               {t("landing.proofTestimonial", locale)}

@@ -22,11 +22,11 @@ import { ShareRow } from "@/components/blog/ShareRow";
 import { BlogCoverVisual } from "@/components/blog/BlogCoverVisual";
 import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
-import { ChevronRightIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { BlogJourneyCta } from "@/components/blog/BlogJourneyCta";
 import { TeamReportFigure } from "@/components/blog/TeamReportFigure";
 import { ResultAccessFigure } from "@/components/blog/ResultAccessFigure";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -89,7 +89,7 @@ function getTagStyle(tag: string): string {
 
 function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-heading italic leading-[1.65] text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit [&_p]:leading-[1.65]">
+    <div className="my-8 rounded-[20px] border border-[var(--color-surface-self-border)] border-l-[3px] border-l-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-heading italic leading-[1.65] text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit [&_p]:leading-[1.65]">
       {children}
     </div>
   );
@@ -97,7 +97,7 @@ function Callout({ children }: { children: React.ReactNode }) {
 
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-1 flex-col items-center rounded-[10px] border border-[var(--color-border-default)] bg-surface-card px-6 py-5 text-center">
+    <div className="flex flex-1 flex-col items-center rounded-[18px] border border-[var(--color-border-default)] bg-surface-card px-6 py-5 text-center shadow-[0_10px_28px_rgba(26,26,46,0.03)]">
       <span className="font-fraunces text-heading leading-none text-[var(--color-action-primary-bg)]">{value}</span>
       <span className="mt-1.5 text-note leading-[1.4] text-[var(--color-text-muted)]">{label}</span>
     </div>
@@ -162,7 +162,7 @@ function CompareTable({
   // oszlopcímkével (a fejléc-sáv csak md:-től látszik) – 320px-en a
   // 2×~92px-es hasábokban a hosszú szakkifejezések olvashatatlanok.
   return (
-    <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
+    <div className="my-8 overflow-hidden rounded-[20px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_12px_32px_rgba(26,26,46,0.035)]">
       <div className="hidden grid-cols-2 md:grid">
         <div className="bg-surface-card px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
           {leftLabel}
@@ -208,7 +208,7 @@ function PullQuote({ children, source }: { children: React.ReactNode; source?: s
 
 function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu?: boolean }) {
   return (
-    <div className="my-8 rounded-[10px] bg-[var(--color-surface-inverse)] px-6 py-5">
+    <div className="my-8 rounded-[20px] bg-[var(--color-surface-inverse)] px-6 py-6 shadow-[0_18px_40px_rgba(26,26,46,0.10)]">
       <SectionEyebrow as="div" tone="onDark" className="mb-2">
         {isHu ? "kulcsgondolat" : "key insight"}
       </SectionEyebrow>
@@ -263,7 +263,7 @@ const makeComponents = (isHu: boolean) => ({
   ),
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
-      className="my-8 rounded-r-[10px] border-l-[2.5px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] py-4 pl-6 pr-5 italic text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit"
+      className="my-8 rounded-[20px] border border-[var(--color-surface-self-border)] border-l-[3px] border-l-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] py-5 pl-6 pr-5 italic text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit"
       {...props}
     />
   ),
@@ -355,6 +355,10 @@ export default async function BlogPostPage({
     inThisArticle: t("blog.inThisArticle", locale),
     minutesLeft: t("blog.minutesLeft", locale),
   };
+  const authorLabel = t("blog.authorTeam", locale);
+  const authorBreakAt = authorLabel.lastIndexOf(" ");
+  const authorLead = authorBreakAt > 0 ? authorLabel.slice(0, authorBreakAt) : authorLabel;
+  const authorTail = authorBreakAt > 0 ? authorLabel.slice(authorBreakAt + 1) : "";
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
@@ -365,15 +369,15 @@ export default async function BlogPostPage({
         translationSlug={post.translationSlug}
       />
       {/* Vissza a cikkjegyzékhez */}
-      <div className="mx-auto max-w-[1080px] px-7 pb-0 pt-6">
+      <div className="mx-auto max-w-[1120px] px-5 pb-0 pt-7 sm:px-7 lg:pt-9">
         <EditorialBackControl
           href="/blog"
           backLabel={t("blog.backToBlog", locale)}
         />
       </div>
 
-      <div className="mx-auto max-w-[1080px] px-7 pb-14 pt-4 md:grid md:grid-cols-[minmax(0,1fr)_250px] md:items-start md:gap-10">
-      <article className="min-w-0 max-w-[840px]">
+      <div className="mx-auto max-w-[1120px] px-5 pb-16 pt-5 sm:px-7 md:grid md:grid-cols-[minmax(0,1fr)_260px] md:items-start md:gap-10 lg:gap-12">
+      <article className="min-w-0 max-w-[820px]">
         {/* Tags */}
         {post.tags.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-1.5">
@@ -396,21 +400,27 @@ export default async function BlogPostPage({
         </h1>
 
         {/* Description */}
-        <p className="mb-4 text-heading font-light leading-relaxed text-ink-body">
+        <p className="mb-5 max-w-[760px] text-heading font-light leading-relaxed text-ink-body">
           {post.description}
         </p>
 
         {/* Szerző-blokk + megosztás (E-E-A-T – összhangban az Article JSON-LD-vel) */}
-        <div className="mb-8 flex items-center gap-3 border-b border-t border-[var(--color-border-default)] py-3.5">
+        <div className="mb-8 flex flex-wrap items-center gap-2.5 rounded-[20px] border border-sand bg-surface-card/70 px-3.5 py-3 shadow-[0_10px_30px_rgba(26,26,46,0.035)] sm:flex-nowrap sm:gap-3 sm:px-4">
           <span
             aria-hidden
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] font-fraunces text-body text-[var(--color-action-primary-fg)]"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px_17px_14px_16px] bg-[var(--color-action-primary-bg)] font-fraunces text-caption text-[var(--color-action-primary-fg)] sm:h-10 sm:w-10"
           >
-            t
+            tr
           </span>
           <span className="min-w-0">
-            <span className="block text-caption font-semibold text-ink">
-              {t("blog.authorTeam", locale)}
+            <span aria-label={authorLabel} className="block text-caption font-semibold text-ink">
+              <span className="block whitespace-nowrap sm:inline">{authorLead}</span>
+              {authorTail ? (
+                <>
+                  {" "}
+                  <span className="block sm:inline">{authorTail}</span>
+                </>
+              ) : null}
             </span>
             <span className="block text-micro text-[var(--color-text-muted)]">
               {new Date(post.publishedAt).toLocaleDateString(
@@ -420,7 +430,7 @@ export default async function BlogPostPage({
               · {post.readingTime}
             </span>
           </span>
-          <span className="ml-auto">
+          <span className="ml-auto flex shrink-0 justify-end max-[360px]:w-full">
             <ShareRow
               title={post.title}
               labels={{
@@ -437,7 +447,7 @@ export default async function BlogPostPage({
             képernyőkép, amit megosztanak. Ugyanaz a determinisztikus
             kompozíció, mint a listán (azonos slug + family + concept + lineMode + seed),
             így a kártya és a cikk ugyanazt az arcot mutatja. */}
-        <div className="relative mb-8 aspect-video overflow-hidden rounded-2xl border border-sand">
+        <div className="relative mb-9 aspect-video overflow-hidden rounded-[24px] border border-sand shadow-[0_22px_54px_rgba(75,44,52,0.10)] sm:rounded-[28px]">
           <BlogCoverVisual
             coverImage={post.coverImage}
             coverFocalX={post.coverFocalX}
@@ -477,10 +487,10 @@ export default async function BlogPostPage({
             {olderPost ? (
               <Link
                 href={`/blog/${olderPost.slug}`}
-                className="group flex min-h-32 flex-col rounded-xl border border-sand bg-surface-card px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+                className={`group flex min-h-32 flex-col rounded-[20px] border border-sand bg-surface-card px-5 py-5 shadow-[0_10px_30px_rgba(26,26,46,0.03)] transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)] hover:shadow-[0_16px_36px_rgba(26,26,46,0.06)] ${FOCUS_RING_CLASS}`}
               >
                 <span className="mb-3 flex items-center gap-2 text-caption font-semibold text-[var(--color-accent-primary-strong)]">
-                  <BackChevronIcon size="sm" />
+                  <BackChevronIcon size="sm" tone="accent" />
                   <span>{t("blog.prevArticle", locale)}</span>
                 </span>
                 <span className="block text-pretty font-fraunces text-body leading-[1.35] text-ink">
@@ -493,11 +503,11 @@ export default async function BlogPostPage({
             {newerPost && (
               <Link
                 href={`/blog/${newerPost.slug}`}
-                className="group flex min-h-32 flex-col rounded-xl border border-sand bg-surface-card px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+                className={`group flex min-h-32 flex-col rounded-[20px] border border-sand bg-surface-card px-5 py-5 text-right shadow-[0_10px_30px_rgba(26,26,46,0.03)] transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)] hover:shadow-[0_16px_36px_rgba(26,26,46,0.06)] ${FOCUS_RING_CLASS}`}
               >
                 <span className="mb-3 flex items-center justify-end gap-2 text-caption font-semibold text-[var(--color-accent-primary-strong)]">
                   {t("blog.nextArticle", locale)}
-                  <ChevronRightIcon className="h-3.5 w-3.5" />
+                  <BackChevronIcon size="sm" tone="accent" className="rotate-180" />
                 </span>
                 <span className="block text-pretty font-fraunces text-body leading-[1.35] text-ink">
                   {newerPost.title}
@@ -518,7 +528,7 @@ export default async function BlogPostPage({
                 <Link
                   key={rel.slug}
                   href={`/blog/${rel.slug}`}
-                  className="rounded-2xl border border-sand bg-surface-card p-5 transition-all hover:-translate-y-px hover:shadow-md hover:shadow-black/[0.04]"
+                  className={`rounded-[20px] border border-sand bg-surface-card p-5 shadow-[0_10px_28px_rgba(26,26,46,0.03)] transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)] hover:shadow-[0_16px_36px_rgba(26,26,46,0.06)] ${FOCUS_RING_CLASS}`}
                 >
                   {rel.tags.length > 0 && (
                     <div className="mb-1.5 flex flex-wrap gap-1">

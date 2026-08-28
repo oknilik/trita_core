@@ -193,12 +193,12 @@ export function BlogListContent({
           aria-hidden="true"
           className="pointer-events-none absolute right-[7%] top-[12%] h-[72%] w-[48%] rounded-full bg-[var(--color-surface-highlight-warm)]/35 blur-3xl"
         />
-        <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-9 md:grid-cols-[1.02fr_0.98fr] md:gap-12 lg:gap-16">
+        <div className="relative mx-auto grid max-w-[1120px] grid-cols-1 items-center gap-9 md:grid-cols-[1.02fr_0.98fr] md:gap-12 lg:gap-16">
           <div>
             <SectionEyebrow className="mb-5">
                 {t("blog.editorialEyebrow", displayLocale)}
             </SectionEyebrow>
-            <h1 className="max-w-[720px] font-fraunces text-fluid-display font-medium leading-[0.98] tracking-[-0.045em] text-ink">
+            <h1 className="max-w-[720px] font-fraunces text-fluid-display font-medium tracking-tight text-ink">
               {t("blog.heroTitle", displayLocale)}
               <em className="italic text-[var(--color-accent-primary-strong)]">
                 {t("blog.heroTitleEm", displayLocale)}
@@ -248,7 +248,7 @@ export function BlogListContent({
           szélességű vonal jelzi a következő ritmusegységet. */}
       {tagChips.length > 1 && (
         <section className="bg-cream px-7">
-          <fieldset className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 border-b border-sand/60 py-5">
+          <fieldset className="mx-auto flex max-w-[1120px] flex-wrap items-center gap-2 border-b border-sand/60 py-5">
             <legend className="sr-only">{t("blog.filterLabel", displayLocale)}</legend>
             <span className="mr-2 text-label uppercase tracking-[0.13em] text-[var(--color-text-muted)]" aria-hidden="true">
               {t("blog.filterLabel", displayLocale)}
@@ -288,7 +288,7 @@ export function BlogListContent({
       )}
 
       <section id="blog-results" className="px-7 pb-20 pt-14 md:pt-20">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-[1120px]">
           <div className="mb-7 flex min-h-11 flex-wrap items-end justify-between gap-3">
             <div>
               {!activeTag ? (

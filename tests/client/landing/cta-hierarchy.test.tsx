@@ -43,6 +43,29 @@ describe("landing CTA-hierarchia", () => {
     expect(screen.queryByRole("link", { name: /kipróbál/i })).not.toBeInTheDocument();
   });
 
+  it("a hero CTA-ja a riport-előnézet előtt marad a mobil DOM-sorrendben", () => {
+    const { container } = render(<HeroSection mode="team" />);
+
+    const primaryCta = screen.getByRole("link", { name: "Megnézem a pilotprogramot" });
+    const preview = container.querySelector("[data-landing-hero-preview]");
+
+    expect(preview).not.toBeNull();
+    expect(primaryCta.compareDocumentPosition(preview as Node)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
+
+  it("mobilon is megtartja a teljes személyes és csapatos eredménykivonatot", () => {
+    const self = render(<HeroSection mode="self" />);
+
+    expect(self.container.querySelector('[data-landing-preview-detail="self-strengths"]')).not.toHaveClass("hidden");
+    expect(self.container.querySelector('[data-landing-preview-detail="self-roles"]')).not.toHaveClass("hidden");
+
+    self.unmount();
+    const team = render(<HeroSection mode="team" />);
+    expect(team.container.querySelector('[data-landing-preview-detail="team-narrative"]')).not.toHaveClass("hidden");
+  });
+
   it("egyéni módban megtartja a teszt és az együttműködés útvonalát", () => {
     render(
       <>

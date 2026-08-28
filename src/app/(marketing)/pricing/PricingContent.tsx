@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
 import { CheckIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -125,7 +126,7 @@ export function PricingContent() {
       </section>
 
       <section className="bg-warm">
-        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+        <PageWidthDivider />
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <SectionEyebrow>{t("pricing.workflowEyebrow", locale)}</SectionEyebrow>
@@ -135,7 +136,7 @@ export function PricingContent() {
           </div>
           <Workflow locale={locale} />
         </div>
-        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+        <PageWidthDivider />
       </section>
 
       <section className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
@@ -191,7 +192,7 @@ export function PricingContent() {
       </section>
 
       <section className="bg-warm">
-        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+        <PageWidthDivider />
         <div className="mx-auto max-w-3xl px-7 py-16 md:py-24">
           <div className="text-center">
             <SectionEyebrow>{locale === "hu" ? "Mielőtt belevágunk" : "Before we begin"}</SectionEyebrow>

@@ -11,11 +11,13 @@ import {
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t, tf, type Locale } from "@/lib/i18n/public";
 import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 const INPUT_CLASS = "w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
 
@@ -102,7 +104,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
 
           <div className="relative flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 className="max-w-[16ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+              <h3 className="max-w-[16ch] font-fraunces text-title text-ink md:text-display">
                 {t("pilot.partnerResultTitle", locale)}
               </h3>
             </div>
@@ -311,7 +313,7 @@ export function PilotContent() {
           ebből él (--color-surface-canvas = cream), így az oldal alján nem
           jelenik meg eltérő színű csík a hullám fölött. */}
       <section id="jelentkezes" className="bg-cream">
-        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+        <PageWidthDivider />
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div>
             <SectionEyebrow tone="team" className="mb-4">{t("pilot.formEyebrow", locale)}</SectionEyebrow>
@@ -348,7 +350,7 @@ export function PilotContent() {
                 className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-10 text-center"
               >
                 <div className="font-fraunces text-5xl leading-none text-bronze">+</div>
-                <h3 className="mt-4 font-fraunces text-3xl leading-tight text-ink">
+                <h3 className="mt-4 font-fraunces text-display text-ink">
                   {t("pilot.successTitle", locale)}
                 </h3>
                 <p className="mt-3 text-base leading-8 text-ink-body">
@@ -511,7 +513,7 @@ export function PilotContent() {
                       ref={submitRef}
                       type="submit"
                       disabled={status === "sending"}
-                      className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-base font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                      className={`inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-7 py-3.5 text-base font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 ${FOCUS_RING_CLASS}`}
                     >
                       {status === "sending" ? t("pilot.submitSending", locale) : t("pilot.submitDefault", locale)}
                     </button>
@@ -548,12 +550,12 @@ export function PilotContent() {
 function FounderSection({ locale }: { locale: Locale }) {
   return (
     <section className="bg-cream">
-      <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+      <PageWidthDivider />
       <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
         <div className="grid items-center gap-8 rounded-[28px] border border-sand bg-warm p-6 md:grid-cols-[minmax(0,1fr)_280px] md:p-9">
           <div>
             <SectionEyebrow tone="team">{t("pilot.founderEyebrow", locale)}</SectionEyebrow>
-            <h2 className="mt-3 max-w-[22ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+            <h2 className="mt-3 max-w-[22ch] font-fraunces text-title text-ink md:text-display">
               {t("pilot.founderTitle", locale)}
             </h2>
             <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-body">
@@ -662,7 +664,7 @@ function PilotFactBar({ locale }: { locale: Locale }) {
                 }`}
               >
                 <dd className="flex items-baseline gap-1.5">
-                  <span className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-accent)] md:text-4xl">
+                  <span className="font-fraunces text-display leading-none text-[var(--color-layer-team-accent)] md:text-hero">
                     {tf(`pilot.fact${fact}Value`, locale, vars)}
                   </span>
                   {unit ? (
@@ -698,7 +700,7 @@ function EditorialSection({
 }) {
   return (
     <section id={id} className={tone === "warm" ? "bg-warm" : "bg-cream"}>
-      <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+      <PageWidthDivider />
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <SectionEyebrow tone={tone === "warm" ? "team" : "bronze"}>{eyebrow}</SectionEyebrow>
