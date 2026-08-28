@@ -508,6 +508,17 @@ export const landingTranslations = {
     articleNavigation: { hu: "További cikkek", en: "More articles" },
   },
   pilot: {
+    // A page.tsx statikus metadata-ja a DEFAULT_LOCALE-lal épül; nyelvváltás
+    // után a LocalizedPageMeta ugyanebből a két kulcsból frissíti a
+    // title/description/og:* értékeket a kliensen (P0-3).
+    metaTitle: {
+      hu: "Pilotprogram – az első partnercsapatainknak | trita",
+      en: "Pilot program – for our first partner teams | trita",
+    },
+    metaDescription: {
+      hu: "90 napos, személyesen kísért csapatprogram: közös mérés, értelmező workshop, konkrét vezetői lépés és visszamérés.",
+      en: "A 90-day, personally guided team program: shared measurement, an interpretation workshop, one concrete leadership action, and a follow-up measurement.",
+    },
     // Hero – partneri meghívás
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
     badge: {

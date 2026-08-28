@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
+import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
 import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
 import { CheckIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -96,6 +97,7 @@ export function PricingContent() {
 
   return (
     <main className="overflow-hidden bg-cream text-ink selection:bg-bronze/20">
+      <LocalizedPageMeta titleKey="pricing.metaTitle" descriptionKey="pricing.metaDescription" />
       <section className="relative overflow-hidden bg-cream">
         <div
           aria-hidden="true"

@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
+import { DEFAULT_LOCALE, t } from "@/lib/i18n";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
 import { PilotContent } from "./PilotContent";
 
 // Statikus metadata a DEFAULT_LOCALE-lal — a tartalom nyelvváltását a
-// kliens-oldali LocaleProvider kezeli (PilotContent).
+// kliens-oldali LocaleProvider kezeli (PilotContent), a fej-elemeket a
+// LocalizedPageMeta szinkronizálja ugyanezekből a kulcsokból.
 export const metadata: Metadata = buildPageMetadata({
   path: "/pilot",
-  title: "Pilotprogram – az első partnercsapatainknak | trita",
-  description:
-    "90 napos, személyesen kísért csapatprogram: közös mérés, értelmező workshop, konkrét vezetői lépés és visszamérés.",
+  title: t("pilot.metaTitle", DEFAULT_LOCALE),
+  description: t("pilot.metaDescription", DEFAULT_LOCALE),
   ogTitle: "Pilotprogram – az első partnercsapatainknak",
   ogDescription:
     "90 napos, személyesen kísért csapatprogram az első partnercsapatoknak.",

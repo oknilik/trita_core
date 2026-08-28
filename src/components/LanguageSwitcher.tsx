@@ -5,7 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n/public";
 import { FOCUS_RING_CLASS, FOCUS_RING_ON_INVERSE_CLASS } from "@/lib/ui/focus";
 
-export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown" | "pills" | "footer" }) {
+export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown" | "pills" | "footer" | "inline" }) {
   const { locale, setLocale } = useLocale();
   const [open, setOpen] = useState(false);
 
@@ -39,6 +39,34 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
               }`}
             >
               {t(`locale.${loc}` as const, locale)}
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Diszkrét „HU / EN" szövegkapcsoló a publikus fejlécbe (P0-3/5): a
+  // footer-variáns világos felületű párja, címke nélkül.
+  if (variant === "inline") {
+    return (
+      <div className="flex items-center gap-1 text-caption" aria-label={t("locale.label", locale)}>
+        {SUPPORTED_LOCALES.map((loc, index) => (
+          <div key={loc} className="contents">
+            {index > 0 ? (
+              <span aria-hidden="true" className="text-[var(--color-text-muted)]/50">/</span>
+            ) : null}
+            <button
+              type="button"
+              aria-pressed={loc === locale}
+              onClick={() => setLocale(loc as Locale)}
+              className={`min-h-9 rounded-md px-1.5 uppercase tracking-wide transition-colors hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS} ${
+                loc === locale
+                  ? "font-semibold text-[var(--color-text-primary)]"
+                  : "font-medium text-[var(--color-text-muted)]"
+              }`}
+            >
+              {loc}
             </button>
           </div>
         ))}

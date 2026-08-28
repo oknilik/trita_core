@@ -9,6 +9,7 @@ import { UserMenu } from "@/components/UserMenu";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { MobileMenuShell, MobileMenuRow } from "@/components/layout/mobile-menu";
 import { t } from "@/lib/i18n/public";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
@@ -276,6 +277,12 @@ export function NavBar({
           <div className="pointer-events-auto flex items-center gap-2 justify-self-end">
             {!isSignedIn && (
               <>
+                {/* Nyelvváltó a fejlécben (P0-3/5): eddig csak a footerben
+                    volt elérhető — a HU-alapértelmezésről váltani akaró
+                    látogatónak az első képernyőn kell a kapcsoló. */}
+                <div className="hidden lg:block">
+                  <LanguageSwitcher variant="inline" />
+                </div>
                 {/* Csendes másodlagos belépő: a tiszta felirat nem versenyez
                     a fő CTA-val, és nem igényel magyarázó ikont. */}
                 <Link
@@ -366,6 +373,12 @@ export function NavBar({
               >
                 {t("nav.signOut", locale)}
               </Link>
+            </div>
+          ) : null}
+
+          {!isSignedIn ? (
+            <div className="mt-3 flex justify-center border-t border-[var(--color-border-soft)] pt-3">
+              <LanguageSwitcher variant="inline" />
             </div>
           ) : null}
 

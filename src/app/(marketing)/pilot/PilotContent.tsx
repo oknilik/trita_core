@@ -10,6 +10,7 @@ import {
 } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
+import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
 import { t, type Locale } from "@/lib/i18n/public";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
@@ -234,6 +235,7 @@ export function PilotContent() {
 
   return (
     <main className="overflow-hidden bg-cream text-ink selection:bg-bronze/20">
+      <LocalizedPageMeta titleKey="pilot.metaTitle" descriptionKey="pilot.metaDescription" />
       <section className="relative overflow-hidden bg-cream">
         <div
           aria-hidden="true"
