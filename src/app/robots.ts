@@ -17,6 +17,9 @@ const PUBLIC_PATHS = [
   ...(isPortfolioSurfaceActive("patternExplorer") ? ["/patterns"] : []),
   "/pilot",
   "/how-we-work",
+  // A review-draft jogi oldalak noindex metát adnak, ezért bejárhatónak kell
+  // maradniuk. A sitemapből jóváhagyásig szándékosan hiányoznak.
+  "/legal",
   // A /privacy tervezet-állapotban is BEJÁRHATÓ marad (nem tesszük a
   // disallow-listára): a `noindex` meta csak akkor tud érvényesülni, ha a
   // robot le tudja tölteni a lapot. A sitemapból viszont kimarad, amíg

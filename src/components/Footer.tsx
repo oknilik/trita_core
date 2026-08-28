@@ -55,6 +55,7 @@ export function Footer() {
     {
       heading: t("footer.colLegal", locale),
       links: [
+        { label: t("footer.legalDocuments", locale), href: "/legal" },
         { label: t("footer.privacy", locale), href: "/privacy" },
         { label: t("footer.contact", locale), href: "/contact" },
       ],

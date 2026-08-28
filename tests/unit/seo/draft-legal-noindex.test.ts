@@ -9,9 +9,14 @@ import sitemap from "@/app/sitemap";
 
 const entries = sitemap();
 const privacyEntries = entries.filter((entry) => entry.url.endsWith("/privacy"));
+const draftLegalEntries = entries.filter((entry) => entry.url.includes("/legal"));
 
 test("az éles adatvédelmi tájékoztató szerepel a sitemapben", () => {
   assert.equal(privacyEntries.length, 1, "az éles jogi lapnak szerepelnie kell a sitemapben");
+});
+
+test("az ügyvédi review-draft oldalak jóváhagyásig nem szerepelnek a sitemapben", () => {
+  assert.equal(draftLegalEntries.length, 0);
 });
 
 test("a sitemap minden bejegyzése abszolút URL, duplikátum nélkül", () => {

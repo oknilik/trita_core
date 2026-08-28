@@ -196,6 +196,7 @@ export const commonTranslations = {
     navFounding: { hu: "Alapítói program", en: "Founding" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
     signUp: { hu: "Regisztráció", en: "Sign up" },
+    legalDocuments: { hu: "Jogi dokumentumok", en: "Legal documents" },
     privacy: { hu: "Adatvédelem", en: "Privacy" },
     contact: { hu: "Kapcsolat", en: "Contact" },
     copyright: { hu: "© 2026 trita. Minden jog fenntartva.", en: "© 2026 trita. All rights reserved." },
