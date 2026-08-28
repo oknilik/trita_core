@@ -11,11 +11,13 @@ import {
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t, tf, type Locale } from "@/lib/i18n/public";
 import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 const INPUT_CLASS = "w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
 
@@ -311,7 +313,7 @@ export function PilotContent() {
           ebből él (--color-surface-canvas = cream), így az oldal alján nem
           jelenik meg eltérő színű csík a hullám fölött. */}
       <section id="jelentkezes" className="bg-cream">
-        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+        <PageWidthDivider />
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div>
             <SectionEyebrow tone="team" className="mb-4">{t("pilot.formEyebrow", locale)}</SectionEyebrow>
@@ -511,7 +513,7 @@ export function PilotContent() {
                       ref={submitRef}
                       type="submit"
                       disabled={status === "sending"}
-                      className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-base font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                      className={`inline-flex min-h-[54px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-base font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 ${FOCUS_RING_CLASS}`}
                     >
                       {status === "sending" ? t("pilot.submitSending", locale) : t("pilot.submitDefault", locale)}
                     </button>
@@ -548,7 +550,7 @@ export function PilotContent() {
 function FounderSection({ locale }: { locale: Locale }) {
   return (
     <section className="bg-cream">
-      <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+      <PageWidthDivider />
       <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
         <div className="grid items-center gap-8 rounded-[28px] border border-sand bg-warm p-6 md:grid-cols-[minmax(0,1fr)_280px] md:p-9">
           <div>
@@ -698,7 +700,7 @@ function EditorialSection({
 }) {
   return (
     <section id={id} className={tone === "warm" ? "bg-warm" : "bg-cream"}>
-      <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+      <PageWidthDivider />
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <SectionEyebrow tone={tone === "warm" ? "team" : "bronze"}>{eyebrow}</SectionEyebrow>
