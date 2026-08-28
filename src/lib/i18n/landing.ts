@@ -372,8 +372,8 @@ export const landingTranslations = {
       en: "What methodology is it based on?",
     },
     faqA8: {
-      hu: "A személyiségfelmérés a hatfaktoros személyiségmodellre épül, szabadon felhasználható, kutatásban használt kérdésbankból. Az önértékelést kollégai és ismerősi visszajelzés árnyalhatja, a csapatszintű kép pedig mért adatokból készül — a riport mindig jelöli, mi mért és mi becsült.",
-      en: "The personality assessment builds on the six-factor personality model, using an openly available question bank used in research. Self-assessment can be complemented by observer feedback, and the team-level picture is built from measured data — the report always distinguishes measured from estimated.",
+      hu: "A személyiségfelmérés a pszichológiai kutatásban széles körben vizsgált hatfaktoros személyiségmodellre épül, az önértékelést pedig kollégai és ismerősi visszajelzés árnyalhatja. A csapatkép ezen felül két mért rétegre támaszkodik: a csapatszerep-kérdőívre és a pszichológiai biztonság névtelen mérésére — a riport mindig jelöli, mi mért adat és mi becslés.",
+      en: "The personality assessment builds on the six-factor personality model, widely studied in psychological research, and self-assessment can be complemented by feedback from colleagues and acquaintances. The team picture also draws on two measured layers: the team role questionnaire and an anonymous measure of psychological safety — the report always distinguishes measured data from estimates.",
     },
     bottomHeading: { hu: "Kezdjük egy beszélgetéssel.", en: "Let's start with a conversation." },
     bottomSub: { hu: "Mesélj a csapatodról – egy munkanapon belül válaszolunk.", en: "Tell us about your team – we reply within one business day." },
