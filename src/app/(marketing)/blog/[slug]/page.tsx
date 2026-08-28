@@ -365,14 +365,14 @@ export default async function BlogPostPage({
         translationSlug={post.translationSlug}
       />
       {/* Vissza a cikkjegyzékhez */}
-      <div className="mx-auto max-w-[1080px] px-7 pb-0 pt-6">
+      <div className="mx-auto max-w-[1120px] px-7 pb-0 pt-6">
         <EditorialBackControl
           href="/blog"
           backLabel={t("blog.backToBlog", locale)}
         />
       </div>
 
-      <div className="mx-auto max-w-[1080px] px-7 pb-14 pt-4 md:grid md:grid-cols-[minmax(0,1fr)_250px] md:items-start md:gap-10">
+      <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-4 md:grid md:grid-cols-[minmax(0,1fr)_250px] md:items-start md:gap-10">
       <article className="min-w-0 max-w-[840px]">
         {/* Tags */}
         {post.tags.length > 0 && (
