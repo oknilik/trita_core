@@ -903,8 +903,8 @@ export const landingTranslations = {
     },
 
     statement: {
-      hu: "A jó csapat nem véletlen. Mintázat – és a mintázat tanulható.",
-      en: "A good team is not luck. It is a pattern – and patterns can be learned.",
+      hu: "A jó csapat nem szerencse kérdése. Ahogy együtt dolgoztok, annak mintázata van – és amit látni lehet, azon dolgozni is.",
+      en: "A good team is not a matter of luck. The way you work together has a pattern – and what can be seen can be worked on.",
     },
 
     ctaTitle: { hu: "Beszélgessünk a csapatodról.", en: "Let's talk about your team." },
