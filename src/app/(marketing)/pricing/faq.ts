@@ -12,4 +12,6 @@
  * láthatónak kell lennie az oldalon — egy forrás, hogy ne csúszhasson szét:
  * új GYIK-tétel = új i18n-kulcs + egy szám ebben a tömbben.
  */
-export const PRICING_FAQ_INDEXES = [1, 2, 3, 4] as const;
+// Sorrend, nem sorszám: az 5-ös (Ki látja az egyéni eredményeket?) a
+// „Mennyibe kerül?" mellé, a második helyre kerül (P0-4).
+export const PRICING_FAQ_INDEXES = [1, 5, 2, 3, 4] as const;

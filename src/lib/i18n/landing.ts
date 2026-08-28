@@ -324,6 +324,16 @@ export const landingTranslations = {
       hu: "Minden egyéni funkció ingyenes: felmérés, riport, observer-visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói validálás és a workshopok a fizetős program részei.",
       en: "All individual features are free: assessment, report, observer feedback. Team-level measurements – team picture, team role map, psychological safety –, consultant validation and workshops are part of the paid program.",
     },
+    // P0-4: a bevezetés ezen a kérdésen áll vagy bukik — a pontos, védhető
+    // megfogalmazás üzleti/jogi döntés, addig {{TODO}}.
+    faqQ5: {
+      hu: "Ki látja az egyéni eredményeket?",
+      en: "Who can see individual results?",
+    },
+    faqA5: {
+      hu: "{{TODO: eredmény-láthatóság — pontos, védhető megfogalmazás}}",
+      en: "{{TODO_EN: eredmény-láthatóság}}",
+    },
     bottomHeading: { hu: "Kezdjük egy beszélgetéssel.", en: "Let's start with a conversation." },
     bottomSub: { hu: "Mesélj a csapatodról – egy munkanapon belül válaszolunk.", en: "Tell us about your team – we reply within one business day." },
     bottomCta: { hu: "Kapcsolatfelvétel", en: "Contact us" },
@@ -721,6 +731,13 @@ export const landingTranslations = {
       hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Az első beszélgetésen megismerjük a csapatotokat, átbeszéljük, mire lenne most a legnagyobb szükségetek, és megnézzük, hogyan tudunk együtt dolgozni.",
       en: "Complete the short form and we’ll get back to you within one business day. We’ll first discuss, with no obligation, what you would like to try and how we could work together.",
     },
+    // P0-4: egymondatos adatvédelmi utalás az űrlap mellett; a pontos
+    // láthatósági szabály a /how-we-work GYIK-ben és az Adatkezelésben él.
+    privacyNote: {
+      hu: "{{TODO: egymondatos összefoglaló arról, ki látja az egyéni eredményeket}}",
+      en: "{{TODO_EN: eredmény-láthatóság egy mondatban}}",
+    },
+    privacyNoteLink: { hu: "Részletek az Adatkezelésben", en: "Details in the Privacy Policy" },
     fitEyebrow: { hu: "Jó helyen jártok, ha", en: "A good fit if" },
     fitBody: {
       hu: "együtt dolgozó csapatként szeretnétek tisztábban látni a működéseteket, nyitottak vagytok a közös gondolkodásra, és készek vagytok egy közösen kiválasztott következő lépést megvalósítani.",

@@ -328,6 +328,15 @@ export function PilotContent() {
                 {t("pilot.fitBody", locale)}
               </p>
             </div>
+            <p className="mt-5 text-sm leading-6 text-ink-body">
+              {t("pilot.privacyNote", locale)}{" "}
+              <a
+                href="/privacy"
+                className="font-medium text-sage transition-colors hover:text-sage-dark"
+              >
+                {t("pilot.privacyNoteLink", locale)}
+              </a>
+            </p>
           </div>
 
           <div className="rounded-[28px] border border-sand bg-surface-card p-6 shadow-[0_24px_70px_rgba(26,26,46,0.08)] md:p-8">
