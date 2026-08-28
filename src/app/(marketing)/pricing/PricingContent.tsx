@@ -180,24 +180,6 @@ export function PricingContent() {
         </div>
       </section>
 
-      <section className="px-7 pb-16 md:pb-24">
-        <div className="mx-auto grid max-w-[1060px] overflow-hidden rounded-[28px] border border-sand bg-surface-card shadow-[0_24px_70px_rgba(26,26,46,0.07)] md:grid-cols-[0.72fr_1.28fr]">
-          <div className="relative min-h-52 overflow-hidden bg-[var(--color-layer-team-soft)] p-7">
-            <div className="absolute -bottom-20 -left-14 size-56 rounded-full border border-[var(--color-layer-team-accent)]/15" />
-            <div className="absolute -bottom-8 -left-2 size-36 rounded-full border border-[var(--color-layer-team-accent)]/20" />
-            <div className="relative flex h-full items-end"><span className="font-fraunces text-7xl text-[var(--color-layer-team-accent)]/20">90</span><span className="mb-2 ml-2 text-label uppercase text-[var(--color-layer-team-accent)]">{locale === "hu" ? "nap" : "days"}</span></div>
-          </div>
-          <div className="p-7 md:p-10">
-            <SectionEyebrow tone="team">{t("pricing.pilotEyebrow", locale)}</SectionEyebrow>
-            <h2 className="mt-4 font-fraunces text-3xl text-ink">{t("pricing.pilotTitle", locale)}</h2>
-            <p className="mt-4 text-sm leading-relaxed text-ink-body">{t("pricing.pilotBody", locale)}</p>
-            <Link href="/pilot" onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })} className={`mt-5 inline-flex min-h-11 items-center font-semibold text-[var(--color-layer-team-accent)] transition-colors hover:text-[var(--color-layer-team-bright)] ${FOCUS_RING_CLASS}`}>
-              {t("pricing.pilotCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       <section className="bg-warm">
         <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
         <div className="mx-auto max-w-3xl px-7 py-16 md:py-24">
@@ -214,6 +196,27 @@ export function PricingContent() {
                 <p className="px-5 pb-5 pr-14 text-sm leading-relaxed text-ink-body">{t(`pricing.faqA${i}`, locale)}</p>
               </details>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* P1-3: a pilot-teaser a GYIK UTÁN, közvetlenül a kapcsolati űrlap
+          előtt él — így nem szakítja meg az árazás → GYIK gondolatmenetet,
+          és a záró kapcsolatfelvétel előszobája. */}
+      <section className="px-7 py-16 md:py-24">
+        <div className="mx-auto grid max-w-[1060px] overflow-hidden rounded-[28px] border border-sand bg-surface-card shadow-[0_24px_70px_rgba(26,26,46,0.07)] md:grid-cols-[0.72fr_1.28fr]">
+          <div className="relative min-h-52 overflow-hidden bg-[var(--color-layer-team-soft)] p-7">
+            <div className="absolute -bottom-20 -left-14 size-56 rounded-full border border-[var(--color-layer-team-accent)]/15" />
+            <div className="absolute -bottom-8 -left-2 size-36 rounded-full border border-[var(--color-layer-team-accent)]/20" />
+            <div className="relative flex h-full items-end"><span className="font-fraunces text-7xl text-[var(--color-layer-team-accent)]/20">90</span><span className="mb-2 ml-2 text-label uppercase text-[var(--color-layer-team-accent)]">{locale === "hu" ? "nap" : "days"}</span></div>
+          </div>
+          <div className="p-7 md:p-10">
+            <SectionEyebrow tone="team">{t("pricing.pilotEyebrow", locale)}</SectionEyebrow>
+            <h2 className="mt-4 font-fraunces text-3xl text-ink">{t("pricing.pilotTitle", locale)}</h2>
+            <p className="mt-4 text-sm leading-relaxed text-ink-body">{t("pricing.pilotBody", locale)}</p>
+            <Link href="/pilot" onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })} className={`mt-5 inline-flex min-h-11 items-center font-semibold text-[var(--color-layer-team-accent)] transition-colors hover:text-[var(--color-layer-team-bright)] ${FOCUS_RING_CLASS}`}>
+              {t("pricing.pilotCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
+            </Link>
           </div>
         </div>
       </section>

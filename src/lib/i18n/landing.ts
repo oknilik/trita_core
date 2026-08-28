@@ -790,7 +790,9 @@ export const landingTranslations = {
       en: "Optional, but it helps a lot for the first conversation.",
     },
     submitSending: { hu: "Küldés...", en: "Sending..." },
-    submitDefault: { hu: "Beszéljünk a csapatotokról", en: "Apply as a partner team" },
+    // P1-3: a hero gombjával azonos szöveg — egyetlen elsődleges akció fut
+    // az oldalon, és a „Meséljetek a csapatotokról" címmel sem redundáns.
+    submitDefault: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
     preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
     errorMessage: {
       hu: "Nem sikerült elküldeni. Próbáld újra, vagy írj a hello@trita.io címre.",
