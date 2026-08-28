@@ -13,6 +13,7 @@ import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/component
 import { track } from "@/lib/analytics/client";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { ChevronRightIcon } from "@/components/ui/icons";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // A hajtás feletti kísérőelemek CSS-keyframe-mel úsznak be. A H1 szándékosan
 // NEM kapja meg: ez az oldal LCP-eleme, és az opacity: 0 kezdőállapot még
@@ -384,15 +385,12 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   const isSelf = mode === "self";
   const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-layer-team-accent)";
   // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 – nagy szövegnek épp
-  // a határon, 11px-es feliratnak bukó. Szöveghez ezért a bronz-skála
-  // sötétebb fokait használjuk; team módban a kanonikus réteg-akcent dolgozik:
-  //   eyebrow (11px)  → accent-primary-strong (bronze-700) – 5.5:1
-  //   H1 em (nagy)    → accent-primary-mid                 – 3.9:1
-  const eyebrowColor = isSelf ? "var(--color-accent-primary-strong)" : accentColor;
+  // a határon. A H1 em ezért a bronz-skála középső fokát kapja (3.9:1, nagy
+  // szöveg); az eyebrow kontrasztját a SectionEyebrow tónusai kezelik.
   const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
-  // Tömör CTA-felület fehér szöveggel: self módban bronze-dark, team módban
-  // a valódi team hero első gradiens-stopja. Így a CTA a megfelelő réteghez
-  // tartozik, de mindkét módban megtartja ugyanazt a gomb-anatómiát.
+  // Tömör CTA-felület: self módban bronze-dark, team módban a valódi team
+  // hero első gradiens-stopja. Így a CTA a megfelelő réteghez tartozik, de
+  // mindkét módban megtartja ugyanazt a gomb-anatómiát.
   const ctaBackground = isSelf ? "var(--color-bronze-dark)" : "var(--color-layer-team-hero-from)";
 
   // Detect existing localStorage draft for guest users.
@@ -416,18 +414,12 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               <ModeSwitcher mode={mode} />
             </div>
 
-            <div className={`${riseIn} mb-4 flex items-center gap-3`}>
-              {/* A vonalka és a felirat EGY tipográfiai egység – ugyanabból a
-                  bronz-fokból kell jönniük, különben a sötétebb szöveg mellett
-                  a világosabb vonal elszíneződésnek látszik. */}
-              <div className="h-[1.5px] w-5 shrink-0" style={{ background: eyebrowColor }} />
-              <span
-                className="font-dm-sans text-label uppercase"
-                style={{ color: eyebrowColor }}
-              >
-                {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
-              </span>
-            </div>
+            <SectionEyebrow
+              tone={isSelf ? "bronze" : "team"}
+              className={`${riseIn} mb-4`}
+            >
+              {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
+            </SectionEyebrow>
 
             <h1 className="text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink">
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
@@ -459,11 +451,11 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     mode: isSelf ? "self" : "team",
                   })
                 }
-                className={`inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-xl px-7 py-3 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto sm:min-w-[280px] ${FOCUS_RING_CLASS}`}
+                className={`inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-xl px-7 py-3 text-base font-bold text-[var(--color-text-on-accent-deep)] shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto sm:min-w-[280px] ${FOCUS_RING_CLASS}`}
                 style={{
                   background: ctaBackground,
                   boxShadow: isSelf
-                    ? "0 4px 14px rgba(154,101,56,0.25)"
+                    ? "0 4px 14px color-mix(in srgb, var(--color-bronze-dark) 25%, transparent)"
                     : "0 4px 14px color-mix(in srgb, var(--color-layer-team-hero-from) 28%, transparent)",
                 }}
               >
