@@ -355,6 +355,10 @@ export default async function BlogPostPage({
     inThisArticle: t("blog.inThisArticle", locale),
     minutesLeft: t("blog.minutesLeft", locale),
   };
+  const authorLabel = t("blog.authorTeam", locale);
+  const authorBreakAt = authorLabel.lastIndexOf(" ");
+  const authorLead = authorBreakAt > 0 ? authorLabel.slice(0, authorBreakAt) : authorLabel;
+  const authorTail = authorBreakAt > 0 ? authorLabel.slice(authorBreakAt + 1) : "";
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
@@ -401,16 +405,22 @@ export default async function BlogPostPage({
         </p>
 
         {/* Szerző-blokk + megosztás (E-E-A-T – összhangban az Article JSON-LD-vel) */}
-        <div className="mb-8 flex flex-wrap items-center gap-3 rounded-[20px] border border-sand bg-surface-card/70 px-3.5 py-3 shadow-[0_10px_30px_rgba(26,26,46,0.035)] sm:flex-nowrap sm:px-4">
+        <div className="mb-8 flex flex-wrap items-center gap-2.5 rounded-[20px] border border-sand bg-surface-card/70 px-3.5 py-3 shadow-[0_10px_30px_rgba(26,26,46,0.035)] sm:flex-nowrap sm:gap-3 sm:px-4">
           <span
             aria-hidden
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px_18px_15px_17px] bg-[var(--color-action-primary-bg)] font-fraunces text-caption text-[var(--color-action-primary-fg)]"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px_17px_14px_16px] bg-[var(--color-action-primary-bg)] font-fraunces text-caption text-[var(--color-action-primary-fg)] sm:h-10 sm:w-10"
           >
             tr
           </span>
           <span className="min-w-0">
-            <span className="block text-caption font-semibold text-ink">
-              {t("blog.authorTeam", locale)}
+            <span aria-label={authorLabel} className="block text-caption font-semibold text-ink">
+              <span className="block whitespace-nowrap sm:inline">{authorLead}</span>
+              {authorTail ? (
+                <>
+                  {" "}
+                  <span className="block sm:inline">{authorTail}</span>
+                </>
+              ) : null}
             </span>
             <span className="block text-micro text-[var(--color-text-muted)]">
               {new Date(post.publishedAt).toLocaleDateString(

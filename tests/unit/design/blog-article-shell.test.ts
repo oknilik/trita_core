@@ -58,6 +58,12 @@ test("a megosztás mobilon törhet, de nem rajzol részleges elválasztóvonalat
   assert.match(shareSource, /FOCUS_RING_CLASS/);
 });
 
+test("a mobil szerzőnév az utolsó szó előtt, két olvasható sorra törik", () => {
+  assert.match(source, /authorLabel\.lastIndexOf\(" "\)/);
+  assert.match(source, /block whitespace-nowrap sm:inline/);
+  assert.match(source, /<span className="block sm:inline">\{authorTail\}<\/span>/);
+});
+
 test("az előző, következő és kapcsolódó cikkek az egységes navigációs kártyát követik", () => {
   assert.match(source, /<BackChevronIcon size="sm" tone="accent" \/>/);
   assert.match(source, /<BackChevronIcon size="sm" tone="accent" className="rotate-180" \/>/);
