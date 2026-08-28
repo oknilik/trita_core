@@ -277,6 +277,8 @@ export function PilotContent() {
         </div>
       </section>
 
+      <PilotFactBar locale={locale} />
+
       <EditorialSection
         eyebrow={t("pilot.exchangeEyebrow", locale)}
         title={t("pilot.exchangeTitle", locale)}
@@ -522,6 +524,44 @@ export function PilotContent() {
         </div>
       </section>
     </main>
+  );
+}
+
+const PILOT_FACTS = [1, 2, 3, 4] as const;
+
+// Ténysáv a hero alatt (P0-1): a nagy szám tipográfiája a /how-we-work
+// pilot-teaser „90 NAP" motívumát követi (font-fraunces + text-label unit).
+function PilotFactBar({ locale }: { locale: Locale }) {
+  return (
+    <section aria-label={t("pilot.factsA11y", locale)} className="bg-cream">
+      <div className="mx-auto max-w-[1120px] px-7 pb-16 md:pb-24">
+        <dl className="grid grid-cols-2 overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_16px_40px_rgba(26,26,46,0.05)] lg:grid-cols-4">
+          {PILOT_FACTS.map((fact) => {
+            const unit = t(`pilot.fact${fact}Unit`, locale);
+            return (
+              <div
+                key={fact}
+                className="border-b border-l border-sand p-5 first:border-l-0 md:p-6 max-lg:odd:border-l-0 lg:border-b-0 max-lg:[&:nth-child(n+3)]:border-b-0"
+              >
+                <dd className="flex items-baseline gap-1.5">
+                  <span className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-accent)] md:text-4xl">
+                    {t(`pilot.fact${fact}Value`, locale)}
+                  </span>
+                  {unit ? (
+                    <span className="text-label uppercase text-[var(--color-layer-team-accent)]">
+                      {unit}
+                    </span>
+                  ) : null}
+                </dd>
+                <dt className="mt-2 text-sm leading-relaxed text-ink-body">
+                  {t(`pilot.fact${fact}Label`, locale)}
+                </dt>
+              </div>
+            );
+          })}
+        </dl>
+      </div>
+    </section>
   );
 }
 

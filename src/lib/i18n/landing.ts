@@ -523,6 +523,26 @@ export const landingTranslations = {
     metaChip2: { hu: "Egymásra figyelünk", en: "Open feedback" },
     metaChip3: { hu: "Közös fejlesztés", en: "Shared development" },
 
+    // Ténysáv a hero alatt — a /how-we-work teaser konkrét ígéreteinek
+    // (90 nap, korlátozott létszám) itt kell fedezetet kapniuk. A {{TODO}}
+    // értékeket üzleti döntés tölti ki (ld. brief 0. táblázat).
+    factsA11y: { hu: "A pilot legfontosabb adatai", en: "Key facts about the pilot" },
+    fact1Value: { hu: "90", en: "90" },
+    fact1Unit: { hu: "nap", en: "days" },
+    fact1Label: { hu: "teljes hozzáférés", en: "full access" },
+    fact2Value: { hu: "{{TODO: csapatszám}}", en: "{{TODO: csapatszám}}" },
+    fact2Unit: { hu: "csapat", en: "teams" },
+    fact2Label: { hu: "ennyi partnercsapattal indulunk", en: "partner teams at launch" },
+    fact3Value: { hu: "{{TODO: ár}}", en: "{{TODO: ár}}" },
+    fact3Unit: { hu: "", en: "" },
+    fact3Label: { hu: "a pilot ára", en: "the price of the pilot" },
+    fact4Value: { hu: "2+1", en: "2+1" },
+    fact4Unit: { hu: "alkalom", en: "sessions" },
+    fact4Label: {
+      hu: "két beszélgetés és egy záró visszamérés",
+      en: "two conversations and a closing remeasurement",
+    },
+
     // Partneri hero-vizuál
     partnerVisualA11y: {
       hu: "Ti megosztjátok velünk a tapasztalataitokat, mi pedig figyelünk, kérdezünk és tanulunk belőlük.",
