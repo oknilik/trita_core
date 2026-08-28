@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t } from "@/lib/i18n/public";
 import { ContactForm } from "./ContactForm";
@@ -44,7 +45,7 @@ export function ContactContent() {
       </section>
 
       <section id="contact-form" className="bg-cream">
-        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand/60" />
+        <PageWidthDivider />
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="grid gap-10 lg:grid-cols-[250px_minmax(0,1fr)]">
             <div>
@@ -70,7 +71,7 @@ export function ContactContent() {
             </div>
           </div>
         </div>
-        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand/60" />
+        <PageWidthDivider />
       </section>
     </main>
   );

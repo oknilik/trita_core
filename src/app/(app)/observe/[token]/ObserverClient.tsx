@@ -581,14 +581,14 @@ export function ObserverClient({
           <ThemeToggle variant="compact" />
         </AssessmentFocusHeader>
 
-        <main className="mx-auto flex w-full max-w-[1210px] flex-1 px-3 pb-3 pt-3 sm:px-5 sm:pb-5 lg:px-4 lg:pb-8 lg:pt-4">
+        <main className="mx-auto flex w-full max-w-[1180px] flex-1 px-3 pb-3 pt-3 sm:px-5 sm:pb-5 lg:px-4 lg:pb-8 lg:pt-4">
           <div data-testid="observer-intro-layout" className="grid w-full overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.10)] lg:min-h-[680px] lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]">
             <section className="relative flex min-h-[390px] flex-col justify-between overflow-hidden bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-7 py-9 text-[var(--color-text-on-inverse)] sm:min-h-[430px] sm:px-10 sm:py-11 lg:min-h-0 lg:px-12 lg:py-14">
               <div aria-hidden="true" className="pointer-events-none absolute -right-28 -top-32 h-72 w-72 rounded-full bg-white/[0.05]" />
               <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-white/[0.05]" />
 
               <div className="relative z-10">
-                <p className="text-label uppercase tracking-[0.16em] text-[var(--color-accent-primary-soft)]">
+                <p className="text-label uppercase text-[var(--color-accent-primary-soft)]">
                   {t("observer.introEyebrow", locale)}
                 </p>
                 <h1 className="mt-6 max-w-[470px] font-fraunces text-display font-medium leading-[1.03] tracking-[-0.035em] text-[var(--color-text-on-inverse)] lg:text-hero">
@@ -615,7 +615,7 @@ export function ObserverClient({
             </section>
 
             <section className="flex flex-col justify-center px-5 py-8 sm:px-9 sm:py-10 lg:px-12 lg:py-12">
-              <p className="text-label uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+              <p className="text-label uppercase text-[var(--color-text-muted)]">
                 {t("observer.introFormEyebrow", locale)}
               </p>
               <h2 className="mt-2 font-fraunces text-title font-medium leading-tight tracking-[-0.025em] text-[var(--color-text-primary)] sm:text-display">
@@ -730,7 +730,7 @@ export function ObserverClient({
           <ThemeToggle variant="compact" />
         </AssessmentFocusHeader>
 
-        <main className="mx-auto flex w-full max-w-[1080px] flex-1 items-center px-3 pb-3 pt-3 sm:px-5 sm:pb-5 lg:px-4 lg:pb-8 lg:pt-4">
+        <main className="mx-auto flex w-full max-w-[1180px] flex-1 items-center px-3 pb-3 pt-3 sm:px-5 sm:pb-5 lg:px-4 lg:pb-8 lg:pt-4">
           <div
             data-testid="observer-done-layout"
             className="grid w-full overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.10)] lg:min-h-[540px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
@@ -746,7 +746,7 @@ export function ObserverClient({
                 >
                   ✓
                 </span>
-                <p className="mt-8 text-label uppercase tracking-[0.16em] text-[var(--color-accent-primary-soft)]">
+                <p className="mt-8 text-label uppercase text-[var(--color-accent-primary-soft)]">
                   {t("observer.doneEyebrow", locale)}
                 </p>
                 <h1 className="mt-3 max-w-[430px] font-fraunces text-display font-medium leading-[1.05] tracking-[-0.035em] text-[var(--color-text-on-inverse)] sm:text-hero">
@@ -766,7 +766,7 @@ export function ObserverClient({
             </section>
 
             <section className="flex flex-col justify-center px-5 py-9 sm:px-9 sm:py-11 lg:px-12 lg:py-12">
-              <p className="text-label uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+              <p className="text-label uppercase text-[var(--color-text-muted)]">
                 {t("observer.doneNextEyebrow", locale)}
               </p>
               <h2 className="mt-2 font-fraunces text-title font-medium leading-tight tracking-[-0.025em] text-[var(--color-text-primary)] sm:text-display">

@@ -55,6 +55,17 @@ describe("landing CTA-hierarchia", () => {
     );
   });
 
+  it("mobilon is megtartja a teljes személyes és csapatos eredménykivonatot", () => {
+    const self = render(<HeroSection mode="self" />);
+
+    expect(self.container.querySelector('[data-landing-preview-detail="self-strengths"]')).not.toHaveClass("hidden");
+    expect(self.container.querySelector('[data-landing-preview-detail="self-roles"]')).not.toHaveClass("hidden");
+
+    self.unmount();
+    const team = render(<HeroSection mode="team" />);
+    expect(team.container.querySelector('[data-landing-preview-detail="team-narrative"]')).not.toHaveClass("hidden");
+  });
+
   it("egyéni módban megtartja a teszt és az együttműködés útvonalát", () => {
     render(
       <>

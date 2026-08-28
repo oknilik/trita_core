@@ -116,7 +116,7 @@ function SelfPanel() {
 
         {/* A prototípushoz ténylegesen rendelt két erősség. A négy 50-es
             dimenzió semleges, ezért nem gyártunk melléjük „figyelendő” címkét. */}
-        <div className="mt-5 hidden flex-wrap items-center gap-2 md:flex">
+        <div data-landing-preview-detail="self-strengths" className="mt-5 flex flex-wrap items-center gap-2">
           <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
@@ -135,7 +135,7 @@ function SelfPanel() {
         </div>
 
         {/* A tényleges riport csapatszerep-modelljének két legerősebb becslése. */}
-        <div className="mb-1 mt-5 hidden md:block">
+        <div data-landing-preview-detail="self-roles" className="mb-1 mt-5">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
               {t("landing.selfTeamRolesEyebrow", locale)}
@@ -354,7 +354,8 @@ function TeamPanel() {
         </div>
 
         <div
-          className="mt-3 hidden rounded-r-[14px] p-3.5 md:block"
+          data-landing-preview-detail="team-narrative"
+          className="mt-3 rounded-r-[14px] p-3.5"
           style={{
             borderLeft: "4px solid var(--color-layer-team-accent)",
             background: "color-mix(in srgb, var(--color-layer-team-accent) 10%, var(--color-surface-card))",
@@ -385,14 +386,12 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   const isSelf = mode === "self";
   const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-layer-team-accent)";
   // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 – nagy szövegnek épp
-  // a határon, 11px-es feliratnak bukó. Szöveghez ezért a bronz-skála
-  // sötétebb fokait használjuk; team módban a kanonikus réteg-akcent dolgozik:
-  //   eyebrow (11px)  → accent-primary-strong (bronze-700) – 5.5:1
-  //   H1 em (nagy)    → accent-primary-mid                 – 3.9:1
+  // a határon. A H1 em ezért a bronz-skála középső fokát kapja (3.9:1, nagy
+  // szöveg); az eyebrow kontrasztját a SectionEyebrow tónusai kezelik.
   const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
-  // Tömör CTA-felület fehér szöveggel: self módban bronze-dark, team módban
-  // a valódi team hero első gradiens-stopja. Így a CTA a megfelelő réteghez
-  // tartozik, de mindkét módban megtartja ugyanazt a gomb-anatómiát.
+  // Tömör CTA-felület: self módban bronze-dark, team módban a valódi team
+  // hero első gradiens-stopja. Így a CTA a megfelelő réteghez tartozik, de
+  // mindkét módban megtartja ugyanazt a gomb-anatómiát.
   const ctaBackground = isSelf ? "var(--color-bronze-dark)" : "var(--color-layer-team-hero-from)";
 
   // Detect existing localStorage draft for guest users.
@@ -413,11 +412,12 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               <ModeSwitcher mode={mode} />
             </div>
 
-            <div className={`${riseIn} mb-4`}>
-              <SectionEyebrow tone={isSelf ? "bronze" : "team"}>
-                {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
-              </SectionEyebrow>
-            </div>
+            <SectionEyebrow
+              tone={isSelf ? "bronze" : "team"}
+              className={`${riseIn} mb-4`}
+            >
+              {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
+            </SectionEyebrow>
 
             <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink">
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
@@ -447,7 +447,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 }
                 className={getButtonClassName({
                   size: "lg",
-                  className: "min-h-[54px] w-full px-7 text-base shadow-md hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg sm:w-auto sm:min-w-[280px]",
+                  className: "min-h-[52px] w-full px-7 text-base shadow-md hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg sm:w-auto sm:min-w-[280px]",
                 })}
                 style={{
                   background: ctaBackground,
@@ -455,7 +455,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     ? "var(--color-text-on-accent-deep)"
                     : "var(--color-text-on-inverse)",
                   boxShadow: isSelf
-                    ? "0 4px 14px rgba(154,101,56,0.25)"
+                    ? "0 4px 14px color-mix(in srgb, var(--color-bronze-dark) 25%, transparent)"
                     : "0 4px 14px color-mix(in srgb, var(--color-layer-team-hero-from) 28%, transparent)",
                 }}
               >

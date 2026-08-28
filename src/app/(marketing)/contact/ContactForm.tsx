@@ -4,6 +4,7 @@ import { useId, useMemo, useRef, useState, type FormEvent } from "react";
 import type { Locale } from "@/lib/i18n/public";
 import { t } from "@/lib/i18n/public";
 import { track } from "@/lib/analytics/client";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 type Topic = "demo" | "pricing" | "support" | "partnership" | "other";
 type ContactField = "name" | "email" | "company" | "message";
@@ -147,7 +148,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => setSuccess(false)}
-          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105"
+          className={`mt-6 inline-flex min-h-[52px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 ${FOCUS_RING_CLASS}`}
         >
           {t("contact.sendAnother", locale)}
         </button>
@@ -351,7 +352,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
           ref={submitRef}
           type="submit"
           disabled={loading}
-          className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+          className={`inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 ${FOCUS_RING_CLASS}`}
         >
           {loading ? t("contact.submitting", locale) : t("contact.submit", locale)}
         </button>

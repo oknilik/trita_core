@@ -44,7 +44,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
                 mode: "team",
               })
             }
-            className={`inline-flex min-h-[54px] shrink-0 items-center justify-center rounded-xl bg-[var(--color-layer-team-hero-from)] px-7 text-base font-semibold text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[var(--ui-shadow-lg)] ${FOCUS_RING_CLASS}`}
+            className={`inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-xl bg-[var(--color-layer-team-hero-from)] px-7 text-base font-semibold text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[var(--ui-shadow-lg)] ${FOCUS_RING_CLASS}`}
           >
             {t("landing.ctaTeamCta", locale)}
           </Link>
@@ -80,8 +80,9 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
               })
             }
             className={[
-              "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-heading font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:-translate-y-0.5 hover:shadow-lg",
+              "inline-flex min-h-[52px] items-center justify-center rounded-xl px-7 text-base font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:-translate-y-0.5 hover:shadow-lg",
               "bg-[var(--color-bronze-dark)] hover:bg-[var(--color-accent-primary-strong)]",
+              FOCUS_RING_CLASS,
             ].join(" ")}
           >
             {cta}
