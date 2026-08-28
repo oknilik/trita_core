@@ -531,17 +531,17 @@ export const landingTranslations = {
     partnerVisualEyebrow: { hu: "Partneri pilot", en: "Partner pilot" },
     partnerTeamTitle: { hu: "Ti", en: "Your team" },
     partnerTeamBody: {
-      hu: "Megosztjátok velünk a tapasztalataitokat",
+      hu: "Elmondjátok, mit tapasztaltok",
       en: "Real use and honest experience",
     },
     partnerTritaTitle: { hu: "Mi", en: "trita" },
     partnerTritaBody: {
-      hu: "Figyelünk, kérdezünk és tovább gondolkodunk veletek",
+      hu: "Figyelünk, kérdezünk és tanulunk belőle",
       en: "Attention and openness to improve",
     },
     partnerResultTitle: { hu: "Együtt formáljuk tovább", en: "A program shaped together" },
     partnerResultBody: {
-      hu: "Figyelemből születik",
+      hu: "A tapasztalataitok nyomán",
       en: "Built to work in real team situations",
     },
     partnerVisualNote: {

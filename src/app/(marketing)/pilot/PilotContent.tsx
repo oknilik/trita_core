@@ -84,7 +84,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
               <p className="text-label uppercase text-white/75">
                 {t("pilot.partnerTeamTitle", locale)}
               </p>
-              <p className="mt-1 text-sm leading-snug text-white/85">
+              <p className="mt-1 min-w-0 break-words text-sm leading-snug text-white/85 [overflow-wrap:anywhere]">
                 {t("pilot.partnerTeamBody", locale)}
               </p>
             </div>
@@ -98,7 +98,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
               <p className="text-label uppercase text-white/75">
                 {t("pilot.partnerTritaTitle", locale)}
               </p>
-              <p className="mt-1 text-sm leading-snug text-white/85">
+              <p className="mt-1 min-w-0 break-words text-sm leading-snug text-white/85 [overflow-wrap:anywhere]">
                 {t("pilot.partnerTritaBody", locale)}
               </p>
             </div>
