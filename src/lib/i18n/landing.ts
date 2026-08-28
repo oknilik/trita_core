@@ -529,12 +529,10 @@ export const landingTranslations = {
       en: "The team’s experience and trita’s method shape the program together.",
     },
     partnerVisualEyebrow: { hu: "Partneri pilot", en: "Partner pilot" },
-    partnerTeamTitle: { hu: "Ti", en: "Your team" },
     partnerTeamBody: {
       hu: "Elmondjátok, mit tapasztaltok",
       en: "Real use and honest experience",
     },
-    partnerTritaTitle: { hu: "Mi", en: "trita" },
     partnerTritaBody: {
       hu: "Figyelünk, kérdezünk és tanulunk belőle",
       en: "Attention and openness to improve",
@@ -682,23 +680,23 @@ export const landingTranslations = {
     // Application form section
     formEyebrow: { hu: "Partneri jelentkezés", en: "Partner application" },
     formTitle: {
-      hu: "Lehettek ti a következő partnercsapat.",
+      hu: "Ismerjük meg egymást.",
       en: "You could be our next partner team.",
     },
     formBody: {
-      hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Először kötelezettség nélkül átbeszéljük, mit szeretnétek kipróbálni, és hogyan tudnánk együtt dolgozni.",
+      hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Az első beszélgetésen megismerjük a csapatotokat, átbeszéljük, mire lenne most a legnagyobb szükségetek, és megnézzük, hogyan tudunk együtt dolgozni.",
       en: "Complete the short form and we’ll get back to you within one business day. We’ll first discuss, with no obligation, what you would like to try and how we could work together.",
     },
-    fitEyebrow: { hu: "Nektek való, ha", en: "A good fit if" },
+    fitEyebrow: { hu: "Jó helyen jártok, ha", en: "A good fit if" },
     fitBody: {
-      hu: "van egy együtt dolgozó csapatotok, szívesen kipróbáljátok a tritát valódi helyzetben, és nyitottan megosztjátok velünk a tapasztalataitokat.",
+      hu: "együtt dolgozó csapatként szeretnétek tisztábban látni a működéseteket, nyitottak vagytok a közös gondolkodásra, és készek vagytok egy közösen kiválasztott következő lépést megvalósítani.",
       en: "you have a team that works together, want to try trita in a real setting, and are open to sharing your experience with us.",
     },
 
     // Form fields
-    formHeading: { hu: "Rövid jelentkezés", en: "Quick application" },
+    formHeading: { hu: "Meséljetek a csapatotokról", en: "Quick application" },
     formSubheading: {
-      hu: "Két perc alatt kitölthető. A csapatról szóló kérdéshez egy mondat is elég.",
+      hu: "Két perc alatt kitölthető. Néhány mondat is elég ahhoz, hogy elinduljunk.",
       en: "It takes two minutes. One sentence about your team is enough.",
     },
     formSpotsLabel: { hu: "Partneri pilot", en: "Partner pilot" },
@@ -716,15 +714,15 @@ export const landingTranslations = {
     sizeOption4: { hu: "51–80 fő", en: "51–80 people" },
     sizeOption5: { hu: "80+ fő", en: "80+ people" },
     labelQuestion: {
-      hu: "Mi a legfontosabb kérdésed a csapatoddal kapcsolatban?",
+      hu: "Mi foglalkoztat most leginkább a csapatotokkal kapcsolatban?",
       en: "What's the most important question about your team?",
     },
     placeholderQuestion: {
-      hu: "Opcionális, de sokat segít az első beszélgetéshez.",
+      hu: "Néhány mondat is sokat segít az első beszélgetéshez.",
       en: "Optional, but it helps a lot for the first conversation.",
     },
     submitSending: { hu: "Küldés...", en: "Sending..." },
-    submitDefault: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
+    submitDefault: { hu: "Beszéljünk a csapatotokról", en: "Apply as a partner team" },
     preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
     errorMessage: {
       hu: "Nem sikerült elküldeni. Próbáld újra, vagy írj a hello@trita.io címre.",

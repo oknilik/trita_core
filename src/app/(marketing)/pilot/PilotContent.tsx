@@ -76,29 +76,23 @@ function PartnerVisual({ locale }: { locale: Locale }) {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
+          <article className="flex items-start gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+            <div className="flex size-16 shrink-0 self-center items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
               <span className="font-fraunces text-lg text-white">Ti</span>
             </div>
             <div className="min-w-0">
-              <p className="text-label uppercase text-white/75">
-                {t("pilot.partnerTeamTitle", locale)}
-              </p>
-              <p className="mt-1 min-w-0 break-words text-sm leading-snug text-white/85 [overflow-wrap:anywhere]">
+              <p className="min-w-0 break-words text-sm leading-snug text-white/85 [overflow-wrap:anywhere]">
                 {t("pilot.partnerTeamBody", locale)}
               </p>
             </div>
           </article>
 
-          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
+          <article className="flex items-start gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+            <div className="flex size-16 shrink-0 self-center items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
               <TritaWordmark className="text-[1.15rem] text-white" />
             </div>
             <div className="min-w-0">
-              <p className="text-label uppercase text-white/75">
-                {t("pilot.partnerTritaTitle", locale)}
-              </p>
-              <p className="mt-1 min-w-0 break-words text-sm leading-snug text-white/85 [overflow-wrap:anywhere]">
+              <p className="min-w-0 break-words text-sm leading-snug text-white/85 [overflow-wrap:anywhere]">
                 {t("pilot.partnerTritaBody", locale)}
               </p>
             </div>
