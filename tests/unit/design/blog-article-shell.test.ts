@@ -48,8 +48,10 @@ test("a tartalomjegyzék és a journey CTA ugyanazt a puha felületi rendszert h
   assert.doesNotMatch(ctaSource, /rounded-\[10px\]/);
 });
 
-test("a megosztás mobilon törhet, és minden ikonvezérlőnek van akadálymentes neve", () => {
-  assert.match(source, /w-full border-t border-sand pt-3 sm:ml-auto/);
+test("a megosztás mobilon törhet, de nem rajzol részleges elválasztóvonalat", () => {
+  assert.match(source, /flex flex-wrap items-center/);
+  assert.match(source, /max-\[360px\]:w-full/);
+  assert.doesNotMatch(source, /w-full border-t border-sand/);
   assert.match(shareSource, /aria-label=\{labels\.copyLink\}/);
   assert.match(shareSource, /aria-label="LinkedIn"/);
   assert.match(shareSource, /aria-label="Email"/);

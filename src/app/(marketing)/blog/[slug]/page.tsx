@@ -401,7 +401,7 @@ export default async function BlogPostPage({
         </p>
 
         {/* Szerző-blokk + megosztás (E-E-A-T – összhangban az Article JSON-LD-vel) */}
-        <div className="mb-8 flex items-center gap-3 rounded-[20px] border border-sand bg-surface-card/70 px-3.5 py-3 shadow-[0_10px_30px_rgba(26,26,46,0.035)] sm:px-4">
+        <div className="mb-8 flex flex-wrap items-center gap-3 rounded-[20px] border border-sand bg-surface-card/70 px-3.5 py-3 shadow-[0_10px_30px_rgba(26,26,46,0.035)] sm:flex-nowrap sm:px-4">
           <span
             aria-hidden
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px_18px_15px_17px] bg-[var(--color-action-primary-bg)] font-fraunces text-caption text-[var(--color-action-primary-fg)]"
@@ -420,7 +420,7 @@ export default async function BlogPostPage({
               · {post.readingTime}
             </span>
           </span>
-          <span className="w-full border-t border-sand pt-3 sm:ml-auto sm:w-auto sm:border-0 sm:pt-0">
+          <span className="ml-auto flex shrink-0 justify-end max-[360px]:w-full">
             <ShareRow
               title={post.title}
               labels={{
