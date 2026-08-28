@@ -765,22 +765,25 @@ export const landingTranslations = {
       en: "If the program delivered real value, we ask permission to share a short, agreed testimonial or anonymized account of your experience.",
     },
 
-    // Alapító-blokk (P1-1): referenciák híján pilot fázisban az alapító
-    // személye az elérhető bizonyíték. A bemutatkozó szöveg és a fotó
-    // üzleti input ({{TODO}}); a módszertani mondat a termék valós
-    // állításaiból áll (HEXACO névhasználat user-facing szövegben tilos,
-    // ld. CLAUDE.md — „hatfaktoros személyiségmodell").
-    founderEyebrow: { hu: "Ki áll a trita mögött", en: "Behind trita" },
-    founderTitle: { hu: "Személyesen kísérlek végig", en: "I will guide you personally" },
+    // „Ki kísér végig" blokk (P1-1, átalakítva): a bizalom-funkció a
+    // személyes VÁLLALÁSRA és a módszertanra épül, nem az alapító
+    // bemutatására — fotó és életrajz szándékosan nincs (döntés:
+    // 2026-08-28). A módszertani mondat a termék valós állításaiból áll
+    // (HEXACO névhasználat user-facing szövegben tilos, ld. CLAUDE.md —
+    // „hatfaktoros személyiségmodell").
+    founderEyebrow: { hu: "Ki kísér végig", en: "Who guides you" },
+    founderTitle: {
+      hu: "Nem platformot kaptok, hanem közös munkát.",
+      en: "You don't get a platform — you get shared work.",
+    },
     founderBody: {
-      hu: "{{TODO: alapító bemutatkozó — 3–4 mondat: ki vagy, szakmai háttér, miért ezt építed}}",
-      en: "{{TODO_EN: alapító bemutatkozó}}",
+      hu: "A pilotban minden csapattal a trita alapítója dolgozik végig: ő ellenőrzi a csapatképet, ő vezeti a közös értelmezést, és őt éritek el közvetlenül a program teljes ideje alatt.",
+      en: "In the pilot, trita's founder works with every team from start to finish: reviewing the team picture, leading the joint interpretation, and staying directly reachable throughout the program.",
     },
     founderMethod: {
       hu: "A felmérés a hatfaktoros személyiségmodellre épül, szabadon felhasználható, kutatásban használt kérdésbankból — a csapatkép minden eleménél jelöljük, mi mért adat és mi becslés.",
       en: "The assessment builds on the six-factor personality model, using an openly available question bank used in research — every element of the team picture is labeled as measured data or estimate.",
     },
-    founderPhotoAlt: { hu: "{{TODO: alapító neve}}", en: "{{TODO: alapító neve}}" },
 
     // Application form section
     formEyebrow: { hu: "Partneri jelentkezés", en: "Partner application" },

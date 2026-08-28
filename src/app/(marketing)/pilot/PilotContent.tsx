@@ -540,37 +540,25 @@ export function PilotContent() {
   );
 }
 
-// Alapító-blokk (P1-1): fotó balra, rövid szöveg jobbra, mobilon egymás
-// alá. Amíg nincs fotó ({{TODO}}), a hero-vizuál organikus blob-formája ad
-// helyet a monogramnak — fotónál a span helyére next/image kerül.
+// „Ki kísér végig" blokk (P1-1, átalakítva): fotó és életrajz nélkül — a
+// bizalmat a személyes vállalás és a módszertani horgony hordozza, nem az
+// alapító bemutatása.
 function FounderSection({ locale }: { locale: Locale }) {
   return (
     <section className="bg-cream">
       <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
       <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
-        <div className="grid items-center gap-8 rounded-[28px] border border-sand bg-warm p-6 md:grid-cols-[200px_minmax(0,1fr)] md:p-9">
-          <div
-            aria-label={t("pilot.founderPhotoAlt", locale)}
-            role="img"
-            className="mx-auto flex size-40 items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-sand bg-[var(--color-layer-team-soft)] md:size-48"
-          >
-            {/* {{TODO: fotó}} — addig monogram-placeholder */}
-            <span aria-hidden="true" className="font-fraunces text-4xl text-[var(--color-layer-team-accent)]">
-              D
-            </span>
-          </div>
-          <div>
-            <SectionEyebrow tone="team">{t("pilot.founderEyebrow", locale)}</SectionEyebrow>
-            <h2 className="mt-3 font-fraunces text-2xl leading-tight text-ink md:text-3xl">
-              {t("pilot.founderTitle", locale)}
-            </h2>
-            <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-body">
-              {t("pilot.founderBody", locale)}
-            </p>
-            <p className="mt-4 max-w-[62ch] text-sm leading-relaxed text-ink-body">
-              {t("pilot.founderMethod", locale)}
-            </p>
-          </div>
+        <div className="rounded-[28px] border border-sand bg-warm p-6 md:p-9">
+          <SectionEyebrow tone="team">{t("pilot.founderEyebrow", locale)}</SectionEyebrow>
+          <h2 className="mt-3 max-w-[22ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+            {t("pilot.founderTitle", locale)}
+          </h2>
+          <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-body">
+            {t("pilot.founderBody", locale)}
+          </p>
+          <p className="mt-4 max-w-[62ch] text-sm leading-relaxed text-ink-body">
+            {t("pilot.founderMethod", locale)}
+          </p>
         </div>
       </div>
     </section>
