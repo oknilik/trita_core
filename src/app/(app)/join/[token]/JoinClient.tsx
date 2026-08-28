@@ -216,7 +216,7 @@ export function JoinClient({
             <SectionEyebrow className="mb-1">
               {copy.inviteEyebrow}
             </SectionEyebrow>
-            <h1 className="font-fraunces text-3xl text-ink">
+            <h1 className="font-fraunces text-display text-ink">
               {copy.title}
             </h1>
             <p className="mt-2 text-sm text-ink-body/70">
@@ -273,7 +273,7 @@ export function JoinClient({
                 <SectionEyebrow className="mb-1">
                   {copy.switchEyebrow}
                 </SectionEyebrow>
-                <h2 className="font-fraunces text-2xl text-ink">
+                <h2 className="font-fraunces text-title text-ink">
                   {copy.switchTitle}
                 </h2>
                 <p className="mt-2 text-sm text-ink-body">
@@ -312,7 +312,7 @@ export function JoinClient({
                 <SectionEyebrow className="mb-1">
                   {copy.joinEyebrow}
                 </SectionEyebrow>
-                <h2 className="font-fraunces text-2xl text-ink">
+                <h2 className="font-fraunces text-title text-ink">
                   {copy.welcomePrefix}
                   {existingProfile?.username ? `, ${existingProfile.username}` : ""}!
                 </h2>
@@ -349,7 +349,7 @@ export function JoinClient({
                 <SectionEyebrow className="mb-1">
                   {copy.step1Eyebrow}
                 </SectionEyebrow>
-                <h2 className="font-fraunces text-2xl text-ink">{copy.step1Title}</h2>
+                <h2 className="font-fraunces text-title text-ink">{copy.step1Title}</h2>
                 <p className="mt-1 text-sm text-ink-body/70">
                   {copy.step1Sub}
                 </p>
@@ -433,7 +433,7 @@ export function JoinClient({
                 <SectionEyebrow className="mb-1">
                   {copy.step2Eyebrow}
                 </SectionEyebrow>
-                <h2 className="font-fraunces text-2xl text-ink">{copy.step2Title}</h2>
+                <h2 className="font-fraunces text-title text-ink">{copy.step2Title}</h2>
               </div>
 
               <label className="flex cursor-pointer items-start gap-3 rounded-lg p-2">

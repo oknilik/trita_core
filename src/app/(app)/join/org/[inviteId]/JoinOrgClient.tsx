@@ -152,7 +152,7 @@ export function JoinOrgClient({
             <SectionEyebrow className="mb-1">
               {copy.inviteEyebrow}
             </SectionEyebrow>
-            <h1 className="font-fraunces text-3xl text-ink">
+            <h1 className="font-fraunces text-display text-ink">
               {copy.pageTitle}
             </h1>
             <p className="mt-2 text-sm text-ink-body/70">
@@ -273,7 +273,7 @@ export function JoinOrgClient({
                 <SectionEyebrow className="mb-1">
                   {copy.joinEyebrow}
                 </SectionEyebrow>
-                <h2 className="font-fraunces text-2xl text-ink">
+                <h2 className="font-fraunces text-title text-ink">
                   {copy.welcome}
                   {existingProfile?.username ? `, ${existingProfile.username}` : ""}!
                 </h2>
