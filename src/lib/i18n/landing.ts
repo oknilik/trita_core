@@ -78,7 +78,9 @@ export const landingTranslations = {
     selfTeamRolesNote: { hu: "A pontos képhez külön csapatszerep-kérdőív tartozik.", en: "A separate team-role questionnaire provides the precise picture." },
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
     // HeroSection – team
-    teamEyebrow: { hu: "CSAPATINTELLIGENCIA PLATFORM", en: "TEAM INTELLIGENCE PLATFORM" },
+    // 2026-08-28: „CSAPATINTELLIGENCIA PLATFORM" helyett — a gépies
+    // kategória-címke a „nem csak platform" üzenet ellen dolgozott.
+    teamEyebrow: { hu: "Közös kép a csapatotokról", en: "A shared picture of your team" },
     teamHeadlineBefore: { hu: "Értsétek meg jobban a ", en: "Better understand your " },
     teamHeadlineEm: { hu: "csapatotok működését.", en: "team's dynamics." },
     teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt – a csapatotok valódi dinamikáját. Így még azelőtt felismerhetitek a feszültségeket, hogy konfliktussá válnának, és azt is, mire építhettek együtt.", en: "trita reveals what was previously invisible – your team's true dynamics. This helps you recognize tensions before they turn into conflict, while also showing what you can build on together." },
@@ -227,8 +229,7 @@ export const landingTranslations = {
       hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd átlátható keretet kaptok: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül.",
       en: "In a short conversation, we clarify the goal, then give you a transparent scope: who takes part, what we measure, what you receive, and what it costs.",
     },
-    outcomeVisualEyebrow: { hu: "Amivel továbbmentek", en: "What you leave with" },
-    outcomeVisualBadge: { hu: "3 eredmény", en: "3 outcomes" },
+    outcomeVisualEyebrow: { hu: "Ezt viszitek magatokkal", en: "What you take with you" },
     outcome1Title: { hu: "Tisztább csapatkép", en: "A clearer team picture" },
     outcome1Body: {
       hu: "Látható erősségek és feszültségpontok",
@@ -626,10 +627,6 @@ export const landingTranslations = {
       en: "Attention and openness to improve",
     },
     partnerResultTitle: { hu: "Együtt formáljuk tovább", en: "A program shaped together" },
-    partnerResultBody: {
-      hu: "A tapasztalataitok nyomán",
-      en: "Built to work in real team situations",
-    },
     partnerVisualNote: {
       hu: "Ti elmondjátok, mit tapasztaltok, mi pedig kérdezünk, figyelünk és tanulunk belőle. Így fejlődik tovább a trita veletek együtt.",
       en: "We consider your suggestions together and build in what creates genuine value.",
@@ -814,7 +811,6 @@ export const landingTranslations = {
       hu: "Két perc alatt kitölthető. Néhány mondat is elég ahhoz, hogy elinduljunk.",
       en: "It takes two minutes. One sentence about your team is enough.",
     },
-    formSpotsLabel: { hu: "Partneri pilot", en: "Partner pilot" },
     labelName: { hu: "Név", en: "Name" },
     placeholderName: { hu: "Teljes neved", en: "Full name" },
     labelEmail: { hu: "Email", en: "Email" },

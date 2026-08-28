@@ -66,14 +66,10 @@ function PartnerVisual({ locale }: { locale: Locale }) {
       </div>
 
       <div aria-hidden="true" className="relative">
-        <div className="mb-5 flex items-center justify-between gap-4">
+        <div className="mb-5">
           <p className="text-label uppercase tracking-[0.12em] text-white/65">
             {t("pilot.partnerVisualEyebrow", locale)}
           </p>
-          <span className="inline-flex items-center gap-2 text-note text-white/70">
-            <span className="size-2 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_4px_rgba(232,178,118,0.12)]" />
-            {t("pilot.metaChip2", locale)}
-          </span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
@@ -105,10 +101,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
 
           <div className="relative flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-label uppercase text-[var(--color-layer-team-accent)]">
-                {t("pilot.partnerResultBody", locale)}
-              </p>
-              <h3 className="mt-2 max-w-[16ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+              <h3 className="max-w-[16ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
                 {t("pilot.partnerResultTitle", locale)}
               </h3>
             </div>
@@ -361,16 +354,11 @@ export function PilotContent() {
               </div>
             ) : (
               <>
-                <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-sand pb-5">
-                  <div>
-                    <p className="font-fraunces text-title leading-tight text-ink">{t("pilot.formHeading", locale)}</p>
-                    <p className="mt-1 text-sm leading-6 text-ink-body">
-                      {t("pilot.formSubheading", locale)}
-                    </p>
-                  </div>
-                  <span className="rounded-full border border-[var(--color-layer-team-accent)]/20 bg-[var(--color-layer-team-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
-                    {t("pilot.formSpotsLabel", locale)}
-                  </span>
+                <div className="mb-8 border-b border-sand pb-5">
+                  <p className="font-fraunces text-title leading-tight text-ink">{t("pilot.formHeading", locale)}</p>
+                  <p className="mt-1 text-sm leading-6 text-ink-body">
+                    {t("pilot.formSubheading", locale)}
+                  </p>
                 </div>
 
                 <form

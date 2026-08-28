@@ -30,9 +30,6 @@ function CollaborationVisual({ locale }: { locale: "hu" | "en" }) {
           <p className="text-label uppercase text-[var(--color-text-on-inverse-muted)]">
             {t("pricing.outcomeVisualEyebrow", locale)}
           </p>
-          <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-note text-[var(--color-text-on-inverse-muted)]">
-            {t("pricing.outcomeVisualBadge", locale)}
-          </span>
         </div>
 
         <div className="mx-auto my-6 w-full max-w-[330px]">
