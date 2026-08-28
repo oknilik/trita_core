@@ -1,8 +1,8 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { AboutHorizonArt } from "@/components/marketing/AboutHorizonArt";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
-import { EditorialArt, artKeyFrom } from "@/components/ui/EditorialArt";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t } from "@/lib/i18n/public";
 
@@ -26,10 +26,10 @@ export function AboutContent() {
         <p className="mt-6 max-w-[58ch] text-lg leading-relaxed text-ink-body">{t("about.heroBody", locale)}</p>
       </section>
 
-      {/* Konstelláció-sáv — egyetlen nagy felület, ezért itt a szabad
-          kompozíció a helyes eszköz, nem a SectionTransition. */}
-      <div className="mx-auto max-w-[860px] px-7 pb-10 pt-8 md:pb-14">
-        <EditorialArt artKey={artKeyFrom("about", "hero")} width={860} height={200} />
+      {/* „Horizont” — fixen komponált tájkép-sáv; alacsony, nyugodt átkötés
+          a hero és az elvek között. */}
+      <div className="mx-auto max-w-[900px] px-7 pb-8 pt-9 md:pb-12">
+        <AboutHorizonArt />
       </div>
 
       <section className="border-t border-sand">
