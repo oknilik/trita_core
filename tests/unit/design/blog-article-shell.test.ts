@@ -19,3 +19,11 @@ test("a cikkfejléc a publikus felületek puhább kártyanyelvét követi", () =
   assert.match(source, /rounded-\[24px\] border border-sand/);
   assert.match(source, /sm:rounded-\[28px\]/);
 });
+
+test("az MDX szerkesztői blokkok nem használják a régi tízpixeles kártyasugarat", () => {
+  assert.doesNotMatch(source, /rounded-\[10px\]/);
+  assert.match(source, /function Callout[\s\S]*?rounded-\[20px\]/);
+  assert.match(source, /function StatCard[\s\S]*?rounded-\[18px\]/);
+  assert.match(source, /function CompareTable[\s\S]*?rounded-\[20px\]/);
+  assert.match(source, /function KeyInsight[\s\S]*?rounded-\[20px\]/);
+});

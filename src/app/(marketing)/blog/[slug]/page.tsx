@@ -89,7 +89,7 @@ function getTagStyle(tag: string): string {
 
 function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-heading italic leading-[1.65] text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit [&_p]:leading-[1.65]">
+    <div className="my-8 rounded-[20px] border border-[var(--color-surface-self-border)] border-l-[3px] border-l-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-heading italic leading-[1.65] text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit [&_p]:leading-[1.65]">
       {children}
     </div>
   );
@@ -97,7 +97,7 @@ function Callout({ children }: { children: React.ReactNode }) {
 
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-1 flex-col items-center rounded-[10px] border border-[var(--color-border-default)] bg-surface-card px-6 py-5 text-center">
+    <div className="flex flex-1 flex-col items-center rounded-[18px] border border-[var(--color-border-default)] bg-surface-card px-6 py-5 text-center shadow-[0_10px_28px_rgba(26,26,46,0.03)]">
       <span className="font-fraunces text-heading leading-none text-[var(--color-action-primary-bg)]">{value}</span>
       <span className="mt-1.5 text-note leading-[1.4] text-[var(--color-text-muted)]">{label}</span>
     </div>
@@ -162,7 +162,7 @@ function CompareTable({
   // oszlopcímkével (a fejléc-sáv csak md:-től látszik) – 320px-en a
   // 2×~92px-es hasábokban a hosszú szakkifejezések olvashatatlanok.
   return (
-    <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
+    <div className="my-8 overflow-hidden rounded-[20px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_12px_32px_rgba(26,26,46,0.035)]">
       <div className="hidden grid-cols-2 md:grid">
         <div className="bg-surface-card px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
           {leftLabel}
@@ -208,7 +208,7 @@ function PullQuote({ children, source }: { children: React.ReactNode; source?: s
 
 function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu?: boolean }) {
   return (
-    <div className="my-8 rounded-[10px] bg-[var(--color-surface-inverse)] px-6 py-5">
+    <div className="my-8 rounded-[20px] bg-[var(--color-surface-inverse)] px-6 py-6 shadow-[0_18px_40px_rgba(26,26,46,0.10)]">
       <SectionEyebrow as="div" tone="onDark" className="mb-2">
         {isHu ? "kulcsgondolat" : "key insight"}
       </SectionEyebrow>
@@ -263,7 +263,7 @@ const makeComponents = (isHu: boolean) => ({
   ),
   blockquote: (props: React.HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
-      className="my-8 rounded-r-[10px] border-l-[2.5px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] py-4 pl-6 pr-5 italic text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit"
+      className="my-8 rounded-[20px] border border-[var(--color-surface-self-border)] border-l-[3px] border-l-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] py-5 pl-6 pr-5 italic text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit"
       {...props}
     />
   ),
