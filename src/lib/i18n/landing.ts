@@ -309,15 +309,15 @@ export const landingTranslations = {
     pilotEyebrow: { hu: "pilotprogram", en: "pilot program" },
     pilotTitle: { hu: "Pilotprogram – az első partnercsapatainknak", en: "Pilot program – for our first partner teams" },
     pilotBody: {
-      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Az első {{TODO: csapatszám}} partnercsapattal indulunk.",
-      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with the first {{TODO: csapatszám}} partner teams.",
+      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Az első 5 partnercsapattal indulunk.",
+      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with the first 5 partner teams.",
     },
     pilotCta: { hu: "Részletek", en: "Details" },
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
     faqQ1: { hu: "Mennyibe kerül?", en: "How much does it cost?" },
     faqA1: {
-      hu: "Az egyéni felmérés ingyenes. A csapat- és szervezeti programok ára a létszámtól és a program terjedelmétől függ – az első egyeztetés után egyedi ajánlatot kapsz. Nagyságrendként: {{TODO: ár-horgony}}.",
-      en: "The individual assessment is free. Team and organizational program pricing depends on headcount and scope – you get an individual quote after the first conversation. As a rough anchor: {{TODO: ár-horgony}}.",
+      hu: "Az egyéni felmérés ingyenes. A csapat- és szervezeti programok ára a létszámtól és a program terjedelmétől függ – az első egyeztetés után egyedi ajánlatot kapsz.",
+      en: "The individual assessment is free. Team and organizational program pricing depends on headcount and scope – you get an individual quote after the first conversation.",
     },
     faqQ2: { hu: "Miért nincsenek listaárak?", en: "Why are there no list prices?" },
     faqA2: {
@@ -340,9 +340,13 @@ export const landingTranslations = {
       hu: "Ki látja az egyéni eredményeket?",
       en: "Who can see individual results?",
     },
+    // A válasz a platform tényleges jogosultsági szabályait tükrözi
+    // (team-auth.ts: canViewRawTeamResults csak ORG_CONSULTANT;
+    // anonymity.ts: MIN_RATERS_FOR_ANONYMOUS_AGGREGATE = 3) — ha ezek
+    // változnak, ezt a szöveget is frissíteni KELL.
     faqA5: {
-      hu: "{{TODO: eredmény-láthatóság — pontos, védhető megfogalmazás}}",
-      en: "{{TODO_EN: eredmény-láthatóság}}",
+      hu: "Mindenki a saját eredményét látja, teljes részletességgel. A vezető és a céges adminisztrátor nem fér hozzá a tagok egyéni, dimenziónkénti eredményeihez – ők azt látják, ki töltötte ki a felmérést, valamint az összesített, csapatszintű riportot. Név szerinti egyéni profilokkal kizárólag a tanácsadó dolgozik a csapatkép ellenőrzésekor. A bizalmi és pszichológiai biztonság kérdésekre adott válaszok anonimok, és csak legalább három fő válaszából, összesítve jelennek meg.",
+      en: "Everyone sees their own results in full detail. The leader and the company administrator cannot access members' individual, per-dimension results – they see who has completed the assessment and the aggregated, team-level report. Only the consultant works with named individual profiles when reviewing the team picture. Answers to the trust and psychological safety questions are anonymous and only appear aggregated from at least three people's responses.",
     },
     // P2-1: a számok a program meglévő, máshol is kommunikált elemei
     // (~10 perces kitöltés, 60 perces workshop, két 20–30 perces
@@ -569,8 +573,8 @@ export const landingTranslations = {
     // Hero – partneri meghívás
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
     badge: {
-      hu: "Az első {{TODO: csapatszám}} partnercsapatnak",
-      en: "For our first {{TODO: csapatszám}} partner teams",
+      hu: "Az első 5 partnercsapatnak",
+      en: "For our first 5 partner teams",
     },
     heroTitle: { hu: "A kivételes dolgok akkor születnek, ", en: "Don’t just try it. " },
     heroTitleEm: { hu: "amikor igazán figyelünk egymásra.", en: "Shape it with us." },
@@ -591,12 +595,15 @@ export const landingTranslations = {
     fact1Value: { hu: "90", en: "90" },
     fact1Unit: { hu: "nap", en: "days" },
     fact1Label: { hu: "teljes hozzáférés", en: "full access" },
-    fact2Value: { hu: "{{TODO: csapatszám}}", en: "{{TODO: csapatszám}}" },
+    fact2Value: { hu: "5", en: "5" },
     fact2Unit: { hu: "csapat", en: "teams" },
     fact2Label: { hu: "ennyi partnercsapattal indulunk", en: "partner teams at launch" },
-    fact3Value: { hu: "{{TODO: ár}}", en: "{{TODO: ár}}" },
-    fact3Unit: { hu: "", en: "" },
-    fact3Label: { hu: "a pilot ára", en: "the price of the pilot" },
+    fact3Value: { hu: "Egyedi", en: "Custom" },
+    fact3Unit: { hu: "ár", en: "price" },
+    fact3Label: {
+      hu: "kedvezményes partneri feltételekkel",
+      en: "with discounted partner terms",
+    },
     fact4Value: { hu: "2+1", en: "2+1" },
     fact4Unit: { hu: "alkalom", en: "sessions" },
     fact4Label: {
@@ -788,8 +795,8 @@ export const landingTranslations = {
     // P0-4: egymondatos adatvédelmi utalás az űrlap mellett; a pontos
     // láthatósági szabály a /how-we-work GYIK-ben és az Adatkezelésben él.
     privacyNote: {
-      hu: "{{TODO: egymondatos összefoglaló arról, ki látja az egyéni eredményeket}}",
-      en: "{{TODO_EN: eredmény-láthatóság egy mondatban}}",
+      hu: "Az egyéni eredményeket csak a kitöltő és a tanácsadó látja – a vezető összesített csapatképet kap.",
+      en: "Individual results are visible only to the person and the consultant – the leader receives an aggregated team picture.",
     },
     privacyNoteLink: { hu: "Részletek az Adatkezelésben", en: "Details in the Privacy Policy" },
     fitEyebrow: { hu: "Jó helyen jártok, ha", en: "A good fit if" },
