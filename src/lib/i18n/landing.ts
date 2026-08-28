@@ -862,89 +862,57 @@ export const landingTranslations = {
       en: "We will contact you personally at the provided email address within one business day.",
     },
   },
-  // ── /about – összevont bemutatkozó oldal ────────────────────────────
-  // A korábbi /about és /rolunk tartalma egy rövidebb, tanácsadói fókuszú
-  // történetté állt össze. A részletes folyamat és ajánlat továbbra is a
-  // /how-we-work és /pilot oldalakon él.
+  // ── /about – bemutatkozó oldal („Meleg levél” irány, 2026-08-28) ────
+  // Tömör, személyes hangvétel: hero + konstelláció-sáv + három elv +
+  // történet + kijelentés + CTA. A folyamat részletei a /how-we-work
+  // oldalon élnek, ezért itt nincs lépés-lista.
   about: {
-    heroEyebrow: { hu: "A trita mögött", en: "Behind trita" },
-    heroTitleBefore: { hu: "Egy tanácsadói műhely, amely ", en: "A consulting practice that makes " },
-    heroTitleEm: { hu: "mérhetővé teszi a közös munkát.", en: "teamwork measurable." },
+    heroEyebrow: { hu: "Rólunk", en: "About us" },
+    heroTitleBefore: { hu: "Szia, mi vagyunk a ", en: "Hi, we are " },
+    heroTitleEm: { hu: "trita.", en: "trita." },
     heroBody: {
-      hu: "A platformot a saját csapatdiagnosztikai munkánkhoz építettük. A mérés képet ad; a közös értelmezésből lesz döntés és kipróbálható változtatás.",
-      en: "We built the platform for our own team diagnostic work. Measurement provides the picture; joint interpretation turns it into a decision and a change the team can test.",
+      hu: "Abban segítünk csapatoknak, hogy értsék, hogyan működnek együtt. Nem tesztet adunk el, hanem közös munkát: mérünk, értelmezünk, és veletek visszük végig, amit az eredmények mutatnak.",
+      en: "We help teams understand how they work together. We don't sell a test – we do the work with you: we measure, interpret, and follow through together on what the results show.",
     },
-    heroCtaPrimary: { hu: "Beszéljünk a csapatotokról", en: "Let's talk about your team" },
-    heroCtaSecondary: { hu: "Így dolgozunk", en: "How we work" },
 
-    principlesEyebrow: { hu: "Ami nálunk nem alku tárgya", en: "Our non-negotiables" },
-    principle1Title: { hu: "Tanácsadó vezeti", en: "Consultant-led" },
+    principlesEyebrow: { hu: "Három elv, amihez tartjuk magunkat", en: "Three principles we hold ourselves to" },
+    principle1Title: { hu: "Mért, nem megérzett", en: "Measured, not guessed" },
     principle1Desc: {
-      hu: "A platform a közös munka eszköze, nem a tanácsadói értelmezés helyettesítője.",
-      en: "The platform supports the joint work; it does not replace interpretation by a consultant.",
+      hu: "Minden állítás mögött adat áll – és mindig jelöljük, mi mért és mi becsült.",
+      en: "Every claim is backed by data – and we always mark what is measured and what is estimated.",
     },
-    principle2Title: { hu: "Mért és becsült külön marad", en: "Measured and estimated stay separate" },
+    principle2Title: { hu: "Ember értelmezi", en: "Interpreted by people" },
     principle2Desc: {
-      hu: "Minden kimeneten világosan jelöljük, mi származik mérésből, és mi módszertani becslés.",
-      en: "Every output clearly distinguishes measured data from methodological estimates.",
+      hu: "Az összképet tanácsadó rakja össze és beszéli át veletek – nem algoritmus dobja ki.",
+      en: "The overall picture is put together and talked through with you by a consultant – it is not spat out by an algorithm.",
     },
-    principle3Title: { hu: "Nincs emberranglista", en: "No ranking people" },
+    principle3Title: { hu: "A csapaté az eredmény", en: "The results belong to the team" },
     principle3Desc: {
-      hu: "A csapatképet nem kiválasztásra, teljesítményértékelésre vagy emberek címkézésére használjuk.",
-      en: "The team picture is not used for selection, performance appraisal or labelling people.",
+      hu: "A publikált kép mindig aggregált: egyéni értékek nem kerülnek ki belőle.",
+      en: "The published picture is always aggregated: individual values never leave it.",
     },
 
-    storyEyebrow: { hu: "Miért építjük", en: "Why we built it" },
+    storyEyebrow: { hu: "Honnan jövünk", en: "Where we come from" },
     storyTitle: {
-      hu: "Hogy a fontos mintázatok még időben kimondhatóvá váljanak.",
-      en: "So that important patterns can be named while there is still time to act.",
+      hu: "A trita sok év csapatokkal töltött munkából nőtt ki.",
+      en: "trita grew out of many years spent working with teams.",
     },
     storyBody: {
-      hu: "Tanácsadóként újra és újra azt láttuk, hogy a csapatok sok mindent pontosan érzékelnek, de nincs közös nyelvük ahhoz, hogy beszéljenek róla. A trita ebből az igényből született: először a saját munkánkhoz építettünk eszközt, majd olyan platformmá fejlesztettük, amelyben a mérés, az emberi értelmezés és a változás követése egy folyamatban marad.",
-      en: "As consultants, we repeatedly saw teams sense important dynamics accurately but lack a shared language for discussing them. trita grew from that need: first as a tool for our own work, then as a platform that keeps measurement, human interpretation and follow-up in one coherent process.",
-    },
-
-    stepsEyebrow: { hu: "Hogyan áll össze a kép", en: "How the picture comes together" },
-    stepsTitle: {
-      hu: "Mérésből közös megértés, majd követhető változás.",
-      en: "From measurement to shared understanding and observable change.",
-    },
-    stepsLead: {
-      hu: "A négy lépés egymásra épül. A mélyebb csapatértelmezést minden esetben tanácsadó ellenőrzi és vezeti.",
-      en: "The four steps build on one another. Deeper team interpretation is always reviewed and led by a consultant.",
-    },
-    step1Title: { hu: "Egyéni profil", en: "Individual profile" },
-    step1Desc: {
-      hu: "A munkával kapcsolatos preferenciák és lehetséges fejlődési fókuszok kiindulópontja.",
-      en: "A starting point for work-related preferences and possible development areas.",
-    },
-    step2Title: { hu: "Csapatmérés", en: "Team measurement" },
-    step2Desc: {
-      hu: "Aggregált kép, amelyhez mért bizalmi háló és pszichológiai biztonság felmérés kapcsolódhat.",
-      en: "An aggregated picture that can include a measured trust network and a psychological safety survey.",
-    },
-    step3Title: { hu: "Közös értelmezés", en: "Joint interpretation" },
-    step3Desc: {
-      hu: "A tanácsadó által ellenőrzött csapatképet workshopon fordítjuk át konkrét döntésekre.",
-      en: "In a workshop, the consultant-reviewed team picture is translated into concrete decisions.",
-    },
-    step4Title: { hu: "Visszamérés", en: "Follow-up measurement" },
-    step4Desc: {
-      hu: "A következő körben azt vizsgáljuk meg, mi változott a vállalt beavatkozás után.",
-      en: "The next round examines what changed after the team tested its agreed intervention.",
+      hu: "Éveken át dolgoztunk csapatokban és vezettünk csapatokat – közelről láttuk, hogy a legjobb és a legnehezebb pillanatok is ugyanabból fakadnak: abból, ahogy az emberek egymáshoz kapcsolódnak. A működésről szóló beszélgetések mégis legtöbbször benyomásokra épülnek. A tritát azért építjük, hogy ezeknek a beszélgetéseknek mérhető alapja legyen – és a csapat később is visszatérhessen az eredményeihez.",
+      en: "We spent years working in teams and leading teams – and saw up close that the best and the hardest moments spring from the same source: how people connect with each other. Yet conversations about how a team works are still mostly built on impressions. We are building trita so those conversations have a measurable foundation – and so the team can return to its results later.",
     },
 
     statement: {
-      hu: "Nem embereket akarunk „kezelni”. Közös nyelvet adunk ahhoz, ami a csapatban már amúgy is történik.",
-      en: "We are not here to “manage” people. We provide a shared language for what is already happening in the team.",
+      hu: "A jó csapat nem véletlen. Mintázat – és a mintázat tanulható.",
+      en: "A good team is not luck. It is a pattern – and patterns can be learned.",
     },
 
-    ctaTitle: { hu: "Kezdjük egy beszélgetéssel.", en: "Let's start with a conversation." },
+    ctaTitle: { hu: "Beszélgessünk a csapatodról.", en: "Let's talk about your team." },
     ctaBody: {
-      hu: "Ha van egy csapathelyzet, amelyet érdemes lenne tisztábban látni, a pilotprogramban kis léptékben, világos keretek között próbálhatjuk ki a közös munkát.",
-      en: "If there is a team situation worth seeing more clearly, the pilot program lets us test the work together on a small scale and within clear boundaries.",
+      hu: "Fél óra, kötelezettség nélkül – elmondjuk, hogyan dolgoznánk veletek.",
+      en: "Half an hour, no strings attached – we'll tell you how we would work with you.",
     },
-    ctaPrimary: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
-    ctaSecondary: { hu: "Kapcsolatfelvétel", en: "Get in touch" },
+    ctaPrimary: { hu: "Írj nekünk", en: "Write to us" },
+    ctaSecondary: { hu: "Így dolgozunk", en: "How we work" },
   },
 } as const;
