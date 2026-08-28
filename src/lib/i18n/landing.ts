@@ -773,16 +773,16 @@ export const landingTranslations = {
     // „hatfaktoros személyiségmodell").
     founderEyebrow: { hu: "Ki kísér végig", en: "Who guides you" },
     founderTitle: {
-      hu: "Nem platformot kaptok, hanem közös munkát.",
-      en: "You don't get a platform — you get shared work.",
+      hu: "Nem csak platformot kaptok, hanem közös munkát.",
+      en: "You get more than a platform — you get shared work.",
     },
     founderBody: {
       hu: "A pilotban minden csapattal a trita alapítója dolgozik végig: ő ellenőrzi a csapatképet, ő vezeti a közös értelmezést, és őt éritek el közvetlenül a program teljes ideje alatt.",
       en: "In the pilot, trita's founder works with every team from start to finish: reviewing the team picture, leading the joint interpretation, and staying directly reachable throughout the program.",
     },
     founderMethod: {
-      hu: "A felmérés a hatfaktoros személyiségmodellre épül, szabadon felhasználható, kutatásban használt kérdésbankból — a csapatkép minden eleménél jelöljük, mi mért adat és mi becslés.",
-      en: "The assessment builds on the six-factor personality model, using an openly available question bank used in research — every element of the team picture is labeled as measured data or estimate.",
+      hu: "A csapatkép több rétegből áll össze: hat dimenzió mentén mért személyiségprofilok, csapatszerepek és a pszichológiai biztonság névtelen mérése — és minden eleménél jelöljük, mi mért adat és mi becslés.",
+      en: "The team picture builds up from several layers: personality profiles measured across six dimensions, team roles, and an anonymous measure of psychological safety — and every element is labeled as measured data or estimate.",
     },
 
     // Application form section

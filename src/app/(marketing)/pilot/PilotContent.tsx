@@ -77,7 +77,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <article className="flex items-start gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
             <div className="flex size-16 shrink-0 self-center items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
               <span className="font-fraunces text-lg text-white">Ti</span>
             </div>
@@ -88,7 +88,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
             </div>
           </article>
 
-          <article className="flex items-start gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
             <div className="flex size-16 shrink-0 self-center items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
               <TritaWordmark className="text-[1.15rem] text-white" />
             </div>
@@ -331,10 +331,10 @@ export function PilotContent() {
               </p>
             </div>
             <p className="mt-5 text-sm leading-6 text-ink-body">
-              {t("pilot.privacyNote", locale)}{" "}
+              {t("pilot.privacyNote", locale)}
               <a
                 href="/privacy"
-                className="font-medium text-sage transition-colors hover:text-sage-dark"
+                className="mt-1 block w-fit font-medium text-sage transition-colors hover:text-sage-dark"
               >
                 {t("pilot.privacyNoteLink", locale)}
               </a>
