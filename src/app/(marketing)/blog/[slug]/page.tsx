@@ -365,15 +365,15 @@ export default async function BlogPostPage({
         translationSlug={post.translationSlug}
       />
       {/* Vissza a cikkjegyzékhez */}
-      <div className="mx-auto max-w-[1080px] px-7 pb-0 pt-6">
+      <div className="mx-auto max-w-[1120px] px-5 pb-0 pt-7 sm:px-7 lg:pt-9">
         <EditorialBackControl
           href="/blog"
           backLabel={t("blog.backToBlog", locale)}
         />
       </div>
 
-      <div className="mx-auto max-w-[1080px] px-7 pb-14 pt-4 md:grid md:grid-cols-[minmax(0,1fr)_250px] md:items-start md:gap-10">
-      <article className="min-w-0 max-w-[840px]">
+      <div className="mx-auto max-w-[1120px] px-5 pb-16 pt-5 sm:px-7 md:grid md:grid-cols-[minmax(0,1fr)_260px] md:items-start md:gap-10 lg:gap-12">
+      <article className="min-w-0 max-w-[820px]">
         {/* Tags */}
         {post.tags.length > 0 && (
           <div className="mb-3 flex flex-wrap gap-1.5">
@@ -396,17 +396,17 @@ export default async function BlogPostPage({
         </h1>
 
         {/* Description */}
-        <p className="mb-4 text-heading font-light leading-relaxed text-ink-body">
+        <p className="mb-5 max-w-[760px] text-heading font-light leading-relaxed text-ink-body">
           {post.description}
         </p>
 
         {/* Szerző-blokk + megosztás (E-E-A-T – összhangban az Article JSON-LD-vel) */}
-        <div className="mb-8 flex items-center gap-3 border-b border-t border-[var(--color-border-default)] py-3.5">
+        <div className="mb-8 flex items-center gap-3 rounded-[20px] border border-sand bg-surface-card/70 px-3.5 py-3 shadow-[0_10px_30px_rgba(26,26,46,0.035)] sm:px-4">
           <span
             aria-hidden
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] font-fraunces text-body text-[var(--color-action-primary-fg)]"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[13px_18px_15px_17px] bg-[var(--color-action-primary-bg)] font-fraunces text-caption text-[var(--color-action-primary-fg)]"
           >
-            t
+            tr
           </span>
           <span className="min-w-0">
             <span className="block text-caption font-semibold text-ink">
@@ -437,7 +437,7 @@ export default async function BlogPostPage({
             képernyőkép, amit megosztanak. Ugyanaz a determinisztikus
             kompozíció, mint a listán (azonos slug + family + concept + lineMode + seed),
             így a kártya és a cikk ugyanazt az arcot mutatja. */}
-        <div className="relative mb-8 aspect-video overflow-hidden rounded-2xl border border-sand">
+        <div className="relative mb-9 aspect-video overflow-hidden rounded-[24px] border border-sand shadow-[0_22px_54px_rgba(75,44,52,0.10)] sm:rounded-[28px]">
           <BlogCoverVisual
             coverImage={post.coverImage}
             coverFocalX={post.coverFocalX}
