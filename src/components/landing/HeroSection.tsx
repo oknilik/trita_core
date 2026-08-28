@@ -451,7 +451,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     mode: isSelf ? "self" : "team",
                   })
                 }
-                className={`inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-xl px-7 py-3 text-base font-bold text-[var(--color-text-on-accent-deep)] shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto sm:min-w-[280px] ${FOCUS_RING_CLASS}`}
+                className={`inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-xl px-7 py-3 text-base font-semibold text-[var(--color-text-on-accent-deep)] shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto sm:min-w-[280px] ${FOCUS_RING_CLASS}`}
                 style={{
                   background: ctaBackground,
                   boxShadow: isSelf

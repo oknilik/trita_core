@@ -104,7 +104,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
 
           <div className="relative flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 className="max-w-[16ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+              <h3 className="max-w-[16ch] font-fraunces text-title text-ink md:text-display">
                 {t("pilot.partnerResultTitle", locale)}
               </h3>
             </div>
@@ -350,7 +350,7 @@ export function PilotContent() {
                 className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-10 text-center"
               >
                 <div className="font-fraunces text-5xl leading-none text-bronze">+</div>
-                <h3 className="mt-4 font-fraunces text-3xl leading-tight text-ink">
+                <h3 className="mt-4 font-fraunces text-display text-ink">
                   {t("pilot.successTitle", locale)}
                 </h3>
                 <p className="mt-3 text-base leading-8 text-ink-body">
@@ -513,7 +513,7 @@ export function PilotContent() {
                       ref={submitRef}
                       type="submit"
                       disabled={status === "sending"}
-                      className={`inline-flex min-h-[54px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-base font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 ${FOCUS_RING_CLASS}`}
+                      className={`inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-7 py-3.5 text-base font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 ${FOCUS_RING_CLASS}`}
                     >
                       {status === "sending" ? t("pilot.submitSending", locale) : t("pilot.submitDefault", locale)}
                     </button>
@@ -555,7 +555,7 @@ function FounderSection({ locale }: { locale: Locale }) {
         <div className="grid items-center gap-8 rounded-[28px] border border-sand bg-warm p-6 md:grid-cols-[minmax(0,1fr)_280px] md:p-9">
           <div>
             <SectionEyebrow tone="team">{t("pilot.founderEyebrow", locale)}</SectionEyebrow>
-            <h2 className="mt-3 max-w-[22ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+            <h2 className="mt-3 max-w-[22ch] font-fraunces text-title text-ink md:text-display">
               {t("pilot.founderTitle", locale)}
             </h2>
             <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-body">
@@ -664,7 +664,7 @@ function PilotFactBar({ locale }: { locale: Locale }) {
                 }`}
               >
                 <dd className="flex items-baseline gap-1.5">
-                  <span className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-accent)] md:text-4xl">
+                  <span className="font-fraunces text-display leading-none text-[var(--color-layer-team-accent)] md:text-hero">
                     {tf(`pilot.fact${fact}Value`, locale, vars)}
                   </span>
                   {unit ? (

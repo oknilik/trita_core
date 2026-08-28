@@ -148,7 +148,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => setSuccess(false)}
-          className={`mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 ${FOCUS_RING_CLASS}`}
+          className={`mt-6 inline-flex min-h-[52px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 ${FOCUS_RING_CLASS}`}
         >
           {t("contact.sendAnother", locale)}
         </button>
