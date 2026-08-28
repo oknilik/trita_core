@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useAuthState } from "@/components/auth/auth-state";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t, type Locale } from "@/lib/i18n/public";
 
 type BlogJourneyCtaProps = {
@@ -28,7 +30,7 @@ export function BlogJourneyCta({ locale, variant }: BlogJourneyCtaProps) {
 
   if (variant === "sidebar") {
     return (
-      <div className="rounded-xl border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] px-5 py-4">
+      <div className="rounded-[20px] border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] px-5 py-5 shadow-[0_12px_30px_rgba(26,26,46,0.035)]">
         <p className="mb-1 text-caption font-semibold text-[var(--color-accent-self-deep)]">
           {content.title}
         </p>
@@ -37,7 +39,7 @@ export function BlogJourneyCta({ locale, variant }: BlogJourneyCtaProps) {
         </p>
         <Link
           href={href}
-          className="inline-block rounded-lg bg-[var(--color-action-primary-bg)] px-4 py-2 text-caption font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-[var(--color-action-primary-bg-hover)]"
+          className={getButtonClassName({ size: "sm", className: "mt-0.5" })}
         >
           {content.cta}
         </Link>
@@ -46,11 +48,11 @@ export function BlogJourneyCta({ locale, variant }: BlogJourneyCtaProps) {
   }
 
   return (
-    <div className="mt-8 flex flex-col items-center gap-5 rounded-2xl border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
+    <div className="mt-10 flex flex-col items-center gap-5 rounded-[24px] border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] p-7 shadow-[0_16px_40px_rgba(26,26,46,0.045)] sm:flex-row sm:items-center sm:gap-6 sm:p-8">
       <div className="flex-1 text-center sm:text-left">
-        <p className="mb-1.5 text-caption font-semibold text-[var(--color-accent-self-deep)]">
+        <SectionEyebrow as="div" className="mb-2">
           {content.eyebrow}
-        </p>
+        </SectionEyebrow>
         <h3 className="mb-1.5 font-fraunces text-xl leading-snug text-ink">
           {content.title}
         </h3>
@@ -60,7 +62,7 @@ export function BlogJourneyCta({ locale, variant }: BlogJourneyCtaProps) {
       </div>
       <Link
         href={href}
-        className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-7 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+        className={getButtonClassName({ size: "lg", className: "shrink-0" })}
       >
         {content.cta}
       </Link>

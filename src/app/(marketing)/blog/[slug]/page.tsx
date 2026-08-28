@@ -420,7 +420,7 @@ export default async function BlogPostPage({
               · {post.readingTime}
             </span>
           </span>
-          <span className="ml-auto">
+          <span className="w-full border-t border-sand pt-3 sm:ml-auto sm:w-auto sm:border-0 sm:pt-0">
             <ShareRow
               title={post.title}
               labels={{

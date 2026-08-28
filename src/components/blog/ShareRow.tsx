@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 // Megosztás-sor a cikk fejlécében: link-másolás (SuccessCheck
 // visszajelzéssel), LinkedIn és email. B2B olvasónál a LinkedIn-share a
@@ -33,11 +34,11 @@ export function ShareRow({
   };
 
   const btn =
-    "inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg border border-sand bg-surface-card px-2 text-caption text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-surface-self-border)] hover:text-[var(--color-accent-self-deep)]";
+    `inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-xl border border-sand bg-[var(--color-surface-subtle)] px-2 text-caption text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-surface-self-border)] hover:bg-surface-card hover:text-[var(--color-accent-self-deep)] ${FOCUS_RING_CLASS}`;
 
   return (
     <div className="flex items-center gap-2" aria-label={labels.share}>
-      <button type="button" onClick={onCopy} className={btn} title={labels.copyLink}>
+      <button type="button" onClick={onCopy} className={btn} title={labels.copyLink} aria-label={labels.copyLink}>
         {copied ? (
           <>
             <SuccessCheck />
@@ -50,7 +51,7 @@ export function ShareRow({
           </svg>
         )}
       </button>
-      <button type="button" onClick={onLinkedIn} className={btn} title="LinkedIn">
+      <button type="button" onClick={onLinkedIn} className={btn} title="LinkedIn" aria-label="LinkedIn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
           <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" />
         </svg>
@@ -59,6 +60,7 @@ export function ShareRow({
         href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
         className={btn}
         title="Email"
+        aria-label="Email"
         onClick={(e) => {
           // A body-t kattintáskor frissítjük, hogy SSR-kor ne legyen üres URL
           e.currentTarget.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(pageUrl())}`;

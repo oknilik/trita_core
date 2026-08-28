@@ -90,10 +90,10 @@ export function ArticleToc({
 
   if (variant === "mobile") {
     return (
-      <details className="mb-6 rounded-xl border border-sand bg-surface-card md:hidden">
+      <details className="mb-7 rounded-[20px] border border-sand bg-surface-card shadow-[0_10px_28px_rgba(26,26,46,0.03)] md:hidden">
         {/* A padding a summary-n van, hogy a teljes kártyafelület legyen a
             toggle érintőcélja (min. 44px) – nem csak a szövegsor */}
-        <summary className="flex min-h-[44px] cursor-pointer list-none items-center px-5 py-3.5 text-caption font-semibold text-ink">
+        <summary className="flex min-h-[48px] cursor-pointer list-none items-center px-5 py-3.5 text-caption font-semibold text-ink">
           {labels.inThisArticle}
         </summary>
         <div className="px-5 pb-3.5">{list}</div>
@@ -102,7 +102,7 @@ export function ArticleToc({
   }
 
   return (
-    <div className="rounded-xl border border-sand bg-surface-card px-5 py-4">
+    <div className="rounded-[20px] border border-sand bg-surface-card px-5 py-5 shadow-[0_12px_32px_rgba(26,26,46,0.035)]">
       <p className="mb-3 text-caption font-semibold text-ink">
         {labels.inThisArticle}
       </p>
