@@ -265,7 +265,7 @@ export const landingTranslations = {
       en: "The responses become a reviewed team picture, then we identify the next step together.",
     },
     offerEyebrow: { hu: "Hogyan vághatsz bele", en: "How to get started" },
-    offerTitle: { hu: "Egyénileg ingyenes. Csapatra szabva.", en: "Free for individuals. Tailored for teams." },
+    offerTitle: { hu: "Kezdd magadon, folytassátok csapatként.", en: "Start with yourself, continue as a team." },
     offerBody: {
       hu: "Az egyéni felmérést azonnal elkezdheted. A csapatprogram keretét a célotokhoz, a létszámhoz és a választott mérésekhez igazítjuk.",
       en: "You can start the individual assessment right away. We tailor the team program to your goals, headcount, and selected measurements.",
