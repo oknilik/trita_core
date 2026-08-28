@@ -142,7 +142,12 @@ export function PricingContent() {
 
       <section className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
         <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
-          <div><SectionEyebrow>{t("pricing.offerEyebrow", locale)}</SectionEyebrow></div>
+          <div>
+            <SectionEyebrow>{t("pricing.offerEyebrow", locale)}</SectionEyebrow>
+            <p className="mt-4 hidden max-w-[24ch] text-sm leading-relaxed text-ink-body lg:block">
+              {t("pricing.offerAside", locale)}
+            </p>
+          </div>
           <div>
             <h2 className="max-w-[17ch] font-fraunces text-fluid-title tracking-tight text-ink">{t("pricing.offerTitle", locale)}</h2>
             <p className="mt-5 max-w-[64ch] text-base leading-relaxed text-ink-body">{t("pricing.offerBody", locale)}</p>
@@ -150,7 +155,14 @@ export function PricingContent() {
               <article className="flex flex-col rounded-[24px] border border-sage/15 bg-sage-soft p-6 md:p-7">
                 <SectionEyebrow tone="self">{t("pricing.selfEyebrow", locale)}</SectionEyebrow>
                 <h3 className="mt-4 font-fraunces text-2xl text-ink">{t("pricing.selfTitle", locale)}</h3>
-                <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-body">{t("pricing.selfBody", locale)}</p>
+                <p className="mt-3 text-sm leading-relaxed text-ink-body">{t("pricing.selfBody", locale)}</p>
+                <ul className="mt-5 flex-1 space-y-3">
+                  {[1, 2, 3].map((item) => (
+                    <li key={item} className="flex gap-2.5 text-caption leading-relaxed text-ink-body">
+                      <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-sage" />{t(`pricing.selfCheck${item}`, locale)}
+                    </li>
+                  ))}
+                </ul>
                 <Link href="/try" className={`mt-6 inline-flex min-h-11 items-center self-start font-semibold text-sage-dark transition-colors hover:text-sage ${FOCUS_RING_CLASS}`}>
                   {t("pricing.selfCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
                 </Link>

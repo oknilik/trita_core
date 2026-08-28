@@ -274,6 +274,11 @@ export const landingTranslations = {
     offerFactor2: { hu: "A célhoz illő mérések", en: "Measurements that fit the goal" },
     offerFactor3: { hu: "Közös értelmezés és következő lépés", en: "Joint debrief and next step" },
     offerCta: { hu: "Egyeztessünk", en: "Start a conversation" },
+    // P3-2: az eyebrow alatti kísérőmondat — az oszlop eddig üresen lógott.
+    offerAside: {
+      hu: "Az egyéni felmérés a kipróbálás, a csapatprogram a közös munka belépője.",
+      en: "The individual assessment is how you try it; the team program is how we work together.",
+    },
     offerPilotCta: { hu: "Így működik a pilotprogramunk", en: "See how the pilot works" },
     selfEyebrow: { hu: "egyéni · ingyenes", en: "individual · free" },
     selfTitle: { hu: "Ismerd meg, hogyan működsz", en: "Understand how you operate" },
@@ -281,6 +286,11 @@ export const landingTranslations = {
       hu: "Töltsd ki a körülbelül 10 perces személyiségfelmérést, és kapj részletes képet a jellemző mintázataidról, a munkastílusodról és a csapatban betöltött szerepeidről. Az eredményt később mások visszajelzéseivel is árnyalhatod.",
       en: "Complete the approximately 10-minute personality assessment to get a detailed picture of your characteristic patterns, work style, and roles in a team. Later, you can add nuance with feedback from others.",
     },
+    // P3-1: a jobb oldali csapat-kártya pipasorának párja — enélkül az
+    // egyéni kártyán nagy üres blokk maradt a szöveg és a CTA között.
+    selfCheck1: { hu: "~10 perces kitöltés", en: "~10-minute assessment" },
+    selfCheck2: { hu: "Azonnali, dimenziónkénti eredmény", en: "Instant, per-dimension results" },
+    selfCheck3: { hu: "Ingyenes, regisztrációval", en: "Free, with registration" },
     selfCta: { hu: "Elindítom az ingyenes felmérést", en: "Start the free assessment" },
     teamEyebrow: { hu: "csapat és szervezet · egyedi program", en: "team & organization · tailored program" },
     teamTitle: { hu: "Tisztább csapatkép, közös következő lépéssel", en: "A clearer team picture, with a shared next step" },
