@@ -16,6 +16,7 @@ import { TextField } from "@/components/ui/primitives/TextField";
 import { createClientLogger } from "@/lib/client-logger";
 import { buildSignInPath, sanitizeInternalRedirect } from "@/lib/navigation/auth-redirects";
 import { presentAuthError, type AuthErrorContext, type AuthErrorTarget } from "@/lib/auth-errors";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 const log = createClientLogger("auth");
 
@@ -174,10 +175,8 @@ function SignUpContent() {
   if (isVerifying) {
     return (
       <AuthPageShell panelContext="verify">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.17em] text-[var(--color-accent-self-deep)]">
-              {t("auth.accountEyebrow", locale)}
-            </p>
-            <h1 className="mb-2 font-fraunces text-4xl leading-[1.05] tracking-tight text-[var(--color-text-primary)] sm:text-hero">
+            <SectionEyebrow tone="selfDeep" className="mb-3">{t("auth.accountEyebrow", locale)}</SectionEyebrow>
+            <h1 className="mb-2 font-fraunces text-display tracking-tight text-[var(--color-text-primary)] sm:text-hero">
               {t("auth.verifyTitle", locale)}
             </h1>
             <p className="mb-7 text-base leading-relaxed text-[var(--color-text-muted)]">
@@ -261,10 +260,8 @@ function SignUpContent() {
 
   return (
     <AuthPageShell panelContext={intent}>
-          <p className="mb-3 text-xs font-bold uppercase tracking-[0.17em] text-[var(--color-accent-self-deep)]">
-            {t("auth.accountEyebrow", locale)}
-          </p>
-          <h1 className="mb-3 font-fraunces text-4xl leading-[1.05] tracking-[-0.03em] text-[var(--color-text-primary)] sm:text-hero">
+          <SectionEyebrow tone="selfDeep" className="mb-3">{t("auth.accountEyebrow", locale)}</SectionEyebrow>
+          <h1 className="mb-3 font-fraunces text-display tracking-tight text-[var(--color-text-primary)] sm:text-hero">
             {t("auth.signUpTitle", locale)}
           </h1>
           <p className="mb-7 text-base leading-relaxed text-[var(--color-text-muted)]">

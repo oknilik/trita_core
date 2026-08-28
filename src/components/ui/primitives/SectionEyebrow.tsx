@@ -5,6 +5,7 @@ type SectionEyebrowTone =
   | "bronze"
   | "muted"
   | "self"
+  | "selfDeep"
   | "team"
   | "org"
   | "candidate"
@@ -28,6 +29,9 @@ const TONE_TEXT: Record<SectionEyebrowTone, string> = {
   bronze: "text-[var(--color-accent-primary-strong)]",
   muted: "text-muted",
   self: "text-surface-self-accent",
+  // A self-réteg MÉLY zsályája: 11px-es nagybetűs felirathoz a sima sage
+  // kontrasztja krémen kevés — az auth-oldalak eyebrow-ja ezt használja.
+  selfDeep: "text-[var(--color-accent-self-deep)]",
   team: "text-surface-team-accent",
   org: "text-surface-org-accent",
   candidate: "text-accent-candidate",
@@ -39,6 +43,7 @@ const TONE_DOT: Record<SectionEyebrowTone, string> = {
   bronze: "bg-[var(--color-accent-primary-strong)]",
   muted: "bg-[var(--color-text-muted)]",
   self: "bg-surface-self-accent",
+  selfDeep: "bg-[var(--color-accent-self-deep)]",
   team: "bg-surface-team-accent",
   org: "bg-surface-org-accent",
   candidate: "bg-accent-candidate",
