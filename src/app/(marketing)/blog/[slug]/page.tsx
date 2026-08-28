@@ -22,11 +22,11 @@ import { ShareRow } from "@/components/blog/ShareRow";
 import { BlogCoverVisual } from "@/components/blog/BlogCoverVisual";
 import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
-import { ChevronRightIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { BlogJourneyCta } from "@/components/blog/BlogJourneyCta";
 import { TeamReportFigure } from "@/components/blog/TeamReportFigure";
 import { ResultAccessFigure } from "@/components/blog/ResultAccessFigure";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -477,10 +477,10 @@ export default async function BlogPostPage({
             {olderPost ? (
               <Link
                 href={`/blog/${olderPost.slug}`}
-                className="group flex min-h-32 flex-col rounded-xl border border-sand bg-surface-card px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+                className={`group flex min-h-32 flex-col rounded-[20px] border border-sand bg-surface-card px-5 py-5 shadow-[0_10px_30px_rgba(26,26,46,0.03)] transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)] hover:shadow-[0_16px_36px_rgba(26,26,46,0.06)] ${FOCUS_RING_CLASS}`}
               >
                 <span className="mb-3 flex items-center gap-2 text-caption font-semibold text-[var(--color-accent-primary-strong)]">
-                  <BackChevronIcon size="sm" />
+                  <BackChevronIcon size="sm" tone="accent" />
                   <span>{t("blog.prevArticle", locale)}</span>
                 </span>
                 <span className="block text-pretty font-fraunces text-body leading-[1.35] text-ink">
@@ -493,11 +493,11 @@ export default async function BlogPostPage({
             {newerPost && (
               <Link
                 href={`/blog/${newerPost.slug}`}
-                className="group flex min-h-32 flex-col rounded-xl border border-sand bg-surface-card px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+                className={`group flex min-h-32 flex-col rounded-[20px] border border-sand bg-surface-card px-5 py-5 text-right shadow-[0_10px_30px_rgba(26,26,46,0.03)] transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)] hover:shadow-[0_16px_36px_rgba(26,26,46,0.06)] ${FOCUS_RING_CLASS}`}
               >
                 <span className="mb-3 flex items-center justify-end gap-2 text-caption font-semibold text-[var(--color-accent-primary-strong)]">
                   {t("blog.nextArticle", locale)}
-                  <ChevronRightIcon className="h-3.5 w-3.5" />
+                  <BackChevronIcon size="sm" tone="accent" className="rotate-180" />
                 </span>
                 <span className="block text-pretty font-fraunces text-body leading-[1.35] text-ink">
                   {newerPost.title}
@@ -518,7 +518,7 @@ export default async function BlogPostPage({
                 <Link
                   key={rel.slug}
                   href={`/blog/${rel.slug}`}
-                  className="rounded-2xl border border-sand bg-surface-card p-5 transition-all hover:-translate-y-px hover:shadow-md hover:shadow-black/[0.04]"
+                  className={`rounded-[20px] border border-sand bg-surface-card p-5 shadow-[0_10px_28px_rgba(26,26,46,0.03)] transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)] hover:shadow-[0_16px_36px_rgba(26,26,46,0.06)] ${FOCUS_RING_CLASS}`}
                 >
                   {rel.tags.length > 0 && (
                     <div className="mb-1.5 flex flex-wrap gap-1">

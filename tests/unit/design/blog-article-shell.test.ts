@@ -55,3 +55,11 @@ test("a megosztás mobilon törhet, és minden ikonvezérlőnek van akadályment
   assert.match(shareSource, /aria-label="Email"/);
   assert.match(shareSource, /FOCUS_RING_CLASS/);
 });
+
+test("az előző, következő és kapcsolódó cikkek az egységes navigációs kártyát követik", () => {
+  assert.match(source, /<BackChevronIcon size="sm" tone="accent" \/>/);
+  assert.match(source, /<BackChevronIcon size="sm" tone="accent" className="rotate-180" \/>/);
+  assert.doesNotMatch(source, /ChevronRightIcon/);
+  assert.match(source, /relatedPosts[\s\S]*?rounded-\[20px\]/);
+  assert.match(source, /FOCUS_RING_CLASS/);
+});
