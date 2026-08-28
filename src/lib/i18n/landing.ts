@@ -868,8 +868,10 @@ export const landingTranslations = {
   // oldalon élnek, ezért itt nincs lépés-lista.
   about: {
     heroEyebrow: { hu: "Rólunk", en: "About us" },
+    // A „trita” szót a TritaWordmark szójel rendereli (bronz i-pont),
+    // ezért a cím két szöveg-szeletre bomlik a jel körül.
     heroTitleBefore: { hu: "Szia, mi vagyunk a ", en: "Hi, we are " },
-    heroTitleEm: { hu: "trita.", en: "trita." },
+    heroTitleAfter: { hu: ".", en: "." },
     heroBody: {
       hu: "Abban segítünk csapatoknak, hogy értsék, hogyan működnek együtt. Nem tesztet adunk el, hanem közös munkát: mérünk, értelmezünk, és veletek visszük végig, amit az eredmények mutatnak.",
       en: "We help teams understand how they work together. We don't sell a test – we do the work with you: we measure, interpret, and follow through together on what the results show.",

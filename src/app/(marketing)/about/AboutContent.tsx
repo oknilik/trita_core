@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { TritaWordmark } from "@/components/TritaLogo";
 import { AboutHorizonArt } from "@/components/marketing/AboutHorizonArt";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -21,7 +22,8 @@ export function AboutContent() {
         <SectionEyebrow className="mb-6">{t("about.heroEyebrow", locale)}</SectionEyebrow>
         <h1 className="max-w-[15ch] font-fraunces text-fluid-display tracking-tight text-ink">
           {t("about.heroTitleBefore", locale)}
-          <em className="not-italic text-[var(--color-accent-primary-strong)]">{t("about.heroTitleEm", locale)}</em>
+          <TritaWordmark className="text-ink" />
+          {t("about.heroTitleAfter", locale)}
         </h1>
         <p className="mt-6 max-w-[58ch] text-lg leading-relaxed text-ink-body">{t("about.heroBody", locale)}</p>
       </section>
