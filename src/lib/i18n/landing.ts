@@ -306,8 +306,8 @@ export const landingTranslations = {
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
     faqQ1: { hu: "Mennyibe kerül?", en: "How much does it cost?" },
     faqA1: {
-      hu: "Az egyéni felmérés ingyenes. A csapat- és szervezeti programok ára a létszámtól és a program terjedelmétől függ – az első egyeztetés után egyedi ajánlatot kapsz.",
-      en: "The individual assessment is free. Team and organizational program pricing depends on headcount and scope – you get an individual quote after the first conversation.",
+      hu: "Az egyéni felmérés ingyenes. A csapat- és szervezeti programok ára a létszámtól és a program terjedelmétől függ – az első egyeztetés után egyedi ajánlatot kapsz. Nagyságrendként: {{TODO: ár-horgony}}.",
+      en: "The individual assessment is free. Team and organizational program pricing depends on headcount and scope – you get an individual quote after the first conversation. As a rough anchor: {{TODO: ár-horgony}}.",
     },
     faqQ2: { hu: "Miért nincsenek listaárak?", en: "Why are there no list prices?" },
     faqA2: {
@@ -333,6 +333,33 @@ export const landingTranslations = {
     faqA5: {
       hu: "{{TODO: eredmény-láthatóság — pontos, védhető megfogalmazás}}",
       en: "{{TODO_EN: eredmény-láthatóság}}",
+    },
+    // P2-1: a számok a program meglévő, máshol is kommunikált elemei
+    // (~10 perces kitöltés, 60 perces workshop, két 20–30 perces
+    // beszélgetés a pilotban).
+    faqQ6: {
+      hu: "Mennyi időt vesz el a csapattól?",
+      en: "How much of the team's time does it take?",
+    },
+    faqA6: {
+      hu: "A felmérés kitöltése körülbelül 10 perc fejenként. Ehhez jön egy 60 perces közös értelmező workshop, a pilotban pedig két rövid, 20–30 perces visszajelző beszélgetés a vezetővel. A csapat napi munkáját ezen felül nem terheljük.",
+      en: "Completing the assessment takes about 10 minutes per person. Add a 60-minute joint interpretation workshop, and in the pilot two short 20–30-minute feedback conversations with the leader. Beyond that, we don't take time from the team's daily work.",
+    },
+    faqQ7: {
+      hu: "Mi van, ha valaki nem tölti ki?",
+      en: "What if someone doesn't complete it?",
+    },
+    faqA7: {
+      hu: "A kitöltés önkéntes, és nincs merev részvételi küszöb: a csapatkép a meglévő kitöltésekből épül, a riport pedig minden elemnél jelzi, mi mért adat, mi becslés, és hol nincs még elég információ. A kollégiális szerep-visszajelzés csak legalább három értékelő után jelenik meg. A kitöltési időszakban figyeljük a részvételt, és segítünk, ha valaki elakad.",
+      en: "Participation is voluntary and there is no rigid threshold: the team picture builds on the responses we have, and the report labels every element as measured data, estimate, or not-enough-information. Peer role feedback only appears with at least three raters. During the response window we monitor participation and help if anyone gets stuck.",
+    },
+    faqQ8: {
+      hu: "Milyen módszertanon alapul?",
+      en: "What methodology is it based on?",
+    },
+    faqA8: {
+      hu: "A személyiségfelmérés a hatfaktoros személyiségmodellre épül, szabadon felhasználható, kutatásban használt kérdésbankból. Az önértékelést kollégai és ismerősi visszajelzés árnyalhatja, a csapatszintű kép pedig mért adatokból készül — a riport mindig jelöli, mi mért és mi becsült.",
+      en: "The personality assessment builds on the six-factor personality model, using an openly available question bank used in research. Self-assessment can be complemented by observer feedback, and the team-level picture is built from measured data — the report always distinguishes measured from estimated.",
     },
     bottomHeading: { hu: "Kezdjük egy beszélgetéssel.", en: "Let's start with a conversation." },
     bottomSub: { hu: "Mesélj a csapatodról – egy munkanapon belül válaszolunk.", en: "Tell us about your team – we reply within one business day." },

@@ -13,5 +13,7 @@
  * új GYIK-tétel = új i18n-kulcs + egy szám ebben a tömbben.
  */
 // Sorrend, nem sorszám: az 5-ös (Ki látja az egyéni eredményeket?) a
-// „Mennyibe kerül?" mellé, a második helyre kerül (P0-4).
-export const PRICING_FAQ_INDEXES = [1, 5, 2, 3, 4] as const;
+// „Mennyibe kerül?" mellé került (P0-4); a 2-es (Miért nincsenek
+// listaárak?) hátrébb, hogy a két árazási kérdés ne közvetlenül egymás
+// után jöjjön (P2-2).
+export const PRICING_FAQ_INDEXES = [1, 5, 6, 7, 8, 3, 2, 4] as const;
