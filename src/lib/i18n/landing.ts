@@ -299,8 +299,8 @@ export const landingTranslations = {
     pilotEyebrow: { hu: "pilotprogram", en: "pilot program" },
     pilotTitle: { hu: "Pilotprogram – az első partnercsapatainknak", en: "Pilot program – for our first partner teams" },
     pilotBody: {
-      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Korlátozott számú csapattal indulunk.",
-      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with a limited number of teams.",
+      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Az első {{TODO: csapatszám}} partnercsapattal indulunk.",
+      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with the first {{TODO: csapatszám}} partner teams.",
     },
     pilotCta: { hu: "Részletek", en: "Details" },
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
@@ -510,7 +510,10 @@ export const landingTranslations = {
   pilot: {
     // Hero – partneri meghívás
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
-    badge: { hu: "Az első partnercsapatoknak", en: "For our first partner teams" },
+    badge: {
+      hu: "Az első {{TODO: csapatszám}} partnercsapatnak",
+      en: "For our first {{TODO: csapatszám}} partner teams",
+    },
     heroTitle: { hu: "A kivételes dolgok akkor születnek, ", en: "Don’t just try it. " },
     heroTitleEm: { hu: "amikor igazán figyelünk egymásra.", en: "Shape it with us." },
     heroBody: {
