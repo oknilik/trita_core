@@ -10,7 +10,9 @@ import {
 } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
-import { t, type Locale } from "@/lib/i18n/public";
+import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
+import { t, tf, type Locale } from "@/lib/i18n/public";
+import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
@@ -65,18 +67,14 @@ function PartnerVisual({ locale }: { locale: Locale }) {
       </div>
 
       <div aria-hidden="true" className="relative">
-        <div className="mb-5 flex items-center justify-between gap-4">
+        <div className="mb-5">
           <p className="text-label uppercase tracking-[0.12em] text-white/65">
             {t("pilot.partnerVisualEyebrow", locale)}
           </p>
-          <span className="inline-flex items-center gap-2 text-note text-white/70">
-            <span className="size-2 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_4px_rgba(232,178,118,0.12)]" />
-            {t("pilot.metaChip2", locale)}
-          </span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <article className="flex items-start gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
             <div className="flex size-16 shrink-0 self-center items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
               <span className="font-fraunces text-lg text-white">Ti</span>
             </div>
@@ -87,7 +85,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
             </div>
           </article>
 
-          <article className="flex items-start gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
             <div className="flex size-16 shrink-0 self-center items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
               <TritaWordmark className="text-[1.15rem] text-white" />
             </div>
@@ -104,10 +102,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
 
           <div className="relative flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-label uppercase text-[var(--color-layer-team-accent)]">
-                {t("pilot.partnerResultBody", locale)}
-              </p>
-              <h3 className="mt-2 max-w-[16ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+              <h3 className="max-w-[16ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
                 {t("pilot.partnerResultTitle", locale)}
               </h3>
             </div>
@@ -234,6 +229,7 @@ export function PilotContent() {
 
   return (
     <main className="overflow-hidden bg-cream text-ink selection:bg-bronze/20">
+      <LocalizedPageMeta titleKey="pilot.metaTitle" descriptionKey="pilot.metaDescription" />
       <section className="relative overflow-hidden bg-cream">
         <div
           aria-hidden="true"
@@ -245,7 +241,7 @@ export function PilotContent() {
               <div className="mb-6 flex flex-wrap items-center gap-3">
                 <SectionEyebrow tone="team">{t("pilot.eyebrow", locale)}</SectionEyebrow>
                 <span className="inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-surface-card/75 px-4 py-1.5 text-caption font-medium text-[var(--color-layer-team-accent)] backdrop-blur-sm">
-                  {t("pilot.badge", locale)}
+                  {tf("pilot.badge", locale, { total: PILOT_TOTAL_TEAMS })}
                 </span>
               </div>
 
@@ -265,6 +261,8 @@ export function PilotContent() {
                 primary={{ href: "#jelentkezes", label: t("pilot.heroCta", locale) }}
               />
 
+              <SpotsIndicator locale={locale} />
+
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <MetaChip>{t("pilot.metaChip1", locale)}</MetaChip>
                 <MetaChip>{t("pilot.metaChip2", locale)}</MetaChip>
@@ -276,6 +274,8 @@ export function PilotContent() {
           </div>
         </div>
       </section>
+
+      <PilotFactBar locale={locale} />
 
       <EditorialSection
         eyebrow={t("pilot.exchangeEyebrow", locale)}
@@ -305,7 +305,12 @@ export function PilotContent() {
         </div>
       </EditorialSection>
 
-      <section id="jelentkezes" className="bg-[var(--color-layer-team-soft)]/45">
+      <FounderSection locale={locale} />
+
+      {/* A háttér a közös vászonszín: a footer hullám előtti védősáv is
+          ebből él (--color-surface-canvas = cream), így az oldal alján nem
+          jelenik meg eltérő színű csík a hullám fölött. */}
+      <section id="jelentkezes" className="bg-cream">
         <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div>
@@ -324,6 +329,15 @@ export function PilotContent() {
                 {t("pilot.fitBody", locale)}
               </p>
             </div>
+            <p className="mt-5 text-sm leading-6 text-ink-body">
+              {t("pilot.privacyNote", locale)}
+              <a
+                href="/privacy"
+                className="mt-1 block w-fit font-medium text-sage transition-colors hover:text-sage-dark"
+              >
+                {t("pilot.privacyNoteLink", locale)}
+              </a>
+            </p>
           </div>
 
           <div className="rounded-[28px] border border-sand bg-surface-card p-6 shadow-[0_24px_70px_rgba(26,26,46,0.08)] md:p-8">
@@ -343,16 +357,19 @@ export function PilotContent() {
               </div>
             ) : (
               <>
-                <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-sand pb-5">
-                  <div>
-                    <p className="font-fraunces text-title leading-tight text-ink">{t("pilot.formHeading", locale)}</p>
-                    <p className="mt-1 text-sm leading-6 text-ink-body">
-                      {t("pilot.formSubheading", locale)}
+                <div className="mb-8 border-b border-sand pb-5">
+                  <p className="font-fraunces text-title leading-tight text-ink">{t("pilot.formHeading", locale)}</p>
+                  <p className="mt-1 text-sm leading-6 text-ink-body">
+                    {t("pilot.formSubheading", locale)}
+                  </p>
+                  {PILOT_SPOTS_LEFT > 0 ? (
+                    <p className="mt-2 text-sm font-medium text-[var(--color-layer-team-accent)]">
+                      {tf("pilot.formSpotsNote", locale, {
+                        total: PILOT_TOTAL_TEAMS,
+                        left: PILOT_SPOTS_LEFT,
+                      })}
                     </p>
-                  </div>
-                  <span className="rounded-full border border-[var(--color-layer-team-accent)]/20 bg-[var(--color-layer-team-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
-                    {t("pilot.formSpotsLabel", locale)}
-                  </span>
+                  ) : null}
                 </div>
 
                 <form
@@ -522,6 +539,147 @@ export function PilotContent() {
         </div>
       </section>
     </main>
+  );
+}
+
+// „Ki kísér végig" blokk (P1-1, átalakítva): fotó és életrajz nélkül — a
+// bizalmat a személyes vállalás és a módszertani horgony hordozza, nem az
+// alapító bemutatása.
+function FounderSection({ locale }: { locale: Locale }) {
+  return (
+    <section className="bg-cream">
+      <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+      <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
+        <div className="grid items-center gap-8 rounded-[28px] border border-sand bg-warm p-6 md:grid-cols-[minmax(0,1fr)_280px] md:p-9">
+          <div>
+            <SectionEyebrow tone="team">{t("pilot.founderEyebrow", locale)}</SectionEyebrow>
+            <h2 className="mt-3 max-w-[22ch] font-fraunces text-2xl leading-tight text-ink md:text-3xl">
+              {t("pilot.founderTitle", locale)}
+            </h2>
+            <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-body">
+              {t("pilot.founderBody", locale)}
+            </p>
+            <p className="mt-4 max-w-[62ch] text-sm leading-relaxed text-ink-body">
+              {t("pilot.founderMethod", locale)}
+            </p>
+          </div>
+          {/* Miró-ihletésű „rétegek" illusztráció: három áttetsző folt
+              (személyiség · csapatszerepek · pszichológiai biztonság), a
+              metszetükben csillag — a módszertani mondat vizuális párja.
+              Minden szín token, így sötét módban is ül. */}
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 300 260"
+            className="mx-auto w-full max-w-[260px] md:max-w-none"
+          >
+            <path
+              d="M96 60 C150 26 214 52 216 108 C218 156 168 176 124 164 C78 152 58 86 96 60 Z"
+              fill="var(--color-layer-team-badge)"
+              opacity=".8"
+            />
+            <path
+              d="M150 108 C214 84 268 118 258 168 C249 212 186 224 146 202 C108 182 104 126 150 108 Z"
+              fill="var(--color-sage)"
+              opacity=".55"
+            />
+            <path
+              d="M62 128 C104 106 168 122 172 168 C176 210 124 236 84 220 C46 204 28 148 62 128 Z"
+              fill="var(--color-layer-team-accent)"
+              opacity=".5"
+            />
+            <path
+              d="M96 60 C150 26 214 52 216 108 C218 156 168 176 124 164 C78 152 58 86 96 60 Z"
+              fill="none"
+              stroke="var(--color-ink)"
+              strokeWidth="4"
+            />
+            <path
+              d="M150 152 l6 14 15 4 -15 6 -6 14 -6-14 -15-6 15-4 z"
+              fill="var(--color-surface-inverse)"
+            />
+            <circle cx="248" cy="52" r="7" fill="var(--color-surface-inverse)" />
+            <path
+              d="M34 70 Q48 56 66 66"
+              fill="none"
+              stroke="var(--color-ink)"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Kapacitás-jelző a hero CTA alatt: 10 pötty — a szabad helyek világítanak
+// (badge-szín), a beteltek halványak. Információ, nem dekoráció: a számok a
+// pilot-config.ts-ből jönnek, betelt pilotnál a sor nem renderelődik.
+function SpotsIndicator({ locale }: { locale: Locale }) {
+  if (PILOT_SPOTS_LEFT <= 0) return null;
+  const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT };
+  return (
+    <p className="mt-5 flex flex-wrap items-center gap-3">
+      <span aria-hidden="true" className="flex items-center gap-1.5">
+        {Array.from({ length: PILOT_TOTAL_TEAMS }, (_, i) => (
+          <span
+            key={i}
+            className={
+              i < PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT
+                ? "size-2.5 rounded-full bg-sand"
+                : "size-2.5 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_3px_rgba(232,178,118,0.18)]"
+            }
+          />
+        ))}
+      </span>
+      <span
+        aria-label={tf("pilot.spotsA11y", locale, vars)}
+        className="text-sm font-semibold text-[var(--color-layer-team-accent)]"
+      >
+        {tf("pilot.spotsLeftShort", locale, vars)}
+      </span>
+    </p>
+  );
+}
+
+const PILOT_FACTS = [1, 2, 3, 4] as const;
+
+// Ténysáv a hero alatt (P0-1): a nagy szám tipográfiája a /how-we-work
+// pilot-teaser „90 NAP" motívumát követi (font-fraunces + text-label unit).
+function PilotFactBar({ locale }: { locale: Locale }) {
+  return (
+    <section aria-label={t("pilot.factsA11y", locale)} className="bg-cream">
+      <div className="mx-auto max-w-[1120px] px-7 pb-16 md:pb-24">
+        <dl className="grid grid-cols-2 overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_16px_40px_rgba(26,26,46,0.05)] lg:grid-cols-4">
+          {PILOT_FACTS.map((fact) => {
+            const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT };
+            const unit = tf(`pilot.fact${fact}Unit`, locale, vars);
+            return (
+              <div
+                key={fact}
+                className={`border-b border-l border-sand p-5 first:border-l-0 md:p-6 max-lg:odd:border-l-0 lg:border-b-0 max-lg:[&:nth-child(n+3)]:border-b-0 ${
+                  fact === 2 ? "bg-[var(--color-layer-team-soft)]/45" : ""
+                }`}
+              >
+                <dd className="flex items-baseline gap-1.5">
+                  <span className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-accent)] md:text-4xl">
+                    {tf(`pilot.fact${fact}Value`, locale, vars)}
+                  </span>
+                  {unit ? (
+                    <span className="text-label uppercase text-[var(--color-layer-team-accent)]">
+                      {unit}
+                    </span>
+                  ) : null}
+                </dd>
+                <dt className="mt-2 text-sm leading-relaxed text-ink-body">
+                  {tf(`pilot.fact${fact}Label`, locale, vars)}
+                </dt>
+              </div>
+            );
+          })}
+        </dl>
+      </div>
+    </section>
   );
 }
 

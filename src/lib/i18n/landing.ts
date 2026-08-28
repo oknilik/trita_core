@@ -78,7 +78,9 @@ export const landingTranslations = {
     selfTeamRolesNote: { hu: "A pontos képhez külön csapatszerep-kérdőív tartozik.", en: "A separate team-role questionnaire provides the precise picture." },
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
     // HeroSection – team
-    teamEyebrow: { hu: "CSAPATINTELLIGENCIA PLATFORM", en: "TEAM INTELLIGENCE PLATFORM" },
+    // 2026-08-28: „CSAPATINTELLIGENCIA PLATFORM" helyett — a gépies
+    // kategória-címke a „nem csak platform" üzenet ellen dolgozott.
+    teamEyebrow: { hu: "Közös kép a csapatotokról", en: "A shared picture of your team" },
     teamHeadlineBefore: { hu: "Értsétek meg jobban a ", en: "Better understand your " },
     teamHeadlineEm: { hu: "csapatotok működését.", en: "team's dynamics." },
     teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt – a csapatotok valódi dinamikáját. Így még azelőtt felismerhetitek a feszültségeket, hogy konfliktussá válnának, és azt is, mire építhettek együtt.", en: "trita reveals what was previously invisible – your team's true dynamics. This helps you recognize tensions before they turn into conflict, while also showing what you can build on together." },
@@ -227,8 +229,7 @@ export const landingTranslations = {
       hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd átlátható keretet kaptok: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül.",
       en: "In a short conversation, we clarify the goal, then give you a transparent scope: who takes part, what we measure, what you receive, and what it costs.",
     },
-    outcomeVisualEyebrow: { hu: "Amivel továbbmentek", en: "What you leave with" },
-    outcomeVisualBadge: { hu: "3 eredmény", en: "3 outcomes" },
+    outcomeVisualEyebrow: { hu: "Ezt viszitek magatokkal", en: "What you take with you" },
     outcome1Title: { hu: "Tisztább csapatkép", en: "A clearer team picture" },
     outcome1Body: {
       hu: "Látható erősségek és feszültségpontok",
@@ -265,7 +266,7 @@ export const landingTranslations = {
       en: "The responses become a reviewed team picture, then we identify the next step together.",
     },
     offerEyebrow: { hu: "Hogyan vághatsz bele", en: "How to get started" },
-    offerTitle: { hu: "Egyénileg ingyenes. Csapatra szabva.", en: "Free for individuals. Tailored for teams." },
+    offerTitle: { hu: "Kezdd magadon, folytassátok csapatként.", en: "Start with yourself, continue as a team." },
     offerBody: {
       hu: "Az egyéni felmérést azonnal elkezdheted. A csapatprogram keretét a célotokhoz, a létszámhoz és a választott mérésekhez igazítjuk.",
       en: "You can start the individual assessment right away. We tailor the team program to your goals, headcount, and selected measurements.",
@@ -274,6 +275,11 @@ export const landingTranslations = {
     offerFactor2: { hu: "A célhoz illő mérések", en: "Measurements that fit the goal" },
     offerFactor3: { hu: "Közös értelmezés és következő lépés", en: "Joint debrief and next step" },
     offerCta: { hu: "Egyeztessünk", en: "Start a conversation" },
+    // P3-2: az eyebrow alatti kísérőmondat — az oszlop eddig üresen lógott.
+    offerAside: {
+      hu: "Az egyéni felmérés a kipróbálás, a csapatprogram a közös munka belépője.",
+      en: "The individual assessment is how you try it; the team program is how we work together.",
+    },
     offerPilotCta: { hu: "Így működik a pilotprogramunk", en: "See how the pilot works" },
     selfEyebrow: { hu: "egyéni · ingyenes", en: "individual · free" },
     selfTitle: { hu: "Ismerd meg, hogyan működsz", en: "Understand how you operate" },
@@ -281,6 +287,11 @@ export const landingTranslations = {
       hu: "Töltsd ki a körülbelül 10 perces személyiségfelmérést, és kapj részletes képet a jellemző mintázataidról, a munkastílusodról és a csapatban betöltött szerepeidről. Az eredményt később mások visszajelzéseivel is árnyalhatod.",
       en: "Complete the approximately 10-minute personality assessment to get a detailed picture of your characteristic patterns, work style, and roles in a team. Later, you can add nuance with feedback from others.",
     },
+    // P3-1: a jobb oldali csapat-kártya pipasorának párja — enélkül az
+    // egyéni kártyán nagy üres blokk maradt a szöveg és a CTA között.
+    selfCheck1: { hu: "~10 perces kitöltés", en: "~10-minute assessment" },
+    selfCheck2: { hu: "Azonnali, dimenziónkénti eredmény", en: "Instant, per-dimension results" },
+    selfCheck3: { hu: "Ingyenes, regisztrációval", en: "Free, with registration" },
     selfCta: { hu: "Elindítom az ingyenes felmérést", en: "Start the free assessment" },
     teamEyebrow: { hu: "csapat és szervezet · egyedi program", en: "team & organization · tailored program" },
     teamTitle: { hu: "Tisztább csapatkép, közös következő lépéssel", en: "A clearer team picture, with a shared next step" },
@@ -299,8 +310,8 @@ export const landingTranslations = {
     pilotEyebrow: { hu: "pilotprogram", en: "pilot program" },
     pilotTitle: { hu: "Pilotprogram – az első partnercsapatainknak", en: "Pilot program – for our first partner teams" },
     pilotBody: {
-      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Korlátozott számú csapattal indulunk.",
-      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with a limited number of teams.",
+      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Az első {total} partnercsapattal indulunk, és még {left} hely szabad.",
+      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with the first {total} partner teams, and {left} spots are still open.",
     },
     pilotCta: { hu: "Részletek", en: "Details" },
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
@@ -323,6 +334,47 @@ export const landingTranslations = {
     faqA4: {
       hu: "Minden egyéni funkció ingyenes: felmérés, riport, observer-visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói validálás és a workshopok a fizetős program részei.",
       en: "All individual features are free: assessment, report, observer feedback. Team-level measurements – team picture, team role map, psychological safety –, consultant validation and workshops are part of the paid program.",
+    },
+    // P0-4: a bevezetés ezen a kérdésen áll vagy bukik — a pontos, védhető
+    // megfogalmazás üzleti/jogi döntés, addig {{TODO}}.
+    faqQ5: {
+      hu: "Ki látja az egyéni eredményeket?",
+      en: "Who can see individual results?",
+    },
+    // A válasz a platform tényleges jogosultsági szabályait tükrözi
+    // (team-auth.ts: canViewRawTeamResults csak ORG_CONSULTANT;
+    // anonymity.ts: MIN_RATERS_FOR_ANONYMOUS_AGGREGATE = 3) — ha ezek
+    // változnak, ezt a szöveget is frissíteni KELL.
+    faqA5: {
+      hu: "Mindenki a saját eredményét látja, teljes részletességgel. A vezető és a céges adminisztrátor nem fér hozzá a tagok egyéni, dimenziónkénti eredményeihez – ők azt látják, ki töltötte ki a felmérést, valamint az összesített, csapatszintű riportot. Név szerinti egyéni profilokkal kizárólag a tanácsadó dolgozik a csapatkép ellenőrzésekor. A bizalmi és pszichológiai biztonság kérdésekre adott válaszok anonimok, és csak legalább három fő válaszából, összesítve jelennek meg.",
+      en: "Everyone sees their own results in full detail. The leader and the company administrator cannot access members' individual, per-dimension results – they see who has completed the assessment and the aggregated, team-level report. Only the consultant works with named individual profiles when reviewing the team picture. Answers to the trust and psychological safety questions are anonymous and only appear aggregated from at least three people's responses.",
+    },
+    // P2-1: a számok a program meglévő, máshol is kommunikált elemei
+    // (~10 perces kitöltés, 60 perces workshop, két 20–30 perces
+    // beszélgetés a pilotban).
+    faqQ6: {
+      hu: "Mennyi időt vesz el a csapattól?",
+      en: "How much of the team's time does it take?",
+    },
+    faqA6: {
+      hu: "A felmérés kitöltése körülbelül 10 perc fejenként. Ehhez jön egy 60 perces közös értelmező workshop, a pilotban pedig két rövid, 20–30 perces visszajelző beszélgetés a vezetővel. A csapat napi munkáját ezen felül nem terheljük.",
+      en: "Completing the assessment takes about 10 minutes per person. Add a 60-minute joint interpretation workshop, and in the pilot two short 20–30-minute feedback conversations with the leader. Beyond that, we don't take time from the team's daily work.",
+    },
+    faqQ7: {
+      hu: "Mi van, ha valaki nem tölti ki?",
+      en: "What if someone doesn't complete it?",
+    },
+    faqA7: {
+      hu: "A kitöltés önkéntes, és nincs merev részvételi küszöb: a csapatkép a meglévő kitöltésekből épül, a riport pedig minden elemnél jelzi, mi mért adat, mi becslés, és hol nincs még elég információ. A kollégiális szerep-visszajelzés csak legalább három értékelő után jelenik meg. A kitöltési időszakban figyeljük a részvételt, és segítünk, ha valaki elakad.",
+      en: "Participation is voluntary and there is no rigid threshold: the team picture builds on the responses we have, and the report labels every element as measured data, estimate, or not-enough-information. Peer role feedback only appears with at least three raters. During the response window we monitor participation and help if anyone gets stuck.",
+    },
+    faqQ8: {
+      hu: "Milyen módszertanon alapul?",
+      en: "What methodology is it based on?",
+    },
+    faqA8: {
+      hu: "A személyiségfelmérés a pszichológiai kutatásban széles körben vizsgált hatfaktoros személyiségmodellre épül, az önértékelést pedig kollégai és ismerősi visszajelzés árnyalhatja. A csapatkép ezen felül két mért rétegre támaszkodik: a csapatszerep-kérdőívre és a pszichológiai biztonság névtelen mérésére — a riport mindig jelöli, mi mért adat és mi becslés.",
+      en: "The personality assessment builds on the six-factor personality model, widely studied in psychological research, and self-assessment can be complemented by feedback from colleagues and acquaintances. The team picture also draws on two measured layers: the team role questionnaire and an anonymous measure of psychological safety — the report always distinguishes measured data from estimates.",
     },
     bottomHeading: { hu: "Kezdjük egy beszélgetéssel.", en: "Let's start with a conversation." },
     bottomSub: { hu: "Mesélj a csapatodról – egy munkanapon belül válaszolunk.", en: "Tell us about your team – we reply within one business day." },
@@ -508,9 +560,23 @@ export const landingTranslations = {
     articleNavigation: { hu: "További cikkek", en: "More articles" },
   },
   pilot: {
+    // A page.tsx statikus metadata-ja a DEFAULT_LOCALE-lal épül; nyelvváltás
+    // után a LocalizedPageMeta ugyanebből a két kulcsból frissíti a
+    // title/description/og:* értékeket a kliensen (P0-3).
+    metaTitle: {
+      hu: "Pilotprogram – az első partnercsapatainknak | trita",
+      en: "Pilot program – for our first partner teams | trita",
+    },
+    metaDescription: {
+      hu: "90 napos, személyesen kísért csapatprogram: közös mérés, értelmező workshop, konkrét vezetői lépés és visszamérés.",
+      en: "A 90-day, personally guided team program: shared measurement, an interpretation workshop, one concrete leadership action, and a follow-up measurement.",
+    },
     // Hero – partneri meghívás
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
-    badge: { hu: "Az első partnercsapatoknak", en: "For our first partner teams" },
+    badge: {
+      hu: "Az első {total} partnercsapatnak",
+      en: "For our first {total} partner teams",
+    },
     heroTitle: { hu: "A kivételes dolgok akkor születnek, ", en: "Don’t just try it. " },
     heroTitleEm: { hu: "amikor igazán figyelünk egymásra.", en: "Shape it with us." },
     heroBody: {
@@ -518,10 +584,40 @@ export const landingTranslations = {
       en: "In the pilot, we work more closely together. You use trita in real team situations; we listen, ask questions, and develop it further based on what you learn.",
     },
     heroCta: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
+    // Kapacitás-jelző a hero CTA alatt: 10 pötty + ez a felirat.
+    spotsLeftShort: { hu: "Még {left} szabad hely", en: "{left} spots still open" },
+    spotsA11y: {
+      hu: "A {total} partnercsapat-helyből {left} szabad",
+      en: "{left} of {total} partner team spots are open",
+    },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
     metaChip1: { hu: "Közvetlen kapcsolat", en: "Direct contact" },
     metaChip2: { hu: "Egymásra figyelünk", en: "Open feedback" },
     metaChip3: { hu: "Közös fejlesztés", en: "Shared development" },
+
+    // Ténysáv a hero alatt — a /how-we-work teaser konkrét ígéreteinek
+    // (90 nap, korlátozott létszám) itt kell fedezetet kapniuk. A {{TODO}}
+    // értékeket üzleti döntés tölti ki (ld. brief 0. táblázat).
+    factsA11y: { hu: "A pilot legfontosabb adatai", en: "Key facts about the pilot" },
+    fact1Value: { hu: "90", en: "90" },
+    fact1Unit: { hu: "nap", en: "days" },
+    fact1Label: { hu: "teljes hozzáférés", en: "full access" },
+    // A nagy szám a SZABAD helyek száma (C-változat): ez a döntési tény.
+    fact2Value: { hu: "{left}", en: "{left}" },
+    fact2Unit: { hu: "/ {total}", en: "/ {total}" },
+    fact2Label: { hu: "szabad partnercsapat-hely", en: "open partner team spots" },
+    fact3Value: { hu: "Egyedi", en: "Custom" },
+    fact3Unit: { hu: "ár", en: "price" },
+    fact3Label: {
+      hu: "kedvezményes partneri feltételekkel",
+      en: "with discounted partner terms",
+    },
+    fact4Value: { hu: "2+1", en: "2+1" },
+    fact4Unit: { hu: "alkalom", en: "sessions" },
+    fact4Label: {
+      hu: "két beszélgetés és egy záró visszamérés",
+      en: "two conversations and a closing remeasurement",
+    },
 
     // Partneri hero-vizuál
     partnerVisualA11y: {
@@ -538,10 +634,6 @@ export const landingTranslations = {
       en: "Attention and openness to improve",
     },
     partnerResultTitle: { hu: "Együtt formáljuk tovább", en: "A program shaped together" },
-    partnerResultBody: {
-      hu: "A tapasztalataitok nyomán",
-      en: "Built to work in real team situations",
-    },
     partnerVisualNote: {
       hu: "Ti elmondjátok, mit tapasztaltok, mi pedig kérdezünk, figyelünk és tanulunk belőle. Így fejlődik tovább a trita veletek együtt.",
       en: "We consider your suggestions together and build in what creates genuine value.",
@@ -677,6 +769,26 @@ export const landingTranslations = {
       en: "If the program delivered real value, we ask permission to share a short, agreed testimonial or anonymized account of your experience.",
     },
 
+    // „Ki kísér végig" blokk (P1-1, átalakítva): a bizalom-funkció a
+    // személyes VÁLLALÁSRA és a módszertanra épül, nem az alapító
+    // bemutatására — fotó és életrajz szándékosan nincs (döntés:
+    // 2026-08-28). A módszertani mondat a termék valós állításaiból áll
+    // (HEXACO névhasználat user-facing szövegben tilos, ld. CLAUDE.md —
+    // „hatfaktoros személyiségmodell").
+    founderEyebrow: { hu: "Ki kísér végig", en: "Who guides you" },
+    founderTitle: {
+      hu: "Nem csak platformot kaptok, hanem közös munkát.",
+      en: "You get more than a platform — you get shared work.",
+    },
+    founderBody: {
+      hu: "A pilotban minden csapattal a trita alapítója dolgozik végig: ő ellenőrzi a csapatképet, ő vezeti a közös értelmezést, és őt éritek el közvetlenül a program teljes ideje alatt.",
+      en: "In the pilot, trita's founder works with every team from start to finish: reviewing the team picture, leading the joint interpretation, and staying directly reachable throughout the program.",
+    },
+    founderMethod: {
+      hu: "A csapatkép több rétegből áll össze: hat dimenzió mentén mért személyiségprofilok, csapatszerepek és a pszichológiai biztonság névtelen mérése — és minden eleménél jelöljük, mi mért adat és mi becslés.",
+      en: "The team picture builds up from several layers: personality profiles measured across six dimensions, team roles, and an anonymous measure of psychological safety — and every element is labeled as measured data or estimate.",
+    },
+
     // Application form section
     formEyebrow: { hu: "Partneri jelentkezés", en: "Partner application" },
     formTitle: {
@@ -687,6 +799,13 @@ export const landingTranslations = {
       hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Az első beszélgetésen megismerjük a csapatotokat, átbeszéljük, mire lenne most a legnagyobb szükségetek, és megnézzük, hogyan tudunk együtt dolgozni.",
       en: "Complete the short form and we’ll get back to you within one business day. We’ll first discuss, with no obligation, what you would like to try and how we could work together.",
     },
+    // P0-4: egymondatos adatvédelmi utalás az űrlap mellett; a pontos
+    // láthatósági szabály a /how-we-work GYIK-ben és az Adatkezelésben él.
+    privacyNote: {
+      hu: "Az egyéni eredményeket csak a kitöltő és a tanácsadó látja – a vezető összesített csapatképet kap.",
+      en: "Individual results are visible only to the person and the consultant – the leader receives an aggregated team picture.",
+    },
+    privacyNoteLink: { hu: "Részletek az Adatkezelésben", en: "Details in the Privacy Policy" },
     fitEyebrow: { hu: "Jó helyen jártok, ha", en: "A good fit if" },
     fitBody: {
       hu: "együtt dolgozó csapatként szeretnétek tisztábban látni a működéseteket, nyitottak vagytok a közös gondolkodásra, és készek vagytok egy közösen kiválasztott következő lépést megvalósítani.",
@@ -695,11 +814,16 @@ export const landingTranslations = {
 
     // Form fields
     formHeading: { hu: "Meséljetek a csapatotokról", en: "Quick application" },
+    // Szabadhely-jelzés az űrlap fejlécében — a szám a pilot-config.ts-ből
+    // jön, 0-nál a sor nem renderelődik.
+    formSpotsNote: {
+      hu: "A {total} partnercsapat-helyből még {left} szabad.",
+      en: "{left} of the {total} partner team spots are still open.",
+    },
     formSubheading: {
       hu: "Két perc alatt kitölthető. Néhány mondat is elég ahhoz, hogy elinduljunk.",
       en: "It takes two minutes. One sentence about your team is enough.",
     },
-    formSpotsLabel: { hu: "Partneri pilot", en: "Partner pilot" },
     labelName: { hu: "Név", en: "Name" },
     placeholderName: { hu: "Teljes neved", en: "Full name" },
     labelEmail: { hu: "Email", en: "Email" },
@@ -722,7 +846,9 @@ export const landingTranslations = {
       en: "Optional, but it helps a lot for the first conversation.",
     },
     submitSending: { hu: "Küldés...", en: "Sending..." },
-    submitDefault: { hu: "Beszéljünk a csapatotokról", en: "Apply as a partner team" },
+    // P1-3: a hero gombjával azonos szöveg — egyetlen elsődleges akció fut
+    // az oldalon, és a „Meséljetek a csapatotokról" címmel sem redundáns.
+    submitDefault: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
     preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
     errorMessage: {
       hu: "Nem sikerült elküldeni. Próbáld újra, vagy írj a hello@trita.io címre.",

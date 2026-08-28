@@ -150,6 +150,7 @@ export const commonTranslations = {
     menu: { hu: "Menü", en: "Menu" },
     blog: { hu: "Blog", en: "Blog" },
     pricing: { hu: "Együttműködés", en: "How we work" },
+    pilot: { hu: "Pilotprogram", en: "Pilot program" },
     profile: { hu: "Profilom", en: "My profile" },
     team: { hu: "Csapat", en: "Team" },
     organizations: { hu: "Szervezetek", en: "Organizations" },

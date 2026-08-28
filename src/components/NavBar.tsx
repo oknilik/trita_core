@@ -68,11 +68,21 @@ function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
+function FlagIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3.5 14V2.5" />
+      <path d="M3.5 3h8.5l-1.8 2.8L12 8.5H3.5" />
+    </svg>
+  );
+}
+
 const LINK_ICONS: Record<string, (p: { className?: string }) => React.ReactNode> = {
   home: HomeIcon,
   dashboard: GridIcon,
   blog: BlogIcon,
   pricing: CollabIcon,
+  pilot: FlagIcon,
 };
 
 // ─── Nav link — az app-nav (NavHeaderUI) aktív/inaktív stílusával ────────────
@@ -184,6 +194,9 @@ export function NavBar({
       ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
       : []),
     { id: "pricing", href: "/how-we-work", label: t("nav.pricing", locale) },
+    // Aktuális üzleti prioritás (P1-2): a pilot eddig csak egy oldalközépi
+    // kártyáról volt elérhető.
+    { id: "pilot", href: "/pilot", label: t("nav.pilot", locale) },
   ];
 
   const authLinks = [
@@ -194,6 +207,7 @@ export function NavBar({
       ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
       : []),
     { id: "pricing", href: "/how-we-work", label: t("nav.pricing", locale) },
+    { id: "pilot", href: "/pilot", label: t("nav.pilot", locale) },
   ];
 
   const links = isSignedIn ? authLinks : publicLinks;
