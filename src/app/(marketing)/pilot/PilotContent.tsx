@@ -11,7 +11,8 @@ import {
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
-import { t, type Locale } from "@/lib/i18n/public";
+import { t, tf, type Locale } from "@/lib/i18n/public";
+import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
@@ -240,7 +241,7 @@ export function PilotContent() {
               <div className="mb-6 flex flex-wrap items-center gap-3">
                 <SectionEyebrow tone="team">{t("pilot.eyebrow", locale)}</SectionEyebrow>
                 <span className="inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-surface-card/75 px-4 py-1.5 text-caption font-medium text-[var(--color-layer-team-accent)] backdrop-blur-sm">
-                  {t("pilot.badge", locale)}
+                  {tf("pilot.badge", locale, { total: PILOT_TOTAL_TEAMS })}
                 </span>
               </div>
 
@@ -359,6 +360,14 @@ export function PilotContent() {
                   <p className="mt-1 text-sm leading-6 text-ink-body">
                     {t("pilot.formSubheading", locale)}
                   </p>
+                  {PILOT_SPOTS_LEFT > 0 ? (
+                    <p className="mt-2 text-sm font-medium text-[var(--color-layer-team-accent)]">
+                      {tf("pilot.formSpotsNote", locale, {
+                        total: PILOT_TOTAL_TEAMS,
+                        left: PILOT_SPOTS_LEFT,
+                      })}
+                    </p>
+                  ) : null}
                 </div>
 
                 <form
@@ -566,7 +575,8 @@ function PilotFactBar({ locale }: { locale: Locale }) {
       <div className="mx-auto max-w-[1120px] px-7 pb-16 md:pb-24">
         <dl className="grid grid-cols-2 overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_16px_40px_rgba(26,26,46,0.05)] lg:grid-cols-4">
           {PILOT_FACTS.map((fact) => {
-            const unit = t(`pilot.fact${fact}Unit`, locale);
+            const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT };
+            const unit = tf(`pilot.fact${fact}Unit`, locale, vars);
             return (
               <div
                 key={fact}
@@ -574,7 +584,7 @@ function PilotFactBar({ locale }: { locale: Locale }) {
               >
                 <dd className="flex items-baseline gap-1.5">
                   <span className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-accent)] md:text-4xl">
-                    {t(`pilot.fact${fact}Value`, locale)}
+                    {tf(`pilot.fact${fact}Value`, locale, vars)}
                   </span>
                   {unit ? (
                     <span className="text-label uppercase text-[var(--color-layer-team-accent)]">
@@ -583,7 +593,7 @@ function PilotFactBar({ locale }: { locale: Locale }) {
                   ) : null}
                 </dd>
                 <dt className="mt-2 text-sm leading-relaxed text-ink-body">
-                  {t(`pilot.fact${fact}Label`, locale)}
+                  {tf(`pilot.fact${fact}Label`, locale, vars)}
                 </dt>
               </div>
             );

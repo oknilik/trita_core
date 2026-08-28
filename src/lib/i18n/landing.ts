@@ -310,8 +310,8 @@ export const landingTranslations = {
     pilotEyebrow: { hu: "pilotprogram", en: "pilot program" },
     pilotTitle: { hu: "Pilotprogram – az első partnercsapatainknak", en: "Pilot program – for our first partner teams" },
     pilotBody: {
-      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Az első 5 partnercsapattal indulunk.",
-      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with the first 5 partner teams.",
+      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Az első {total} partnercsapattal indulunk, és még {left} hely szabad.",
+      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with the first {total} partner teams, and {left} spots are still open.",
     },
     pilotCta: { hu: "Részletek", en: "Details" },
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
@@ -574,8 +574,8 @@ export const landingTranslations = {
     // Hero – partneri meghívás
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
     badge: {
-      hu: "Az első 5 partnercsapatnak",
-      en: "For our first 5 partner teams",
+      hu: "Az első {total} partnercsapatnak",
+      en: "For our first {total} partner teams",
     },
     heroTitle: { hu: "A kivételes dolgok akkor születnek, ", en: "Don’t just try it. " },
     heroTitleEm: { hu: "amikor igazán figyelünk egymásra.", en: "Shape it with us." },
@@ -596,9 +596,9 @@ export const landingTranslations = {
     fact1Value: { hu: "90", en: "90" },
     fact1Unit: { hu: "nap", en: "days" },
     fact1Label: { hu: "teljes hozzáférés", en: "full access" },
-    fact2Value: { hu: "5", en: "5" },
+    fact2Value: { hu: "{total}", en: "{total}" },
     fact2Unit: { hu: "csapat", en: "teams" },
-    fact2Label: { hu: "ennyi partnercsapattal indulunk", en: "partner teams at launch" },
+    fact2Label: { hu: "partnercsapat — még {left} szabad hely", en: "partner teams — {left} spots still open" },
     fact3Value: { hu: "Egyedi", en: "Custom" },
     fact3Unit: { hu: "ár", en: "price" },
     fact3Label: {
@@ -807,6 +807,12 @@ export const landingTranslations = {
 
     // Form fields
     formHeading: { hu: "Meséljetek a csapatotokról", en: "Quick application" },
+    // Szabadhely-jelzés az űrlap fejlécében — a szám a pilot-config.ts-ből
+    // jön, 0-nál a sor nem renderelődik.
+    formSpotsNote: {
+      hu: "A {total} partnercsapat-helyből még {left} szabad.",
+      en: "{left} of the {total} partner team spots are still open.",
+    },
     formSubheading: {
       hu: "Két perc alatt kitölthető. Néhány mondat is elég ahhoz, hogy elinduljunk.",
       en: "It takes two minutes. One sentence about your team is enough.",

@@ -8,7 +8,8 @@ import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
 import { CheckIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
-import { t } from "@/lib/i18n/public";
+import { t, tf } from "@/lib/i18n/public";
+import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { PRICING_FAQ_INDEXES } from "./faq";
 
@@ -222,7 +223,9 @@ export function PricingContent() {
           <div className="p-7 md:p-10">
             <SectionEyebrow tone="team">{t("pricing.pilotEyebrow", locale)}</SectionEyebrow>
             <h2 className="mt-4 font-fraunces text-3xl text-ink">{t("pricing.pilotTitle", locale)}</h2>
-            <p className="mt-4 text-sm leading-relaxed text-ink-body">{t("pricing.pilotBody", locale)}</p>
+            <p className="mt-4 text-sm leading-relaxed text-ink-body">
+              {tf("pricing.pilotBody", locale, { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT })}
+            </p>
             <Link href="/pilot" onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })} className={`mt-5 inline-flex min-h-11 items-center font-semibold text-[var(--color-layer-team-accent)] transition-colors hover:text-[var(--color-layer-team-bright)] ${FOCUS_RING_CLASS}`}>
               {t("pricing.pilotCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
             </Link>
