@@ -311,7 +311,10 @@ export function PilotContent() {
 
       <FounderSection locale={locale} />
 
-      <section id="jelentkezes" className="bg-[var(--color-layer-team-soft)]/45">
+      {/* A háttér a közös vászonszín: a footer hullám előtti védősáv is
+          ebből él (--color-surface-canvas = cream), így az oldal alján nem
+          jelenik meg eltérő színű csík a hullám fölött. */}
+      <section id="jelentkezes" className="bg-cream">
         <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div>
