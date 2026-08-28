@@ -593,9 +593,9 @@ function FounderSection({ locale }: { locale: Locale }) {
             />
             <path
               d="M150 152 l6 14 15 4 -15 6 -6 14 -6-14 -15-6 15-4 z"
-              fill="var(--color-ink)"
+              fill="var(--color-surface-inverse)"
             />
-            <circle cx="248" cy="52" r="7" fill="var(--color-ink)" />
+            <circle cx="248" cy="52" r="7" fill="var(--color-surface-inverse)" />
             <path
               d="M34 70 Q48 56 66 66"
               fill="none"
