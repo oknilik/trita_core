@@ -191,12 +191,6 @@ export function PilotContent() {
     track("form.start", { form_id: "pilot_apply" });
   };
 
-  const partnerBenefits = [
-    { number: "01", title: t("pilot.partnerBenefit1Title", locale), desc: t("pilot.partnerBenefit1Desc", locale) },
-    { number: "02", title: t("pilot.partnerBenefit2Title", locale), desc: t("pilot.partnerBenefit2Desc", locale) },
-    { number: "03", title: t("pilot.partnerBenefit3Title", locale), desc: t("pilot.partnerBenefit3Desc", locale) },
-  ];
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (status === "sending") return;
@@ -288,18 +282,6 @@ export function PilotContent() {
           </div>
         </div>
       </section>
-
-      <EditorialSection
-        id="mit-jelent"
-        eyebrow={t("pilot.partnerBenefitsEyebrow", locale)}
-        title={t("pilot.partnerBenefitsTitle", locale)}
-      >
-        <div className="grid gap-5 lg:grid-cols-3">
-          {partnerBenefits.map((item) => (
-            <FeatureCard key={item.number} {...item} />
-          ))}
-        </div>
-      </EditorialSection>
 
       <EditorialSection
         eyebrow={t("pilot.exchangeEyebrow", locale)}
@@ -646,21 +628,6 @@ function validatePilotFields(values: PilotFormValues, locale: Locale): PilotFiel
   if (values.message.trim().length > 4000) errors.message = copy.message;
 
   return errors;
-}
-
-function FeatureCard({ number, title, desc }: { number: string; title: string; desc: string }) {
-  return (
-    <article className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] transition-transform hover:-translate-y-0.5">
-      <div className="mb-4 flex items-center gap-3">
-        <span className="flex size-9 items-center justify-center rounded-full bg-[var(--color-layer-team-soft)] font-fraunces text-sm text-[var(--color-layer-team-accent)]">
-          {number}
-        </span>
-        <div className="h-px flex-1 bg-sand" />
-      </div>
-      <h3 className="font-fraunces text-title leading-tight text-ink">{title}</h3>
-      <p className="mt-3 text-base leading-8 text-ink-body">{desc}</p>
-    </article>
-  );
 }
 
 function ExchangeCard({
