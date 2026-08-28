@@ -76,29 +76,23 @@ function PartnerVisual({ locale }: { locale: Locale }) {
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
+          <article className="flex items-start gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+            <div className="flex size-16 shrink-0 self-center items-center justify-center rounded-[46%_54%_48%_52%/54%_45%_55%_46%] border border-white/15 bg-[var(--color-layer-self-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
               <span className="font-fraunces text-lg text-white">Ti</span>
             </div>
             <div className="min-w-0">
-              <p className="text-label uppercase text-white/75">
-                {t("pilot.partnerTeamTitle", locale)}
-              </p>
-              <p className="mt-1 text-sm leading-snug text-white/85">
+              <p className="min-w-0 break-words text-sm leading-snug text-white/85 [overflow-wrap:anywhere]">
                 {t("pilot.partnerTeamBody", locale)}
               </p>
             </div>
           </article>
 
-          <article className="flex items-center gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
+          <article className="flex items-start gap-4 rounded-[20px] border border-white/10 bg-white/[0.055] p-4">
+            <div className="flex size-16 shrink-0 self-center items-center justify-center rounded-[54%_46%_52%_48%/45%_55%_46%_54%] border border-white/15 bg-[var(--color-layer-team-hero-from)] shadow-[0_12px_26px_rgba(0,0,0,0.16)]">
               <TritaWordmark className="text-[1.15rem] text-white" />
             </div>
             <div className="min-w-0">
-              <p className="text-label uppercase text-white/75">
-                {t("pilot.partnerTritaTitle", locale)}
-              </p>
-              <p className="mt-1 text-sm leading-snug text-white/85">
+              <p className="min-w-0 break-words text-sm leading-snug text-white/85 [overflow-wrap:anywhere]">
                 {t("pilot.partnerTritaBody", locale)}
               </p>
             </div>
@@ -191,12 +185,6 @@ export function PilotContent() {
     track("form.start", { form_id: "pilot_apply" });
   };
 
-  const partnerBenefits = [
-    { number: "01", title: t("pilot.partnerBenefit1Title", locale), desc: t("pilot.partnerBenefit1Desc", locale) },
-    { number: "02", title: t("pilot.partnerBenefit2Title", locale), desc: t("pilot.partnerBenefit2Desc", locale) },
-    { number: "03", title: t("pilot.partnerBenefit3Title", locale), desc: t("pilot.partnerBenefit3Desc", locale) },
-  ];
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (status === "sending") return;
@@ -288,18 +276,6 @@ export function PilotContent() {
           </div>
         </div>
       </section>
-
-      <EditorialSection
-        id="mit-jelent"
-        eyebrow={t("pilot.partnerBenefitsEyebrow", locale)}
-        title={t("pilot.partnerBenefitsTitle", locale)}
-      >
-        <div className="grid gap-5 lg:grid-cols-3">
-          {partnerBenefits.map((item) => (
-            <FeatureCard key={item.number} {...item} />
-          ))}
-        </div>
-      </EditorialSection>
 
       <EditorialSection
         eyebrow={t("pilot.exchangeEyebrow", locale)}
@@ -646,21 +622,6 @@ function validatePilotFields(values: PilotFormValues, locale: Locale): PilotFiel
   if (values.message.trim().length > 4000) errors.message = copy.message;
 
   return errors;
-}
-
-function FeatureCard({ number, title, desc }: { number: string; title: string; desc: string }) {
-  return (
-    <article className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] transition-transform hover:-translate-y-0.5">
-      <div className="mb-4 flex items-center gap-3">
-        <span className="flex size-9 items-center justify-center rounded-full bg-[var(--color-layer-team-soft)] font-fraunces text-sm text-[var(--color-layer-team-accent)]">
-          {number}
-        </span>
-        <div className="h-px flex-1 bg-sand" />
-      </div>
-      <h3 className="font-fraunces text-title leading-tight text-ink">{title}</h3>
-      <p className="mt-3 text-base leading-8 text-ink-body">{desc}</p>
-    </article>
-  );
 }
 
 function ExchangeCard({

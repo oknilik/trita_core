@@ -511,41 +511,39 @@ export const landingTranslations = {
     // Hero – partneri meghívás
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
     badge: { hu: "Az első partnercsapatoknak", en: "For our first partner teams" },
-    heroTitle: { hu: "Ne csak próbáljátok ki. ", en: "Don’t just try it. " },
-    heroTitleEm: { hu: "Alakítsátok velünk.", en: "Shape it with us." },
+    heroTitle: { hu: "A kivételes dolgok akkor születnek, ", en: "Don’t just try it. " },
+    heroTitleEm: { hu: "amikor igazán figyelünk egymásra.", en: "Shape it with us." },
     heroBody: {
-      hu: "A pilotban szorosabban dolgozunk együtt. Ti valódi csapathelyzetben használjátok a tritát, mi pedig figyelünk, kérdezünk, és a tapasztalataitok alapján fejlesztjük tovább.",
+      hu: "Pilotpartnerként szorosabban dolgozunk együtt. Ti megosztjátok velünk a tapasztalataitokat, mi pedig ezekre építve fejlesztjük tovább a tritát.",
       en: "In the pilot, we work more closely together. You use trita in real team situations; we listen, ask questions, and develop it further based on what you learn.",
     },
     heroCta: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
     metaChip1: { hu: "Közvetlen kapcsolat", en: "Direct contact" },
-    metaChip2: { hu: "Nyitott visszajelzés", en: "Open feedback" },
+    metaChip2: { hu: "Egymásra figyelünk", en: "Open feedback" },
     metaChip3: { hu: "Közös fejlesztés", en: "Shared development" },
 
     // Partneri hero-vizuál
     partnerVisualA11y: {
-      hu: "A csapat tapasztalatai és a trita módszere közösen formálják a programot.",
+      hu: "Ti megosztjátok velünk a tapasztalataitokat, mi pedig figyelünk, kérdezünk és tanulunk belőlük.",
       en: "The team’s experience and trita’s method shape the program together.",
     },
     partnerVisualEyebrow: { hu: "Partneri pilot", en: "Partner pilot" },
-    partnerTeamTitle: { hu: "A csapatotok", en: "Your team" },
     partnerTeamBody: {
-      hu: "Valós használat és őszinte tapasztalatok",
+      hu: "Elmondjátok, mit tapasztaltok",
       en: "Real use and honest experience",
     },
-    partnerTritaTitle: { hu: "A trita", en: "trita" },
     partnerTritaBody: {
-      hu: "Figyelem és nyitottság a fejlesztésre",
+      hu: "Figyelünk, kérdezünk és tanulunk belőle",
       en: "Attention and openness to improve",
     },
-    partnerResultTitle: { hu: "Közösen formált program", en: "A program shaped together" },
+    partnerResultTitle: { hu: "Együtt formáljuk tovább", en: "A program shaped together" },
     partnerResultBody: {
-      hu: "Ami valódi csapathelyzetekben is működik",
+      hu: "A tapasztalataitok nyomán",
       en: "Built to work in real team situations",
     },
     partnerVisualNote: {
-      hu: "A javaslataitokat együtt mérlegeljük, és ami valódi értéket ad, beépítjük.",
+      hu: "Ti elmondjátok, mit tapasztaltok, mi pedig kérdezünk, figyelünk és tanulunk belőle. Így fejlődik tovább a trita veletek együtt.",
       en: "We consider your suggestions together and build in what creates genuine value.",
     },
 
@@ -575,72 +573,44 @@ export const landingTranslations = {
       en: "We map the team's relationships and how safe it feels to ask, make mistakes, or disagree. We then choose one leadership action and measure its effect again at the end of the program.",
     },
 
-    // Rövid partneri értékajánlat
-    partnerBenefitsEyebrow: {
-      hu: "Mit jelent partnercsapatnak lenni",
-      en: "What being a partner team means",
-    },
-    partnerBenefitsTitle: {
-      hu: "Valódi használat. Közvetlen párbeszéd. Közös fejlesztés.",
-      en: "Real use. Direct dialogue. Shared development.",
-    },
-    partnerBenefit1Title: { hu: "Valódi csapathelyzet", en: "A real team setting" },
-    partnerBenefit1Desc: {
-      hu: "Nem bemutatókörnyezetben próbáljátok ki a tritát, hanem a saját csapatotok mindennapi működésében.",
-      en: "You don’t try trita in a demo environment, but in the day-to-day work of your own team.",
-    },
-    partnerBenefit2Title: { hu: "Közvetlen párbeszéd", en: "Direct dialogue" },
-    partnerBenefit2Desc: {
-      hu: "Rendszeresen átbeszéljük, mi működik, hol akadtatok el, és min lenne érdemes változtatnunk.",
-      en: "We regularly discuss what works, where you got stuck, and what may be worth changing.",
-    },
-    partnerBenefit3Title: {
-      hu: "Javaslatok, amelyek számítanak",
-      en: "Suggestions that matter",
-    },
-    partnerBenefit3Desc: {
-      hu: "Nyitottan fogadjuk a tapasztalataitokat, és együtt döntjük el, mely ötletek adnak valódi értéket a programhoz.",
-      en: "We welcome your experience and decide together which ideas add genuine value to the program.",
-    },
-
     // Kölcsönös vállalás
     exchangeEyebrow: { hu: "A közös munka alapja", en: "The basis of our work together" },
     exchangeTitle: {
-      hu: "Amit adunk, és amit tőletek kérünk.",
+      hu: "Mi végigkísérünk benneteket. Ti időt és figyelmet szántok ránk.",
       en: "What we give, and what we ask from you.",
     },
     exchangeGiveLabel: { hu: "Amit mi adunk", en: "What we provide" },
     exchangeGiveTitle: {
-      hu: "Teljes program, közvetlen figyelemmel",
+      hu: "Végig mellettetek vagyunk",
       en: "The full program, with direct attention",
     },
     exchangeGive1: {
-      hu: "Mérésekből készülő, ellenőrzött csapatkép",
+      hu: "Elkészítjük és szakmailag ellenőrizzük a csapatképet",
       en: "A reviewed team picture built from measurement",
     },
     exchangeGive2: {
-      hu: "Közös értelmezés és konkrét következő lépés",
+      hu: "Együtt értelmezzük, és kiválasztunk egy megvalósítható következő lépést",
       en: "Joint interpretation and a concrete next step",
     },
     exchangeGive3: {
-      hu: "Visszamérés és közvetlen kapcsolat a program során",
+      hu: "A program során elérhetők maradunk, a végén pedig megnézzük, mi változott",
       en: "Follow-up measurement and direct contact throughout",
     },
-    exchangeAskLabel: { hu: "Amit tőletek kérünk", en: "What we ask from you" },
+    exchangeAskLabel: { hu: "Amit ti hoztok", en: "What we ask from you" },
     exchangeAskTitle: {
-      hu: "Valódi használat, őszinte visszajelzés",
+      hu: "Időt, nyitottságot és őszinte visszajelzést",
       en: "Real use and honest feedback",
     },
     exchangeAsk1: {
-      hu: "A csapat végigmegy a felméréseken",
+      hu: "A csapat kitölti a felméréseket",
       en: "The team completes the assessments",
     },
     exchangeAsk2: {
-      hu: "Két rövid beszélgetésen megosztjátok a tapasztalataitokat",
+      hu: "Két rövid beszélgetésen elmondjátok, mit tapasztaltatok",
       en: "You share your experience in two short conversations",
     },
     exchangeAsk3: {
-      hu: "Kipróbáltok egy közösen választott változtatást",
+      hu: "A közösen kiválasztott lépést kipróbáljátok a mindennapi munkában",
       en: "You try one change we select together",
     },
 
@@ -710,23 +680,23 @@ export const landingTranslations = {
     // Application form section
     formEyebrow: { hu: "Partneri jelentkezés", en: "Partner application" },
     formTitle: {
-      hu: "Lehettek ti a következő partnercsapat.",
+      hu: "Ismerjük meg egymást.",
       en: "You could be our next partner team.",
     },
     formBody: {
-      hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Először kötelezettség nélkül átbeszéljük, mit szeretnétek kipróbálni, és hogyan tudnánk együtt dolgozni.",
+      hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Az első beszélgetésen megismerjük a csapatotokat, átbeszéljük, mire lenne most a legnagyobb szükségetek, és megnézzük, hogyan tudunk együtt dolgozni.",
       en: "Complete the short form and we’ll get back to you within one business day. We’ll first discuss, with no obligation, what you would like to try and how we could work together.",
     },
-    fitEyebrow: { hu: "Nektek való, ha", en: "A good fit if" },
+    fitEyebrow: { hu: "Jó helyen jártok, ha", en: "A good fit if" },
     fitBody: {
-      hu: "van egy együtt dolgozó csapatotok, szívesen kipróbáljátok a tritát valódi helyzetben, és nyitottan megosztjátok velünk a tapasztalataitokat.",
+      hu: "együtt dolgozó csapatként szeretnétek tisztábban látni a működéseteket, nyitottak vagytok a közös gondolkodásra, és készek vagytok egy közösen kiválasztott következő lépést megvalósítani.",
       en: "you have a team that works together, want to try trita in a real setting, and are open to sharing your experience with us.",
     },
 
     // Form fields
-    formHeading: { hu: "Rövid jelentkezés", en: "Quick application" },
+    formHeading: { hu: "Meséljetek a csapatotokról", en: "Quick application" },
     formSubheading: {
-      hu: "Két perc alatt kitölthető. A csapatról szóló kérdéshez egy mondat is elég.",
+      hu: "Két perc alatt kitölthető. Néhány mondat is elég ahhoz, hogy elinduljunk.",
       en: "It takes two minutes. One sentence about your team is enough.",
     },
     formSpotsLabel: { hu: "Partneri pilot", en: "Partner pilot" },
@@ -744,15 +714,15 @@ export const landingTranslations = {
     sizeOption4: { hu: "51–80 fő", en: "51–80 people" },
     sizeOption5: { hu: "80+ fő", en: "80+ people" },
     labelQuestion: {
-      hu: "Mi a legfontosabb kérdésed a csapatoddal kapcsolatban?",
+      hu: "Mi foglalkoztat most leginkább a csapatotokkal kapcsolatban?",
       en: "What's the most important question about your team?",
     },
     placeholderQuestion: {
-      hu: "Opcionális, de sokat segít az első beszélgetéshez.",
+      hu: "Néhány mondat is sokat segít az első beszélgetéshez.",
       en: "Optional, but it helps a lot for the first conversation.",
     },
     submitSending: { hu: "Küldés...", en: "Sending..." },
-    submitDefault: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
+    submitDefault: { hu: "Beszéljünk a csapatotokról", en: "Apply as a partner team" },
     preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
     errorMessage: {
       hu: "Nem sikerült elküldeni. Próbáld újra, vagy írj a hello@trita.io címre.",
