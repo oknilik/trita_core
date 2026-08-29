@@ -1,0 +1,1220 @@
+{
+  "generatedFrom": "Trita legal documents v1, effective 2026-08-29",
+  "documents": {
+    "platform-terms": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "1-a-feltetelek-celja-es-hatalya",
+        "text": "1. A feltételek célja és hatálya"
+      },
+      {
+        "kind": "p",
+        "text": "1.1. A jelen Platform Felhasználási Feltételek (a továbbiakban: Feltételek) az OKNILIK Kft. (Szolgáltató) által a trita.io weboldalon és a kapcsolódó webalkalmazásban nyújtott, egyéni felhasználóknak szóló ingyenes digitális szolgáltatás igénybevételét szabályozzák."
+      },
+      {
+        "kind": "p",
+        "text": "1.2. A Feltételek nem terjednek ki a szervezeteknek nyújtott Team Scan, tanácsadási, workshop- vagy más B2B szolgáltatásra. Az ilyen szolgáltatás kizárólag egyedi ajánlat, megrendelés vagy külön szerződés alapján vehető igénybe."
+      },
+      {
+        "kind": "p",
+        "text": "1.3. Felhasználó az a természetes személy, aki a Platformot saját céljára használja, felmérést tölt ki, fiókot hoz létre, eredményt tekint meg vagy meghívás alapján visszajelzést ad."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "2-a-szolgaltato-adatai",
+        "text": "2. A Szolgáltató adatai"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Adat",
+            "Tartalom"
+          ],
+          [
+            "Cégnév",
+            "OKNILIK Kft."
+          ],
+          [
+            "Székhely",
+            "7632 Pécs, Tüskésréti út 5."
+          ],
+          [
+            "Cégjegyzékszám",
+            "02-09-086218"
+          ],
+          [
+            "Adószám",
+            "27455764-2-02"
+          ],
+          [
+            "Kapcsolat",
+            "hello@trita.io"
+          ],
+          [
+            "Weboldal",
+            "https://trita.io"
+          ],
+          [
+            "Tárhelyszolgáltató",
+            "Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, USA; Delaware registration no. 5857312"
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "3-a-szerzodes-letrejotte-es-elektronikus-lepesek",
+        "text": "3. A szerződés létrejötte és elektronikus lépések"
+      },
+      {
+        "kind": "p",
+        "text": "3.1. A Felhasználó a regisztrációs felületen külön jelölőnégyzettel elfogadja a Feltételeket, és tudomásul veszi az Adatvédelmi tájékoztatót. Az elfogadás nélkül a regisztráció nem indítható el. Az elfogadással a Felhasználó és a Szolgáltató között ingyenes digitális szolgáltatás nyújtására irányuló szerződés jön létre. A Szolgáltató naplózza az elfogadott dokumentumverziót és az elfogadás időpontját."
+      },
+      {
+        "kind": "p",
+        "text": "3.2. A szerződés nyelve magyar. Az esetleges angol változat tájékoztató fordítás; eltérés esetén a magyar szöveg irányadó, kivéve, ha kötelező jogszabály ettől eltérően rendelkezik."
+      },
+      {
+        "kind": "p",
+        "text": "3.3. A szerződés elektronikus úton jön létre, nem minősül írásba foglalt szerződésnek, és azt a Szolgáltató egyedileg visszakereshető formában nem archiválja. Az aktuális Feltételek tartósan elérhetők a Platform jogi oldalán."
+      },
+      {
+        "kind": "p",
+        "text": "3.4. A Felhasználó az elküldés előtt javíthatja a beviteli hibákat a felület vissza- és szerkesztési funkcióival. A felmérési válaszok végleges beküldésének következményeit a felület külön jelzi."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "4-jogosultsag-es-fiok",
+        "text": "4. Jogosultság és fiók"
+      },
+      {
+        "kind": "p",
+        "text": "4.1. A Platformot kizárólag 18. életévüket betöltött személyek használhatják. A 18 év alatti személy nem hozhat létre fiókot és nem adhat meg személyes adatot."
+      },
+      {
+        "kind": "p",
+        "text": "4.2. A Felhasználó valós, saját és naprakész adatokat ad meg, a fiókját nem ruházza át, hozzáférési adatait bizalmasan kezeli, és az illetéktelen használatot haladéktalanul jelzi."
+      },
+      {
+        "kind": "p",
+        "text": "4.3. A hitelesítést külső szolgáltató végzi. A Szolgáltató jelszót nem tárol. A Felhasználó felel az általa választott külső bejelentkezési mód és eszköz biztonságáért."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "5-a-szolgaltatas-tartalma",
+        "text": "5. A szolgáltatás tartalma"
+      },
+      {
+        "kind": "ul",
+        "items": [
+          "ingyenes, 60 állításból álló, hozzávetőleg 10 perces egyéni személyiségfelmérés;",
+          "az eredményhez kapcsolódó személyiség-, munkastílus- és csapatszerep-értelmezések;",
+          "fiókhoz kapcsolódó eredménymegőrzés, profil-, megosztási és exportfunkciók a mindenkori felület szerint;",
+          "observer-meghívók és összesített külső visszajelzés, ha a funkció elérhető;",
+          "a Platform biztonságos működéséhez szükséges értesítések és ügyféltámogatás."
+        ]
+      },
+      {
+        "kind": "p",
+        "text": "5.2. A Platform funkciói folyamatosan fejlődhetnek. A képernyők, magyarázatok és funkciónevek nem jelentenek vállalást olyan jövőbeli funkcióra, amelyet a Szolgáltató még nem tett elérhetővé."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "6-a-meres-es-az-eredmenyek-korlatai",
+        "text": "6. A mérés és az eredmények korlátai"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Lényeges korlátozás\nA Trita nem egészségügyi, klinikai vagy pszichológiai diagnosztikai eszköz. Az eredmény önbevalláson és — ahol alkalmazható — összesített visszajelzésen alapuló értelmezési segítség, nem ténymegállapítás vagy szakvélemény."
+          ]
+        ]
+      },
+      {
+        "kind": "p",
+        "text": "6.1. A Felhasználó nem használhatja az eredményt önmagában felvételi, előléptetési, bérezési, elbocsátási, egészségügyi, jogi, hitel- vagy más, jelentős következménnyel járó döntés kizárólagos alapjaként."
+      },
+      {
+        "kind": "p",
+        "text": "6.2. A pontszámokat algoritmus számítja, de a Szolgáltató nem hoz a Felhasználóra nézve joghatással járó, kizárólag automatizált döntést. Becsült elemeknél a Platform forrás- vagy megbízhatósági jelölést alkalmazhat."
+      },
+      {
+        "kind": "p",
+        "text": "6.3. A Felhasználó tudomásul veszi, hogy az önjellemzés pillanatnyi állapot, kitöltési körülmény és válaszadási őszinteség függvénye. A Szolgáltató nem garantál egyedi élethelyzetre vonatkozó pontosságot vagy meghatározott eredményt."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "7-megengedett-hasznalat-es-felhasznaloi-tartalom",
+        "text": "7. Megengedett használat és felhasználói tartalom"
+      },
+      {
+        "kind": "p",
+        "text": "7.1. A Felhasználó a Platformot jogszerű, személyes célra használhatja. Tilos különösen a hozzáférési korlát megkerülése, automatizált tömeges lekérés, jogosulatlan tesztelés, kártevő feltöltése, más személy megszemélyesítése, zaklató meghívók küldése, valamint más felhasználó eredményének engedély nélküli megszerzése vagy közzététele."
+      },
+      {
+        "kind": "p",
+        "text": "7.2. A Felhasználó az általa bevitt szöveg és visszajelzés jogszerűségéért felel. A Szolgáltatónak a szolgáltatás nyújtásához, megjelenítéséhez, biztonsági mentéséhez és technikai feldolgozásához szükséges, nem kizárólagos, időben a szerződéshez igazodó felhasználási engedélyt ad."
+      },
+      {
+        "kind": "p",
+        "text": "7.3. Observer-visszajelzésnél a meghívó személy köteles a címzett e-mail-címét jogszerűen használni, és nem küldhet kéretlen, ismétlődő vagy megtévesztő meghívást."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "8-dijmentesseg",
+        "text": "8. Díjmentesség"
+      },
+      {
+        "kind": "p",
+        "text": "8.1. A jelen Feltételek szerinti egyéni szolgáltatás díjmentes. A Platform nem kér bankkártyaadatot, és nem végez önkiszolgáló fizetést. A díjmentesség nem teszi a B2B szolgáltatásokat ingyenessé."
+      },
+      {
+        "kind": "p",
+        "text": "8.2. Ha a Szolgáltató később fizetős egyéni funkciót vezet be, ahhoz külön, előzetes tájékoztatás és kifejezett megrendelés szükséges; a jelen szerződésből automatikus fizetési kötelezettség nem keletkezik."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "9-szellemi-tulajdon",
+        "text": "9. Szellemi tulajdon"
+      },
+      {
+        "kind": "p",
+        "text": "9.1. A Platform szoftvere, megjelenése, kérdés-összeállítása, pontozási és riportlogikája, szövegei, grafikái és márkajelzései a Szolgáltató vagy jogosult partnerei szellemi tulajdonát képezik. A Felhasználó személyes, nem kizárólagos, nem átruházható használati jogot kap a Platform rendeltetésszerű használatára."
+      },
+      {
+        "kind": "p",
+        "text": "9.2. Tilos a Platform forráskódjának visszafejtése, a kérdésbank vagy riportok tömeges másolása, továbbértékesítése, versengő adatbázis építése vagy a Trita márka megtévesztő használata, kivéve, amennyiben jogszabály ezt kifejezetten megengedi."
+      },
+      {
+        "kind": "p",
+        "text": "9.3. A Felhasználó a saját, letöltött eredményét személyes célra felhasználhatja és megoszthatja. Harmadik személy adata vagy visszajelzése csak a Platform által biztosított összesített formában osztható meg."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "10-adatvedelem-es-titkossag",
+        "text": "10. Adatvédelem és titkosság"
+      },
+      {
+        "kind": "p",
+        "text": "10.1. A személyes adatok kezelését a mindenkori Adatvédelmi tájékoztató részletezi. A Feltételek és az Adatvédelmi tájékoztató eltérő célt szolgálnak; adatkezelési kérdésben az Adatvédelmi tájékoztató az irányadó."
+      },
+      {
+        "kind": "p",
+        "text": "10.2. Egyéni használatnál a Szolgáltató adatkezelő. Szervezeti meghívás alapján végzett mérésnél a megrendelő szervezet lehet adatkezelő, a Szolgáltató pedig adatfeldolgozó; erre a szervezet saját tájékoztatója és külön megállapodás is vonatkozhat."
+      },
+      {
+        "kind": "p",
+        "text": "10.3. A Platform csapatszintű funkcióiban egyéni válasz nem jelenik meg szervezeti nézetben; összesítés csak a dokumentált anonimitási küszöb elérésekor készül. Ez a mondat nem jogosítja fel az egyéni Felhasználót Team Scan szolgáltatás igénybevételére."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "11-elerhetoseg-karbantartas-es-modositas",
+        "text": "11. Elérhetőség, karbantartás és módosítás"
+      },
+      {
+        "kind": "p",
+        "text": "11.1. A Szolgáltató az ingyenes Platform folyamatos elérhetőségére nem vállal szolgáltatási szintet. Tervezett karbantartás, biztonsági intézkedés, szolgáltatói hiba vagy vis maior átmeneti kiesést okozhat."
+      },
+      {
+        "kind": "p",
+        "text": "11.2. A Szolgáltató a digitális szolgáltatást és e Feltételeket indokolt esetben módosíthatja, különösen jogszabályváltozás, biztonság, technikai fejlődés, visszaélés-megelőzés vagy funkciófejlesztés miatt. A Felhasználó jogait vagy hozzáférését hátrányosan és nem csekély mértékben érintő változásról előzetesen, világosan tájékoztatást ad, és biztosítja a kötelező jogszabály szerinti jogokat."
+      },
+      {
+        "kind": "p",
+        "text": "11.3. Biztonsági vagy jogsértési kockázat esetén a Szolgáltató azonnali módosítást vagy ideiglenes korlátozást alkalmazhat, az ok és várható időtartam utólagos közlésével, amennyiben ez nem veszélyezteti a védekezést."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "12-felfuggesztes-megszuntetes-es-torles",
+        "text": "12. Felfüggesztés, megszüntetés és törlés"
+      },
+      {
+        "kind": "p",
+        "text": "12.1. A Felhasználó a fiókját bármikor törölheti a profiloldalon, vagy segítséget kérhet a hello@trita.io címen. A törlés adatvédelmi következményeit és a biztonsági mentések kiürülésének határidejét az Adatvédelmi tájékoztató tartalmazza."
+      },
+      {
+        "kind": "p",
+        "text": "12.2. A Szolgáltató súlyos vagy ismételt szerződésszegés, biztonsági veszély, jogellenes használat vagy jogszabályi kötelezettség esetén korlátozhatja vagy megszüntetheti a hozzáférést. Ha lehetséges, előzetes figyelmeztetést és észszerű javítási határidőt ad."
+      },
+      {
+        "kind": "p",
+        "text": "12.3. A megszűnés nem érinti a korábban keletkezett igényeket, a kötelező adatmegőrzést és azokat a rendelkezéseket, amelyek természetüknél fogva fennmaradnak."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "13-kellekszavatossag-es-felelosseg",
+        "text": "13. Kellékszavatosság és felelősség"
+      },
+      {
+        "kind": "p",
+        "text": "13.1. A Szolgáltató teljesíti a fogyasztókra irányadó, eltérést nem engedő digitális szolgáltatási és kellékszavatossági szabályokat. A jelen Feltételek nem korlátozzák a Felhasználó kötelező jogait."
+      },
+      {
+        "kind": "p",
+        "text": "13.2. A Szolgáltató a díjmentes, általános célú értelmezések alapján hozott egyéni döntésért, a Felhasználó vagy harmadik személy általi félreértelmezésért, illetve előre nem látható közvetett kárért csak a kötelező jogszabályok keretei között felel."
+      },
+      {
+        "kind": "p",
+        "text": "13.3. Semmilyen felelősségkorlátozás nem alkalmazható szándékos károkozásra, életet, testi épséget vagy egészséget megkárosító szerződésszegésre, illetve más, jogszabály szerint ki nem zárható felelősségre."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "14-panaszkezeles-es-jogervenyesites",
+        "text": "14. Panaszkezelés és jogérvényesítés"
+      },
+      {
+        "kind": "p",
+        "text": "14.1. A Felhasználó panaszát a hello@trita.io címre vagy a Szolgáltató székhelyére küldheti. A Szolgáltató az írásbeli panaszt a vonatkozó jogszabály szerinti határidőben, érdemben megválaszolja."
+      },
+      {
+        "kind": "p",
+        "text": "14.2. Fogyasztói jogvita esetén a Felhasználó a lakóhelye vagy tartózkodási helye szerint illetékes békéltető testülethez fordulhat. A békéltető testületek naprakész listája és az online kérelemindítás a https://bekeltetes.hu oldalon érhető el. Fogyasztóvédelmi hatósági ügyben a területileg illetékes kormányhivatal jár el; elérhetőségei a https://kormanyhivatalok.hu oldalon találhatók."
+      },
+      {
+        "kind": "p",
+        "text": "14.3. A felek elsődlegesen békés rendezésre törekednek. A Felhasználó bírósághoz fordulási jogát ez nem érinti."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "15-iranyado-jog-elvalaszthatosag-es-zaro-szabalyok",
+        "text": "15. Irányadó jog, elválaszthatóság és záró szabályok"
+      },
+      {
+        "kind": "p",
+        "text": "15.1. A szerződésre a magyar jog irányadó, azzal, hogy ez nem fosztja meg a fogyasztót a szokásos tartózkodási helye szerinti, eltérést nem engedő védelemtől."
+      },
+      {
+        "kind": "p",
+        "text": "15.2. Ha valamely rendelkezés érvénytelen vagy végrehajthatatlan, a többi rendelkezés hatályban marad. A felek az érintett rendelkezést annak céljához legközelebb álló, jogszerű szabállyal helyettesítik."
+      },
+      {
+        "kind": "p",
+        "text": "15.3. A Szolgáltató elmulasztott vagy késedelmes joggyakorlása nem jelent jogról való lemondást."
+      },
+      {
+        "kind": "p",
+        "text": "15.4. Jelen Feltételek utolsó frissítése: 2026. augusztus 29. Hatálybalépése: 2026. augusztus 29."
+      }
+    ],
+    "business-terms": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "1-felek-hataly-es-szerzodeses-sorrend",
+        "text": "1. Felek, hatály és szerződéses sorrend"
+      },
+      {
+        "kind": "p",
+        "text": "1.1. Szolgáltató: OKNILIK Kft., 7632 Pécs, Tüskésréti út 5., Cg. 02-09-086218, adószám 27455764-2-02, hello@trita.io. Megrendelő: az egyedi ajánlatban vagy megrendelőlapon azonosított gazdálkodó szervezet vagy szakmai szervezet."
+      },
+      {
+        "kind": "p",
+        "text": "1.2. A B2B Szolgáltatási Feltételek a Szolgáltató Team Scan, szervezeti felmérési, riport-, workshop-, tanácsadási és kapcsolódó platformszolgáltatásaira irányadók, ha az egyedi dokumentum ezekre hivatkozik."
+      },
+      {
+        "kind": "p",
+        "text": "1.3. A szerződés dokumentumainak elsőbbségi sorrendje eltérés esetén: (i) aláírt egyedi szerződés vagy megrendelőlap; (ii) egyedi ajánlat és szolgáltatásleírás; (iii) Adatfeldolgozási Megállapodás; (iv) e B2B Feltételek; (v) szakmai playbook vagy ütemterv. Adatvédelmi tárgyban a DPA élvez elsőbbséget."
+      },
+      {
+        "kind": "p",
+        "text": "1.4. A Megrendelő kijelenti, hogy nem fogyasztóként jár el. Aki a Megrendelő nevében elfogadja a szerződést, szavatolja képviseleti jogosultságát."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "2-fogalmak",
+        "text": "2. Fogalmak"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Fogalom",
+            "Jelentés"
+          ],
+          [
+            "Team Scan v1",
+            "Rögzített mérési kör: friss 60 itemes self-felmérés, mért bizalmi háló és 8 itemes, névtelen pszichológiai biztonság pulse."
+          ],
+          [
+            "Kampány",
+            "A Platformon létrehozott, meghatározott csapatra, lépésekre és időszakra vonatkozó mérési folyamat."
+          ],
+          [
+            "Riport",
+            "A lezárt kampányból készített, tanácsadó által ellenőrzött és publikált csapatkép."
+          ],
+          [
+            "Teljesítési egység",
+            "TEAM_SCAN_LICENSE az első teljes körre; REMEASUREMENT_CYCLE ugyanazon csapat minden további teljes körére."
+          ],
+          [
+            "Résztvevő",
+            "A Megrendelő által meghívott munkavállaló, vezető, jelölt vagy más természetes személy."
+          ],
+          [
+            "Egyedi Dokumentum",
+            "Ajánlat, megrendelőlap vagy szerződés, amely a konkrét scope-ot, díjat és időzítést rögzíti."
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "3-a-szolgaltatas-terjedelme",
+        "text": "3. A szolgáltatás terjedelme"
+      },
+      {
+        "kind": "p",
+        "text": "3.1. A szolgáltatás kizárólag az Egyedi Dokumentumban rögzített csapatokra, létszámra, kampányokra, workshopokra, beszélgetésekre, riportokra és időszakra terjed ki. Observer-, peer-, jelölti vagy más kiegészítő mérés csak kifejezett írásbeli megrendelés esetén része a szolgáltatásnak."
+      },
+      {
+        "kind": "p",
+        "text": "3.2. A Team Scan v1 tipikus elemei: setup és adatkezelési egyeztetés; személyes kickoff; baseline mérés; tanácsadó által validált riport; vezetői debrief; 1–3 célmutatóhoz kötött akció; kísérés; visszamérési kör; záró értékelés. A pilot alapértelmezett időtartama 90 nap, de az Egyedi Dokumentum az irányadó."
+      },
+      {
+        "kind": "p",
+        "text": "3.3. A Szolgáltató a mérési módszertan lényeges integritását megőrzi. A rögzített Team Scan v1 lépéssor a kampányon belül nem írható át. Módszertani változás esetén a Szolgáltató előzetesen jelzi, ha az az összehasonlíthatóságot érinti."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "4-inditasi-feltetelek-es-egyuttmukodes",
+        "text": "4. Indítási feltételek és együttműködés"
+      },
+      {
+        "kind": "p",
+        "text": "4.1. A szolgáltatás indításának feltétele az Egyedi Dokumentum elfogadása, szükség esetén a DPA aláírása, a Megrendelő kapcsolattartójának kijelölése, a résztvevői kör és időzítés jóváhagyása, továbbá a szükséges adatvédelmi tájékoztatás biztosítása."
+      },
+      {
+        "kind": "p",
+        "text": "4.2. A Megrendelő felel a résztvevők jogszerű bevonásáért, saját adatkezelési jogalapjáért és tájékoztatásáért, a munkajogi és érdekképviseleti követelmények betartásáért, valamint a pontos névsor és jogosultságok átadásáért."
+      },
+      {
+        "kind": "p",
+        "text": "4.3. A Megrendelő olyan vezetői kommunikációt biztosít, amely fejlesztési célt közöl, nem ígér olyan anonimitást, amelyet a Platform nem tud biztosítani, és nem kéri egyéni válasz, képernyőkép vagy részvételi bizonyíték átadását az anonim pulse-ról."
+      },
+      {
+        "kind": "p",
+        "text": "4.4. A Megrendelő késedelme, hiányos adatszolgáltatása, alacsony részvétel, átszervezés vagy időpontlemondás a határidőket arányosan módosíthatja. A Szolgáltató ezek hatását írásban jelzi."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "5-utemezes-merfoldkovek-es-teljesites",
+        "text": "5. Ütemezés, mérföldkövek és teljesítés"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Mérföldkő",
+            "Irányadó tartalom",
+            "Teljesítési jel"
+          ],
+          [
+            "Setup",
+            "Szervezet, csapat, névsor, jogosultságok, kickoff és kampányterv.",
+            "Kampány indításra kész / aktivált."
+          ],
+          [
+            "Baseline",
+            "Self → trust → pulse lépések, emlékeztetési renddel.",
+            "Kampány lezárva."
+          ],
+          [
+            "Riport",
+            "Adatminőség-ellenőrzés, tanácsadói narratíva, publikálás.",
+            "A konkrét kampányhoz kötött riport PUBLISHED."
+          ],
+          [
+            "Akció",
+            "Vezetői debrief és 1–3 vállalás, legalább egy célmutatóval.",
+            "Akciók rögzítve."
+          ],
+          [
+            "Follow-up",
+            "Új, összehasonlítható kör és kompozíciós/mérési kapu.",
+            "Follow-up riport publikálva."
+          ]
+        ]
+      },
+      {
+        "kind": "p",
+        "text": "5.2. A TEAM_SCAN_LICENSE vagy REMEASUREMENT_CYCLE teljesítési egység akkor minősül teljesítettnek, ha az adott Team Scan v1 kampány lezárt és az ahhoz rendelt riport publikált. A riport újrapublikálása nem hoz létre új egységet; több csapat külön egység."
+      },
+      {
+        "kind": "p",
+        "text": "5.3. A riportban dokumentált adatminőségi korlát, alacsony részvétel vagy nem kimutatható változás önmagában nem hibás teljesítés, ha a Szolgáltató a módszertani és anonimitási szabályokat betartotta. A Szolgáltató nem garantál pozitív szervezeti változást."
+      },
+      {
+        "kind": "p",
+        "text": "5.4. A Megrendelő az átadott mérföldkővel kapcsolatos, objektíven ellenőrizhető hibát 5 munkanapon belül írásban jelzi. Ha e határidőn belül nem jelez hibát, a mérföldkő a projektterv alkalmazásában elfogadottnak tekintendő; ez nem jelenti a kötelező jogokról való lemondást."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "6-dijak-szamlazas-es-koltsegek",
+        "text": "6. Díjak, számlázás és költségek"
+      },
+      {
+        "kind": "p",
+        "text": "6.1. A díj, pénznem, ÁFA-kezelés, fizetési ütemezés, esetleges kedvezmény és lemondási feltétel az Egyedi Dokumentumban szerepel. A Platformon nincs online fizetés; a Szolgáltató a számlát a Platformon kívül állítja ki."
+      },
+      {
+        "kind": "p",
+        "text": "6.2. Ha az Egyedi Dokumentum másként nem rendelkezik, a díjak nettó forintösszegek, amelyekre ÁFA rakódik; a számlák fizetési határideje a kiállítástól számított 15 nap, fizetési módjuk banki átutalás. Késedelem esetén a Ptk. szerinti késedelmi kamat és behajtási költségátalány alkalmazható."
+      },
+      {
+        "kind": "p",
+        "text": "6.3. Az előre jóváhagyott, rendkívüli utazási vagy harmadik fél költsége a díjon felül számlázható. A Megrendelő által a kezdést megelőző 2 munkanapon belül lemondott workshop díjának 50%-a számlázható, kivéve igazolt vis maior esetén."
+      },
+      {
+        "kind": "p",
+        "text": "6.4. A pilot státusz — fizetős, kedvezményes, díjmentes vagy barter — csak az Egyedi Dokumentumból állapítható meg. A mérési eredmény nem befolyásolja a díjat."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "7-adatvedelem-anonimitas-es-megengedett-felhasznalas",
+        "text": "7. Adatvédelem, anonimitás és megengedett felhasználás"
+      },
+      {
+        "kind": "p",
+        "text": "7.1. Szervezeti mérésnél a Megrendelő főszabály szerint adatkezelő, a Szolgáltató adatfeldolgozó. A felek külön DPA-t alkalmaznak. A Szolgáltató a saját szerződéskezelési, számlázási, biztonsági és szolgáltatásfejlesztési adatai tekintetében önálló adatkezelő lehet."
+      },
+      {
+        "kind": "p",
+        "text": "7.2. Egyéni válasz nem jelenik meg csapat- vagy szervezeti nézetben. Összesített eredmény csak legalább 3 értékelő vagy kitöltő válasza esetén jelenhet meg. A pszichológiai biztonság pulse válaszait a Platform felhasználói azonosító nélkül rögzíti; név szerinti válaszlista nem képezhető."
+      },
+      {
+        "kind": "p",
+        "text": "7.3. A Megrendelő nem kísérelheti meg a résztvevők újraazonosítását, nem követelheti egyéni válasz vagy képernyőkép átadását, nem kapcsolhat anonim eredményt személyhez, és nem használhatja az eredményt megtorlásra vagy kizárólagos foglalkoztatási döntésre."
+      },
+      {
+        "kind": "p",
+        "text": "7.4. Az összesített csapatképet csak az Egyedi Dokumentumban és jogosultsági modellben meghatározott vezető, szervezeti adminisztrátor és kijelölt tanácsadó érheti el. A Megrendelő felel saját hozzáférései rendszeres felülvizsgálatáért."
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Foglalkoztatási döntések\nA Team Scan döntéstámogató és fejlesztési eszköz. Nem használható önmagában felvételi, előléptetési, bérezési, fegyelmi vagy elbocsátási döntéshez; emberi mérlegelés és más releváns információ szükséges."
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "8-szakmai-korlatok",
+        "text": "8. Szakmai korlátok"
+      },
+      {
+        "kind": "p",
+        "text": "8.1. A Team Scan nem klinikai diagnózis, nem alkalmassági vizsgálat, nem validált csapattipológia és nem ígér meghatározott üzleti eredményt. A 16 minta és más elnevezések értelmezési nyelvet adnak; a közvetlenül mért trust- és pulse-adatok külön evidenciát képeznek."
+      },
+      {
+        "kind": "p",
+        "text": "8.2. A stabil személyiségprofil a visszamérésben kontroll, nem fejlődési címke. Összetételváltozásnál vagy mérési bizonytalanságnál a riport korlátozást vagy warningot alkalmaz; kézi delta nem helyettesíti a Platform összehasonlító logikáját."
+      },
+      {
+        "kind": "p",
+        "text": "8.3. A tanácsadói debrief szakmai értelmezés, nem jogi, munkajogi, egészségügyi vagy pszichoterápiás tanácsadás."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "9-szellemi-tulajdon-es-felhasznalasi-jogok",
+        "text": "9. Szellemi tulajdon és felhasználási jogok"
+      },
+      {
+        "kind": "p",
+        "text": "9.1. A Platform, módszertan, kérdés- és riportstruktúra, pontozás, sablonok, márkajelzések és általános know-how a Szolgáltató vagy jogosultjai tulajdona. A Megrendelő a szerződés időtartamára, belső üzleti célra, nem kizárólagos és nem átruházható hozzáférési jogot kap."
+      },
+      {
+        "kind": "p",
+        "text": "9.2. A Megrendelő a részére átadott végleges riportot belső célra másolhatja és felhasználhatja. Külső közzététel, kereskedelmi továbbértékesítés, benchmark-adatbázisba helyezés, módszertani visszafejtés vagy Trita-márkás nyilvános állítás a Szolgáltató előzetes írásbeli engedélyéhez kötött."
+      },
+      {
+        "kind": "p",
+        "text": "9.3. A Megrendelő megtartja a saját, jogszerűen átadott anyagaihoz fűződő jogokat, és a teljesítéshez szükséges felhasználási engedélyt ad. A Szolgáltató csak dokumentált, külön referencia-hozzájárulással használhat nevet, logót, idézetet vagy esettanulmányt."
+      },
+      {
+        "kind": "p",
+        "text": "9.4. A Szolgáltató személyhez nem köthető, ténylegesen anonimizált összesített statisztikát a szolgáltatás minőségének és módszertanának fejlesztésére használhat, feltéve, hogy sem a Megrendelő, sem résztvevő nem azonosítható."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "10-titoktartas",
+        "text": "10. Titoktartás"
+      },
+      {
+        "kind": "p",
+        "text": "10.1. Bizalmas Információ minden nem nyilvános üzleti, technikai, szervezeti, módszertani és személyes információ, ideértve a csapatriportokat és projektanyagokat. A fogadó fél azokat csak a szerződés teljesítésére használja, legalább saját hasonló adataihoz alkalmazott gondossággal védi, és csak szükséges körben adja át munkatársának vagy alvállalkozójának."
+      },
+      {
+        "kind": "p",
+        "text": "10.2. Nem bizalmas az az információ, amely jogszerűen nyilvános, a fogadó fél előtt igazolhatóan ismert, harmadik féltől jogszerűen kapott vagy önállóan fejlesztett. Kötelező hatósági vagy bírósági közlésnél a fogadó fél — ha jogszerű — előzetesen értesít."
+      },
+      {
+        "kind": "p",
+        "text": "10.3. A titoktartás a szerződés megszűnését követő 5 évig, üzleti titok és személyes adat esetén a védelem fennállásáig tart."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "11-uzemeltetes-tamogatas-es-biztonsag",
+        "text": "11. Üzemeltetés, támogatás és biztonság"
+      },
+      {
+        "kind": "p",
+        "text": "11.1. A Szolgáltató észszerű szakmai és technikai intézkedésekkel működteti a Platformot. Általános rendelkezésre állási SLA nincs, kivéve, ha az Egyedi Dokumentum kifejezetten rögzíti."
+      },
+      {
+        "kind": "p",
+        "text": "11.2. Pilotidőszakban a Szolgáltató bejelentett, érdemi működési hibára munkanapon 24 órán belül megkezdi a reakciót. Ez első válaszra és triázsra vonatkozó cél, nem megoldási határidő. Kritikus hiba prioritást kap."
+      },
+      {
+        "kind": "p",
+        "text": "11.3. Tervezett karbantartásról a Szolgáltató lehetőség szerint előre tájékoztat. Biztonsági kockázat esetén előzetes értesítés nélkül korlátozhat funkciót, majd indokolatlan késedelem nélkül közli a lényeges információt."
+      },
+      {
+        "kind": "p",
+        "text": "11.4. A Megrendelő saját eszközei, hálózata, belső jogosultságai és kommunikációs rendszerei működéséért felel."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "12-valtozaskezeles",
+        "text": "12. Változáskezelés"
+      },
+      {
+        "kind": "p",
+        "text": "12.1. A scope, csapatszám, résztvevői kör, extra mérési réteg, workshop vagy határidő módosítása írásbeli change request alapján történik. A Szolgáltató közli a díj- és időhatást; a változás csak elfogadás után kötelező."
+      },
+      {
+        "kind": "p",
+        "text": "12.2. Jogszabályi, adatbiztonsági vagy szolgáltatói változás miatt szükséges, arányos technikai módosítás nem minősül scope-bővítésnek, ha a lényeges üzleti funkciót nem csökkenti. Lényeges hátrány esetén a felek jóhiszeműen egyeztetnek."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "13-idotartam-felfuggesztes-es-megszunes",
+        "text": "13. Időtartam, felfüggesztés és megszűnés"
+      },
+      {
+        "kind": "p",
+        "text": "13.1. A szerződés az Egyedi Dokumentumban megjelölt időre jön létre. Automatikus megújulás nincs, kivéve kifejezett írásbeli kikötés esetén."
+      },
+      {
+        "kind": "p",
+        "text": "13.2. Lényeges szerződésszegés esetén a másik fél írásban legalább 10 munkanapos póthatáridőt adhat, majd eredménytelenül eltelt határidő után azonnali hatállyal felmondhat. Súlyos adatbiztonsági, jogellenes vagy megtorló használatnál azonnali felfüggesztés alkalmazható."
+      },
+      {
+        "kind": "p",
+        "text": "13.3. Fizetési késedelem esetén a Szolgáltató legalább 5 munkanapos felszólítást követően felfüggesztheti a hozzáférést, ha ez nem veszélyezteti aránytalanul a résztvevők jogait vagy az adatbiztonságot."
+      },
+      {
+        "kind": "p",
+        "text": "13.4. Megszűnéskor a díjak esedékessé válnak a már teljesített részekre; az adatok visszaadására vagy törlésére a DPA irányadó. A Megrendelő a megszűnés előtt köteles a számára szükséges, elérhető riportokat letölteni."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "14-szavatossag-es-felelosseg",
+        "text": "14. Szavatosság és felelősség"
+      },
+      {
+        "kind": "p",
+        "text": "14.1. A Szolgáltató szavatolja, hogy a szolgáltatást szakmailag gondosan, a leírt módszertani és adatvédelmi korlátokkal nyújtja. Nem szavatol megszakításmentes működést, meghatározott részvételi arányt, pszichometriai vagy üzleti eredményt, illetve a Megrendelő akcióinak végrehajtását."
+      },
+      {
+        "kind": "p",
+        "text": "14.2. A felek teljes, szerződéses és szerződésen kívüli kártérítési felelősségének együttes felső határa a káreseményt megelőző 12 hónapban az alapul szolgáló szerződés alapján megfizetett nettó díj összege."
+      },
+      {
+        "kind": "p",
+        "text": "14.3. A felek nem felelnek elmaradt haszonért, elmaradt megtakarításért, közvetett vagy következményi kárért, kivéve, ha a kizárást jogszabály tiltja. A korlát nem alkalmazható szándékos károkozásra, titoktartás vagy szellemi tulajdon súlyos megsértésére, adatvédelmi felelősség kötelező részére, illetve életet, testi épséget vagy egészséget sértő károkozásra."
+      },
+      {
+        "kind": "p",
+        "text": "14.4. A Megrendelő felel a saját jogellenes résztvevői bevonásából, újraazonosítási kísérletéből, megtorló vagy kizárólagos foglalkoztatási döntési használatából eredő igényekért."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "15-vis-maior-alvallalkozok-es-engedmenyezes",
+        "text": "15. Vis maior, alvállalkozók és engedményezés"
+      },
+      {
+        "kind": "p",
+        "text": "15.1. Egyik fél sem felel az észszerű ellenőrzési körén kívüli, elháríthatatlan esemény miatti késedelemért. Az érintett fél haladéktalanul értesít, enyhíti a hatást, és 30 napot meghaladó fennakadásnál bármelyik fél megszüntetheti az érintett, még nem teljesített részt."
+      },
+      {
+        "kind": "p",
+        "text": "15.2. A Szolgáltató igénybe vehet megfelelően kötelezett alvállalkozót és adatfeldolgozót; adatfeldolgozásnál a DPA szabályai irányadók."
+      },
+      {
+        "kind": "p",
+        "text": "15.3. A Megrendelő a szerződést a Szolgáltató előzetes írásbeli hozzájárulása nélkül nem ruházhatja át. A Szolgáltató cégcsoporton belüli vagy jogutódlással járó átruházásról előzetesen tájékoztat, feltéve, hogy a Megrendelő jogai nem csökkennek."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "16-jogvitak-es-zaro-rendelkezesek",
+        "text": "16. Jogviták és záró rendelkezések"
+      },
+      {
+        "kind": "p",
+        "text": "16.1. A szerződésre a magyar jog irányadó. A felek a vitát először vezetői egyeztetéssel kísérlik meg rendezni 15 napon belül."
+      },
+      {
+        "kind": "p",
+        "text": "16.2. Eredménytelen egyeztetés esetén a felek a hatáskörtől függően a Pécsi Járásbíróság, illetve a Pécsi Törvényszék kizárólagos illetékességét kötik ki."
+      },
+      {
+        "kind": "p",
+        "text": "16.3. Értesítésnek minősül az Egyedi Dokumentumban megadott kapcsolattartói e-mailre küldött üzenet. Felmondás és lényeges szerződésmódosítás esetén visszaigazolható kézbesítés szükséges."
+      },
+      {
+        "kind": "p",
+        "text": "16.4. A szerződés csak írásban módosítható. Írásbelinek minősül a felek azonosítható e-mail-váltása vagy elektronikus aláírása, ha a Ptk. írásbeliségre vonatkozó követelményei teljesülnek."
+      }
+    ],
+    "dpa": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "1-felek-es-beepules",
+        "text": "1. Felek és beépülés"
+      },
+      {
+        "kind": "p",
+        "text": "1.1. Adatkezelő: az alapul szolgáló Egyedi Dokumentumban azonosított Megrendelő. Adatfeldolgozó: OKNILIK Kft., 7632 Pécs, Tüskésréti út 5., Cg. 02-09-086218, hello@trita.io."
+      },
+      {
+        "kind": "p",
+        "text": "1.2. E Megállapodás az alapul szolgáló B2B szerződés elválaszthatatlan része, és a GDPR 28. cikk (3) bekezdése szerinti adatfeldolgozási feltételeket rögzíti. Személyesadat-kezelési tárgyban eltérés esetén e DPA elsőbbséget élvez."
+      },
+      {
+        "kind": "p",
+        "text": "1.3. Ha a Megrendelő több adatkezelő nevében jár el, biztosítja a szükséges felhatalmazást és egyetlen kapcsolattartót jelöl ki. A DPA nem teszi az Adatfeldolgozót a Megrendelő munkajogi vagy egyéb adatkezelési döntéseinek meghatározójává."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "2-targy-idotartam-jelleg-es-cel",
+        "text": "2. Tárgy, időtartam, jelleg és cél"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Elem",
+            "Leírás"
+          ],
+          [
+            "Tárgy",
+            "Szervezeti felmérési kampányok, résztvevői hozzáférés, mérési adatok tárolása és pontozása, aggregálás, riportkészítés, workshop- és támogatási folyamat."
+          ],
+          [
+            "Időtartam",
+            "Az alapul szolgáló szerződés teljes időtartama, majd a 13. pont szerinti visszaadási/törlési időszak."
+          ],
+          [
+            "Jelleg",
+            "Gyűjtés, rögzítés, rendszerezés, tárolás, lekérdezés, pontozás, összesítés, megjelenítés, export, korlátozás, törlés."
+          ],
+          [
+            "Cél",
+            "Csapatfejlesztési és szervezeti mérési program végrehajtása az Adatkezelő dokumentált céljai szerint."
+          ],
+          [
+            "Terület",
+            "Elsődleges adatbázis-tárolás az Európai Unióban; egyes technikai szolgáltatóknál EGT-n kívüli hozzáférés/továbbítás a 10. pont szerint."
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "3-adatkezelo-utasitasai-es-felelossege",
+        "text": "3. Adatkezelő utasításai és felelőssége"
+      },
+      {
+        "kind": "p",
+        "text": "3.1. Az Adatfeldolgozó kizárólag az Adatkezelő dokumentált utasításai alapján kezel személyes adatot, beleértve az EGT-n kívüli továbbítást is, kivéve az Adatfeldolgozóra kötelező uniós vagy tagállami jogot. Ilyen jogi kötelezettségről — ha a jog nem tiltja — az adatkezelés előtt tájékoztat."
+      },
+      {
+        "kind": "p",
+        "text": "3.2. Dokumentált utasításnak minősül az alapul szolgáló szerződés, e DPA, az Egyedi Dokumentum, a jóváhagyott kampánykonfiguráció és az arra jogosult kapcsolattartó írásbeli kérése."
+      },
+      {
+        "kind": "p",
+        "text": "3.3. Ha az Adatfeldolgozó megítélése szerint egy utasítás sérti a GDPR-t vagy más uniós/tagállami adatvédelmi szabályt, haladéktalanul tájékoztat és a vitatott műveletet — a sürgős védelmi intézkedés kivételével — felfüggesztheti."
+      },
+      {
+        "kind": "p",
+        "text": "3.4. Az Adatkezelő felel az adatkezelés jogszerűségéért, jogalapjáért, célhoz kötöttségéért, adattakarékosságáért, a résztvevői tájékoztatásért, munkajogi/érdekképviseleti követelményekért, a névsor pontosságáért és a hozzáférési jogosultságokért."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "4-titoktartas-es-szemelyi-hozzaferes",
+        "text": "4. Titoktartás és személyi hozzáférés"
+      },
+      {
+        "kind": "p",
+        "text": "4.1. Az Adatfeldolgozó biztosítja, hogy a személyes adathoz hozzáférő személyek megfelelő titoktartási kötelezettség alatt álljanak vagy jogszabályi titoktartás kötelezze őket, és csak feladatukhoz szükséges mértékben férjenek hozzá."
+      },
+      {
+        "kind": "p",
+        "text": "4.2. Az Adatfeldolgozó szerepkör-alapú hozzáférést, adminisztrátori korlátozást és rendszeres jogosultság-felülvizsgálatot alkalmaz. A tanácsadó kizárólag a hozzárendelt szervezet/csapat szükséges adataihoz férhet hozzá."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "5-adatbiztonsag",
+        "text": "5. Adatbiztonság"
+      },
+      {
+        "kind": "p",
+        "text": "5.1. Az Adatfeldolgozó a kockázattal arányos technikai és szervezési intézkedéseket alkalmaz a GDPR 32. cikke szerint. A részletes intézkedéseket a 2. melléklet tartalmazza."
+      },
+      {
+        "kind": "p",
+        "text": "5.2. Az intézkedések kialakításakor figyelembe veszi a technika állását, a megvalósítás költségeit, az adatkezelés jellegét, hatókörét, körülményeit és céljait, valamint a természetes személyek jogaira jelentett kockázatot."
+      },
+      {
+        "kind": "p",
+        "text": "5.3. Az Adatfeldolgozó nem garantál abszolút biztonságot, de dokumentált kockázatkezelést, változáskövetést, sérülékenység- és incidenskezelést tart fenn."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "6-erintetti-kerelmek",
+        "text": "6. Érintetti kérelmek"
+      },
+      {
+        "kind": "p",
+        "text": "6.1. Az Adatfeldolgozó a kezelés jellegére tekintettel megfelelő technikai és szervezési intézkedésekkel segíti az Adatkezelőt a GDPR III. fejezete szerinti kérelmek megválaszolásában."
+      },
+      {
+        "kind": "p",
+        "text": "6.2. Ha érintett közvetlenül az Adatfeldolgozóhoz fordul szervezeti adattal kapcsolatban, az Adatfeldolgozó a kérelmet indokolatlan késedelem nélkül továbbítja az Adatkezelő kapcsolattartójának, és önállóan nem válaszol, kivéve, ha erre az Adatkezelő felhatalmazza vagy jogszabály kötelezi."
+      },
+      {
+        "kind": "p",
+        "text": "6.3. Az alapfunkciókhoz tartozó keresés, export, helyesbítés vagy törlés támogatása a szolgáltatás része. Rendkívüli, aránytalan fejlesztést vagy manuális munkát igénylő segítség észszerű díjazású change request lehet, ha ez nem csorbít kötelező jogot."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "7-incidenskezeles",
+        "text": "7. Incidenskezelés"
+      },
+      {
+        "kind": "p",
+        "text": "7.1. Az Adatfeldolgozó a személyes adatok megsértését jelentő adatvédelmi incidensről az Adatkezelőt indokolatlan késedelem nélkül, de legkésőbb az észleléstől számított 24 órán belül értesíti."
+      },
+      {
+        "kind": "p",
+        "text": "7.2. Az értesítés — amennyiben ismert — tartalmazza az incidens jellegét, az érintetti és adatrekord-kategóriákat és becsült számot, a várható következményeket, a megtett vagy tervezett intézkedéseket és a kapcsolattartót. Az információ részletekben is megadható."
+      },
+      {
+        "kind": "p",
+        "text": "7.3. Az Adatfeldolgozó együttműködik a kivizsgálásban, megőrzi a releváns bizonyítékot, dokumentálja az incidenst és támogatja az Adatkezelő hatósági/érintetti kötelezettségeit. Hatóságnak az Adatkezelő nevében csak kifejezett utasításra tesz bejelentést."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "8-dpia-elozetes-konzultacio-es-megfelelesi-segitseg",
+        "text": "8. DPIA, előzetes konzultáció és megfelelési segítség"
+      },
+      {
+        "kind": "p",
+        "text": "8.1. Az Adatfeldolgozó a rendelkezésére álló információval és a kezelés jellegére tekintettel segíti az Adatkezelőt a GDPR 32–36. cikke szerinti kötelezettségekben, különösen kockázatértékelés, adatvédelmi hatásvizsgálat és előzetes konzultáció során."
+      },
+      {
+        "kind": "p",
+        "text": "8.2. A Megrendelő mérlegeli a DPIA szükségességét, különösen munkavállalók szisztematikus értékelése, nagy lépték, új technológia, sérülékeny helyzet vagy jelentős döntési használat esetén. A Szolgáltató nem minősíti automatikusan jogszerűnek a Megrendelő célját."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "9-tovabbi-adatfeldolgozok",
+        "text": "9. További adatfeldolgozók"
+      },
+      {
+        "kind": "p",
+        "text": "9.1. Az Adatkezelő általános írásbeli felhatalmazást ad a 3. mellékletben felsorolt további adatfeldolgozók igénybevételére. Az Adatfeldolgozó új vagy cserélt további adatfeldolgozóról legalább 30 nappal előre e-mailben vagy adminfelületen tájékoztat."
+      },
+      {
+        "kind": "p",
+        "text": "9.2. Az Adatkezelő adatvédelmi szempontból megalapozott kifogást emelhet az értesítési időn belül. A felek jóhiszeműen alternatívát keresnek; ha nincs észszerű megoldás, az érintett szolgáltatás megszüntethető a még nem teljesített rész arányos elszámolásával."
+      },
+      {
+        "kind": "p",
+        "text": "9.3. Az Adatfeldolgozó a további adatfeldolgozóra lényegében azonos adatvédelmi kötelezettségeket ír elő, megfelelő garanciákat követel, és a további adatfeldolgozó kötelezettségeiért a GDPR szerint felel."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "10-nemzetkozi-adattovabbitas",
+        "text": "10. Nemzetközi adattovábbítás"
+      },
+      {
+        "kind": "p",
+        "text": "10.1. Az EGT-n kívüli továbbítás csak a GDPR V. fejezete szerinti jogalappal történhet, például megfelelőségi határozat, az Európai Bizottság általános szerződési feltételei (SCC) és szükség szerinti kiegészítő intézkedések alapján."
+      },
+      {
+        "kind": "p",
+        "text": "10.2. Az Adatfeldolgozó dokumentálja az alkalmazott transzfermechanizmust, és az Adatkezelő észszerű kérésére megadja a lényeges információt. Megfelelőségi határozat elvesztése vagy lényeges jogi változás esetén alternatív garanciát vezet be vagy felfüggeszti az érintett továbbítást."
+      },
+      {
+        "kind": "p",
+        "text": "10.3. E DPA önmagában nem az (EU) 2021/914 szerinti harmadik országbeli adattovábbítási SCC. Ha az szükséges, a felek vagy a szolgáltatói lánc megfelelő modulját külön alkalmazzák."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "11-ellenorzes-es-audit",
+        "text": "11. Ellenőrzés és audit"
+      },
+      {
+        "kind": "p",
+        "text": "11.1. Az Adatfeldolgozó az Adatkezelő rendelkezésére bocsátja a GDPR 28. cikk teljesítésének igazolásához szükséges információt, és lehetővé teszi az auditot, ideértve az ellenőrzést is."
+      },
+      {
+        "kind": "p",
+        "text": "11.2. Elsődlegesen naprakész dokumentáció, biztonsági összefoglaló, független tanúsítás vagy szolgáltatói auditjelentés használható. Helyszíni audit évente legfeljebb egyszer, legalább 15 munkanapos előzetes értesítéssel, munkaidőben és a többi ügyfél adatainak védelmével végezhető, kivéve incidens vagy hatósági utasítás esetén."
+      },
+      {
+        "kind": "p",
+        "text": "11.3. Az Adatkezelő viseli a rendkívüli audit észszerű költségét, kivéve, ha az lényeges meg nem felelést tár fel. Az auditor titoktartási kötelezettséget vállal és nem lehet közvetlen versenytárs."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "12-hatosagi-megkeresesek",
+        "text": "12. Hatósági megkeresések"
+      },
+      {
+        "kind": "p",
+        "text": "12.1. Az Adatfeldolgozó — ha jogszerű — értesíti az Adatkezelőt a személyes adatra vonatkozó kötelező hatósági vagy bírósági megkeresésről. Csak a kötelező minimumot adja át, és dokumentálja a közlést."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "13-adatok-visszaadasa-es-torlese",
+        "text": "13. Adatok visszaadása és törlése"
+      },
+      {
+        "kind": "p",
+        "text": "13.1. Az alapul szolgáló szolgáltatás megszűnésekor az Adatkezelő választása szerint az Adatfeldolgozó a személyes adatot visszaadja vagy törli, és a másolatokat törli, kivéve, ha uniós vagy tagállami jog megőrzést ír elő."
+      },
+      {
+        "kind": "p",
+        "text": "13.2. A választást az Adatkezelő a megszűnéstől számított 30 napon belül közli. Ennek hiányában az Adatfeldolgozó az adatokat legkésőbb a megszűnéstől számított 90 napon belül törli. A biztonsági mentésekből a rendes rotáció szerint, legfeljebb további 30 napon belül kerülnek ki."
+      },
+      {
+        "kind": "p",
+        "text": "13.3. A már ténylegesen anonimizált, személyhez és Megrendelőhöz ésszerűen vissza nem vezethető aggregátum nem személyes adat; kezelésére az alapul szolgáló szerződés rendelkezései irányadók."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "14-felelosseg-idotartam-es-zaro-rendelkezesek",
+        "text": "14. Felelősség, időtartam és záró rendelkezések"
+      },
+      {
+        "kind": "p",
+        "text": "14.1. E DPA az alapul szolgáló szerződéssel együtt lép hatályba, és addig marad hatályban, amíg az Adatfeldolgozó személyes adatot kezel az Adatkezelő nevében."
+      },
+      {
+        "kind": "p",
+        "text": "14.2. A felek adatvédelmi felelősségére a GDPR és az alapul szolgáló szerződés alkalmazandó. Az alapul szolgáló felelősségkorlátozás csak annyiban érvényesül, amennyiben kötelező adatvédelmi jog azt megengedi."
+      },
+      {
+        "kind": "p",
+        "text": "14.3. A DPA módosítása írásban történik. Az alfeldolgozói lista a 9. pont szerinti értesítési és kifogási eljárással frissíthető."
+      },
+      {
+        "kind": "p",
+        "text": "14.4. Irányadó jog és joghatóság: az alapul szolgáló szerződés szerint, a felügyeleti hatóságok és érintettek kötelező jogainak sérelme nélkül."
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "1-melleklet-az-adatkezeles-reszletei",
+        "text": "1. melléklet — Az adatkezelés részletei"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "id": "a-erintetti-kategoriak",
+        "text": "A. Érintetti kategóriák"
+      },
+      {
+        "kind": "ul",
+        "items": [
+          "a Megrendelő munkavállalói, vezetői, csapattagjai és szervezeti adminisztrátorai;",
+          "a Megrendelő által meghívott observerek, peer értékelők vagy — külön scope esetén — jelöltek;",
+          "a Megrendelő kapcsolattartói és a szolgáltatás működtetésében részt vevő felhasználók."
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "id": "b-szemelyesadat-kategoriak",
+        "text": "B. Személyesadat-kategóriák"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Kategória",
+            "Példák / korlát"
+          ],
+          [
+            "Azonosító és kapcsolat",
+            "Név, e-mail, felhasználói és szervezeti azonosító, meghívó- és hozzáférési állapot."
+          ],
+          [
+            "Szervezeti metaadat",
+            "Szervezet, csapat, szerepkör, vezetői/admin jogosultság, kampánytagság."
+          ],
+          [
+            "Felmérési adat",
+            "Self-válaszok és pontszámok; trust-kérdések válaszai és aggregátumai; observer/peer válaszok, ha megrendelt."
+          ],
+          [
+            "Anonim pulse",
+            "A pszichológiai biztonság válaszai user-referencia nélkül; n≥3 alatt nincs aggregátum. Újraazonosítás tilos."
+          ],
+          [
+            "Riport és akció",
+            "Aggregált mutatók, tanácsadói narratíva, adatminőségi jelzés, akció, célmutató, státusz."
+          ],
+          [
+            "Technikai adat",
+            "Munkamenet-, esemény-, biztonsági és hibalog; IP vagy álnévi technikai azonosító korlátozott ideig."
+          ],
+          [
+            "Különleges adat",
+            "Nem célzott és nem kérhető. Szabad szövegben történő megadását a Megrendelőnek és résztvevőnek kerülni kell."
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "id": "c-gyakorisag-es-megorzes",
+        "text": "C. Gyakoriság és megőrzés"
+      },
+      {
+        "kind": "p",
+        "text": "A kezelés a kampány és szolgáltatás használata során folyamatos vagy eseményvezérelt. A szervezeti mérési adatok az alapul szolgáló szerződés végéig, azt követően a 13. pont szerinti legfeljebb 90 napos visszaadási/törlési időszakig maradnak; az üzemeltetési naplók legfeljebb 12 hónapig, ha jogi/biztonsági ok nem indokol eltérő zárolást."
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "id": "d-kapcsolattartok-es-utasitasi-csatorna",
+        "text": "D. Kapcsolattartók és utasítási csatorna"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Szerep",
+            "Név",
+            "E-mail",
+            "Jogosultság"
+          ],
+          [
+            "Adatkezelő kapcsolattartó",
+            "Az Egyedi Dokumentumban megjelölt kapcsolattartó",
+            "Az Egyedi Dokumentumban megadott e-mail",
+            "Utasítás, érintetti kérelem, incidens"
+          ],
+          [
+            "Adatfeldolgozó kapcsolattartó",
+            "OKNILIK Kft. adatvédelmi kapcsolattartó",
+            "hello@trita.io",
+            "DPA, biztonság, incidens"
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "2-melleklet-technikai-es-szervezesi-intezkedesek",
+        "text": "2. melléklet — Technikai és szervezési intézkedések"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Terület",
+            "Jelenlegi kontroll / vállalás"
+          ],
+          [
+            "Átvitel és tárolás",
+            "HTTPS/TLS minden hálózati kérésnél; adatbázis-szintű titkosított tárolás; EU adatbázis-régió."
+          ],
+          [
+            "Hitelesítés",
+            "Clerk-alapú hitelesítés; a Szolgáltató jelszót nem tárol; többtényezős azonosítás lehetősége."
+          ],
+          [
+            "Hozzáférés",
+            "Szerepkör- és szervezet-alapú jogosultság, least privilege, admin/tanácsadó korlátozás, hozzáférési felülvizsgálat."
+          ],
+          [
+            "Tenant-szeparáció",
+            "Szervezeti és csapatszintű hozzáférési ellenőrzések alkalmazási rétegben; jogosulatlan kereszt-hozzáférés tesztelése."
+          ],
+          [
+            "Anonimitás",
+            "Egyéni csapatválasz nem jelenik meg; n≥3 aggregációs küszöb; pulse user-azonosító nélkül; trust csak aggregált formában."
+          ],
+          [
+            "Tokenek",
+            "Megosztó és observer linkek egyedi, lejáró és visszavonható tokennel; tokenek és titkok környezeti konfigurációban."
+          ],
+          [
+            "Naplózás",
+            "Biztonsági és üzemeltetési események korlátozott megőrzéssel; felhasználói kérdőív-tartalom nem kerülhet hiba-riasztásba."
+          ],
+          [
+            "Mentés/törlés",
+            "Biztonsági mentési rotáció; fiókadat legfeljebb 30 nap alatt kikerül a mentésekből; szervezeti törlés a DPA szerint."
+          ],
+          [
+            "Fejlesztés",
+            "Kódreview, tesztelés, környezeti titokkezelés, függőségfrissítés és változáskövetés."
+          ],
+          [
+            "Incidens",
+            "Hiba-riasztás felhasználói tartalom nélkül; incidens-triázs, dokumentálás, értesítés és helyreállítási lépések."
+          ],
+          [
+            "Üzletmenet",
+            "Felhős redundancia és szolgáltatói mentés a konfiguráció szerint; helyreállítás az incidenskezelési eljárás alapján."
+          ],
+          [
+            "Személyzet",
+            "Titoktartás, szerepkör szerinti hozzáférés, offboarding és hozzáférés-visszavonás; adatbiztonsági tájékoztatás a hozzáférés megadása előtt."
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "3-melleklet-tovabbi-adatfeldolgozok",
+        "text": "3. melléklet — További adatfeldolgozók"
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Ellenőrzési kötelezettség\nPublikálás előtt minden szolgáltató pontos szerződő jogi személyét, régióját, adatfajtáját, DPA-ját, SCC/DPF státuszát és alfeldolgozói listáját az aktuális szerződésből kell igazolni. Az alábbi lista a jelenlegi kód- és adatvédelmi leírásból készült."
+          ]
+        ]
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "Szolgáltató",
+            "Cél / adatkör",
+            "Hely / transzfer",
+            "Státusz"
+          ],
+          [
+            "Clerk",
+            "Hitelesítés, munkamenet; e-mail és auth azonosítók.",
+            "USA/EGT; DPF vagy SCC.",
+            "Aktív — jogi entitás ellenőrzendő"
+          ],
+          [
+            "Neon",
+            "PostgreSQL adatbázis; felhasználói és felmérési adatok.",
+            "EU régió.",
+            "Aktív — régió rögzítendő"
+          ],
+          [
+            "Vercel",
+            "Alkalmazáshosztolás, szerverfunkciók, teljesítmény-analitika.",
+            "EU/USA; DPA és SCC/DPF szerint.",
+            "Aktív — entitás és log-régió ellenőrzendő"
+          ],
+          [
+            "Resend",
+            "Tranzakciós e-mail; cím, név, üzenet/meta.",
+            "USA; SCC/DPF szerint.",
+            "Aktív — retention ellenőrzendő"
+          ],
+          [
+            "Upstash",
+            "Rate limiting; álnévi kulcsok és technikai meta.",
+            "USA/EGT; szolgáltatói DPA és SCC vagy más megfelelő garancia szerint.",
+            "Aktív komponens — adatáramlás ellenőrzendő"
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 1,
+        "id": "4-melleklet-alairasi-blokk",
+        "text": "4. melléklet — Aláírási blokk"
+      },
+      {
+        "kind": "p",
+        "text": "A felek kijelentik, hogy a DPA-t és mellékleteit megismerték, és az alapul szolgáló szerződés részeként elfogadják."
+      },
+      {
+        "kind": "table",
+        "rows": [
+          [
+            "ADATKEZELŐ",
+            "ADATFELDOLGOZÓ"
+          ],
+          [
+            "Az Egyedi Dokumentumban azonosított Megrendelő",
+            "OKNILIK Kft."
+          ],
+          [
+            "Az Egyedi Dokumentumban megjelölt képviselő",
+            "A cégjegyzék szerinti képviselő"
+          ],
+          [
+            "Az alapul szolgáló szerződés hatálybalépésének napja",
+            "Az alapul szolgáló szerződés hatálybalépésének napja"
+          ],
+          [
+            "Aláírás: __________________",
+            "Aláírás: __________________"
+          ]
+        ]
+      }
+    ]
+  }
+}

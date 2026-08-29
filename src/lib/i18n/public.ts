@@ -23,6 +23,7 @@ import { profileTranslations } from "./profile";
 import { notificationTranslations } from "./notifications";
 import { navigationTranslations } from "./navigation";
 import { sharedLabelTranslations } from "./shared-labels";
+import { legalTranslations } from "./legal";
 import { createTranslator, mergeDomains } from "./core";
 
 export {
@@ -40,6 +41,7 @@ export const PUBLIC_TRANSLATION_DOMAINS = [
   notificationTranslations,
   navigationTranslations,
   sharedLabelTranslations,
+  legalTranslations,
 ];
 
 const publicTranslations = mergeDomains(PUBLIC_TRANSLATION_DOMAINS);

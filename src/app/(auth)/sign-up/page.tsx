@@ -17,6 +17,7 @@ import { createClientLogger } from "@/lib/client-logger";
 import { buildSignInPath, sanitizeInternalRedirect } from "@/lib/navigation/auth-redirects";
 import { presentAuthError, type AuthErrorContext, type AuthErrorTarget } from "@/lib/auth-errors";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { createRegistrationLegalAcceptance } from "@/lib/legal/versions";
 
 const log = createClientLogger("auth");
 
@@ -55,6 +56,7 @@ function SignUpContent() {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [resendNote, setResendNote] = useState<string | null>(null);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [hasAcceptedLegal, setHasAcceptedLegal] = useState(false);
 
   const showAuthError = (err: unknown, context: AuthErrorContext) => {
     setError(presentAuthError(err, context));
@@ -93,14 +95,18 @@ function SignUpContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!signUp || isSubmitting) return;
+    if (!signUp || isSubmitting || !hasAcceptedLegal) return;
     setError(null);
     setIsSubmitting(true);
 
     try {
       await signUp.create({
         emailAddress: email,
-        unsafeMetadata: { locale, intent },
+        unsafeMetadata: {
+          locale,
+          intent,
+          legalAcceptance: createRegistrationLegalAcceptance(),
+        },
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -155,9 +161,16 @@ function SignUpContent() {
   };
 
   const handleGoogleSignUp = async () => {
-    if (!signUp || isGoogleLoading) return;
+    if (!signUp || isGoogleLoading || !hasAcceptedLegal) return;
     setIsGoogleLoading(true);
     try {
+      await signUp.update({
+        unsafeMetadata: {
+          locale,
+          intent,
+          legalAcceptance: createRegistrationLegalAcceptance(),
+        },
+      });
       await signUp.authenticateWithRedirect({
         strategy: "oauth_google",
         redirectUrl: "/sign-up/sso-callback",
@@ -290,6 +303,37 @@ function SignUpContent() {
 
           {/* Form section – blurred until intent is chosen */}
           <div className={`transition-all duration-300 ${!intent ? "pointer-events-none select-none opacity-40 blur-[2px]" : ""}`}>
+            <label className="mb-4 flex cursor-pointer items-start gap-3 rounded-lg border border-[var(--color-border-default)] bg-[var(--color-surface-card)] px-4 py-3">
+              <input
+                type="checkbox"
+                checked={hasAcceptedLegal}
+                onChange={(event) => setHasAcceptedLegal(event.target.checked)}
+                required
+                className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--color-action-primary-bg)]"
+              />
+              <span className="text-xs leading-relaxed text-[var(--color-text-muted)]">
+                {t("auth.legalAcceptancePrefix", locale)}{" "}
+                <Link
+                  href="/legal/platform-terms"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-[var(--color-action-primary-bg)] underline underline-offset-2"
+                >
+                  {t("auth.platformTerms", locale)}
+                </Link>{" "}
+                {t("auth.legalAcceptanceAnd", locale)}{" "}
+                <Link
+                  href="/privacy"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-semibold text-[var(--color-action-primary-bg)] underline underline-offset-2"
+                >
+                  {t("auth.privacyNotice", locale)}
+                </Link>
+                {t("auth.legalAcceptanceSuffix", locale)}
+              </span>
+            </label>
+
             {/* Google – primary action */}
             <Button
               type="button"
@@ -297,7 +341,7 @@ function SignUpContent() {
               size="lg"
               fullWidth
               onClick={handleGoogleSignUp}
-              disabled={!intent || !isLoaded}
+              disabled={!intent || !isLoaded || !hasAcceptedLegal}
               loading={isGoogleLoading}
               className="mb-3"
               iconLeft={<GoogleIcon />}
@@ -335,7 +379,7 @@ function SignUpContent() {
                 type="submit"
                 size="lg"
                 fullWidth
-                disabled={!intent || !isLoaded}
+                disabled={!intent || !isLoaded || !hasAcceptedLegal}
                 loading={isSubmitting}
                 style={{ backgroundColor: "var(--color-bronze-dark)", color: "var(--color-text-on-accent-deep)" }}
                 className="min-h-[56px] justify-center rounded-[16px] px-5 shadow-[0_10px_24px_rgba(139,82,48,0.18)] hover:brightness-[1.06]"

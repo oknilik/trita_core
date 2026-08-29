@@ -4,6 +4,11 @@ import { ChevronRightIcon } from "@/components/ui/icons";
 // Működés gyűjtőfül — üzemeltetési nézetek belépői
 const OPS_CARDS = [
   {
+    href: "/admin?tab=legal",
+    title: "Jogi dokumentumok",
+    desc: "Verzióváltás aktiválása, elfogadási arány és kötelező újbóli elfogadás kiküldése.",
+  },
+  {
     href: "/admin?tab=feedback",
     title: "Visszajelzések",
     desc: "Szerep-kalibráció, érdeklődés-jelzések és elégedettség-aggregátumok.",

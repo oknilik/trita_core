@@ -33,7 +33,8 @@ export type NotificationSourceType =
   | "candidate_invite"
   | "compare_invite"
   | "crm_deal"
-  | "crm_quote";
+  | "crm_quote"
+  | "legal_campaign";
 
 // ── Notification intent (orchestrator output → repository input) ────────────
 
@@ -91,4 +92,5 @@ export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMe
   COMPARE_ACCEPTED:            { titleKey: "notifications.compareAccepted.title",            bodyKey: "notifications.compareAccepted.body",            category: "assessment",  defaultPriority: "normal" },
   CRM_NEXT_ACTION_DUE:         { titleKey: "notifications.crmNextActionDue.title",           bodyKey: "notifications.crmNextActionDue.body",           category: "system",      defaultPriority: "high"   },
   CRM_QUOTE_EXPIRING:          { titleKey: "notifications.crmQuoteExpiring.title",           bodyKey: "notifications.crmQuoteExpiring.body",           category: "system",      defaultPriority: "normal" },
+  LEGAL_ACCEPTANCE_REQUIRED:   { titleKey: "notifications.legalAcceptanceRequired.title",   bodyKey: "notifications.legalAcceptanceRequired.body",   category: "system",      defaultPriority: "high"   },
 };

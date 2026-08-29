@@ -90,6 +90,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.4,
     },
+    { url: `${baseUrl}/legal`, lastModified: new Date("2026-08-29T00:00:00.000Z"), changeFrequency: "yearly", priority: 0.4 },
+    { url: `${baseUrl}/legal/platform-terms`, lastModified: new Date("2026-08-29T00:00:00.000Z"), changeFrequency: "yearly", priority: 0.4 },
+    { url: `${baseUrl}/legal/business-terms`, lastModified: new Date("2026-08-29T00:00:00.000Z"), changeFrequency: "yearly", priority: 0.3 },
+    { url: `${baseUrl}/legal/dpa`, lastModified: new Date("2026-08-29T00:00:00.000Z"), changeFrequency: "yearly", priority: 0.3 },
     { url: `${baseUrl}/contact`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.4 },
   ];
 }

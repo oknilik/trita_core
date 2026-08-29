@@ -1573,6 +1573,69 @@ export async function sendWelcomeEmail(params: {
   return ok;
 }
 
+// ─── Jogi dokumentumok újbóli elfogadása ──────────────────────────────────
+// Tranzakcionális, kötelező működési levél: a lifecycle leiratkozás nem érinti.
+const legalAcceptanceTranslations = {
+  hu: {
+    subject: "Frissültek a trita jogi feltételei",
+    kind: "Fontos",
+    eyebrow: "Jogi feltételek",
+    heading: "Új elfogadás szükséges",
+    preheader: "A trita használatának folytatásához fogadd el a frissített feltételeket.",
+    body1: "Frissítettük a Platform ÁSZF-et és az Adatkezelési tájékoztatót.",
+    body2: "A következő belépéskor áttekintheted a dokumentumokat, és egy lépésben rögzítheted az elfogadásodat.",
+    cta: "Dokumentumok áttekintése",
+    footer: "Ezt a működési emailt azért kaptad, mert trita-fiókkal rendelkezel, és az új feltételek elfogadása szükséges.",
+  },
+  en: {
+    subject: "The trita legal terms have been updated",
+    kind: "Important",
+    eyebrow: "Legal terms",
+    heading: "New acceptance required",
+    preheader: "Accept the updated terms to continue using trita.",
+    body1: "We updated the Platform Terms and the Privacy Notice.",
+    body2: "At your next sign-in, you can review the documents and record your acceptance in one step.",
+    cta: "Review the documents",
+    footer: "You received this operational email because you have a trita account and need to accept the updated terms.",
+  },
+} as const;
+
+export async function sendLegalAcceptanceRequiredEmail(params: {
+  to: string;
+  locale?: Locale;
+  campaignId: string;
+  recipientId: string;
+  sendNumber: number;
+}): Promise<boolean> {
+  const locale = normalizeLocale(params.locale);
+  const copy = legalAcceptanceTranslations[locale];
+  const ctaLink = `${APP_URL}/dashboard`;
+
+  const html = buildEmailLayout({
+    locale,
+    kind: copy.kind,
+    eyebrow: copy.eyebrow,
+    heading: copy.heading,
+    preheader: copy.preheader,
+    bodyContent: `
+      <p style="${EMAIL_P}">${copy.body1}</p>
+      <p style="${EMAIL_P};margin-bottom:26px">${copy.body2}</p>
+      ${renderCtaButton({ href: ctaLink, label: copy.cta })}`,
+    quietNote: copy.footer,
+    signOff: SIGN_OFF[locale],
+  });
+
+  return sendEmail({
+    template: "legal-acceptance-required",
+    to: params.to,
+    subject: copy.subject,
+    html,
+    text: `${copy.heading}\n\n${copy.body1}\n\n${copy.body2}\n\n${copy.cta}: ${ctaLink}\n\n${copy.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
+    idempotencyKey: `legal-${params.campaignId}-${params.recipientId}-${params.sendNumber}`,
+    logFields: { campaignId: params.campaignId, recipientId: params.recipientId },
+  });
+}
+
 // ─── Team report published email ─────────────────────────────────────────────
 // A tanácsadó által validált csapatriport publikálásakor megy a riport
 // címzettjeinek (csapattagok + org vezetők) – a TEAM_REPORT_PUBLISHED in-app

@@ -10,6 +10,7 @@ import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 import { scrubProfileData } from "@/lib/account-scrub";
 import { normalizeLocale } from "@/lib/i18n/core";
+import { PLATFORM_TERMS_VERSION, PRIVACY_NOTICE_VERSION } from "@/lib/legal/versions";
 
 const clerkUserSchema = z.object({
   id: z.string(),
@@ -51,6 +52,13 @@ const clerkEmailSchema = z.object({
   }),
 });
 
+const registrationLegalAcceptanceSchema = z.object({
+  accepted: z.literal(true),
+  acceptedAt: z.string().datetime(),
+  platformTermsVersion: z.literal(PLATFORM_TERMS_VERSION),
+  privacyNoticeVersion: z.literal(PRIVACY_NOTICE_VERSION),
+});
+
 export async function POST(req: Request) {
   const log = await getRequestLogger("clerk-webhook");
   const secret = process.env.CLERK_WEBHOOK_SECRET;
@@ -86,6 +94,12 @@ export async function POST(req: Request) {
     )?.email_address;
     const fallbackEmail = user.email_addresses?.[0]?.email_address;
     const email = primaryEmail ?? fallbackEmail ?? null;
+    const registrationLegalAcceptance = registrationLegalAcceptanceSchema.safeParse(
+      user.unsafe_metadata?.legalAcceptance,
+    );
+    const acceptedAt = registrationLegalAcceptance.success
+      ? new Date(registrationLegalAcceptance.data.acceptedAt)
+      : null;
 
     const upsertedProfile = await prisma.userProfile.upsert({
       where: { clerkId: user.id },
@@ -93,6 +107,14 @@ export async function POST(req: Request) {
         clerkId: user.id,
         email,
         username: user.username ?? null,
+        ...(acceptedAt
+          ? {
+              platformTermsVersion: PLATFORM_TERMS_VERSION,
+              platformTermsAcceptedAt: acceptedAt,
+              privacyNoticeVersion: PRIVACY_NOTICE_VERSION,
+              privacyNoticeAcceptedAt: acceptedAt,
+            }
+          : {}),
       },
       update: {
         email,
@@ -100,6 +122,26 @@ export async function POST(req: Request) {
       },
       select: { id: true },
     });
+
+    if (acceptedAt && registrationLegalAcceptance.success) {
+      await prisma.legalAcceptanceRecord.upsert({
+        where: {
+          userId_platformTermsVersion_privacyNoticeVersion: {
+            userId: upsertedProfile.id,
+            platformTermsVersion: registrationLegalAcceptance.data.platformTermsVersion,
+            privacyNoticeVersion: registrationLegalAcceptance.data.privacyNoticeVersion,
+          },
+        },
+        create: {
+          userId: upsertedProfile.id,
+          platformTermsVersion: registrationLegalAcceptance.data.platformTermsVersion,
+          privacyNoticeVersion: registrationLegalAcceptance.data.privacyNoticeVersion,
+          acceptedAt,
+          source: "REGISTRATION",
+        },
+        update: {},
+      });
+    }
 
     const intent = normalizeJourneyIntent(user.unsafe_metadata?.intent);
     if (intent) {

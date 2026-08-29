@@ -21,6 +21,7 @@ export type AdminTabId =
   | "consultants"
   | "blog"
   | "ops"
+  | "legal"
   | "feedback"
   | "reminders";
 
@@ -151,6 +152,16 @@ function buildGroups(newInquiryCount: number, crmDueCount: number): NavGroup[] {
             <svg className={ICON} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="8" cy="8" r="2.5" />
               <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4" />
+            </svg>
+          ),
+        },
+        {
+          id: "legal",
+          label: "Jogi dokumentumok",
+          icon: (
+            <svg className={ICON} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 1.5h7l3 3V14.5H3Z" />
+              <path d="M10 1.5v3h3M5.5 8h5M5.5 10.5h5" />
             </svg>
           ),
         },
