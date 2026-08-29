@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { buildPageMetadata, clampMetaDescription } from "@/lib/seo";
 import {
-  getLegalReviewDocument,
-  LEGAL_REVIEW_DOCUMENTS,
-} from "@/lib/legal/review-documents";
+  getLegalDocument,
+  LEGAL_DOCUMENTS,
+} from "@/lib/legal/documents";
 import { LegalDocumentContent } from "./LegalDocumentContent";
 
 interface LegalDocumentPageProps {
@@ -12,12 +12,12 @@ interface LegalDocumentPageProps {
 }
 
 export function generateStaticParams() {
-  return LEGAL_REVIEW_DOCUMENTS.map(({ slug }) => ({ slug }));
+  return LEGAL_DOCUMENTS.map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: LegalDocumentPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const document = getLegalReviewDocument(slug);
+  const document = getLegalDocument(slug);
 
   if (!document) return {};
 
@@ -28,13 +28,12 @@ export async function generateMetadata({ params }: LegalDocumentPageProps): Prom
       description: clampMetaDescription(document.description.hu),
       type: "article",
     }),
-    robots: { index: false, follow: true },
   };
 }
 
 export default async function LegalDocumentPage({ params }: LegalDocumentPageProps) {
   const { slug } = await params;
-  const document = getLegalReviewDocument(slug);
+  const document = getLegalDocument(slug);
 
   if (!document) notFound();
 

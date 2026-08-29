@@ -6,9 +6,8 @@ export const metadata: Metadata = {
   ...buildPageMetadata({
     path: "/legal",
     title: "Jogi dokumentumok | trita",
-    description: "A Trita hatályos jogi tájékoztatója és ügyvédi felülvizsgálat alatt álló szerződéses tervezetei.",
+    description: "A Trita hatályos Platform Feltételei, B2B Feltételei, Adatfeldolgozási Megállapodása és Adatvédelmi tájékoztatója.",
   }),
-  robots: { index: false, follow: true },
 };
 
 export default function LegalPage() {

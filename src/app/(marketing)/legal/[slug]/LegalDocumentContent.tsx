@@ -5,19 +5,100 @@ import { useLocale } from "@/components/LocaleProvider";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
-  getLegalDocumentDownloadPath,
-  type LegalReviewDocument,
-} from "@/lib/legal/review-documents";
+  type LegalContentBlock,
+  type LegalDocument,
+} from "@/lib/legal/documents";
 
-export function LegalDocumentContent({ document }: { document: LegalReviewDocument }) {
+function LegalBlock({ block }: { block: LegalContentBlock }) {
+  switch (block.kind) {
+    case "heading": {
+      if (block.level === 1) {
+        return (
+          <h2 id={block.id} className="scroll-mt-28 border-t border-sand pt-8 font-fraunces text-title text-ink first:border-0 first:pt-0">
+            {block.text}
+          </h2>
+        );
+      }
+
+      if (block.level === 2) {
+        return (
+          <h3 id={block.id} className="scroll-mt-28 pt-3 font-fraunces text-heading text-ink">
+            {block.text}
+          </h3>
+        );
+      }
+
+      return (
+        <h4 id={block.id} className="scroll-mt-28 pt-2 text-body font-semibold text-ink">
+          {block.text}
+        </h4>
+      );
+    }
+
+    case "p":
+      return <p className="text-body leading-relaxed text-ink-body">{block.text}</p>;
+
+    case "ul":
+      return (
+        <ul className="space-y-2.5">
+          {block.items.map((item) => (
+            <li key={item} className="relative pl-5 text-body leading-relaxed text-ink-body before:absolute before:left-0 before:top-[0.7em] before:h-1.5 before:w-1.5 before:rounded-full before:bg-bronze">
+              {item}
+            </li>
+          ))}
+        </ul>
+      );
+
+    case "ol":
+      return (
+        <ol className="list-decimal space-y-2.5 pl-5 text-body leading-relaxed text-ink-body">
+          {block.items.map((item) => <li key={item}>{item}</li>)}
+        </ol>
+      );
+
+    case "table":
+      return (
+        <div className="-mx-5 overflow-x-auto px-5 md:mx-0 md:px-0">
+          <table className="w-full min-w-[620px] border-collapse text-left">
+            <thead>
+              <tr className="border-b border-sand">
+                {block.rows[0].map((cell) => (
+                  <th key={cell} scope="col" className="pb-2 pr-4 text-label uppercase text-[var(--color-accent-primary-strong)] last:pr-0">
+                    {cell}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {block.rows.slice(1).map((row, rowIndex) => (
+                <tr key={`${rowIndex}-${row.join("|")}`} className="border-b border-sand/70 last:border-0">
+                  {row.map((cell, cellIndex) => (
+                    <td key={`${cellIndex}-${cell}`} className={`whitespace-pre-line py-3 pr-4 align-top text-caption leading-relaxed last:pr-0 ${cellIndex === 0 ? "font-medium text-ink" : "text-ink-body"}`}>
+                      {cell}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+  }
+}
+
+export function LegalDocumentContent({ document }: { document: LegalDocument }) {
   const { locale } = useLocale();
   const hu = locale === "hu";
+  const tableOfContents = document.content.filter(
+    (block): block is Extract<LegalContentBlock, { kind: "heading" }> =>
+      block.kind === "heading" && block.level === 1,
+  );
 
   return (
-    <main className="min-h-dvh bg-cream">
+    <main id="top" className="min-h-dvh bg-cream">
       <section className="mx-auto grid max-w-[1120px] gap-9 px-7 pb-14 pt-12 md:pb-18 md:pt-20 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
         <div>
-          <SectionEyebrow className="mb-6">{hu ? "jogi tervezet" : "legal draft"}</SectionEyebrow>
+          <SectionEyebrow className="mb-6">{hu ? "jogi dokumentum" : "legal document"}</SectionEyebrow>
           <h1 className="max-w-[18ch] font-fraunces text-fluid-display tracking-tight text-ink">
             {document.title[locale]}
           </h1>
@@ -32,10 +113,10 @@ export function LegalDocumentContent({ document }: { document: LegalReviewDocume
           <div className="mt-4 space-y-3 text-caption leading-relaxed text-ink-body">
             <p>{document.documentId}</p>
             <p className="border-t border-sand pt-3">
-              {hu ? "Ügyvédi review-draft · nem jóváhagyott" : "Legal review draft · not approved"}
+              {hu ? "Hatályos dokumentum" : "Effective document"}
             </p>
             <p className="border-t border-sand pt-3">
-              {hu ? "Tervezett hatálybalépés: döntendő" : "Planned effective date: pending"}
+              {hu ? "Hatályos: 2026. augusztus 29-től" : "Effective from 29 August 2026"}
             </p>
           </div>
         </aside>
@@ -44,62 +125,51 @@ export function LegalDocumentContent({ document }: { document: LegalReviewDocume
       <PageWidthDivider />
 
       <section className="px-7 py-12 lg:py-16">
-        <div className="mx-auto grid max-w-[1120px] gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="space-y-6">
-            <article className="rounded-lg border border-sand bg-surface-card p-6 md:p-8">
-              <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
-                {hu ? "Hatály" : "Scope"}
+        <div className="mx-auto max-w-[1120px]">
+          {!hu ? (
+            <p className="mb-6 rounded-lg border border-bronze/40 bg-surface-card px-5 py-4 text-caption leading-relaxed text-ink-body">
+              The complete legal text is currently available in Hungarian. The Hungarian text is controlling.
+            </p>
+          ) : null}
+
+          <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
+            <aside className="h-fit rounded-lg border border-sand bg-surface-card p-4 lg:sticky lg:top-28">
+              <p className="mb-3 text-label uppercase text-ink-body">{hu ? "Tartalom" : "Contents"}</p>
+              <nav className="space-y-1">
+                {tableOfContents.map((heading, index) => (
+                  <a key={heading.id} href={`#${heading.id}`} className="group flex min-h-11 items-baseline gap-2 rounded px-2 py-1.5 transition-colors hover:bg-surface-highlight-warm lg:min-h-0">
+                    <span className="text-micro text-[var(--color-accent-primary-strong)]">{String(index + 1).padStart(2, "0")}</span>
+                    <span className="text-caption text-ink-body transition-colors group-hover:text-ink">{heading.text}</span>
+                  </a>
+                ))}
+              </nav>
+              <Link
+                href="/legal"
+                className="mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-sand px-4 text-center text-caption font-semibold text-ink transition-colors hover:bg-cream"
+              >
+                {hu ? "Összes dokumentum" : "All documents"}
+              </Link>
+            </aside>
+
+            <article className="min-w-0 rounded-lg border border-sand bg-surface-card p-5 md:p-8">
+              <div className="mb-8 rounded-lg border border-bronze/40 bg-cream px-5 py-4">
+                <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">{hu ? "Hatály" : "Scope"}</p>
+                <p className="mt-2 text-caption leading-relaxed text-ink-body">{document.scope[locale]}</p>
+              </div>
+
+              <div className="space-y-5">
+                {document.content.map((block, index) => (
+                  <LegalBlock key={block.kind === "heading" ? block.id : `${block.kind}-${index}`} block={block} />
+                ))}
+              </div>
+
+              <p className="mt-10 border-t border-sand pt-5 text-right">
+                <a href="#top" className="text-caption text-[var(--color-accent-primary-strong)] underline-offset-4 hover:underline">
+                  ↑ {hu ? "Vissza a tetejére" : "Back to top"}
+                </a>
               </p>
-              <p className="mt-4 text-body leading-relaxed text-ink-body">{document.scope[locale]}</p>
-            </article>
-
-            <article className="rounded-lg border border-sand bg-surface-card p-6 md:p-8">
-              <h2 className="font-fraunces text-title text-ink">{hu ? "Lényegi pontok" : "Key points"}</h2>
-              <ul className="mt-5 space-y-3">
-                {document.highlights[locale].map((item) => (
-                  <li key={item} className="relative pl-5 text-body leading-relaxed text-ink-body before:absolute before:left-0 before:top-[0.7em] before:h-1.5 before:w-1.5 before:rounded-full before:bg-bronze">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </article>
-
-            <article className="rounded-lg border border-bronze/40 bg-surface-card p-6 md:p-8">
-              <h2 className="font-fraunces text-title text-ink">
-                {hu ? "Publikálás előtt lezárandó" : "To close before publication"}
-              </h2>
-              <ol className="mt-5 space-y-3">
-                {document.reviewItems[locale].map((item, index) => (
-                  <li key={item} className="flex gap-3 text-body leading-relaxed text-ink-body">
-                    <span className="font-semibold text-[var(--color-accent-primary-strong)]">{index + 1}.</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ol>
             </article>
           </div>
-
-          <aside className="h-fit rounded-lg border border-sand bg-surface-card p-6 lg:sticky lg:top-28">
-            <h2 className="font-fraunces text-heading text-ink">{hu ? "Teljes dokumentum" : "Full document"}</h2>
-            <p className="mt-3 text-caption leading-relaxed text-ink-body">
-              {hu
-                ? "A pontos RD1 szöveg szerkeszthető Word-formátumban tölthető le ügyvédi és üzleti review-ra."
-                : "Download the exact RD1 wording as an editable Word file for legal and business review."}
-            </p>
-            <a
-              href={getLegalDocumentDownloadPath(document)}
-              download
-              className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[var(--color-accent-primary-strong)] px-5 text-center text-caption font-semibold text-white transition-opacity hover:opacity-90"
-            >
-              {hu ? "Word-tervezet letöltése" : "Download Word draft"}
-            </a>
-            <Link
-              href="/legal"
-              className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-sand px-5 text-caption font-semibold text-ink transition-colors hover:bg-cream"
-            >
-              {hu ? "Vissza a dokumentumokhoz" : "Back to documents"}
-            </Link>
-          </aside>
         </div>
       </section>
     </main>

@@ -75,6 +75,12 @@ model UserProfile {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // A regisztrációkor elfogadott jogi verziók bizonyítható naplója.
+  platformTermsVersion    String?
+  platformTermsAcceptedAt DateTime?
+  privacyNoticeVersion    String?
+  privacyNoticeAcceptedAt DateTime?
+
   // Demographic data (onboarding)
   birthYear   Int?
   gender      String?

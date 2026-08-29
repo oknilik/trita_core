@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { LEGAL_REVIEW_DOCUMENTS } from "@/lib/legal/review-documents";
+import { LEGAL_DOCUMENTS } from "@/lib/legal/documents";
 
 export function LegalHubContent() {
   const { locale } = useLocale();
@@ -19,17 +19,17 @@ export function LegalHubContent() {
         </h1>
         <p className="mt-6 max-w-[760px] text-lg leading-relaxed text-ink-body">
           {hu
-            ? "A Trita jelenlegi jogi dokumentumai és a kiadás előtt álló szerződéses tervezetek egy helyen."
-            : "Trita’s current legal notice and pre-release contractual drafts in one place."}
+            ? "A Trita hatályos jogi dokumentumai egy helyen."
+            : "Trita’s effective legal documents in one place."}
         </p>
         <div className="mt-8 max-w-[860px] rounded-lg border border-bronze/40 bg-surface-card px-5 py-4">
           <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
-            {hu ? "Review-státusz" : "Review status"}
+            {hu ? "Dokumentumstátusz" : "Document status"}
           </p>
           <p className="mt-2 text-body leading-relaxed text-ink-body">
             {hu
-              ? "A három RD1 dokumentum ügyvédi review-draft, nem jóváhagyott és még nem hatályos. A jelenleg hatályos Adatvédelmi tájékoztató külön érhető el."
-              : "The three RD1 documents are legal review drafts: they are not approved and not yet effective. The currently effective Privacy Notice is available separately."}
+              ? "A Platform Feltételek, a B2B Feltételek és a DPA 2026. augusztus 29-től hatályos. Az Adatvédelmi tájékoztató külön érhető el."
+              : "The Platform Terms, B2B Terms and DPA are effective from 29 August 2026. The Privacy Notice is available separately."}
           </p>
         </div>
       </section>
@@ -38,10 +38,10 @@ export function LegalHubContent() {
 
       <section className="px-7 py-12 lg:py-16">
         <div className="mx-auto grid max-w-[1120px] gap-5 md:grid-cols-3">
-          {LEGAL_REVIEW_DOCUMENTS.map((document) => (
+          {LEGAL_DOCUMENTS.map((document) => (
             <article key={document.slug} className="flex flex-col rounded-lg border border-sand bg-surface-card p-6">
               <p className="text-micro font-semibold uppercase tracking-wider text-[var(--color-accent-primary-strong)]">
-                {document.documentId} · {hu ? "tervezet" : "draft"}
+                {document.documentId} · {hu ? "hatályos" : "effective"}
               </p>
               <h2 className="mt-4 font-fraunces text-title text-ink">{document.title[locale]}</h2>
               <p className="mt-3 flex-1 text-body leading-relaxed text-ink-body">

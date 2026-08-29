@@ -1,37 +1,48 @@
 import type { Locale } from "@/lib/i18n/core";
+import rawLegalContent from "./legal-document-content.json";
+import { B2B_TERMS_VERSION, DPA_VERSION, PLATFORM_TERMS_VERSION } from "./versions";
 
 export type LegalDocumentSlug = "platform-terms" | "business-terms" | "dpa";
+
+export type LegalContentBlock =
+  | { kind: "heading"; level: number; id: string; text: string }
+  | { kind: "p"; text: string }
+  | { kind: "ul" | "ol"; items: string[] }
+  | { kind: "table"; rows: string[][] };
+
+const LEGAL_CONTENT = rawLegalContent.documents as unknown as Record<
+  LegalDocumentSlug,
+  LegalContentBlock[]
+>;
 
 interface LocalizedText {
   hu: string;
   en: string;
 }
 
-export interface LegalReviewDocument {
+export interface LegalDocument {
   slug: LegalDocumentSlug;
   documentId: string;
-  fileName: string;
   title: LocalizedText;
   shortTitle: LocalizedText;
   description: LocalizedText;
   scope: LocalizedText;
   highlights: Record<Locale, string[]>;
-  reviewItems: Record<Locale, string[]>;
+  content: LegalContentBlock[];
 }
 
-export const LEGAL_REVIEW_DOCUMENTS: readonly LegalReviewDocument[] = [
+export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
   {
     slug: "platform-terms",
-    documentId: "PFF-2026-08-RD1",
-    fileName: "trita-platform-felhasznalasi-feltetelek-review-draft-2026-08-28.docx",
+    documentId: PLATFORM_TERMS_VERSION,
     title: {
       hu: "Platform Felhasználási Feltételek",
       en: "Platform Terms of Use",
     },
     shortTitle: { hu: "Platformfeltételek", en: "Platform terms" },
     description: {
-      hu: "A trita.io ingyenes egyéni személyiségfelmérésének, eredményeinek és observer-visszajelzéseinek tervezett használati feltételei.",
-      en: "Draft terms for the free individual assessment, results and observer feedback available on trita.io. The Hungarian document is controlling; this English summary is informational only.",
+      hu: "A trita.io ingyenes egyéni személyiségfelmérésének, eredményeinek és observer-visszajelzéseinek használati feltételei.",
+      en: "Terms for the free individual assessment, results and observer feedback available on trita.io. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
       hu: "Kizárólag az ingyenes egyéni szolgáltatás. A Team Scan és minden más B2B szolgáltatás külön ajánlat vagy szerződés tárgya.",
@@ -51,27 +62,11 @@ export const LEGAL_REVIEW_DOCUMENTS: readonly LegalReviewDocument[] = [
         "Accounts can be deleted at any time; data processing details are in the Privacy Notice.",
       ],
     },
-    reviewItems: {
-      hu: [
-        "elfogadási pont, checkbox és verziónapló",
-        "16+ vagy 18+ korhatár és képviselői hozzájárulás",
-        "elektronikus archiválás módja",
-        "Vercel tárhelyszolgáltató pontos jogi adatai",
-        "fogyasztói vitarendezési adatok és a 373/2021. Korm. rendelet alkalmazása",
-      ],
-      en: [
-        "acceptance point, checkbox and version log",
-        "16+ or 18+ age threshold and guardian consent",
-        "electronic archiving method",
-        "exact legal details of the Vercel hosting entity",
-        "consumer dispute information and application of Government Decree 373/2021",
-      ],
-    },
+    content: LEGAL_CONTENT["platform-terms"],
   },
   {
     slug: "business-terms",
-    documentId: "B2B-2026-08-RD1",
-    fileName: "trita-b2b-szolgaltatasi-feltetelek-review-draft-2026-08-28.docx",
+    documentId: B2B_TERMS_VERSION,
     title: {
       hu: "B2B Szolgáltatási Feltételek",
       en: "B2B Service Terms",
@@ -79,7 +74,7 @@ export const LEGAL_REVIEW_DOCUMENTS: readonly LegalReviewDocument[] = [
     shortTitle: { hu: "B2B feltételek", en: "B2B terms" },
     description: {
       hu: "A Team Scan és a kapcsolódó felmérési, riport-, workshop- és tanácsadási szolgáltatások szerződéses kerete.",
-      en: "Draft contractual framework for Team Scan and related assessment, reporting, workshop and advisory services. The Hungarian document is controlling; this English summary is informational only.",
+      en: "Contractual framework for Team Scan and related assessment, reporting, workshop and advisory services. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
       hu: "Csak akkor válik a szerződés részévé, ha az egyedi ajánlat, megrendelőlap vagy szerződés kifejezetten hivatkozik rá. Nincs online checkout.",
@@ -99,27 +94,11 @@ export const LEGAL_REVIEW_DOCUMENTS: readonly LegalReviewDocument[] = [
         "The separate DPA controls data-processing matters.",
       ],
     },
-    reviewItems: {
-      hu: [
-        "fizetési határidő, késedelmi kamat és lemondási szabályok",
-        "felelősségi limit és biztosítási háttér",
-        "SLA, támogatási idő és rendelkezésre állási vállalás",
-        "referenciahasználat, alvállalkozók és változáskezelés",
-        "egyedi adatmegőrzési és törlési vállalások összehangolása a DPA-val",
-      ],
-      en: [
-        "payment term, late interest and cancellation rules",
-        "liability cap and insurance coverage",
-        "SLA, support hours and availability commitment",
-        "reference use, subcontractors and change management",
-        "alignment of retention and deletion commitments with the DPA",
-      ],
-    },
+    content: LEGAL_CONTENT["business-terms"],
   },
   {
     slug: "dpa",
-    documentId: "DPA-2026-08-RD1",
-    fileName: "trita-adatfeldolgozasi-megallapodas-dpa-review-draft-2026-08-28.docx",
+    documentId: DPA_VERSION,
     title: {
       hu: "Adatfeldolgozási Megállapodás (DPA)",
       en: "Data Processing Agreement (DPA)",
@@ -127,7 +106,7 @@ export const LEGAL_REVIEW_DOCUMENTS: readonly LegalReviewDocument[] = [
     shortTitle: { hu: "DPA", en: "DPA" },
     description: {
       hu: "A szervezeti szolgáltatások GDPR 28. cikke szerinti adatfeldolgozási kerete, mellékletekkel és alfeldolgozói listával.",
-      en: "Draft Article 28 GDPR data-processing framework for organisational services, including schedules and a subprocessors list. The Hungarian document is controlling; this English summary is informational only.",
+      en: "Article 28 GDPR data-processing framework for organisational services, including schedules and a subprocessors list. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
       hu: "A B2B-szerződés elválaszthatatlan része. Adatfeldolgozási eltérésben elsőbbséget élvez a B2B Feltételekkel szemben.",
@@ -147,29 +126,10 @@ export const LEGAL_REVIEW_DOCUMENTS: readonly LegalReviewDocument[] = [
         "Post-termination return/deletion and schedules of technical and organisational measures.",
       ],
     },
-    reviewItems: {
-      hu: [
-        "incidensértesítés vállalható maximuma",
-        "új alfeldolgozó 15 vagy 30 napos értesítése",
-        "Clerk, Neon, Vercel, Resend, Upstash és Anthropic pontos entitás-, régió- és transzferadatai",
-        "törlési/backup határidők architekturális igazolása",
-        "RTO/RPO, restore-teszt, sérülékenységvizsgálat és DPIA-sablon",
-      ],
-      en: [
-        "achievable maximum incident-notification period",
-        "15- or 30-day notice for new subprocessors",
-        "exact entity, region and transfer details for Clerk, Neon, Vercel, Resend, Upstash and Anthropic",
-        "architectural validation of deletion and backup periods",
-        "RTO/RPO, restore testing, vulnerability scanning and a DPIA template",
-      ],
-    },
+    content: LEGAL_CONTENT.dpa,
   },
 ] as const;
 
-export function getLegalReviewDocument(slug: string): LegalReviewDocument | undefined {
-  return LEGAL_REVIEW_DOCUMENTS.find((document) => document.slug === slug);
-}
-
-export function getLegalDocumentDownloadPath(document: LegalReviewDocument): string {
-  return `/legal-documents/${document.fileName}`;
+export function getLegalDocument(slug: string): LegalDocument | undefined {
+  return LEGAL_DOCUMENTS.find((document) => document.slug === slug);
 }
