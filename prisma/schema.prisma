@@ -81,6 +81,9 @@ model UserProfile {
   privacyNoticeVersion    String?
   privacyNoticeAcceptedAt DateTime?
 
+  legalCampaignsCreated LegalAcceptanceCampaign[] @relation("LegalCampaignCreator")
+  legalAcceptances      LegalAcceptanceRecord[]
+
   // Demographic data (onboarding)
   birthYear   Int?
   gender      String?
@@ -910,6 +913,50 @@ enum NotificationType {
   COMPARE_ACCEPTED
   CRM_NEXT_ACTION_DUE
   CRM_QUOTE_EXPIRING
+  LEGAL_ACCEPTANCE_REQUIRED
+}
+
+// Egy admin által aktivált jogi verzióváltás. A legutóbb aktivált sor az
+// érvényes elfogadási kampány; a felhasználói bizonyíték továbbra is a
+// UserProfile verzió+időpont mezőiben marad.
+model LegalAcceptanceCampaign {
+  id                   String   @id @default(cuid())
+  platformTermsVersion String
+  privacyNoticeVersion String
+  effectiveAt          DateTime
+  activatedAt          DateTime @default(now())
+  lastSentAt           DateTime?
+  recipientCount       Int      @default(0)
+  sendCount             Int      @default(0)
+  createdById          String
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  createdBy UserProfile @relation("LegalCampaignCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  acceptances LegalAcceptanceRecord[]
+
+  @@unique([platformTermsVersion, privacyNoticeVersion])
+  @@index([activatedAt])
+}
+
+// Append-only elfogadási bizonyíték. A UserProfile a gyors aktuális állapotot
+// tartja, ez a tábla pedig minden korábbi verzió elfogadását megőrzi.
+model LegalAcceptanceRecord {
+  id                   String   @id @default(cuid())
+  userId               String
+  campaignId           String?
+  platformTermsVersion String
+  privacyNoticeVersion String
+  acceptedAt           DateTime
+  source               String   // REGISTRATION | REACCEPTANCE
+  createdAt            DateTime @default(now())
+
+  user     UserProfile              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign LegalAcceptanceCampaign? @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, platformTermsVersion, privacyNoticeVersion])
+  @@index([campaignId])
+  @@index([acceptedAt])
 }
 
 // Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).

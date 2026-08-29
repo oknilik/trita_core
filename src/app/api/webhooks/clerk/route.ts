@@ -123,6 +123,26 @@ export async function POST(req: Request) {
       select: { id: true },
     });
 
+    if (acceptedAt && registrationLegalAcceptance.success) {
+      await prisma.legalAcceptanceRecord.upsert({
+        where: {
+          userId_platformTermsVersion_privacyNoticeVersion: {
+            userId: upsertedProfile.id,
+            platformTermsVersion: registrationLegalAcceptance.data.platformTermsVersion,
+            privacyNoticeVersion: registrationLegalAcceptance.data.privacyNoticeVersion,
+          },
+        },
+        create: {
+          userId: upsertedProfile.id,
+          platformTermsVersion: registrationLegalAcceptance.data.platformTermsVersion,
+          privacyNoticeVersion: registrationLegalAcceptance.data.privacyNoticeVersion,
+          acceptedAt,
+          source: "REGISTRATION",
+        },
+        update: {},
+      });
+    }
+
     const intent = normalizeJourneyIntent(user.unsafe_metadata?.intent);
     if (intent) {
       await setJourneyIntentForProfile(upsertedProfile.id, intent);

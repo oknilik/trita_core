@@ -261,6 +261,16 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       m.sendWelcomeEmail({ to: "uj@example.com", locale }),
     );
 
+    await capture("legal-acceptance-required", locale, () =>
+      m.sendLegalAcceptanceRequiredEmail({
+        to: "felhasznalo@example.com",
+        locale,
+        campaignId: "legal-campaign-1",
+        recipientId: "profile-1",
+        sendNumber: 1,
+      }),
+    );
+
     await capture("team_report_published", locale, () =>
       m.sendTeamReportPublishedEmail({
         to: "tag@example.com",

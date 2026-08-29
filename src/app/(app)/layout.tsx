@@ -10,6 +10,8 @@ import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { resolveWorkspaceNavContext } from "@/lib/navigation/nav-context.server";
 import { HelpWidget } from "@/components/help/HelpWidget";
+import { LegalAcceptanceGate } from "@/components/legal/LegalAcceptanceGate";
+import { getPendingLegalAcceptanceByClerkId } from "@/lib/legal/acceptance.server";
 
 // A bejelentkezett app-felület shellje: auth + journey + org-kontextus
 // requestenként — szándékosan dinamikus. A marketing-oldalak a (marketing)
@@ -41,12 +43,13 @@ export const metadata: Metadata = {
 export default async function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [{ userId }, locale] = await Promise.all([
-    getServerAuth(),
-    getServerLocale(),
+  const { userId } = await getServerAuth();
+  const locale = await getServerLocale();
+  const [navContext, pendingLegalAcceptance] = await Promise.all([
+    resolveWorkspaceNavContext(userId, locale),
+    userId ? getPendingLegalAcceptanceByClerkId(userId) : Promise.resolve(null),
   ]);
-  const { navData, signedInHomeHref, signedInExperienceHints, helpAudience } =
-    await resolveWorkspaceNavContext(userId, locale);
+  const { navData, signedInHomeHref, signedInExperienceHints, helpAudience } = navContext;
 
   // Clerk itt (nem a root layoutban) — az app-felület komponensei (NavHeaderUI
   // signOut, profile, try, observe…) ezt a providert kapják. A nav auth-
@@ -85,6 +88,7 @@ export default async function AppLayout({
             <Suspense>
               <HelpWidget audience={helpAudience} />
             </Suspense>
+            <LegalAcceptanceGate pending={pendingLegalAcceptance} locale={locale} />
           </ServerAuthStateProvider>
       </div>
     </ClerkProvider>

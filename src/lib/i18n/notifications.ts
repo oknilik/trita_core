@@ -166,6 +166,13 @@ export const notificationTranslations = {
         en: "{quoteNo} – \"{deal}\": the quote is valid until {date}. Time to follow up.",
       },
     },
+    legalAcceptanceRequired: {
+      title: { hu: "Új jogi feltételek várnak elfogadásra", en: "Updated legal terms require acceptance" },
+      body: {
+        hu: "A trita használatának folytatásához tekintsd át és fogadd el a frissített feltételeket.",
+        en: "Review and accept the updated terms to continue using trita.",
+      },
+    },
 
     // UI labels
     markAllRead: { hu: "Összes olvasottnak jelölése", en: "Mark all as read" },

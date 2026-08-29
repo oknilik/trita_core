@@ -19,6 +19,7 @@ import { OpsTab } from "@/app/(app)/admin/_tabs/OpsTab";
 import { FeedbackTab } from "@/app/(app)/admin/_tabs/FeedbackTab";
 import { RemindersTab } from "@/app/(app)/admin/_tabs/RemindersTab";
 import { BlogTab } from "@/app/(app)/admin/_tabs/BlogTab";
+import { LegalTab } from "@/app/(app)/admin/_tabs/LegalTab";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 export const dynamic = "force-dynamic";
@@ -47,7 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
 //     kilógott és eltörte a UI-t).
 // A fülök tartalma és lekérdezései változatlanul a _tabs/ könyvtárban.
 // ─────────────────────────────────────────────────────────────────────
-const TAB_IDS = ["overview", "analytics", "crm", "inquiries", "orgs", "consultants", "blog", "ops", "feedback", "reminders"] as const;
+const TAB_IDS = ["overview", "analytics", "crm", "inquiries", "orgs", "consultants", "blog", "ops", "legal", "feedback", "reminders"] as const;
 
 function isAdminTabActive(tab: AdminTabId): boolean {
   if (tab === "crm") return isPortfolioSurfaceActive("crm");
@@ -64,6 +65,7 @@ const TAB_TITLES: Record<AdminTabId, string> = {
   consultants: "Tanácsadók",
   blog: "Blog",
   ops: "Rendszer",
+  legal: "Jogi dokumentumok",
   feedback: "Visszajelzések",
   reminders: "Emlékeztetők",
 };
@@ -129,6 +131,7 @@ export default async function AdminPage({
               {activeTab === "orgs" && <OrgsTab />}
               {activeTab === "consultants" && <ConsultantsTab />}
               {activeTab === "ops" && <OpsTab />}
+              {activeTab === "legal" && <LegalTab />}
               {activeTab === "feedback" && <FeedbackTab />}
               {activeTab === "reminders" && <RemindersTab />}
               {isPortfolioSurfaceActive("blog") && activeTab === "blog" && <BlogTab />}

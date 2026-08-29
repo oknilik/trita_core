@@ -39,4 +39,7 @@ test("a Clerk webhook és az adatmodell megőrzi az elfogadási bizonyítékot",
     assert.match(webhook, new RegExp(field));
     assert.match(schema, new RegExp(field));
   }
+  assert.match(webhook, /legalAcceptanceRecord\.upsert/);
+  assert.match(schema, /model LegalAcceptanceRecord/);
+  assert.match(schema, /@@unique\(\[userId, platformTermsVersion, privacyNoticeVersion\]\)/);
 });
