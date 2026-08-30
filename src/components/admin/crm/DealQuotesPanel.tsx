@@ -160,6 +160,12 @@ export function DealQuotesPanel({
                   </div>
                 ) : (
                   <div className="mt-2 flex flex-wrap items-center gap-2 border-t border-sand/60 pt-2">
+                    <Link
+                      href={`/admin/crm/quotes/${quote.id}/documents`}
+                      className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
+                    >
+                      Dokumentumok
+                    </Link>
                     {quote.status === "DRAFT" && (
                       <>
                         <Link

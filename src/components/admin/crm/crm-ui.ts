@@ -88,6 +88,7 @@ const CRM_ERROR_TEXT: Record<string, string> = {
   DEAL_NOT_FOUND: "A deal nem található – lehet, hogy időközben törölték.",
   INQUIRY_NOT_FOUND: "A megkeresés nem található.",
   QUOTE_NOT_FOUND: "Az ajánlat nem található.",
+  DOCUMENT_NOT_FOUND: "A dokumentum nem található.",
   ACTIVITY_NOT_FOUND: "A bejegyzés nem található.",
   ORG_NOT_FOUND: "A szervezet nem található.",
   USER_NOT_FOUND: "A felhasználó nem található.",
@@ -95,6 +96,12 @@ const CRM_ERROR_TEXT: Record<string, string> = {
   INVALID_TRANSITION: "Ez az állapotváltás nem engedélyezett.",
   LOST_REASON_REQUIRED: "Elveszett lezáráshoz kötelező okot választani.",
   QUOTE_NOT_DRAFT: "Csak piszkozat állapotú ajánlat szerkeszthető.",
+  ORDER_FORM_REQUIRES_ACCEPTED_QUOTE:
+    "Az Egyedi Megrendelőlap csak elfogadott ajánlatból generálható.",
+  TEAM_HEADCOUNT_MISMATCH:
+    "A csapatok száma vagy összlétszáma nem egyezik az ajánlattal.",
+  QUOTE_SNAPSHOT_MISMATCH:
+    "A régi ajánlat számítása eltér a jelenlegi modelltől. Készíts belőle új piszkozatot.",
   ONLY_DRAFT_DELETABLE: "Csak piszkozat törölhető – kiment ajánlat nyom marad.",
   NOT_EDITABLE: "Rendszer-bejegyzés nem módosítható és nem törölhető.",
   INQUIRY_ALREADY_LINKED: "Ez a megkeresés már egy dealhez kapcsolódik.",
