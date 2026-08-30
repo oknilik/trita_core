@@ -8,19 +8,20 @@ import {
 import type { DocumentProps } from "@react-pdf/renderer";
 import type { ReactElement } from "react";
 import type { CommercialDocumentSnapshot } from "@/lib/crm/commercial-document-schema";
+import { PDF_COLORS } from "@/lib/design-tokens";
 import { COMPANY } from "@/lib/legal/company";
 import { DISCOUNT_LABELS, QUOTE_STEP_LABELS } from "@/lib/quote/rate-card";
 
 const c = {
-  ink: "#173c36",
-  body: "#425b56",
-  muted: "#70817d",
-  cream: "#f4f0e8",
-  paper: "#fffdf8",
-  sand: "#dcd8ce",
-  green: "#235e53",
-  orange: "#d96346",
-  yellow: "#e8bd4f",
+  ink: PDF_COLORS.ink,
+  body: PDF_COLORS.ink500,
+  muted: PDF_COLORS.ink300,
+  cream: PDF_COLORS.cream300,
+  paper: PDF_COLORS.white,
+  sand: PDF_COLORS.sand,
+  green: PDF_COLORS.sage,
+  orange: PDF_COLORS.bronze,
+  yellow: PDF_COLORS.bronzeLight,
 };
 
 const s = StyleSheet.create({
@@ -72,9 +73,9 @@ const s = StyleSheet.create({
     marginBottom: 8,
   },
   title: { fontSize: 25, lineHeight: 1.08, fontWeight: 700, marginBottom: 8 },
-  subtitle: { fontSize: 10, lineHeight: 1.5, color: "#c8d9d4", maxWidth: 410 },
+  subtitle: { fontSize: 10, lineHeight: 1.5, color: PDF_COLORS.sage200, maxWidth: 410 },
   section: {
-    backgroundColor: "#ffffff",
+    backgroundColor: PDF_COLORS.white,
     border: `1 solid ${c.sand}`,
     borderRadius: 9,
     padding: "14 16",
@@ -366,7 +367,7 @@ function OrderForm({ snapshot }: { snapshot: CommercialDocumentSnapshot }) {
             <Row label="Székhely" value={COMPANY.address} />
             <Row label="Cégjegyzékszám" value={COMPANY.registrationNumber} />
             <Row label="Adószám" value={COMPANY.taxNumber} />
-            <Row label="Képviselő" value="Kilinkó Dániel, ügyvezető" />
+            <Row label="Képviselő" value="A cégjegyzék szerinti képviselő" />
             <Row label="E-mail" value={COMPANY.contactEmail} />
           </View>
           <View style={s.half}>
@@ -504,7 +505,7 @@ function OrderForm({ snapshot }: { snapshot: CommercialDocumentSnapshot }) {
         </Text>
         <Text style={s.subhead}>Kapcsolattartók</Text>
         <Row label="Megrendelő" value={`${customer.representativeName} · ${customer.contactEmail}`} />
-        <Row label="Szolgáltató" value={`Kilinkó Dániel · ${COMPANY.contactEmail}${customer.providerPhone ? ` · ${customer.providerPhone}` : ""}`} />
+        <Row label="Szolgáltató" value={`Cégjegyzék szerinti képviselő · ${COMPANY.contactEmail}${customer.providerPhone ? ` · ${customer.providerPhone}` : ""}`} />
       </View>
 
       <View style={s.section}>
@@ -541,8 +542,8 @@ function OrderForm({ snapshot }: { snapshot: CommercialDocumentSnapshot }) {
             <Text>Kelt: ____________________</Text>
           </View>
           <View style={s.signatureCell}>
-            <Text>Kilinkó Dániel</Text>
-            <Text>ügyvezető, {COMPANY.legalName}</Text>
+            <Text>A cégjegyzék szerinti képviselő</Text>
+            <Text>{COMPANY.legalName}</Text>
             <Text>Kelt: ____________________</Text>
           </View>
         </View>
