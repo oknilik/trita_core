@@ -62,6 +62,43 @@ test("a kiszállásra nem vonatkozik kedvezmény", () => {
   );
 });
 
+test("az alapító kedvezmény alapértelmezetten nem csökkenti a fejdíjat", () => {
+  const small = calculateQuote(
+    input({ headcount: 8, discountPct: 20, discountReason: "alapító partner" }),
+    DEFAULT_RATE_CARD,
+  );
+  const larger = calculateQuote(
+    input({ headcount: 18, discountPct: 20, discountReason: "alapító partner" }),
+    DEFAULT_RATE_CARD,
+  );
+  assert.equal(
+    small.discountAmount,
+    Math.round(
+      (DEFAULT_RATE_CARD.baseFee + DEFAULT_RATE_CARD.workshopDayFee) * 0.2,
+    ),
+  );
+  assert.equal(larger.discountAmount, small.discountAmount);
+});
+
+test("a teljes-program kedvezmény a szakmai díjtételekre is vonatkozik", () => {
+  const selected = calculateQuote(
+    input({ discountPct: 20, discountScope: "base_workshop", discountReason: "pilot" }),
+    DEFAULT_RATE_CARD,
+  );
+  const all = calculateQuote(
+    input({ discountPct: 20, discountScope: "all", discountReason: "pilot" }),
+    DEFAULT_RATE_CARD,
+  );
+  assert.ok(all.discountAmount > selected.discountAmount);
+  assert.ok(all.netTotal < selected.netTotal);
+});
+
+test("a nettó, ÁFA és bruttó összeg összezár", () => {
+  const result = calculateQuote(input({ vatRate: 27 }), DEFAULT_RATE_CARD);
+  assert.equal(result.vatAmount, Math.round(result.netTotal * 0.27));
+  assert.equal(result.grossTotal, result.netTotal + result.vatAmount);
+});
+
 test("a továbbhárított költség nem szépíti az effektív óradíjat", () => {
   // A kiszállás nem tanácsadói bevétel. Ha beleszámítana, a kalkulátor
   // pont a legfontosabb számot mutatná túl kedvezőnek.
@@ -76,7 +113,7 @@ test("a továbbhárított költség nem szépíti az effektív óradíjat", () =
 
 test("a mély kedvezmény figyelmeztetést hoz, nem csendes fedezet-vesztést", () => {
   const deep = calculateQuote(
-    input({ discountPct: 60, discountReason: "" }),
+    input({ discountPct: 60, discountScope: "all", discountReason: "" }),
     DEFAULT_RATE_CARD,
   );
   assert.ok(deep.warnings.includes("DISCOUNT_OVER_CAP"));

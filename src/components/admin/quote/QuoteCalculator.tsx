@@ -14,6 +14,8 @@ import {
 import {
   DISCOUNT_KINDS,
   DISCOUNT_LABELS,
+  DISCOUNT_SCOPES,
+  DISCOUNT_SCOPE_LABELS,
   QUOTE_STEPS,
   QUOTE_STEP_LABELS,
   quoteInputSchema,
@@ -290,7 +292,9 @@ export function QuoteCalculator({
       result.discountAmount > 0
         ? `Kedvezmény${input.discountKind ? ` (${DISCOUNT_LABELS[input.discountKind]})` : ""}: −${huf(result.discountAmount)}`
         : null,
-      `Egyszeri díj: ${huf(result.oneOffTotal)}`,
+      `Nettó programdíj: ${huf(result.netTotal)}`,
+      `ÁFA (${input.vatRate}%): ${huf(result.vatAmount)}`,
+      `Bruttó programdíj: ${huf(result.grossTotal)}`,
       result.retainerTotal > 0
         ? `Havi kísérés: ${huf(rate.retainerMonthlyFee)} / hó, ${input.retainerMonths} hónap`
         : null,
@@ -406,6 +410,25 @@ export function QuoteCalculator({
               </button>
             ))}
           </div>
+          <p className="mt-4 font-mono text-xs uppercase tracking-widest text-muted">
+            Kedvezmény hatóköre
+          </p>
+          <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {DISCOUNT_SCOPES.map((scope) => (
+              <button
+                key={scope}
+                type="button"
+                onClick={() => patch({ discountScope: scope })}
+                className={`min-h-[44px] rounded-lg border px-3 text-left text-sm transition ${
+                  input.discountScope === scope
+                    ? "border-sage bg-sage-soft text-ink"
+                    : "border-sand bg-surface-card text-muted hover:border-bronze-edge"
+                }`}
+              >
+                {DISCOUNT_SCOPE_LABELS[scope]}
+              </button>
+            ))}
+          </div>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-[140px_minmax(0,1fr)]">
             <NumberField
               label="Mérték"
@@ -425,6 +448,33 @@ export function QuoteCalculator({
                 className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none focus:border-bronze"
               />
             </label>
+          </div>
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_180px_120px]">
+            <label className="flex flex-col gap-1">
+              <span className="font-mono text-xs uppercase tracking-widest text-muted">
+                Egyéb tétel neve
+              </span>
+              <input
+                type="text"
+                value={input.otherFeeLabel}
+                maxLength={120}
+                onChange={(event) => patch({ otherFeeLabel: event.target.value })}
+                className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none focus:border-bronze"
+              />
+            </label>
+            <NumberField
+              label="Egyéb tétel"
+              value={input.otherFee}
+              step={5_000}
+              onChange={(otherFee) => patch({ otherFee })}
+              suffix="Ft"
+            />
+            <NumberField
+              label="ÁFA"
+              value={input.vatRate}
+              onChange={(vatRate) => patch({ vatRate })}
+              suffix="%"
+            />
           </div>
         </section>
 
@@ -645,9 +695,17 @@ export function QuoteCalculator({
             </p>
           )}
 
-          <p className="mt-3 border-t border-sand pt-3 text-sm text-ink-body">Egyszeri díj</p>
+          <p className="mt-3 border-t border-sand pt-3 text-sm text-ink-body">Nettó programdíj</p>
           <p className="font-fraunces text-3xl tabular-nums text-ink">
-            {huf(result.oneOffTotal)}
+            {huf(result.netTotal)}
+          </p>
+          <p className="mt-1 flex items-baseline justify-between gap-3 text-sm text-muted">
+            <span>ÁFA ({input.vatRate}%)</span>
+            <span className="tabular-nums">{huf(result.vatAmount)}</span>
+          </p>
+          <p className="mt-2 flex items-baseline justify-between gap-3 border-t border-sand pt-2 text-sm font-semibold text-ink">
+            <span>Bruttó programdíj</span>
+            <span className="tabular-nums">{huf(result.grossTotal)}</span>
           </p>
           {result.retainerTotal > 0 && (
             <p className="mt-1 text-sm text-ink-body">
