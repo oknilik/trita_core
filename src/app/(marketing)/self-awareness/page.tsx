@@ -3,9 +3,11 @@ import { LandingContent } from "@/components/landing/LandingContent";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
+import { SEO_INTENTS } from "@/lib/seo-intents";
 
-const path = "/self-awareness";
-const title = "Önismereti személyiségteszt és egyéni profil | trita";
+const seoIntent = SEO_INTENTS.selfAwareness;
+const path = seoIntent.path;
+const title = "Önismereti személyiségteszt – lásd tisztábban magad | trita";
 const description =
   "Ismerd meg a személyiséged fő mintázatait, erősségeidet és természetes csapatszerepeidet egy ingyenes, hatdimenziós felméréssel.";
 
@@ -24,7 +26,11 @@ export default function SelfAwarenessPage() {
           path,
           title,
           description,
-          about: ["Önismeret", "Személyiségteszt", "Csapatszerepek"],
+          about: seoIntent.topics,
+          breadcrumb: [
+            { name: "Főoldal", path: "/" },
+            { name: "Önismereti személyiségteszt", path },
+          ],
         })}
       />
       <LandingContent initialMode="self" />

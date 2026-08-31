@@ -209,13 +209,12 @@ export const landingTranslations = {
     ctaTeamMicrocopy: { hu: "Kiemelt támogatás a pilot teljes ideje alatt · első csapatkép néhány napon belül", en: "Personal onboarding · first result within days" },
   },
   pricing: {
-    // SEO: a cím a KERESETT szolgáltatás-megnevezéssel kezdődik
-    // („csapatfejlesztés", „csapatdiagnosztika"), nem a belső
-    // „Együttműködés" fejezetcímmel – utóbbira nincs keresés. A description
+    // SEO: a cím a keresett „csapatfejlesztés" szolgáltatás-megnevezéssel
+    // kezdődik, majd a trita személyes, rugalmas működését ígéri. A description
     // kihasználja a snippet-hosszt (~155 kar.), és előre hozza a két
     // döntési tényt: az egyéni rész ingyenes, listaár nincs.
     metaTitle: {
-      hu: "Csapatfejlesztés és csapatdiagnosztika | trita",
+      hu: "Csapatfejlesztés, a csapatotokra szabva | trita",
       en: "Team development and diagnostics | trita",
     },
     metaDescription: {
@@ -873,25 +872,28 @@ export const landingTranslations = {
     heroTitleBefore: { hu: "Szia, mi vagyunk a ", en: "Hi, we are " },
     heroTitleAfter: { hu: ".", en: "." },
     heroBody: {
-      hu: "Abban segítünk csapatoknak, hogy értsék, hogyan működnek együtt. Nem tesztet adunk el, hanem közös munkát: mérünk, értelmezünk, és veletek visszük végig, amit az eredmények mutatnak.",
-      en: "We help teams understand how they work together. We don't sell a test – we do the work with you: we measure, interpret, and follow through together on what the results show.",
+      hu: "Abban segítünk csapatoknak, hogy jobban értsék, hogyan működnek együtt. A mérés nálunk a közös megértés kezdete: együtt értelmezzük, mit mutat, és közösen alakítjuk ki a következő lépést.",
+      en: "We help teams understand how they work together. For us, measurement is where shared understanding begins: we interpret what it shows together and shape the next step with you.",
     },
 
-    principlesEyebrow: { hu: "Három elv, amihez tartjuk magunkat", en: "Three principles we hold ourselves to" },
-    principle1Title: { hu: "Mért, nem megérzett", en: "Measured, not guessed" },
+    principlesEyebrow: {
+      hu: "Ami fontos nekünk a közös munkában",
+      en: "What matters to us when we work together",
+    },
+    principle1Title: { hu: "Tényekből indulunk ki", en: "We start with facts" },
     principle1Desc: {
-      hu: "Minden állítás mögött adat áll – és mindig jelöljük, mi mért és mi becsült.",
-      en: "Every claim is backed by data – and we always mark what is measured and what is estimated.",
+      hu: "A megérzések mellé megbízható adatokat teszünk, hogy legyen egy közös alap, ahonnan elindulhat a beszélgetés.",
+      en: "We put reliable data alongside intuition, creating a shared foundation for the conversation.",
     },
-    principle2Title: { hu: "Ember értelmezi", en: "Interpreted by people" },
+    principle2Title: { hu: "Együtt értelmezzük", en: "We make sense of it together" },
     principle2Desc: {
-      hu: "Az összképet tanácsadó rakja össze és beszéli át veletek – nem algoritmus dobja ki.",
-      en: "The overall picture is put together and talked through with you by a consultant – it is not spat out by an algorithm.",
+      hu: "A számok önmagukban keveset mondanak. Veletek együtt nézzük meg, mit jelentenek a ti csapatotokban, és merre érdemes továbbindulni.",
+      en: "Numbers mean little on their own. Together, we explore what they mean for your team and where to go next.",
     },
-    principle3Title: { hu: "A csapaté az eredmény", en: "The results belong to the team" },
+    principle3Title: { hu: "Vigyázunk a bizalomra", en: "We protect trust" },
     principle3Desc: {
-      hu: "A publikált kép mindig aggregált: egyéni értékek nem kerülnek ki belőle.",
-      en: "The published picture is always aggregated: individual values never leave it.",
+      hu: "A közös eredmény a csapat egészéről szól, az egyéni válaszokat pedig bizalmasan kezeljük. Mert őszintén beszélgetni csak biztonságban lehet.",
+      en: "The shared result is about the team as a whole, while individual responses remain confidential. Because honest conversations need a safe space.",
     },
 
     storyEyebrow: { hu: "Honnan jövünk", en: "Where we come from" },
@@ -904,9 +906,19 @@ export const landingTranslations = {
       en: "We spent years working in teams and leading teams – and saw up close that the best and the hardest moments spring from the same source: how people connect with each other. Yet conversations about how a team works are still mostly built on impressions. We are building trita so those conversations have a measurable foundation – and so the team can return to its results later.",
     },
 
-    statement: {
-      hu: "A jó csapat nem szerencse kérdése. Ahogy együtt dolgoztok, annak mintázata van – és amit látni lehet, azon dolgozni is.",
-      en: "A good team is not a matter of luck. The way you work together has a pattern – and what can be seen can be worked on.",
+    statementLine1: {
+      hu: "A jól működő csapat nem szerencse kérdése.",
+      en: "A well-functioning team is not a matter of luck.",
+    },
+    statementLine2Before: {
+      hu: "Ahogy együtt dolgoztok, annak ",
+      en: "The way you work together has a ",
+    },
+    statementLine2Accent: { hu: "mintázata van", en: "pattern" },
+    statementLine2After: { hu: " –", en: " –" },
+    statementLine3: {
+      hu: "és amit látni lehet, azon dolgozni is.",
+      en: "and what can be seen can be worked on.",
     },
 
     ctaTitle: { hu: "Beszélgessünk a csapatodról.", en: "Let's talk about your team." },

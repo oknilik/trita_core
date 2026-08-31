@@ -215,7 +215,7 @@ export interface WebPageInput {
   locale?: Locale;
   breadcrumb?: BreadcrumbItem[];
   /** A lap fő témája – entitás-kapcsolat az AI-nak (pl. „csapatmintázat"). */
-  about?: string | string[];
+  about?: string | readonly string[];
   /** ISO dátum, ha a laphoz értelmezhető tartalmi frissítés tartozik. */
   dateModified?: string;
 }

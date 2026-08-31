@@ -10,8 +10,10 @@ import {
 } from "@/lib/structured-data";
 import { PricingContent } from "../pricing/PricingContent";
 import { PRICING_FAQ_INDEXES } from "../pricing/faq";
+import { SEO_INTENTS } from "@/lib/seo-intents";
 
-const CANONICAL_PATH = "/how-we-work";
+const seoIntent = SEO_INTENTS.howWeWork;
+const CANONICAL_PATH = seoIntent.path;
 
 export const metadata: Metadata = buildPageMetadata({
   path: CANONICAL_PATH,
@@ -33,7 +35,7 @@ export default function HowWeWorkPage() {
             path: CANONICAL_PATH,
             title: t("pricing.metaTitle", DEFAULT_LOCALE),
             description: t("pricing.metaDescription", DEFAULT_LOCALE),
-            about: ["Csapatdiagnosztika", "Szervezetfejlesztés"],
+            about: seoIntent.topics,
             breadcrumb: [
               { name: "Főoldal", path: "/" },
               { name: "Együttműködés", path: CANONICAL_PATH },

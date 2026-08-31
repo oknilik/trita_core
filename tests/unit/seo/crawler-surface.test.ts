@@ -40,8 +40,11 @@ const PRIVATE_PREFIXES = [
   "/patterns",
   "/profile",
   "/share/",
-  "/team",
+  "/team/",
 ];
+
+const PRIVATE_EXACT_PATHS = ["/team"];
+const PRIVATE_ROBOTS_RULES = [...PRIVATE_PREFIXES, "/team$"];
 
 test("a robots.txt külön szabályt ad az AI-keresők crawlereinek", () => {
   const result = productionRobots();
@@ -68,7 +71,7 @@ test("a robots.txt minden szabálya tiltja a privát útvonalakat", () => {
         ? [rule.disallow]
         : [];
 
-    for (const prefix of PRIVATE_PREFIXES) {
+    for (const prefix of PRIVATE_ROBOTS_RULES) {
       assert.ok(
         disallow.includes(prefix),
         `a(z) ${JSON.stringify(rule?.userAgent)} szabályból hiányzik a tiltás: ${prefix}`,
@@ -102,13 +105,14 @@ test("az llms.txt nem sorol fel privát útvonalat linkként", async () => {
         `privát útvonal szivárgott az llms.txt-be: ${path}`,
       );
     }
+    assert.ok(!PRIVATE_EXACT_PATHS.includes(path), `privát útvonal szivárgott az llms.txt-be: ${path}`);
   }
 });
 
 test("az llms.txt csak az aktív fő lapokat tartalmazza", async () => {
   const body = await llmsTxt().text();
 
-  for (const path of ["/try", "/how-we-work", "/pilot"]) {
+  for (const path of ["/try", "/self-awareness", "/team-dynamics", "/how-we-work", "/pilot"]) {
     assert.ok(body.includes(`${path})`), `hiányzó publikus lap az llms.txt-ből: ${path}`);
   }
   for (const path of ["/patterns"]) {
@@ -116,6 +120,23 @@ test("az llms.txt csak az aktív fő lapokat tartalmazza", async () => {
   }
   assert.ok(body.includes("/blog)"), "az aktív bloglista hiányzik az llms.txt-ből");
   assert.ok(body.includes("hello@trita.io"));
+});
+
+test("a publikus csapatdiagnosztika-lapot nem nyeli el a privát /team szabály", () => {
+  const result = productionRobots();
+  const rules = Array.isArray(result.rules) ? result.rules : [result.rules];
+
+  for (const rule of rules) {
+    const allow = Array.isArray(rule?.allow) ? rule.allow : rule?.allow ? [rule.allow] : [];
+    const disallow = Array.isArray(rule?.disallow)
+      ? rule.disallow
+      : rule?.disallow
+        ? [rule.disallow]
+        : [];
+
+    assert.ok(allow.includes("/team-dynamics"));
+    assert.equal(disallow.includes("/team"), false);
+  }
 });
 
 test("az aktív publikus megosztás tokenútja továbbra sem crawler-belépő", async () => {
