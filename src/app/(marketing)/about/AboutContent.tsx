@@ -3,6 +3,7 @@
 import { useLocale } from "@/components/LocaleProvider";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { AboutHorizonArt } from "@/components/marketing/AboutHorizonArt";
+import { AboutStatementArt } from "@/components/marketing/AboutStatementArt";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t } from "@/lib/i18n/public";
@@ -64,12 +65,17 @@ export function AboutContent() {
       </section>
 
       <section className="bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]">
-        <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
-          <blockquote className="max-w-[34ch] font-fraunces text-fluid-title tracking-tight">
+        <div className="relative mx-auto flex max-w-[1280px] items-center overflow-hidden px-7 py-16 md:min-h-[360px] md:py-20">
+          <blockquote className="relative z-10 max-w-[34ch] font-fraunces text-fluid-title leading-[1.12] tracking-tight">
             <span className="md:block">{t("about.statementLine1", locale)}</span>{" "}
-            <span className="md:block">{t("about.statementLine2", locale)}</span>{" "}
+            <span className="md:block">
+              {t("about.statementLine2Before", locale)}
+              <span className="text-[var(--color-accent-primary)]">{t("about.statementLine2Accent", locale)}</span>
+              {t("about.statementLine2After", locale)}
+            </span>{" "}
             <span className="md:block">{t("about.statementLine3", locale)}</span>
           </blockquote>
+          <AboutStatementArt className="pointer-events-none absolute -bottom-20 -right-24 w-[270px] opacity-25 md:-bottom-24 md:-right-20 md:w-[360px] md:opacity-35 xl:bottom-1/2 xl:-right-5 xl:w-[340px] xl:translate-y-1/2 xl:opacity-90" />
         </div>
       </section>
 

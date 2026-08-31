@@ -910,10 +910,12 @@ export const landingTranslations = {
       hu: "A jól működő csapat nem szerencse kérdése.",
       en: "A well-functioning team is not a matter of luck.",
     },
-    statementLine2: {
-      hu: "Ahogy együtt dolgoztok, annak mintázata van –",
-      en: "The way you work together has a pattern –",
+    statementLine2Before: {
+      hu: "Ahogy együtt dolgoztok, annak ",
+      en: "The way you work together has a ",
     },
+    statementLine2Accent: { hu: "mintázata van", en: "pattern" },
+    statementLine2After: { hu: " –", en: " –" },
     statementLine3: {
       hu: "és amit látni lehet, azon dolgozni is.",
       en: "and what can be seen can be worked on.",
