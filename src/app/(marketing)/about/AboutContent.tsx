@@ -68,7 +68,7 @@ export function AboutContent() {
         <div className="relative mx-auto flex max-w-[1280px] items-center overflow-hidden px-7 py-16 md:min-h-[360px] md:py-20">
           <blockquote className="relative z-10 max-w-[34ch] font-fraunces text-fluid-title leading-[1.12] tracking-tight">
             <span className="md:block">{t("about.statementLine1", locale)}</span>{" "}
-            <span className="md:block">
+            <span className="mt-5 block md:mt-6">
               {t("about.statementLine2Before", locale)}
               <span className="text-[var(--color-accent-primary)]">{t("about.statementLine2Accent", locale)}</span>
               {t("about.statementLine2After", locale)}
