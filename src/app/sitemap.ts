@@ -12,7 +12,7 @@ import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
  * tekinti és figyelmen kívül hagyja. Ezt a konstanst akkor bumpold, amikor a
  * marketing-oldalak tartalma érdemben változik.
  */
-const CONTENT_REVIEWED_AT = new Date("2026-08-27T00:00:00.000Z");
+const CONTENT_REVIEWED_AT = new Date("2026-08-31T00:00:00.000Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = getSiteUrl();

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { LandingContent } from "@/components/landing/LandingContent";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
+import { SEO_INTENTS } from "@/lib/seo-intents";
 import {
   buildOrganizationJsonLd,
   buildWebPageJsonLd,
@@ -9,18 +10,22 @@ import {
 } from "@/lib/structured-data";
 
 // A `<title>` KULCSSZÓ-ELSŐ, márka-utolsó sorrendben: a magyar keresésekben a
-// „személyiségteszt" és a „csapatdiagnosztika" a kereslet, a „trita" nem —
-// márkanévre amúgy is első találat vagyunk. A korábbi, márkával kezdődő cím
-// („trita — személyiség- és csapatintelligencia platform") a saját kategória-
-// megnevezésünkre optimalizált, amit senki nem keres.
+// a „személyiségteszt magyarul" a főoldal keresési szándéka, a „trita" nem —
+// márkanévre amúgy is első találat vagyunk. A csapatdiagnosztikának külön,
+// mélyebb céloldala van, így a két lap nem ugyanarra az elsődleges kifejezésre
+// versenyez.
+const seoIntent = SEO_INTENTS.home;
+const title = "Személyiségteszt magyarul, hat dimenzió mentén | trita";
+const description =
+  "Ingyenes magyar személyiségteszt 60 kérdéssel és azonnali eredménnyel. Ismerd meg a fő mintázataidat, erősségeidet és csapatszerepeidet.";
+
 export const metadata: Metadata = buildPageMetadata({
   path: "/",
-  title: "Személyiségteszt és csapatdiagnosztika | trita",
-  description:
-    "Ismerd meg, hogyan működsz egyénileg és csapatban. Ingyenes magyar személyiségteszt 6 dimenzióval, 360°-os visszajelzés és csapatdiagnosztika.",
+  title,
+  description,
   ogTitle: "trita – személyiség- és csapatintelligencia",
   ogDescription:
-    "Mérhető személyiség- és csapatdinamika insightok együttműködéshez, fejlesztéshez és döntéstámogatáshoz.",
+    "Mérhető személyiség- és csapatdinamika az együttműködéshez, fejlesztéshez és döntéstámogatáshoz.",
 });
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey
@@ -38,10 +43,9 @@ export default function Home() {
           buildWebSiteJsonLd("hu"),
           buildWebPageJsonLd({
             path: "/",
-            title: "Személyiségteszt és csapatdiagnosztika | trita",
-            description:
-              "Ismerd meg, hogyan működsz egyénileg és csapatban. Ingyenes magyar személyiségteszt 6 dimenzióval, 360°-os visszajelzés és csapatdiagnosztika.",
-            about: ["Személyiségteszt", "Csapatdiagnosztika", "Hatfaktoros személyiségmodell"],
+            title,
+            description,
+            about: seoIntent.topics,
           }),
         ]}
       />

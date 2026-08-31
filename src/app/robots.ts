@@ -11,11 +11,14 @@ import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
  */
 const PUBLIC_PATHS = [
   "/",
+  "/about",
   ...(isPortfolioSurfaceActive("blog") ? ["/blog"] : []),
   "/contact",
   "/founding",
   ...(isPortfolioSurfaceActive("patternExplorer") ? ["/patterns"] : []),
   "/pilot",
+  "/self-awareness",
+  "/team-dynamics",
   "/how-we-work",
   // A hatályos jogi dokumentumok indexelhetők és a sitemapben is szerepelnek.
   "/legal",
@@ -62,7 +65,11 @@ const PRIVATE_PATHS = [
   "/sign-out",
   "/sign-up",
   "/tasks",
-  "/team",
+  // A sima `/team` prefix a publikus `/team-dynamics` lapot is tiltaná.
+  // A `$` csak a pontos útvonalat, a perjeles szabály csak az aloldalakat
+  // zárja le (a Google robots.txt mintakezelése támogatja a `$` horgonyt).
+  "/team$",
+  "/team/",
   "/try/claim",
   "/try/complete",
 ];
