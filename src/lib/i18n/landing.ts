@@ -872,8 +872,8 @@ export const landingTranslations = {
     heroTitleBefore: { hu: "Szia, mi vagyunk a ", en: "Hi, we are " },
     heroTitleAfter: { hu: ".", en: "." },
     heroBody: {
-      hu: "Abban segítünk csapatoknak, hogy értsék, hogyan működnek együtt. Nem tesztet adunk el, hanem közös munkát: mérünk, értelmezünk, és veletek visszük végig, amit az eredmények mutatnak.",
-      en: "We help teams understand how they work together. We don't sell a test – we do the work with you: we measure, interpret, and follow through together on what the results show.",
+      hu: "Abban segítünk csapatoknak, hogy jobban értsék, hogyan működnek együtt. A mérés nálunk a közös megértés kezdete: együtt értelmezzük, mit mutat, és közösen alakítjuk ki a következő lépést.",
+      en: "We help teams understand how they work together. For us, measurement is where shared understanding begins: we interpret what it shows together and shape the next step with you.",
     },
 
     principlesEyebrow: { hu: "Három elv, amihez tartjuk magunkat", en: "Three principles we hold ourselves to" },
