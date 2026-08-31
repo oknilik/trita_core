@@ -10,6 +10,7 @@ const RENAMED_SLUGS: ReadonlyArray<[from: string, to: string]> = [
   ["tritan-vs-mbti-why-it-matters", "hexaco-vs-mbti-why-it-matters"],
   ["miert-hazudik-az-onertekeles", "miert-nem-eleg-az-onertekeles"],
   ["why-self-assessment-lies", "why-self-assessment-is-not-enough"],
+  ["mi-az-a-hexaco", "hatfaktoros-szemelyisegmodell"],
 ];
 
 test("a régi blog-slugok az új cikkoldalon kötnek ki", async ({ page }) => {
