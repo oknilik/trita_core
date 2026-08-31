@@ -876,21 +876,24 @@ export const landingTranslations = {
       en: "We help teams understand how they work together. For us, measurement is where shared understanding begins: we interpret what it shows together and shape the next step with you.",
     },
 
-    principlesEyebrow: { hu: "Három elv, amihez tartjuk magunkat", en: "Three principles we hold ourselves to" },
-    principle1Title: { hu: "Mért, nem megérzett", en: "Measured, not guessed" },
+    principlesEyebrow: {
+      hu: "Ami fontos nekünk a közös munkában",
+      en: "What matters to us when we work together",
+    },
+    principle1Title: { hu: "Tényekből indulunk ki", en: "We start with facts" },
     principle1Desc: {
-      hu: "Minden állítás mögött adat áll – és mindig jelöljük, mi mért és mi becsült.",
-      en: "Every claim is backed by data – and we always mark what is measured and what is estimated.",
+      hu: "A megérzések mellé megbízható adatokat teszünk, hogy legyen egy közös alap, ahonnan elindulhat a beszélgetés.",
+      en: "We put reliable data alongside intuition, creating a shared foundation for the conversation.",
     },
-    principle2Title: { hu: "Ember értelmezi", en: "Interpreted by people" },
+    principle2Title: { hu: "Együtt értelmezzük", en: "We make sense of it together" },
     principle2Desc: {
-      hu: "Az összképet tanácsadó rakja össze és beszéli át veletek – nem algoritmus dobja ki.",
-      en: "The overall picture is put together and talked through with you by a consultant – it is not spat out by an algorithm.",
+      hu: "A számok önmagukban keveset mondanak. Veletek együtt nézzük meg, mit jelentenek a ti csapatotokban, és merre érdemes továbbindulni.",
+      en: "Numbers mean little on their own. Together, we explore what they mean for your team and where to go next.",
     },
-    principle3Title: { hu: "A csapaté az eredmény", en: "The results belong to the team" },
+    principle3Title: { hu: "Vigyázunk a bizalomra", en: "We protect trust" },
     principle3Desc: {
-      hu: "A publikált kép mindig aggregált: egyéni értékek nem kerülnek ki belőle.",
-      en: "The published picture is always aggregated: individual values never leave it.",
+      hu: "A közös eredmény a csapat egészéről szól, az egyéni válaszokat pedig bizalmasan kezeljük. Mert őszintén beszélgetni csak biztonságban lehet.",
+      en: "The shared result is about the team as a whole, while individual responses remain confidential. Because honest conversations need a safe space.",
     },
 
     storyEyebrow: { hu: "Honnan jövünk", en: "Where we come from" },
