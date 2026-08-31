@@ -117,7 +117,7 @@ export const commonTranslations = {
       en: "Take the test | trita",
     },
     tryTitle: {
-      hu: "Ingyenes személyiségteszt – 60 kérdés, kb. 10 perc | trita",
+      hu: "Ingyenes személyiségteszt – első eredmény 10 perc alatt | trita",
       en: "Free personality test – 60 questions, about 10 minutes | trita",
     },
     tryDescription: {
@@ -407,7 +407,7 @@ export const commonTranslations = {
   contact: {
     // Page
     metaTitle: {
-      hu: "Csapatdiagnosztika és csapatfejlesztés – kapcsolat | trita",
+      hu: "Beszéljünk a csapatotokról | trita",
       en: "Team diagnostics and development – contact | trita",
     },
     metaDescription: {

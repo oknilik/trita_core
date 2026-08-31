@@ -209,13 +209,12 @@ export const landingTranslations = {
     ctaTeamMicrocopy: { hu: "Kiemelt támogatás a pilot teljes ideje alatt · első csapatkép néhány napon belül", en: "Personal onboarding · first result within days" },
   },
   pricing: {
-    // SEO: a cím a KERESETT szolgáltatás-megnevezéssel kezdődik
-    // („csapatfejlesztés", „csapatdiagnosztika"), nem a belső
-    // „Együttműködés" fejezetcímmel – utóbbira nincs keresés. A description
+    // SEO: a cím a keresett „csapatfejlesztés" szolgáltatás-megnevezéssel
+    // kezdődik, majd a trita személyes, rugalmas működését ígéri. A description
     // kihasználja a snippet-hosszt (~155 kar.), és előre hozza a két
     // döntési tényt: az egyéni rész ingyenes, listaár nincs.
     metaTitle: {
-      hu: "Csapatfejlesztés és csapatdiagnosztika | trita",
+      hu: "Csapatfejlesztés, a csapatotokra szabva | trita",
       en: "Team development and diagnostics | trita",
     },
     metaDescription: {

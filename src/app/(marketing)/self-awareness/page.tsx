@@ -7,7 +7,7 @@ import { SEO_INTENTS } from "@/lib/seo-intents";
 
 const seoIntent = SEO_INTENTS.selfAwareness;
 const path = seoIntent.path;
-const title = "Önismereti személyiségteszt és egyéni profil | trita";
+const title = "Önismereti személyiségteszt – lásd tisztábban magad | trita";
 const description =
   "Ismerd meg a személyiséged fő mintázatait, erősségeidet és természetes csapatszerepeidet egy ingyenes, hatdimenziós felméréssel.";
 

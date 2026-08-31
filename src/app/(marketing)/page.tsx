@@ -15,7 +15,7 @@ import {
 // mélyebb céloldala van, így a két lap nem ugyanarra az elsődleges kifejezésre
 // versenyez.
 const seoIntent = SEO_INTENTS.home;
-const title = "Személyiségteszt magyarul, hat dimenzió mentén | trita";
+const title = "Magyar személyiségteszt – értsd meg, hogyan működsz | trita";
 const description =
   "Ingyenes magyar személyiségteszt 60 kérdéssel és azonnali eredménnyel. Ismerd meg a fő mintázataidat, erősségeidet és csapatszerepeidet.";
 
