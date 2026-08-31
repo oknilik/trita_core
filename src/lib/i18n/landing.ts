@@ -906,9 +906,17 @@ export const landingTranslations = {
       en: "We spent years working in teams and leading teams – and saw up close that the best and the hardest moments spring from the same source: how people connect with each other. Yet conversations about how a team works are still mostly built on impressions. We are building trita so those conversations have a measurable foundation – and so the team can return to its results later.",
     },
 
-    statement: {
-      hu: "A jó csapat nem szerencse kérdése. Ahogy együtt dolgoztok, annak mintázata van – és amit látni lehet, azon dolgozni is.",
-      en: "A good team is not a matter of luck. The way you work together has a pattern – and what can be seen can be worked on.",
+    statementLine1: {
+      hu: "A jól működő csapat nem szerencse kérdése.",
+      en: "A well-functioning team is not a matter of luck.",
+    },
+    statementLine2: {
+      hu: "Ahogy együtt dolgoztok, annak mintázata van –",
+      en: "The way you work together has a pattern –",
+    },
+    statementLine3: {
+      hu: "és amit látni lehet, azon dolgozni is.",
+      en: "and what can be seen can be worked on.",
     },
 
     ctaTitle: { hu: "Beszélgessünk a csapatodról.", en: "Let's talk about your team." },

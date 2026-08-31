@@ -65,7 +65,11 @@ export function AboutContent() {
 
       <section className="bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]">
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
-          <blockquote className="max-w-[26ch] font-fraunces text-fluid-title tracking-tight">{t("about.statement", locale)}</blockquote>
+          <blockquote className="max-w-[34ch] font-fraunces text-fluid-title tracking-tight">
+            <span className="md:block">{t("about.statementLine1", locale)}</span>{" "}
+            <span className="md:block">{t("about.statementLine2", locale)}</span>{" "}
+            <span className="md:block">{t("about.statementLine3", locale)}</span>
+          </blockquote>
         </div>
       </section>
 
