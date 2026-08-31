@@ -115,7 +115,7 @@ describe("CrmTodayPanel", () => {
     // A fixture-dátum a múltban van → lejárt
     expect(screen.getByText(/Lejárt ·/)).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Kész" }));
+    await user.click(screen.getByRole("button", { name: "Elintézve" }));
     expect(await screen.findByTestId("quick-log-form")).toBeInTheDocument();
 
     // „Kész”-mód: dátum nélkül a mentés törli az elintézett next actiont

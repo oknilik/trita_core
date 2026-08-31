@@ -59,13 +59,13 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
 
   return (
     <DashboardPanel tone="warm" className="p-5 md:p-6">
-      <SectionEyebrow>ma</SectionEyebrow>
+      <SectionEyebrow>mai követések</SectionEyebrow>
       <h2 className="mt-1 font-fraunces text-xl text-ink">
-        Mit kell ma tennem? {deals.length > 0 ? `(${deals.length})` : ""}
+        Ami ma figyelmet kér {deals.length > 0 ? `(${deals.length})` : ""}
       </h2>
       <p className="mt-1 text-xs text-ink-body">
-        Lejárt és ma esedékes következő lépések. „Kész” = naplózod, mi történt,
-        és rögtön kitűzöd a következőt – egy mentésben.
+        Itt találod a lejárt és a mára vállalt teendőket. Ha elkészültél,
+        rögzítheted az eredményt és a következő lépést is.
       </p>
 
       {error && (
@@ -79,7 +79,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
           data-testid="crm-today-empty"
           className="mt-4"
           title="Minden esedékes lépés megvan mára."
-          description="Új teendő a Pipeline nézetben tűzhető ki – nyitott deal ne maradjon következő lépés nélkül."
+          description="Új teendőt az Aktív ügyek között, az adott ügy megnyitása után tudsz kitűzni."
         />
       ) : (
         <div className="mt-4 flex flex-col gap-3">
@@ -135,9 +135,9 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
                     onClick={() => setDoneDeal(deal)}
                     className="min-h-[40px] rounded-lg bg-action-primary-bg px-4 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover disabled:opacity-60"
                   >
-                    Kész
+                    Elintézve
                   </button>
-                  <span className="text-xs text-muted">Halasztás:</span>
+                  <span className="text-xs text-muted">Máskor:</span>
                   {POSTPONE_PRESETS.map((days) => (
                     <button
                       key={days}
@@ -154,7 +154,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
                     href={`/admin/crm/${deal.id}`}
                     className="ml-auto inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-surface-card px-4 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
                   >
-                    Megnyitás
+                    Ügy megnyitása
                   </Link>
                 </div>
               </div>
@@ -166,9 +166,9 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
       <Modal
         isOpen={doneDeal !== null}
         onClose={() => setDoneDeal(null)}
-        eyebrow="lépés elintézve"
+        eyebrow="teendő elintézve"
         title={doneDeal?.title ?? ""}
-        description="Naplózd, mi történt, és tűzd ki a következő lépést – egy mentés."
+        description="Rögzítsd röviden, mi történt. Ha kell, rögtön add meg a következő teendőt is."
       >
         {doneDeal && (
           <QuickLogForm

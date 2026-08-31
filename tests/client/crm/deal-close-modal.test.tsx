@@ -88,11 +88,11 @@ describe("DealDetail – lezárás", () => {
     const user = userEvent.setup();
     render(<DealDetail deal={makeDeal()} orgs={[]} suggestedUser={null} />);
 
-    await user.click(screen.getByRole("button", { name: "Elveszett" }));
+    await user.click(screen.getByRole("button", { name: "Lezárás eredmény nélkül" }));
     await user.click(await screen.findByTestId("crm-close-submit"));
 
     expect(await screen.findByTestId("crm-close-error")).toHaveTextContent(
-      "Elveszett lezáráshoz kötelező okot választani.",
+      "Az eredmény nélküli lezáráshoz kötelező okot választani.",
     );
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -101,7 +101,7 @@ describe("DealDetail – lezárás", () => {
     const user = userEvent.setup();
     render(<DealDetail deal={makeDeal()} orgs={[]} suggestedUser={null} />);
 
-    await user.click(screen.getByRole("button", { name: "Elveszett" }));
+    await user.click(screen.getByRole("button", { name: "Lezárás eredmény nélkül" }));
     await user.selectOptions(await screen.findByTestId("crm-close-outcome-kind"), "price");
     await user.click(screen.getByTestId("crm-close-submit"));
 
@@ -118,7 +118,7 @@ describe("DealDetail – lezárás", () => {
     const user = userEvent.setup();
     render(<DealDetail deal={makeDeal()} orgs={[]} suggestedUser={null} />);
 
-    await user.click(screen.getByRole("button", { name: "Megnyert" }));
+    await user.click(screen.getByRole("button", { name: "Megnyertként lezárás" }));
     expect(
       await screen.findByText(/Nincs szervezet linkelve/),
     ).toBeInTheDocument();

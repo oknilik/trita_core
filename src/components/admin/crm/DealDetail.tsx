@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/primitives/Button";
@@ -65,6 +66,38 @@ export function DealDetail({
 }) {
   const router = useRouter();
   const open = isOpenStage(deal.stage);
+  const latestQuote = deal.quotes[0] ?? null;
+  const primaryAction = (() => {
+    if (latestQuote?.status === "ACCEPTED") {
+      return {
+        label: "Megrendelőlap készítése",
+        href: `/admin/crm/quotes/${latestQuote.id}/documents`,
+        message: "Az ajánlatot elfogadták. A következő lépés a megrendelőlap elkészítése.",
+      };
+    }
+    if (!open) return null;
+    if (latestQuote?.status === "DRAFT") {
+      return {
+        label: "Ajánlat folytatása",
+        href: `/admin/quote?dealId=${deal.id}&from=${latestQuote.id}`,
+        message: "Az ajánlat piszkozatként elkészült, még nincs kiküldve.",
+      };
+    }
+    if (latestQuote?.status === "SENT") {
+      return {
+        label: "Válasz rögzítése",
+        href: "#ajanlatok",
+        message: "Az ajánlat kint van, most az ügyfél döntésére vársz.",
+      };
+    }
+    return {
+      label: latestQuote ? "Új ajánlat készítése" : "Ajánlat készítése",
+      href: `/admin/quote?dealId=${deal.id}`,
+      message: latestQuote
+        ? "A korábbi ajánlat lezárult. Innen új ajánlatot készíthetsz."
+        : "Az egyeztetés alapján elkészítheted az első ajánlatot.",
+    };
+  })();
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -112,7 +145,7 @@ export function DealDetail({
   async function submitClose() {
     if (!closeOutcome) return;
     if (closeOutcome === "LOST" && !outcomeKind) {
-      setCloseError("Elveszett lezáráshoz kötelező okot választani.");
+      setCloseError("Az eredmény nélküli lezáráshoz kötelező okot választani.");
       return;
     }
     setBusy(true);
@@ -145,7 +178,7 @@ export function DealDetail({
           backLabel="Vissza a CRM-hez"
         />
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <SectionEyebrow>deal</SectionEyebrow>
+          <SectionEyebrow>ügy</SectionEyebrow>
           <StatusChip
             variant={toneToChipVariant(DEAL_STAGE_TONES[deal.stage as DealStage] ?? "neutral")}
           >
@@ -214,12 +247,31 @@ export function DealDetail({
           <p className="mt-2 text-sm italic text-ink-body">„{deal.outcomeNote}”</p>
         )}
 
-        {/* Stage-vezérlők */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-sand/60 pt-3">
+        {primaryAction && (
+          <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-sage/40 bg-sage-soft p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-label uppercase text-sage-dark">Következő lépés</p>
+              <p className="mt-1 text-sm text-ink-body">{primaryAction.message}</p>
+            </div>
+            <Link
+              href={primaryAction.href}
+              className="inline-flex min-h-[44px] shrink-0 items-center justify-center rounded-[var(--ui-radius-lg)] bg-action-primary-bg px-[var(--ui-space-5)] text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover"
+            >
+              {primaryAction.label}
+            </Link>
+          </div>
+        )}
+
+        {/* Ritka állapotműveletek */}
+        <details className="mt-4 border-t border-sand/60 pt-2">
+          <summary className="flex min-h-[44px] cursor-pointer list-none items-center text-sm font-semibold text-muted marker:content-none hover:text-ink">
+            További műveletek
+          </summary>
+          <div className="flex flex-wrap items-center gap-2 pb-1">
           {open ? (
             <>
               <label className="flex items-center gap-2 text-xs text-muted">
-                Stage:
+                Állapot:
                 <select
                   value={deal.stage}
                   disabled={busy}
@@ -228,7 +280,7 @@ export function DealDetail({
                       void patch({ action: "set_stage", stage: event.target.value });
                     }
                   }}
-                  aria-label="Stage váltása"
+                  aria-label="Állapot váltása"
                   className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink"
                 >
                   {OPEN_DEAL_STAGES.map((stage) => (
@@ -250,7 +302,7 @@ export function DealDetail({
                     setCloseOutcome("WON");
                   }}
                 >
-                  Megnyert
+                  Megnyertként lezárás
                 </Button>
                 <Button
                   type="button"
@@ -264,18 +316,18 @@ export function DealDetail({
                     setCloseOutcome("LOST");
                   }}
                 >
-                  Elveszett
+                  Lezárás eredmény nélkül
                 </Button>
               </div>
             </>
           ) : (
             <>
-              <span className="text-xs text-muted">Újranyitás ide:</span>
+              <span className="text-xs text-muted">Újranyitás ebben az állapotban:</span>
               <select
                 value={reopenStage}
                 disabled={busy}
                 onChange={(event) => setReopenStage(event.target.value)}
-                aria-label="Újranyitás stage-e"
+                aria-label="Újranyitás állapota"
                 className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink"
               >
                 {OPEN_DEAL_STAGES.map((stage) => (
@@ -295,7 +347,8 @@ export function DealDetail({
               </Button>
             </>
           )}
-        </div>
+          </div>
+        </details>
 
         {error && (
           <p role="alert" className="mt-3 rounded-lg bg-state-error-bg px-3 py-2 text-sm text-state-error-fg">
@@ -304,23 +357,41 @@ export function DealDetail({
         )}
       </DashboardPanel>
 
-      {/* ── Tartalom: bal (naplózó + idővonal) · jobb (lépés, ajánlat, linkek) ── */}
+      {/* ── Tartalom: a napi munka elöl, az előzmények és kapcsolatok lenyitva ── */}
       <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
         <div className="flex flex-col gap-4">
           {/* Mindig látható – lezárt (WON) dealen is naplózható ügyfél-történet. */}
           <DashboardPanel tone="cream" className="p-5">
-            <SectionEyebrow>gyors-naplózó</SectionEyebrow>
+            <SectionEyebrow>esemény rögzítése</SectionEyebrow>
             <div className="mt-3">
               <QuickLogForm dealId={deal.id} />
             </div>
           </DashboardPanel>
-          <DealTimeline activities={deal.activities} inquiries={deal.inquiries} />
+          <details className="group">
+            <summary className="flex min-h-[52px] cursor-pointer list-none items-center justify-between gap-3 rounded-2xl border border-sand bg-surface-card px-5 py-3 text-sm font-semibold text-ink shadow-[var(--ui-shadow-sm)] marker:content-none">
+              <span>Előzmények ({deal.activities.length + deal.inquiries.length})</span>
+              <span className="text-xs font-normal text-muted group-open:hidden">Megnyitás</span>
+              <span className="hidden text-xs font-normal text-muted group-open:inline">Bezárás</span>
+            </summary>
+            <div className="mt-2">
+              <DealTimeline activities={deal.activities} inquiries={deal.inquiries} />
+            </div>
+          </details>
         </div>
 
         <div className="flex flex-col gap-4">
           <DealNextActionCard deal={deal} />
           <DealQuotesPanel dealId={deal.id} quotes={deal.quotes} />
-          <DealLinksPanel deal={deal} orgs={orgs} suggestedUser={suggestedUser} />
+          <details className="group">
+            <summary className="flex min-h-[52px] cursor-pointer list-none items-center justify-between gap-3 rounded-2xl border border-sand bg-surface-card px-5 py-3 text-sm font-semibold text-ink shadow-[var(--ui-shadow-sm)] marker:content-none">
+              <span>Kapcsolatok és hozzáférés</span>
+              <span className="text-xs font-normal text-muted group-open:hidden">Megnyitás</span>
+              <span className="hidden text-xs font-normal text-muted group-open:inline">Bezárás</span>
+            </summary>
+            <div className="mt-2">
+              <DealLinksPanel deal={deal} orgs={orgs} suggestedUser={suggestedUser} />
+            </div>
+          </details>
         </div>
       </div>
 
@@ -328,7 +399,7 @@ export function DealDetail({
       <Modal
         isOpen={details !== null}
         onClose={() => setDetails(null)}
-        eyebrow="deal"
+        eyebrow="ügy"
         title="Adatok szerkesztése"
       >
         {details && (
@@ -351,7 +422,7 @@ export function DealDetail({
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <label className="flex flex-col gap-1">
-                <span className={CRM_FIELD_LABEL_CLASS}>Kontakt neve</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Kapcsolattartó neve</span>
                 <input
                   type="text"
                   value={details.contactName}
@@ -433,18 +504,18 @@ export function DealDetail({
         isOpen={closeOutcome !== null}
         onClose={() => setCloseOutcome(null)}
         eyebrow="lezárás"
-        title={closeOutcome === "WON" ? "Deal megnyerve" : "Deal elveszett"}
+        title={closeOutcome === "WON" ? "Ügy megnyerve" : "Ügy lezárása"}
         description={
           closeOutcome === "WON"
-            ? "A deal lekerül a napi teendők közül; a tanulság rögzítése opcionális."
-            : "Mi volt a döntő ok? A strukturált win/loss tanulság a termék-visszacsatolás alapja."
+            ? "Az ügy lekerül a napi teendők közül. A tanulság rögzítése opcionális."
+            : "Mi volt a döntő ok? A rövid tanulság később segít jobb döntéseket hozni."
         }
       >
         <div className="flex flex-col gap-3">
           {closeOutcome === "WON" && !deal.organization && (
             <p className="rounded-lg bg-state-warning-bg px-3 py-2 text-sm text-state-warning-fg">
               Nincs szervezet linkelve – az org-hozzáférés aktiválása így nem
-              találja meg automatikusan ezt a dealt. Egyéni ügynél ez rendben van.
+              találja meg automatikusan ezt az ügyet. Egyéni ügynél ez rendben van.
             </p>
           )}
           <label className="flex flex-col gap-1">
@@ -491,7 +562,7 @@ export function DealDetail({
               data-testid="crm-close-submit"
               onClick={() => void submitClose()}
             >
-              {closeOutcome === "WON" ? "Lezárás megnyertként" : "Lezárás elveszettként"}
+              {closeOutcome === "WON" ? "Lezárás megnyertként" : "Ügy lezárása"}
             </Button>
           </div>
         </div>

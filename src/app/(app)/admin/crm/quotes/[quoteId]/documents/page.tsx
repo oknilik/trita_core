@@ -56,7 +56,7 @@ export default async function QuoteDocumentsPage({
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
         <EditorialBackHeader
           href={`/admin/crm/${quote.dealId}`}
-          backLabel={`Vissza a dealhez: ${quote.deal.title}`}
+          backLabel={`Vissza az ügyhöz: ${quote.deal.title}`}
           eyebrow={quoteLabel}
           title="Ajánlat és Egyedi Megrendelőlap"
           description="Az ügyféladatokat egyszer kell kitölteni. Az ajánlat és a megrendelőlap ugyanabból a lezárt kalkulációból és jogi verziókból készül."

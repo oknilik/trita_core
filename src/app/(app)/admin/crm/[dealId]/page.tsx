@@ -19,7 +19,7 @@ import { normalizeEmail } from "@/lib/newsletter";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Deal | trita admin",
+  title: "Ügy | trita admin",
   robots: { index: false, follow: false },
 };
 

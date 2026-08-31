@@ -19,12 +19,12 @@ export const OPEN_DEAL_STAGES = ["NEW", "DISCOVERY", "QUOTED", "DORMANT"] as con
 export type OpenDealStage = (typeof OPEN_DEAL_STAGES)[number];
 
 export const DEAL_STAGE_LABELS: Record<DealStage, string> = {
-  NEW: "Új",
-  DISCOVERY: "Felderítés",
-  QUOTED: "Ajánlat kint",
+  NEW: "Első kapcsolat",
+  DISCOVERY: "Egyeztetés",
+  QUOTED: "Ajánlat elküldve",
   WON: "Megnyert",
-  LOST: "Elveszett",
-  DORMANT: "Parkolt",
+  LOST: "Lezárt",
+  DORMANT: "Később",
 };
 
 export const DEAL_STAGE_TONES: Record<DealStage, CrmTone> = {

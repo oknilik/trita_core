@@ -142,7 +142,7 @@ export function QuickLogForm({
           type="text"
           value={summary}
           onChange={(event) => setSummary(event.target.value)}
-          placeholder="Mi történt? (egy sor – Enter = mentés)"
+          placeholder="Mi történt? Röviden, egy mondatban"
           aria-label="Összefoglaló"
           maxLength={300}
           data-testid="quick-log-summary"
@@ -164,7 +164,7 @@ export function QuickLogForm({
         onClick={() => setExpanded((open) => !open)}
         className="inline-flex min-h-[44px] items-center self-start text-xs text-[var(--color-accent-primary-strong)] underline underline-offset-2"
       >
-        {expanded ? "Kevesebb mező" : "Részletek + következő lépés"}
+        {expanded ? "Kevesebb mező" : "Részletek és következő teendő"}
       </button>
 
       {expanded && (
@@ -195,13 +195,13 @@ export function QuickLogForm({
           </label>
 
           <div className="border-t border-sand pt-3">
-            <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">Következő lépés ezután</p>
+            <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">Következő teendő</p>
             <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-[180px_minmax(0,1fr)]">
               <input
                 type="date"
                 value={nextDate}
                 onChange={(event) => setNextDate(event.target.value)}
-                aria-label="Következő lépés dátuma"
+                aria-label="Következő teendő dátuma"
                 data-testid="quick-log-next-date"
                 className={CRM_INPUT_CLASS}
               />
@@ -210,8 +210,8 @@ export function QuickLogForm({
                 value={nextNote}
                 onChange={(event) => setNextNote(event.target.value)}
                 maxLength={1000}
-                placeholder="Mi a következő lépés? (pl. ajánlat-follow-up hívás)"
-                aria-label="Következő lépés jegyzete"
+                placeholder="Mit kell ezután tenni?"
+                aria-label="Következő teendő leírása"
                 data-testid="quick-log-next-note"
                 className={CRM_INPUT_CLASS}
               />
@@ -219,7 +219,7 @@ export function QuickLogForm({
             <p className="mt-1.5 text-xs text-muted">
               {clearNextActionWhenEmpty
                 ? "Dátum nélkül az elintézett lépés törlődik – jobb, ha rögtön kitűzöd a következőt."
-                : "Dátum nélkül a deal következő lépése nem változik – a naplózás és a kitűzés egy mentés."}
+                : "Dátum nélkül az ügy következő teendője nem változik."}
             </p>
           </div>
         </div>

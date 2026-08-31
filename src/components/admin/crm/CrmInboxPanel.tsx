@@ -144,13 +144,13 @@ export function CrmInboxPanel({
 
   return (
     <DashboardPanel className="p-5 md:p-6">
-      <SectionEyebrow>beérkező</SectionEyebrow>
+      <SectionEyebrow>új megkeresések</SectionEyebrow>
       <h2 className="mt-1 font-fraunces text-xl text-ink">
-        Kvalifikálásra váró megkeresések {inquiries.length > 0 ? `(${inquiries.length})` : ""}
+        Válaszra várnak {inquiries.length > 0 ? `(${inquiries.length})` : ""}
       </h2>
       <p className="mt-1 text-xs text-ink-body">
-        Új, dealhez még nem kötött megkeresések. A pipeline-ba kerülés döntés:
-        ami nem sales, azt zárd le itt – nem torzítja a win-rate-et.
+        Nézd át az új üzeneteket, majd vedd fel őket új ügyként, csatold egy
+        meglévőhöz, vagy zárd le őket.
       </p>
 
       {error && (
@@ -162,8 +162,8 @@ export function CrmInboxPanel({
       {inquiries.length === 0 ? (
         <EmptyState
           className="mt-4"
-          title="Nincs kvalifikálásra váró megkeresés."
-          description="Új contact-űrlapos megkeresés automatikusan itt landol; nyitott dealhez tartozó email-ről érkező üzenet magától a deal idővonalára kerül."
+          title="Nincs feldolgozásra váró megkeresés."
+          description="Az új kapcsolatfelvételi üzenetek automatikusan itt jelennek meg."
         />
       ) : (
         <div className="mt-4 flex flex-col gap-3">
@@ -190,7 +190,7 @@ export function CrmInboxPanel({
 
                 {row.openDealMatch && (
                   <p className="mt-2 rounded-lg bg-state-info-bg px-3 py-2 text-xs text-state-info-fg">
-                    Ez az email már pipeline-ban van:{" "}
+                    Ehhez az email-címhez már tartozik aktív ügy:{" "}
                     <Link
                       href={`/admin/crm/${row.openDealMatch.id}`}
                       className="font-semibold underline underline-offset-2"
@@ -215,7 +215,7 @@ export function CrmInboxPanel({
                       setDraft(draftFromInquiry(row));
                     }}
                   >
-                    Pipeline-ba
+                    Új ügy létrehozása
                   </Button>
                   {row.openDealMatch ? (
                     <Button
@@ -238,10 +238,10 @@ export function CrmInboxPanel({
                           if (event.target.value) void attachTo(row.id, event.target.value);
                         }}
                         onBlur={() => setAttachId(null)}
-                        aria-label="Deal kiválasztása csatoláshoz"
+                        aria-label="Ügy kiválasztása csatoláshoz"
                         className="min-h-[44px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink-body md:w-auto md:flex-none"
                       >
-                        <option value="">Melyik dealhez?</option>
+                        <option value="">Melyik ügyhöz?</option>
                         {openDeals.map((deal) => (
                           <option key={deal.id} value={deal.id}>
                             {deal.title}
@@ -268,7 +268,7 @@ export function CrmInboxPanel({
                     onClick={() => void closeAsNotSales(row.id)}
                     className="ml-auto"
                   >
-                    Nem sales – lezárás
+                    Nem üzleti megkeresés
                   </Button>
                 </div>
               </div>
@@ -277,13 +277,13 @@ export function CrmInboxPanel({
         </div>
       )}
 
-      {/* Deal-létrehozó modal – előtöltve az inquiry-ből */}
+      {/* Ügy-létrehozó modal – előtöltve a megkeresésből */}
       <Modal
         isOpen={draft !== null}
         onClose={() => setDraft(null)}
-        eyebrow="pipeline-ba"
-        title="Deal létrehozása"
-        description="A kontakt-adatok a megkeresésből jönnek – az üzenet a deal idővonalára kerül."
+        eyebrow="új ügy"
+        title="Ügy létrehozása"
+        description="Az alapadatokat már kitöltöttük. Elég megadnod, mikor és mivel szeretnéd folytatni."
       >
         {draft && (
           <form
@@ -294,7 +294,7 @@ export function CrmInboxPanel({
             }}
           >
             <label className="flex flex-col gap-1">
-              <span className={CRM_FIELD_LABEL_CLASS}>Deal címe</span>
+              <span className={CRM_FIELD_LABEL_CLASS}>Ügy neve</span>
               <input
                 type="text"
                 value={draft.title}
@@ -303,9 +303,13 @@ export function CrmInboxPanel({
                 className={CRM_INPUT_CLASS}
               />
             </label>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <details className="rounded-xl border border-sand bg-cream/50 p-3">
+              <summary className="cursor-pointer text-sm font-semibold text-ink">
+                Kapcsolati és üzleti adatok
+              </summary>
+              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
               <label className="flex flex-col gap-1">
-                <span className={CRM_FIELD_LABEL_CLASS}>Kontakt neve</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Kapcsolattartó neve</span>
                 <input
                   type="text"
                   value={draft.contactName}
@@ -344,26 +348,27 @@ export function CrmInboxPanel({
                   className={CRM_INPUT_CLASS}
                 />
               </label>
-            </div>
-            <label className="flex flex-col gap-1 sm:max-w-[220px]">
-              <span className={CRM_FIELD_LABEL_CLASS}>Becsült érték (nettó Ft)</span>
-              <input
-                type="number"
-                min={0}
-                step={50_000}
-                value={draft.expectedValue}
-                onChange={(event) => patchDraft({ expectedValue: event.target.value })}
-                className={`${CRM_INPUT_CLASS} tabular-nums`}
-              />
-            </label>
+                <label className="flex flex-col gap-1 sm:max-w-[220px]">
+                  <span className={CRM_FIELD_LABEL_CLASS}>Becsült érték (nettó Ft)</span>
+                  <input
+                    type="number"
+                    min={0}
+                    step={50_000}
+                    value={draft.expectedValue}
+                    onChange={(event) => patchDraft({ expectedValue: event.target.value })}
+                    className={`${CRM_INPUT_CLASS} tabular-nums`}
+                  />
+                </label>
+              </div>
+            </details>
             <div className="rounded-xl border border-sand bg-cream/60 p-3">
-              <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">Első következő lépés</p>
+              <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">Első teendő</p>
               <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-[180px_minmax(0,1fr)]">
                 <input
                   type="date"
                   value={draft.nextDate}
                   onChange={(event) => patchDraft({ nextDate: event.target.value })}
-                  aria-label="Következő lépés dátuma"
+                  aria-label="Első teendő dátuma"
                   className={CRM_INPUT_CLASS}
                 />
                 <input
@@ -371,8 +376,8 @@ export function CrmInboxPanel({
                   value={draft.nextNote}
                   onChange={(event) => patchDraft({ nextNote: event.target.value })}
                   maxLength={1000}
-                  placeholder="pl. válasz-email + hívás egyeztetése"
-                  aria-label="Következő lépés jegyzete"
+                  placeholder="pl. válasz küldése és egyeztetés"
+                  aria-label="Első teendő leírása"
                   className={CRM_INPUT_CLASS}
                 />
               </div>

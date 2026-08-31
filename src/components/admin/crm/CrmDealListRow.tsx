@@ -7,7 +7,6 @@ import {
   DEAL_STAGE_TONES,
   OUTCOME_KIND_LABELS,
   QUOTE_STATUS_LABELS,
-  QUOTE_STATUS_TONES,
   type DealStage,
   type OutcomeKind,
   type QuoteStatus,
@@ -77,11 +76,18 @@ export function CrmDealListRow({
         </div>
         <p className="mt-1 text-xs text-muted">
           {deal.contactName}
-          {deal.lastActivityAt
-            ? ` · utolsó aktivitás: ${relativeDayLabel(deal.lastActivityAt)}`
-            : " · még nincs aktivitás"}
-          {variant === "closed" && deal.closedAt ? ` · lezárva: ${formatDay(deal.closedAt)}` : ""}
+          {latestQuote
+            ? ` · ajánlat: ${QUOTE_STATUS_LABELS[latestQuote.status as QuoteStatus] ?? latestQuote.status.toLowerCase()}`
+            : " · még nincs ajánlat"}
+          {variant === "closed" && deal.closedAt
+            ? ` · lezárva: ${formatDay(deal.closedAt)}`
+            : deal.lastActivityAt
+              ? ` · frissítve: ${relativeDayLabel(deal.lastActivityAt)}`
+              : ""}
         </p>
+        {variant === "open" && deal.nextActionNote && (
+          <p className="mt-1 text-xs text-ink-body">Következő: {deal.nextActionNote}</p>
+        )}
         {variant === "closed" && deal.outcomeNote && (
           <p className="mt-1 text-xs italic text-ink-body">„{deal.outcomeNote}”</p>
         )}
@@ -106,15 +112,6 @@ export function CrmDealListRow({
               {OUTCOME_KIND_LABELS[deal.outcomeKind as OutcomeKind] ?? deal.outcomeKind}
             </StatusChip>
           )
-        )}
-        {latestQuote && (
-          <StatusChip
-            variant={toneToChipVariant(
-              QUOTE_STATUS_TONES[latestQuote.status as QuoteStatus] ?? "neutral",
-            )}
-          >
-            Ajánlat: {QUOTE_STATUS_LABELS[latestQuote.status as QuoteStatus] ?? latestQuote.status}
-          </StatusChip>
         )}
         <span className="text-sm font-semibold tabular-nums text-ink">
           {value != null ? huf(value) : "–"}

@@ -91,7 +91,7 @@ describe("QuickLogForm", () => {
     const user = userEvent.setup();
     render(<QuickLogForm dealId="deal1" />);
 
-    await user.click(screen.getByRole("button", { name: "Részletek + következő lépés" }));
+    await user.click(screen.getByRole("button", { name: "Részletek és következő teendő" }));
     fireEvent.change(screen.getByTestId("quick-log-summary"), {
       target: { value: "Meeting megvolt" },
     });

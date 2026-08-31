@@ -141,7 +141,10 @@ export async function getPipelineSnapshot(now: Date = new Date()) {
     };
   });
 
-  const outstandingSentTotal = openDeals.reduce(
+  const activeDeals = openDeals.filter((deal) => deal.stage !== "DORMANT");
+  const activeGroups = byStage.filter((group) => group.stage !== "DORMANT");
+
+  const outstandingSentTotal = activeDeals.reduce(
     (sum, deal) =>
       sum + deal.quotes.filter((q) => q.status === "SENT").reduce((s, q) => s + q.netTotal, 0),
     0,
@@ -157,7 +160,7 @@ export async function getPipelineSnapshot(now: Date = new Date()) {
     byStage,
     closedRecent,
     metrics: {
-      openValueTotal: byStage.reduce((sum, group) => sum + group.valueTotal, 0),
+      openValueTotal: activeGroups.reduce((sum, group) => sum + group.valueTotal, 0),
       outstandingSentTotal,
       winRate30d:
         closedInWindow.length > 0 ? Math.round((wonInWindow / closedInWindow.length) * 100) : null,
