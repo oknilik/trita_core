@@ -15,14 +15,14 @@ import type {
 } from "@/components/admin/crm/types";
 
 // ─────────────────────────────────────────────────────────────────────
-// CRM fül — négy alnézet a napi hurok sorrendjében: Ma → Beérkező →
-// Pipeline → Lezártak. A váltás kliens-oldali (minden adat egy szerver-
+// CRM fül — három emberi nézetben: Teendők → Aktív ügyek → Lezárt ügyek.
+// A váltás kliens-oldali (minden adat egy szerver-
 // render-ben jön), az induló nézet a ?view= paraméterből jöhet (pl. az
 // INQUIRY_RECEIVED notif a Beérkezőre mélylinkel).
 // ─────────────────────────────────────────────────────────────────────
 
 export function AdminCrmSection({
-  initialView = "today",
+  initialView = "tasks",
   due,
   intake,
   stageGroups,
@@ -40,14 +40,14 @@ export function AdminCrmSection({
 }) {
   const [view, setView] = useState<CrmView>(initialView);
 
-  const openCount = stageGroups.reduce((sum, group) => sum + group.count, 0);
+  const activeGroups = stageGroups.filter((group) => group.stage !== "DORMANT");
+  const openCount = activeGroups.reduce((sum, group) => sum + group.count, 0);
   const dormant = stageGroups.find((group) => group.stage === "DORMANT")?.deals ?? [];
 
   const tabs: Array<{ id: CrmView; label: string; count?: number }> = [
-    { id: "today", label: "Ma", count: due.length },
-    { id: "inbox", label: "Beérkező", count: intake.length },
-    { id: "pipeline", label: "Pipeline", count: openCount },
-    { id: "closed", label: "Lezártak" },
+    { id: "tasks", label: "Teendők", count: due.length + intake.length },
+    { id: "pipeline", label: "Aktív ügyek", count: openCount },
+    { id: "closed", label: "Lezárt ügyek" },
   ];
 
   return (
@@ -55,7 +55,7 @@ export function AdminCrmSection({
       <div
         role="tablist"
         aria-label="CRM nézetek"
-        className="flex w-max max-w-full gap-1.5 overflow-x-auto rounded-xl border border-sand bg-surface-card p-1.5"
+        className="flex w-full max-w-2xl gap-1.5 overflow-x-auto rounded-2xl border border-sand bg-surface-card p-1.5 shadow-[var(--ui-shadow-sm)]"
       >
         {tabs.map((tab) => {
           const active = view === tab.id;
@@ -66,15 +66,15 @@ export function AdminCrmSection({
               role="tab"
               aria-selected={active}
               onClick={() => setView(tab.id)}
-              className={`flex min-h-[42px] items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-sm font-semibold transition ${
-                active ? "bg-bronze text-[var(--color-text-on-accent)] shadow-sm" : "text-muted hover:bg-cream hover:text-ink"
+              className={`flex min-h-[44px] flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl px-3.5 text-sm font-semibold transition ${
+                active ? "bg-sage-soft text-sage-dark shadow-sm" : "text-muted hover:bg-cream hover:text-ink"
               }`}
             >
               {tab.label}
               {tab.count !== undefined && tab.count > 0 && (
                 <span
                   className={`rounded-full px-1.5 py-0.5 text-micro font-semibold leading-none ${
-                    active ? "bg-surface-card text-[var(--color-accent-primary-strong)]" : "bg-state-warning-bg text-state-warning-fg"
+                    active ? "bg-surface-card text-sage-dark" : "bg-state-warning-bg text-state-warning-fg"
                   }`}
                 >
                   {tab.count}
@@ -85,9 +85,13 @@ export function AdminCrmSection({
         })}
       </div>
 
-      {view === "today" && <CrmTodayPanel deals={due} />}
-      {view === "inbox" && <CrmInboxPanel inquiries={intake} openDeals={openDealOptions} />}
-      {view === "pipeline" && <CrmPipelinePanel stageGroups={stageGroups} metrics={metrics} />}
+      {view === "tasks" && (
+        <div className="flex flex-col gap-4">
+          <CrmInboxPanel inquiries={intake} openDeals={openDealOptions} />
+          <CrmTodayPanel deals={due} />
+        </div>
+      )}
+      {view === "pipeline" && <CrmPipelinePanel stageGroups={activeGroups} metrics={metrics} />}
       {view === "closed" && <CrmClosedPanel closedRecent={closedRecent} dormant={dormant} />}
     </div>
   );

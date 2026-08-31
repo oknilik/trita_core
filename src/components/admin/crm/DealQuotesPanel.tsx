@@ -68,13 +68,14 @@ export function DealQuotesPanel({
 
   return (
     <DashboardPanel className="p-5">
+      <div id="ajanlatok" className="scroll-mt-6" />
       <div className="flex items-center justify-between gap-2">
         <SectionEyebrow>ajánlatok</SectionEyebrow>
         <Link
           href={`/admin/quote?dealId=${dealId}`}
           className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 py-2 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover"
         >
-          Új ajánlat
+          Ajánlat készítése
         </Link>
       </div>
 
@@ -86,8 +87,8 @@ export function DealQuotesPanel({
 
       {quotes.length === 0 ? (
         <p className="mt-3 text-sm text-muted">
-          Még nincs ajánlat. Az „Új ajánlat” a kalkulátort nyitja – mentéskor
-          piszkozatként ide kerül, sorszámmal.
+          Még nincs ajánlat. A kalkulátorban összeállíthatod az árat és a
+          tartalmat, majd innen készítheted el a PDF-et.
         </p>
       ) : (
         <div className="mt-3 flex flex-col gap-3">
@@ -111,12 +112,10 @@ export function DealQuotesPanel({
                 </div>
                 {quote.title && <p className="mt-1 text-sm text-ink-body">{quote.title}</p>}
                 <p className="mt-1 text-xs text-muted">
-                  {quote.effectiveHourlyRate != null
-                    ? `Effektív óradíj: ${huf(quote.effectiveHourlyRate)} (belső) · `
-                    : ""}
-                  {quote.discountPct > 0 ? `kedvezmény: ${quote.discountPct}% · ` : ""}
-                  {quote.sentAt ? `kiküldve: ${formatDay(quote.sentAt)} · ` : ""}
-                  {quote.validUntil ? `érvényes: ${formatDay(quote.validUntil)}-ig` : "nincs érvényességi dátum"}
+                  {quote.sentAt ? `Kiküldve: ${formatDay(quote.sentAt)} · ` : ""}
+                  {quote.validUntil
+                    ? `Érvényes: ${formatDay(quote.validUntil)}-ig`
+                    : "Nincs érvényességi dátum"}
                 </p>
                 {quote.status === "DECLINED" && quote.declineReason && (
                   <p className="mt-1 text-xs italic text-ink-body">
@@ -164,26 +163,25 @@ export function DealQuotesPanel({
                       <>
                         <Link
                           href={`/admin/quote?dealId=${dealId}&from=${quote.id}`}
+                          className="inline-flex min-h-[40px] items-center rounded-lg bg-action-primary-bg px-3 py-2 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover"
+                        >
+                          Ajánlat folytatása
+                        </Link>
+                        <Link
+                          href={`/admin/crm/quotes/${quote.id}/documents`}
                           className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
                         >
-                          Szerkesztés
+                          PDF és dokumentumok
                         </Link>
                         <Button
                           type="button"
                           size="sm"
+                          variant="secondary"
                           disabled={busy}
                           onClick={() => void patchQuote(quote.id, { action: "mark_sent" })}
                         >
-                          Kiküldve
+                          Elküldtem az ügyfélnek
                         </Button>
-                        <button
-                          type="button"
-                          disabled={busy}
-                          onClick={() => setDeleteId(quote.id)}
-                          className="ml-auto inline-flex min-h-[40px] items-center text-sm text-muted underline underline-offset-2 hover:text-state-error-fg"
-                        >
-                          Törlés
-                        </button>
                       </>
                     )}
                     {quote.status === "SENT" && (
@@ -194,7 +192,7 @@ export function DealQuotesPanel({
                           disabled={busy}
                           onClick={() => setAcceptId(quote.id)}
                         >
-                          Elfogadva
+                          Elfogadás rögzítése
                         </Button>
                         <Button
                           type="button"
@@ -206,27 +204,68 @@ export function DealQuotesPanel({
                             setDeclineId(quote.id);
                           }}
                         >
-                          Elutasítva
+                          Elutasítás rögzítése
                         </Button>
+                        <Link
+                          href={`/admin/crm/quotes/${quote.id}/documents`}
+                          className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
+                        >
+                          PDF és dokumentumok
+                        </Link>
                       </>
                     )}
-                    {quote.status !== "DRAFT" && (
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="secondary"
-                        disabled={busy}
-                        onClick={() =>
-                          void run(quote.id, () =>
-                            crmRequest(`/api/admin/crm/quotes/${quote.id}/duplicate`, {
-                              method: "POST",
-                            }),
-                          )
-                        }
+                    {quote.status !== "DRAFT" && quote.status !== "SENT" && (
+                      <Link
+                        href={`/admin/crm/quotes/${quote.id}/documents`}
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
                       >
-                        Másolat
-                      </Button>
+                        PDF és dokumentumok
+                      </Link>
                     )}
+                    <details className="ml-auto">
+                      <summary className="flex min-h-[40px] cursor-pointer list-none items-center text-sm text-muted marker:content-none hover:text-ink">
+                        További műveletek
+                      </summary>
+                      <div className="mt-1 flex flex-wrap justify-end gap-2 rounded-xl border border-sand bg-cream/60 p-2">
+                        {(quote.effectiveHourlyRate != null || quote.discountPct > 0) && (
+                          <span className="self-center px-1 text-xs text-muted">
+                            {quote.effectiveHourlyRate != null
+                              ? `Effektív óradíj: ${huf(quote.effectiveHourlyRate)}`
+                              : ""}
+                            {quote.effectiveHourlyRate != null && quote.discountPct > 0 ? " · " : ""}
+                            {quote.discountPct > 0 ? `Kedvezmény: ${quote.discountPct}%` : ""}
+                          </span>
+                        )}
+                        {quote.status !== "DRAFT" && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="secondary"
+                            disabled={busy}
+                            onClick={() =>
+                              void run(quote.id, () =>
+                                crmRequest(`/api/admin/crm/quotes/${quote.id}/duplicate`, {
+                                  method: "POST",
+                                }),
+                              )
+                            }
+                          >
+                            Másolat készítése
+                          </Button>
+                        )}
+                        {quote.status === "DRAFT" && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            disabled={busy}
+                            onClick={() => setDeleteId(quote.id)}
+                          >
+                            Piszkozat törlése
+                          </Button>
+                        )}
+                      </div>
+                    </details>
                   </div>
                 )}
               </div>
@@ -245,9 +284,9 @@ export function DealQuotesPanel({
             if (ok) setAcceptId(null);
           });
         }}
-        title="Ajánlat elfogadva?"
-        description="Az elfogadással a deal automatikusan megnyertre zárul, és lekerül a napi teendők közül."
-        confirmText="Elfogadva – deal megnyerve"
+        title="Elfogadta az ügyfél az ajánlatot?"
+        description="Az elfogadás rögzítésével az ügy automatikusan megnyertként zárul, és lekerül a napi teendők közül."
+        confirmText="Igen, elfogadta"
         cancelText="Mégse"
         isLoading={busyId === acceptId}
       />

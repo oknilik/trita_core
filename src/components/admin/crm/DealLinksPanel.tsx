@@ -84,7 +84,7 @@ export function DealLinksPanel({
             aria-label="Szervezet hozzákötése"
             className="mt-1 min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink-body"
           >
-            <option value="">Org hozzákötése…</option>
+            <option value="">Szervezet kiválasztása…</option>
             {orgs.map((org) => (
               <option key={org.id} value={org.id}>
                 {org.name}
@@ -93,7 +93,7 @@ export function DealLinksPanel({
           </select>
         )}
         <p className="mt-1 text-xs text-muted">
-          A won-ágon az org-aktiválás ezen a linken találja meg a dealt.
+          A hozzáférés aktiválásakor a rendszer ezen a kapcsolaton találja meg az ügyet.
         </p>
       </div>
 
@@ -128,7 +128,7 @@ export function DealLinksPanel({
           </Button>
         ) : (
           <p className="mt-1 text-xs text-muted">
-            Nincs a kontakt-emailhez tartozó fiók.
+            Nincs a kapcsolattartó email-címéhez tartozó fiók.
           </p>
         )}
       </div>
@@ -140,7 +140,7 @@ export function DealLinksPanel({
         </p>
         {deal.inquiries.length === 0 ? (
           <p className="mt-1 text-xs text-muted">
-            Nincs csatolt megkeresés – a Beérkezőből csatolható.
+            Nincs csatolt megkeresés. A Teendők nézetből csatolhatsz hozzá egyet.
           </p>
         ) : (
           <ul className="mt-1 flex flex-col gap-1.5">
@@ -154,7 +154,7 @@ export function DealLinksPanel({
                   type="button"
                   disabled={busy}
                   onClick={() => void patch({ action: "detach_inquiry", inquiryId: inquiry.id })}
-                  title="Leválasztás a dealről"
+                  title="Leválasztás az ügyről"
                   className="-my-2 ml-auto inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted transition hover:text-state-error-fg"
                 >
                   ×

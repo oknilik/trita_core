@@ -10,10 +10,12 @@
  * modul minden exportja kliens-referenciává válik, így a szerver-oldali
  * CrmTab nem tudná meghívni az isCrmView guardot.
  */
-export type CrmView = "today" | "inbox" | "pipeline" | "closed";
+export type CrmView = "tasks" | "pipeline" | "closed";
 
-export function isCrmView(value: string | undefined): value is CrmView {
-  return value === "today" || value === "inbox" || value === "pipeline" || value === "closed";
+/** A korábbi mélylinkeket is az összevont Teendők nézetre vezetjük. */
+export function resolveCrmView(value: string | undefined): CrmView {
+  if (value === "pipeline" || value === "closed") return value;
+  return "tasks";
 }
 
 /** Ajánlat-kivonat a deal-listákhoz (a listDeals quote-select alakja). */

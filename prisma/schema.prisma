@@ -800,18 +800,18 @@ model TeamRoleObservation {
 // felület soha nem mutatja. payload: strukturált mezők (message, roleTag…).
 // Terv: docs/product/peer-feedback-terv.md
 model PeerFeedbackItem {
-  id             String    @id @default(cuid())
-  teamId         String
-  campaignId     String?
-  fromUserId     String
-  toUserId       String
-  kind           String    @default("appreciation")
-  visibility     String    @default("named")
-  payload        Json
-  requestId      String?
-  teamVisible    Boolean   @default(false)
-  teamHiddenAt   DateTime?
-  createdAt      DateTime  @default(now())
+  id           String    @id @default(cuid())
+  teamId       String
+  campaignId   String?
+  fromUserId   String
+  toUserId     String
+  kind         String    @default("appreciation")
+  visibility   String    @default("named")
+  payload      Json
+  requestId    String?
+  teamVisible  Boolean   @default(false)
+  teamHiddenAt DateTime?
+  createdAt    DateTime  @default(now())
 
   request  FeedbackRequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
   team     Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -920,19 +920,19 @@ enum NotificationType {
 // érvényes elfogadási kampány; a felhasználói bizonyíték továbbra is a
 // UserProfile verzió+időpont mezőiben marad.
 model LegalAcceptanceCampaign {
-  id                   String   @id @default(cuid())
+  id                   String    @id @default(cuid())
   platformTermsVersion String
   privacyNoticeVersion String
   effectiveAt          DateTime
-  activatedAt          DateTime @default(now())
+  activatedAt          DateTime  @default(now())
   lastSentAt           DateTime?
-  recipientCount       Int      @default(0)
-  sendCount             Int      @default(0)
+  recipientCount       Int       @default(0)
+  sendCount            Int       @default(0)
   createdById          String
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
-  createdBy UserProfile @relation("LegalCampaignCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  createdBy   UserProfile             @relation("LegalCampaignCreator", fields: [createdById], references: [id], onDelete: Restrict)
   acceptances LegalAcceptanceRecord[]
 
   @@unique([platformTermsVersion, privacyNoticeVersion])
@@ -948,7 +948,7 @@ model LegalAcceptanceRecord {
   platformTermsVersion String
   privacyNoticeVersion String
   acceptedAt           DateTime
-  source               String   // REGISTRATION | REACCEPTANCE
+  source               String // REGISTRATION | REACCEPTANCE
   createdAt            DateTime @default(now())
 
   user     UserProfile              @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -1174,10 +1174,34 @@ model Quote {
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 
-  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  deal      Deal                 @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  documents CommercialDocument[]
 
   @@index([dealId, createdAt])
   @@index([status, validUntil])
+}
+
+// Egy ügyfélnek kiadott, verziózott kereskedelmi dokumentum. A snapshot
+// a Quote input/result/rateCardSnapshot, a Deal ügyféladatai, a kitöltött
+// dokumentummezők és a jogi verziók EGYÜTTES, immutábilis pillanatképe.
+// Így egy későbbi ár- vagy sablonmódosítás nem írja át a már kiadott PDF-et.
+model CommercialDocument {
+  id            String    @id @default(cuid())
+  quoteId       String
+  kind          String // PROPOSAL | ORDER_FORM
+  version       Int
+  status        String    @default("GENERATED") // GENERATED | SENT | SIGNED
+  snapshot      Json
+  generatedAt   DateTime  @default(now())
+  sentAt        DateTime?
+  signedAt      DateTime?
+  signedFileUrl String?
+
+  quote Quote @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+
+  @@unique([quoteId, kind, version])
+  @@index([quoteId, generatedAt])
+  @@index([status, generatedAt])
 }
 
 // ============================================

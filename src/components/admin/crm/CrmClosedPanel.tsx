@@ -18,8 +18,8 @@ type ClosedFilter = "ALL" | "WON" | "LOST" | "DORMANT";
 const FILTER_LABELS: Record<ClosedFilter, string> = {
   ALL: "Mind",
   WON: "Megnyert",
-  LOST: "Elveszett",
-  DORMANT: "Parkolt",
+  LOST: "Lezárt",
+  DORMANT: "Később",
 };
 
 export function CrmClosedPanel({
@@ -42,14 +42,14 @@ export function CrmClosedPanel({
 
   return (
     <DashboardPanel className="p-5 md:p-6">
-      <SectionEyebrow>lezártak</SectionEyebrow>
-      <h2 className="mt-1 font-fraunces text-xl text-ink">Lezárt és parkolt dealek</h2>
+      <SectionEyebrow>lezárt ügyek</SectionEyebrow>
+      <h2 className="mt-1 font-fraunces text-xl text-ink">Lezárt és későbbre tett ügyek</h2>
       <p className="mt-1 text-xs text-ink-body">
-        Megnyert/elveszett dealek az elmúlt 90 napból, plusz a parkoltak. Az
-        elveszett ügyek oka kötelezően rögzített – érdemes időnként visszaolvasni.
+        Az elmúlt 90 nap döntései és azok az ügyek, amelyekkel most nem kell
+        foglalkoznod. A lezárás oka és tanulsága itt később is visszanézhető.
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-label="Outcome-szűrő">
+      <div className="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-label="Lezárt ügyek szűrője">
         {(Object.keys(FILTER_LABELS) as ClosedFilter[]).map((item) => {
           const active = filter === item;
           return (
@@ -75,7 +75,7 @@ export function CrmClosedPanel({
         <EmptyState
           className="mt-4"
           title="Nincs találat ezzel a szűrővel."
-          description="A dealek a részletnézetből zárhatók le (Megnyert / Elveszett) vagy parkolhatók (Parkolt stage)."
+          description="Az ügyeket a részletnézetből zárhatod le vagy teheted későbbre."
         />
       ) : (
         <div className="mt-4 flex flex-col gap-2">

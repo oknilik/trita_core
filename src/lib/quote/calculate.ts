@@ -1,6 +1,7 @@
 import {
   QUOTE_STEPS,
   type DiscountKind,
+  type DiscountScope,
   type QuoteStep,
   type RateCard,
 } from "@/lib/quote/rate-card";
@@ -23,9 +24,13 @@ export interface QuoteInput {
   waves: number;
   /** Havi kísérés hónapjai (0 = nincs). */
   retainerMonths: number;
+  otherFee: number;
+  otherFeeLabel: string;
   discountPct: number;
   discountKind: DiscountKind | null;
+  discountScope: DiscountScope;
   discountReason: string;
+  vatRate: number;
 }
 
 export interface QuoteLine {
@@ -45,6 +50,8 @@ export interface QuoteResult {
   listTotal: number;
   discountAmount: number;
   netTotal: number;
+  vatAmount: number;
+  grossTotal: number;
   /** Egyszeri rész (baseline + hullámok), retainer nélkül. */
   oneOffTotal: number;
   retainerTotal: number;
@@ -120,6 +127,7 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
     Math.round(((measurement + steps.perHead) * rate.waveRatePct) / 100) + rate.waveFixedFee;
   const waves = waveUnit * Math.max(0, Math.round(input.waves));
   const retainer = rate.retainerMonthlyFee * Math.max(0, Math.round(input.retainerMonths));
+  const otherFee = Math.max(0, Math.round(input.otherFee));
 
   const lines: QuoteLine[] = [
     { key: "base", label: "Programdíj", amount: rate.baseFee },
@@ -128,20 +136,30 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
     { key: "workshop", label: `Workshop (${input.workshopDays} nap)`, amount: workshop },
     { key: "waves", label: `Utánkövetés (${input.waves} hullám)`, amount: waves },
     { key: "retainer", label: `Havi kísérés (${input.retainerMonths} hó)`, amount: retainer },
+    { key: "other", label: input.otherFeeLabel.trim() || "Egyéb díj", amount: otherFee },
     { key: "travel", label: `Kiszállás (${input.travelDays} nap)`, amount: travel, passThrough: true },
   ].filter((line) => line.amount > 0);
 
+  const discountableKeys =
+    input.discountScope === "all"
+      ? null
+      : new Set(["base", "workshop"]);
   const discountableSubtotal = lines
-    .filter((line) => !line.passThrough)
+    .filter((line) => !line.passThrough && (!discountableKeys || discountableKeys.has(line.key)))
     .reduce((sum, line) => sum + line.amount, 0);
   const passThroughSubtotal = lines
     .filter((line) => line.passThrough)
     .reduce((sum, line) => sum + line.amount, 0);
 
-  const listTotal = discountableSubtotal + passThroughSubtotal;
+  // A listaár minden tétel összege. A discountableSubtotal szándékosan csak
+  // a választott kedvezményalap; a fejdíj attól még a listaár része marad.
+  const listTotal = lines.reduce((sum, line) => sum + line.amount, 0);
   const discountPct = Math.min(100, Math.max(0, input.discountPct));
   const discountAmount = Math.round((discountableSubtotal * discountPct) / 100);
   const netTotal = listTotal - discountAmount;
+  const vatRate = Math.min(100, Math.max(0, Math.round(input.vatRate)));
+  const vatAmount = Math.round((netTotal * vatRate) / 100);
+  const grossTotal = netTotal + vatAmount;
 
   const estimatedHours =
     rate.hours.setup +
@@ -175,6 +193,8 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
     listTotal,
     discountAmount,
     netTotal,
+    vatAmount,
+    grossTotal,
     oneOffTotal: netTotal - retainer,
     retainerTotal: retainer,
     estimatedHours,
@@ -195,8 +215,12 @@ export function emptyQuoteInput(): QuoteInput {
     travelDays: 0,
     waves: 1,
     retainerMonths: 0,
+    otherFee: 0,
+    otherFeeLabel: "Egyéb díj",
     discountPct: 0,
     discountKind: null,
+    discountScope: "base_workshop",
     discountReason: "",
+    vatRate: 27,
   };
 }

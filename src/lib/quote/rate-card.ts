@@ -45,6 +45,14 @@ export const QUOTE_STEP_LABELS: Record<QuoteStep, string> = {
 export const DISCOUNT_KINDS = ["pilot", "multi_team", "prepaid_waves", "other"] as const;
 export type DiscountKind = (typeof DISCOUNT_KINDS)[number];
 
+export const DISCOUNT_SCOPES = ["base_workshop", "all"] as const;
+export type DiscountScope = (typeof DISCOUNT_SCOPES)[number];
+
+export const DISCOUNT_SCOPE_LABELS: Record<DiscountScope, string> = {
+  base_workshop: "Csak a programdíj és a workshop",
+  all: "A teljes program (kiszállás nélkül)",
+};
+
 export const DISCOUNT_LABELS: Record<DiscountKind, string> = {
   pilot: "Pilot / alapító partner",
   multi_team: "Több csapat egyszerre",
@@ -153,9 +161,13 @@ export const quoteInputSchema = z.object({
   travelDays: z.number().int().min(0).max(100),
   waves: z.number().int().min(0).max(50),
   retainerMonths: z.number().int().min(0).max(60),
+  otherFee: z.number().int().min(0).max(100_000_000).default(0),
+  otherFeeLabel: z.string().max(120).default("Egyéb díj"),
   discountPct: z.number().int().min(0).max(100),
   discountKind: z.enum(DISCOUNT_KINDS).nullable(),
+  discountScope: z.enum(DISCOUNT_SCOPES).default("base_workshop"),
   discountReason: z.string().max(1000),
+  vatRate: z.number().int().min(0).max(100).default(27),
 });
 
 export type QuoteInputParsed = z.infer<typeof quoteInputSchema>;

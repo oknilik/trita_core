@@ -90,7 +90,7 @@ export default async function QuoteCalculatorPage({
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-10">
       <EditorialBackHeader
         href={deal ? `/admin/crm/${deal.id}` : "/admin"}
-        backLabel={deal ? `Vissza a dealhez: ${deal.title}` : "Vissza az adminhoz"}
+        backLabel={deal ? `Vissza az ügyhöz: ${deal.title}` : "Vissza az adminhoz"}
         eyebrow="belső eszköz"
         title="Ajánlat-kalkulátor"
         description="Programdíj + degresszív fejenkénti mérési díj + utánkövetés. A vevőnek szánt összefoglaló a jobb alsó dobozban áll össze – belső számok (óradíj, padló, kedvezmény-keret) nincsenek benne."

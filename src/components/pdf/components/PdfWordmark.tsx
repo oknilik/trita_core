@@ -1,5 +1,5 @@
 import { View, Text } from "@react-pdf/renderer";
-import { colors } from "../styles";
+import { PDF_COLORS } from "@/lib/design-tokens";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Kanonikus trita szójel PDF-ben — a webes TritaWordmark (TritaLogo.tsx) párja:
@@ -25,8 +25,8 @@ interface PdfWordmarkProps {
 
 export function PdfWordmark({
   size = 12,
-  color = colors.ink,
-  dotColor = colors.bronze,
+  color = PDF_COLORS.ink,
+  dotColor = PDF_COLORS.bronze,
   opacity,
 }: PdfWordmarkProps) {
   const letter = {

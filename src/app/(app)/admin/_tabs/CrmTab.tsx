@@ -8,7 +8,7 @@ import { AdminCrmSection } from "@/components/admin/crm/AdminCrmSection";
 import { getEngagementByEmail, toEngagementDto } from "@/lib/newsletter-engagement";
 import { normalizeEmail } from "@/lib/newsletter";
 import { CrmMigrationPendingCard } from "@/components/admin/crm/CrmMigrationPendingCard";
-import { isCrmView } from "@/components/admin/crm/types";
+import { resolveCrmView } from "@/components/admin/crm/types";
 import type {
   CrmDealRow,
   CrmIntakeRow,
@@ -113,7 +113,7 @@ export async function CrmTab({ view }: { view?: string }) {
 
   return (
     <AdminCrmSection
-      initialView={isCrmView(view) ? view : undefined}
+      initialView={resolveCrmView(view)}
       due={dueDeals.map((deal) => toDealRow(deal, engagement))}
       intake={intake}
       stageGroups={snapshot.byStage.map((group) => ({

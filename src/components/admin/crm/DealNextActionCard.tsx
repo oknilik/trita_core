@@ -85,7 +85,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
       }`}
     >
       <div className="flex items-center justify-between gap-2">
-        <SectionEyebrow tone={hasAction ? "bronze" : "muted"}>következő lépés</SectionEyebrow>
+        <SectionEyebrow tone={hasAction ? "bronze" : "muted"}>következő teendő</SectionEyebrow>
         {hasAction && (
           <StatusChip
             variant={
@@ -107,7 +107,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
             type="date"
             value={dateDraft}
             onChange={(event) => setDateDraft(event.target.value)}
-            aria-label="Következő lépés dátuma"
+            aria-label="Következő teendő dátuma"
             className={CRM_INPUT_CLASS}
           />
           <input
@@ -115,8 +115,8 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
             value={noteDraft}
             onChange={(event) => setNoteDraft(event.target.value)}
             maxLength={1000}
-            placeholder="Mi a lépés? (pl. follow-up hívás az ajánlatról)"
-            aria-label="Következő lépés jegyzete"
+            placeholder="Mit kell tenni? (pl. visszahívás az ajánlatról)"
+            aria-label="Következő teendő leírása"
             className={CRM_INPUT_CLASS}
           />
           <div className="flex gap-2">
@@ -135,7 +135,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
             {deal.nextActionNote || <span className="italic text-muted">Nincs jegyzet.</span>}
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-sand/60 pt-3">
-            <span className="text-xs text-muted">Halasztás:</span>
+            <span className="text-xs text-muted">Máskor:</span>
             {POSTPONE_PRESETS.map((days) => (
               <button
                 key={days}
@@ -175,11 +175,11 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
       ) : (
         <>
           <p className="mt-2 text-sm text-ink-body" data-testid="crm-next-action-missing">
-            Ennek a dealnek nincs következő lépése – így könnyen elfelejtődik.
-            Tűzz ki egyet, és megjelenik a „Ma” panelen, amikor esedékes.
+            Ehhez az ügyhöz még nincs következő teendő. Adj meg egy dátumot,
+            hogy időben visszakerüljön a Teendők közé.
           </p>
           <Button type="button" size="sm" className="mt-3" onClick={openEditor}>
-            Következő lépés kitűzése
+            Teendő hozzáadása
           </Button>
         </>
       )}
