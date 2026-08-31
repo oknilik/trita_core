@@ -11,6 +11,7 @@ const RENAMED_SLUGS: ReadonlyArray<[from: string, to: string]> = [
   ["miert-hazudik-az-onertekeles", "miert-nem-eleg-az-onertekeles"],
   ["why-self-assessment-lies", "why-self-assessment-is-not-enough"],
   ["mi-az-a-hexaco", "hatfaktoros-szemelyisegmodell"],
+  ["what-is-hexaco", "six-factor-personality-model"],
 ];
 
 test("a régi blog-slugok az új cikkoldalon kötnek ki", async ({ page }) => {

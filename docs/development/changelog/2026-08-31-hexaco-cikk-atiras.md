@@ -1,8 +1,8 @@
-# 2026-08-31 — Blog: a HEXACO-bemutató cikk átírása és slug-csere
+# 2026-08-31 — Blog: a HEXACO-bemutató cikkpár átírása és slug-csere
 
 ## Új felütés: hatfaktoros modell → trita
 
-A `mi-az-a-hexaco` HU-cikk teljes átdolgozása:
+A `mi-az-a-hexaco` HU-cikk teljes átdolgozása (az EN-párcikk követi):
 
 - A felütés már nem a HEXACO márkanév, hanem a **hatfaktoros
   személyiségmodell** — a HEXACO a történeti szakaszban jelenik meg,
@@ -21,10 +21,11 @@ A `mi-az-a-hexaco` HU-cikk teljes átdolgozása:
 
 ## Slug-csere redirect-tel
 
-- Fájl: `mi-az-a-hexaco.mdx` → `hatfaktoros-szemelyisegmodell.mdx`;
-  az EN-párcikk (`what-is-hexaco`) `translationSlug`-ja követi.
-- A `next.config.ts` `blogSlugRenames` táblája új sort kapott
+- Fájlok: `mi-az-a-hexaco.mdx` → `hatfaktoros-szemelyisegmodell.mdx`,
+  `what-is-hexaco.mdx` → `six-factor-personality-model.mdx`; a két
+  cikk `translationSlug`-ja kölcsönösen frissítve.
+- A `next.config.ts` `blogSlugRenames` táblája két új sort kapott
   (cikkoldal + hírlevél-borító route, permanens redirect), a
-  `blog-slug-redirects` e2e szerződés-teszt a párral bővült.
-- Az EN-cikk szövege NEM változott — a HU-átírás mintájára külön
-  menetben érdemes átvezetni.
+  `blog-slug-redirects` e2e szerződés-teszt a két párral bővült.
+- Az EN-cikk szövege a HU-átírás tükre (six-factor personality model
+  felütés, „How does trita build on this?” szakasz, ~10 min).

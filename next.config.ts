@@ -170,9 +170,10 @@ const nextConfig: NextConfig = {
       "tritan-vs-mbti-why-it-matters": "hexaco-vs-mbti-why-it-matters",
       "miert-hazudik-az-onertekeles": "miert-nem-eleg-az-onertekeles",
       "why-self-assessment-lies": "why-self-assessment-is-not-enough",
-      // 2026-08-31: a cikk felütése a hatfaktoros modellre került át,
-      // a cím és a slug ehhez igazodott.
+      // 2026-08-31: a cikkpár felütése a hatfaktoros modellre került át,
+      // a címek és a slugok ehhez igazodtak.
       "mi-az-a-hexaco": "hatfaktoros-szemelyisegmodell",
+      "what-is-hexaco": "six-factor-personality-model",
     };
 
     return [
