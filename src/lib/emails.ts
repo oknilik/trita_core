@@ -1516,12 +1516,12 @@ const welcomeTranslations = {
     subject: "Üdvözlünk a tritán!",
     kind: "Üdvözlet",
     eyebrow: "Első lépés",
-    preheader: "Az első lépés egy ~9 perces kitöltés – utána azonnal látod az eredményed.",
+    preheader: "Az első lépés egy ~10 perces kitöltés – utána azonnal látod az eredményed.",
     heading: "Üdvözlünk a tritán!",
     body1:
       "Örülünk, hogy itt vagy. A trita hat személyiségdimenzió mentén mutatja meg, hogyan működsz – és ha csapatban dolgozol, azt is, hogyan működtök együtt.",
     body2:
-      "Az első lépés egy rövid, ~9 perces kitöltés. A válaszaid alapján azonnal megkapod a részletes eredményedet.",
+      "Az első lépés egy rövid, ~10 perces kitöltés. A válaszaid alapján azonnal megkapod a részletes eredményedet.",
     cta: "Kezdés",
     optOut: "Ha nem szeretnél ilyen emaileket kapni:",
   },
@@ -1529,12 +1529,12 @@ const welcomeTranslations = {
     subject: "Welcome to trita!",
     kind: "Welcome",
     eyebrow: "First step",
-    preheader: "The first step is a ~9-minute assessment – you'll see your results right away.",
+    preheader: "The first step is a ~10-minute assessment – you'll see your results right away.",
     heading: "Welcome to trita!",
     body1:
       "We're glad you're here. trita shows how you work along six personality dimensions – and if you work in a team, how you work together.",
     body2:
-      "The first step is a short, ~9-minute assessment. You'll get your detailed results immediately based on your answers.",
+      "The first step is a short, ~10-minute assessment. You'll get your detailed results immediately based on your answers.",
     cta: "Get started",
     optOut: "If you'd rather not receive emails like this:",
   },

@@ -606,8 +606,8 @@ export const resultsTranslations = {
       en: "Get to know your work style",
     },
     nextStepTestBody: {
-      hu: "Egy rövid, körülbelül kilencperces teszt után letisztult képet kapsz arról, mi visz előre, mi ad stabilitást, és mire érdemes figyelned. Nem címkéz, hanem rávilágít a jellemző működésedre.",
-      en: "A short assessment of about 9 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you – it sheds light.",
+      hu: "Egy rövid, körülbelül tízperces teszt után letisztult képet kapsz arról, mi visz előre, mi ad stabilitást, és mire érdemes figyelned. Nem címkéz, hanem rávilágít a jellemző működésedre.",
+      en: "A short assessment of about 10 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you – it sheds light.",
     },
     uniqueProfile: { hu: "Egyedi profil", en: "Unique profile" },
     // A legacy PDF-összefoglaló kulcsok (strengthsSuffix/watchPrefix/
@@ -1456,8 +1456,8 @@ export const resultsTranslations = {
       en: "Finish your personality profile",
     },
     ccNeedsProfileNote: {
-      hu: "Az iránytű a személyiségprofilodból dolgozik – ha ez megvan, itt folytathatod. A kitöltés körülbelül kilenc percet vesz igénybe.",
-      en: "The compass works from your personality profile – once it's done, you can continue here. It takes about 9 minutes.",
+      hu: "Az iránytű a személyiségprofilodból dolgozik – ha ez megvan, itt folytathatod. A kitöltés körülbelül tíz percet vesz igénybe.",
+      en: "The compass works from your personality profile – once it's done, you can continue here. It takes about 10 minutes.",
     },
     // Szekció-átvezető CTA-k az eredmény-oldal alján (2026-07-31): a karrier
     // és a munkastílus önálló oldal lett, innen vezetünk át rájuk.

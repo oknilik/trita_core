@@ -76,7 +76,7 @@ ${enPosts
 
 ## Amit érdemes tudni rólunk
 
-- Mérőeszköz: TSFI kérdőív (60 item rövid forma, kb. 9-10 perc), hat
+- Mérőeszköz: TSFI kérdőív (60 item rövid forma, kb. 10 perc), hat
   személyiségdimenzió mentén: Becsületesség-Alázat (H), Emocionalitás (E),
   Extraverzió (X), Barátságosság (A), Lelkiismeretesség (C), Nyitottság (O).
 - Módszertan (a felületen NEM így kommunikáljuk, itt a pontosság kedvéért):

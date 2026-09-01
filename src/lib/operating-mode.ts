@@ -20,7 +20,7 @@ export function isConsultingLed(): boolean {
 }
 
 // Kérdőív-forma a kiszolgált flow-kban (self, try, observer, candidate).
-// "short" = TSFI-S (60 item, ~9 perc) — a sima felhasználói út ezt kapja.
+// "short" = TSFI-S (60 item, ~10 perc) — a sima felhasználói út ezt kapja.
 // "full" = teljes 100 itemes bank. KÉSŐBBI FUNKCIÓ: tanácsadói választás
 // kampány-szinten (Campaign mezőként) — akkor ez a konstans lesz a default,
 // és a kampány felülbírálhatja. A pontozás formától független (a teljes
