@@ -87,25 +87,29 @@ export function CompareTable({
         </ul>
       </div>
 
-      {/* Asztali: valódi kétoszlopos tábla */}
-      <div className="hidden overflow-hidden rounded-[20px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_12px_32px_rgba(26,26,46,0.035)] md:block">
+      {/* Asztali: valódi kétoszlopos tábla.
+          A bal oszlop meleg homoktónust kap, hogy ne „üres oldal a
+          sötét mellett" legyen; a fejlécet bronz sáv nyitja, a sorok
+          pedig együtt világosodnak hoverre. */}
+      <div className="hidden overflow-hidden rounded-[20px] border border-[var(--color-border-default)] shadow-[0_12px_32px_rgba(26,26,46,0.06)] md:block">
+        <div className="h-[3px] bg-[var(--color-accent-primary)]" />
         <div className="grid grid-cols-2">
-          <div className="bg-surface-card px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
+          <div className="bg-[var(--color-surface-highlight-warm)] px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-accent-primary-strong)]">
             {leftLabel}
           </div>
-          <div className="bg-[var(--color-surface-inverse)] px-5 py-3 text-micro font-semibold uppercase tracking-wider text-white/60">
+          <div className="bg-[var(--color-surface-inverse)] px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-accent-primary-soft)]">
             {rightLabel}
           </div>
         </div>
         {rowList.map(([left, right], i) => (
           <div
             key={i}
-            className="grid grid-cols-2 border-t border-[var(--color-border-default)]"
+            className="group grid grid-cols-2 border-t border-[var(--color-border-default)]"
           >
-            <div className="bg-surface-card px-5 py-3 text-caption break-words text-[var(--color-text-secondary)]">
+            <div className="bg-[var(--color-surface-subtle)] px-5 py-3.5 text-caption break-words text-[var(--color-text-secondary)] transition-colors group-hover:bg-[var(--color-surface-card)]">
               {left}
             </div>
-            <div className="bg-[var(--color-surface-inverse)] px-5 py-3 text-caption break-words text-white/80">
+            <div className="bg-[var(--color-surface-inverse)] px-5 py-3.5 text-caption break-words text-[var(--color-text-on-inverse)] transition-colors group-hover:bg-[var(--color-surface-inverse-soft)]">
               {right}
             </div>
           </div>
