@@ -25,6 +25,7 @@ import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { BlogJourneyCta } from "@/components/blog/BlogJourneyCta";
 import { TeamReportFigure } from "@/components/blog/TeamReportFigure";
+import { CompareTable } from "@/components/blog/CompareTable";
 import { ResultAccessFigure } from "@/components/blog/ResultAccessFigure";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
@@ -146,75 +147,6 @@ function DimBadge({ code, label }: { code: string; label: string }) {
       {" "}
       <span>{label}</span>
     </span>
-  );
-}
-
-// A sorok SZÖVEGES attribútumban érkeznek, nem tömb-kifejezésben: a
-// next-mdx-remote v6 alapból kiszűr minden JS-kifejezést az MDX-ből
-// (blockJS), így a korábbi rows={[["a","b"],…]} némán elveszett, és a
-// tábla csak a fejlécet mutatta. Formátum: soronként egy sor, a két
-// cellát „|" választja el. Őrzi: tests/unit/blog/mdx-expression-guard.test.ts
-function parseCompareRows(rows: string): [string, string][] {
-  return rows
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const [left = "", right = ""] = line.split("|").map((cell) => cell.trim());
-      return [left, right] as [string, string];
-    });
-}
-
-function CompareTable({
-  leftLabel,
-  rightLabel,
-  rows = "",
-}: {
-  leftLabel: string;
-  rightLabel: string;
-  rows?: string;
-}) {
-  // Mobilon a tábla tipografikus listává olvad: keret és kártya helyett a
-  // szedés viszi a szerkezetet. A bal oldal halványabb, a jobb oldalt
-  // bronz vonal emeli ki, a párokat hajszálvonal választja el. A címke
-  // ott halk kisbetűs, nem nagybetűs sáv – hat soron át tizenkét
-  // uppercase blokk kiabált. A sötét hasáb md:-től él, ahol tényleg
-  // oszlop; az asztali nézet változatlan.
-  const rowList = parseCompareRows(rows);
-  return (
-    <div className="my-8 md:overflow-hidden md:rounded-[20px] md:border md:border-[var(--color-border-default)] md:bg-surface-card md:shadow-[0_12px_32px_rgba(26,26,46,0.035)]">
-      <div className="hidden grid-cols-2 md:grid">
-        <div className="bg-surface-card px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
-          {leftLabel}
-        </div>
-        <div className="bg-[var(--color-surface-inverse)] px-5 py-3 text-micro font-semibold uppercase tracking-wider text-white/60">
-          {rightLabel}
-        </div>
-      </div>
-      {rowList.map(([left, right], i) => (
-        <div
-          key={i}
-          className={`md:grid md:grid-cols-2 md:border-t md:border-[var(--color-border-default)] ${
-            i > 0
-              ? "mt-5 border-t border-[var(--color-border-default)] pt-5 md:mt-0 md:pt-0"
-              : ""
-          }`}
-        >
-          <div className="text-caption break-words text-[var(--color-text-muted)] md:px-5 md:py-3 md:text-[var(--color-text-secondary)]">
-            <span className="mb-0.5 block text-note text-[var(--color-text-muted)] md:hidden">
-              {leftLabel}
-            </span>
-            {left}
-          </div>
-          <div className="mt-3 border-l-2 border-[var(--color-accent-primary)] pl-4 text-caption break-words text-[var(--color-text-secondary)] md:mt-0 md:border-l-0 md:bg-[var(--color-surface-inverse)] md:pl-0 md:px-5 md:py-3 md:text-white/80">
-            <span className="mb-0.5 block text-note text-[var(--color-accent-primary-strong)] md:hidden">
-              {rightLabel}
-            </span>
-            {right}
-          </div>
-        </div>
-      ))}
-    </div>
   );
 }
 

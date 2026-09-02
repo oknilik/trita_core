@@ -19,6 +19,12 @@ const shareSource = readFileSync(
   join(process.cwd(), "src/components/blog/ShareRow.tsx"),
   "utf8",
 );
+// A CompareTable 2026-09-02-án önálló kliens-komponensbe költözött: kis
+// kijelzőn kapcsolóval mutat egy oldalt, ahhoz useState kell.
+const compareSource = readFileSync(
+  join(process.cwd(), "src/components/blog/CompareTable.tsx"),
+  "utf8",
+);
 
 test("a blogcikk az egységes, finom visszavezérlőt használja", () => {
   assert.match(source, /<EditorialBackControl/);
@@ -36,7 +42,8 @@ test("az MDX szerkesztői blokkok nem használják a régi tízpixeles kártyasu
   assert.doesNotMatch(source, /rounded-\[10px\]/);
   assert.match(source, /function Callout[\s\S]*?rounded-\[20px\]/);
   assert.match(source, /function StatCard[\s\S]*?rounded-\[18px\]/);
-  assert.match(source, /function CompareTable[\s\S]*?rounded-\[20px\]/);
+  assert.match(compareSource, /function CompareTable[\s\S]*?rounded-\[20px\]/);
+  assert.doesNotMatch(compareSource, /rounded-\[10px\]/);
   assert.match(source, /function KeyInsight[\s\S]*?rounded-\[20px\]/);
 });
 
