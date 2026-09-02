@@ -174,12 +174,12 @@ function CompareTable({
   rightLabel: string;
   rows?: string;
 }) {
-  // Mobilon a tábla kártyákra bomlik: egy sor = egy kártya, benne a két
-  // oldal egymás alatt, oszlopcímkével. A jobb oldali cellát ott NEM a
-  // sötét háttér különbözteti meg, hanem egy bronz vonal – teljes
-  // szélességben egymás után rakott sötét sávok olvashatatlanná és
-  // nyugtalanná tették a listát. A sötét hasáb md:-től él, ahol tényleg
-  // oszlop. A hosszú szakkifejezések a keskeny cellában törhetnek.
+  // Mobilon a tábla tipografikus listává olvad: keret és kártya helyett a
+  // szedés viszi a szerkezetet. A bal oldal halványabb, a jobb oldalt
+  // bronz vonal emeli ki, a párokat hajszálvonal választja el. A címke
+  // ott halk kisbetűs, nem nagybetűs sáv – hat soron át tizenkét
+  // uppercase blokk kiabált. A sötét hasáb md:-től él, ahol tényleg
+  // oszlop; az asztali nézet változatlan.
   const rowList = parseCompareRows(rows);
   return (
     <div className="my-8 md:overflow-hidden md:rounded-[20px] md:border md:border-[var(--color-border-default)] md:bg-surface-card md:shadow-[0_12px_32px_rgba(26,26,46,0.035)]">
@@ -191,27 +191,29 @@ function CompareTable({
           {rightLabel}
         </div>
       </div>
-      <div className="flex flex-col gap-3 md:block md:gap-0">
-        {rowList.map(([left, right], i) => (
-          <div
-            key={i}
-            className="overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-surface-card md:grid md:grid-cols-2 md:rounded-none md:border-x-0 md:border-b-0 md:border-t"
-          >
-            <div className="px-4 py-3 text-caption break-words text-[var(--color-text-secondary)] md:px-5">
-              <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-text-muted)] md:hidden">
-                {leftLabel}
-              </span>
-              {left}
-            </div>
-            <div className="border-t-2 border-[var(--color-accent-primary)] px-4 py-3 text-caption break-words text-[var(--color-text-secondary)] md:border-t-0 md:bg-[var(--color-surface-inverse)] md:px-5 md:text-white/80">
-              <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-accent-primary-strong)] md:hidden">
-                {rightLabel}
-              </span>
-              {right}
-            </div>
+      {rowList.map(([left, right], i) => (
+        <div
+          key={i}
+          className={`md:grid md:grid-cols-2 md:border-t md:border-[var(--color-border-default)] ${
+            i > 0
+              ? "mt-5 border-t border-[var(--color-border-default)] pt-5 md:mt-0 md:pt-0"
+              : ""
+          }`}
+        >
+          <div className="text-caption break-words text-[var(--color-text-muted)] md:px-5 md:py-3 md:text-[var(--color-text-secondary)]">
+            <span className="mb-0.5 block text-note text-[var(--color-text-muted)] md:hidden">
+              {leftLabel}
+            </span>
+            {left}
           </div>
-        ))}
-      </div>
+          <div className="mt-3 border-l-2 border-[var(--color-accent-primary)] pl-4 text-caption break-words text-[var(--color-text-secondary)] md:mt-0 md:border-l-0 md:bg-[var(--color-surface-inverse)] md:pl-0 md:px-5 md:py-3 md:text-white/80">
+            <span className="mb-0.5 block text-note text-[var(--color-accent-primary-strong)] md:hidden">
+              {rightLabel}
+            </span>
+            {right}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
