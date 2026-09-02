@@ -26,6 +26,7 @@ import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { BlogJourneyCta } from "@/components/blog/BlogJourneyCta";
 import { TeamReportFigure } from "@/components/blog/TeamReportFigure";
 import { CompareTable } from "@/components/blog/CompareTable";
+import { PsychSafetyFigure } from "@/components/blog/PsychSafetyFigure";
 import { ResultAccessFigure } from "@/components/blog/ResultAccessFigure";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
@@ -241,6 +242,7 @@ const makeComponents = (isHu: boolean) => ({
   CompareTable,
   TeamReportFigure,
   ResultAccessFigure,
+  PsychSafetyFigure,
   KeyInsight: ({ children }: { children: React.ReactNode }) => (
     <KeyInsight isHu={isHu}>{children}</KeyInsight>
   ),
