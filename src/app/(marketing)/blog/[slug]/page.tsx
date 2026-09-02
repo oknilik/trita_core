@@ -174,11 +174,15 @@ function CompareTable({
   rightLabel: string;
   rows?: string;
 }) {
-  // Mobilon a két hasáb egymás alá kerül, cellánként megismételt
-  // oszlopcímkével (a fejléc-sáv csak md:-től látszik) – 320px-en a
-  // 2×~92px-es hasábokban a hosszú szakkifejezések olvashatatlanok.
+  // Mobilon a tábla kártyákra bomlik: egy sor = egy kártya, benne a két
+  // oldal egymás alatt, oszlopcímkével. A jobb oldali cellát ott NEM a
+  // sötét háttér különbözteti meg, hanem egy bronz vonal – teljes
+  // szélességben egymás után rakott sötét sávok olvashatatlanná és
+  // nyugtalanná tették a listát. A sötét hasáb md:-től él, ahol tényleg
+  // oszlop. A hosszú szakkifejezések a keskeny cellában törhetnek.
+  const rowList = parseCompareRows(rows);
   return (
-    <div className="my-8 overflow-hidden rounded-[20px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_12px_32px_rgba(26,26,46,0.035)]">
+    <div className="my-8 md:overflow-hidden md:rounded-[20px] md:border md:border-[var(--color-border-default)] md:bg-surface-card md:shadow-[0_12px_32px_rgba(26,26,46,0.035)]">
       <div className="hidden grid-cols-2 md:grid">
         <div className="bg-surface-card px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
           {leftLabel}
@@ -187,22 +191,27 @@ function CompareTable({
           {rightLabel}
         </div>
       </div>
-      {parseCompareRows(rows).map(([left, right], i) => (
-        <div key={i} className="grid grid-cols-1 border-t border-[var(--color-border-default)] md:grid-cols-2">
-          <div className="bg-surface-card px-4 py-3 text-caption text-[var(--color-text-secondary)] md:px-5">
-            <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-text-muted)] md:hidden">
-              {leftLabel}
-            </span>
-            {left}
+      <div className="flex flex-col gap-3 md:block md:gap-0">
+        {rowList.map(([left, right], i) => (
+          <div
+            key={i}
+            className="overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-surface-card md:grid md:grid-cols-2 md:rounded-none md:border-x-0 md:border-b-0 md:border-t"
+          >
+            <div className="px-4 py-3 text-caption break-words text-[var(--color-text-secondary)] md:px-5">
+              <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-text-muted)] md:hidden">
+                {leftLabel}
+              </span>
+              {left}
+            </div>
+            <div className="border-t-2 border-[var(--color-accent-primary)] px-4 py-3 text-caption break-words text-[var(--color-text-secondary)] md:border-t-0 md:bg-[var(--color-surface-inverse)] md:px-5 md:text-white/80">
+              <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-accent-primary-strong)] md:hidden">
+                {rightLabel}
+              </span>
+              {right}
+            </div>
           </div>
-          <div className="bg-[var(--color-surface-inverse)] px-4 py-3 text-caption text-white/80 md:px-5">
-            <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-white/60 md:hidden">
-              {rightLabel}
-            </span>
-            {right}
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }
