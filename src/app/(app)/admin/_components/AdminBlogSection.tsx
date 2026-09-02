@@ -110,7 +110,7 @@ const SNIPPETS: Array<{ label: string; text: string }> = [
   { label: "PullQuote", text: '\n<PullQuote source="kulcsgondolat">„Idézet a szövegritmus tördelésére."</PullQuote>\n' },
   {
     label: "CompareTable",
-    text: '\n<CompareTable\n  leftLabel="Bal oszlop"\n  rightLabel="Jobb oszlop"\n  rows={[\n    ["első sor bal", "első sor jobb"],\n    ["második sor bal", "második sor jobb"],\n  ]}\n/>\n',
+    text: '\n<CompareTable\n  leftLabel="Bal oszlop"\n  rightLabel="Jobb oszlop"\n  rows="első sor bal | első sor jobb\nmásodik sor bal | második sor jobb"\n/>\n',
   },
 ];
 

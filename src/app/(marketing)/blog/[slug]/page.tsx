@@ -149,14 +149,30 @@ function DimBadge({ code, label }: { code: string; label: string }) {
   );
 }
 
+// A sorok SZÖVEGES attribútumban érkeznek, nem tömb-kifejezésben: a
+// next-mdx-remote v6 alapból kiszűr minden JS-kifejezést az MDX-ből
+// (blockJS), így a korábbi rows={[["a","b"],…]} némán elveszett, és a
+// tábla csak a fejlécet mutatta. Formátum: soronként egy sor, a két
+// cellát „|" választja el. Őrzi: tests/unit/blog/mdx-expression-guard.test.ts
+function parseCompareRows(rows: string): [string, string][] {
+  return rows
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [left = "", right = ""] = line.split("|").map((cell) => cell.trim());
+      return [left, right] as [string, string];
+    });
+}
+
 function CompareTable({
   leftLabel,
   rightLabel,
-  rows = [],
+  rows = "",
 }: {
   leftLabel: string;
   rightLabel: string;
-  rows?: [string, string][];
+  rows?: string;
 }) {
   // Mobilon a két hasáb egymás alá kerül, cellánként megismételt
   // oszlopcímkével (a fejléc-sáv csak md:-től látszik) – 320px-en a
@@ -171,7 +187,7 @@ function CompareTable({
           {rightLabel}
         </div>
       </div>
-      {rows.map(([left, right], i) => (
+      {parseCompareRows(rows).map(([left, right], i) => (
         <div key={i} className="grid grid-cols-1 border-t border-[var(--color-border-default)] md:grid-cols-2">
           <div className="bg-surface-card px-4 py-3 text-caption text-[var(--color-text-secondary)] md:px-5">
             <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-text-muted)] md:hidden">
