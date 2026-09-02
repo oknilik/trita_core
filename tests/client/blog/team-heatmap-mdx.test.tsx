@@ -10,6 +10,25 @@ function PassThrough({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+/**
+ * A cikk BÁRMELY MDX-komponenst használhatja — ez a teszt csak a
+ * TeamReportFigure szerződését őrzi. Ezért a forrásból szedjük ki a
+ * használt komponensneveket, és mindet átengedjük; így egy új komponens
+ * (DimBadge, StatRow, …) nem töri el a tesztet. A valódi komponens-map a
+ * blogoldalon él: src/app/(marketing)/blog/[slug]/page.tsx
+ */
+function componentsFor(source: string, overrides: Record<string, unknown>) {
+  const used = new Set(
+    [...source.matchAll(/<([A-Z][A-Za-z0-9]*)/g)].map((m) => m[1]),
+  );
+  const map: Record<string, unknown> = {};
+  for (const name of used) map[name] = PassThrough;
+  return { ...map, ...overrides } as Record<
+    string,
+    React.ComponentType<{ children?: React.ReactNode }>
+  >;
+}
+
 describe("TeamReportFigure MDX contract", () => {
   it.each([
     ["egy-csapat-egy-hoterkep.mdx", "Aggregált csapatprofil", "Csapatátlag"],
@@ -19,11 +38,7 @@ describe("TeamReportFigure MDX contract", () => {
     const { content: source } = matter(raw);
     const { content } = await compileMDX({
       source,
-      components: {
-        Callout: PassThrough,
-        KeyInsight: PassThrough,
-        TeamReportFigure,
-      },
+      components: componentsFor(source, { TeamReportFigure }),
     });
 
     render(content);
