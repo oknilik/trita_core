@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LandingContent } from "@/components/landing/LandingContent";
+import { TeamLandingContent } from "@/components/landing/TeamLandingContent";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
@@ -33,7 +33,7 @@ export default function TeamDynamicsPage() {
           ],
         })}
       />
-      <LandingContent initialMode="team" />
+      <TeamLandingContent />
     </main>
   );
 }

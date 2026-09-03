@@ -12,7 +12,6 @@ import { t } from "@/lib/i18n/public";
 import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
-import { useSiteMode } from "@/components/landing/site-mode";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
@@ -21,7 +20,7 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 function isLinkActive(pathname: string, href: string): boolean {
   const normalizedHref = href.split("?")[0] ?? href;
   if (href === "/") {
-    return pathname === "/" || pathname === "/self-awareness" || pathname === "/team-dynamics";
+    return pathname === "/" || pathname === "/team-dynamics";
   }
   return pathname.startsWith(normalizedHref);
 }
@@ -133,7 +132,6 @@ export function NavBar({
   // adja — így a marketing-fa nem szállít clerk-js bundle-t.
   const { isSignedIn } = useAuthState();
   const currentPath = usePathname();
-  const siteMode = useSiteMode(currentPath === "/team-dynamics" ? "team" : "self");
   const [drawerOpen, setDrawerOpen] = useState(false);
   // UX-A18: localStorage-t nem olvasunk render közben (hydration mismatch:
   // a szerver "Kipróbálom"-ot, a kliens "Folytatom"-ot adott) — a landing
@@ -151,8 +149,10 @@ export function NavBar({
     currentPath.startsWith("/observe")
   ) return null;
 
-  const isTeamLanding =
-    (currentPath === "/" || currentPath === "/team-dynamics") && siteMode === "team";
+  // A fejléc CTA-ja az ÚTVONALBÓL tudja, milyen közönségnek szól: a
+  // csapatdiagnosztika-lapon a pilot, mindenhol máshol az ingyenes teszt.
+  // (A korábbi kliens-oldali self/team módváltó 2026-09-03-án kivezetve.)
+  const isTeamLanding = currentPath === "/team-dynamics";
   const publicCtaHref = isTeamLanding ? "/pilot" : "/try";
   const publicCtaLabel = isTeamLanding
     ? t("nav.ctaTeam", locale)

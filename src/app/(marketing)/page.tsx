@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FocusedLandingContent } from "@/components/landing/FocusedLandingContent";
+import { LandingContent } from "@/components/landing/LandingContent";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 import { SEO_INTENTS } from "@/lib/seo-intents";
@@ -29,9 +29,10 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey
-// handoffra. A fókuszált landing nem használ useSearchParams-t, ezért nem
-// kell Suspense-határ: a teljes oldal — a hero H1-gyel, ami az LCP-elem —
-// bekerül a prerenderelt HTML-be.
+// handoffra. A landing nem használ useSearchParams-t, ezért nem kell
+// Suspense-határ: a teljes oldal — a hero H1-gyel, ami az LCP-elem —
+// bekerül a prerenderelt HTML-be. A korábbi /self-awareness tükör-oldal ide
+// irányít (next.config.ts): az egyéni ígéret egyetlen lapon él.
 export default function Home() {
   // A gyökér-lapon él a márka- és site-entitás (`@id` horgonyokkal); az összes
   // többi lap ezekre HIVATKOZIK ahelyett, hogy újra kihirdetné őket.
@@ -49,7 +50,7 @@ export default function Home() {
           }),
         ]}
       />
-      <FocusedLandingContent />
+      <LandingContent />
     </main>
   );
 }

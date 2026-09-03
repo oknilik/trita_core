@@ -2,31 +2,39 @@
 
 import { HeroSection } from "@/components/landing/HeroSection";
 import { HowItWorks } from "@/components/landing/HowItWorks";
-import { Features } from "@/components/landing/Features";
 import { ProofSection } from "@/components/landing/ProofSection";
-import { StatsBar } from "@/components/landing/StatsBar";
+import { TeamPathway } from "@/components/landing/TeamPathway";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
-import { useSiteMode, type SiteMode } from "@/components/landing/site-mode";
 
-// A szerver-snapshotot az útvonal adja át, ezért mindkét indexelhető landing
-// a helyes H1-gyel kerül a statikus HTML-be. A kliens-snapshot az URL-ből
-// olvas, így a főoldali tab-bemutató hidratációs eltérés nélkül működik.
-export function LandingContent({ initialMode = "self" }: { initialMode?: SiteMode }) {
-  const mode = useSiteMode(initialMode);
-
+/**
+ * A főoldal — egyetlen, egyéni ígérettel (2026-09-03).
+ *
+ * Sorrend és szerep:
+ *   1. Hero + profil-előnézet: mit kapsz, mennyi idő, mibe kerül (semmibe).
+ *   2. Három lépés: hogyan jutsz el odáig.
+ *   3. Miért több egy átlagos tesztnél: bizalom + idézet.
+ *   4. Csapatos átvezető: ha csapatként folytatnátok — pilot és mélyoldal.
+ *   5. Záró CTA.
+ *
+ * A korábbi self/team módváltó és a Features/StatsBar szekció kivezetve: a
+ * feature-kártyák a profil-előnézetben, a számok a hero pirulái közt élnek.
+ * Nincs useSearchParams, ezért nincs Suspense-határ: a hero H1 (LCP-elem)
+ * benne van a prerenderelt HTML-ben.
+ */
+export function LandingContent() {
   return (
     <>
-      <HeroSection mode={mode} />
-      <HowItWorks mode={mode} />
-      {/* Szerkesztői átkötő (formanyelv 2. szint) — a „hogyan működik"
-          folyamat és a képesség-blokk közti levegő. Dekoráció, aria-hidden;
-          a mód a kulcsban van, hogy a self/team nézet ne ugyanazt kapja. */}
-      <SectionTransition artKey={artKeyFrom("landing", "how-features", mode)} />
-      <Features mode={mode} />
-      <ProofSection mode={mode} />
-      <StatsBar mode={mode} />
-      <CtaSection mode={mode} />
+      <HeroSection mode="self" />
+      {/* Csillagos brand-motívum a hero és a lépések közt (formanyelv 2.
+          szint); a negatív margó a két szekció közé úsztatja. */}
+      <div data-landing-brand-mark className="relative z-20 -my-7 sm:-my-8">
+        <SectionTransition artKey={artKeyFrom("landing", "hero-steps", "self")} />
+      </div>
+      <HowItWorks mode="self" />
+      <ProofSection mode="self" />
+      <TeamPathway />
+      <CtaSection mode="self" />
     </>
   );
 }

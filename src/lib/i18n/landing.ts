@@ -44,12 +44,8 @@ export const landingTranslations = {
     },
 
     // ─── New landing page (self/team) ────────────────────────────────
-    // HeroSection – self
-    selfEyebrow: { hu: "ÖNISMERET ÉS CSAPATMŰKÖDÉS", en: "SELF-AWARENESS AND TEAMWORK" },
-    selfHeadlineBefore: { hu: "Értsd meg, hogyan működsz – és mit viszel a ", en: "Understand how you work – and what you bring to the " },
-    selfHeadlineEm: { hu: "csapatba.", en: "team." },
-    selfSub: { hu: "Megmutatjuk, milyen mintázatok mozgatnak, miben lehetsz erős, és mit vihetsz egy csapatba – érthetően, egy helyen.", en: "See which patterns drive you, where your strengths may lie, and what you can bring to a team – clearly, in one place." },
-    selfCta: { hu: "Ingyenes teszt indítása", en: "Start free assessment" },
+    // HeroSection – self (a cím és az alszöveg a „Fókuszált főoldal"
+    // blokkban: focusedEyebrow / ctaSelfHeadline* / focusedHeroSub / focusedHeroCta)
     selfCtaContinue: { hu: "Folytasd a tesztet", en: "Continue assessment" },
     selfCtaContinueShort: { hu: "Folytatom", en: "Continue" },
     selfMetaTime: { hu: "~10 perc", en: "~10 minutes" },
@@ -77,33 +73,23 @@ export const landingTranslations = {
     selfTeamRoleRank2: { hu: "Másodlagos", en: "Secondary" },
     selfTeamRolesNote: { hu: "A pontos képhez külön csapatszerep-kérdőív tartozik.", en: "A separate team-role questionnaire provides the precise picture." },
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
-    // Fókuszált főoldal — az egyéni belépő az elsődleges, a csapatos út
-    // külön, statikus átvezetést kap az automatikus módváltás helyett.
+    // Fókuszált főoldal (2026-09-03) — az egyéni belépő az elsődleges, a
+    // csapatos út egyetlen statikus átvezetést kap a korábbi módváltó helyett.
     focusedEyebrow: { hu: "EGYÉNI · INGYENES", en: "INDIVIDUAL · FREE" },
     focusedHeroSub: {
       hu: "Ismerd meg a fő mintázataidat, erősségeidet és azt, mit viszel egy csapatba.",
       en: "Discover your key patterns, strengths, and what you bring to a team.",
     },
     focusedHeroCta: { hu: "Elindítom az ingyenes tesztet", en: "Start the free assessment" },
-    focusedPreviewTitle: { hu: "A te profilod", en: "Your profile" },
-    focusedPreviewBadge: { hu: "Ízelítő az eredményből", en: "A preview of your results" },
-    focusedStepsTitle: { hu: "Három lépés. Ennyi.", en: "Three steps. That's it." },
-    focusedStep2Title: { hu: "Megkapod a profilod", en: "Get your profile" },
-    focusedStep3Title: { hu: "Megérted a működésed", en: "Understand how you operate" },
-    focusedStep3Desc: {
-      hu: "A személyes képedből kirajzolódik, mire építhetsz, és milyen szerepekben működsz természetesen.",
-      en: "Your personal picture reveals what you can build on and which roles come naturally to you.",
-    },
     focusedTeamEyebrow: { hu: "Tanácsadóval kísért program", en: "Consultant-guided program" },
     focusedTeamTitle: { hu: "Csapatként folytatnátok?", en: "Ready to continue as a team?" },
     focusedTeamSub: {
       hu: "Mélyebb csapatmegértés, közös nyelv és célzott fejlődés vezetői támogatással.",
       en: "Deeper team understanding, a shared language, and focused development with leadership support.",
     },
-    focusedTeamCta: { hu: "Megnézem a csapatprogramot", en: "Explore the team program" },
-    focusedTrustScience: { hu: "Tudományos alap", en: "Scientific foundation" },
-    focusedTrustClear: { hu: "Érthető eredmény", en: "Clear results" },
-    focusedTrustPace: { hu: "Saját tempóban", en: "At your own pace" },
+    focusedTeamLayersLabel: { hu: "Mit mér a csapatprogram", en: "What the team program measures" },
+    // Másodlagos út: a /team-dynamics mélyoldal. Az elsődleges a pilot (teamCta).
+    focusedTeamCta: { hu: "A csapatdiagnosztika részletei", en: "Team diagnostics in detail" },
     // HeroSection – team
     // 2026-08-28: „CSAPATINTELLIGENCIA PLATFORM" helyett — a gépies
     // kategória-címke a „nem csak platform" üzenet ellen dolgozott.
@@ -123,6 +109,8 @@ export const landingTranslations = {
     teamPanelTitle: { hu: "Értékesítés", en: "Sales" },
     teamPanelValidated: { hu: "Tanácsadó által jóváhagyva", en: "Reviewed by a consultant" },
     teamPanelPublished: { hu: "Publikált", en: "Published" },
+    // A showcase seed ötfős csapata (scripts/seed-showcase-org.ts).
+    teamPanelMembers: { hu: "5 tag", en: "5 members" },
     teamStatMembersLabel: { hu: "Tagok", en: "Members" },
     teamStatCompletionLabel: { hu: "Kitöltöttség", en: "Completion" },
     teamDualViewEyebrow: { hu: "Két nézőpont, egy csapatkép", en: "Two perspectives, one team picture" },
@@ -222,9 +210,12 @@ export const landingTranslations = {
     // felület parkolt, és a playbook szerint a minta „értelmezési nyelv, nem
     // validált csapattípus" – a stat a Scan v1 tényleges rétegeit mondja.
     statTeamLayersLabel: { hu: "mérési réteg", en: "measurement layers" },
-    // CtaSection
+    // A főoldal hero H1-e (2026-09-03 óta): a leggyorsabban érthető ígéret.
     ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban megérted, ", en: "In ~10 minutes, better understand " },
     ctaSelfHeadlineEm: { hu: "hogyan működsz.", en: "how you operate." },
+    // CtaSection — a záró blokk nem ismétli a hero címét.
+    ctaSelfClosingBefore: { hu: "Egy kérdőív, és tisztábban látod, ", en: "One questionnaire, and you see more clearly " },
+    ctaSelfClosingEm: { hu: "mire építhetsz.", en: "what you can build on." },
     ctaSelfSub: { hu: "Indítsd el a tesztet, és lásd tisztábban a rád jellemző mintázatokat, az erősségeidet és azt, milyen szerepek állhatnak közel hozzád egy csapatban.", en: "Start the assessment and see your characteristic patterns, strengths, and the roles that may suit you in a team more clearly." },
     ctaSelfCta: { hu: "Elindítom a tesztet", en: "Start the test" },
     ctaSelfSecondary: { hu: "Együttműködés részletei", en: "How we work" },

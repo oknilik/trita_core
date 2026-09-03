@@ -43,7 +43,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a főoldalt (/) paraméter nélkül. 2. Nézd meg a mód-váltót és a hero CTA-t. 3. Kattints a fő CTA-ra.",
     expected:
-      "Alapból a self-mód aktív (a váltó „self” gombja kiemelt). A hero CTA a /try-ra visz, ahol a teszt intro-képernyője jelenik meg (3 lépés + „Kezdjük el” gomb, 60 kérdés / percbecslés).",
+      "A főoldal egyetlen, egyéni ígérettel nyit (nincs self/team váltó). A hero CTA a /try-ra visz, ahol a teszt intro-képernyője jelenik meg (3 lépés + „Kezdjük el” gomb, 60 kérdés / percbecslés).",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -51,14 +51,14 @@ export const cases = [
   {
     id: "TRY-04",
     area: "Vendég-tölcsér",
-    name: "Landing team-mód: önálló URL + pilot CTA",
+    name: "Csapatos átvezető: pilot CTA + /team-dynamics mélyoldal",
     persona: "vendég",
     emails: { fő: "AUTO" },
     preconditions: "Inkognitó böngésző.",
     steps:
-      "1. Nyisd meg a főoldalt. 2. Kattints a mód-váltó „csapat” gombjára. 3. Figyeld az URL-t és a tartalmat. 4. Kattints a hero CTA-ra, majd vissza; és az oldal alján a záró CTA-ra is.",
+      "1. Nyisd meg a főoldalt, és görgess a szilvaszínű „Csapatként folytatnátok?” blokkig. 2. Kattints „A csapatdiagnosztika részletei” linkre. 3. A /team-dynamics oldalon kattints a hero CTA-ra, majd vissza; és az oldal alján a záró CTA-ra is.",
     expected:
-      "A /team-dynamics oldal nyílik meg, a hero és a szekciók csapatszövegre, illetve sage-akcentre váltanak. A hero és az oldal-alji elsődleges CTA is a /pilot oldalra visz; a hero másodlagos CTA-ja a /contact oldalra mutat.",
+      "A főoldali blokk elsődleges gombja a /pilot oldalra visz, a másodlagos link a /team-dynamics mélyoldalra. Ott a hero és a szekciók csapatszöveget és szilva-akcentet hordoznak, módváltó nincs. A hero és az oldal-alji elsődleges CTA is a /pilot oldalra visz; a hero másodlagos CTA-ja a /contact oldalra mutat.",
     automated: "none",
     coveredBy: "",
     priority: "P2",

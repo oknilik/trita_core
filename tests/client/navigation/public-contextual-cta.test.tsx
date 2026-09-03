@@ -1,10 +1,11 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { NavBar } from "@/components/NavBar";
-import { setSiteModePreview } from "@/components/landing/site-mode";
+
+const pathnameMock = vi.fn(() => "/");
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/",
+  usePathname: () => pathnameMock(),
 }));
 
 vi.mock("@/components/LocaleProvider", () => ({
@@ -21,27 +22,25 @@ vi.mock("@/components/UserMenu", () => ({ UserMenu: () => null }));
 
 describe("publikus fejléc – landing kontextusú CTA", () => {
   beforeEach(() => {
-    window.history.replaceState({}, "", "/");
+    pathnameMock.mockReturnValue("/");
     window.scrollTo = vi.fn();
     Object.defineProperty(window, "scrollY", { configurable: true, writable: true, value: 0 });
     window.localStorage.clear();
   });
 
-  afterEach(() => {
-    act(() => setSiteModePreview(null));
-    window.history.replaceState({}, "", "/");
-  });
-
-  it("egyéni módban a mérésre, csapatmódban a pilotprogramra visz", () => {
-    render(<NavBar />);
+  it("a főoldalon a mérésre, a csapatdiagnosztika-lapon a pilotprogramra visz", () => {
+    const home = render(<NavBar />);
 
     const selfCtas = screen.getAllByRole("link", { name: "Kipróbálom" });
     expect(selfCtas.every((link) => link.getAttribute("href") === "/try")).toBe(true);
 
-    act(() => setSiteModePreview("team"));
+    home.unmount();
+    pathnameMock.mockReturnValue("/team-dynamics");
+    render(<NavBar />);
 
     const teamCtas = screen.getAllByRole("link", { name: "Pilotprogram" });
     expect(teamCtas.every((link) => link.getAttribute("href") === "/pilot")).toBe(true);
+    expect(screen.queryByRole("link", { name: "Kipróbálom" })).not.toBeInTheDocument();
   });
 
   it("a blogot asztali és mobil navigációban is elérhetővé teszi", () => {

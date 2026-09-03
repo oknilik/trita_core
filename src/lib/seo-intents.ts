@@ -7,15 +7,18 @@
  * ugyanarra az elsődleges kifejezésre versenyezzenek egymással.
  */
 export const SEO_INTENTS = {
+  // 2026-09-03: a korábbi /self-awareness lap a főoldalba olvadt (állandó
+  // átirányítás) — az önismereti szándék témái is ide tartoznak.
   home: {
     path: "/",
     primary: "személyiségteszt magyarul",
-    topics: ["Személyiségteszt magyarul", "Hatfaktoros személyiségmodell", "Csapatintelligencia"],
-  },
-  selfAwareness: {
-    path: "/self-awareness",
-    primary: "önismereti személyiségteszt",
-    topics: ["Önismereti személyiségteszt", "Egyéni személyiségprofil", "Csapatszerepek"],
+    topics: [
+      "Személyiségteszt magyarul",
+      "Önismereti személyiségteszt",
+      "Egyéni személyiségprofil",
+      "Hatfaktoros személyiségmodell",
+      "Csapatintelligencia",
+    ],
   },
   teamDynamics: {
     path: "/team-dynamics",
