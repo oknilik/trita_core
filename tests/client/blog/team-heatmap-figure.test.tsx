@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { TeamReportFigure } from "@/components/blog/TeamReportFigure";
 
@@ -33,5 +33,27 @@ describe("TeamReportFigure", () => {
 
     expect(screen.queryByText("Anna")).not.toBeInTheDocument();
     expect(screen.queryByText("Bence")).not.toBeInTheDocument();
+  });
+});
+
+describe("TeamReportFigure variánsok", () => {
+  it("a referencia-variáns más adatsort és más képaláírást ad, mint az esettanulmányé", () => {
+    const { container: caseFig } = render(<TeamReportFigure locale="hu" />);
+    const caseText = caseFig.textContent ?? "";
+    cleanup();
+    const { container: refFig } = render(<TeamReportFigure locale="hu" variant="reference" />);
+    const refText = refFig.textContent ?? "";
+
+    // A történet képaláírása valós, módosított csapatadatra hivatkozik –
+    // ez az állítás sérülne, ha a referenciacikk ugyanazt mutatná.
+    expect(caseText).not.toEqual(refText);
+    expect(refText).toContain("nem valós csapat adata");
+    expect(caseText).not.toContain("nem valós csapat adata");
+  });
+
+  it("a referencia-variáns egy szűk és egy széles sávot állít szembe", () => {
+    render(<TeamReportFigure locale="hu" variant="reference" />);
+    expect(screen.getByLabelText(/Barátságosság.*szűk/)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Lelkiismeretesség.*széles/)).toBeInTheDocument();
   });
 });

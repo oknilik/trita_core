@@ -10,7 +10,7 @@ import { optimizeBlogCover, sniffCoverExtension } from "@/lib/blog-cover-format"
 // külső URL vagy könyvtárból kilépő út kerülhetne a publikus oldalra.
 
 test("az ervenyes borito-ut atmegy", () => {
-  assert.equal(isBlogCoverImage("/blog-covers/csapatdinamika-olvasasa.jpg"), true);
+  assert.equal(isBlogCoverImage("/blog-covers/csapat-szemelyisegkep-ertelmezese.jpg"), true);
   assert.equal(isBlogCoverImage("/blog-covers/abc.png"), true);
   assert.equal(isBlogCoverImage("/blog-covers/a-b-c.webp"), true);
 });

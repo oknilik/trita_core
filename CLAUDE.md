@@ -75,7 +75,7 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 - Jelenleg **egyetlen kérdésbank él**: a **TSFI v2** (2026-07-16,
   `src/lib/questions/tritan.ts`, `TestType.TRITAN`). Minden új user ezt
   kapja (`assignTestType.ts` — fix, nem random). Alapértelmezett forma:
-  **TSFI-S** (60 item, ~9 perc; `DEFAULT_ASSESSMENT_FORM = "short"` az
+  **TSFI-S** (60 item, ~10 perc; `DEFAULT_ASSESSMENT_FORM = "short"` az
   operating-mode-ban, a 100 itemes full későbbi tanácsadói opció).
 - **Licenc rendezve**: a TSFI-itemek az IPIP public domain poolból jönnek
   (92 IPIP–HEXACO + 8 kiegészítő) — kereskedelmi használatra is szabad,
@@ -222,6 +222,8 @@ Aktuális állapot (2026-08-23):
 - `docs/development/changelog/` — napi változásnapló (KARBANTARTANDÓ)
 - `docs/architecture/` — ADR-ek, journey/notification architektúra
 - `docs/development/ui-token-map.md` + `ui-contribution-guide.md` — design
+- `docs/development/blog-style-guide.md` — blog írásszabály (hang, hivatkozás,
+  szerkezet, tiltólista, MDX-kötöttségek)
 - `docs/audits/` — egyszeri auditok (team-intelligence audit itt)
 - Üzleti kontextus (gyökér iCloud doksik): tanácsadói hibrid modell,
   founding customer program

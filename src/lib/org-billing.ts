@@ -52,7 +52,7 @@ export const ORG_BILLING_FIELDS: Array<{
   { key: "address", label: "Utca, házszám", placeholder: "Fő utca 1." },
   { key: "country", label: "Ország", placeholder: "Magyarország" },
   { key: "contactName", label: "Kapcsolattartó", placeholder: "Kovács Anna" },
-  { key: "contactEmail", label: "Kapcsolattartó email", type: "email", placeholder: "anna@ceg.hu" },
+  { key: "contactEmail", label: "Kapcsolattartó email", type: "email", placeholder: "nev@ceg.hu" },
   { key: "contactPhone", label: "Telefon", placeholder: "+36 30 123 4567" },
   { key: "billingEmail", label: "Számlázási email", type: "email", placeholder: "szamla@ceg.hu" },
   { key: "industry", label: "Iparág", placeholder: "pl. IT, gyártás, pénzügy" },

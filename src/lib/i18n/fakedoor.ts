@@ -109,7 +109,7 @@ export const fakeDoorTranslations = {
       hu: "Csak erről az egy funkcióról írunk, és bármikor leiratkozhatsz.",
       en: "We'd only write about this one feature, and you can unsubscribe any time.",
     },
-    emailPlaceholder: { hu: "email@pelda.hu", en: "you@example.com" },
+    emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     emailInvalid: { hu: "Ez az e-mail-cím nem tűnik érvényesnek.", en: "That email doesn't look valid." },
 
     // ── „Nem" ág (T4) ─────────────────────────────────────────────────

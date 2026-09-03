@@ -425,7 +425,7 @@ export const landingTranslations = {
     // Rövid változat a lábléchez és az oldalsávhoz – ott nincs hely a fentire.
     compactTitle: { hu: "Cikkek és trita-hírlevél", en: "Articles and the trita newsletter" },
     emailLabel: { hu: "Email cím", en: "Email address" },
-    emailPlaceholder: { hu: "te@pelda.hu", en: "you@example.com" },
+    emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     submit: { hu: "Feliratkozom", en: "Subscribe" },
     submitting: { hu: "Küldés...", en: "Sending..." },
     // A hozzájárulás szövege – a beküldés GOMBJÁNÁL kell állnia, hogy a

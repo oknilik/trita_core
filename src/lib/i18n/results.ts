@@ -303,7 +303,7 @@ export const resultsTranslations = {
     deleteSuccess: { hu: "Meghívó törölve.", en: "Invite canceled." },
     deleteFailed: { hu: "Nem sikerült törölni a meghívót.", en: "Could not delete invite." },
     byEmailTitle: { hu: "Meghívás emailben", en: "Invite by email" },
-    byEmailPlaceholder: { hu: "ismerős@email.com", en: "friend@email.com" },
+    byEmailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     activeLimit: { hu: "Egyszerre legfeljebb 5 aktív meghívód lehet.", en: "Maximum 5 active invites at a time." },
     stats: { hu: "{completed} kitöltve, {pending} függőben, {canceled} törölve", en: "{completed} completed, {pending} pending, {canceled} canceled" },
   },
@@ -606,8 +606,8 @@ export const resultsTranslations = {
       en: "Get to know your work style",
     },
     nextStepTestBody: {
-      hu: "Egy rövid, körülbelül kilencperces teszt után letisztult képet kapsz arról, mi visz előre, mi ad stabilitást, és mire érdemes figyelned. Nem címkéz, hanem rávilágít a jellemző működésedre.",
-      en: "A short assessment of about 9 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you – it sheds light.",
+      hu: "Egy rövid, körülbelül tízperces teszt után letisztult képet kapsz arról, mi visz előre, mi ad stabilitást, és mire érdemes figyelned. Nem címkéz, hanem rávilágít a jellemző működésedre.",
+      en: "A short assessment of about 10 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you – it sheds light.",
     },
     uniqueProfile: { hu: "Egyedi profil", en: "Unique profile" },
     // A legacy PDF-összefoglaló kulcsok (strengthsSuffix/watchPrefix/
@@ -1102,8 +1102,8 @@ export const resultsTranslations = {
       en: "Show it to them – scanning it takes them straight to the consent page.",
     },
     compareEmailPlaceholder: {
-      hu: "email@pelda.hu (nem kötelező)",
-      en: "email@example.com (optional)",
+      hu: "nev@email.hu (nem kötelező)",
+      en: "name@email.com (optional)",
     },
     compareEmailOptionalNote: {
       hu: "Ha megadsz egy címet, a linket emailben is kiküldjük.",
@@ -1456,8 +1456,8 @@ export const resultsTranslations = {
       en: "Finish your personality profile",
     },
     ccNeedsProfileNote: {
-      hu: "Az iránytű a személyiségprofilodból dolgozik – ha ez megvan, itt folytathatod. A kitöltés körülbelül kilenc percet vesz igénybe.",
-      en: "The compass works from your personality profile – once it's done, you can continue here. It takes about 9 minutes.",
+      hu: "Az iránytű a személyiségprofilodból dolgozik – ha ez megvan, itt folytathatod. A kitöltés körülbelül tíz percet vesz igénybe.",
+      en: "The compass works from your personality profile – once it's done, you can continue here. It takes about 10 minutes.",
     },
     // Szekció-átvezető CTA-k az eredmény-oldal alján (2026-07-31): a karrier
     // és a munkastílus önálló oldal lett, innen vezetünk át rájuk.
@@ -1985,7 +1985,7 @@ export const resultsTranslations = {
       hu: "A levélben a profil linkje és egy QR-kód is szerepel.",
       en: "The email includes the profile link and a QR code.",
     },
-    shareEmailPlaceholder: { hu: "nev@ceg.hu", en: "name@company.com" },
+    shareEmailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     shareEmailSend: { hu: "Küldés", en: "Send" },
     shareEmailSending: { hu: "Küldés…", en: "Sending…" },
     shareEmailSentTo: { hu: "Elküldtük ide:", en: "Sent to:" },

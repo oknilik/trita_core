@@ -403,14 +403,21 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   return (
     <section className="bg-cream">
       <div className="mx-auto max-w-[1120px] px-7 pb-20 pt-12 md:pb-28 md:pt-20">
-        <div className="grid gap-10 md:grid-cols-2 md:items-center md:gap-12">
+        <div className="grid gap-10 md:grid-cols-2 md:items-stretch md:gap-12">
           {/* Mobilon a teljes ígéret és a CTA megelőzi az előnézetet. Így a
               látogató nem kényszerül egy hosszú riportkártyán végiggörgetni,
               mielőtt elérné az első döntési pontot. */}
-          <div data-landing-hero-copy className="flex min-w-0 flex-col">
+          {/* Rögzített geometria módváltásnál: az oszlop md:-től a kártya
+              magasságát veszi fel, a kapcsoló a tetején ül, a szöveg pedig a
+              MARADÉK térben középre kerül (md:my-auto). Így a self és a team
+              eltérő hosszú szövege nem tolja el a kapcsolót – korábban a rács
+              items-center-e az egész oszlopot újrapozicionálta. */}
+          <div data-landing-hero-copy className="flex min-w-0 flex-col md:min-h-[674px]">
             <div className={`${riseIn} mb-4 lg:mb-5`}>
               <ModeSwitcher mode={mode} />
             </div>
+
+            <div data-landing-hero-copy-body className="flex flex-col md:my-auto">
 
             <SectionEyebrow
               tone={isSelf ? "bronze" : "team"}
@@ -518,23 +525,36 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 </div>
               </div>
             )}
+            </div>
           </div>
 
           {/* A mobil előnézet tudatosan tömörebb: a részletes szerep- és
               narratív blokkok közepes nézettől jelennek meg. */}
-          {isSelf ? (
-            <div data-landing-hero-preview>
+          {/* Mindkét panel a DOM-ban marad, egy rácscellába rakva: a
+              konténer magassága a magasabbikét veszi fel, ezért módváltásnál
+              nem ugrik az oldal, és a panel nem mountol újra (a rise-in nem
+              játszik le másodszor). Az inaktív panel invisible + aria-hidden,
+              a data-landing-hero-preview jelölőt csak az aktív viseli. */}
+          <div className="grid [&>*]:[grid-area:1/1]">
+            <div
+              data-landing-hero-preview={isSelf ? "" : undefined}
+              aria-hidden={isSelf ? undefined : true}
+              className={isSelf ? undefined : "invisible pointer-events-none"}
+            >
               <div className="mx-auto w-full max-w-[460px]">
                 <SelfPanel />
               </div>
             </div>
-          ) : (
-            <div data-landing-hero-preview>
+            <div
+              data-landing-hero-preview={isSelf ? undefined : ""}
+              aria-hidden={isSelf ? true : undefined}
+              className={isSelf ? "invisible pointer-events-none" : undefined}
+            >
               <div className="mx-auto w-full max-w-[460px]">
                 <TeamPanel />
               </div>
             </div>
-          )}
+          </div>
 
         </div>
       </div>

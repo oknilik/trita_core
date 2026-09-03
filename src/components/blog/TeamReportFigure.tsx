@@ -7,8 +7,21 @@ interface AggregateDimension {
   spread: number;
 }
 
+/**
+ * `variant="case"` — az anonimizált csapattörténet módosított, valós
+ * eredetű adatai. `variant="reference"` — kitalált tanító példa a
+ * profil-olvasásról szóló cikkhez. A kettő SZÁNDÉKOSAN nem ugyanaz: a
+ * történet képaláírása valós csapat módosított adataira hivatkozik, és
+ * ez az állítás elveszne, ha ugyanaz a sor jelenne meg máshol
+ * illusztrációként.
+ *
+ * A variánst string prop viszi, nem objektum: a next-mdx-remote v6
+ * kiszűri a JS-kifejezéseket az MDX-ből (ld.
+ * tests/unit/blog/mdx-expression-guard.test.ts).
+ */
 interface TeamReportFigureProps {
   locale: "hu" | "en";
+  variant?: "case" | "reference";
   dimensions?: AggregateDimension[];
 }
 
@@ -23,6 +36,8 @@ const LABELS = {
     wide: "széles",
     caption:
       "A teljes csapatriport aggregált személyiségképet bemutató részének egyszerűsített ábrája. A közös nézet csak aggregált csapatadatot mutat; más csapattag egyéni értéke nem látható.",
+    captionReference:
+      "Kitalált példa a riport aggregált szeletének olvasásához, nem valós csapat adata. Figyeld a sáv szélességét: a Barátságosság szűk sávja hasonló munkamódot jelez, a Lelkiismeretesség széles sávja többfélét. A közös nézet itt sem mutatja, ki hol áll.",
   },
   en: {
     title: "Aggregate team profile",
@@ -34,10 +49,12 @@ const LABELS = {
     wide: "wide",
     caption:
       "A simplified illustration of the part of the full team report that presents the aggregate personality picture. The shared view contains aggregate team data only; no other team member's individual values are visible.",
+    captionReference:
+      "An invented example for reading the aggregate slice of the report, not the data of a real team. Watch the width of the band: the narrow band on Agreeableness signals a similar way of working, the wide band on Conscientiousness signals several. Here too, the shared view does not show where anyone stands.",
   },
 } as const;
 
-const DEFAULT_DIMENSIONS: Record<TeamReportFigureProps["locale"], AggregateDimension[]> = {
+const CASE_DIMENSIONS: Record<TeamReportFigureProps["locale"], AggregateDimension[]> = {
   hu: [
     { code: "H", label: "Becsületesség-Alázat", average: 62, spread: 20 },
     { code: "E", label: "Emocionalitás", average: 50, spread: 15 },
@@ -56,6 +73,28 @@ const DEFAULT_DIMENSIONS: Record<TeamReportFigureProps["locale"], AggregateDimen
   ],
 };
 
+/** Tanító példa: két szélső sáv (szűk A, széles C), hogy az olvasás tanulható legyen. */
+const REFERENCE_DIMENSIONS: Record<TeamReportFigureProps["locale"], AggregateDimension[]> = {
+  hu: [
+    { code: "H", label: "Becsületesség-Alázat", average: 58, spread: 12 },
+    { code: "E", label: "Emocionalitás", average: 47, spread: 14 },
+    { code: "X", label: "Extraverzió", average: 61, spread: 17 },
+    { code: "A", label: "Barátságosság", average: 72, spread: 6 },
+    { code: "C", label: "Lelkiismeretesség", average: 54, spread: 24 },
+    { code: "O", label: "Nyitottság", average: 66, spread: 13 },
+  ],
+  en: [
+    { code: "H", label: "Honesty-Humility", average: 58, spread: 12 },
+    { code: "E", label: "Emotionality", average: 47, spread: 14 },
+    { code: "X", label: "Extraversion", average: 61, spread: 17 },
+    { code: "A", label: "Agreeableness", average: 72, spread: 6 },
+    { code: "C", label: "Conscientiousness", average: 54, spread: 24 },
+    { code: "O", label: "Openness", average: 66, spread: 13 },
+  ],
+};
+
+const DIMENSION_SETS = { case: CASE_DIMENSIONS, reference: REFERENCE_DIMENSIONS };
+
 function diversityLabel(
   spread: number,
   copy: (typeof LABELS)[TeamReportFigureProps["locale"]],
@@ -67,9 +106,11 @@ function diversityLabel(
 
 export function TeamReportFigure({
   locale,
-  dimensions = DEFAULT_DIMENSIONS[locale],
+  variant = "case",
+  dimensions = DIMENSION_SETS[variant][locale],
 }: TeamReportFigureProps) {
   const copy = LABELS[locale];
+  const caption = variant === "reference" ? copy.captionReference : copy.caption;
 
   return (
     <figure className="my-8 rounded-2xl border border-sand bg-surface-card p-4 md:p-6">
@@ -118,7 +159,7 @@ export function TeamReportFigure({
       </div>
 
       <figcaption className="mt-5 border-t border-sand pt-3 text-micro leading-relaxed text-muted">
-        {copy.caption}
+        {caption}
       </figcaption>
     </figure>
   );

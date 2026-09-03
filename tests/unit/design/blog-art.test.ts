@@ -10,7 +10,7 @@ import {
 test("a cikk témája szerkesztői fogalommá fordul", () => {
   assert.equal(
     inferBlogArtConcept({
-      slug: "csapatdinamika-olvasasa",
+      slug: "csapat-szemelyisegkep-ertelmezese",
       tags: ["csapatdinamika", "bizalom"],
     }),
     "connection",
@@ -45,7 +45,7 @@ test("a cikk témája szerkesztői fogalommá fordul", () => {
   );
   assert.equal(
     inferBlogArtConcept({
-      slug: "pszichometriai-ertekeles-bevezetese",
+      slug: "pszichometriai-felmeres-bevezetese",
       tags: ["pszichometria", "változáskezelés"],
     }),
     "threshold",

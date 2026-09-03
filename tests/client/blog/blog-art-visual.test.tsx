@@ -5,7 +5,7 @@ import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 describe("BlogArtVisual", () => {
   it("a négy család különböző, de determinisztikus SVG-t ad", () => {
     const common = {
-      slug: "csapatdinamika-olvasasa",
+      slug: "csapat-szemelyisegkep-ertelmezese",
       title: "A csapatdinamika olvasása",
       tags: ["csapatdinamika"],
       concept: "connection" as const,

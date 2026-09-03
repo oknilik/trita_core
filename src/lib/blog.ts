@@ -15,6 +15,22 @@ import {
 
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 
+/**
+ * Olvasási idő a cikk törzsszövegéből. A listanézet és a cikkoldal külön
+ * olvassa be ugyanazt a fájlt, ezért a számítás itt lakik: két külön
+ * másolat idővel elcsúszhatna, és a blogindexen más perc jelenne meg,
+ * mint magán a cikken.
+ */
+function computeReadingMinutes(content: string): number {
+  return Math.ceil(readingTime(content).minutes);
+}
+
+/** A percérték megjelenítési formája — a locale dönti el a feliratot. */
+function formatReadingTime(minutes: number, locale: "hu" | "en"): string {
+  return locale === "hu" ? `${minutes} perc` : `${minutes} min read`;
+}
+
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -115,8 +131,7 @@ export function getAllPosts(
       if (data.locale && data.locale !== locale) return null;
       if (data.status === "draft" && !options?.includeDrafts) return null;
 
-      const rt = readingTime(content);
-      const minutes = Math.ceil(rt.minutes);
+      const minutes = computeReadingMinutes(content);
 
       return {
         slug,
@@ -125,7 +140,7 @@ export function getAllPosts(
         publishedAt: data.publishedAt as string,
         locale: (data.locale ?? "hu") as "hu" | "en",
         tags: (data.tags ?? []) as string[],
-        readingTime: locale === "hu" ? `${minutes} perc` : `${minutes} min read`,
+        readingTime: formatReadingTime(minutes, locale),
         readingMinutes: minutes,
         heroQuote: data.heroQuote as string | undefined,
         startHere: data.startHere as number | undefined,
@@ -187,8 +202,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
 
   const raw = fs.readFileSync(filePath, "utf-8");
   const { data, content } = matter(raw);
-  const rt = readingTime(content);
-  const minutes = Math.ceil(rt.minutes);
+  const minutes = computeReadingMinutes(content);
   const locale = (data.locale ?? "hu") as "hu" | "en";
 
   return {
@@ -199,7 +213,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     locale,
     translationSlug: data.translationSlug as string | undefined,
     tags: (data.tags ?? []) as string[],
-    readingTime: locale === "hu" ? `${minutes} perc` : `${minutes} min read`,
+    readingTime: formatReadingTime(minutes, locale),
     readingMinutes: minutes,
     heroQuote: data.heroQuote as string | undefined,
     startHere: data.startHere as number | undefined,

@@ -15,8 +15,8 @@ test("a szerkesztett szam dedupe-kulcsa sajat nevterben van", () => {
 // átirányítássá válni. A teszt azt őrzi, hogy a paraméterek kódolva mennek.
 test("a kattintas-koveto link a slugot es az id-t kodolva viszi", () => {
   assert.equal(
-    clickUrl("https://trita.io", "del_1", "csapatdinamika-olvasasa"),
-    "https://trita.io/api/newsletter/click?d=del_1&to=csapatdinamika-olvasasa",
+    clickUrl("https://trita.io", "del_1", "csapat-szemelyisegkep-ertelmezese"),
+    "https://trita.io/api/newsletter/click?d=del_1&to=csapat-szemelyisegkep-ertelmezese",
   );
   // Egy külső URL-nek látszó érték is csak paraméterként utazik: a végpont
   // slugként oldja fel, és ismeretlen slugnál a bloglistára megy.

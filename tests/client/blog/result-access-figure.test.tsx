@@ -21,7 +21,7 @@ describe("ResultAccessFigure", () => {
   });
 
   it.each([
-    ["pszichometriai-ertekeles-bevezetese.mdx", "hu", "A résztvevő"],
+    ["pszichometriai-felmeres-bevezetese.mdx", "hu", "A résztvevő"],
     ["introducing-psychometric-assessment.mdx", "en", "The participant"],
   ])("prerendereli a %s cikk hozzáférési blokkját", async (file, locale, role) => {
     const raw = fs.readFileSync(path.join(process.cwd(), "content/blog", file), "utf8");
