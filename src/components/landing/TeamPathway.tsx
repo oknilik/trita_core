@@ -67,11 +67,13 @@ export function TeamPathway() {
 
           <p className="mt-5 text-note text-white/60">{facts.join(" · ")}</p>
 
-          <div className="mt-7 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+          {/* A két út egy sorban, amíg elfér; szűk oszlopban a másodlagos
+              link a gomb ALÁ kerül, a gomb felirata nem törik két sorba. */}
+          <div className="mt-7 flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
               href="/pilot"
               onClick={() => track("cta.click", { cta_id: "team_pathway", surface: "landing", mode: "team" })}
-              className={`inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-accent-primary-soft)] px-6 text-sm font-semibold text-[var(--color-layer-team-hero-from)] shadow-md transition-all hover:-translate-y-px hover:brightness-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-layer-team-hero-from)]`}
+              className={`inline-flex min-h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[var(--color-accent-primary-soft)] px-6 text-sm font-semibold text-[var(--color-layer-team-hero-from)] shadow-md transition-all hover:-translate-y-px hover:brightness-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-layer-team-hero-from)]`}
             >
               {t("landing.teamCta", locale)}
               <ChevronRightIcon className="ml-2 h-4 w-4" />
