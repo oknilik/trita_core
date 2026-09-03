@@ -100,6 +100,69 @@ const publicEvents = {
     question: "P4",
   }),
 
+  "help.open": spec({
+    schema: z
+      .object({
+        audience: z.enum(["public", "member", "manager", "admin"]),
+        surface: tag(32),
+      })
+      .strict(),
+    origin: "client",
+    description: "A kontextuális segítségpanel megnyitása.",
+    question: "P4",
+  }),
+
+  "help.search": spec({
+    schema: z
+      .object({
+        audience: z.enum(["public", "member", "manager", "admin"]),
+        result_count: count,
+        surface: tag(32),
+      })
+      .strict(),
+    origin: "client",
+    description: "Segítségkeresés eredménydarabszáma; a keresett szöveg nem kerül az analitikába.",
+    question: "P4",
+  }),
+
+  "help.answer_open": spec({
+    schema: z
+      .object({
+        entry_id: tag(48),
+        source: z.enum(["context", "topic", "search", "related"]),
+        surface: tag(32),
+      })
+      .strict(),
+    origin: "client",
+    description: "Segítségválasz megnyitása és annak belépési útja.",
+    question: "P4",
+  }),
+
+  "help.answer_feedback": spec({
+    schema: z
+      .object({
+        entry_id: tag(48),
+        helpful: z.boolean(),
+        surface: tag(32),
+      })
+      .strict(),
+    origin: "client",
+    description: "A felhasználó hasznosnak ítélte-e a megnyitott segítségválaszt.",
+    question: "P4",
+  }),
+
+  "help.contact_start": spec({
+    schema: z
+      .object({
+        source: z.enum(["footer", "no_result"]),
+        surface: tag(32),
+      })
+      .strict(),
+    origin: "client",
+    description: "Emberi segítségkérés indítása a panelből.",
+    question: "P5",
+  }),
+
   "form.start": spec({
     schema: z.object({ form_id: tag(32) }).strict(),
     origin: "client",

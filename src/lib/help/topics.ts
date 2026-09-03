@@ -13,6 +13,12 @@ export interface HelpEntry {
   id: string;
   question: LocalizedText;
   answer: LocalizedText;
+  /** Rövid, cselekvésre fordított lépések a válasznézetben. */
+  steps?: LocalizedText[];
+  /** Keresési szinonimák; nem jelennek meg a felületen. */
+  keywords?: LocalizedText;
+  /** Kapcsolódó válaszok azonosítói. */
+  related?: string[];
   link?: { href: string; label: LocalizedText };
   audiences: HelpAudience[];
 }
@@ -35,12 +41,12 @@ const TOPICS: HelpTopic[] = [
       {
         id: "what-is-trita",
         question: {
-          hu: "Mi a trita és kinek való?",
-          en: "What is trita and who is it for?",
+          hu: "Mi is az a trita és kinek tud segíteni?",
+          en: "What exactly is trita, and who can it help?",
         },
         answer: {
-          hu: "A trita személyiség- és csapatintelligencia platform: önértékelő felmérés, ismerősi visszajelzés és csapatszintű elemzések egy helyen. Egyéneknek önismereti eszköz, csapatoknak és cégeknek tanácsadói kísérettel zajló fejlesztési program alapja.",
-          en: "trita is a personality and team intelligence platform: self-assessment, peer feedback and team-level analytics in one place. For individuals it is a self-awareness tool; for teams and companies it is the foundation of a consultant-guided development program.",
+          hu: "A trita személyiség- és csapatintelligencia platform: önértékelés, külső visszajelzések és csapatszintű elemzések egy helyen. Egyéni szinten ingyenes önismereti eszköz, csapatoknak és cégeknek tanácsadói kísérettel zajló fejlesztési program alapja.",
+          en: "trita is a personality and team intelligence platform: self-assessment, external feedback, and team-level analyses in one place. For individuals, it is a free self-awareness tool; for teams and companies, it serves as the foundation of a consultant-guided development program.",
         },
         audiences: ["public"],
       },
@@ -51,8 +57,8 @@ const TOPICS: HelpTopic[] = [
           en: "Can I try it for free?",
         },
         answer: {
-          hu: "Igen. A vendégteszt regisztráció nélkül kitölthető, kb. 8-10 percet vesz igénybe, és a végén azonnal kapsz egy első személyiségképet.",
-          en: "Yes. The guest test requires no registration, takes about 8-10 minutes, and gives you a first personality profile right away.",
+          hu: "Igen. Az egyéni felmérés ingyenesen kitölthető, ami körülbelül 8–10 percet vesz igénybe. A végén azonnal kapsz egy teljes személyiségképet.",
+          en: "Yes. The individual assessment is free to complete and takes approximately 8–10 minutes. At the end, you will immediately receive a complete personality profile.",
         },
         link: {
           href: "/try",
@@ -63,12 +69,12 @@ const TOPICS: HelpTopic[] = [
       {
         id: "how-assessment-works",
         question: {
-          hu: "Hogyan működik a felmérés?",
-          en: "How does the assessment work?",
+          hu: "Hogyan működik a személyiségteszt?",
+          en: "How does the personality test work?",
         },
         answer: {
-          hu: "A felmérés hat személyiségdimenziót mér – szabadon felhasználható, kutatásban használt kérdésekkel –, és kb. 8-10 perc alatt kitölthető. Az önértékelést opcionálisan ismerősi visszajelzésekkel egészítheted ki, így az önkép és a külső kép összevethető.",
-          en: "The assessment measures six personality dimensions – using freely available, research-grade items – and takes about 8-10 minutes. You can optionally complement your self-assessment with peer feedback, so your self-image and how others see you can be compared.",
+          hu: "A felmérés hat személyiségdimenziót mér és körülbelül 8–10 perc alatt kitölthető. Az önértékelést opcionálisan külső visszajelzésekkel egészítheted ki, így az önképed és a külső kép összevethetővé válik.",
+          en: "The assessment measures six personality dimensions and takes approximately 8–10 minutes to complete. You can optionally supplement your self-assessment with external feedback, making it possible to compare your self-image with how others see you.",
         },
         audiences: ["public"],
       },
@@ -85,8 +91,8 @@ const TOPICS: HelpTopic[] = [
           en: "What does a team get?",
         },
         answer: {
-          hu: "A csapat tagjai kitöltik a felmérést, majd aggregált csapatprofil készül: dimenzió-átlagok, csapatmintázat és csapatszerep-eloszlás. Az eredményeket tanácsadó értékeli és validálja, személyes interjúk tanulságaival kiegészítve – egyéni eredmény soha nem kerül a csapatképbe.",
-          en: "Team members complete the assessment, then an aggregate team profile is built: dimension averages, team pattern and team role distribution. A consultant reviews and validates the results, enriched with insights from personal interviews – individual results never appear in the team picture.",
+          hu: "A csapat tagjai végigmennek a trita folyamatán, majd közös csapatprofil készül. Többek között személyiségdimenziókat, csapatmintázatokat, csapatszerep-eloszlást és pszichológiai biztonságot vizsgálunk. Az eredményeket egy tanácsadó értékeli, rendszerezi és validálja, a személyes interjúk tanulságaival kiegészítve – egyéni eredmény soha nem kerül a csapatképbe. Az elkészült anyaggal dolgozunk tovább a workshopokon.",
+          en: "Team members go through the trita process, after which a shared team profile is created. Among other areas, we examine personality dimensions, team patterns, team role distribution, and psychological safety. A consultant evaluates, organizes, and validates the results, supplementing them with insights from personal interviews – individual results never appear in the team profile. We then use the completed material as the basis for the workshops.",
         },
         audiences: ["public"],
       },
@@ -97,13 +103,34 @@ const TOPICS: HelpTopic[] = [
           en: "How do we get started with a team?",
         },
         answer: {
-          hu: "Vedd fel velünk a kapcsolatot, és egyeztetünk egy rövid bevezető beszélgetést. A program mindig tanácsadói kísérettel zajlik, ezért az indulás első lépése egy személyes egyeztetés.",
-          en: "Get in touch and we will schedule a short introductory call. The program always runs with consultant guidance, so the first step is a personal conversation.",
+          hu: "Vedd fel velünk a kapcsolatot, és egyeztetünk egy rövid bevezető beszélgetést, kötelezettségek nélkül. A program mindig tanácsadói kísérettel zajlik, ezért az indulás első lépése egy személyes egyeztetés.",
+          en: "Get in touch and we will arrange a short introductory conversation, with no obligation. The program always runs with consultant guidance, so the first step is a personal consultation.",
         },
         link: {
           href: "/contact",
           label: { hu: "Kapcsolatfelvétel", en: "Contact us" },
         },
+        audiences: ["public"],
+      },
+      {
+        id: "pilot-program",
+        question: {
+          hu: "Mi a pilotprogram, és hogyan csatlakozhatunk?",
+          en: "What is the pilot program, and how can our team join?",
+        },
+        answer: {
+          hu: "A 90 napos pilotprogram cégeknek kínál kedvezményes lehetőséget és a szokásosnál szorosabb együttműködést a trita core csapatával. Közös, mérhető képet készítünk a csapat működéséről: megnézzük, mire lehet építeni, hol érdemes változtatni, majd kijelölünk és visszamérünk egy konkrét vezetői lépést. A teljes folyamat során személyesen dolgozunk veletek, az első beszélgetés pedig kötelezettségmentes.",
+          en: "The 90-day pilot program offers companies discounted terms and closer collaboration with trita's core team. Together, we build a shared, measurable picture of how your team works: we identify what you can build on, where change would help, then select and remeasure one concrete leadership action. We work with you personally throughout the process, and the initial conversation comes with no obligation.",
+        },
+        link: {
+          href: "/pilot",
+          label: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
+        },
+        keywords: {
+          hu: "pilot program kedvezmény cégek core csapat 90 nap jelentkezés",
+          en: "pilot program discount companies core team 90 days apply",
+        },
+        related: ["what-teams-get", "how-to-start"],
         audiences: ["public"],
       },
       {
@@ -118,7 +145,7 @@ const TOPICS: HelpTopic[] = [
         },
         link: {
           href: "/how-we-work",
-          label: { hu: "Árak és csomagok", en: "Pricing" },
+          label: { hu: "Együttműködés és árazás", en: "How we work and pricing" },
         },
         audiences: ["public"],
       },
@@ -176,6 +203,13 @@ const TOPICS: HelpTopic[] = [
           href: "/profile/results",
           label: { hu: "Eredményeim megnyitása", en: "Open my results" },
         },
+        steps: [
+          { hu: "Kezdd az Összképpel: itt látod a legerősebb mintázatokat.", en: "Start with Overview to see your strongest patterns." },
+          { hu: "A Részletek nézetben dimenziónként olvashatod az értelmezést.", en: "Use Details to read the interpretation dimension by dimension." },
+          { hu: "A Külső kép megmutatja, hol egyezik vagy tér el mások benyomása.", en: "Outside view shows where other people's impressions align with or differ from yours." },
+        ],
+        keywords: { hu: "értelmezés dimenzió összkép részletek profil", en: "interpret dimensions overview details profile" },
+        related: ["comparison", "who-sees-results"],
         audiences: SIGNED_IN,
       },
       {
@@ -188,6 +222,8 @@ const TOPICS: HelpTopic[] = [
           hu: "Az egyéni eredményedet alapesetben csak te látod. Szervezeti programban a tanácsadó a munkája részeként hozzáfér, a vezetők és a csapattagok viszont csak aggregált, névtelenített csapatképet látnak – a te egyéni értékeid abban nem jelennek meg.",
           en: "By default only you can see your individual results. In an organizational program the consultant has access as part of their work, but managers and teammates only see an aggregated, anonymized team picture – your individual values never appear in it.",
         },
+        keywords: { hu: "adatvédelem vezető tanácsadó láthatóság", en: "privacy manager consultant visibility" },
+        related: ["data-handling", "when-team-results"],
         audiences: SIGNED_IN,
       },
       {
@@ -204,6 +240,8 @@ const TOPICS: HelpTopic[] = [
           href: "/profile/results?tab=comparison",
           label: { hu: "Összehasonlítás megnyitása", en: "Open comparison" },
         },
+        keywords: { hu: "külső kép vakfolt eltérés observer", en: "outside view blind spot difference observer" },
+        related: ["how-invite", "who-sees-results"],
         audiences: SIGNED_IN,
       },
     ],
@@ -219,13 +257,20 @@ const TOPICS: HelpTopic[] = [
           en: "How do I request feedback from someone?",
         },
         answer: {
-          hu: "Az Eredményeim oldal Meghívók fülén tudsz meghívó linket készíteni és elküldeni. Egyszerre legfeljebb 5 aktív meghívód lehet, és minden link 30 napig érvényes. A kitöltéshez az ismerősödnek nem kell regisztrálnia.",
-          en: "On the Invites tab of My Results you can create and send invite links. You can have up to 5 active invites at a time, and each link is valid for 30 days. Your peer does not need to register to fill it out.",
+          hu: "Az Eredményeim oldal Külső kép fülén, a Meghívások résznél tudsz linket készíteni és elküldeni. Egyszerre legfeljebb 5 aktív meghívód lehet, és minden link 30 napig érvényes. A kitöltéshez az ismerősödnek nem kell regisztrálnia.",
+          en: "On the Outside view tab of My Results, use the Invitations section to create and send a link. You can have up to 5 active invites at a time, and each link is valid for 30 days. Your peer does not need to register to fill it out.",
         },
         link: {
           href: "/profile/results?tab=comparison#invitations",
           label: { hu: "Meghívók kezelése", en: "Manage invites" },
         },
+        steps: [
+          { hu: "Nyisd meg az Eredményeim oldal Külső kép fülét.", en: "Open the Outside view tab on My Results." },
+          { hu: "A Meghívások résznél adj meg emailcímet, vagy készíts megosztható linket.", en: "In Invitations, enter an email address or create a shareable link." },
+          { hu: "A beérkezett visszajelzések állapotát ugyanitt követheted.", en: "Track incoming feedback in the same place." },
+        ],
+        keywords: { hu: "meghívás meghívó link email külső kép", en: "invite invitation link email outside view" },
+        related: ["whom-to-ask", "comparison"],
         audiences: SIGNED_IN,
       },
       {
@@ -307,13 +352,18 @@ const TOPICS: HelpTopic[] = [
       {
         id: "start-campaign",
         question: {
-          hu: "Hogyan indítok visszajelzés-kampányt?",
-          en: "How do I launch a feedback campaign?",
+          hu: "Hogyan indul új csapatmérés?",
+          en: "How is a new team measurement started?",
         },
         answer: {
-          hu: "A kampányok felületen tudsz visszajelzés-kört indítani a csapatnak. A kampány vázlatként indul, aktiválás után gyűjti a válaszokat, lezárás után pedig nem nyitható újra – a lezárással várj, amíg mindenki végzett.",
-          en: "You can launch a feedback round for your team on the campaigns screen. A campaign starts as a draft, collects responses once activated, and cannot be reopened after closing – wait to close until everyone is done.",
+          hu: "Új mérést a program tanácsadója indít a szervezet Mérések felületén. A mérés vázlatként készül el, aktiválás után gyűjti a válaszokat, lezárás után pedig nem nyitható újra. Ha új kört szeretnél, jelezd a tanácsadódnak vagy írj nekünk.",
+          en: "A new measurement is launched by the program consultant from the organization's Measurements area. It starts as a draft, collects responses after activation, and cannot be reopened after closing. To start a new round, contact your consultant or get in touch with us.",
         },
+        link: {
+          href: "/contact",
+          label: { hu: "Új mérés egyeztetése", en: "Discuss a new measurement" },
+        },
+        keywords: { hu: "kampány kör indítás mérés tanácsadó", en: "campaign round launch measurement consultant" },
         audiences: MANAGING,
       },
       {
@@ -341,8 +391,8 @@ const TOPICS: HelpTopic[] = [
           en: "Where do I manage the organization and teams?",
         },
         answer: {
-          hu: "A szervezeti vezérlőn éred el a csapatokat, a tagokat és a kampányokat. Új csapatot a Csapatok fülön hozhatsz létre, a tagok szerepét a Tagok fülön módosíthatod.",
-          en: "The organization cockpit gives you access to teams, members and campaigns. Create new teams on the Teams tab and manage member roles on the Members tab.",
+          hu: "A szervezeti felületen éred el a csapatokat és a tagokat. Új csapatot a Csapatok fülön hozhatsz létre, a tagok szerepét a Tagok fülön módosíthatod. A méréseket a program tanácsadója kezeli.",
+          en: "The organization area gives you access to teams and members. Create new teams on the Teams tab and manage member roles on the Members tab. Measurements are managed by the program consultant.",
         },
         link: {
           href: "/dashboard",

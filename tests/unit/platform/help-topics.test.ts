@@ -48,10 +48,26 @@ test("every entry has non-empty HU and EN texts", () => {
           assert.ok(localized.hu.trim().length > 0);
           assert.ok(localized.en.trim().length > 0);
         }
+        for (const step of entry.steps ?? []) {
+          assert.ok(step.hu.trim().length > 0);
+          assert.ok(step.en.trim().length > 0);
+        }
         if (entry.link) {
           assert.ok(entry.link.href.startsWith("/"), `${entry.id}: internal link expected`);
         }
       }
     }
   }
+});
+
+test("help copy follows the current results and measurement terminology", () => {
+  const entries = getHelpTopics("admin").flatMap((topic) => topic.entries);
+  const invite = entries.find((entry) => entry.id === "how-invite");
+  const measurement = entries.find((entry) => entry.id === "start-campaign");
+  const orgAdmin = entries.find((entry) => entry.id === "manage-org");
+
+  assert.match(invite?.answer.hu ?? "", /Külső kép/);
+  assert.match(measurement?.question.hu ?? "", /mérés/);
+  assert.match(measurement?.answer.hu ?? "", /tanácsadó/);
+  assert.doesNotMatch(orgAdmin?.answer.hu ?? "", /kampány/);
 });
