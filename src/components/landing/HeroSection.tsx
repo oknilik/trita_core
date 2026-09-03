@@ -407,14 +407,14 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
         key={self ? "self" : "team"}
         data-landing-hero-variable-mode={self ? "self" : "team"}
         aria-hidden={active ? undefined : true}
-        className={active ? "flex flex-col" : "invisible flex flex-col pointer-events-none"}
+        className={active ? "flex flex-col min-[700px]:max-md:items-center" : "invisible flex flex-col pointer-events-none min-[700px]:max-md:items-center"}
       >
             <p className={`${riseIn} mb-7 mt-6 max-w-[610px] text-balance text-base font-light leading-relaxed text-ink-body`}>
               {self ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
             </p>
 
             <div
-              className={`${riseIn} mb-4 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center`}
+              className={`${riseIn} mb-4 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center min-[700px]:max-md:justify-center`}
               style={{ animationDelay: "0.1s" }}
             >
               <Link
@@ -472,7 +472,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             </div>
 
             {self ? (
-              <div className={`${riseIn} flex flex-wrap items-center gap-2`} style={{ animationDelay: "0.2s" }}>
+              <div className={`${riseIn} flex flex-wrap items-center gap-2 min-[700px]:max-md:justify-center`} style={{ animationDelay: "0.2s" }}>
                 {[
                   { Icon: ClockIcon, text: t("landing.selfMetaTime", locale) },
                   { Icon: FlaskIcon, text: t("landing.selfMetaMethod", locale) },
@@ -486,8 +486,8 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 ))}
               </div>
             ) : (
-              <div className={`${riseIn} flex flex-wrap items-center gap-2`} style={{ animationDelay: "0.2s" }}>
-                <div className="flex flex-wrap items-center gap-2">
+              <div className={`${riseIn} flex flex-wrap items-center gap-2 min-[700px]:max-md:justify-center`} style={{ animationDelay: "0.2s" }}>
+                <div className="flex flex-wrap items-center gap-2 min-[700px]:max-md:justify-center">
                   {[
                     { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
                     { Icon: ClockIcon, text: t("landing.teamMetaTiming", locale) },
@@ -517,12 +517,12 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               MARADÉK térben középre kerül (md:my-auto). Így a self és a team
               eltérő hosszú szövege nem tolja el a kapcsolót – korábban a rács
               items-center-e az egész oszlopot újrapozicionálta. */}
-          <div data-landing-hero-copy className="flex min-w-0 flex-col min-[700px]:max-md:mx-auto min-[700px]:max-md:w-full min-[700px]:max-md:max-w-[640px] md:min-h-[674px]">
-            <div className={`${riseIn} mb-4 lg:mb-5`}>
+          <div data-landing-hero-copy className="flex min-w-0 flex-col min-[700px]:max-md:mx-auto min-[700px]:max-md:w-full min-[700px]:max-md:max-w-[560px] min-[700px]:max-md:items-center min-[700px]:max-md:text-center md:min-h-[674px]">
+            <div className={`${riseIn} mb-4 min-[700px]:max-md:self-center lg:mb-5`}>
               <ModeSwitcher mode={mode} />
             </div>
 
-            <div data-landing-hero-copy-body className="flex flex-col">
+            <div data-landing-hero-copy-body className="flex w-full flex-col min-[700px]:max-md:items-center">
 
             <SectionEyebrow
               tone={isSelf ? "bronze" : "team"}
@@ -537,7 +537,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 (pl. 375/768px-en 5 vs 4 sor) nem tolja el az alatta lévő
                 szöveget. Nem heading és aria-hidden – egyetlen H1 marad. */}
             <div className="grid [&>*]:[grid-area:1/1]">
-              <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink min-[700px]:max-md:max-w-[15ch] min-[700px]:max-md:text-fluid-title">
+              <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink min-[700px]:max-md:max-w-[14ch]">
                 {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
                 <em className="italic" style={{ color: headlineAccentColor }}>
                   {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
@@ -546,7 +546,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               <span
                 aria-hidden
                 data-landing-hero-title-ghost
-                className="invisible block max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight min-[700px]:max-md:max-w-[15ch] min-[700px]:max-md:text-fluid-title"
+                className="invisible block max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight min-[700px]:max-md:max-w-[14ch]"
               >
                 {isSelf ? t("landing.teamHeadlineBefore", locale) : t("landing.selfHeadlineBefore", locale)}
                 <em className="italic">
