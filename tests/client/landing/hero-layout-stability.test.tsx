@@ -28,8 +28,27 @@ describe("hero – rögzített geometria módváltásnál", () => {
     expect(copy).toHaveClass("md:min-h-[674px]");
     // A kapcsoló az oszlop ELSŐ gyermeke – a szöveg hossza nem tolhatja el.
     expect(copy!.firstElementChild!.querySelector('[data-testid="mode-switcher"]')).not.toBeNull();
+    // A szöveg FELÜLRE igazodik: a rövidebb változat nem csúszhat középre.
     const body = copy!.querySelector("[data-landing-hero-copy-body]");
-    expect(body).toHaveClass("md:my-auto");
+    expect(body).not.toHaveClass("md:my-auto");
+    // A módfüggő rész mindkét változata jelen van, egy cellába rakva; csak az aktív érhető el.
+    const variable = copy!.querySelector("[data-landing-hero-variable]")!;
+    expect(variable.className).toContain("[grid-area:1/1]");
+    expect(variable.children).toHaveLength(2);
+    const activeVariant = variable.querySelector(`[data-landing-hero-variable-mode="${mode}"]`)!;
+    const inactiveVariant = variable.querySelector(`[data-landing-hero-variable-mode="${mode === "self" ? "team" : "self"}"]`)!;
+    expect(activeVariant).not.toHaveAttribute("aria-hidden");
+    expect(inactiveVariant).toHaveAttribute("aria-hidden", "true");
+    expect(inactiveVariant).toHaveClass("invisible");
+    // A H1 mellett a másik mód címe láthatatlan szellemként tartja a magasságot – de NEM heading.
+    const headings = container.querySelectorAll("h1");
+    expect(headings).toHaveLength(1);
+    const ghost = container.querySelector("[data-landing-hero-title-ghost]")!;
+    expect(ghost.tagName).toBe("SPAN");
+    expect(ghost).toHaveAttribute("aria-hidden");
+    expect(ghost).toHaveClass("invisible");
+    expect(ghost.parentElement!.className).toContain("[grid-area:1/1]");
+    expect(ghost.textContent).not.toEqual(headings[0].textContent);
   });
 
   it.each([
