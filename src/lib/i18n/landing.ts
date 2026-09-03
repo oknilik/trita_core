@@ -602,11 +602,19 @@ export const landingTranslations = {
     },
     heroCta: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
     // Kapacitás-jelző a hero CTA alatt: 10 pötty + ez a felirat.
-    spotsLeftShort: { hu: "Még {left} szabad hely", en: "{left} spots still open" },
     spotsA11y: {
       hu: "A {total} partnercsapat-helyből {left} szabad",
       en: "{left} of {total} partner team spots are open",
     },
+    // Kapacitás-kártya a hero CTA alatt (2026-09-03): a pöttysor helyett a
+    // szabad helyek száma a döntési tény — nagy szám, sáv, és maga a kártya
+    // a jelentkezésre visz.
+    spotsPanelTitle: { hu: "Még {left} szabad partnercsapat-hely", en: "{left} partner team spots still open" },
+    spotsPanelUrgency: {
+      hu: "Az első {total} csapattal indulunk – jelentkezz, amíg van hely.",
+      en: "We start with the first {total} teams – apply while spots last.",
+    },
+    spotsPanelCta: { hu: "Jelentkezem", en: "Apply now" },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
     metaChip1: { hu: "Közvetlen kapcsolat", en: "Direct contact" },
     metaChip2: { hu: "Egymásra figyelünk", en: "Open feedback" },

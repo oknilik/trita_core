@@ -56,3 +56,20 @@
 - A `check:colors` nyers-hex keret (38 > 22) a `main`-en is bukik — az
   `opengraph-image.tsx` 19 hexe a #85-tel jött be; nem ennek a változásnak a
   hibája.
+
+## Kiegészítés (2026-09-03, este)
+
+- **`/team-dynamics` – Features-kártyák:** a három mérési réteg kártyája
+  egyforma hátteret kap. Az első („Mért bizalmi háló") korábbi kiemelése
+  színben rangsort sugallt három egyenrangú réteg közt.
+- **Blogcikkek dátuma:** a 9 cikkpár (HU+EN) megjelenési dátuma
+  egyenletesen szétosztva 2026 februárjától, ~25 naponként, a meglévő
+  sorrend megtartásával; a legfrissebb pár (08-26) helyben maradt. A blog
+  forrása a `content/blog/*.mdx` frontmatter (nincs blog-tábla a DB-ben —
+  az admin Blog-fül is ide commitol), így a git-commit a mentés. A hírlevél-
+  digest 14 napos ablaka és a `NewsletterDelivery` napló miatt a régebbre
+  datált cikkek NEM mennek ki újra.
+- **`/pilot` – szabad helyek:** a hero CTA alatti pöttysor helyett
+  kapacitás-kártya: nagy szám (`7 / 10`), tízrészes sáv, sürgető sor, és a
+  kártya maga a jelentkezésre (`#jelentkezes`) visz. Új `cta_id`:
+  `hero_spots` (`surface: "pilot"`). A `spotsLeftShort` kulcs kivezetve.

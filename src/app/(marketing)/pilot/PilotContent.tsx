@@ -18,6 +18,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 const INPUT_CLASS = "w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
 
@@ -614,33 +615,52 @@ function FounderSection({ locale }: { locale: Locale }) {
   );
 }
 
-// Kapacitás-jelző a hero CTA alatt: 10 pötty — a szabad helyek világítanak
-// (badge-szín), a beteltek halványak. Információ, nem dekoráció: a számok a
-// pilot-config.ts-ből jönnek, betelt pilotnál a sor nem renderelődik.
+// Kapacitás-kártya a hero CTA alatt (2026-09-03, a korábbi pöttysor
+// helyett): a szabad helyek száma a döntési tény, ezért nagy számként áll,
+// alatta tízrészes sáv (a betelt helyek homokszín, a szabadok a badge
+// színén világítanak), és a kártya maga is a jelentkezésre visz. A számok
+// a pilot-config.ts-ből jönnek; betelt pilotnál a kártya nem renderelődik.
 function SpotsIndicator({ locale }: { locale: Locale }) {
   if (PILOT_SPOTS_LEFT <= 0) return null;
   const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT };
+  const taken = PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT;
   return (
-    <p className="mt-5 flex flex-wrap items-center gap-3">
-      <span aria-hidden="true" className="flex items-center gap-1.5">
-        {Array.from({ length: PILOT_TOTAL_TEAMS }, (_, i) => (
-          <span
-            key={i}
-            className={
-              i < PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT
-                ? "size-2.5 rounded-full bg-sand"
-                : "size-2.5 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_3px_rgba(232,178,118,0.18)]"
-            }
-          />
-        ))}
+    <a
+      href="#jelentkezes"
+      data-pilot-spots
+      aria-label={tf("pilot.spotsA11y", locale, vars)}
+      onClick={() => track("cta.click", { cta_id: "hero_spots", surface: "pilot" })}
+      className={`group mt-6 flex max-w-[600px] items-center gap-4 rounded-2xl border border-[var(--color-layer-team-accent)]/30 bg-surface-card p-4 shadow-[0_12px_32px_rgba(26,26,46,0.08)] transition-[translate,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(26,26,46,0.12)] sm:gap-5 sm:p-5 ${FOCUS_RING_CLASS}`}
+    >
+      <span className="flex shrink-0 items-baseline gap-1 font-fraunces leading-none text-[var(--color-layer-team-accent)]">
+        <span className="text-display md:text-hero">{PILOT_SPOTS_LEFT}</span>
+        <span className="text-label uppercase">/ {PILOT_TOTAL_TEAMS}</span>
       </span>
-      <span
-        aria-label={tf("pilot.spotsA11y", locale, vars)}
-        className="text-sm font-semibold text-[var(--color-layer-team-accent)]"
-      >
-        {tf("pilot.spotsLeftShort", locale, vars)}
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold text-ink sm:text-base">
+          {tf("pilot.spotsPanelTitle", locale, vars)}
+        </span>
+        <span aria-hidden="true" className="mt-2.5 grid grid-cols-10 gap-1">
+          {Array.from({ length: PILOT_TOTAL_TEAMS }, (_, i) => (
+            <span
+              key={i}
+              className={
+                i < taken
+                  ? "h-1.5 rounded-full bg-sand"
+                  : "h-1.5 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_2px_rgba(232,178,118,0.18)]"
+              }
+            />
+          ))}
+        </span>
+        <span className="mt-2 block text-note leading-relaxed text-ink-body">
+          {tf("pilot.spotsPanelUrgency", locale, vars)}
+        </span>
       </span>
-    </p>
+      <span className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-[var(--color-layer-team-accent)] sm:inline-flex">
+        {t("pilot.spotsPanelCta", locale)}
+        <ChevronRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+      </span>
+    </a>
   );
 }
 
