@@ -303,7 +303,7 @@ export const resultsTranslations = {
     deleteSuccess: { hu: "Meghívó törölve.", en: "Invite canceled." },
     deleteFailed: { hu: "Nem sikerült törölni a meghívót.", en: "Could not delete invite." },
     byEmailTitle: { hu: "Meghívás emailben", en: "Invite by email" },
-    byEmailPlaceholder: { hu: "ismerős@email.com", en: "friend@email.com" },
+    byEmailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     activeLimit: { hu: "Egyszerre legfeljebb 5 aktív meghívód lehet.", en: "Maximum 5 active invites at a time." },
     stats: { hu: "{completed} kitöltve, {pending} függőben, {canceled} törölve", en: "{completed} completed, {pending} pending, {canceled} canceled" },
   },
@@ -1102,8 +1102,8 @@ export const resultsTranslations = {
       en: "Show it to them – scanning it takes them straight to the consent page.",
     },
     compareEmailPlaceholder: {
-      hu: "email@pelda.hu (nem kötelező)",
-      en: "email@example.com (optional)",
+      hu: "nev@email.hu (nem kötelező)",
+      en: "name@email.com (optional)",
     },
     compareEmailOptionalNote: {
       hu: "Ha megadsz egy címet, a linket emailben is kiküldjük.",
@@ -1985,7 +1985,7 @@ export const resultsTranslations = {
       hu: "A levélben a profil linkje és egy QR-kód is szerepel.",
       en: "The email includes the profile link and a QR code.",
     },
-    shareEmailPlaceholder: { hu: "nev@ceg.hu", en: "name@company.com" },
+    shareEmailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     shareEmailSend: { hu: "Küldés", en: "Send" },
     shareEmailSending: { hu: "Küldés…", en: "Sending…" },
     shareEmailSentTo: { hu: "Elküldtük ide:", en: "Sent to:" },

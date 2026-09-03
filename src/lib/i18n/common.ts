@@ -376,7 +376,7 @@ export const commonTranslations = {
     nameLabel: { hu: "Neved", en: "Your name" },
     namePlaceholder: { hu: "Kovács Anna", en: "Jane Smith" },
     emailLabel: { hu: "Email cím", en: "Email address" },
-    emailPlaceholder: { hu: "anna@example.com", en: "jane@example.com" },
+    emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     backgroundLabel: { hu: "Szakmai háttér", en: "Professional background" },
     backgroundPlaceholder: {
       hu: "Pl. 5 éve dolgozom coaching területen, ICF ACC tanúsítással rendelkezem, főként leadership és karrierváltás témában dolgozom...",

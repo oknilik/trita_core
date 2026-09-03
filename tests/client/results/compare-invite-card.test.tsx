@@ -51,7 +51,7 @@ describe("CompareInviteCard", () => {
 
     // Az egyetlen értelmes következő lépés azonnal használható.
     expect(
-      screen.getByPlaceholderText("email@pelda.hu (nem kötelező)"),
+      screen.getByPlaceholderText("nev@email.hu (nem kötelező)"),
     ).toBeInTheDocument();
     // Nincs mire visszacsukni, tehát nincs toggle sem.
     expect(
@@ -75,7 +75,7 @@ describe("CompareInviteCard", () => {
     await user.click(screen.getByRole("button", { name: "Személy meghívása" }));
 
     expect(
-      screen.getByPlaceholderText("email@pelda.hu (nem kötelező)"),
+      screen.getByPlaceholderText("nev@email.hu (nem kötelező)"),
     ).toBeInTheDocument();
   });
 

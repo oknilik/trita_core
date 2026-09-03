@@ -15,7 +15,7 @@ export const authTranslations = {
     resendCodeSent: { hu: "Kód elküldve.", en: "Code sent." },
     resendCodeWait: { hu: "Próbáld újra {seconds} mp múlva.", en: "Try again in {seconds}s." },
     emailLabel: { hu: "E-mail-cím", en: "Email address" },
-    emailPlaceholder: { hu: "nev@pelda.hu", en: "name@example.com" },
+    emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     codeNote: { hu: "Nincs jelszó. A kód rövid ideig érvényes, és csak egyszer használható.", en: "No password. The code expires shortly and can only be used once." },
     requestSignInCode: { hu: "Belépési kód kérése", en: "Request sign-in code" },
     requestSignUpCode: { hu: "Regisztrációs kód kérése", en: "Request sign-up code" },

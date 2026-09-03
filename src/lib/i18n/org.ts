@@ -703,7 +703,7 @@ export const orgTranslations = {
 
       // OrgInviteForm
       emailLabel: { hu: "Email cím", en: "Email address" },
-      emailPlaceholder: { hu: "kolléga@cég.hu", en: "colleague@company.com" },
+      emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
       roleLabel: { hu: "Szerepkör", en: "Role" },
       roleMember: { hu: "Tag", en: "Member" },
       roleManager: { hu: "Menedzser", en: "Manager" },
@@ -1511,7 +1511,7 @@ export const orgTranslations = {
       alreadyMember: { hu: "Ez a személy már tagja a csapatnak (vagy meghívó küldve).", en: "This person is already a member or has a pending invite." },
       error: { hu: "Hiba. Próbáld újra.", en: "Something went wrong." },
       emailLabel: { hu: "Emailcím", en: "Email address" },
-      emailPlaceholder: { hu: "kolléga@cég.hu", en: "colleague@company.com" },
+      emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
       adding: { hu: "Hozzáadás…", en: "Adding…" },
       add: { hu: "Hozzáadás", en: "Add member" },
       memberAdded: { hu: "A tagot hozzáadtuk.", en: "Member added successfully." },
@@ -1547,7 +1547,7 @@ export const orgTranslations = {
     // CandidateInviteForm
     candidateInvite: {
       emailLabel: { hu: "Email cím (opcionális)", en: "Email address (optional)" },
-      emailPlaceholder: { hu: "jelolt@pelda.hu", en: "candidate@example.com" },
+      emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
       nameLabel: { hu: "Jelölt neve", en: "Candidate name" },
       namePlaceholder: { hu: "Kovács Anna", en: "Jane Smith" },
       nameRequired: { hu: "A jelölt neve kötelező.", en: "Candidate name is required." },
