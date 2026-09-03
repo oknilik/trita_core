@@ -16,6 +16,13 @@
 - A csapatos átvezető elsődleges útja a **`/pilot`**, másodlagos linkje a
   `/team-dynamics` mélyoldal (a PR első változata a mélyoldalra küldött
   elsődlegesen — ez egy fölösleges ugrás volt).
+- A csapatos átvezetőben **nincs csapatkép-előnézet**: az a `/team-dynamics`
+  hero-jában dolgozik, a főoldalon csak elvitte a figyelmet a döntéstől.
+  Helyén egy kézzel komponált szerkesztői „kapcsolódás" rajz
+  (`TeamPathwayArt.tsx`): három forma (folt · mag · sarló) egy tintavonalra
+  fűzve, pályaívvel, pontsorral, csillaggal és nappal — a meglévő
+  formakészletből és az inverz palettából, ezért rokona a hero alatti
+  csillagos motívumnak. Az `EditorialShapeGlyph` ehhez lett exportálva.
 - **`/team-dynamics`** statikus csapatdiagnosztika-mélyoldal lett
   (`TeamLandingContent`): a korábbi csapat-módú szekciók, módváltó nélkül.
 - **`/self-awareness`** megszűnt: állandó átirányítás a főoldalra

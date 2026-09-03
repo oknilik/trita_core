@@ -97,12 +97,15 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     }
     expect(within(pathway).getByText(/~30 perc tagonkénti kitöltés/)).toBeInTheDocument();
 
-    // A csapatkép-előnézet a blokkban, a valódi riport kivonatával.
-    expect(within(pathway).getByText("Értékesítés")).toBeInTheDocument();
-    expect(within(pathway).getByText("Családi Vállalkozás")).toBeInTheDocument();
-    expect(within(pathway).getByText("Két nézőpont, egy csapatkép")).toBeInTheDocument();
-    expect(within(pathway).getByText("Csapatátlag – egyéni értékek nem jelennek meg.")).toBeInTheDocument();
-    expect(within(pathway).getByText("Tanácsadói értékelés")).toBeInTheDocument();
-    expect(within(pathway).getByText("5 tag")).toBeInTheDocument();
+    // A csapatkép-előnézet NEM a főoldalon él (a /team-dynamics hero-jában
+    // igen): helyén a szerkesztői „kapcsolódás" rajz, dekorációként.
+    expect(within(pathway).queryByText("Családi Vállalkozás")).not.toBeInTheDocument();
+    const art = pathway.querySelector("[data-landing-team-art] svg");
+    expect(art).not.toBeNull();
+    expect(art).toHaveAttribute("aria-hidden", "true");
+    // Három tömör forma, egy gerinc-vonal, csillag és nap: a nyelv teljes hármasa.
+    expect(art?.querySelectorAll("[data-art-form]").length).toBe(3);
+    expect(art?.querySelector("[data-art-spine]")).not.toBeNull();
+    expect(art?.querySelector("[data-art-star]")).not.toBeNull();
   });
 });

@@ -28,7 +28,12 @@ import {
   type ArtPalette,
 } from "@/lib/miro-primitives";
 
-function Shape({ shape, p, strokeWidth }: { shape: PlacedShape; p: ArtPalette; strokeWidth: number }) {
+/**
+ * Egyetlen elhelyezett szerkesztői forma. Exportált, hogy a kézzel komponált
+ * illusztrációk (pl. a főoldal csapatos átvezetője) ugyanabból a
+ * formakészletből és színszerepekből dolgozzanak, mint a konstelláció.
+ */
+export function EditorialShapeGlyph({ shape, p, strokeWidth }: { shape: PlacedShape; p: ArtPalette; strokeWidth: number }) {
   const def = EDITORIAL_SHAPES[shape.id];
   const fill = shape.tone === "counterweight" ? p.counterweight : p.form;
   // A formák a saját −50…50 egységnégyzetükben élnek; a vonalvastagságot
@@ -88,7 +93,7 @@ export function EditorialArt({
         className={className} role="img" aria-hidden
         style={{ display: "block", width: "100%", height: "100%" }}
       >
-        <Shape shape={shape} p={p} strokeWidth={strokeWidth} />
+        <EditorialShapeGlyph shape={shape} p={p} strokeWidth={strokeWidth} />
       </svg>
     );
   }
@@ -108,7 +113,7 @@ export function EditorialArt({
       />
       <circle cx={c.sun.x} cy={c.sun.y} r={c.sun.r} fill={p.sun} />
       {c.shapes.map((shape, i) => (
-        <Shape key={`${shape.id}-${i}`} shape={shape} p={p} strokeWidth={strokeWidth} />
+        <EditorialShapeGlyph key={`${shape.id}-${i}`} shape={shape} p={p} strokeWidth={strokeWidth} />
       ))}
       {c.star && (
         <g stroke={p.line} strokeWidth={r2(strokeWidth * 0.8)} strokeLinecap="round" opacity={0.9}>

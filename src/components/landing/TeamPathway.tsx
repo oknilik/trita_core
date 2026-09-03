@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
-import { TeamPanel } from "@/components/landing/panels";
+import { TeamPathwayArt } from "@/components/landing/TeamPathwayArt";
 import { track } from "@/lib/analytics/client";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
@@ -15,7 +15,9 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
  * korábbi csapat-módú landing Features-, StatsBar- és HowItWorks-szekcióiból
  * a döntéshez kell: a három mérési réteg, az idő- és átfutási ígéret, a
  * tanácsadói értelmezés. Az elsődleges út a pilot, a részletek a
- * /team-dynamics mélyoldalon.
+ * /team-dynamics mélyoldalon. A csapatkép-előnézet szándékosan NEM
+ * szerepel itt (2026-09-03): a mélyoldalon dolgozik, a főoldalon csak
+ * elvitte a figyelmet a döntéstől.
  */
 export function TeamPathway() {
   const { locale } = useLocale();
@@ -89,8 +91,14 @@ export function TeamPathway() {
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto mt-9 w-full max-w-[460px] md:mt-0">
-          <TeamPanel />
+        {/* A csapatkép-előnézet a /team-dynamics hero-jában él; itt egy
+            szerkesztői „kapcsolódás" rajz áll a helyén — a látogató nem keres
+            benne adatot, a figyelme a három rétegen és a két úton marad. */}
+        <div
+          data-landing-team-art
+          className="relative z-10 mx-auto mt-6 w-full max-w-[300px] sm:max-w-[360px] md:mt-0 md:max-w-[440px]"
+        >
+          <TeamPathwayArt />
         </div>
       </div>
     </section>
