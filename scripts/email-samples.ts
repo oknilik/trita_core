@@ -306,8 +306,8 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
           locale === "hu"
             ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
             : "What a team reveals through the way its members react to each other's feedback.",
-        postUrl: "https://trita.io/blog/csapatdinamika-olvasasa",
-        postImageUrl: blogImageUrl("https://trita.io", "csapatdinamika-olvasasa"),
+        postUrl: "https://trita.io/blog/csapat-szemelyisegkep-ertelmezese",
+        postImageUrl: blogImageUrl("https://trita.io", "csapat-szemelyisegkep-ertelmezese"),
         readingMinutes: 7,
         unsubUrl: "https://trita.io/newsletter/unsubscribe?token=unsub-token",
         unsubPostUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
@@ -334,8 +334,8 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
               locale === "hu"
                 ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
                 : "What a team reveals through the way its members react to each other's feedback.",
-            url: "https://trita.io/blog/csapatdinamika-olvasasa",
-            imageUrl: blogImageUrl("https://trita.io", "csapatdinamika-olvasasa"),
+            url: "https://trita.io/blog/csapat-szemelyisegkep-ertelmezese",
+            imageUrl: blogImageUrl("https://trita.io", "csapat-szemelyisegkep-ertelmezese"),
             readingMinutes: 7,
           },
           {

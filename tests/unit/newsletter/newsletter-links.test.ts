@@ -61,7 +61,7 @@ test("a forras-ertekkeszlet a beillesztesi pontokat fedi", () => {
 // postafiókban hónapokig ott marad. Ezt a hibát 2026-08-21-én prod buildon
 // mérve találtuk meg; a teszt azért van, hogy ne térhessen vissza.
 test("a level-borito a stabil hirlevel-route-rol jon, nem az OG-kepbol", () => {
-  const url = new URL(blogImageUrl("https://trita.io", "csapatdinamika-olvasasa"));
-  assert.equal(url.pathname, "/api/newsletter/cover/csapatdinamika-olvasasa");
+  const url = new URL(blogImageUrl("https://trita.io", "csapat-szemelyisegkep-ertelmezese"));
+  assert.equal(url.pathname, "/api/newsletter/cover/csapat-szemelyisegkep-ertelmezese");
   assert.ok(!url.pathname.includes("opengraph-image"));
 });

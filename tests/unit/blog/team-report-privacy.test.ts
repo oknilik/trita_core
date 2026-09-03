@@ -35,7 +35,7 @@ test("a csapatriport alapcikkek rögzítik a saját és aggregált nézet határ
     requiredAny?: string[][];
   }[] = [
     {
-      file: "csapatdinamika-olvasasa.mdx",
+      file: "csapat-szemelyisegkep-ertelmezese.mdx",
       // A tagadószó „nem" és „sem" is lehet — a mondat előzménye dönti el,
       // melyik a helyes magyarul. Az ÁLLÍTÁS a kötött: más csapattag
       // egyéni pontszáma nem jelenhet meg a közös nézetben.
@@ -43,15 +43,15 @@ test("a csapatriport alapcikkek rögzítik a saját és aggregált nézet határ
       requiredAny: [["más csapattag egyéni pontszáma nem látható", "más csapattag egyéni pontszáma sem látható"]],
     },
     {
-      file: "reading-your-teams-personality-profile.mdx",
+      file: "reading-your-teams-personality-picture.mdx",
       required: ["sees only their own personality profile", "does not show any other team member's individual score"],
     },
     {
-      file: "egy-csapat-egy-hoterkep.mdx",
+      file: "amikor-a-csapatriport-beszelgetest-indit.mdx",
       required: ["mindenki csak a saját profilját látta", "aggregált személyiségkép"],
     },
     {
-      file: "one-team-one-heatmap.mdx",
+      file: "when-a-team-report-starts-a-conversation.mdx",
       required: ["each person saw only their own profile", "aggregate personality picture"],
     },
   ];
