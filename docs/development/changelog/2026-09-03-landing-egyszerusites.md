@@ -73,3 +73,8 @@
   kapacitás-kártya: nagy szám (`7 / 10`), tízrészes sáv, sürgető sor, és a
   kártya maga a jelentkezésre (`#jelentkezes`) visz. Új `cta_id`:
   `hero_spots` (`surface: "pilot"`). A `spotsLeftShort` kulcs kivezetve.
+- **`/pilot` – a következő szabad hely lüktet:** a kapacitás-kártya sávjában
+  az első szabad szelet lélegzik (`pilot-spot-next`, `globals.css`): halvány
+  gyűrű nő ki belőle és elhal, közben kicsit felfénylik. Csak ez az egy
+  szelet mozog. Reduced motion mellett a mozgás kikapcsol, a következő hely
+  statikus gyűrűt kap — az információ megmarad.

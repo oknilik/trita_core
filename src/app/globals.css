@@ -1409,3 +1409,36 @@ input[type="range"].pattern-range::-moz-range-track {
     opacity: 1;
   }
 }
+
+/* ── Pilot kapacitás-kártya: a KÖVETKEZŐ szabad hely lüktet ─────────────
+   A tízrészes sáv első szabad szelete lélegzik: halvány gyűrű nő ki
+   belőle és elhal (box-shadow), közben a szelet kicsit felfénylik. Csak
+   ez az egy szelet mozog — a többi szabad hely nyugodtan világít, a
+   betelteké homokszín. Így a szem a „ez a tiéd lehet" helyre ugrik,
+   anélkül, hogy az egész sáv zajongana.
+
+   Reduced motion: a lüktetés KIKAPCSOL, de a következő hely jelölése
+   megmarad egy statikus gyűrűvel — az információ nem vész el, csak nem
+   mozog. */
+@keyframes pilot-spot-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-layer-team-accent) 75%, transparent);
+    filter: brightness(1);
+  }
+  55% {
+    box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-layer-team-accent) 0%, transparent);
+    filter: brightness(1.12);
+  }
+}
+
+.pilot-spot-next {
+  animation: pilot-spot-pulse 1.6s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pilot-spot-next {
+    animation: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-layer-team-accent) 55%, transparent);
+  }
+}

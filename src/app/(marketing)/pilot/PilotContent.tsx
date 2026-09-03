@@ -640,14 +640,20 @@ function SpotsIndicator({ locale }: { locale: Locale }) {
         <span className="block text-sm font-semibold text-ink sm:text-base">
           {tf("pilot.spotsPanelTitle", locale, vars)}
         </span>
+        {/* A betelt helyek homokszín, a szabadok a badge színén világítanak;
+            a KÖVETKEZŐ szabad hely lüktet (pilot-spot-next, globals.css) —
+            „ez lehet a tiétek". */}
         <span aria-hidden="true" className="mt-2.5 grid grid-cols-10 gap-1">
           {Array.from({ length: PILOT_TOTAL_TEAMS }, (_, i) => (
             <span
               key={i}
+              data-pilot-spot={i < taken ? "taken" : i === taken ? "next" : "open"}
               className={
                 i < taken
                   ? "h-1.5 rounded-full bg-sand"
-                  : "h-1.5 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_2px_rgba(232,178,118,0.18)]"
+                  : i === taken
+                    ? "pilot-spot-next h-1.5 rounded-full bg-[var(--color-layer-team-badge)]"
+                    : "h-1.5 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_2px_rgba(232,178,118,0.18)]"
               }
             />
           ))}
