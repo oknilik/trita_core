@@ -116,7 +116,7 @@ function SelfPanel() {
 
         {/* A prototípushoz ténylegesen rendelt két erősség. A négy 50-es
             dimenzió semleges, ezért nem gyártunk melléjük „figyelendő” címkét. */}
-        <div data-landing-preview-detail="self-strengths" className="mt-5 flex flex-wrap items-center gap-2 min-[700px]:max-md:hidden">
+        <div data-landing-preview-detail="self-strengths" className="mt-5 flex flex-wrap items-center gap-2">
           <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
@@ -135,7 +135,7 @@ function SelfPanel() {
         </div>
 
         {/* A tényleges riport csapatszerep-modelljének két legerősebb becslése. */}
-        <div data-landing-preview-detail="self-roles" className="mb-1 mt-5 min-[700px]:max-md:hidden">
+        <div data-landing-preview-detail="self-roles" className="mb-1 mt-5">
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
               {t("landing.selfTeamRolesEyebrow", locale)}
@@ -271,7 +271,7 @@ function TeamPanel() {
           </div>
         </div>
 
-        <div className="mt-2 grid grid-cols-2 gap-2 min-[700px]:max-md:grid-cols-1">
+        <div className="mt-2 grid grid-cols-2 gap-2">
           <div className="min-w-0 rounded-xl bg-[var(--color-surface-subtle)] p-3">
             <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
               {t("landing.teamPrinciplesTitle", locale)}
@@ -328,11 +328,11 @@ function TeamPanel() {
           </div>
         </div>
 
-        <p className="mt-3 text-micro text-muted min-[700px]:max-md:hidden">
+        <p className="mt-3 text-micro text-muted">
           {t("landing.teamPrivacyNote", locale)}
         </p>
 
-        <div className="mt-3 grid grid-cols-2 gap-2 min-[700px]:max-md:hidden">
+        <div className="mt-3 grid grid-cols-2 gap-2">
           <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
             <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-sage-dark)]">
               <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-sage)]" />
@@ -355,7 +355,7 @@ function TeamPanel() {
 
         <div
           data-landing-preview-detail="team-narrative"
-          className="mt-3 rounded-r-[14px] p-3.5 min-[700px]:max-md:hidden"
+          className="mt-3 rounded-r-[14px] p-3.5"
           style={{
             borderLeft: "4px solid var(--color-layer-team-accent)",
             background: "color-mix(in srgb, var(--color-layer-team-accent) 10%, var(--color-surface-card))",
@@ -414,7 +414,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             </p>
 
             <div
-              className={`${riseIn} mb-4 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center min-[700px]:max-md:flex-col min-[700px]:max-md:items-stretch`}
+              className={`${riseIn} mb-4 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center`}
               style={{ animationDelay: "0.1s" }}
             >
               <Link
@@ -430,7 +430,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 }
                 className={getButtonClassName({
                   size: "lg",
-                  className: "min-h-[52px] w-full px-7 text-base shadow-md hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg sm:w-auto sm:min-w-[280px] min-[700px]:max-md:w-full min-[700px]:max-md:min-w-0",
+                  className: "min-h-[52px] w-full px-7 text-base shadow-md hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg sm:w-auto sm:min-w-[280px]",
                 })}
                 style={{
                   background: ctaBackground,
@@ -461,7 +461,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   className={getButtonClassName({
                     variant: "ghost",
                     size: "md",
-                    className: "group px-3 min-[700px]:max-md:justify-center",
+                    className: "group px-3",
                   })}
                   style={{ color: "var(--color-layer-team-accent)" }}
                 >
@@ -507,8 +507,8 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
 
   return (
     <section className="bg-cream">
-      <div className="mx-auto max-w-[1120px] px-7 pb-20 pt-12 min-[700px]:pb-24 min-[700px]:pt-16 md:pb-28 md:pt-20">
-        <div className="grid gap-10 min-[700px]:grid-cols-[minmax(0,1.08fr)_minmax(280px,0.92fr)] min-[700px]:items-start min-[700px]:gap-6 md:grid-cols-2 md:items-stretch md:gap-12">
+      <div className="mx-auto max-w-[1120px] px-7 pb-20 pt-12 min-[700px]:max-md:pb-16 min-[700px]:max-md:pt-14 md:pb-28 md:pt-20">
+        <div className="grid gap-10 min-[700px]:max-md:gap-6 md:grid-cols-2 md:items-stretch md:gap-12">
           {/* Mobilon a teljes ígéret és a CTA megelőzi az előnézetet. Így a
               látogató nem kényszerül egy hosszú riportkártyán végiggörgetni,
               mielőtt elérné az első döntési pontot. */}
@@ -517,7 +517,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               MARADÉK térben középre kerül (md:my-auto). Így a self és a team
               eltérő hosszú szövege nem tolja el a kapcsolót – korábban a rács
               items-center-e az egész oszlopot újrapozicionálta. */}
-          <div data-landing-hero-copy className="flex min-w-0 flex-col min-[700px]:min-h-[560px] md:min-h-[674px]">
+          <div data-landing-hero-copy className="flex min-w-0 flex-col min-[700px]:max-md:mx-auto min-[700px]:max-md:w-full min-[700px]:max-md:max-w-[640px] md:min-h-[674px]">
             <div className={`${riseIn} mb-4 lg:mb-5`}>
               <ModeSwitcher mode={mode} />
             </div>
@@ -537,7 +537,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 (pl. 375/768px-en 5 vs 4 sor) nem tolja el az alatta lévő
                 szöveget. Nem heading és aria-hidden – egyetlen H1 marad. */}
             <div className="grid [&>*]:[grid-area:1/1]">
-              <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink min-[700px]:max-md:max-w-[12ch] min-[700px]:max-md:text-fluid-title min-[700px]:max-md:leading-[0.98]">
+              <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink min-[700px]:max-md:max-w-[15ch] min-[700px]:max-md:text-fluid-title">
                 {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
                 <em className="italic" style={{ color: headlineAccentColor }}>
                   {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
@@ -546,7 +546,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               <span
                 aria-hidden
                 data-landing-hero-title-ghost
-                className="invisible block max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight min-[700px]:max-md:max-w-[12ch] min-[700px]:max-md:text-fluid-title min-[700px]:max-md:leading-[0.98]"
+                className="invisible block max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight min-[700px]:max-md:max-w-[15ch] min-[700px]:max-md:text-fluid-title"
               >
                 {isSelf ? t("landing.teamHeadlineBefore", locale) : t("landing.selfHeadlineBefore", locale)}
                 <em className="italic">
@@ -581,7 +581,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               aria-hidden={isSelf ? undefined : true}
               className={isSelf ? undefined : "invisible pointer-events-none"}
             >
-              <div className="mx-auto w-full max-w-[460px]">
+              <div className="mx-auto w-full max-w-[460px] min-[700px]:max-md:max-w-[560px]">
                 <SelfPanel />
               </div>
             </div>
@@ -590,7 +590,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               aria-hidden={isSelf ? true : undefined}
               className={isSelf ? "invisible pointer-events-none" : undefined}
             >
-              <div className="mx-auto w-full max-w-[460px]">
+              <div className="mx-auto w-full max-w-[460px] min-[700px]:max-md:max-w-[560px]">
                 <TeamPanel />
               </div>
             </div>
