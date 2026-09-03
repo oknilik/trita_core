@@ -28,10 +28,19 @@ test("a blogok nem mutatják közös nézetként az egyéni csapatpontszámokat"
 });
 
 test("a csapatriport alapcikkek rögzítik a saját és aggregált nézet határát", () => {
-  const contracts = [
+  const contracts: {
+    file: string;
+    required: string[];
+    /** Ugyanaz az állítás több elfogadható megfogalmazásban – legalább egy kell. */
+    requiredAny?: string[][];
+  }[] = [
     {
       file: "csapatdinamika-olvasasa.mdx",
-      required: ["csak a saját személyiségprofilját látja", "más csapattag egyéni pontszáma nem látható"],
+      // A tagadószó „nem" és „sem" is lehet — a mondat előzménye dönti el,
+      // melyik a helyes magyarul. Az ÁLLÍTÁS a kötött: más csapattag
+      // egyéni pontszáma nem jelenhet meg a közös nézetben.
+      required: ["csak a saját személyiségprofilját látja"],
+      requiredAny: [["más csapattag egyéni pontszáma nem látható", "más csapattag egyéni pontszáma sem látható"]],
     },
     {
       file: "reading-your-teams-personality-profile.mdx",
@@ -51,6 +60,12 @@ test("a csapatriport alapcikkek rögzítik a saját és aggregált nézet határ
     const source = readBlog(contract.file).toLowerCase();
     for (const phrase of contract.required) {
       assert.ok(source.includes(phrase.toLowerCase()), `${contract.file}: hiányzó adatvédelmi állítás: ${phrase}`);
+    }
+    for (const variants of contract.requiredAny ?? []) {
+      assert.ok(
+        variants.some((phrase) => source.includes(phrase.toLowerCase())),
+        `${contract.file}: hiányzó adatvédelmi állítás, egyik alakban sem: ${variants.join(" / ")}`,
+      );
     }
   }
 });
