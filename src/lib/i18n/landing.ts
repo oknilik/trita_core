@@ -415,8 +415,8 @@ export const landingTranslations = {
   newsletter: {
     eyebrow: { hu: "Értesítő", en: "Updates" },
     title: {
-      hu: "Új cikkek és ritka, válogatott összefoglalók",
-      en: "New articles and occasional curated digests",
+      hu: "Új cikkek és válogatott összefoglalók",
+      en: "New articles and curated digests",
     },
     sub: {
       hu: "Minden új blogbejegyzésről értesítünk, és időnként több cikkből álló szerkesztett hírlevelet küldünk. Bármikor leiratkozhatsz.",

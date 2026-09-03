@@ -392,49 +392,25 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   // Tömör CTA-felület: self módban bronze-dark, team módban a valódi team
   // hero első gradiens-stopja. Így a CTA a megfelelő réteghez tartozik, de
   // mindkét módban megtartja ugyanazt a gomb-anatómiát.
-  const ctaBackground = isSelf ? "var(--color-bronze-dark)" : "var(--color-layer-team-hero-from)";
-
   // Detect existing localStorage draft for guest users.
   // Must run in useEffect to avoid hydration mismatch (localStorage is client-only).
   const [hasDraft, setHasDraft] = useState(false);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage csak kliensen olvasható, hydration-biztos minta
   useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("TRITAN")); }, []);
 
-  return (
-    <section className="bg-cream">
-      <div className="mx-auto max-w-[1120px] px-7 pb-20 pt-12 md:pb-28 md:pt-20">
-        <div className="grid gap-10 md:grid-cols-2 md:items-stretch md:gap-12">
-          {/* Mobilon a teljes ígéret és a CTA megelőzi az előnézetet. Így a
-              látogató nem kényszerül egy hosszú riportkártyán végiggörgetni,
-              mielőtt elérné az első döntési pontot. */}
-          {/* Rögzített geometria módváltásnál: az oszlop md:-től a kártya
-              magasságát veszi fel, a kapcsoló a tetején ül, a szöveg pedig a
-              MARADÉK térben középre kerül (md:my-auto). Így a self és a team
-              eltérő hosszú szövege nem tolja el a kapcsolót – korábban a rács
-              items-center-e az egész oszlopot újrapozicionálta. */}
-          <div data-landing-hero-copy className="flex min-w-0 flex-col md:min-h-[674px]">
-            <div className={`${riseIn} mb-4 lg:mb-5`}>
-              <ModeSwitcher mode={mode} />
-            </div>
-
-            <div data-landing-hero-copy-body className="flex flex-col md:my-auto">
-
-            <SectionEyebrow
-              tone={isSelf ? "bronze" : "team"}
-              className={`${riseIn} mb-4`}
-            >
-              {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
-            </SectionEyebrow>
-
-            <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink">
-              {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
-              <em className="italic" style={{ color: headlineAccentColor }}>
-                {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
-              </em>
-            </h1>
-
+  // A módfüggő szöveg-blokk egy változata. Az inaktív példány rejtett, de a
+  // DOM-ban marad, hogy a blokk magassága módtól független legyen.
+  const renderVariableCopy = (self: boolean, active: boolean) => {
+    const ctaBackground = self ? "var(--color-bronze-dark)" : "var(--color-layer-team-hero-from)";
+    return (
+      <div
+        key={self ? "self" : "team"}
+        data-landing-hero-variable-mode={self ? "self" : "team"}
+        aria-hidden={active ? undefined : true}
+        className={active ? "flex flex-col" : "invisible flex flex-col pointer-events-none"}
+      >
             <p className={`${riseIn} mb-7 mt-6 max-w-[610px] text-balance text-base font-light leading-relaxed text-ink-body`}>
-              {isSelf ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
+              {self ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
             </p>
 
             <div
@@ -442,14 +418,14 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               style={{ animationDelay: "0.1s" }}
             >
               <Link
-                href={isSelf ? "/try" : "/pilot"}
+                href={self ? "/try" : "/pilot"}
                 // P2: a hero elsődleges CTA-ja módonként külön mérve – ebből
                 // derül ki, melyik ígéret működik.
                 onClick={() =>
                   track("cta.click", {
                     cta_id: "hero_primary",
                     surface: "landing",
-                    mode: isSelf ? "self" : "team",
+                    mode: self ? "self" : "team",
                   })
                 }
                 className={getButtonClassName({
@@ -458,21 +434,21 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 })}
                 style={{
                   background: ctaBackground,
-                  color: isSelf
+                  color: self
                     ? "var(--color-text-on-accent-deep)"
                     : "var(--color-text-on-inverse)",
-                  boxShadow: isSelf
+                  boxShadow: self
                     ? "0 4px 14px color-mix(in srgb, var(--color-bronze-dark) 25%, transparent)"
                     : "0 4px 14px color-mix(in srgb, var(--color-layer-team-hero-from) 28%, transparent)",
                 }}
               >
                 <span>
-                  {isSelf
+                  {self
                     ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
                     : t("landing.teamCta", locale)}
                 </span>
               </Link>
-              {!isSelf ? (
+              {!self ? (
                 <Link
                   href="/contact"
                   onClick={() =>
@@ -495,7 +471,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               ) : null}
             </div>
 
-            {isSelf ? (
+            {self ? (
               <div className={`${riseIn} flex flex-wrap items-center gap-2`} style={{ animationDelay: "0.2s" }}>
                 {[
                   { Icon: ClockIcon, text: t("landing.selfMetaTime", locale) },
@@ -525,6 +501,70 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 </div>
               </div>
             )}
+      </div>
+    );
+  };
+
+  return (
+    <section className="bg-cream">
+      <div className="mx-auto max-w-[1120px] px-7 pb-20 pt-12 md:pb-28 md:pt-20">
+        <div className="grid gap-10 md:grid-cols-2 md:items-stretch md:gap-12">
+          {/* Mobilon a teljes ígéret és a CTA megelőzi az előnézetet. Így a
+              látogató nem kényszerül egy hosszú riportkártyán végiggörgetni,
+              mielőtt elérné az első döntési pontot. */}
+          {/* Rögzített geometria módváltásnál: az oszlop md:-től a kártya
+              magasságát veszi fel, a kapcsoló a tetején ül, a szöveg pedig a
+              MARADÉK térben középre kerül (md:my-auto). Így a self és a team
+              eltérő hosszú szövege nem tolja el a kapcsolót – korábban a rács
+              items-center-e az egész oszlopot újrapozicionálta. */}
+          <div data-landing-hero-copy className="flex min-w-0 flex-col md:min-h-[674px]">
+            <div className={`${riseIn} mb-4 lg:mb-5`}>
+              <ModeSwitcher mode={mode} />
+            </div>
+
+            <div data-landing-hero-copy-body className="flex flex-col">
+
+            <SectionEyebrow
+              tone={isSelf ? "bronze" : "team"}
+              className={`${riseIn} mb-4`}
+            >
+              {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
+            </SectionEyebrow>
+
+            {/* A H1 mellett a MÁSIK mód címe is ott ül ugyanabban a
+                rácscellában, láthatatlan span-ként, azonos tipográfiával:
+                a cella a magasabbik címet tartja, így a sorszám-különbség
+                (pl. 375/768px-en 5 vs 4 sor) nem tolja el az alatta lévő
+                szöveget. Nem heading és aria-hidden – egyetlen H1 marad. */}
+            <div className="grid [&>*]:[grid-area:1/1]">
+              <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink">
+                {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
+                <em className="italic" style={{ color: headlineAccentColor }}>
+                  {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
+                </em>
+              </h1>
+              <span
+                aria-hidden
+                data-landing-hero-title-ghost
+                className="invisible block max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight"
+              >
+                {isSelf ? t("landing.teamHeadlineBefore", locale) : t("landing.selfHeadlineBefore", locale)}
+                <em className="italic">
+                  {isSelf ? t("landing.teamHeadlineEm", locale) : t("landing.selfHeadlineEm", locale)}
+                </em>
+              </span>
+            </div>
+
+            {/* A módonként eltérő magasságú részek (alszöveg, CTA-sor,
+                pirulák) MINDKÉT változatban a DOM-ban maradnak, egy
+                rácscellába rakva: a blokk a magasabbik méretét tartja, így
+                módváltásnál sem a szöveg, sem az alatta lévő tartalom nem
+                mozdul. Az inaktív invisible + aria-hidden. A H1 és az
+                eyebrow szándékosan egyszeres (LCP/SEO: egy H1). */}
+            <div data-landing-hero-variable className="grid [&>*]:[grid-area:1/1]">
+              {renderVariableCopy(true, isSelf)}
+              {renderVariableCopy(false, !isSelf)}
+            </div>
             </div>
           </div>
 
