@@ -77,6 +77,33 @@ export const landingTranslations = {
     selfTeamRoleRank2: { hu: "Másodlagos", en: "Secondary" },
     selfTeamRolesNote: { hu: "A pontos képhez külön csapatszerep-kérdőív tartozik.", en: "A separate team-role questionnaire provides the precise picture." },
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
+    // Fókuszált főoldal — az egyéni belépő az elsődleges, a csapatos út
+    // külön, statikus átvezetést kap az automatikus módváltás helyett.
+    focusedEyebrow: { hu: "EGYÉNI · INGYENES", en: "INDIVIDUAL · FREE" },
+    focusedHeroSub: {
+      hu: "Ismerd meg a fő mintázataidat, erősségeidet és azt, mit viszel egy csapatba.",
+      en: "Discover your key patterns, strengths, and what you bring to a team.",
+    },
+    focusedHeroCta: { hu: "Elindítom az ingyenes tesztet", en: "Start the free assessment" },
+    focusedPreviewTitle: { hu: "A te profilod", en: "Your profile" },
+    focusedPreviewBadge: { hu: "Ízelítő az eredményből", en: "A preview of your results" },
+    focusedStepsTitle: { hu: "Három lépés. Ennyi.", en: "Three steps. That's it." },
+    focusedStep2Title: { hu: "Megkapod a profilod", en: "Get your profile" },
+    focusedStep3Title: { hu: "Megérted a működésed", en: "Understand how you operate" },
+    focusedStep3Desc: {
+      hu: "A személyes képedből kirajzolódik, mire építhetsz, és milyen szerepekben működsz természetesen.",
+      en: "Your personal picture reveals what you can build on and which roles come naturally to you.",
+    },
+    focusedTeamEyebrow: { hu: "Tanácsadóval kísért program", en: "Consultant-guided program" },
+    focusedTeamTitle: { hu: "Csapatként folytatnátok?", en: "Ready to continue as a team?" },
+    focusedTeamSub: {
+      hu: "Mélyebb csapatmegértés, közös nyelv és célzott fejlődés vezetői támogatással.",
+      en: "Deeper team understanding, a shared language, and focused development with leadership support.",
+    },
+    focusedTeamCta: { hu: "Megnézem a csapatprogramot", en: "Explore the team program" },
+    focusedTrustScience: { hu: "Tudományos alap", en: "Scientific foundation" },
+    focusedTrustClear: { hu: "Érthető eredmény", en: "Clear results" },
+    focusedTrustPace: { hu: "Saját tempóban", en: "At your own pace" },
     // HeroSection – team
     // 2026-08-28: „CSAPATINTELLIGENCIA PLATFORM" helyett — a gépies
     // kategória-címke a „nem csak platform" üzenet ellen dolgozott.

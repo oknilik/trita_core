@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LandingContent } from "@/components/landing/LandingContent";
+import { FocusedLandingContent } from "@/components/landing/FocusedLandingContent";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 import { SEO_INTENTS } from "@/lib/seo-intents";
@@ -29,9 +29,9 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey
-// handoffra. A LandingContent nem használ useSearchParams-t (ld. site-mode.ts),
-// ezért nem kell Suspense-határ: a teljes landing — a hero H1-gyel, ami az
-// LCP-elem — bekerül a prerenderelt HTML-be.
+// handoffra. A fókuszált landing nem használ useSearchParams-t, ezért nem
+// kell Suspense-határ: a teljes oldal — a hero H1-gyel, ami az LCP-elem —
+// bekerül a prerenderelt HTML-be.
 export default function Home() {
   // A gyökér-lapon él a márka- és site-entitás (`@id` horgonyokkal); az összes
   // többi lap ezekre HIVATKOZIK ahelyett, hogy újra kihirdetné őket.
@@ -49,7 +49,7 @@ export default function Home() {
           }),
         ]}
       />
-      <LandingContent />
+      <FocusedLandingContent />
     </main>
   );
 }
