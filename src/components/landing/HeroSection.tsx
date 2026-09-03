@@ -537,7 +537,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 (pl. 375/768px-en 5 vs 4 sor) nem tolja el az alatta lévő
                 szöveget. Nem heading és aria-hidden – egyetlen H1 marad. */}
             <div className="grid [&>*]:[grid-area:1/1]">
-              <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink min-[700px]:max-md:max-w-[12ch] min-[700px]:max-md:text-[clamp(3rem,6vw,3.5rem)] min-[700px]:max-md:leading-[0.98]">
+              <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink min-[700px]:max-md:max-w-[12ch] min-[700px]:max-md:text-fluid-title min-[700px]:max-md:leading-[0.98]">
                 {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
                 <em className="italic" style={{ color: headlineAccentColor }}>
                   {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
@@ -546,7 +546,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               <span
                 aria-hidden
                 data-landing-hero-title-ghost
-                className="invisible block max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight min-[700px]:max-md:max-w-[12ch] min-[700px]:max-md:text-[clamp(3rem,6vw,3.5rem)] min-[700px]:max-md:leading-[0.98]"
+                className="invisible block max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight min-[700px]:max-md:max-w-[12ch] min-[700px]:max-md:text-fluid-title min-[700px]:max-md:leading-[0.98]"
               >
                 {isSelf ? t("landing.teamHeadlineBefore", locale) : t("landing.selfHeadlineBefore", locale)}
                 <em className="italic">
