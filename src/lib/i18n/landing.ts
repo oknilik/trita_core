@@ -269,6 +269,10 @@ export const landingTranslations = {
     },
     teamCta: { hu: "Egyeztessünk a csapatotokról", en: "Talk to us about your team" },
     pilotEyebrow: { hu: "pilotprogram", en: "pilot program" },
+    pilotSectionTitle: {
+      hu: "Csatlakozz korai partnereink közé.",
+      en: "Join our early partners.",
+    },
     pilotTitle: { hu: "Pilotprogram – az első partnercsapatainknak", en: "Pilot program – for our first partner teams" },
     pilotBody: {
       hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Az első {total} partnercsapattal indulunk, és még {left} hely szabad.",

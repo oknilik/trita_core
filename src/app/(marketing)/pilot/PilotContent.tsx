@@ -12,13 +12,13 @@ import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
+import { PilotSpotsIndicator } from "@/components/marketing/PilotSpotsIndicator";
 import { t, tf, type Locale } from "@/lib/i18n/public";
 import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
-import { ChevronRightIcon } from "@/components/ui/icons";
 
 const INPUT_CLASS = "w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
 
@@ -264,7 +264,13 @@ export function PilotContent() {
                 primary={{ href: "#jelentkezes", label: t("pilot.heroCta", locale) }}
               />
 
-              <SpotsIndicator locale={locale} />
+              <PilotSpotsIndicator
+                locale={locale}
+                href="#jelentkezes"
+                ctaId="hero_spots"
+                surface="pilot"
+                className="mt-6"
+              />
 
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <MetaChip>{t("pilot.metaChip1", locale)}</MetaChip>
@@ -612,116 +618,6 @@ function FounderSection({ locale }: { locale: Locale }) {
         </div>
       </div>
     </section>
-  );
-}
-
-// Kapacitás-kártya a hero CTA alatt: a nagy szám és a sötét csapatfelület
-// egyetlen döntési ténnyé sűríti a limitált helyeket. A tízrészes sávban az
-// első szabad helyre a brand-csillag „érkezik meg"; a többi nyugodt marad.
-// A számok a pilot-config.ts-ből jönnek; betelt pilotnál nem renderelődik.
-//
-// Mozgás — „érkezés" (2026-09-04): EGYSZERI koreográfia, amikor a kártya
-// képbe kerül, nem végtelen hurok. A szeletek balról jobbra nőnek ki, a
-// nagy szám {total}-ról {left}-re számol le, a csillag egyszer leszáll az
-// első szabad helyre, és az a szelet egyet felfénylik. Utána a kártya
-// nyugodt: a csillag statikusan a helyén marad, és 9 mp-enként egyetlen
-// halk fény fut át a szabad helyeken — emlékeztető, nem hurok.
-//
-// SSR: a szerver a KÉSZ állapotot adja (szám = {left}, minden szelet
-// látható, csillag a helyén) — JS nélkül is teljes az információ. A kliens
-// csak akkor játssza le az érkezést, ha a kártya ténylegesen képbe kerül,
-// és a rendszer nem kér csökkentett mozgást.
-type SpotsPhase = "rest" | "play" | "idle";
-
-function SpotsIndicator({ locale }: { locale: Locale }) {
-  const cardRef = useRef<HTMLAnchorElement>(null);
-  const [phase, setPhase] = useState<SpotsPhase>("rest");
-  const [count, setCount] = useState(PILOT_SPOTS_LEFT);
-
-  useEffect(() => {
-    const card = cardRef.current;
-    if (!card || PILOT_SPOTS_LEFT <= 0) return;
-    if (
-      typeof IntersectionObserver === "undefined" ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      return;
-    }
-
-    let timers: number[] = [];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        observer.disconnect();
-        setPhase("play");
-        setCount(PILOT_TOTAL_TEAMS);
-        // Visszaszámlálás {total} → {left} a szeletek kinövése alatt.
-        for (let n = PILOT_TOTAL_TEAMS - 1; n >= PILOT_SPOTS_LEFT; n -= 1) {
-          const step = PILOT_TOTAL_TEAMS - n;
-          timers.push(window.setTimeout(() => setCount(n), 550 + step * 190));
-        }
-        timers.push(window.setTimeout(() => setPhase("idle"), 2800));
-      },
-      { threshold: 0.6 },
-    );
-    observer.observe(card);
-
-    return () => {
-      observer.disconnect();
-      timers.forEach((id) => window.clearTimeout(id));
-      timers = [];
-    };
-  }, []);
-
-  if (PILOT_SPOTS_LEFT <= 0) return null;
-  const taken = PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT;
-  const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT, taken };
-  return (
-    <a
-      ref={cardRef}
-      href="#jelentkezes"
-      data-pilot-spots
-      data-pilot-spots-phase={phase}
-      aria-label={tf("pilot.spotsA11y", locale, vars)}
-      onClick={() => track("cta.click", { cta_id: "hero_spots", surface: "pilot" })}
-      className={`group relative mt-6 grid max-w-[600px] grid-cols-[auto_minmax(0,1fr)] items-center gap-4 overflow-hidden rounded-[22px] bg-gradient-to-br from-[var(--color-layer-team-hero-from)] to-[var(--color-layer-team-hero-to)] p-4 text-[var(--color-text-on-inverse)] shadow-[0_18px_44px_color-mix(in_srgb,var(--color-layer-team-hero-to)_22%,transparent)] transition-[translate,box-shadow,filter] duration-200 hover:-translate-y-0.5 hover:brightness-[1.04] hover:shadow-[0_24px_56px_color-mix(in_srgb,var(--color-layer-team-hero-to)_28%,transparent)] sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:gap-5 sm:p-5 ${FOCUS_RING_CLASS}`}
-    >
-      <span className="shrink-0 font-fraunces text-display leading-none tracking-[-0.06em] text-[var(--color-layer-team-badge)] tabular-nums md:text-hero">
-        {count}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-sm font-semibold text-[var(--color-text-on-inverse)] sm:text-base">
-          {tf("pilot.spotsPanelTitle", locale, vars)}
-        </span>
-        <span className="mt-1 block text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-          {tf("pilot.spotsPanelUrgency", locale, vars)}
-        </span>
-        {/* Az első három szelet foglalt, a hét barackszínű szelet szabad.
-            Az első szabad hely fölé a brand-csillag érkezik — egyszer. A
-            fázist a data-pilot-spots-phase vezérli (globals.css: pilot-spot-*). */}
-        <span aria-hidden="true" className="mt-5 grid grid-cols-10 gap-1.5">
-          {Array.from({ length: PILOT_TOTAL_TEAMS }, (_, i) => (
-            <span
-              key={i}
-              data-pilot-spot={i < taken ? "taken" : i === taken ? "next" : "open"}
-              data-pilot-spot-effect={i === taken ? "star-arrival" : undefined}
-              style={{ ["--i" as string]: i }}
-              className={
-                i < taken
-                  ? "pilot-spot h-1.5 rounded-full bg-[var(--color-text-on-inverse)]/25"
-                  : i === taken
-                    ? "pilot-spot pilot-spot-next h-1.5 rounded-full bg-[var(--color-layer-team-badge)]"
-                    : "pilot-spot pilot-spot-open h-1.5 rounded-full bg-[var(--color-layer-team-badge)]"
-              }
-            />
-          ))}
-        </span>
-      </span>
-      <span className="col-span-2 inline-flex shrink-0 items-center justify-self-end gap-1 text-sm font-semibold text-[var(--color-layer-team-badge)] sm:col-span-1">
-        {t("pilot.spotsPanelCta", locale)}
-        <ChevronRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-      </span>
-    </a>
   );
 }
 
