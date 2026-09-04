@@ -67,13 +67,19 @@ function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
-function ProcessIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+/** Két egyenrangú kör közös metszete: együttműködés mint közösen alakított tér. */
+function SharedSpaceIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
-    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="3" cy="8" r="1.5" />
-      <circle cx="13" cy="8" r="1.5" />
-      <path d="M4.5 8h7" />
-      <path d="m9.5 5.75 2.25 2.25-2.25 2.25" />
+    <svg
+      data-nav-icon="shared-space"
+      className={className}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.35"
+    >
+      <circle cx="6" cy="8" r="3.75" />
+      <circle cx="10" cy="8" r="3.75" />
     </svg>
   );
 }
@@ -83,7 +89,7 @@ const LINK_ICONS: Record<string, (p: { className?: string }) => React.ReactNode>
   dashboard: GridIcon,
   blog: BlogIcon,
   teamsFor: CollabIcon,
-  pricing: ProcessIcon,
+  pricing: SharedSpaceIcon,
 };
 
 // ─── Nav link — az app-nav (NavHeaderUI) aktív/inaktív stílusával ────────────

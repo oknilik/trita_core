@@ -64,6 +64,15 @@ describe("publikus fejléc – landing kontextusú CTA", () => {
     expect(screen.getByRole("link", { name: "Főoldal" })).not.toHaveAttribute("aria-current");
   });
 
+  it("az Együttműködés menüpont a két kör közös terét használja ikonként", () => {
+    render(<NavBar />);
+
+    const collaborationLink = screen.getByRole("link", { name: "Együttműködés" });
+    const icon = collaborationLink.querySelector('[data-nav-icon="shared-space"]');
+    expect(icon).not.toBeNull();
+    expect(icon?.querySelectorAll("circle")).toHaveLength(2);
+  });
+
   it("a blogot asztali és mobil navigációban is elérhetővé teszi", () => {
     render(<NavBar />);
 

@@ -40,6 +40,8 @@
 - A publikus navigációban a konkrét Pilotprogram helyét a tartós
   **Csapatoknak** ajánlat (`/team-dynamics`) vette át. A pilot a csapatos
   oldal elsődleges következő lépéseként továbbra is hangsúlyos marad.
+- Az **Együttműködés** menüpont ikonja két átfedő kör lett: a közös tér
+  egyszerű, kis méretben is olvasható jele váltja a korábbi folyamatnyilat.
 
 ## Kompatibilitás
 
