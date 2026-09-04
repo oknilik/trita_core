@@ -71,7 +71,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: `${baseUrl}/`, lastModified: reviewedAt, changeFrequency: "weekly", priority: 1 },
-    { url: `${baseUrl}/self-awareness`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/team-dynamics`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/how-we-work`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/about`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.8 },

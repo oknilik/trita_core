@@ -112,10 +112,12 @@ test("az llms.txt nem sorol fel privát útvonalat linkként", async () => {
 test("az llms.txt csak az aktív fő lapokat tartalmazza", async () => {
   const body = await llmsTxt().text();
 
-  for (const path of ["/try", "/self-awareness", "/team-dynamics", "/how-we-work", "/pilot"]) {
+  for (const path of ["/try", "/team-dynamics", "/how-we-work", "/pilot"]) {
     assert.ok(body.includes(`${path})`), `hiányzó publikus lap az llms.txt-ből: ${path}`);
   }
-  for (const path of ["/patterns"]) {
+  // A /self-awareness tükör-oldal 2026-09-03-án a főoldalba olvadt
+  // (állandó átirányítás) — a parkolt lapokhoz hasonlóan nem szerepelhet.
+  for (const path of ["/patterns", "/self-awareness"]) {
     assert.equal(body.includes(`${path})`), false, `parkolt lap kint maradt: ${path}`);
   }
   assert.ok(body.includes("/blog)"), "az aktív bloglista hiányzik az llms.txt-ből");

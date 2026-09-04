@@ -149,6 +149,7 @@ export const commonTranslations = {
     signOut: { hu: "Kijelentkezés", en: "Sign out" },
     menu: { hu: "Menü", en: "Menu" },
     blog: { hu: "Blog", en: "Blog" },
+    publicTeams: { hu: "Csapatoknak", en: "For teams" },
     pricing: { hu: "Együttműködés", en: "How we work" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     profile: { hu: "Profilom", en: "My profile" },
@@ -158,8 +159,6 @@ export const commonTranslations = {
     /** A megosztott profil (/share/[token]) minimál fejlécének egyetlen CTA-ja. */
     ctaSharedOwnProfile: { hu: "Saját profil készítése", en: "Create my profile" },
     ctaTeam: { hu: "Pilotprogram", en: "Pilot program" },
-    modeSelf: { hu: "Önismeret", en: "Self-awareness" },
-    modeTeam: { hu: "Csapatműködés", en: "Team dynamics" },
     dropdownProfile: { hu: "Profilom", en: "My profile" },
     dropdownSignOut: { hu: "Kijelentkezés", en: "Sign out" },
   },
@@ -407,28 +406,34 @@ export const commonTranslations = {
   contact: {
     // Page
     metaTitle: {
-      hu: "Beszéljünk a csapatotokról | trita",
-      en: "Team diagnostics and development – contact | trita",
+      hu: "Kapcsolat | trita",
+      en: "Contact | trita",
     },
     metaDescription: {
-      hu: "Kérj személyes egyeztetést csapatdiagnosztikáról, csapatfejlesztésről, pilotprogramról vagy árazásról. Egy munkanapon belül válaszolunk.",
-      en: "Talk to us about team diagnostics, team development, the pilot program, or pricing. We respond within one business day.",
+      hu: "Demó, árazás, partnerség, terméktámogatás vagy egyéb kérdés – írj a trita csapatának. Jellemzően egy munkanapon belül válaszolunk.",
+      en: "Demo, pricing, partnerships, product support, or any other question – contact the trita team. We usually reply within one business day.",
     },
     eyebrow: { hu: "Kapcsolat", en: "Contact" },
-    title: { hu: "Beszéljünk arról, miben tud segíteni a trita.", en: "Let's talk about how trita can help." },
+    title: { hu: "Írj nekünk.", en: "Write to us." },
+    titleEm: { hu: "Pár mondat is elég.", en: "A few lines are enough." },
     subtitle: {
-      hu: "Demó, árazás, partneri együttműködés vagy támogatás – írj nekünk itt, és egy munkanapon belül válaszolunk.",
-      en: "Demo, pricing, partnerships, or support – send us a note and we'll reply within one business day.",
+      hu: "Demó, árazás, partnerség, támogatás vagy bármi más – jó helyen jársz. Az üzeneted közvetlenül a csapathoz érkezik.",
+      en: "Demo, pricing, partnerships, support, or anything else – you're in the right place. Your message goes straight to the team.",
     },
     heroCta: { hu: "Írok nektek", en: "Send a message" },
-    chipResponseTime: { hu: "24 órás válaszidő", en: "24h response time" },
+    chipResponseTime: { hu: "Jellemzően 1 munkanapon belül válaszolunk", en: "We usually reply within 1 business day" },
 
     // Form section
     sectionEyebrow: { hu: "Kapcsolatfelvétel", en: "Get in touch" },
     sectionTitle: { hu: "Miben segíthetünk?", en: "How can we help?" },
     sectionLead: {
-      hu: "Pár mondat is elég. Ha tudjuk a témát, gyorsabban tudunk segíteni.",
-      en: "A few sentences are enough. Knowing the topic helps us respond faster.",
+      hu: "Válassz témát, hogy rögtön a megfelelő emberhez kerüljön.",
+      en: "Choose a topic so your message reaches the right person straight away.",
+    },
+    emailStripTitle: { hu: "Inkább emailt írnál?", en: "Prefer email?" },
+    emailStripBody: {
+      hu: "Ugyanahhoz a csapathoz érkezik, és ugyanúgy egy munkanapon belül válaszolunk.",
+      en: "It reaches the same team, and we still reply within one business day.",
     },
 
     // Info cards
@@ -444,6 +449,7 @@ export const commonTranslations = {
     email: { hu: "Email", en: "Email" },
     company: { hu: "Cég (opcionális)", en: "Company (optional)" },
     topic: { hu: "Téma", en: "Topic" },
+    topicPrompt: { hu: "Mivel kapcsolatban írsz?", en: "What are you writing about?" },
     message: { hu: "Üzenet", en: "Message" },
     submit: { hu: "Üzenet küldése", en: "Send message" },
     submitting: { hu: "Küldés...", en: "Sending..." },

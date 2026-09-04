@@ -101,7 +101,7 @@ const DIMENSION_SURFACES = [
   "src/components/results/DimensionAccordion.tsx",
   "src/components/results/AltruismCard.tsx",
   "src/components/profile/ProfileTabs.tsx",
-  "src/components/landing/HeroSection.tsx",
+  "src/components/landing/panels.tsx",
   "src/app/(app)/share/[token]/page.tsx",
   "src/components/pdf/components/PdfDimensionChart.tsx",
   "src/components/pdf/components/PdfDimensionDetail.tsx",

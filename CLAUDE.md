@@ -118,7 +118,9 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 ## Route-térkép (fő felületek)
 
 ```
-PUBLIKUS:  / (landing, self/team mód) · /try (vendég teszt) · /how-we-work
+PUBLIKUS:  / (landing: egyéni ígéret + csapatos átvezető; nincs self/team
+            mód — a /self-awareness 308 → /) · /team-dynamics (statikus
+            csapatdiagnosztika-mélyoldal) · /try (vendég teszt) · /how-we-work
            (a tanácsadói ajánlat — a /pricing PERMANENSEN ide irányít,
             next.config.ts; a PricingContent komponens itt él tovább)
            · /about · /rolunk · /founding (307 → /pilot) · /pilot · /contact

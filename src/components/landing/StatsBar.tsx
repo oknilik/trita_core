@@ -1,7 +1,7 @@
 "use client";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
-import type { SiteMode } from "@/components/landing/ModeSwitcher";
+import type { SiteMode } from "@/components/landing/types";
 
 export function StatsBar({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();

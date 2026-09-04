@@ -31,7 +31,6 @@ test("contact: HU keyboard validation, API error and successful Enter retry", as
   const name = form.getByRole("textbox", { name: "Név" });
   const email = form.getByRole("textbox", { name: "Email" });
   const company = form.getByRole("textbox", { name: "Cég (opcionális)" });
-  const topic = form.getByRole("combobox", { name: "Téma" });
   const message = form.getByRole("textbox", { name: "Üzenet" });
   const submit = form.getByRole("button", { name: "Üzenet küldése" });
 
@@ -49,8 +48,6 @@ test("contact: HU keyboard validation, API error and successful Enter retry", as
   await page.keyboard.press("Tab");
   await expect(company).toBeFocused();
   await page.keyboard.type("Tesztes Kft.");
-  await page.keyboard.press("Tab");
-  await expect(topic).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(message).toBeFocused();
   await page.keyboard.type("Ez egy kellően hosszú tesztüzenet a csapatnak.");

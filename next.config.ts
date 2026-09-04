@@ -182,6 +182,14 @@ const nextConfig: NextConfig = {
         destination: "/how-we-work",
         permanent: true,
       },
+      // 2026-09-03: a landing egyszerűsítésével az önismereti tükör-oldal
+      // megszűnt — az egyéni ígéret a főoldalon él. A régi URL indexelt és
+      // hírlevélben is szerepelt, ezért állandó átirányítás.
+      {
+        source: "/self-awareness",
+        destination: "/",
+        permanent: true,
+      },
       ...Object.entries(blogSlugRenames).flatMap(([from, to]) => [
         { source: `/blog/${from}`, destination: `/blog/${to}`, permanent: true },
         {

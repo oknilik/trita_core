@@ -42,7 +42,6 @@ const isProtectedRoute = createRouteMatcher([
 
 // Public pages (no auth required)
 const isPublicRoute = createRouteMatcher([
-  "/self-awareness",
   "/team-dynamics",
   "/observe(.*)",
   "/share(.*)",

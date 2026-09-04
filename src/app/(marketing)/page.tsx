@@ -29,9 +29,10 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey
-// handoffra. A LandingContent nem használ useSearchParams-t (ld. site-mode.ts),
-// ezért nem kell Suspense-határ: a teljes landing — a hero H1-gyel, ami az
-// LCP-elem — bekerül a prerenderelt HTML-be.
+// handoffra. A landing nem használ useSearchParams-t, ezért nem kell
+// Suspense-határ: a teljes oldal — a hero H1-gyel, ami az LCP-elem —
+// bekerül a prerenderelt HTML-be. A korábbi /self-awareness tükör-oldal ide
+// irányít (next.config.ts): az egyéni ígéret egyetlen lapon él.
 export default function Home() {
   // A gyökér-lapon él a márka- és site-entitás (`@id` horgonyokkal); az összes
   // többi lap ezekre HIVATKOZIK ahelyett, hogy újra kihirdetné őket.

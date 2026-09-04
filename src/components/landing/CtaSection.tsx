@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
-import type { SiteMode } from "@/components/landing/ModeSwitcher";
+import type { SiteMode } from "@/components/landing/types";
 import { track } from "@/lib/analytics/client";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
@@ -61,9 +61,9 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
     <section className="px-7 py-16 md:py-24">
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-fluid-title font-medium tracking-tight text-ink">
-          {t("landing.ctaSelfHeadlineBefore", locale)}
+          {t("landing.ctaSelfClosingBefore", locale)}
           <em className="italic text-[var(--color-accent-primary)]">
-            {t("landing.ctaSelfHeadlineEm", locale)}
+            {t("landing.ctaSelfClosingEm", locale)}
           </em>
         </h2>
         <p className="mb-9 text-base leading-relaxed text-ink-body">

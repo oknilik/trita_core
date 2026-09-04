@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ContactForm } from "@/app/(marketing)/contact/ContactForm";
@@ -39,6 +39,20 @@ describe("public form state contracts", () => {
     localeMock.value = "hu";
   });
 
+  it("kiemeli a következő pilot-helyet a brand-csillagos kapacitáskártyán", () => {
+    const { container } = render(<PilotContent />);
+
+    const capacity = container.querySelector("[data-pilot-spots]");
+    const nextSpot = container.querySelector('[data-pilot-spot="next"]');
+    expect(capacity).not.toBeNull();
+    const capacityUi = within(capacity as HTMLElement);
+    expect(capacityUi.getByText("szabad partnercsapat-hely")).toBeInTheDocument();
+    expect(capacityUi.getByText("3 hely már foglalt · a következő lehet a tiétek")).toBeInTheDocument();
+    expect(nextSpot).toHaveAttribute("data-pilot-spot-effect", "star-arrival");
+    expect(container.querySelectorAll('[data-pilot-spot="taken"]')).toHaveLength(3);
+    expect(container.querySelectorAll('[data-pilot-spot="open"]')).toHaveLength(6);
+  });
+
   it("validates the Hungarian contact form, submits with Enter, retains an API error, then retries", async () => {
     const user = userEvent.setup();
     const pending = pendingResponse();
@@ -52,9 +66,12 @@ describe("public form state contracts", () => {
     const name = screen.getByRole("textbox", { name: t("contact.name", "hu") });
     const email = screen.getByRole("textbox", { name: t("contact.email", "hu") });
     const company = screen.getByRole("textbox", { name: t("contact.company", "hu") });
-    const topic = screen.getByRole("combobox", { name: t("contact.topic", "hu") });
+    const topics = screen.getAllByRole("radio");
+    const topic = screen.getByRole("radio", { name: t("contact.topicDemo", "hu") });
     const message = screen.getByRole("textbox", { name: t("contact.message", "hu") });
-    expectUniqueIds([name, email, company, topic, message]);
+    expect(topics).toHaveLength(5);
+    expect(topic).toBeChecked();
+    expectUniqueIds([name, email, company, ...topics, message]);
 
     const submit = screen.getByRole("button", { name: t("contact.submit", "hu") });
     await user.click(submit);
@@ -74,7 +91,7 @@ describe("public form state contracts", () => {
     await waitFor(() => expect(name).toBeDisabled());
     expect(email).toBeDisabled();
     expect(company).toBeDisabled();
-    expect(topic).toBeDisabled();
+    expect(topics.every((option) => option.hasAttribute("disabled"))).toBe(true);
     expect(message).toBeDisabled();
 
     await act(async () => pending.resolve({ ok: false, status: 500 }));

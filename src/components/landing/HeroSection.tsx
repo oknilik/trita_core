@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
-import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
+import type { SiteMode } from "@/components/landing/types";
+import { SelfPanel, TeamPanel } from "@/components/landing/panels";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
-import { getDimensionLabel } from "@/lib/dimension-utils";
-import { dimColorsCss } from "@/lib/color-system";
-import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
 import { ChevronRightIcon } from "@/components/ui/icons";
@@ -18,399 +16,81 @@ import { getButtonClassName } from "@/components/ui/primitives/Button";
 // A hajtás feletti kísérőelemek CSS-keyframe-mel úsznak be. A H1 szándékosan
 // NEM kapja meg: ez az oldal LCP-eleme, és az opacity: 0 kezdőállapot még
 // nulla animation-delay mellett is későbbre tolja, mikor tekinti a böngésző
-// teljesen kirajzoltnak. A mozgás a kapcsolón, eyebrow-n és a H1 alatti
-// blokkokon marad meg, így a hero karaktere nem változik.
+// teljesen kirajzoltnak.
 const riseIn = "animate-rise-in";
 
-// ─── Self panel – a valódi eredménynézet kicsinyített mása ──────────────────
-
-function SelfPanel() {
-  const { locale } = useLocale();
-
-  // A kanonikus archetípus-prototípus (interaction-engine.ts) A-domináns,
-  // H-másodlagos változata: 86 / 74 / 50. A landing a domináns dimenzió
-  // közös főnévi címkéjét mutatja (Hídépítő), a teljes riport a mérési
-  // bizonytalanság alapján egészíti ki melléknévi színezettel.
-  const dims = [
-    { code: "H", name: t("landing.selfDim1", locale), value: 74 },
-    { code: "E", name: t("landing.selfDim2", locale), value: 50 },
-    { code: "X", name: t("landing.selfDim3", locale), value: 50 },
-    { code: "A", name: t("landing.selfDim4", locale), value: 86 },
-    { code: "C", name: t("landing.selfDim5", locale), value: 50 },
-    { code: "O", name: t("landing.selfDim6", locale), value: 50 },
-  ];
-
-  const strengths = [
-    { code: "A", name: t("landing.selfDim4", locale) },
-    { code: "H", name: t("landing.selfDim1", locale) },
-  ];
-  // Ugyanezen profil kanonikus team-role-estimate rangsorának két legerősebb
-  // eleme: CS 69, KO 68. Nem munkaterületeket nevezünk csapatszerepnek,
-  // hanem a tényleges riport 9 szerepes modelljének becslését mutatjuk.
-  const likelyRoles: TeamRoleCode[] = ["CS", "KO"];
-  const roleRanks = [
-    t("landing.selfTeamRoleRank1", locale),
-    t("landing.selfTeamRoleRank2", locale),
-  ];
-  // A sávok a rangsor vizuális hierarchiáját mutatják, nem százalékos
-  // pontszámok: a becslésnél a riport sem kommunikál álprecizitást.
-  const roleRankVisuals = [
-    { color: "var(--color-layer-team-accent)", width: "92%" },
-    { color: "var(--color-sage)", width: "79%" },
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-[28px] bg-surface-card shadow-[0_24px_64px_rgba(26,26,46,0.10)] md:flex md:h-[674px] md:flex-col">
-      {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
-      <div className="relative bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 pb-6 pt-6">
-        <p className="text-micro uppercase tracking-widest text-white/70">
-          {t("landing.selfPanelEyebrow", locale)}
-        </p>
-        <p className="mt-1.5 font-fraunces text-body text-white/80">
-          {t("landing.selfPanelName", locale)}
-        </p>
-        <div className="mt-0.5 flex items-center gap-2.5">
-          <p className="font-fraunces text-heading font-medium italic text-[var(--color-accent-primary-soft)]">
-            {t("landing.selfPanelType", locale)}
-          </p>
-          {/* Valós riport-állítás: elsődleges csapatszerep-hajlam chip –
-              az ál-percentilis („Top 25%") badge kivezetve (B17). */}
-          <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
-            {t("landing.selfPanelRole", locale)}
-          </span>
-        </div>
-        <p className="mt-2 max-w-[360px] text-note leading-[1.55] text-white/75">
-          {t("landing.selfPanelInsight", locale)}
-        </p>
-      </div>
-
-      {/* ═══ DIMENZIÓ-SÁV ═══ */}
-      <div className="bg-surface-card px-5 pb-5 pt-6">
-        <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
-          <div className="grid grid-cols-3">
-            {dims.map((dim, i) => {
-              const colors = dimColorsCss(dim.code);
-              return (
-                <div
-                  key={dim.name}
-                  className={`min-w-0 px-1 py-4 text-center md:px-2 ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
-                >
-                  <p className="mb-1 truncate text-micro text-[var(--color-text-muted)]">{dim.name}</p>
-                  <p
-                    className="mb-1 font-fraunces text-heading leading-none"
-                    style={{ color: colors.strong }}
-                  >
-                    {dim.value}
-                  </p>
-                  <span
-                    className="inline-block max-w-full truncate rounded px-1 py-[2px] text-micro font-semibold md:px-1.5"
-                    style={{ backgroundColor: colors.soft, color: colors.strong }}
-                  >
-                    {getDimensionLabel(dim.value, locale)}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* A prototípushoz ténylegesen rendelt két erősség. A négy 50-es
-            dimenzió semleges, ezért nem gyártunk melléjük „figyelendő” címkét. */}
-        <div data-landing-preview-detail="self-strengths" className="mt-5 flex flex-wrap items-center gap-2">
-          <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-            {t("landing.selfStrLabel", locale)}:
-          </span>
-          {strengths.map((dim) => {
-            const colors = dimColorsCss(dim.code);
-            return (
-              <span
-                key={dim.code}
-                className="rounded px-2 py-0.5 text-micro font-medium"
-                style={{ backgroundColor: colors.soft, color: colors.strong }}
-              >
-                {dim.name}
-              </span>
-            );
-          })}
-        </div>
-
-        {/* A tényleges riport csapatszerep-modelljének két legerősebb becslése. */}
-        <div data-landing-preview-detail="self-roles" className="mb-1 mt-5">
-          <div className="mb-3 flex flex-wrap items-center gap-2">
-            <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-              {t("landing.selfTeamRolesEyebrow", locale)}
-            </p>
-            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro font-semibold text-[var(--color-text-muted)]">
-              {t("landing.selfTeamRolesSource", locale)}
-            </span>
-          </div>
-          <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-surface-card">
-            {likelyRoles.map((role, index) => {
-              const rankVisual = roleRankVisuals[index];
-              return (
-                <div
-                  key={role}
-                  className={`relative grid min-w-0 grid-cols-[1.75rem_minmax(0,1fr)] items-center gap-x-2.5 px-3 py-2.5 pl-3.5 sm:grid-cols-[1.75rem_minmax(7rem,0.8fr)_minmax(5rem,1fr)] ${index < likelyRoles.length - 1 ? "border-b border-[var(--color-border-soft)]" : ""} ${index === 0 ? "bg-[var(--color-surface-subtle)]/45" : ""}`}
-                >
-                  <span
-                    aria-hidden
-                    className="absolute inset-y-0 left-0 w-[3px] opacity-70"
-                    style={{ backgroundColor: rankVisual.color }}
-                  />
-                  <span
-                    aria-hidden
-                    className="flex h-6 w-6 items-center justify-center rounded-full text-micro font-bold text-white opacity-90"
-                    style={{ backgroundColor: rankVisual.color }}
-                  >
-                    {index + 1}
-                  </span>
-                  <div className="flex min-w-0 flex-col">
-                    <p className="order-1 truncate font-fraunces text-note font-semibold leading-tight text-[var(--color-text-primary)]">
-                      {TEAM_ROLES[role][locale]}
-                    </p>
-                    <span
-                      className="order-2 mt-0.5 block truncate text-micro font-semibold uppercase tracking-wide opacity-60"
-                      style={{ color: rankVisual.color }}
-                    >
-                      {roleRanks[index]}
-                    </span>
-                  </div>
-                  <div
-                    aria-hidden
-                    className="col-start-2 mt-1.5 h-1 overflow-hidden rounded-full bg-[var(--color-surface-subtle)] sm:col-start-3 sm:row-start-1 sm:mt-0"
-                  >
-                    <div
-                      className="h-full rounded-full opacity-70"
-                      style={{ backgroundColor: rankVisual.color, width: rankVisual.width }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          <p className="mt-3 flex items-start gap-1.5 text-micro leading-relaxed text-[var(--color-text-muted)]">
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="mt-px h-3.5 w-3.5 shrink-0"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 11v5" />
-              <path d="M12 8h.01" />
-            </svg>
-            <span>{t("landing.selfTeamRolesNote", locale)}</span>
-          </p>
-        </div>
-      </div>
-
-      {/* ═══ VISSZAFOGOTT PANEL-LÁBLÉC ═══ */}
-      <div className="mt-auto flex h-11 shrink-0 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
-        <span className="text-note font-medium text-[var(--color-action-primary-bg)]">
-          {t("landing.selfFadeCta", locale)}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// ─── Team panel – a valódi publikált riport kicsinyített mása ───────────────
-
-function TeamPanel() {
-  const { locale } = useLocale();
-
-  // A showcase seed ötfős Értékesítés csapatának tényleges aggregátumai
-  // (scripts/seed-showcase-org.ts). A négy érték ugyanaz a mintázatmotor-
-  // bemenet, amely ECFP-re, vagyis „Családi Vállalkozásra” értékelődik.
-  const dims = [
-    { name: t("landing.teamAxisDrive", locale), mean: 81, color: "var(--color-layer-team-accent)" },
-    { name: t("landing.teamAxisCohesion", locale), mean: 64, color: "var(--color-sage)" },
-    { name: t("landing.teamAxisDiscipline", locale), mean: 55, color: "var(--color-bronze)" },
-    { name: t("landing.teamAxisOpenness", locale), mean: 56, color: "#555c9e" },
-  ];
-
-  return (
-    <div className="overflow-hidden rounded-[28px] bg-surface-card shadow-[0_24px_64px_rgba(26,26,46,0.10)] md:flex md:h-[674px] md:flex-col">
-      {/* A valódi team hero szilva-gradiensét használó közös riportfejléc. */}
-      <div className="bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] px-6 pb-6 pt-6 text-[var(--color-text-on-inverse)]">
-        <p className="text-micro uppercase tracking-widest text-white/70">
-          {t("landing.teamPanelEyebrow", locale)}
-        </p>
-        <p className="mt-2 font-fraunces text-heading font-medium text-white">
-          {t("landing.teamPanelTitle", locale)}
-        </p>
-        <div className="mt-0.5 flex flex-wrap items-center gap-2.5">
-          <p className="font-fraunces text-heading font-medium italic text-[var(--color-layer-team-glow)]">
-            {t("landing.teamPatternName", locale)}
-          </p>
-          <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
-            {t("landing.teamPanelPublished", locale)}
-          </span>
-        </div>
-        <p className="mt-2 text-note leading-[1.55] text-white/75">
-          {t("landing.teamPanelValidated", locale)}
-        </p>
-      </div>
-
-      <div className="bg-surface-card px-5 pb-5 pt-5 md:flex-1">
-        <div className="flex items-center justify-between gap-3">
-          <p className="text-micro uppercase tracking-widest text-muted">
-            {t("landing.teamDualViewEyebrow", locale)}
-          </p>
-          <div className="flex shrink-0 gap-1.5">
-            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-1 text-micro text-muted">
-              5 {locale === "hu" ? "tag" : "members"}
-            </span>
-            <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-1 text-micro text-muted">
-              100%
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-2 grid grid-cols-2 gap-2">
-          <div className="min-w-0 rounded-xl bg-[var(--color-surface-subtle)] p-3">
-            <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
-              {t("landing.teamPrinciplesTitle", locale)}
-            </p>
-            <div className="mt-4 flex flex-col gap-3.5">
-              {dims.map((d) => (
-                <div key={d.name} className="grid grid-cols-[3.5rem_minmax(0,1fr)_1.25rem] items-center gap-1.5">
-                  <span className="truncate text-micro text-ink-body">{d.name}</span>
-                  <div className="h-1.5 min-w-0 overflow-hidden rounded-full bg-sand">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${d.mean}%`, backgroundColor: d.color }}
-                    />
-                  </div>
-                  <span className="text-right font-mono text-micro tabular-nums text-ink">
-                    {d.mean}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="min-w-0 rounded-xl bg-[var(--color-surface-subtle)] p-3">
-            <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
-              {t("landing.teamRelationshipsTitle", locale)}
-            </p>
-            <svg
-              className="mx-auto mt-1 h-[132px] w-full max-w-[172px]"
-              viewBox="0 0 180 145"
-              role="img"
-              aria-labelledby="team-network-title team-network-description"
-            >
-              <title id="team-network-title">{t("landing.teamRelationshipsA11yTitle", locale)}</title>
-              <desc id="team-network-description">{t("landing.teamRelationshipsA11yDescription", locale)}</desc>
-              <g fill="none" strokeLinecap="round">
-                <path d="M49 37 90 66 132 37 49 37" stroke="var(--color-sage)" strokeWidth="4" />
-                <path d="M49 37 32 112M132 37l16 75" stroke="var(--color-layer-team-accent)" strokeWidth="2.5" opacity=".5" />
-                <path d="M90 66l58 46M32 112h116" stroke="var(--color-bronze)" strokeWidth="2" strokeDasharray="6 5" />
-              </g>
-              {[
-                { x: 49, y: 37, label: "A", r: 16 },
-                { x: 132, y: 37, label: "C", r: 16 },
-                { x: 32, y: 112, label: "D", r: 15 },
-                { x: 148, y: 112, label: "E", r: 15 },
-              ].map((node) => (
-                <g key={node.label}>
-                  <circle cx={node.x} cy={node.y} r={node.r} fill="var(--color-surface-card)" stroke="var(--color-layer-team-accent)" strokeWidth="2" />
-                  <text x={node.x} y={node.y} dominantBaseline="middle" textAnchor="middle" className="fill-[var(--color-text-primary)] text-micro font-semibold">{node.label}</text>
-                </g>
-              ))}
-              <circle cx="90" cy="66" r="18" fill="var(--color-sage)" stroke="var(--color-surface-card)" strokeWidth="3" />
-              <text x="90" y="66" dominantBaseline="middle" textAnchor="middle" className="fill-white text-micro font-bold">B</text>
-            </svg>
-          </div>
-        </div>
-
-        <p className="mt-3 text-micro text-muted">
-          {t("landing.teamPrivacyNote", locale)}
-        </p>
-
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
-            <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-sage-dark)]">
-              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-sage)]" />
-              {t("landing.teamStrengthLabel", locale)}
-            </p>
-            <p className="mt-1.5 text-micro leading-relaxed text-ink-body">
-              {t("landing.teamStrengthText", locale)}
-            </p>
-          </div>
-          <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
-            <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-bronze-dark)]">
-              <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-bronze)]" />
-              {t("landing.teamWatchLabel", locale)}
-            </p>
-            <p className="mt-1.5 text-micro leading-relaxed text-ink-body">
-              {t("landing.teamWatchText", locale)}
-            </p>
-          </div>
-        </div>
-
-        <div
-          data-landing-preview-detail="team-narrative"
-          className="mt-3 rounded-r-[14px] p-3.5"
-          style={{
-            borderLeft: "4px solid var(--color-layer-team-accent)",
-            background: "color-mix(in srgb, var(--color-layer-team-accent) 10%, var(--color-surface-card))",
-          }}
-        >
-          <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-layer-team-accent)]">
-            {t("landing.teamNarrativeLabel", locale)}
-          </p>
-          <p className="text-note leading-relaxed text-ink-body">
-            {t("landing.teamNarrativeText", locale)}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex h-11 shrink-0 items-center justify-center border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]">
-        <span className="text-note font-medium text-[var(--color-layer-team-accent)]">
-          {t("landing.teamFadeCta", locale)}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-// ─── Main component ───────────────────────────────────────────────────────────
-
+/**
+ * Statikus hero: a mód az ÚTVONALBÓL jön (`/` → self, `/team-dynamics` →
+ * team), nem kliens-oldali kapcsolóból. A 2026-09-03-i egyszerűsítés
+ * kivezette a self/team módváltót és az automatikus tab-bemutatót: a
+ * beeső látogató egyetlen ígéretet és egyetlen elsődleges utat lát. Ezzel a
+ * korábbi „mindkét változat a DOM-ban, láthatatlanul" geometria-rögzítés is
+ * feleslegessé vált — nincs mihez rögzíteni.
+ */
 export function HeroSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
-  const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-layer-team-accent)";
   // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 – nagy szövegnek épp
-  // a határon. A H1 em ezért a bronz-skála középső fokát kapja (3.9:1, nagy
-  // szöveg); az eyebrow kontrasztját a SectionEyebrow tónusai kezelik.
-  const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
-  // Tömör CTA-felület: self módban bronze-dark, team módban a valódi team
-  // hero első gradiens-stopja. Így a CTA a megfelelő réteghez tartozik, de
-  // mindkét módban megtartja ugyanazt a gomb-anatómiát.
-  // Detect existing localStorage draft for guest users.
-  // Must run in useEffect to avoid hydration mismatch (localStorage is client-only).
+  // a határon. A H1 em ezért a bronz-skála középső fokát kapja (3.9:1).
+  const headlineAccentColor = isSelf
+    ? "var(--color-accent-primary-mid)"
+    : "var(--color-layer-team-accent)";
+  const ctaBackground = isSelf
+    ? "var(--color-bronze-dark)"
+    : "var(--color-layer-team-hero-from)";
+
+  // Meglévő vendég-draft: a CTA felirata folytatásra vált. localStorage csak
+  // kliensen olvasható, ezért useEffect (hydration-biztos minta).
   const [hasDraft, setHasDraft] = useState(false);
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage csak kliensen olvasható, hydration-biztos minta
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage csak kliensen érhető el
   useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("TRITAN")); }, []);
 
-  // A módfüggő szöveg-blokk egy változata. Az inaktív példány rejtett, de a
-  // DOM-ban marad, hogy a blokk magassága módtól független legyen.
-  const renderVariableCopy = (self: boolean, active: boolean) => {
-    const ctaBackground = self ? "var(--color-bronze-dark)" : "var(--color-layer-team-hero-from)";
-    return (
-      <div
-        key={self ? "self" : "team"}
-        data-landing-hero-variable-mode={self ? "self" : "team"}
-        aria-hidden={active ? undefined : true}
-        className={active ? "flex flex-col min-[700px]:max-md:items-center" : "invisible flex flex-col pointer-events-none min-[700px]:max-md:items-center"}
-      >
+  const meta = isSelf
+    ? [
+        { Icon: ClockIcon, text: t("landing.selfMetaTime", locale) },
+        { Icon: FlaskIcon, text: t("landing.selfMetaMethod", locale) },
+        { Icon: BoltIcon, text: t("landing.selfMetaInstant", locale) },
+        { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
+      ]
+    : [
+        { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
+        { Icon: ClockIcon, text: t("landing.teamMetaTiming", locale) },
+        { Icon: GiftIcon, text: t("landing.teamMetaOffer", locale) },
+      ];
+
+  const primaryLabel = isSelf
+    ? hasDraft
+      ? t("landing.selfCtaContinue", locale)
+      : t("landing.focusedHeroCta", locale)
+    : t("landing.teamCta", locale);
+
+  return (
+    <section className="bg-cream">
+      {/* A következő szekció saját felső térközt ad. A hero alján csak a
+          riportkártya árnyékának kell helyet hagyni, különben a két padding
+          200 px fölötti üres sávvá adódik össze. */}
+      <div data-landing-hero-inner className="mx-auto max-w-[1120px] px-7 pb-8 pt-12 min-[700px]:max-md:pt-14 md:pt-20">
+        <div className="grid gap-10 min-[700px]:max-md:gap-6 md:grid-cols-2 md:items-center md:gap-12">
+          {/* Mobilon a teljes ígéret és a CTA megelőzi az előnézetet: a
+              látogató nem kényszerül egy hosszú riportkártyán végiggörgetni,
+              mielőtt elérné az első döntési pontot. */}
+          <div
+            data-landing-hero-copy
+            className="flex min-w-0 flex-col min-[700px]:max-md:mx-auto min-[700px]:max-md:w-full min-[700px]:max-md:max-w-[560px] min-[700px]:max-md:items-center min-[700px]:max-md:text-center"
+          >
+            <SectionEyebrow tone={isSelf ? "bronze" : "team"} className={`${riseIn} mb-4`}>
+              {isSelf ? t("landing.focusedEyebrow", locale) : t("landing.teamEyebrow", locale)}
+            </SectionEyebrow>
+
+            <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink min-[700px]:max-md:max-w-[14ch]">
+              {isSelf ? t("landing.ctaSelfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
+              <em className="italic" style={{ color: headlineAccentColor }}>
+                {isSelf ? t("landing.ctaSelfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
+              </em>
+            </h1>
+
             <p className={`${riseIn} mb-7 mt-6 max-w-[610px] text-balance text-base font-light leading-relaxed text-ink-body`}>
-              {self ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
+              {isSelf ? t("landing.focusedHeroSub", locale) : t("landing.teamSub", locale)}
             </p>
 
             <div
@@ -418,15 +98,9 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               style={{ animationDelay: "0.1s" }}
             >
               <Link
-                href={self ? "/try" : "/pilot"}
-                // P2: a hero elsődleges CTA-ja módonként külön mérve – ebből
-                // derül ki, melyik ígéret működik.
+                href={isSelf ? "/try" : "/pilot"}
                 onClick={() =>
-                  track("cta.click", {
-                    cta_id: "hero_primary",
-                    surface: "landing",
-                    mode: self ? "self" : "team",
-                  })
+                  track("cta.click", { cta_id: "hero_primary", surface: "landing", mode })
                 }
                 className={getButtonClassName({
                   size: "lg",
@@ -434,35 +108,23 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 })}
                 style={{
                   background: ctaBackground,
-                  color: self
+                  color: isSelf
                     ? "var(--color-text-on-accent-deep)"
                     : "var(--color-text-on-inverse)",
-                  boxShadow: self
+                  boxShadow: isSelf
                     ? "0 4px 14px color-mix(in srgb, var(--color-bronze-dark) 25%, transparent)"
                     : "0 4px 14px color-mix(in srgb, var(--color-layer-team-hero-from) 28%, transparent)",
                 }}
               >
-                <span>
-                  {self
-                    ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
-                    : t("landing.teamCta", locale)}
-                </span>
+                <span>{primaryLabel}</span>
               </Link>
-              {!self ? (
+              {!isSelf ? (
                 <Link
                   href="/contact"
                   onClick={() =>
-                    track("cta.click", {
-                      cta_id: "hero_secondary",
-                      surface: "landing",
-                      mode: "team",
-                    })
+                    track("cta.click", { cta_id: "hero_secondary", surface: "landing", mode: "team" })
                   }
-                  className={getButtonClassName({
-                    variant: "ghost",
-                    size: "md",
-                    className: "group px-3",
-                  })}
+                  className={getButtonClassName({ variant: "ghost", size: "md", className: "group px-3" })}
                   style={{ color: "var(--color-layer-team-accent)" }}
                 >
                   {t("landing.teamSecondaryCta", locale)}
@@ -471,131 +133,32 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               ) : null}
             </div>
 
-            {self ? (
-              <div className={`${riseIn} flex flex-wrap items-center gap-2 min-[700px]:max-md:justify-center`} style={{ animationDelay: "0.2s" }}>
-                {[
-                  { Icon: ClockIcon, text: t("landing.selfMetaTime", locale) },
-                  { Icon: FlaskIcon, text: t("landing.selfMetaMethod", locale) },
-                  { Icon: BoltIcon, text: t("landing.selfMetaInstant", locale) },
-                  { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
-                ].map((m) => (
-                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]">
-                    <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-accent-primary)]" />
-                    {m.text}
-                  </span>
-                ))}
-              </div>
-            ) : (
-              <div className={`${riseIn} flex flex-wrap items-center gap-2 min-[700px]:max-md:justify-center`} style={{ animationDelay: "0.2s" }}>
-                <div className="flex flex-wrap items-center gap-2 min-[700px]:max-md:justify-center">
-                  {[
-                    { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
-                    { Icon: ClockIcon, text: t("landing.teamMetaTiming", locale) },
-                    { Icon: GiftIcon, text: t("landing.teamMetaOffer", locale) },
-                  ].map((m) => (
-                    <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]">
-                      <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-layer-team-accent)]" />
-                      {m.text}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-      </div>
-    );
-  };
-
-  return (
-    <section className="bg-cream">
-      <div className="mx-auto max-w-[1120px] px-7 pb-20 pt-12 min-[700px]:max-md:pb-16 min-[700px]:max-md:pt-14 md:pb-28 md:pt-20">
-        <div className="grid gap-10 min-[700px]:max-md:gap-6 md:grid-cols-2 md:items-stretch md:gap-12">
-          {/* Mobilon a teljes ígéret és a CTA megelőzi az előnézetet. Így a
-              látogató nem kényszerül egy hosszú riportkártyán végiggörgetni,
-              mielőtt elérné az első döntési pontot. */}
-          {/* Rögzített geometria módváltásnál: az oszlop md:-től a kártya
-              magasságát veszi fel, a kapcsoló a tetején ül, a szöveg pedig a
-              MARADÉK térben középre kerül (md:my-auto). Így a self és a team
-              eltérő hosszú szövege nem tolja el a kapcsolót – korábban a rács
-              items-center-e az egész oszlopot újrapozicionálta. */}
-          <div data-landing-hero-copy className="flex min-w-0 flex-col min-[700px]:max-md:mx-auto min-[700px]:max-md:w-full min-[700px]:max-md:max-w-[560px] min-[700px]:max-md:items-center min-[700px]:max-md:text-center md:min-h-[674px]">
-            <div className={`${riseIn} mb-4 min-[700px]:max-md:self-center lg:mb-5`}>
-              <ModeSwitcher mode={mode} />
-            </div>
-
-            <div data-landing-hero-copy-body className="flex w-full flex-col min-[700px]:max-md:items-center">
-
-            <SectionEyebrow
-              tone={isSelf ? "bronze" : "team"}
-              className={`${riseIn} mb-4`}
+            {/* A tényszerű ígéretek (idő, módszer, azonnali, ingyenes) itt
+                élnek — a korábbi StatsBar ugyanezt ismételte lejjebb. */}
+            <div
+              data-landing-hero-meta
+              className={`${riseIn} flex flex-wrap items-center gap-2 min-[700px]:max-md:justify-center`}
+              style={{ animationDelay: "0.2s" }}
             >
-              {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
-            </SectionEyebrow>
-
-            {/* A H1 mellett a MÁSIK mód címe is ott ül ugyanabban a
-                rácscellában, láthatatlan span-ként, azonos tipográfiával:
-                a cella a magasabbik címet tartja, így a sorszám-különbség
-                (pl. 375/768px-en 5 vs 4 sor) nem tolja el az alatta lévő
-                szöveget. Nem heading és aria-hidden – egyetlen H1 marad. */}
-            <div className="grid [&>*]:[grid-area:1/1]">
-              <h1 className="max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight text-ink min-[700px]:max-md:max-w-[14ch]">
-                {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
-                <em className="italic" style={{ color: headlineAccentColor }}>
-                  {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
-                </em>
-              </h1>
-              <span
-                aria-hidden
-                data-landing-hero-title-ghost
-                className="invisible block max-w-[13ch] text-balance font-fraunces text-fluid-display font-medium tracking-tight min-[700px]:max-md:max-w-[14ch]"
-              >
-                {isSelf ? t("landing.teamHeadlineBefore", locale) : t("landing.selfHeadlineBefore", locale)}
-                <em className="italic">
-                  {isSelf ? t("landing.teamHeadlineEm", locale) : t("landing.selfHeadlineEm", locale)}
-                </em>
-              </span>
-            </div>
-
-            {/* A módonként eltérő magasságú részek (alszöveg, CTA-sor,
-                pirulák) MINDKÉT változatban a DOM-ban maradnak, egy
-                rácscellába rakva: a blokk a magasabbik méretét tartja, így
-                módváltásnál sem a szöveg, sem az alatta lévő tartalom nem
-                mozdul. Az inaktív invisible + aria-hidden. A H1 és az
-                eyebrow szándékosan egyszeres (LCP/SEO: egy H1). */}
-            <div data-landing-hero-variable className="grid [&>*]:[grid-area:1/1]">
-              {renderVariableCopy(true, isSelf)}
-              {renderVariableCopy(false, !isSelf)}
-            </div>
+              {meta.map((m) => (
+                <span
+                  key={m.text}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]"
+                >
+                  <m.Icon
+                    className={`h-3 w-3 shrink-0 ${isSelf ? "text-[var(--color-accent-primary)]" : "text-[var(--color-layer-team-accent)]"}`}
+                  />
+                  {m.text}
+                </span>
+              ))}
             </div>
           </div>
 
-          {/* A mobil előnézet tudatosan tömörebb: a részletes szerep- és
-              narratív blokkok közepes nézettől jelennek meg. */}
-          {/* Mindkét panel a DOM-ban marad, egy rácscellába rakva: a
-              konténer magassága a magasabbikét veszi fel, ezért módváltásnál
-              nem ugrik az oldal, és a panel nem mountol újra (a rise-in nem
-              játszik le másodszor). Az inaktív panel invisible + aria-hidden,
-              a data-landing-hero-preview jelölőt csak az aktív viseli. */}
-          <div className="grid [&>*]:[grid-area:1/1]">
-            <div
-              data-landing-hero-preview={isSelf ? "" : undefined}
-              aria-hidden={isSelf ? undefined : true}
-              className={isSelf ? undefined : "invisible pointer-events-none"}
-            >
-              <div className="mx-auto w-full max-w-[460px] min-[700px]:max-md:max-w-[560px]">
-                <SelfPanel />
-              </div>
-            </div>
-            <div
-              data-landing-hero-preview={isSelf ? undefined : ""}
-              aria-hidden={isSelf ? true : undefined}
-              className={isSelf ? "invisible pointer-events-none" : undefined}
-            >
-              <div className="mx-auto w-full max-w-[460px] min-[700px]:max-md:max-w-[560px]">
-                <TeamPanel />
-              </div>
+          <div data-landing-hero-preview>
+            <div className="mx-auto w-full max-w-[460px] min-[700px]:max-md:max-w-[560px]">
+              {isSelf ? <SelfPanel /> : <TeamPanel />}
             </div>
           </div>
-
         </div>
       </div>
     </section>

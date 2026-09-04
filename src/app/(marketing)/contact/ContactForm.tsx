@@ -40,8 +40,8 @@ export function ContactForm({ locale }: { locale: Locale }) {
     () => [
       { value: "demo", label: t("contact.topicDemo", locale) },
       { value: "pricing", label: t("contact.topicPricing", locale) },
-      { value: "support", label: t("contact.topicSupport", locale) },
       { value: "partnership", label: t("contact.topicPartnership", locale) },
+      { value: "support", label: t("contact.topicSupport", locale) },
       { value: "other", label: t("contact.topicOther", locale) },
     ],
     [locale],
@@ -157,7 +157,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   }
 
   const inputClass =
-    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-base tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
+    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-dm-sans text-base text-ink outline-none transition-all focus:border-[var(--color-action-primary-bg)]/50 focus:bg-surface-card focus:ring-2 focus:ring-[var(--color-action-primary-bg)]/10";
   const labelClass = "block text-sm font-medium text-ink";
 
   function updateField(field: ContactField, value: string) {
@@ -181,6 +181,39 @@ export function ContactForm({ locale }: { locale: Locale }) {
       aria-describedby={error ? `${fieldIdPrefix}-contact-error` : undefined}
       className="grid gap-5"
     >
+      <fieldset>
+        <legend className="mb-3 text-sm font-medium text-ink">
+          {t("contact.topicPrompt", locale)}{" "}
+          <span aria-hidden="true" className="text-[var(--color-accent-primary-strong)]">*</span>
+        </legend>
+        <div data-contact-topics className="flex flex-wrap gap-2">
+          {topicOptions.map((option) => {
+            const id = `${fieldIdPrefix}-contact-topic-${option.value}`;
+            return (
+              <div key={option.value}>
+                <input
+                  id={id}
+                  type="radio"
+                  name="topic"
+                  value={option.value}
+                  checked={topic === option.value}
+                  required
+                  disabled={loading}
+                  onChange={() => setTopic(option.value)}
+                  className="peer sr-only"
+                />
+                <label
+                  htmlFor={id}
+                  className={`inline-flex min-h-10 cursor-pointer items-center rounded-full border border-sand bg-cream px-3.5 text-caption text-ink-body transition-colors hover:border-[var(--color-action-primary-bg)]/35 peer-checked:border-[var(--color-action-primary-bg)] peer-checked:bg-sage-soft peer-checked:text-sage-dark peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--color-focus-ring)] peer-focus-visible:ring-offset-2 ${loading ? "cursor-not-allowed opacity-60" : ""}`}
+                >
+                  {option.label}
+                </label>
+              </div>
+            );
+          })}
+        </div>
+      </fieldset>
+
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <div>
           <label htmlFor={`${fieldIdPrefix}-contact-name`} className={labelClass}>
@@ -241,55 +274,29 @@ export function ContactForm({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        <div>
-          <label htmlFor={`${fieldIdPrefix}-contact-company`} className={labelClass}>
-            <span className="mb-2 block">{t("contact.company", locale)}</span>
-          </label>
-          <input
-            ref={companyRef}
-            id={`${fieldIdPrefix}-contact-company`}
-            name="company"
-            maxLength={120}
-            type="text"
-            autoComplete="organization"
-            disabled={loading}
-            aria-invalid={Boolean(fieldErrors.company) || undefined}
-            aria-describedby={fieldErrors.company ? `${fieldIdPrefix}-contact-company-error` : undefined}
-            value={company}
-            onChange={(e) => updateField("company", e.target.value)}
-            className={inputClass}
-          />
-          {fieldErrors.company ? (
-            <span id={`${fieldIdPrefix}-contact-company-error`} className="mt-2 block text-xs text-state-error-fg">
-              {fieldErrors.company}
-            </span>
-          ) : null}
-        </div>
-
-        <div>
-          <label htmlFor={`${fieldIdPrefix}-contact-topic`} className={labelClass}>
-            <span className="mb-2 block">
-              {t("contact.topic", locale)}{" "}
-              <span aria-hidden="true" className="text-[var(--color-accent-primary-strong)]">*</span>
-            </span>
-          </label>
-          <select
-            id={`${fieldIdPrefix}-contact-topic`}
-            name="topic"
-            required
-            disabled={loading}
-            value={topic}
-            onChange={(e) => setTopic(e.target.value as Topic)}
-            className={inputClass}
-          >
-            {topicOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div>
+        <label htmlFor={`${fieldIdPrefix}-contact-company`} className={labelClass}>
+          <span className="mb-2 block">{t("contact.company", locale)}</span>
+        </label>
+        <input
+          ref={companyRef}
+          id={`${fieldIdPrefix}-contact-company`}
+          name="company"
+          maxLength={120}
+          type="text"
+          autoComplete="organization"
+          disabled={loading}
+          aria-invalid={Boolean(fieldErrors.company) || undefined}
+          aria-describedby={fieldErrors.company ? `${fieldIdPrefix}-contact-company-error` : undefined}
+          value={company}
+          onChange={(e) => updateField("company", e.target.value)}
+          className={inputClass}
+        />
+        {fieldErrors.company ? (
+          <span id={`${fieldIdPrefix}-contact-company-error`} className="mt-2 block text-xs text-state-error-fg">
+            {fieldErrors.company}
+          </span>
+        ) : null}
       </div>
 
       <div>
@@ -306,13 +313,13 @@ export function ContactForm({ locale }: { locale: Locale }) {
           required
           minLength={20}
           maxLength={4000}
-          rows={7}
+          rows={6}
           disabled={loading}
           aria-invalid={Boolean(fieldErrors.message) || undefined}
           aria-describedby={fieldErrors.message ? `${fieldIdPrefix}-contact-message-error` : undefined}
           value={message}
           onChange={(e) => updateField("message", e.target.value)}
-          className={`${inputClass} min-h-[180px] resize-y py-3.5 leading-relaxed`}
+          className={`${inputClass} min-h-[156px] resize-y py-3.5 leading-relaxed`}
         />
         {fieldErrors.message ? (
           <span id={`${fieldIdPrefix}-contact-message-error`} className="mt-2 block text-xs text-state-error-fg">
@@ -345,8 +352,8 @@ export function ContactForm({ locale }: { locale: Locale }) {
       ) : null}
 
       <div className="flex flex-col gap-3 border-t border-sand pt-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-dm-sans text-label uppercase text-ink-body">
-          {t("contact.requiredHint", locale)}
+        <p className="max-w-[31ch] text-note leading-relaxed text-ink-body">
+          {t("contact.legalBody", locale)}
         </p>
         <button
           ref={submitRef}

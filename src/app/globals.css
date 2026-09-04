@@ -1409,3 +1409,135 @@ input[type="range"].pattern-range::-moz-range-track {
     opacity: 1;
   }
 }
+
+/* ── Pilot kapacitás-kártya: „érkezés" — a brand-csillag egyszer száll le ──
+   Egyszeri koreográfia, amikor a kártya képbe kerül (a fázist a
+   data-pilot-spots-phase attribútum vezérli, ld. PilotContent.tsx):
+
+     play  · a szeletek balról jobbra nőnek ki (85 ms-os lépcsőben); a
+             brand-csillag (✦) felülről leszáll az első szabad helyre, és az
+             a szelet egyet felfénylik;
+     idle  · a kártya nyugodt, a csillag a helyén áll; 9 mp-enként EGY halk
+             fény fut át a szabad helyeken — emlékeztető, nem hurok;
+     rest  · SSR/alapállapot és csökkentett mozgás: minden a helyén, a
+             csillag statikusan a szelet fölött, mozgás nélkül.
+
+   Miért nem hurok: a végtelen lüktetés/leszállás egy 6 px-es sávon idővel
+   zajjá válik a hero-ban; az egyszeri érkezés erősebb pillanat, utána a
+   csillag maga a jel. */
+@keyframes pilot-spot-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes pilot-spot-star-arrive {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -10px) rotate(-24deg) scale(0.72);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, 1px) rotate(4deg) scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes pilot-spot-glint {
+  0% {
+    filter: brightness(1);
+  }
+  25% {
+    filter: brightness(1.28);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@keyframes pilot-spot-sweep {
+  0%,
+  18% {
+    transform: translateX(-140%);
+  }
+  30%,
+  100% {
+    transform: translateX(160%);
+  }
+}
+
+.pilot-spot-next {
+  position: relative;
+  overflow: visible;
+}
+
+.pilot-spot-next::before {
+  content: "✦";
+  position: absolute;
+  bottom: calc(100% + 0.25rem);
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-layer-team-badge);
+  font-size: 0.75rem;
+  line-height: 1;
+  filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--color-layer-team-hero-to) 60%, transparent));
+}
+
+[data-pilot-spots-phase="play"] .pilot-spot {
+  transform-origin: left center;
+  /* backwards: a késleltetés alatt is a rejtett (scaleX 0) kezdőállapot él */
+  animation: pilot-spot-grow 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: calc(0.15s + var(--i, 0) * 85ms);
+}
+
+[data-pilot-spots-phase="play"] .pilot-spot-next {
+  animation:
+    pilot-spot-grow 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards,
+    pilot-spot-glint 1.2s ease-out 1.7s 1;
+  animation-delay: calc(0.15s + var(--i, 0) * 85ms), 1.7s;
+}
+
+[data-pilot-spots-phase="play"] .pilot-spot-next::before {
+  animation: pilot-spot-star-arrive 0.7s cubic-bezier(0.22, 0.8, 0.28, 1) 1.35s backwards;
+}
+
+[data-pilot-spots-phase="idle"] .pilot-spot-open {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-pilot-spots-phase="idle"] .pilot-spot-open::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  transform: translateX(-140%);
+  animation: pilot-spot-sweep 9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: calc(3s + var(--i, 0) * 60ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-pilot-spots-phase] .pilot-spot,
+  [data-pilot-spots-phase] .pilot-spot-next,
+  [data-pilot-spots-phase] .pilot-spot-next::before,
+  [data-pilot-spots-phase] .pilot-spot-open::after {
+    animation: none;
+  }
+
+  [data-pilot-spots-phase] .pilot-spot,
+  [data-pilot-spots-phase] .pilot-spot-next {
+    transform: none;
+  }
+
+  [data-pilot-spots-phase] .pilot-spot-next::before {
+    opacity: 1;
+    transform: translateX(-50%);
+  }
+}

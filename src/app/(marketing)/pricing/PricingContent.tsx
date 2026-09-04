@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
+import { CollaborationRhythmArt } from "@/components/marketing/CollaborationRhythmArt";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
-import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
-import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
 import { CheckIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
@@ -17,57 +16,10 @@ import { PRICING_FAQ_INDEXES } from "./faq";
 const WORKFLOW_STEPS = [1, 2, 3] as const;
 const OFFER_FACTORS = [1, 2, 3] as const;
 
-function CollaborationVisual({ locale }: { locale: "hu" | "en" }) {
+function CollaborationVisual() {
   return (
-    <div
-      className="relative min-h-[390px] overflow-hidden rounded-[28px] border border-sand bg-[var(--color-layer-team-hero-from)] p-5 shadow-[0_28px_80px_rgba(26,26,46,0.16)] sm:p-7"
-    >
-      <div aria-hidden="true" className="absolute -right-20 -top-24 size-72 rounded-full border border-white/10" />
-      <div aria-hidden="true" className="absolute -right-8 -top-12 size-48 rounded-full border border-white/10" />
-      <div aria-hidden="true" className="absolute bottom-7 left-8 size-2 rounded-full bg-[var(--color-layer-team-glow)]" />
-      <div aria-hidden="true" className="absolute bottom-16 right-12 size-1.5 rounded-full bg-[var(--color-text-on-inverse)]/40" />
-
-      <div className="relative flex h-full min-h-[334px] flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <p className="text-label uppercase text-[var(--color-text-on-inverse-muted)]">
-            {t("pricing.outcomeVisualEyebrow", locale)}
-          </p>
-        </div>
-
-        <div className="mx-auto my-6 w-full max-w-[330px]">
-          {WORKFLOW_STEPS.map((outcome) => (
-            <div
-              key={outcome}
-              className="relative mb-3 flex items-center gap-4 rounded-2xl border border-white/15 bg-white/[0.08] px-4 py-4 backdrop-blur-sm"
-            >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] text-[var(--color-layer-team-hero-to)]">
-                <CheckIcon className="h-4 w-4" />
-              </span>
-              <div>
-                <p className="text-sm font-semibold text-[var(--color-text-on-inverse)]">
-                  {t(`pricing.outcome${outcome}Title`, locale)}
-                </p>
-                <p className="mt-0.5 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-                  {t(`pricing.outcome${outcome}Body`, locale)}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3 border-t border-white/10 pt-4">
-          <div aria-hidden="true" className="flex -space-x-2">
-            {["bg-sage", "bg-[var(--color-layer-team-bright)]", "bg-[var(--color-layer-team-glow)]"].map(
-              (color, index) => (
-                <span key={index} className={`size-7 rounded-full border-2 border-[var(--color-layer-team-hero-from)] ${color}`} />
-              ),
-            )}
-          </div>
-          <p className="text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-            {t("pricing.outcomeVisualFooter", locale)}
-          </p>
-        </div>
-      </div>
+    <div className="relative grid min-h-[390px] place-items-center overflow-hidden rounded-[28px] border border-sand bg-[var(--color-layer-team-hero-from)] p-5 shadow-[0_28px_80px_rgba(26,26,46,0.16)] sm:p-7">
+      <CollaborationRhythmArt className="block h-auto w-full max-w-[470px]" />
     </div>
   );
 }
@@ -113,7 +65,7 @@ export function PricingContent() {
             <MarketingActions
               className="mt-8"
               primary={{ href: "/contact", label: t("pricing.offerCta", locale), onClick: () => track("cta.click", { cta_id: "pricing_hero", surface: "pricing" }) }}
-              secondary={{ href: "/pilot", label: t("pricing.offerPilotCta", locale), iconRight: <ChevronRightIcon /> }}
+              secondary={{ href: "#workflow", label: t("pricing.heroProcessCta", locale), iconRight: <ChevronRightIcon /> }}
             />
             <div className="mt-7 flex flex-wrap gap-2.5">
               {OFFER_FACTORS.map((factor) => (
@@ -121,12 +73,11 @@ export function PricingContent() {
               ))}
             </div>
           </div>
-          <CollaborationVisual locale={locale} />
+          <CollaborationVisual />
         </div>
       </section>
 
-      <section className="bg-warm">
-        <PageWidthDivider />
+      <section id="workflow" className="scroll-mt-24 border-t border-sand bg-cream">
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <SectionEyebrow>{t("pricing.workflowEyebrow", locale)}</SectionEyebrow>
@@ -136,11 +87,10 @@ export function PricingContent() {
           </div>
           <Workflow locale={locale} />
         </div>
-        <PageWidthDivider />
       </section>
 
-      <section className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
-        <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <section className="border-y border-sand bg-warm">
+        <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
           <div>
             <SectionEyebrow>{t("pricing.offerEyebrow", locale)}</SectionEyebrow>
             <p className="mt-4 hidden max-w-[24ch] text-sm leading-relaxed text-ink-body lg:block">
@@ -191,14 +141,13 @@ export function PricingContent() {
         </div>
       </section>
 
-      <section className="bg-warm">
-        <PageWidthDivider />
+      <section className="bg-cream">
         <div className="mx-auto max-w-3xl px-7 py-16 md:py-24">
           <div className="text-center">
             <SectionEyebrow>{locale === "hu" ? "Mielőtt belevágunk" : "Before we begin"}</SectionEyebrow>
             <h2 className="mt-4 font-fraunces text-fluid-title text-ink">{t("pricing.faqHeading", locale)}</h2>
           </div>
-          <div className="mt-8 space-y-3">
+          <div className="mt-8 grid gap-3 md:grid-cols-2">
             {PRICING_FAQ_INDEXES.map((i) => (
               <details key={i} onToggle={(event) => event.currentTarget.open && track("faq.open", { faq_id: `pricing_q${i}`, surface: "pricing" })} className="group rounded-[18px] border border-sand bg-surface-card open:shadow-[0_12px_30px_rgba(26,26,46,0.04)]">
                 <summary className={`flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-[18px] px-5 py-4 text-sm font-semibold text-ink ${FOCUS_RING_CLASS}`}>
@@ -211,32 +160,48 @@ export function PricingContent() {
         </div>
       </section>
 
-      {/* P1-3: a pilot-teaser a GYIK UTÁN, közvetlenül a kapcsolati űrlap
-          előtt él — így nem szakítja meg az árazás → GYIK gondolatmenetet,
-          és a záró kapcsolatfelvétel előszobája. */}
-      <section className="px-7 py-16 md:py-24">
-        <div className="mx-auto grid max-w-[1060px] overflow-hidden rounded-[28px] border border-sand bg-surface-card shadow-[0_24px_70px_rgba(26,26,46,0.07)] md:grid-cols-[0.72fr_1.28fr]">
-          <div className="relative min-h-52 overflow-hidden bg-[var(--color-layer-team-soft)] p-7">
-            <div className="absolute -bottom-20 -left-14 size-56 rounded-full border border-[var(--color-layer-team-accent)]/15" />
-            <div className="absolute -bottom-8 -left-2 size-36 rounded-full border border-[var(--color-layer-team-accent)]/20" />
-            <div className="relative flex h-full items-end"><span className="font-fraunces text-7xl text-[var(--color-layer-team-accent)]/20">90</span><span className="mb-2 ml-2 text-label uppercase text-[var(--color-layer-team-accent)]">{locale === "hu" ? "nap" : "days"}</span></div>
+      <section className="px-7 pb-16 pt-5 md:pb-20 md:pt-8">
+        <div className="mx-auto grid max-w-[1060px] gap-5 rounded-[22px] border border-[var(--color-bronze-edge)] bg-[var(--color-bronze-100)] px-6 py-6 md:grid-cols-[110px_minmax(0,1fr)_auto] md:items-center md:px-7">
+          <div className="flex items-baseline gap-2">
+            <span className="font-fraunces text-6xl leading-none text-[var(--color-accent-primary-strong)]">90</span>
+            <span className="text-label uppercase text-[var(--color-accent-primary-strong)]">
+              {locale === "hu" ? "nap" : "days"}
+            </span>
           </div>
-          <div className="p-7 md:p-10">
-            <SectionEyebrow tone="team">{t("pricing.pilotEyebrow", locale)}</SectionEyebrow>
-            <h2 className="mt-4 font-fraunces text-3xl text-ink">{t("pricing.pilotTitle", locale)}</h2>
-            <p className="mt-4 text-sm leading-relaxed text-ink-body">
+          <div>
+            <SectionEyebrow tone="bronze">{t("pricing.pilotEyebrow", locale)}</SectionEyebrow>
+            <h2 className="mt-2 font-fraunces text-2xl text-ink">{t("pricing.pilotTitle", locale)}</h2>
+            <p className="mt-2 max-w-[65ch] text-caption leading-relaxed text-ink-body">
               {tf("pricing.pilotBody", locale, { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT })}
             </p>
-            <Link href="/pilot" onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })} className={`mt-5 inline-flex min-h-11 items-center font-semibold text-[var(--color-layer-team-accent)] transition-colors hover:text-[var(--color-layer-team-bright)] ${FOCUS_RING_CLASS}`}>
-              {t("pricing.pilotCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
-            </Link>
           </div>
+          <Link
+            href="/pilot"
+            onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })}
+            className={`inline-flex min-h-11 shrink-0 items-center font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
+          >
+            {t("pricing.pilotCta", locale)}
+            <ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
+          </Link>
         </div>
       </section>
 
-      <section className="px-5 py-8 lg:px-14">
-        <div className="mx-auto max-w-[1060px] rounded-[28px] bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-6 py-12 lg:px-10 lg:py-14">
-          <PricingQuickAsk locale={locale} />
+      <section className="px-5 pb-8 lg:px-14">
+        <div className="mx-auto max-w-[1060px] rounded-[28px] bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-6 py-12 text-center lg:px-10 lg:py-14">
+          <SectionEyebrow tone="onDark">{t("pricing.quickAskEyebrow", locale)}</SectionEyebrow>
+          <h2 className="mx-auto mt-4 max-w-[18ch] font-fraunces text-fluid-title text-[var(--color-text-on-inverse)]">
+            {t("pricing.bottomHeading", locale)}
+          </h2>
+          <p className="mx-auto mt-3 max-w-[52ch] text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+            {t("pricing.bottomSub", locale)}
+          </p>
+          <Link
+            href="/contact"
+            onClick={() => track("cta.click", { cta_id: "pricing_bottom", surface: "pricing" })}
+            className={`mt-7 inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:-translate-y-0.5 hover:brightness-105 ${FOCUS_RING_CLASS}`}
+          >
+            {t("pricing.bottomCta", locale)}
+          </Link>
         </div>
       </section>
     </main>

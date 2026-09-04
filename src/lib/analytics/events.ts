@@ -61,17 +61,6 @@ const publicEvents = {
     question: "P1",
   }),
 
-  "landing.mode_switch": spec({
-    schema: z
-      .object({
-        to: z.enum(["self", "team"]),
-      })
-      .strict(),
-    origin: "client",
-    description: "A landing egyéni/csapat mód-váltója.",
-    question: "P2",
-  }),
-
   "cta.click": spec({
     schema: z
       .object({

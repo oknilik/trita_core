@@ -432,10 +432,13 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
               ) : (
                 <div>
                   <p className="mb-2 text-xs font-medium text-muted">{isHu ? "Ezen az oldalon" : "On this page"}</p>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  {/* A panel asztalon is fixen 430 px széles. Itt nem használunk
+                      viewport-alapú `sm:grid-cols-3` törést: az három ~126 px-es
+                      oszlopot készített, ezért a hosszú HU/EN szavak kilógtak. */}
+                  <div className="grid grid-cols-1 gap-2">
                     {contextualEntries.map((item) => (
-                      <button key={item.id} type="button" onClick={() => openEntry(item, "context")} className="group flex min-h-14 items-center gap-3 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] px-3 py-2.5 text-left text-sm font-medium text-ink transition hover:border-sage/35 hover:bg-sage-ghost sm:min-h-[106px] sm:flex-col sm:items-start sm:justify-between">
-                        <span className="shrink-0 text-sage">{entryIcon(item.id, topicByEntryId.get(item.id) ?? "")}</span><span className="leading-snug">{item.question[locale]}</span>
+                      <button data-help-context-card key={item.id} type="button" onClick={() => openEntry(item, "context")} className="group flex min-h-14 w-full min-w-0 items-center gap-3 overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] px-3 py-2.5 text-left text-sm font-medium text-ink transition hover:border-sage/35 hover:bg-sage-ghost">
+                        <span className="shrink-0 text-sage">{entryIcon(item.id, topicByEntryId.get(item.id) ?? "")}</span><span data-help-context-label className="min-w-0 flex-1 break-words leading-snug [overflow-wrap:anywhere]">{item.question[locale]}</span>
                       </button>
                     ))}
                   </div>

@@ -11,6 +11,8 @@ import { BackChevronIcon } from '@/components/ui/primitives/BackChevronIcon'
 import { ChevronRightIcon } from '@/components/ui/icons'
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
+import { AssessmentIntroArt } from "@/components/ui/AssessmentIntroArt";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { useAssessmentStepController } from '@/components/assessment/useAssessmentStepController'
 import { useToast } from '@/components/ui/Toast'
 import { track } from '@/lib/analytics/client'
@@ -638,11 +640,6 @@ export function AssessmentClient({
       { num: 2, style: "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]", title: t("assessment.introStep2", locale), sub: t("assessment.introStep2Sub", locale) },
       { num: 3, style: "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]", title: t("assessment.introStep3", locale), sub: t("assessment.introStep3Sub", locale) },
     ]
-    const previewDims = [
-      { name: t("landing.selfDim1", locale), val: 79 },
-      { name: t("landing.selfDim2", locale), val: 46 },
-      { name: t("landing.selfDim3", locale), val: 34 },
-    ]
     return (
       <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
         <AssessmentFocusHeader homeHref={assessmentHomeHref}>
@@ -657,12 +654,9 @@ export function AssessmentClient({
 
             {/* Left column */}
             <div>
-              <div className="mb-2.5 flex items-center gap-2">
-                <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
-                <span className="text-micro font-medium uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-                  {t("assessment.introEyebrow", locale)}
-                </span>
-              </div>
+              <SectionEyebrow tone="bronze" className="mb-2.5">
+                {t("assessment.introEyebrow", locale)}
+              </SectionEyebrow>
               <h1 className="mb-4 max-w-[620px] font-fraunces text-title leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-display 2xl:text-hero">
                 {tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
                 <em className="not-italic text-[var(--color-accent-primary-strong)]">{t("assessment.introHeadlineEm", locale)}</em>
@@ -702,31 +696,7 @@ export function AssessmentClient({
                   </div>
                 </div>
               ))}
-              {/* Dekoratív miniatűr eredmény-teaser – a törpe, halvány szöveg
-                  szándékos „thumbnail"-hatás, nem olvasásra szánt tartalom,
-                  ezért aria-hidden és mentesül a 10px-es a11y-padló alól. */}
-              <div aria-hidden className="mt-1 rounded-[12px] bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-4 py-3.5 lg:px-5 lg:py-4">
-                {/* eslint-disable-next-line no-restricted-syntax */}
-                <p className="text-[6px] uppercase tracking-widest text-white/20">
-                  {t("assessment.introPreviewEyebrow", locale)}
-                </p>
-                <p className="mt-0.5 font-fraunces text-sm font-medium italic text-[var(--color-accent-primary-soft)]">
-                  {t("assessment.introPreviewType", locale)}
-                </p>
-                <div className="mt-2 flex gap-1.5">
-                  {previewDims.map((d) => (
-                    <div key={d.name} className="flex-1 rounded bg-white/[0.05] px-1 py-1 text-center">
-                      {/* eslint-disable-next-line no-restricted-syntax */}
-                      <p className="text-[5px] text-white/20">{d.name}</p>
-                      <p className="font-fraunces text-xs text-white/[0.35]">{d.val}</p>
-                    </div>
-                  ))}
-                </div>
-                {/* eslint-disable-next-line no-restricted-syntax */}
-                <p className="mt-1.5 text-center text-[7px] text-white/[0.15]">
-                  {t("assessment.introPreviewLabel", locale)}
-                </p>
-              </div>
+              <AssessmentIntroArt />
             </div>
 
           </div>

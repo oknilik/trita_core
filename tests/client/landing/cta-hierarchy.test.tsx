@@ -7,10 +7,6 @@ vi.mock("@/components/LocaleProvider", () => ({
   useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
 }));
 
-vi.mock("@/components/landing/ModeSwitcher", () => ({
-  ModeSwitcher: () => <div data-testid="mode-switcher" />,
-}));
-
 vi.mock("@/lib/analytics/client", () => ({
   track: vi.fn(),
 }));
@@ -64,6 +60,14 @@ describe("landing CTA-hierarchia", () => {
     self.unmount();
     const team = render(<HeroSection mode="team" />);
     expect(team.container.querySelector('[data-landing-preview-detail="team-narrative"]')).not.toHaveClass("hidden");
+  });
+
+  it("a hero csak az aktív mód panelét rendereli – nincs rejtett másik változat", () => {
+    const { container } = render(<HeroSection mode="self" />);
+
+    expect(container.querySelectorAll("[data-landing-hero-preview]")).toHaveLength(1);
+    expect(container.querySelector('[data-landing-preview-detail="team-narrative"]')).toBeNull();
+    expect(container.querySelector("[aria-hidden='true'].invisible")).toBeNull();
   });
 
   it("egyéni módban megtartja a teszt és az együttműködés útvonalát", () => {

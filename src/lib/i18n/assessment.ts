@@ -18,7 +18,7 @@ export const assessmentTranslations = {
     // P1.6: a vendég-draft KIZÁRÓLAG ebben a böngészőben él — ezt nem
     // hallgatjuk el, mert inkognitó/sütitörlés/eszközváltás = elveszett 60 item.
     introInfoGuest: {
-      hu: "Bármikor félbeszakíthatod – a haladásod ebben a böngészőben mentődik, itt folytathatod. Másik eszközön vagy a böngészési adatok törlése után nem lesz elérhető; regisztráció után az eredményed a fiókodba kerül.",
+      hu: "Bármikor félbeszakíthatod – a haladásod ebben a böngészőben mentésre kerül, itt folytathatod. Másik eszközön vagy a böngészési adatok törlése után nem lesz elérhető, regisztráció után az eredményed a fiókodba kerül.",
       en: "You can pause anytime – your progress is saved in this browser, and you can continue here. It won't be available on another device or after clearing browsing data; once you register, your result is stored in your account.",
     },
     introMeta: { hu: "{count} kérdés · ~{minutes} perc · azonnali eredmény", en: "{count} questions · ~{minutes} minutes · instant results" },
@@ -28,9 +28,6 @@ export const assessmentTranslations = {
     introStep2Sub: { hu: "6 dimenzió + erősségek", en: "6 dimensions + strengths" },
     introStep3: { hu: "Munkahelyi működés", en: "How you work" },
     introStep3Sub: { hu: "Munkastílus, csapatszerepek, ideális környezet", en: "Work style, team roles, ideal environment" },
-    introPreviewEyebrow: { hu: "Ilyen eredményt kapsz", en: "This is what you'll get" },
-    introPreviewType: { hu: "Stratégiai Innovátor", en: "Strategic Innovator" },
-    introPreviewLabel: { hu: "A te működési profilod", en: "Your work-style profile" },
     introWelcome: { hu: "Örülünk, hogy itt vagy!", en: "We're glad you're here!", de: "Schön, dass du dabei bist!" },
     introBody: { hu: "Töltsd ki figyelmesen a következő kérdőívet – minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat.", en: "Please fill in the questionnaire carefully – go with your first impression on each question, don't overthink it." },
     introAutoAdvanceHint: {

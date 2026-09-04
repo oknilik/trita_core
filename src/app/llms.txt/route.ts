@@ -91,9 +91,8 @@ ${enPosts
 
 ## Fő oldalak
 
-${line("/", "Főoldal", "Mit mér a trita, kinek szól, hogyan épül fel az egyéni és a csapatszintű kép.", baseUrl)}
+${line("/", "Főoldal", "Ingyenes egyéni személyiségprofil: fő mintázatok, erősségek és természetes csapatszerepek hat személyiségdimenzió mentén; átvezetés a tanácsadóval kísért csapatprogramhoz.", baseUrl)}
 ${line("/try", "Ingyenes személyiségteszt", "60 kérdéses személyiségteszt regisztráció nélkül, kb. 10 perc, azonnali visszajelzés hat dimenzió mentén.", baseUrl)}
-${line("/self-awareness", "Önismereti személyiségteszt", "Egyéni személyiségprofil, erősségek és természetes csapatszerepek hat személyiségdimenzió mentén.", baseUrl)}
 ${line("/team-dynamics", "Csapatdiagnosztika", "Csapatszerepek, bizalmi háló és pszichológiai biztonság tanácsadó által értelmezett csapatképben.", baseUrl)}
 ${line("/about", "Rólunk", "A trita mögött tanácsadói műhely áll. A mérésből tanácsadó vezette közös értelmezés és visszamérhető változtatás lesz; embereket nem rangsorolunk.", baseUrl)}
 ${line("/how-we-work", "Együttműködés és árazás", "Hogyan indul egy csapat- vagy szervezeti program, mi ingyenes, és mitől függ az ár. Gyakori kérdések.", baseUrl)}

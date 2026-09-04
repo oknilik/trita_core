@@ -85,12 +85,16 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
     await expectFinalPathname(page, "/sign-up");
   });
 
-  test("the audience landing pages stay public for guests", async ({ page }) => {
-    for (const publicLanding of ["/self-awareness", "/team-dynamics"]) {
-      const response = await page.goto(publicLanding, { waitUntil: "domcontentloaded" });
-      expect(response?.status(), `${publicLanding} should be public`).toBe(200);
-      await expectFinalPathname(page, publicLanding);
-    }
+  test("the team landing page stays public for guests", async ({ page }) => {
+    const response = await page.goto("/team-dynamics", { waitUntil: "domcontentloaded" });
+    expect(response?.status(), "/team-dynamics should be public").toBe(200);
+    await expectFinalPathname(page, "/team-dynamics");
+  });
+
+  test("the retired self-awareness landing redirects guests to the home page", async ({ page }) => {
+    const response = await page.goto("/self-awareness", { waitUntil: "domcontentloaded" });
+    expect(response?.status()).toBe(200);
+    await expectFinalPathname(page, "/");
   });
 
   test("authenticated user is bounced from auth routes to the journey handoff", async ({

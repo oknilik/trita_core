@@ -17,7 +17,6 @@ const PUBLIC_PATHS = [
   "/founding",
   ...(isPortfolioSurfaceActive("patternExplorer") ? ["/patterns"] : []),
   "/pilot",
-  "/self-awareness",
   "/team-dynamics",
   "/how-we-work",
   // A hatályos jogi dokumentumok indexelhetők és a sitemapben is szerepelnek.

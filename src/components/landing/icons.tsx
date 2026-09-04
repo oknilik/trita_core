@@ -1,5 +1,5 @@
 // Vonalas ikon-készlet a landing emoji-i helyett (design-akciólista #6).
-// A ModeSwitcher SVG-stílusát követi: 16-os viewBox, currentColor stroke,
+// Egységes SVG-stílus: 16-os viewBox, currentColor stroke,
 // 1.5 vonalvastagság. Mindig aria-hidden — a jelentést a kísérő szöveg adja.
 
 type IconProps = { className?: string };
