@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { Footer } from "@/components/Footer";
 import { NavBar } from "@/components/NavBar";
 
 const pathnameMock = vi.fn(() => "/");
@@ -19,6 +20,7 @@ vi.mock("@/components/auth/auth-state", () => ({
 vi.mock("@/components/LanguageSwitcher", () => ({ LanguageSwitcher: () => null }));
 vi.mock("@/components/ThemeToggle", () => ({ ThemeToggle: () => null }));
 vi.mock("@/components/UserMenu", () => ({ UserMenu: () => null }));
+vi.mock("@/components/newsletter/NewsletterForm", () => ({ NewsletterForm: () => null }));
 
 describe("publikus fejléc – landing kontextusú CTA", () => {
   beforeEach(() => {
@@ -95,5 +97,19 @@ describe("publikus fejléc – landing kontextusú CTA", () => {
     expect(header).toHaveAttribute("data-compact", "false");
     expect(screen.getByRole("link", { name: "trita" })).toBeVisible();
     expect(screen.getByRole("button", { name: "Menü" })).toBeVisible();
+  });
+});
+
+describe("publikus footer – menüstruktúra", () => {
+  it("a fejléc fő útvonalait ugyanabban a sorrendben teszi elérhetővé", () => {
+    const { container } = render(<Footer />);
+    const exploreLinks = Array.from(container.querySelectorAll("ul"))[0]?.querySelectorAll("a");
+
+    expect(Array.from(exploreLinks ?? []).map((link) => [link.textContent, link.getAttribute("href")])).toEqual([
+      ["Főoldal", "/"],
+      ["Csapatoknak", "/team-dynamics"],
+      ["Blog", "/blog"],
+      ["Együttműködés", "/how-we-work"],
+    ]);
   });
 });
