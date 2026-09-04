@@ -61,6 +61,8 @@
 
 - **Főoldali hero:** visszakerült a korábbi „ÖNISMERET ÉS
   CSAPATMŰKÖDÉS” nyitócímke az egyszerűsített flow fölé.
+- **Főoldali csillagos elválasztó:** a hero alól egy szekcióval lejjebb,
+  közvetlenül a három lépés és a „Mitől több” bizonyítékblokk közé került.
 - **Tesztindító:** a félrevezetően konkrét mintaeredmény helyét egy halk,
   szöveg nélküli Trita-konstelláció vette át; az oldal eyebrow-ja a közös
   pöttyös rendszerkomponenst használja, a vendégmentés szövege pontosabb.

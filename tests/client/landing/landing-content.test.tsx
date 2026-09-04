@@ -70,8 +70,11 @@ describe("főoldal – egy ígéret, egy oldal", () => {
       expect(order[i - 1].compareDocumentPosition(order[i])).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     }
 
-    // Csillagos brand-motívum a hero és a lépések közt.
-    expect(container.querySelector("[data-landing-brand-mark] svg")).not.toBeNull();
+    // Csillagos brand-motívum a lépések és a bizonyíték-szekció közt.
+    const brandMark = container.querySelector("[data-landing-brand-mark]") as HTMLElement;
+    expect(brandMark.querySelector("svg")).not.toBeNull();
+    expect(steps.compareDocumentPosition(brandMark)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(brandMark.compareDocumentPosition(proof)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     // A bizonyíték-szekció megtartja az idézetet.
     expect(screen.getByText(/Most értettem meg, miért kerülök újra és újra/)).toBeInTheDocument();
   });

@@ -26,12 +26,12 @@ export function LandingContent() {
   return (
     <>
       <HeroSection mode="self" />
-      {/* Csillagos brand-motívum a hero és a lépések közt (formanyelv 2.
-          szint); a negatív margó a két szekció közé úsztatja. */}
-      <div data-landing-brand-mark className="relative z-20 -my-7 sm:-my-8">
-        <SectionTransition artKey={artKeyFrom("landing", "hero-steps", "self")} />
-      </div>
       <HowItWorks mode="self" />
+      {/* Csillagos brand-motívum a lépések és a bizonyíték közt (formanyelv
+          2. szint); a negatív margó a két szekció közé úsztatja. */}
+      <div data-landing-brand-mark className="relative z-20 -my-7 sm:-my-8">
+        <SectionTransition artKey={artKeyFrom("landing", "steps-proof", "self")} />
+      </div>
       <ProofSection mode="self" />
       <TeamPathway />
       <CtaSection mode="self" />
