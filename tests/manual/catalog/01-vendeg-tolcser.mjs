@@ -51,14 +51,14 @@ export const cases = [
   {
     id: "TRY-04",
     area: "Vendég-tölcsér",
-    name: "Csapatos átvezető: pilot CTA + /team-dynamics mélyoldal",
+    name: "Csapatos átvezető: /team-dynamics + pilot CTA",
     persona: "vendég",
     emails: { fő: "AUTO" },
     preconditions: "Inkognitó böngésző.",
     steps:
       "1. Nyisd meg a főoldalt, és görgess a szilvaszínű „Csapatként folytatnátok?” blokkig. 2. Kattints „A csapatdiagnosztika részletei” linkre. 3. A /team-dynamics oldalon kattints a hero CTA-ra, majd vissza; és az oldal alján a záró CTA-ra is.",
     expected:
-      "A főoldali blokk elsődleges gombja a /pilot oldalra visz, a másodlagos link a /team-dynamics mélyoldalra. Ott a hero és a szekciók csapatszöveget és szilva-akcentet hordoznak, módváltó nincs. A hero és az oldal-alji elsődleges CTA is a /pilot oldalra visz; a hero másodlagos CTA-ja a /contact oldalra mutat.",
+      "A főoldali blokk elsődleges gombja a /team-dynamics mélyoldalra visz, a másodlagos link a /pilot oldalra. A mélyoldalon a hero és a szekciók csapatszöveget és szilva-akcentet hordoznak, módváltó nincs. A hero és az oldal-alji elsődleges CTA is a /pilot oldalra visz; a hero másodlagos CTA-ja a /contact oldalra mutat.",
     automated: "none",
     coveredBy: "",
     priority: "P2",

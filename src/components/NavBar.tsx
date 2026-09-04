@@ -20,7 +20,7 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 function isLinkActive(pathname: string, href: string): boolean {
   const normalizedHref = href.split("?")[0] ?? href;
   if (href === "/") {
-    return pathname === "/" || pathname === "/team-dynamics";
+    return pathname === "/";
   }
   return pathname.startsWith(normalizedHref);
 }
@@ -67,11 +67,13 @@ function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
-function FlagIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+function ProcessIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3.5 14V2.5" />
-      <path d="M3.5 3h8.5l-1.8 2.8L12 8.5H3.5" />
+      <circle cx="3" cy="8" r="1.5" />
+      <circle cx="13" cy="8" r="1.5" />
+      <path d="M4.5 8h7" />
+      <path d="m9.5 5.75 2.25 2.25-2.25 2.25" />
     </svg>
   );
 }
@@ -80,8 +82,8 @@ const LINK_ICONS: Record<string, (p: { className?: string }) => React.ReactNode>
   home: HomeIcon,
   dashboard: GridIcon,
   blog: BlogIcon,
-  pricing: CollabIcon,
-  pilot: FlagIcon,
+  teamsFor: CollabIcon,
+  pricing: ProcessIcon,
 };
 
 // ─── Nav link — az app-nav (NavHeaderUI) aktív/inaktív stílusával ────────────
@@ -190,24 +192,24 @@ export function NavBar({
 
   const publicLinks = [
     { id: "home", href: "/", label: t("nav.publicHome", locale) },
+    // A tartós csapatos ajánlat önálló főmenüpont. A Pilotprogram ennek
+    // konkrét belépője, ezért a /team-dynamics oldalon marad CTA-ként.
+    { id: "teamsFor", href: "/team-dynamics", label: t("nav.publicTeams", locale) },
     ...(isPortfolioSurfaceActive("blog")
       ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
       : []),
     { id: "pricing", href: "/how-we-work", label: t("nav.pricing", locale) },
-    // Aktuális üzleti prioritás (P1-2): a pilot eddig csak egy oldalközépi
-    // kártyáról volt elérhető.
-    { id: "pilot", href: "/pilot", label: t("nav.pilot", locale) },
   ];
 
   const authLinks = [
     // Bejelentkezve a link az appba (journey handoff) visz – a címke is
     // ezt mondja, ne 'Főoldal'-t (design-akciólista #18).
     { id: "dashboard", href: signedInHomeHref, label: t("nav.dashboard", locale) },
+    { id: "teamsFor", href: "/team-dynamics", label: t("nav.publicTeams", locale) },
     ...(isPortfolioSurfaceActive("blog")
       ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
       : []),
     { id: "pricing", href: "/how-we-work", label: t("nav.pricing", locale) },
-    { id: "pilot", href: "/pilot", label: t("nav.pilot", locale) },
   ];
 
   const links = isSignedIn ? authLinks : publicLinks;
@@ -363,6 +365,7 @@ export function NavBar({
                   href={link.href}
                   icon={<Icon className="h-4 w-4" />}
                   title={link.label}
+                  active={isLinkActive(currentPath, link.href)}
                   onClick={() => setDrawerOpen(false)}
                 />
               );

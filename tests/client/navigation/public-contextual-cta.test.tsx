@@ -43,6 +43,27 @@ describe("publikus fejléc – landing kontextusú CTA", () => {
     expect(screen.queryByRole("link", { name: "Kipróbálom" })).not.toBeInTheDocument();
   });
 
+  it("a tartós csapatos ajánlatot teszi a menübe a pilotprogram helyett", () => {
+    render(<NavBar />);
+
+    const desktopTeamLink = screen.getByRole("link", { name: "Csapatoknak" });
+    expect(desktopTeamLink).toHaveAttribute("href", "/team-dynamics");
+    expect(screen.queryByRole("link", { name: "Pilotprogram" })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Menü" }));
+    const teamLinks = screen.getAllByRole("link", { name: "Csapatoknak" });
+    expect(teamLinks).toHaveLength(2);
+    expect(teamLinks.every((link) => link.getAttribute("href") === "/team-dynamics")).toBe(true);
+  });
+
+  it("a csapatoldalon a Csapatoknak menüpont aktív, nem a Főoldal", () => {
+    pathnameMock.mockReturnValue("/team-dynamics");
+    render(<NavBar />);
+
+    expect(screen.getByRole("link", { name: "Csapatoknak" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Főoldal" })).not.toHaveAttribute("aria-current");
+  });
+
   it("a blogot asztali és mobil navigációban is elérhetővé teszi", () => {
     render(<NavBar />);
 

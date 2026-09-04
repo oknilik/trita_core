@@ -37,6 +37,9 @@
   hero H1-e lett.
 - A NavBar CTA-ja útvonal-alapú: `/team-dynamics` → Pilotprogram, máshol →
   Kipróbálom.
+- A publikus navigációban a konkrét Pilotprogram helyét a tartós
+  **Csapatoknak** ajánlat (`/team-dynamics`) vette át. A pilot a csapatos
+  oldal elsődleges következő lépéseként továbbra is hangsúlyos marad.
 
 ## Kompatibilitás
 

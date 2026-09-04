@@ -149,6 +149,7 @@ export const commonTranslations = {
     signOut: { hu: "Kijelentkezés", en: "Sign out" },
     menu: { hu: "Menü", en: "Menu" },
     blog: { hu: "Blog", en: "Blog" },
+    publicTeams: { hu: "Csapatoknak", en: "For teams" },
     pricing: { hu: "Együttműködés", en: "How we work" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     profile: { hu: "Profilom", en: "My profile" },
