@@ -48,5 +48,7 @@ describe("the separate contact and collaboration art directions", () => {
       "href",
       "#workflow",
     );
+    expect(container.querySelector("[data-pilot-spots]")).toHaveAttribute("href", "/pilot");
+    expect(container.querySelectorAll("[data-testid='page-width-divider']")).toHaveLength(1);
   });
 });

@@ -1412,7 +1412,7 @@ input[type="range"].pattern-range::-moz-range-track {
 
 /* ── Pilot kapacitás-kártya: „érkezés" — a brand-csillag egyszer száll le ──
    Egyszeri koreográfia, amikor a kártya képbe kerül (a fázist a
-   data-pilot-spots-phase attribútum vezérli, ld. PilotContent.tsx):
+   data-pilot-spots-phase attribútum vezérli, ld. PilotSpotsIndicator.tsx):
 
      play  · a szeletek balról jobbra nőnek ki (85 ms-os lépcsőben); a
              brand-csillag (✦) felülről leszáll az első szabad helyre, és az

@@ -5,11 +5,12 @@ import { useLocale } from "@/components/LocaleProvider";
 import { CollaborationRhythmArt } from "@/components/marketing/CollaborationRhythmArt";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
+import { PilotSpotsIndicator } from "@/components/marketing/PilotSpotsIndicator";
 import { CheckIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
-import { t, tf } from "@/lib/i18n/public";
-import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
+import { t } from "@/lib/i18n/public";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { PRICING_FAQ_INDEXES } from "./faq";
 
@@ -77,8 +78,10 @@ export function PricingContent() {
         </div>
       </section>
 
-      <section id="workflow" className="scroll-mt-24 border-t border-sand bg-cream">
-        <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
+      <PageWidthDivider />
+
+      <section id="workflow" className="scroll-mt-24 bg-cream">
+        <div className="mx-auto max-w-[1120px] px-7 pb-10 pt-16 md:pb-14 md:pt-24">
           <div className="mx-auto max-w-2xl text-center">
             <SectionEyebrow>{t("pricing.workflowEyebrow", locale)}</SectionEyebrow>
             <h2 className="mt-4 font-fraunces text-fluid-title tracking-tight text-ink">
@@ -89,8 +92,8 @@ export function PricingContent() {
         </div>
       </section>
 
-      <section className="border-y border-sand bg-warm">
-        <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <section className="bg-cream px-5 pb-16 md:pb-24">
+        <div className="mx-auto grid max-w-[1120px] gap-10 rounded-[28px] bg-warm px-7 py-12 md:px-10 md:py-16 lg:grid-cols-[220px_minmax(0,1fr)] lg:px-12">
           <div>
             <SectionEyebrow>{t("pricing.offerEyebrow", locale)}</SectionEyebrow>
             <p className="mt-4 hidden max-w-[24ch] text-sm leading-relaxed text-ink-body lg:block">
@@ -161,29 +164,13 @@ export function PricingContent() {
       </section>
 
       <section className="px-7 pb-16 pt-5 md:pb-20 md:pt-8">
-        <div className="mx-auto grid max-w-[1060px] gap-5 rounded-[22px] border border-[var(--color-bronze-edge)] bg-[var(--color-bronze-100)] px-6 py-6 md:grid-cols-[110px_minmax(0,1fr)_auto] md:items-center md:px-7">
-          <div className="flex items-baseline gap-2">
-            <span className="font-fraunces text-6xl leading-none text-[var(--color-accent-primary-strong)]">90</span>
-            <span className="text-label uppercase text-[var(--color-accent-primary-strong)]">
-              {locale === "hu" ? "nap" : "days"}
-            </span>
-          </div>
-          <div>
-            <SectionEyebrow tone="bronze">{t("pricing.pilotEyebrow", locale)}</SectionEyebrow>
-            <h2 className="mt-2 font-fraunces text-2xl text-ink">{t("pricing.pilotTitle", locale)}</h2>
-            <p className="mt-2 max-w-[65ch] text-caption leading-relaxed text-ink-body">
-              {tf("pricing.pilotBody", locale, { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT })}
-            </p>
-          </div>
-          <Link
-            href="/pilot"
-            onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })}
-            className={`inline-flex min-h-11 shrink-0 items-center font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
-          >
-            {t("pricing.pilotCta", locale)}
-            <ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
-          </Link>
-        </div>
+        <PilotSpotsIndicator
+          locale={locale}
+          href="/pilot"
+          ctaId="pricing_pilot"
+          surface="pricing"
+          className="mx-auto"
+        />
       </section>
 
       <section className="px-5 pb-8 lg:px-14">
