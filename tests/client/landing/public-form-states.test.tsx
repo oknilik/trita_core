@@ -66,9 +66,12 @@ describe("public form state contracts", () => {
     const name = screen.getByRole("textbox", { name: t("contact.name", "hu") });
     const email = screen.getByRole("textbox", { name: t("contact.email", "hu") });
     const company = screen.getByRole("textbox", { name: t("contact.company", "hu") });
-    const topic = screen.getByRole("combobox", { name: t("contact.topic", "hu") });
+    const topics = screen.getAllByRole("radio");
+    const topic = screen.getByRole("radio", { name: t("contact.topicDemo", "hu") });
     const message = screen.getByRole("textbox", { name: t("contact.message", "hu") });
-    expectUniqueIds([name, email, company, topic, message]);
+    expect(topics).toHaveLength(5);
+    expect(topic).toBeChecked();
+    expectUniqueIds([name, email, company, ...topics, message]);
 
     const submit = screen.getByRole("button", { name: t("contact.submit", "hu") });
     await user.click(submit);
@@ -88,7 +91,7 @@ describe("public form state contracts", () => {
     await waitFor(() => expect(name).toBeDisabled());
     expect(email).toBeDisabled();
     expect(company).toBeDisabled();
-    expect(topic).toBeDisabled();
+    expect(topics.every((option) => option.hasAttribute("disabled"))).toBe(true);
     expect(message).toBeDisabled();
 
     await act(async () => pending.resolve({ ok: false, status: 500 }));

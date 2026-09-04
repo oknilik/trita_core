@@ -103,3 +103,13 @@
   (az EditorialArt mellé). Tisztán dekoráció, nincs benne felmérési logika;
   a `components/assessment/` védett modulban a kapu integrációs tesztet
   követelt volna rá.
+- **`/contact` – önálló vizuális karakter:** az oldal egyetlen hero + űrlap
+  kompozícióvá egyszerűsült. A demó, árazás, partnerség, terméktámogatás és
+  egyéb témák látható választógombok; a korábbi ismétlődő információs
+  kártyákat egy válaszidő-sor és egy halk email-sáv váltja. A „jel és
+  válasz” Trita-rajz az oldal saját, tartalomhoz kötött motívuma.
+- **`/how-we-work` – közös ritmus:** a hero külön, sötét csapatpanelt és
+  oldal-specifikus „közös ritmus” motívumot kapott. Az eredmények tömör
+  sávban, a folyamat három követhető lépésben jelenik meg; a GYIK kétoszlopos,
+  a pilotajánlat kompakt. A második kapcsolati mini-űrlap kikerült, a lap
+  egyetlen záró CTA-val vezet át a teljes `/contact` űrlapra.

@@ -246,6 +246,15 @@ export const landingTranslations = {
       hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd átlátható keretet kaptok: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül.",
       en: "In a short conversation, we clarify the goal, then give you a transparent scope: who takes part, what we measure, what you receive, and what it costs.",
     },
+    heroProcessCta: { hu: "Így dolgozunk együtt", en: "How we work together" },
+    rhythmVisualEyebrow: {
+      hu: "Külön nézőpontok · közös kép",
+      en: "Different perspectives · shared picture",
+    },
+    rhythmVisualCaption: {
+      hu: "A különböző mintázatok nem simulnak egyformára – közös nyelvet és irányt kapnak.",
+      en: "Different patterns do not become identical – they gain a shared language and direction.",
+    },
     outcomeVisualEyebrow: { hu: "Ezt viszitek magatokkal", en: "What you take with you" },
     outcome1Title: { hu: "Tisztább csapatkép", en: "A clearer team picture" },
     outcome1Body: {
