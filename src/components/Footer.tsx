@@ -35,17 +35,24 @@ export function Footer() {
 
   const columns = [
     {
-      heading: t("footer.colProduct", locale),
+      heading: t("footer.colExplore", locale),
       links: [
-        { label: t("footer.about", locale), href: "/about" },
+        { label: t("footer.home", locale), href: "/" },
+        { label: t("footer.teams", locale), href: "/team-dynamics" },
         ...(isPortfolioSurfaceActive("blog")
           ? [{ label: t("footer.blog", locale), href: "/blog" }]
           : []),
         { label: t("footer.pricing", locale), href: "/how-we-work" },
+      ],
+    },
+    {
+      heading: t("footer.colAbout", locale),
+      links: [
+        { label: t("footer.about", locale), href: "/about" },
+        { label: t("footer.pilot", locale), href: "/pilot" },
         ...(isPortfolioSurfaceActive("patternExplorer")
           ? [{ label: t("footer.patterns", locale), href: "/patterns" }]
           : []),
-        { label: t("footer.pilot", locale), href: "/pilot" },
       ],
     },
     {
@@ -100,7 +107,7 @@ export function Footer() {
         className="relative -mt-px w-full bg-gradient-to-b from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
       >
       <div className="mx-auto w-full max-w-[1120px] px-7">
-        <div className="grid grid-cols-2 gap-10 pt-4 sm:grid-cols-4 md:pt-8">
+        <div className="grid grid-cols-2 gap-10 pt-4 sm:grid-cols-3 md:pt-8 lg:grid-cols-5">
 
           {/* Logo + tagline */}
           <div className="col-span-2 sm:col-span-1">

@@ -180,8 +180,12 @@ export const commonTranslations = {
   footer: {
     tagline: { hu: "Személyiség és csapatintelligencia platform.", en: "Personality and team intelligence platform." },
     colProduct: { hu: "Termék", en: "Product" },
+    colExplore: { hu: "Felfedezés", en: "Explore" },
+    colAbout: { hu: "A tritáról", en: "About trita" },
     colAccount: { hu: "Fiók", en: "Account" },
     colLegal: { hu: "Jogi", en: "Legal" },
+    home: { hu: "Főoldal", en: "Home" },
+    teams: { hu: "Csapatoknak", en: "For teams" },
     blog: { hu: "Blog", en: "Blog" },
     about: { hu: "Rólunk", en: "About" },
     pricing: { hu: "Együttműködés", en: "How we work" },
