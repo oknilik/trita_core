@@ -108,8 +108,10 @@
   egyéb témák látható választógombok; a korábbi ismétlődő információs
   kártyákat egy válaszidő-sor és egy halk email-sáv váltja. A „jel és
   válasz” Trita-rajz az oldal saját, tartalomhoz kötött motívuma.
-- **`/how-we-work` – közös ritmus:** a hero külön, sötét csapatpanelt és
-  oldal-specifikus „közös ritmus” motívumot kapott. Az eredmények tömör
-  sávban, a folyamat három követhető lépésben jelenik meg; a GYIK kétoszlopos,
-  a pilotajánlat kompakt. A második kapcsolati mini-űrlap kikerült, a lap
-  egyetlen záró CTA-val vezet át a teljes `/contact` űrlapra.
+- **`/how-we-work` – összehangolódás:** a hero külön, sötét csapatpanelt és
+  oldal-specifikus, felirat nélküli motívumot kapott: három eltérő ritmus egy
+  közös ponton találkozik, majd összehangoltan halad tovább. A hero alatti,
+  ismétlődő három eredményblokk kikerült; a folyamat három követhető lépésben
+  jelenik meg, a GYIK kétoszlopos, a pilotajánlat kompakt. A második kapcsolati
+  mini-űrlap helyett a lap egyetlen záró CTA-val vezet a teljes `/contact`
+  űrlapra.

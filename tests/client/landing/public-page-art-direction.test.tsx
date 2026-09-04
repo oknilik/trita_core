@@ -37,6 +37,8 @@ describe("the separate contact and collaboration art directions", () => {
     const { container } = render(<PricingContent />);
 
     expect(container.querySelector("[data-collaboration-rhythm-art]")).not.toBeNull();
+    expect(screen.queryByText("Tisztább csapatkép")).not.toBeInTheDocument();
+    expect(screen.queryByText("Külön nézőpontok · közös kép")).not.toBeInTheDocument();
     expect(screen.queryByLabelText(t("pricing.quickAskName", "hu"))).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: t("pricing.bottomCta", "hu") })).toHaveAttribute(
       "href",

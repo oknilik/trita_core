@@ -16,20 +16,10 @@ import { PRICING_FAQ_INDEXES } from "./faq";
 const WORKFLOW_STEPS = [1, 2, 3] as const;
 const OFFER_FACTORS = [1, 2, 3] as const;
 
-function CollaborationVisual({ locale }: { locale: "hu" | "en" }) {
+function CollaborationVisual() {
   return (
-    <div
-      className="relative min-h-[390px] overflow-hidden rounded-[28px] border border-sand bg-[var(--color-layer-team-hero-from)] p-5 shadow-[0_28px_80px_rgba(26,26,46,0.16)] sm:p-7"
-    >
-      <div className="relative flex h-full min-h-[334px] flex-col justify-between">
-        <p className="text-label uppercase text-[var(--color-text-on-inverse-muted)]">
-          {t("pricing.rhythmVisualEyebrow", locale)}
-        </p>
-        <CollaborationRhythmArt className="mx-auto my-3 block h-auto w-full max-w-[430px]" />
-        <p className="border-t border-white/10 pt-4 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-          {t("pricing.rhythmVisualCaption", locale)}
-        </p>
-      </div>
+    <div className="relative grid min-h-[390px] place-items-center overflow-hidden rounded-[28px] border border-sand bg-[var(--color-layer-team-hero-from)] p-5 shadow-[0_28px_80px_rgba(26,26,46,0.16)] sm:p-7">
+      <CollaborationRhythmArt className="block h-auto w-full max-w-[470px]" />
     </div>
   );
 }
@@ -83,29 +73,11 @@ export function PricingContent() {
               ))}
             </div>
           </div>
-          <CollaborationVisual locale={locale} />
+          <CollaborationVisual />
         </div>
       </section>
 
-      <section className="border-y border-sand bg-warm">
-        <div className="mx-auto grid max-w-[1050px] gap-6 px-7 py-7 md:grid-cols-3 md:gap-0">
-          {WORKFLOW_STEPS.map((outcome) => (
-            <div
-              key={outcome}
-              className="border-sand md:border-r md:px-7 md:first:pl-0 md:last:border-r-0"
-            >
-              <h2 className="font-fraunces text-xl text-ink">
-                {t(`pricing.outcome${outcome}Title`, locale)}
-              </h2>
-              <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
-                {t(`pricing.outcome${outcome}Body`, locale)}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section id="workflow" className="scroll-mt-24 bg-cream">
+      <section id="workflow" className="scroll-mt-24 border-t border-sand bg-cream">
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <SectionEyebrow>{t("pricing.workflowEyebrow", locale)}</SectionEyebrow>
