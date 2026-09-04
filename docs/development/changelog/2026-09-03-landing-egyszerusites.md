@@ -12,10 +12,11 @@
 - **Információvesztés nélkül** sűrítve: a korábbi self-módú Features-kártyák
   tartalmát a profil-előnézet hordozza; a StatsBar számai a hero piruláiban
   élnek; a csapat-módú Features/StatsBar/HowItWorks lényege a szilvaszínű
-  csapatos átvezetőben (három mérési réteg, átfutás, tanácsadói értelmezés).
-- A csapatos átvezető elsődleges útja a **`/pilot`**, másodlagos linkje a
-  `/team-dynamics` mélyoldal (a PR első változata a mélyoldalra küldött
-  elsődlegesen — ez egy fölösleges ugrás volt).
+  csapatos átvezetőben (egyéni személyiségprofilok, három mérési réteg,
+  átfutás, tanácsadói értelmezés).
+- A csapatos átvezető elsődleges útja a **`/team-dynamics`** mélyoldal,
+  másodlagos linkje a `/pilot`, így előbb megismerhető a teljes ajánlat,
+  miközben a jelentkezési út közvetlenül elérhető marad.
 - A csapatos átvezetőben **nincs csapatkép-előnézet**: az a `/team-dynamics`
   hero-jában dolgozik, a főoldalon csak elvitte a figyelmet a döntéstől.
   Helyén egy kézzel komponált szerkesztői „kapcsolódás" rajz

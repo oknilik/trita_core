@@ -13,9 +13,9 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
  * tanácsadóval kísért csapatprogrammal — miután az egyéni ígéretet és a
  * három lépést már megértette. Egyetlen blokkban hordozza mindazt, ami a
  * korábbi csapat-módú landing Features-, StatsBar- és HowItWorks-szekcióiból
- * a döntéshez kell: a három mérési réteg, az idő- és átfutási ígéret, a
- * tanácsadói értelmezés. Az elsődleges út a pilot, a részletek a
- * /team-dynamics mélyoldalon. A csapatkép-előnézet szándékosan NEM
+ * a döntéshez kell: az egyéni profilok és a három mérési réteg, az idő- és
+ * átfutási ígéret, valamint a tanácsadói értelmezés. Az elsődleges út a
+ * /team-dynamics mélyoldal, a pilot a másodlagos CTA. A csapatkép-előnézet szándékosan NEM
  * szerepel itt (2026-09-03): a mélyoldalon dolgozik, a főoldalon csak
  * elvitte a figyelmet a döntéstől.
  */
@@ -23,6 +23,7 @@ export function TeamPathway() {
   const { locale } = useLocale();
 
   const layers = [
+    t("landing.focusedTeamProfilesTitle", locale),
     t("landing.teamFeat1Title", locale),
     t("landing.teamFeat2Title", locale),
     t("landing.teamFeat3Title", locale),
@@ -73,19 +74,19 @@ export function TeamPathway() {
               link a gomb ALÁ kerül, a gomb felirata nem törik két sorba. */}
           <div className="mt-7 flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
-              href="/pilot"
-              onClick={() => track("cta.click", { cta_id: "team_pathway", surface: "landing", mode: "team" })}
+              href="/team-dynamics"
+              onClick={() => track("cta.click", { cta_id: "team_pathway_details", surface: "landing", mode: "team" })}
               className={`inline-flex min-h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[var(--color-accent-primary-soft)] px-6 text-sm font-semibold text-[var(--color-layer-team-hero-from)] shadow-md transition-all hover:-translate-y-px hover:brightness-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-layer-team-hero-from)]`}
             >
-              {t("landing.teamCta", locale)}
+              {t("landing.focusedTeamCta", locale)}
               <ChevronRightIcon className="ml-2 h-4 w-4" />
             </Link>
             <Link
-              href="/team-dynamics"
-              onClick={() => track("cta.click", { cta_id: "team_pathway_details", surface: "landing", mode: "team" })}
+              href="/pilot"
+              onClick={() => track("cta.click", { cta_id: "team_pathway", surface: "landing", mode: "team" })}
               className={`group inline-flex min-h-[44px] items-center justify-center rounded-lg px-3 text-sm font-semibold text-white/85 transition-colors hover:text-white ${FOCUS_RING_CLASS}`}
             >
-              {t("landing.focusedTeamCta", locale)}
+              {t("landing.teamCta", locale)}
               <ChevronRightIcon className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>

@@ -88,7 +88,8 @@ export const landingTranslations = {
       en: "Deeper team understanding, a shared language, and focused development with leadership support.",
     },
     focusedTeamLayersLabel: { hu: "Mit mér a csapatprogram", en: "What the team program measures" },
-    // Másodlagos út: a /team-dynamics mélyoldal. Az elsődleges a pilot (teamCta).
+    focusedTeamProfilesTitle: { hu: "Egyéni személyiségprofilok", en: "Individual personality profiles" },
+    // Elsődleges út: a /team-dynamics mélyoldal. A pilot a másodlagos CTA.
     focusedTeamCta: { hu: "A csapatdiagnosztika részletei", en: "Team diagnostics in detail" },
     // HeroSection – team
     // 2026-08-28: „CSAPATINTELLIGENCIA PLATFORM" helyett — a gépies

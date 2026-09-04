@@ -87,16 +87,21 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     expect(screen.getByRole("link", { name: "Együttműködés részletei" })).toHaveAttribute("href", "/how-we-work");
   });
 
-  it("a csapatos átvezető a pilotra visz, a részletek a /team-dynamics mélyoldalra", () => {
+  it("a csapatos átvezető elsődlegesen a /team-dynamics oldalra, másodlagosan a pilotra visz", () => {
     const { container } = render(<LandingContent />);
 
     const pathway = container.querySelector("[data-landing-team-pathway]") as HTMLElement;
     expect(pathway).not.toBeNull();
-    expect(within(pathway).getByRole("link", { name: /Megnézem a pilotprogramot/ })).toHaveAttribute("href", "/pilot");
-    expect(within(pathway).getByRole("link", { name: /A csapatdiagnosztika részletei/ })).toHaveAttribute("href", "/team-dynamics");
+    const primaryCta = within(pathway).getByRole("link", { name: /A csapatdiagnosztika részletei/ });
+    const secondaryCta = within(pathway).getByRole("link", { name: /Megnézem a pilotprogramot/ });
+    expect(primaryCta).toHaveAttribute("href", "/team-dynamics");
+    expect(primaryCta).toHaveClass("bg-[var(--color-accent-primary-soft)]");
+    expect(secondaryCta).toHaveAttribute("href", "/pilot");
+    expect(secondaryCta).not.toHaveClass("bg-[var(--color-accent-primary-soft)]");
+    expect(primaryCta.compareDocumentPosition(secondaryCta)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 
-    // A három mérési réteg és az átfutási ígéret a blokkban él.
-    for (const layer of ["Mért bizalmi háló", "Pszichológiai biztonság", "Jóváhagyott csapatkép"]) {
+    // Az egyéni profilok, a három mérési réteg és az átfutási ígéret a blokkban él.
+    for (const layer of ["Egyéni személyiségprofilok", "Mért bizalmi háló", "Pszichológiai biztonság", "Jóváhagyott csapatkép"]) {
       expect(within(pathway).getByText(layer)).toBeInTheDocument();
     }
     expect(within(pathway).getByText(/~30 perc tagonkénti kitöltés/)).toBeInTheDocument();
