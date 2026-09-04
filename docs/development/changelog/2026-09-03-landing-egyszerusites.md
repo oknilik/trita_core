@@ -59,6 +59,8 @@
 
 ## Kiegészítés (2026-09-03, este)
 
+- **Főoldali hero:** visszakerült a korábbi „ÖNISMERET ÉS
+  CSAPATMŰKÖDÉS” nyitócímke az egyszerűsített flow fölé.
 - **`/team-dynamics` – Features-kártyák:** a három mérési réteg kártyája
   egyforma hátteret kap. Az első („Mért bizalmi háló") korábbi kiemelése
   színben rangsort sugallt három egyenrangú réteg közt.

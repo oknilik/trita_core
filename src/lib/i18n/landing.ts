@@ -75,7 +75,7 @@ export const landingTranslations = {
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
     // Fókuszált főoldal (2026-09-03) — az egyéni belépő az elsődleges, a
     // csapatos út egyetlen statikus átvezetést kap a korábbi módváltó helyett.
-    focusedEyebrow: { hu: "EGYÉNI · INGYENES", en: "INDIVIDUAL · FREE" },
+    focusedEyebrow: { hu: "ÖNISMERET ÉS CSAPATMŰKÖDÉS", en: "SELF-AWARENESS AND TEAMWORK" },
     focusedHeroSub: {
       hu: "Ismerd meg a fő mintázataidat, erősségeidet és azt, mit viszel egy csapatba.",
       en: "Discover your key patterns, strengths, and what you bring to a team.",

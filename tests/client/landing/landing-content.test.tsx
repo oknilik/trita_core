@@ -23,6 +23,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     expect(headings).toHaveLength(1);
     expect(headings[0]).toHaveTextContent("~10 perc, és jobban megérted, hogyan működsz.");
     expect(headings[0]).not.toHaveClass("animate-rise-in");
+    expect(screen.getByText("ÖNISMERET ÉS CSAPATMŰKÖDÉS")).toBeInTheDocument();
 
     // Nincs módváltó.
     expect(screen.queryByRole("link", { name: "Önismeret" })).not.toBeInTheDocument();
