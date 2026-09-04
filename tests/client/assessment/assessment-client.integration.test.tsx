@@ -235,6 +235,18 @@ afterEach(() => {
 });
 
 describe("AssessmentClient integration behavior", () => {
+  it("uses the shared dot eyebrow and editorial art without a fake result preview", async () => {
+    const { container } = renderAssessmentClient();
+
+    const eyebrow = screen.getByText(t("assessment.introEyebrow", "en"));
+    expect(eyebrow.querySelector("span.rounded-full")).not.toBeNull();
+    expect(container.querySelector("[data-assessment-intro-art] svg")).not.toBeNull();
+    expect(screen.queryByText("Strategic Innovator")).not.toBeInTheDocument();
+    expect(t("assessment.introInfoGuest", "hu")).toBe(
+      "Bármikor félbeszakíthatod – a haladásod ebben a böngészőben mentésre kerül, itt folytathatod. Másik eszközön vagy a böngészési adatok törlése után nem lesz elérhető, regisztráció után az eredményed a fiókodba kerül.",
+    );
+  });
+
   it("handles next/back spam without overshoot or reset", async () => {
     const user = userEvent.setup();
     renderAssessmentClient();

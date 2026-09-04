@@ -61,6 +61,9 @@
 
 - **Főoldali hero:** visszakerült a korábbi „ÖNISMERET ÉS
   CSAPATMŰKÖDÉS” nyitócímke az egyszerűsített flow fölé.
+- **Tesztindító:** a félrevezetően konkrét mintaeredmény helyét egy halk,
+  szöveg nélküli Trita-konstelláció vette át; az oldal eyebrow-ja a közös
+  pöttyös rendszerkomponenst használja, a vendégmentés szövege pontosabb.
 - **`/team-dynamics` – Features-kártyák:** a három mérési réteg kártyája
   egyforma hátteret kap. Az első („Mért bizalmi háló") korábbi kiemelése
   színben rangsort sugallt három egyenrangú réteg közt.
