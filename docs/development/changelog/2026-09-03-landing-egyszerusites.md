@@ -42,6 +42,9 @@
   oldal elsődleges következő lépéseként továbbra is hangsúlyos marad.
 - Az **Együttműködés** menüpont ikonja két átfedő kör lett: a közös tér
   egyszerű, kis méretben is olvasható jele váltja a korábbi folyamatnyilat.
+- A Segítség panel gyorsválaszai a fix szélességű panelben teljes soros,
+  kompakt kártyák lettek. A viewport-alapú háromoszlopos törés kivezetésével
+  a hosszú magyar és angol kérdéscímek nem lógnak ki a kártyákból.
 
 ## Kompatibilitás
 

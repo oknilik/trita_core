@@ -61,6 +61,20 @@ describe("HelpWidget", () => {
     expect(screen.getByText(/külső kép összevethetővé válik/)).toBeInTheDocument();
   });
 
+  it("a hosszú gyorsválasz-címeket a súgópanel kártyáján belül tartja", () => {
+    render(<HelpWidget audience="public" />);
+    fireEvent.click(screen.getByRole("button", { name: "Segítség megnyitása" }));
+
+    const card = screen.getByRole("button", { name: "Hogyan működik a személyiségteszt?" });
+    expect(card).toHaveAttribute("data-help-context-card");
+    expect(card).toHaveClass("w-full", "min-w-0", "overflow-hidden");
+    expect(card.querySelector("[data-help-context-label]")).toHaveClass(
+      "min-w-0",
+      "break-words",
+      "[overflow-wrap:anywhere]",
+    );
+  });
+
   it("a csapatfolyamat teljes tartalmát és a workshopos folytatást mutatja", () => {
     render(<HelpWidget audience="public" />);
     fireEvent.click(screen.getByRole("button", { name: "Segítség megnyitása" }));
