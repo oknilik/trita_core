@@ -59,9 +59,10 @@
   `hero-layout-stability` teszt törölve (a módváltó geometriáját őrizték).
 - E2E: a `/self-awareness` → `/` átirányítás és a `/team-dynamics`
   publikussága a journey-entrypoints smoke-tesztben.
-- A `check:colors` nyers-hex keret (38 > 22) a `main`-en is bukik — az
-  `opengraph-image.tsx` 19 hexe a #85-tel jött be; nem ennek a változásnak a
-  hibája.
+- A `check:colors` korábban a `main`-en is bukott (38 > 22), mert az
+  `opengraph-image.tsx` Satori-képének 19 kötelező literálját böngészős
+  UI-színként számolta. A fájl az `icon.tsx` és `apple-icon.tsx` mintájára
+  dokumentált kivétel lett; a valódi UI-scope 18/22, a keret nem lazult.
 
 ## Kiegészítés (2026-09-03, este)
 

@@ -15,6 +15,8 @@
 //  - src/lib/riasec-content.ts — C-döntés: a RIASEC-paletta a karrier-réteg
 //    élesítéséig parkolva, nem migráljuk.
 //  - sign-in/sign-up — Google-logó (harmadik fél brand-színei).
+//  - opengraph-image.tsx — Satori által renderelt megosztási kép; a böngészős
+//    CSS custom property-k itt nem oldódnak fel, ezért konkrét színek kellenek.
 //  - src/app/globals.css, src/lib/design-tokens.ts, src/lib/color-system.ts —
 //    token-definíciós fájlok (itt ÉLNEK a hexek).
 
@@ -62,6 +64,7 @@ const isExempt = (rel) =>
   rel === "src/lib/riasec-content.ts" ||
   rel === "src/app/icon.tsx" ||
   rel === "src/app/apple-icon.tsx" ||
+  rel === "src/app/opengraph-image.tsx" ||
   rel.includes("(auth)/sign-in/") ||
   rel.includes("(auth)/sign-up/");
 
