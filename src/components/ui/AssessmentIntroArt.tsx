@@ -18,6 +18,11 @@ const TRAIL = [
  * Halk, tisztán szerkesztői konstelláció a tesztindító lépései alatt.
  * Nem használ mérési formákat vagy mintaeredményt, ezért nem ígér előre
  * személyiségtípust; csak a Trita formanyelvét viszi tovább.
+ *
+ * A `components/ui/` alatt él, az EditorialArt mellett — nem a
+ * `components/assessment/` védett modulban: tisztán dekoráció, nincs benne
+ * felmérési logika, ezért nem tartozik a minőségi kapu integrációs-teszt
+ * kötelezettsége alá (scripts/quality-gate-check.mjs).
  */
 export function AssessmentIntroArt() {
   const palette = ART_COLORS;

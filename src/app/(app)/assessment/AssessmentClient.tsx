@@ -11,7 +11,7 @@ import { BackChevronIcon } from '@/components/ui/primitives/BackChevronIcon'
 import { ChevronRightIcon } from '@/components/ui/icons'
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
-import { AssessmentIntroArt } from "@/components/assessment/AssessmentIntroArt";
+import { AssessmentIntroArt } from "@/components/ui/AssessmentIntroArt";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { useAssessmentStepController } from '@/components/assessment/useAssessmentStepController'
 import { useToast } from '@/components/ui/Toast'

@@ -87,3 +87,19 @@
   sötét csapatgradiens, rajta a nagy szabadhely-számmal és a foglalt helyek
   tényszerű sorával. A pulzáló gyűrű helyett a brand-csillag finoman
   megérkezik az első szabad szelethez; reduced motion mellett statikus.
+
+## Kiegészítés (2026-09-04, reggel)
+
+- **`/pilot` – a csillag egyszer száll le:** a kapacitás-kártya mozgása
+  egyszeri „érkezés"-koreográfia lett (`data-pilot-spots-phase`,
+  `PilotContent.tsx` + `globals.css`): a szeletek balról jobbra nőnek ki,
+  a nagy szám 10-ről 7-re számol le, a brand-csillag egyszer leszáll az
+  első szabad helyre, és az a szelet egyet felfénylik. Utána a kártya
+  nyugodt, a csillag statikusan a helyén marad; 9 mp-enként egyetlen halk
+  fény fut át a szabad helyeken. A korábbi végtelen hurok (lüktetés, majd
+  ismétlődő csillag-leszállás) kivezetve. SSR és csökkentett mozgás: a kész
+  állapot, mozgás nélkül.
+- **Minőségi kapu:** az `AssessmentIntroArt` a `components/ui/` alá került
+  (az EditorialArt mellé). Tisztán dekoráció, nincs benne felmérési logika;
+  a `components/assessment/` védett modulban a kapu integrációs tesztet
+  követelt volna rá.
