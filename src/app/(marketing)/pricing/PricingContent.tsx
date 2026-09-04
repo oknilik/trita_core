@@ -92,8 +92,8 @@ export function PricingContent() {
         </div>
       </section>
 
-      <section className="bg-cream px-5 pb-16 md:pb-24">
-        <div className="mx-auto grid max-w-[1120px] gap-10 rounded-[28px] bg-warm px-7 py-12 md:px-10 md:py-16 lg:grid-cols-[220px_minmax(0,1fr)] lg:px-12">
+      <section className="bg-warm">
+        <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
           <div>
             <SectionEyebrow>{t("pricing.offerEyebrow", locale)}</SectionEyebrow>
             <p className="mt-4 hidden max-w-[24ch] text-sm leading-relaxed text-ink-body lg:block">
@@ -144,8 +144,26 @@ export function PricingContent() {
         </div>
       </section>
 
+      <section className="bg-cream px-7 py-16 md:py-24">
+        <div className="mx-auto max-w-[760px]">
+          <div className="text-center">
+            <SectionEyebrow tone="team">{t("pricing.pilotEyebrow", locale)}</SectionEyebrow>
+            <h2 className="mt-4 font-fraunces text-fluid-title text-ink">
+              {t("pricing.pilotSectionTitle", locale)}
+            </h2>
+          </div>
+          <PilotSpotsIndicator
+            locale={locale}
+            href="/pilot"
+            ctaId="pricing_pilot"
+            surface="pricing"
+            className="mx-auto mt-8"
+          />
+        </div>
+      </section>
+
       <section className="bg-cream">
-        <div className="mx-auto max-w-3xl px-7 py-16 md:py-24">
+        <div className="mx-auto max-w-3xl px-7 pb-16 md:pb-24">
           <div className="text-center">
             <SectionEyebrow>{locale === "hu" ? "Mielőtt belevágunk" : "Before we begin"}</SectionEyebrow>
             <h2 className="mt-4 font-fraunces text-fluid-title text-ink">{t("pricing.faqHeading", locale)}</h2>
@@ -161,16 +179,6 @@ export function PricingContent() {
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="px-7 pb-16 pt-5 md:pb-20 md:pt-8">
-        <PilotSpotsIndicator
-          locale={locale}
-          href="/pilot"
-          ctaId="pricing_pilot"
-          surface="pricing"
-          className="mx-auto"
-        />
       </section>
 
       <section className="px-5 pb-8 lg:px-14">
