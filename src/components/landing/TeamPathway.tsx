@@ -36,7 +36,7 @@ export function TeamPathway() {
   ];
 
   return (
-    <section data-landing-team-pathway className="px-7 pb-16 md:pb-24">
+    <section data-landing-team-pathway className="px-7 pb-4 md:pb-0">
       <div className="relative mx-auto grid max-w-[1120px] overflow-hidden rounded-[30px] bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] p-7 text-[var(--color-text-on-inverse)] sm:p-10 md:grid-cols-[0.95fr_1.05fr] md:items-center md:gap-12 lg:p-12">
         <svg
           aria-hidden

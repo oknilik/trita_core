@@ -45,6 +45,10 @@
 - A Segítség panel gyorsválaszai a fix szélességű panelben teljes soros,
   kompakt kártyák lettek. A viewport-alapú háromoszlopos törés kivezetésével
   a hosszú magyar és angol kérdéscímek nem lógnak ki a kártyákból.
+- A személyes és csapatos hero riportkártyája után megszűnt a két teljes
+  szekció-padding összeadódása: desktopon 208 helyett 128 px marad a következő
+  lépésekig. A főoldali csapatátvezető és a záró CTA köze 192-ről 96 px-re
+  csökkent; mobilon mindkét átmenet 80–96 px-es ritmust kap.
 
 ## Kompatibilitás
 

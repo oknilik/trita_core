@@ -66,7 +66,10 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
 
   return (
     <section className="bg-cream">
-      <div className="mx-auto max-w-[1120px] px-7 pb-20 pt-12 min-[700px]:max-md:pb-16 min-[700px]:max-md:pt-14 md:pb-28 md:pt-20">
+      {/* A következő szekció saját felső térközt ad. A hero alján csak a
+          riportkártya árnyékának kell helyet hagyni, különben a két padding
+          200 px fölötti üres sávvá adódik össze. */}
+      <div data-landing-hero-inner className="mx-auto max-w-[1120px] px-7 pb-8 pt-12 min-[700px]:max-md:pt-14 md:pt-20">
         <div className="grid gap-10 min-[700px]:max-md:gap-6 md:grid-cols-2 md:items-center md:gap-12">
           {/* Mobilon a teljes ígéret és a CTA megelőzi az előnézetet: a
               látogató nem kényszerül egy hosszú riportkártyán végiggörgetni,

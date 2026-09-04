@@ -79,6 +79,20 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     expect(screen.getByText(/Most értettem meg, miért kerülök újra és újra/)).toBeInTheDocument();
   });
 
+  it("nem duplázza meg a szekcióközt a riport- és csapatkártyák után", () => {
+    const { container } = render(<LandingContent />);
+
+    const heroInner = container.querySelector("[data-landing-hero-inner]");
+    const teamPathway = container.querySelector("[data-landing-team-pathway]");
+
+    // A következő szekciók saját pt-16 / md:pt-24 térköze mellé csak az
+    // árnyék és a kártyaszél levegője marad, nem egy második teljes spacing.
+    expect(heroInner).toHaveClass("pb-8");
+    expect(heroInner).not.toHaveClass("pb-20", "md:pb-28");
+    expect(teamPathway).toHaveClass("pb-4", "md:pb-0");
+    expect(teamPathway).not.toHaveClass("pb-16", "md:pb-24");
+  });
+
   it("minden egyéni CTA a tesztre visz, a záró blokk megtartja az együttműködés útját", () => {
     render(<LandingContent />);
 
