@@ -1410,35 +1410,68 @@ input[type="range"].pattern-range::-moz-range-track {
   }
 }
 
-/* ── Pilot kapacitás-kártya: a KÖVETKEZŐ szabad hely lüktet ─────────────
-   A tízrészes sáv első szabad szelete lélegzik: halvány gyűrű nő ki
-   belőle és elhal (box-shadow), közben a szelet kicsit felfénylik. Csak
-   ez az egy szelet mozog — a többi szabad hely nyugodtan világít, a
-   betelteké homokszín. Így a szem a „ez a tiéd lehet" helyre ugrik,
-   anélkül, hogy az egész sáv zajongana.
+/* ── Pilot kapacitás-kártya: brand-csillag az első szabad helyen ────────
+   A csillag felülről finoman megérkezik az első szabad szelethez, majd
+   elhal. Ez a kapacitásra húzza a tekintetet, de a korábbi gyűrűvel
+   ellentétben nem idéz töltést vagy rendszerállapotot. A többi szelet
+   teljesen nyugodt marad.
 
-   Reduced motion: a lüktetés KIKAPCSOL, de a következő hely jelölése
-   megmarad egy statikus gyűrűvel — az információ nem vész el, csak nem
-   mozog. */
-@keyframes pilot-spot-pulse {
+   Reduced motion: a mozgás kikapcsol, a csillag statikusan a helyén marad. */
+@keyframes pilot-spot-star-arrive {
   0%,
+  15% {
+    opacity: 0;
+    transform: translate(-50%, -8px) rotate(-24deg) scale(0.72);
+  }
+  33%,
+  75% {
+    opacity: 1;
+    transform: translate(-50%, 0) rotate(0deg) scale(1);
+  }
   100% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-layer-team-accent) 75%, transparent);
+    opacity: 0;
+    transform: translate(-50%, 2px) rotate(12deg) scale(0.88);
+  }
+}
+
+@keyframes pilot-spot-star-brighten {
+  0%,
+  22%,
+  100% {
     filter: brightness(1);
   }
-  55% {
-    box-shadow: 0 0 0 8px color-mix(in srgb, var(--color-layer-team-accent) 0%, transparent);
-    filter: brightness(1.12);
+  40%,
+  72% {
+    filter: brightness(1.22);
   }
 }
 
 .pilot-spot-next {
-  animation: pilot-spot-pulse 1.6s ease-out infinite;
+  position: relative;
+  overflow: visible;
+  animation: pilot-spot-star-brighten 2.8s ease-in-out infinite;
+}
+
+.pilot-spot-next::before {
+  content: "✦";
+  position: absolute;
+  bottom: calc(100% + 0.25rem);
+  left: 50%;
+  color: var(--color-layer-team-badge);
+  font-size: 0.75rem;
+  line-height: 1;
+  filter: drop-shadow(0 3px 4px color-mix(in srgb, var(--color-layer-team-hero-to) 60%, transparent));
+  animation: pilot-spot-star-arrive 2.8s cubic-bezier(0.22, 0.8, 0.28, 1) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pilot-spot-next {
+  .pilot-spot-next,
+  .pilot-spot-next::before {
     animation: none;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-layer-team-accent) 55%, transparent);
+  }
+
+  .pilot-spot-next::before {
+    opacity: 1;
+    transform: translateX(-50%);
   }
 }

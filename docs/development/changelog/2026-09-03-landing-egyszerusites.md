@@ -78,3 +78,7 @@
   gyűrű nő ki belőle és elhal, közben kicsit felfénylik. Csak ez az egy
   szelet mozog. Reduced motion mellett a mozgás kikapcsol, a következő hely
   statikus gyűrűt kap — az információ megmarad.
+- **`/pilot` – editorial kapacitáskártya:** a világos kártyát felváltotta a
+  sötét csapatgradiens, rajta a nagy szabadhely-számmal és a foglalt helyek
+  tényszerű sorával. A pulzáló gyűrű helyett a brand-csillag finoman
+  megérkezik az első szabad szelethez; reduced motion mellett statikus.

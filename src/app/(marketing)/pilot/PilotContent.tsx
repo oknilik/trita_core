@@ -615,54 +615,53 @@ function FounderSection({ locale }: { locale: Locale }) {
   );
 }
 
-// Kapacitás-kártya a hero CTA alatt (2026-09-03, a korábbi pöttysor
-// helyett): a szabad helyek száma a döntési tény, ezért nagy számként áll,
-// alatta tízrészes sáv (a betelt helyek homokszín, a szabadok a badge
-// színén világítanak), és a kártya maga is a jelentkezésre visz. A számok
-// a pilot-config.ts-ből jönnek; betelt pilotnál a kártya nem renderelődik.
+// Kapacitás-kártya a hero CTA alatt: a nagy szám és a sötét csapatfelület
+// egyetlen döntési ténnyé sűríti a limitált helyeket. A tízrészes sávban az
+// első szabad helyre a brand-csillag „érkezik meg"; a többi nyugodt marad.
+// A számok a pilot-config.ts-ből jönnek; betelt pilotnál nem renderelődik.
 function SpotsIndicator({ locale }: { locale: Locale }) {
   if (PILOT_SPOTS_LEFT <= 0) return null;
-  const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT };
   const taken = PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT;
+  const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT, taken };
   return (
     <a
       href="#jelentkezes"
       data-pilot-spots
       aria-label={tf("pilot.spotsA11y", locale, vars)}
       onClick={() => track("cta.click", { cta_id: "hero_spots", surface: "pilot" })}
-      className={`group mt-6 flex max-w-[600px] items-center gap-4 rounded-2xl border border-[var(--color-layer-team-accent)]/30 bg-surface-card p-4 shadow-[0_12px_32px_rgba(26,26,46,0.08)] transition-[translate,box-shadow] duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_44px_rgba(26,26,46,0.12)] sm:gap-5 sm:p-5 ${FOCUS_RING_CLASS}`}
+      className={`group relative mt-6 grid max-w-[600px] grid-cols-[auto_minmax(0,1fr)] items-center gap-4 overflow-hidden rounded-[22px] bg-gradient-to-br from-[var(--color-layer-team-hero-from)] to-[var(--color-layer-team-hero-to)] p-4 text-[var(--color-text-on-inverse)] shadow-[0_18px_44px_color-mix(in_srgb,var(--color-layer-team-hero-to)_22%,transparent)] transition-[translate,box-shadow,filter] duration-200 hover:-translate-y-0.5 hover:brightness-[1.04] hover:shadow-[0_24px_56px_color-mix(in_srgb,var(--color-layer-team-hero-to)_28%,transparent)] sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:gap-5 sm:p-5 ${FOCUS_RING_CLASS}`}
     >
-      <span className="flex shrink-0 items-baseline gap-1 font-fraunces leading-none text-[var(--color-layer-team-accent)]">
-        <span className="text-display md:text-hero">{PILOT_SPOTS_LEFT}</span>
-        <span className="text-label uppercase">/ {PILOT_TOTAL_TEAMS}</span>
+      <span className="shrink-0 font-fraunces text-display leading-none tracking-[-0.06em] text-[var(--color-layer-team-badge)] md:text-hero">
+        {PILOT_SPOTS_LEFT}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-sm font-semibold text-ink sm:text-base">
+        <span className="block text-sm font-semibold text-[var(--color-text-on-inverse)] sm:text-base">
           {tf("pilot.spotsPanelTitle", locale, vars)}
         </span>
-        {/* A betelt helyek homokszín, a szabadok a badge színén világítanak;
-            a KÖVETKEZŐ szabad hely lüktet (pilot-spot-next, globals.css) —
-            „ez lehet a tiétek". */}
-        <span aria-hidden="true" className="mt-2.5 grid grid-cols-10 gap-1">
+        <span className="mt-1 block text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+          {tf("pilot.spotsPanelUrgency", locale, vars)}
+        </span>
+        {/* Az első három szelet foglalt, a hét barackszínű szelet szabad.
+            Az első szabad hely fölé a brand-csillag érkezik; nincs pulzáló
+            gyűrű, ami töltés- vagy hibaállapotnak tűnhetne. */}
+        <span aria-hidden="true" className="mt-5 grid grid-cols-10 gap-1.5">
           {Array.from({ length: PILOT_TOTAL_TEAMS }, (_, i) => (
             <span
               key={i}
               data-pilot-spot={i < taken ? "taken" : i === taken ? "next" : "open"}
+              data-pilot-spot-effect={i === taken ? "star-arrival" : undefined}
               className={
                 i < taken
-                  ? "h-1.5 rounded-full bg-sand"
+                  ? "h-1.5 rounded-full bg-[var(--color-text-on-inverse)]/25"
                   : i === taken
                     ? "pilot-spot-next h-1.5 rounded-full bg-[var(--color-layer-team-badge)]"
-                    : "h-1.5 rounded-full bg-[var(--color-layer-team-badge)] shadow-[0_0_0_2px_rgba(232,178,118,0.18)]"
+                    : "h-1.5 rounded-full bg-[var(--color-layer-team-badge)]"
               }
             />
           ))}
         </span>
-        <span className="mt-2 block text-note leading-relaxed text-ink-body">
-          {tf("pilot.spotsPanelUrgency", locale, vars)}
-        </span>
       </span>
-      <span className="hidden shrink-0 items-center gap-1 text-sm font-semibold text-[var(--color-layer-team-accent)] sm:inline-flex">
+      <span className="col-span-2 inline-flex shrink-0 items-center justify-self-end gap-1 text-sm font-semibold text-[var(--color-layer-team-badge)] sm:col-span-1">
         {t("pilot.spotsPanelCta", locale)}
         <ChevronRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
       </span>

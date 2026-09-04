@@ -609,10 +609,10 @@ export const landingTranslations = {
     // Kapacitás-kártya a hero CTA alatt (2026-09-03): a pöttysor helyett a
     // szabad helyek száma a döntési tény — nagy szám, sáv, és maga a kártya
     // a jelentkezésre visz.
-    spotsPanelTitle: { hu: "Még {left} szabad partnercsapat-hely", en: "{left} partner team spots still open" },
+    spotsPanelTitle: { hu: "szabad partnercsapat-hely", en: "partner team spots open" },
     spotsPanelUrgency: {
-      hu: "Az első {total} csapattal indulunk – jelentkezz, amíg van hely.",
-      en: "We start with the first {total} teams – apply while spots last.",
+      hu: "{taken} hely már foglalt · a következő lehet a tiétek",
+      en: "{taken} spots are taken · the next one could be yours",
     },
     spotsPanelCta: { hu: "Jelentkezem", en: "Apply now" },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
