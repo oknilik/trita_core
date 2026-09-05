@@ -102,14 +102,15 @@ export const commonTranslations = {
 
   meta: {
     title: {
-      hu: "trita – Csapatintelligencia és csapatdinamika",
-      en: "trita – Team Intelligence and Team Dynamics",
+      hu: "trita - Személyiség- és csapatintelligencia",
+      en: "trita - Personality and Team Intelligence",
     },
-    // Root fallback: a tartós márkaígéret a csapatintelligencia. Az ingyenes
-    // egyéni teszt saját /try metaadata viszi a funnel-specifikus keresést.
+    // SEO: a leírás a KERESETT kifejezéssel indul („személyiségteszt
+    // magyarul"), nem a felszólítással — a snippet első
+    // szavai döntik el, hogy a találat relevánsnak látszik-e.
     description: {
-      hu: "Csapatintelligencia egyéni profilokból és közös mérésekből: lássátok tisztábban a csapatdinamikát, a bizalmat, az erősségeket és a következő lépéseket.",
-      en: "Team intelligence built from individual profiles and shared measures: understand team dynamics, trust, strengths, and the next steps you can take together.",
+      hu: "Személyiségteszt magyarul, hat dimenzió mentén: vesd össze az önértékelésed a környezeted visszajelzésével, és lásd tisztán a csapatod működését.",
+      en: "A personality test across six dimensions: compare your self-image with feedback from people who know you, and see how your team really works.",
     },
     assessmentTitle: {
       hu: "Teszt kitöltése | trita",

@@ -89,30 +89,39 @@ const ORG_DESCRIPTION: Record<Locale, string> = {
  * mert a magyar nyelvű lekérdezéseket magyar tokenek fedik le.
  */
 const ORG_KNOWS_ABOUT: Record<Locale, string[]> = {
+  // Sorrend: csapat-első (2026-09-05). A lista a márka SZAKTERÜLETEIT
+  // mondja, nem a főoldal keresési szándékát — a főoldal maradhat az egyéni
+  // teszt belépője, az entitás mégis csapatintelligencia-platformként áll.
   hu: [
+    "csapatintelligencia",
+    "csapatdiagnosztika",
+    "csapatdinamika",
+    "csapatszerepek",
+    "pszichológiai biztonság",
+    "bizalmi háló csapatban",
+    "360 fokos visszajelzés",
+    "csapatfejlesztés",
+    "szervezetfejlesztés",
+    "vezetőfejlesztés",
     "hatfaktoros személyiségmodell",
     "személyiségteszt",
     "munkahelyi személyiségfelmérés",
-    "csapatdiagnosztika",
-    "csapatdinamika",
-    "360 fokos visszajelzés",
-    "csapatszerepek",
-    "pszichológiai biztonság",
-    "szervezetfejlesztés",
-    "vezetőfejlesztés",
     "pszichometria",
   ],
   en: [
+    "team intelligence",
+    "team diagnostics",
+    "team dynamics",
+    "team roles",
+    "psychological safety",
+    "trust network in teams",
+    "360-degree feedback",
+    "team development",
+    "organizational development",
+    "leadership development",
     "six-factor personality model",
     "personality assessment",
     "workplace psychometrics",
-    "team diagnostics",
-    "team dynamics",
-    "360-degree feedback",
-    "team roles",
-    "psychological safety",
-    "organizational development",
-    "leadership development",
     "psychometrics",
   ],
 };

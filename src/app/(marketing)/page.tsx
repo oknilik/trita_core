@@ -9,21 +9,32 @@ import {
   buildWebSiteJsonLd,
 } from "@/lib/structured-data";
 
-// A főoldal a csapatintelligencia márka- és kategóriaoldala. Az ingyenes
-// egyéni teszt a /try önálló funnel-céloldalán célozza a hozzá tartozó
-// kereséseket; a /team-dynamics a mélyebb „csapatdiagnosztika" szándéké.
+// A `<title>` KULCSSZÓ-ELSŐ, márka-utolsó sorrendben: a magyar keresésekben a
+// „személyiségteszt magyarul" a főoldal keresési szándéka, a „trita" nem —
+// márkanévre amúgy is első találat vagyunk.
+//
+// POZICIONÁLÁS vs. KERESÉSI SZÁNDÉK (2026-09-05): a Google OLDALT rangsorol,
+// nem site-ot. A főoldal a funnel egyéni belépője marad (H1, hero, CTA nem
+// változik), a márka csapatintelligencia-pozicionálását viszont NEM a H1
+// hordozza, hanem:
+//   - a description második fele (márkakeresésnél ez a snippet mondja ki,
+//     mi a trita — miközben az oldal a tesztre rangsorol),
+//   - az OG-pár (megosztásnál a márka-, nem a funnel-üzenet látszik),
+//   - az Organization/WebSite entitás (`structured-data.ts`),
+//   - és a `/team-dynamics` pillar, amely a „csapatintelligencia" kategória
+//     gazdája. Így a két lap nem ugyanarra a kifejezésre versenyez.
 const seoIntent = SEO_INTENTS.home;
-const title = "Csapatintelligencia és csapatdinamika | trita";
+const title = "Magyar személyiségteszt – értsd meg, hogyan működsz | trita";
 const description =
-  "A trita az egyéni profilokból és csapatmérésekből közös csapatképet készít: erősségek, bizalom, pszichológiai biztonság és közös következő lépések.";
+  "Ingyenes magyar személyiségteszt 60 kérdéssel és azonnali eredménnyel. A trita csapatintelligencia-platform egyéni belépője: mintázataid, erősségeid, csapatszerepeid.";
 
 export const metadata: Metadata = buildPageMetadata({
   path: "/",
   title,
   description,
-  ogTitle: "trita – csapatintelligencia a közös munkához",
+  ogTitle: "trita – csapatintelligencia-platform",
   ogDescription:
-    "Értsétek meg, hogyan működtök együtt, mire építhettek, és hol érdemes közösen változtatnotok.",
+    "Ingyenes egyéni személyiségprofil belépőként; csapatoknak tanácsadóval kísért csapatkép: szerepek, bizalmi háló, pszichológiai biztonság.",
 });
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey

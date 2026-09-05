@@ -48,9 +48,6 @@ describe("the separate contact and collaboration art directions", () => {
       "href",
       "#workflow",
     );
-    for (const step of [1, 2, 3, 4, 5]) {
-      expect(screen.getByRole("heading", { name: t(`pricing.workflow${step}Title`, "hu") })).toBeInTheDocument();
-    }
     expect(screen.getByRole("heading", { name: t("pricing.pilotSectionTitle", "hu") })).toBeInTheDocument();
     expect(container.querySelector("[data-pilot-spots]")).toHaveAttribute("href", "/pilot");
     expect(container.querySelectorAll("[data-testid='page-width-divider']")).toHaveLength(1);

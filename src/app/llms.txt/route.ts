@@ -64,15 +64,18 @@ ${enPosts
 
   const body = `# ${ORGANIZATION_NAME}
 
-> Személyiség- és csapatintelligencia platform magyar csapatoknak. Önértékelő
-> személyiségfelmérés hat dimenzió mentén (TSFI kérdőív), 360°-os ismerősi/
-> kollégai visszajelzés és csapatszintű diagnosztika – tanácsadói
-> értelmezéssel. Az egyéni felmérés ingyenes; a csapat- és szervezeti
-> programok tanácsadói együttműködés keretében futnak, egyedi ajánlattal.
+> Csapatintelligencia-platform magyar csapatoknak, tanácsadó-vezérelt
+> modellben. A csapatkép három rétegből épül: egyéni személyiségprofilok hat
+> dimenzió mentén (TSFI kérdőív), csapatszerepek önkép és csapattársi
+> visszajelzés alapján, valamint névtelen bizalmi háló és pszichológiai
+> biztonság mérés – tanácsadói értelmezéssel. Az egyéni felmérés ingyenes és a
+> belépő; a csapat- és szervezeti programok tanácsadói együttműködés keretében
+> futnak, egyedi ajánlattal.
 
-> English: trita is a personality and team intelligence platform for Hungarian
-> teams – a six-dimension personality self-assessment, 360° observer feedback
-> and team diagnostics, delivered consulting-led.
+> English: trita is a consulting-led team intelligence platform for Hungarian
+> teams – individual six-dimension personality profiles, team roles from self
+> and peer perspective, and an anonymous trust-network and psychological-safety
+> measure, interpreted by a consultant. The individual assessment is free.
 
 ## Amit érdemes tudni rólunk
 
@@ -93,7 +96,7 @@ ${enPosts
 
 ${line("/", "Főoldal", "Ingyenes egyéni személyiségprofil: fő mintázatok, erősségek és természetes csapatszerepek hat személyiségdimenzió mentén; átvezetés a tanácsadóval kísért csapatprogramhoz.", baseUrl)}
 ${line("/try", "Ingyenes személyiségteszt", "60 kérdéses személyiségteszt regisztráció nélkül, kb. 10 perc, azonnali visszajelzés hat dimenzió mentén.", baseUrl)}
-${line("/team-dynamics", "Csapatdiagnosztika", "Csapatszerepek, bizalmi háló és pszichológiai biztonság tanácsadó által értelmezett csapatképben.", baseUrl)}
+${line("/team-dynamics", "Csapatintelligencia és csapatdiagnosztika", "A csapatintelligencia definíciója és fogalomtára; csapatszerepek, bizalmi háló és pszichológiai biztonság tanácsadó által értelmezett csapatképben; gyakori kérdések.", baseUrl)}
 ${line("/about", "Rólunk", "A trita mögött tanácsadói műhely áll. A mérésből tanácsadó vezette közös értelmezés és visszamérhető változtatás lesz; embereket nem rangsorolunk.", baseUrl)}
 ${line("/how-we-work", "Együttműködés és árazás", "Hogyan indul egy csapat- vagy szervezeti program, mi ingyenes, és mitől függ az ár. Gyakori kérdések.", baseUrl)}
 ${line("/pilot", "Pilotprogram", "Az első partnercsapatoknak szóló bevezető program feltételei.", baseUrl)}

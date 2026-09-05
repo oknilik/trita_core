@@ -1,8 +1,8 @@
 export const landingTranslations = {
   landing: {
     heroTitle: {
-      hu: "trita – csapatintelligencia az eredményesebb közös munkához",
-      en: "trita – team intelligence for better work together",
+      hu: "trita – személyiség- és csapatintelligencia platform",
+      en: "trita – personality and team intelligence platform",
     },
 
     // ─── New landing page (self/team) ────────────────────────────────
@@ -35,40 +35,31 @@ export const landingTranslations = {
     selfTeamRoleRank2: { hu: "Másodlagos", en: "Secondary" },
     selfTeamRolesNote: { hu: "A pontos képhez külön csapatszerep-kérdőív tartozik.", en: "A separate team-role questionnaire provides the precise picture." },
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
-    // A főoldal csapatintelligencia-ígéretét az egyéni profil teszi
-    // kézzelfoghatóvá: ez a funnel első lépése, nem a végtermék.
-    focusedEyebrow: { hu: "CSAPATINTELLIGENCIA AZ EGYÉNI MŰKÖDÉSTŐL", en: "TEAM INTELLIGENCE STARTS WITH THE INDIVIDUAL" },
+    // Fókuszált főoldal (2026-09-03) — az egyéni belépő az elsődleges, a
+    // csapatos út egyetlen statikus átvezetést kap a korábbi módváltó helyett.
+    focusedEyebrow: { hu: "ÖNISMERET ÉS CSAPATMŰKÖDÉS", en: "SELF-AWARENESS AND TEAMWORK" },
     focusedHeroSub: {
-      hu: "A trita az egyéni működésből, a csapatszerepekből és a kapcsolatokról adott visszajelzésekből közös csapatképet épít. Az ingyenes saját profil az első lépés.",
-      en: "trita turns individual patterns, team roles, and relationship feedback into a shared team picture. Your free personal profile is the first step.",
+      hu: "Ismerd meg a fő mintázataidat, erősségeidet és azt, mit viszel egy csapatba.",
+      en: "Discover your key patterns, strengths, and what you bring to a team.",
     },
-    focusedHeroCta: { hu: "Elkészítem az ingyenes saját profilom", en: "Create my free personal profile" },
-    teamIntelligenceEyebrow: { hu: "Mit jelent?", en: "What does it mean?" },
-    teamIntelligenceTitle: { hu: "Mi a csapatintelligencia?", en: "What is team intelligence?" },
-    teamIntelligenceBody: {
-      hu: "A csapatintelligencia annak közös megértése, hogyan hatnak egymásra a csapattagok működési mintázatai, szerepei és kapcsolatai. Megmutatja, mire tud építeni a csapat, hol keletkezhetnek visszatérő feszültségek, és milyen változtatások segíthetik az eredményesebb közös munkát.",
-      en: "Team intelligence is a shared understanding of how team members' working patterns, roles, and relationships affect one another. It shows what the team can build on, where recurring friction may arise, and which changes can improve the way people work together.",
-    },
-    teamIntelligenceOutcome1: { hu: "Közös nyelv", en: "Shared language" },
-    teamIntelligenceOutcome2: { hu: "Látható dinamika", en: "Visible dynamics" },
-    teamIntelligenceOutcome3: { hu: "Közös következő lépések", en: "Shared next steps" },
-    focusedTeamEyebrow: { hu: "Csapatintelligencia a gyakorlatban", en: "Team intelligence in practice" },
-    focusedTeamTitle: { hu: "Közös kép arról, hogyan működtök együtt", en: "A shared picture of how you work together" },
+    focusedHeroCta: { hu: "Elindítom az ingyenes tesztet", en: "Start the free assessment" },
+    focusedTeamEyebrow: { hu: "Tanácsadóval kísért program", en: "Consultant-guided program" },
+    focusedTeamTitle: { hu: "Csapatként folytatnátok?", en: "Ready to continue as a team?" },
     focusedTeamSub: {
-      hu: "A trita összekapcsolja az egyéni működést, a természetes csapatszerepeket, a bizalmi kapcsolatokat és a pszichológiai biztonságot. Így nem különálló eredményeket kaptok, hanem közösen értelmezhető csapatképet.",
-      en: "trita connects individual patterns, natural team roles, trust relationships, and psychological safety. Instead of isolated results, you get a team picture you can interpret together.",
+      hu: "Mélyebb csapatmegértés, közös nyelv és célzott fejlődés vezetői támogatással.",
+      en: "Deeper team understanding, a shared language, and focused development with leadership support.",
     },
     focusedTeamLayersLabel: { hu: "Mit mér a csapatprogram", en: "What the team program measures" },
     focusedTeamProfilesTitle: { hu: "Egyéni személyiségprofilok", en: "Individual personality profiles" },
     // Elsődleges út: a /team-dynamics mélyoldal. A pilot a másodlagos CTA.
-    focusedTeamCta: { hu: "Megnézem, hogyan készül a csapatkép", en: "See how the team picture is built" },
+    focusedTeamCta: { hu: "A csapatdiagnosztika részletei", en: "Team diagnostics in detail" },
     // HeroSection – team
     // 2026-08-28: „CSAPATINTELLIGENCIA PLATFORM" helyett — a gépies
     // kategória-címke a „nem csak platform" üzenet ellen dolgozott.
-    teamEyebrow: { hu: "Csapatdiagnosztika és csapatintelligencia", en: "Team diagnostics and team intelligence" },
-    teamHeadlineBefore: { hu: "Lássátok tisztán, hogyan működik együtt ", en: "See clearly how " },
-    teamHeadlineEm: { hu: "a csapatotok.", en: "your team works together." },
-    teamSub: { hu: "A trita közös rendszerben mutatja meg a csapattagok természetes működését, a szerepek eloszlását, a bizalmi hálót és a pszichológiai biztonságot. Így a fejlesztés nem benyomásokból, hanem közösen értelmezett képből indul.", en: "trita brings individual working patterns, team roles, the trust network, and psychological safety into one shared system. Development starts from a picture you interpret together, not from impressions." },
+    teamEyebrow: { hu: "Közös kép a csapatotokról", en: "A shared picture of your team" },
+    teamHeadlineBefore: { hu: "Értsétek meg jobban a ", en: "Better understand your " },
+    teamHeadlineEm: { hu: "csapatotok működését.", en: "team's dynamics." },
+    teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt – a csapatotok valódi dinamikáját. Így még azelőtt felismerhetitek a feszültségeket, hogy konfliktussá válnának, és azt is, mire építhettek együtt.", en: "trita reveals what was previously invisible – your team's true dynamics. This helps you recognize tensions before they turn into conflict, while also showing what you can build on together." },
     teamCta: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
     teamSecondaryCta: { hu: "Beszéljünk", en: "Talk to us" },
     teamMicrocopy: { hu: "Személyes onboarding · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
@@ -104,16 +95,16 @@ export const landingTranslations = {
     teamNarrativeLabel: { hu: "Tanácsadói értékelés", en: "Consultant assessment" },
     teamNarrativeText: { hu: "Aktív, lojális csapat, amely a bevált utakon halad, de rugalmasan alkalmazkodik. Az elkötelezettség az összetartó erő.", en: "An active, loyal team that follows proven paths while adapting flexibly. Commitment is what holds it together." },
     // HowItWorks
-    howSelfTitleBefore: { hu: "Az első lépés: értsd meg, ", en: "The first step: understand " },
-    howSelfTitleEm: { hu: "mit viszel a csapatba", en: "what you bring to the team" },
+    howSelfTitleBefore: { hu: "Három lépésben kapsz használható képet ", en: "Three steps to a usable picture of " },
+    howSelfTitleEm: { hu: "magadról", en: "yourself" },
     howTeamTitleBefore: { hu: "Három lépésben kaptok ", en: "Three steps to your " },
     howTeamTitleEm: { hu: "csapatképet", en: "team picture" },
-    howSelf1Title: { hu: "Elkészíted a saját profilodat", en: "Create your personal profile" },
-    howSelf1Desc: { hu: "Körülbelül tíz perc alatt feltérképezed a rád jellemző működési mintázatokat.", en: "In about ten minutes, map the working patterns that characterize you." },
-    howSelf2Title: { hu: "Megérted a természetes szerepeidet", en: "Understand your natural roles" },
-    howSelf2Desc: { hu: "Láthatóvá válik, mivel segíted a csapatot, és milyen helyzetekben lehet szükséged másokra.", en: "See how you support the team and in which situations you may need others." },
-    howSelf3Title: { hu: "Továbbvihetitek a csapatba", en: "Take it into the team" },
-    howSelf3Desc: { hu: "Ha csapatként folytatjátok, az egyéni profilok a kapcsolati és csapatszintű mérésekkel együtt válnak közös csapatképpé.", en: "If you continue as a team, individual profiles combine with relationship and team-level measures to form a shared team picture." },
+    howSelf1Title: { hu: "Kitöltöd", en: "Fill it out" },
+    howSelf1Desc: { hu: "Végigmész a kérdéseken ~10 perc alatt – készülni nem kell rá.", en: "Done in ~10 minutes. No preparation needed." },
+    howSelf2Title: { hu: "Megkapod a profilodat", en: "Get your profile" },
+    howSelf2Desc: { hu: "Azonnal látod a fő mintázataidat és az erősségeidet.", en: "See your key patterns and strengths right away." },
+    howSelf3Title: { hu: "Megérted a saját működésedet", en: "Understand how you naturally operate" },
+    howSelf3Desc: { hu: "A személyes képedből kirajzolódik, milyen mintázatok jellemeznek, miben lehetsz erős, és milyen szerepekben működsz természetesen egy csapatban.", en: "Your personal picture reveals the patterns that define you, where your strengths may lie, and which roles come naturally to you in a team." },
     howTeam1Title: { hu: "Egyéni kitöltés", en: "Individual completion" },
     howTeam1Desc: { hu: "Az első egyeztetés után minden csapattag személyes linket kap, és szakaszosan, önállóan tölti ki a kérdőíveket.", en: "After the initial consultation, each team member receives a personal link and completes the questionnaires independently, in stages." },
     howTeam2Title: { hu: "Tanácsadói ellenőrzés", en: "Consultant review" },
@@ -143,14 +134,14 @@ export const landingTranslations = {
     teamFeat3Title: { hu: "Jóváhagyott csapatkép", en: "Reviewed team picture" },
     teamFeat3Desc: { hu: "Egyéni profilok és közös csapatkép: erősségek, kockázatok és konkrét javaslatok.", en: "Executive summary: strengths, risks, recommendations." },
     // ProofSection
-    proofTitleBefore: { hu: "Az egyéni profil nem végpont, hanem ", en: "The individual profile is not the destination, but " },
-    proofTitleEm: { hu: "közös kiindulópont.", en: "a shared starting point." },
-    proof1Title: { hu: "Egyéni működés közös nyelven", en: "Individual patterns in a shared language" },
-    proof1Desc: { hu: "A csapattagok könnyebben beszélhetnek az eltérő igényeikről, erősségeikről és munkamódjukról.", en: "Team members can talk more easily about their different needs, strengths, and ways of working." },
-    proof2Title: { hu: "Nemcsak személyiséget mér", en: "More than personality" },
-    proof2Desc: { hu: "A csapatprogram a természetes szerepeket, a bizalmi kapcsolatokat és a pszichológiai biztonságot is vizsgálja.", en: "The team program also examines natural roles, trust relationships, and psychological safety." },
-    proof3Title: { hu: "Közös következő lépést ad", en: "A shared next step" },
-    proof3Desc: { hu: "A csapatkép tanácsadói értelmezéssel és konkrét fejlesztési irányokkal válik használhatóvá.", en: "Consultant interpretation and concrete development directions turn the team picture into action." },
+    proofTitleBefore: { hu: "Mitől több ez egy ", en: "What makes this more than an " },
+    proofTitleEm: { hu: "átlagos személyiségtesztnél?", en: "average personality test?" },
+    proof1Title: { hu: "Tudományos alap", en: "Scientific foundation" },
+    proof1Desc: { hu: "Kutatásban használt és validált személyiségmodellekre épül – nem gyors típusbesorolásra.", en: "Built on validated personality models used in research – not quick type classifications." },
+    proof2Title: { hu: "Több mint egy címke", en: "More than a label" },
+    proof2Desc: { hu: "Nem egyetlen típusba sorol, hanem megmutatja a rád jellemző mintázatokat és azt, hogyan jelenhetnek meg a csapatban.", en: "Rather than placing you in a single type, it shows your characteristic patterns and how they may appear in a team." },
+    proof3Title: { hu: "Érthető és használható", en: "Clear and useful" },
+    proof3Desc: { hu: "Közérthető nyelven mutatja meg, mire építhetsz, és hol érdemes tudatosabban alakítanod a működésedet.", en: "It shows in plain language what you can build on and where it may be worth shaping how you operate more intentionally." },
     proofTestimonial: { hu: "Most értettem meg, miért kerülök újra és újra ugyanabba a szerepbe egy csapatban.", en: "Now I understand why I find myself in the same role again and again in a team." },
     proofTestimonialAuthor: { hu: "– Korai felhasználó, 31 éves termékmenedzser", en: "– Early user, 31-year-old Product Manager" },
     // ProofSection – team mód ("Miért más?" megkülönböztető történet)
@@ -182,16 +173,15 @@ export const landingTranslations = {
     // felület parkolt, és a playbook szerint a minta „értelmezési nyelv, nem
     // validált csapattípus" – a stat a Scan v1 tényleges rétegeit mondja.
     statTeamLayersLabel: { hu: "mérési réteg", en: "measurement layers" },
-    // A főoldal H1-e: a csapatszintű végérték az első, az egyéni profil csak
-    // az alatta lévő szövegben és CTA-ban jelenik meg belépőként.
-    ctaSelfHeadlineBefore: { hu: "Értsd meg, mitől működik igazán ", en: "Understand what makes " },
-    ctaSelfHeadlineEm: { hu: "egy csapat.", en: "a team truly work." },
+    // A főoldal hero H1-e (2026-09-03 óta): a leggyorsabban érthető ígéret.
+    ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban megérted, ", en: "In ~10 minutes, better understand " },
+    ctaSelfHeadlineEm: { hu: "hogyan működsz.", en: "how you operate." },
     // CtaSection — a záró blokk nem ismétli a hero címét.
-    ctaSelfClosingBefore: { hu: "Kezdd a saját működéseddel. ", en: "Start with how you work. " },
-    ctaSelfClosingEm: { hu: "Vidd tovább a csapatba.", en: "Take it into the team." },
-    ctaSelfSub: { hu: "Készítsd el ingyenesen a saját profilodat, ismerd meg, mit viszel egy csapatba, majd építsetek belőle közös képet a működésetekről.", en: "Create your personal profile for free, understand what you bring to a team, then build a shared picture of how you work together." },
-    ctaSelfCta: { hu: "Elkészítem a saját profilom", en: "Create my personal profile" },
-    ctaSelfSecondary: { hu: "Csapatként szeretnénk továbblépni", en: "We want to continue as a team" },
+    ctaSelfClosingBefore: { hu: "Egy kérdőív, és tisztábban látod, ", en: "One questionnaire, and you see more clearly " },
+    ctaSelfClosingEm: { hu: "mire építhetsz.", en: "what you can build on." },
+    ctaSelfSub: { hu: "Indítsd el a tesztet, és lásd tisztábban a rád jellemző mintázatokat, az erősségeidet és azt, milyen szerepek állhatnak közel hozzád egy csapatban.", en: "Start the assessment and see your characteristic patterns, strengths, and the roles that may suit you in a team more clearly." },
+    ctaSelfCta: { hu: "Elindítom a tesztet", en: "Start the test" },
+    ctaSelfSecondary: { hu: "Együttműködés részletei", en: "How we work" },
     ctaSelfMicrocopy: { hu: "Ingyenes · azonnali első eredmény", en: "Free · instant first result" },
     ctaTeamHeadlineBefore: { hu: "Lássátok tisztábban, hogyan ", en: "Ready for your first " },
     ctaTeamHeadlineEm: { hu: "működtök együtt.", en: "shared picture?" },
@@ -200,49 +190,41 @@ export const landingTranslations = {
     ctaTeamMicrocopy: { hu: "Kiemelt támogatás a pilot teljes ideje alatt · első csapatkép néhány napon belül", en: "Personal onboarding · first result within days" },
   },
   pricing: {
-    // SEO: a cím és a leírás a csapatfejlesztési együttműködést teszi előre;
-    // az ingyenes egyéni profil ezen az oldalon csak az ajánlat egyik eleme.
+    // SEO: a cím a keresett „csapatfejlesztés" szolgáltatás-megnevezéssel
+    // kezdődik, majd a trita személyes, rugalmas működését ígéri. A description
+    // kihasználja a snippet-hosszt (~155 kar.), és előre hozza a két
+    // döntési tényt: az egyéni rész ingyenes, listaár nincs.
     metaTitle: {
       hu: "Csapatfejlesztés, a csapatotokra szabva | trita",
       en: "Team development and diagnostics | trita",
     },
     metaDescription: {
-      hu: "Tanácsadóval kísért csapatfejlesztés: célzott mérések, értelmezett csapatkép, közös workshop és utánmérés, a csapatotokra szabva.",
-      en: "Consultant-guided team development with focused measures, an interpreted team picture, a shared workshop, and follow-up tailored to your team.",
+      hu: "Az egyéni személyiségfelmérés ingyenes; a csapat- és szervezeti programok ára a létszámtól és a program mélységétől függ – listaár helyett egyedi ajánlat.",
+      en: "The individual personality assessment is free; team and organizational program pricing depends on headcount and depth – an individual quote instead of list prices.",
     },
     heroEyebrow: { hu: "Együttműködés", en: "How we work" },
-    heroHeading: { hu: "Nem egy riportot adunk át, hanem ", en: "We do not just hand over a report – " },
-    heroHeadingEm: { hu: "együtt dolgozunk a csapattal.", en: "we work with the team." },
+    heroHeading: { hu: "Minden csapat más – ezért a közös munka is ", en: "Every team is different – so the way we work together " },
+    heroHeadingEm: { hu: "hozzátok igazodik.", en: "is tailored to you." },
     heroSub: {
-      hu: "A közös céltól a célzott méréseken és a tanácsadói értelmezésen át a workshopig és az utánmérésig végigkísérjük a csapatot.",
-      en: "From the shared goal through focused measures and consultant interpretation to the workshop and follow-up, we guide the team throughout the process.",
+      hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd átlátható keretet kaptok: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül.",
+      en: "In a short conversation, we clarify the goal, then give you a transparent scope: who takes part, what we measure, what you receive, and what it costs.",
     },
     heroProcessCta: { hu: "Így dolgozunk együtt", en: "How we work together" },
     workflowEyebrow: { hu: "Így dolgozunk együtt", en: "How we work together" },
-    workflow1Title: { hu: "Feltérképezzük a helyzetet", en: "Map the situation" },
+    workflow1Title: { hu: "Tisztázzuk a célt", en: "Clarify the goal" },
     workflow1Body: {
-      hu: "Tisztázzuk, mi foglalkoztatja a csapatot, és milyen változáshoz kerestek kapaszkodót.",
-      en: "We clarify what is on the team's mind and which change you need clarity to make.",
+      hu: "Átbeszéljük, mi foglalkoztatja most a csapatot, és milyen döntéshez kerestek kapaszkodót.",
+      en: "We discuss what is currently on the team's mind and which decision you need clarity to make.",
     },
-    workflow2Title: { hu: "Célzottan mérünk", en: "Measure what matters" },
+    workflow2Title: { hu: "Kialakítjuk a keretet", en: "Shape the scope" },
     workflow2Body: {
-      hu: "Az egyéni profilokat a célhoz illő csapatszintű és kapcsolati mérésekkel egészítjük ki.",
-      en: "We combine individual profiles with the team-level and relationship measures that fit the goal.",
+      hu: "Közösen meghatározzuk, kik vesznek részt, mit mérünk, és hogyan dolgozzuk fel az eredményeket.",
+      en: "Together we decide who takes part, what we measure, and how we will make sense of the results.",
     },
-    workflow3Title: { hu: "Értelmezzük a csapatképet", en: "Interpret the team picture" },
+    workflow3Title: { hu: "Közösen értelmezzük", en: "Make sense of it together" },
     workflow3Body: {
-      hu: "A tanácsadó ellenőrzi az eredményeket, összefüggéseket keres, és jelzi a kép bizonytalanságait is.",
-      en: "A consultant reviews the results, identifies connections, and makes uncertainties in the picture explicit.",
-    },
-    workflow4Title: { hu: "Közösen döntünk", en: "Decide together" },
-    workflow4Body: {
-      hu: "A workshopon a csapat közös nyelvet és konkrét következő lépést alakít ki.",
-      en: "In the workshop, the team develops a shared language and agrees on a concrete next step.",
-    },
-    workflow5Title: { hu: "Utánmérjük a változást", en: "Measure the change" },
-    workflow5Body: {
-      hu: "Megnézzük, mi változott a közös munka hatására, és hol maradt még teendő.",
-      en: "We examine what changed through the work and where further action is still needed.",
+      hu: "A kitöltésekből ellenőrzött csapatkép készül, majd kijelöljük a következő lépést.",
+      en: "The responses become a reviewed team picture, then we identify the next step together.",
     },
     offerEyebrow: { hu: "Hogyan vághatsz bele", en: "How to get started" },
     offerTitle: { hu: "Kezdd magadon, folytassátok csapatként.", en: "Start with yourself, continue as a team." },
@@ -852,6 +834,115 @@ export const landingTranslations = {
       hu: "Egy munkanapon belül személyesen jelentkezünk a megadott email-címen.",
       en: "We will contact you personally at the provided email address within one business day.",
     },
+  },
+  // ── /team-dynamics – a csapatintelligencia-PILLAR (2026-09-05) ─────────
+  // A kategória-definíció, a fogalomtár és a GYIK itt él, NEM a főoldalon:
+  // a főoldal a funnel egyéni belépője marad, ez a lap tanítja meg a
+  // keresőnek (és az első látogatónak), mit értünk csapatintelligencián.
+  // A fogalomtár és a GYIK látható szövegéből épül a DefinedTermSet és a
+  // FAQPage JSON-LD (`team-dynamics/page.tsx`) — a Google irányelve szerint
+  // a strukturált adat csak a lapon LÁTHATÓ szöveget ismételheti.
+  teamDynamics: {
+    metaTitle: {
+      hu: "Csapatintelligencia és csapatdiagnosztika | trita",
+      en: "Team intelligence and team diagnostics | trita",
+    },
+    metaDescription: {
+      hu: "Csapatintelligencia a gyakorlatban: csapatszerepek, bizalmi háló és pszichológiai biztonság egy tanácsadó által értelmezett csapatképben. Mit mér, kinek való, ki mit lát.",
+      en: "Team intelligence in practice: team roles, the trust network and psychological safety in a consultant-interpreted team picture. What it measures, who it is for, who sees what.",
+    },
+    definitionEyebrow: { hu: "Mit jelent?", en: "What does it mean?" },
+    definitionTitle: { hu: "Mi a csapatintelligencia?", en: "What is team intelligence?" },
+    definitionBody: {
+      hu: "A csapatintelligencia annak közös megértése, hogyan hatnak egymásra a csapattagok működési mintázatai, szerepei és kapcsolatai. Megmutatja, mire tud építeni a csapat, hol keletkezhetnek visszatérő feszültségek, és milyen változtatások segíthetik az eredményesebb közös munkát.",
+      en: "Team intelligence is a shared understanding of how team members' working patterns, roles, and relationships affect one another. It shows what the team can build on, where recurring friction may arise, and which changes can improve the way people work together.",
+    },
+    definitionOutcome1: { hu: "Közös nyelv", en: "Shared language" },
+    definitionOutcome2: { hu: "Látható dinamika", en: "Visible dynamics" },
+    definitionOutcome3: { hu: "Közös következő lépések", en: "Shared next steps" },
+    glossaryEyebrow: { hu: "Fogalomtár", en: "Glossary" },
+    glossaryTitle: { hu: "A csapatkép fogalmai", en: "The concepts behind the team picture" },
+    glossaryIntro: {
+      hu: "Ugyanazt értjük a szavakon. Így olvasható a csapatkép félreértés nélkül.",
+      en: "We mean the same thing by the same words. This is how to read the team picture without misunderstanding.",
+    },
+    term1Name: { hu: "Csapatintelligencia", en: "Team intelligence" },
+    term1Desc: {
+      hu: "A csapat közös, mért képe arról, hogyan működnek együtt a tagok: mintázatok, szerepek, kapcsolatok és a megszólalás biztonsága egy rendszerben.",
+      en: "A team's shared, measured picture of how its members work together: patterns, roles, relationships and the safety to speak up, in one system.",
+    },
+    term2Name: { hu: "Csapatdiagnosztika", en: "Team diagnostics" },
+    term2Desc: {
+      hu: "A csapatműködés mérésen alapuló felmérése. Megmutatja, mire építhet a csapat, és hol keletkeznek visszatérő feszültségek.",
+      en: "A measurement-based assessment of how a team works. It shows what the team can build on and where recurring friction arises.",
+    },
+    term3Name: { hu: "Csapatdinamika", en: "Team dynamics" },
+    term3Desc: {
+      hu: "Az a mód, ahogyan a tagok működési mintázatai és kapcsolatai a mindennapi munkában egymásra hatnak.",
+      en: "The way members' working patterns and relationships affect one another in everyday work.",
+    },
+    term4Name: { hu: "Csapatszerep", en: "Team role" },
+    // Termékadat: Trita csapatszerep-modell, 9 szerep (team-role-scoring.ts),
+    // self + peer perspektíva (team-role-questions.ts). „Belbin" tilos.
+    term4Desc: {
+      hu: "Az a hozzájárulás, amit valaki természetesen visz a csapatba. A Trita csapatszerep-modell 9 szerepet különböztet meg, önkép és csapattársi visszajelzés alapján.",
+      en: "The contribution someone naturally brings to a team. The Trita team-role model distinguishes 9 roles, based on self-image and peer feedback.",
+    },
+    term5Name: { hu: "Bizalmi háló", en: "Trust network" },
+    // Küszöb: TRUST_MIN_RATERS = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE = 3.
+    term5Desc: {
+      hu: "A csapaton belüli bizalmi és együttműködési kapcsolatok mért térképe, legalább három értékelő névtelen válaszaiból.",
+      en: "The measured map of trust and collaboration ties within a team, built from the anonymous answers of at least three raters.",
+    },
+    term6Name: { hu: "Pszichológiai biztonság", en: "Psychological safety" },
+    // Termékadat: 8 állítás (psych-safety.ts, PS1–PS8).
+    term6Desc: {
+      hu: "Mennyire érzik a tagok biztonságosnak a kérdezést, a hibák beismerését és az eltérő vélemény kimondását. Nyolc állításos, névtelen méréssel becsüljük.",
+      en: "How safe members feel to ask, admit mistakes and voice disagreement. Estimated with an anonymous eight-statement measure.",
+    },
+    faqEyebrow: { hu: "Kérdések", en: "Questions" },
+    faqHeading: {
+      hu: "Gyakori kérdések a csapatdiagnosztikáról",
+      en: "Common questions about team diagnostics",
+    },
+    faqQ1: {
+      hu: "Mi a különbség a csapatdiagnosztika és a csapatépítés között?",
+      en: "What is the difference between team diagnostics and team building?",
+    },
+    faqA1: {
+      hu: "A csapatépítés közös élményt ad. A csapatdiagnosztika mérésen alapuló képet arról, hogyan működik együtt a csapat. A trita az utóbbit csinálja: a képet tanácsadó értelmezi a csapattal együtt, és ebből lesz konkrét következő lépés.",
+      en: "Team building gives a shared experience. Team diagnostics gives a measurement-based picture of how the team works together. trita does the latter: a consultant interprets the picture together with the team, and that becomes a concrete next step.",
+    },
+    faqQ2: { hu: "Mit mér a trita csapatszinten?", en: "What does trita measure at team level?" },
+    faqA2: {
+      hu: "Három réteget. Az egyéni személyiségprofilokból épülő aggregált csapatképet, a csapatszerepeket önkép és csapattársi visszajelzés alapján, valamint a bizalmi hálót és a pszichológiai biztonságot névtelen méréssel.",
+      en: "Three layers. The aggregate team picture built from individual personality profiles, team roles based on self-image and peer feedback, and the trust network and psychological safety measured anonymously.",
+    },
+    faqQ3: { hu: "Hány fős csapatnak való?", en: "What team size is it for?" },
+    // Küszöbök: PATTERN_MIN_MEMBERS = 3 (team-pattern.ts),
+    // MIN_RATERS_FOR_ANONYMOUS_AGGREGATE = 3 (anonymity.ts).
+    faqA3: {
+      hu: "A csapatkép legalább három kitöltéstől értelmezhető, a névtelen mérések pedig legalább három értékelőtől jelennek meg. Felső korlát nincs: a nagyobb szervezeteket csapatonként mérjük, és az egységeket egymás mellett olvassuk.",
+      en: "The team picture can be interpreted from three completions, and the anonymous measures appear from three raters. There is no upper limit: larger organisations are measured team by team, and the units are read side by side.",
+    },
+    faqQ4: { hu: "Ki látja az egyéni eredményeket?", en: "Who sees individual results?" },
+    // Tükrözi a pricing.faqA5 jogosultsági állítását — ha az változik, ez is.
+    faqA4: {
+      hu: "Minden résztvevő csak a saját profilját látja. A vezető és a csapat aggregált csapatképet kap, név szerinti sorok nélkül. A névtelen mérések eredménye csak legalább három értékelő válaszából, összesítve jelenik meg. Név szerinti egyéni profilokkal kizárólag a tanácsadó dolgozik a csapatkép ellenőrzésekor.",
+      en: "Each participant sees only their own profile. The leader and the team receive an aggregate team picture with no named rows. Anonymous measures appear only aggregated, from at least three raters' answers. Only the consultant works with named individual profiles when reviewing the team picture.",
+    },
+    faqQ5: { hu: "Becsült vagy mért adat a csapatkép?", en: "Is the team picture estimated or measured?" },
+    faqA5: {
+      hu: "Mindkettő, és mindig jelöljük, melyik. Ahol még nincs mért adat, ott a profilokból számolt becslést mutatunk forrás- és megbízhatóság-jelöléssel. A mért réteg mindig felülírja a becslést.",
+      en: "Both, and we always mark which is which. Where measured data does not exist yet, we show an estimate computed from the profiles, with a source and confidence label. The measured layer always overrides the estimate.",
+    },
+    faqQ6: { hu: "Mennyi időt kér, és mi az első lépés?", en: "How much time does it take, and what is the first step?" },
+    // Termékadat: TSFI-S 60 item, ~10 perc; peer-kör ~3–4 perc/fő.
+    faqA6: {
+      hu: "Az egyéni kérdőív körülbelül tíz perc, a csapattársi szerep-visszajelzés személyenként néhány perc. Az első lépés egy rövid egyeztetés a tanácsadóval a célról. A folyamat részleteit az Együttműködés oldal írja le.",
+      en: "The individual questionnaire takes about ten minutes, and the peer role feedback a few minutes per person. The first step is a short conversation with the consultant about the goal. The How we work page describes the process in detail.",
+    },
+    faqMoreCta: { hu: "Így dolgozunk együtt", en: "How we work together" },
   },
   // ── /about – bemutatkozó oldal („Meleg levél” irány, 2026-08-28) ────
   // Tömör, személyes hangvétel: hero + konstelláció-sáv + három elv +

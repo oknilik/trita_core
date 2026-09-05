@@ -11,18 +11,19 @@ vi.mock("@/lib/analytics/client", () => ({
 }));
 
 /**
- * A főoldal csapatintelligencia-ígérettel nyit; az egyéni profil ennek
- * funnel-belépője. Nincs self/team módváltó vagy automatikus tab-bemutató.
+ * A főoldal 2026-09-03 óta egyetlen, egyéni ígérettel nyit: nincs self/team
+ * módváltó, nincs automatikus tab-bemutató. A csapatos út egy statikus
+ * átvezető blokk, amely a pilotra és a /team-dynamics mélyoldalra visz.
  */
 describe("főoldal – egy ígéret, egy oldal", () => {
-  it("egyetlen, csapatszintű H1-gyel nyit, az egyéni profil-előnézetet funnelként mutatja", () => {
+  it("egyetlen H1-gyel, egyéni ígérettel nyit, és a profil-előnézetet rögtön mutatja", () => {
     const { container } = render(<LandingContent />);
 
     const headings = screen.getAllByRole("heading", { level: 1 });
     expect(headings).toHaveLength(1);
-    expect(headings[0]).toHaveTextContent("Értsd meg, mitől működik igazán egy csapat.");
+    expect(headings[0]).toHaveTextContent("~10 perc, és jobban megérted, hogyan működsz.");
     expect(headings[0]).not.toHaveClass("animate-rise-in");
-    expect(screen.getByText("CSAPATINTELLIGENCIA AZ EGYÉNI MŰKÖDÉSTŐL")).toBeInTheDocument();
+    expect(screen.getByText("ÖNISMERET ÉS CSAPATMŰKÖDÉS")).toBeInTheDocument();
 
     // Nincs módváltó.
     expect(screen.queryByRole("link", { name: "Önismeret" })).not.toBeInTheDocument();
@@ -55,17 +56,16 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     }
   });
 
-  it("a csapatintelligencia-történetet rendereli a funnel előtt", () => {
+  it("a visszajelzés szerinti tömör sorrendet rendereli: hero → lépések → bizonyíték → csapat → zárás", () => {
     const { container } = render(<LandingContent />);
 
     const h1 = screen.getByRole("heading", { level: 1 });
-    const definition = screen.getByRole("heading", { name: "Mi a csapatintelligencia?" });
-    const team = screen.getByRole("heading", { name: "Közös kép arról, hogyan működtök együtt" });
-    const steps = screen.getByRole("heading", { name: /Az első lépés: értsd meg/ });
-    const proof = screen.getByRole("heading", { name: /Az egyéni profil nem végpont/ });
-    const closing = screen.getByRole("heading", { name: /Kezdd a saját működéseddel/ });
+    const steps = screen.getByRole("heading", { name: /Három lépésben kapsz használható képet/ });
+    const proof = screen.getByRole("heading", { name: /Mitől több ez egy/ });
+    const team = screen.getByRole("heading", { name: "Csapatként folytatnátok?" });
+    const closing = screen.getByRole("heading", { name: /Egy kérdőív, és tisztábban látod/ });
 
-    const order = [h1, definition, team, steps, proof, closing];
+    const order = [h1, steps, proof, team, closing];
     for (let i = 1; i < order.length; i += 1) {
       expect(order[i - 1].compareDocumentPosition(order[i])).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     }
@@ -96,9 +96,9 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   it("minden egyéni CTA a tesztre visz, a záró blokk megtartja az együttműködés útját", () => {
     render(<LandingContent />);
 
-    expect(screen.getByRole("link", { name: "Elkészítem az ingyenes saját profilom" })).toHaveAttribute("href", "/try");
-    expect(screen.getByRole("link", { name: "Elkészítem a saját profilom" })).toHaveAttribute("href", "/try");
-    expect(screen.getByRole("link", { name: "Csapatként szeretnénk továbblépni" })).toHaveAttribute("href", "/team-dynamics");
+    expect(screen.getByRole("link", { name: "Elindítom az ingyenes tesztet" })).toHaveAttribute("href", "/try");
+    expect(screen.getByRole("link", { name: "Elindítom a tesztet" })).toHaveAttribute("href", "/try");
+    expect(screen.getByRole("link", { name: "Együttműködés részletei" })).toHaveAttribute("href", "/how-we-work");
   });
 
   it("a csapatos átvezető elsődlegesen a /team-dynamics oldalra, másodlagosan a pilotra visz", () => {
@@ -106,7 +106,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
 
     const pathway = container.querySelector("[data-landing-team-pathway]") as HTMLElement;
     expect(pathway).not.toBeNull();
-    const primaryCta = within(pathway).getByRole("link", { name: /Megnézem, hogyan készül a csapatkép/ });
+    const primaryCta = within(pathway).getByRole("link", { name: /A csapatdiagnosztika részletei/ });
     const secondaryCta = within(pathway).getByRole("link", { name: /Megnézem a pilotprogramot/ });
     expect(primaryCta).toHaveAttribute("href", "/team-dynamics");
     expect(primaryCta).toHaveClass("bg-[var(--color-accent-primary-soft)]");

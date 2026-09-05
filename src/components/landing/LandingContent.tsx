@@ -4,20 +4,18 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { ProofSection } from "@/components/landing/ProofSection";
 import { TeamPathway } from "@/components/landing/TeamPathway";
-import { TeamIntelligenceDefinition } from "@/components/landing/TeamIntelligenceDefinition";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 
 /**
- * A főoldal — csapatintelligencia-ígérettel, egyéni funnel-belépővel.
+ * A főoldal — egyetlen, egyéni ígérettel (2026-09-03).
  *
  * Sorrend és szerep:
- *   1. Hero: a csapatérték az ígéret, a saját profil az első lépés.
- *   2. Kategória-definíció: mit jelent nálunk a csapatintelligencia.
- *   3. Csapatos ajánlat: közös kép, mérési rétegek, tanácsadói értelmezés.
- *   4. Egyéni funnel: hogyan készül el a kiinduló saját profil.
- *   5. Az egyéni profil mint közös kiindulópont.
- *   6. Záró CTA.
+ *   1. Hero + profil-előnézet: mit kapsz, mennyi idő, mibe kerül (semmibe).
+ *   2. Három lépés: hogyan jutsz el odáig.
+ *   3. Miért több egy átlagos tesztnél: bizalom + idézet.
+ *   4. Csapatos átvezető: ha csapatként folytatnátok — pilot és mélyoldal.
+ *   5. Záró CTA.
  *
  * A korábbi self/team módváltó és a Features/StatsBar szekció kivezetve: a
  * feature-kártyák a profil-előnézetben, a számok a hero pirulái közt élnek.
@@ -28,8 +26,6 @@ export function LandingContent() {
   return (
     <>
       <HeroSection mode="self" />
-      <TeamIntelligenceDefinition />
-      <TeamPathway />
       <HowItWorks mode="self" />
       {/* Csillagos brand-motívum a lépések és a bizonyíték közt (formanyelv
           2. szint); a negatív margó a két szekció közé úsztatja. */}
@@ -37,6 +33,7 @@ export function LandingContent() {
         <SectionTransition artKey={artKeyFrom("landing", "steps-proof", "self")} />
       </div>
       <ProofSection mode="self" />
+      <TeamPathway />
       <CtaSection mode="self" />
     </>
   );
