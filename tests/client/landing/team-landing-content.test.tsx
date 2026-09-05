@@ -20,7 +20,7 @@ describe("csapatdiagnosztika-mélyoldal", () => {
 
     const headings = screen.getAllByRole("heading", { level: 1 });
     expect(headings).toHaveLength(1);
-    expect(headings[0]).toHaveTextContent("Értsétek meg jobban a csapatotok működését.");
+    expect(headings[0]).toHaveTextContent("Lássátok tisztán, hogyan működik együtt a csapatotok.");
     expect(screen.queryByRole("link", { name: "Önismeret" })).not.toBeInTheDocument();
 
     const preview = container.querySelector("[data-landing-hero-preview]");

@@ -9,9 +9,8 @@ import { ChevronRightIcon } from "@/components/ui/icons";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 /**
- * A főoldal csapatos átvezetője. A látogató itt találkozik először a
- * tanácsadóval kísért csapatprogrammal — miután az egyéni ígéretet és a
- * három lépést már megértette. Egyetlen blokkban hordozza mindazt, ami a
+ * A főoldal csapatos ajánlata. A kategória-definíció után rögtön megmutatja
+ * a tanácsadóval kísért csapatprogramot. Egyetlen blokkban hordozza mindazt, ami a
  * korábbi csapat-módú landing Features-, StatsBar- és HowItWorks-szekcióiból
  * a döntéshez kell: az egyéni profilok és a három mérési réteg, az idő- és
  * átfutási ígéret, valamint a tanácsadói értelmezés. Az elsődleges út a

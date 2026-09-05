@@ -7,7 +7,7 @@ import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { DEFAULT_LOCALE, t } from "@/lib/i18n";
-import { getMetadataBase } from "@/lib/seo";
+import { APPLE_TOUCH_ICON, SITE_ICON_LINKS, getMetadataBase } from "@/lib/seo";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -66,26 +66,8 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   icons: {
-    icon: [
-      {
-        url: "/brand/trita-logo-512.png",
-        type: "image/png",
-        sizes: "512x512",
-      },
-      {
-        url: "/brand/trita-favicon-48.png",
-        type: "image/png",
-        sizes: "48x48",
-      },
-    ],
-    shortcut: ["/favicon.ico"],
-    apple: [
-      {
-        url: "/brand/apple-touch-icon.png",
-        type: "image/png",
-        sizes: "180x180",
-      },
-    ],
+    icon: [...SITE_ICON_LINKS],
+    apple: [APPLE_TOUCH_ICON],
   },
 };
 

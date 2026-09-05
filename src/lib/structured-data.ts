@@ -26,6 +26,7 @@
 
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/core";
 import {
+  BRAND_LOGO_PATH,
   DEFAULT_OG_IMAGE_PATH,
   SITE_NAME,
   getAbsoluteUrl,
@@ -75,8 +76,8 @@ export function webPageId(path: string): string {
  * hitelesít, a marketing-szövegben viszont csak zajt visz.
  */
 const ORG_DESCRIPTION: Record<Locale, string> = {
-  hu: "A trita személyiség- és csapatintelligencia platform: személyiségfelmérés hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika, tanácsadói értelmezéssel.",
-  en: "trita is a personality and team intelligence platform: personality assessment across six dimensions, 360° feedback and team diagnostics with consultant-led interpretation.",
+  hu: "A trita csapatintelligencia-platform: egyéni profilokból, csapatszerepekből, 360°-os visszajelzésből és közös mérésekből tanácsadó által értelmezett csapatképet készít.",
+  en: "trita is a team intelligence platform that combines individual profiles, team roles, 360° feedback, and shared measures into a consultant-interpreted team picture.",
 };
 
 /**
@@ -134,8 +135,8 @@ export function buildOrganizationJsonLd(locale: Locale = DEFAULT_LOCALE): JsonLd
     url: siteUrl,
     logo: {
       "@type": "ImageObject",
-      url: `${siteUrl}/brand/trita-logo-512.png`,
-      contentUrl: `${siteUrl}/brand/trita-logo-512.png`,
+      url: `${siteUrl}${BRAND_LOGO_PATH}`,
+      contentUrl: `${siteUrl}${BRAND_LOGO_PATH}`,
       width: 512,
       height: 512,
     },

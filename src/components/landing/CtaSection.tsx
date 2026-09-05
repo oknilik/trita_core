@@ -88,7 +88,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
             {cta}
           </Link>
           <Link
-            href="/how-we-work"
+            href="/team-dynamics"
             className={`inline-flex min-h-11 items-center justify-center rounded-lg px-2 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
           >
             {t("landing.ctaSelfSecondary", locale)}

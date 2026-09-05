@@ -9,23 +9,21 @@ import {
   buildWebSiteJsonLd,
 } from "@/lib/structured-data";
 
-// A `<title>` KULCSSZÓ-ELSŐ, márka-utolsó sorrendben: a magyar keresésekben a
-// a „személyiségteszt magyarul" a főoldal keresési szándéka, a „trita" nem —
-// márkanévre amúgy is első találat vagyunk. A csapatdiagnosztikának külön,
-// mélyebb céloldala van, így a két lap nem ugyanarra az elsődleges kifejezésre
-// versenyez.
+// A főoldal a csapatintelligencia márka- és kategóriaoldala. Az ingyenes
+// egyéni teszt a /try önálló funnel-céloldalán célozza a hozzá tartozó
+// kereséseket; a /team-dynamics a mélyebb „csapatdiagnosztika" szándéké.
 const seoIntent = SEO_INTENTS.home;
-const title = "Magyar személyiségteszt – értsd meg, hogyan működsz | trita";
+const title = "Csapatintelligencia és csapatdinamika | trita";
 const description =
-  "Ingyenes magyar személyiségteszt 60 kérdéssel és azonnali eredménnyel. Ismerd meg a fő mintázataidat, erősségeidet és csapatszerepeidet.";
+  "A trita az egyéni profilokból és csapatmérésekből közös csapatképet készít: erősségek, bizalom, pszichológiai biztonság és közös következő lépések.";
 
 export const metadata: Metadata = buildPageMetadata({
   path: "/",
   title,
   description,
-  ogTitle: "trita – személyiség- és csapatintelligencia",
+  ogTitle: "trita – csapatintelligencia a közös munkához",
   ogDescription:
-    "Mérhető személyiség- és csapatdinamika az együttműködéshez, fejlesztéshez és döntéstámogatáshoz.",
+    "Értsétek meg, hogyan működtök együtt, mire építhettek, és hol érdemes közösen változtatnotok.",
 });
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey
