@@ -7,17 +7,18 @@
  * ugyanarra az elsődleges kifejezésre versenyezzenek egymással.
  */
 export const SEO_INTENTS = {
-  // 2026-09-03: a korábbi /self-awareness lap a főoldalba olvadt (állandó
-  // átirányítás) — az önismereti szándék témái is ide tartoznak.
+  // A főoldal a márka és a csapatszintű ajánlat gyűjtőlapja. Az ingyenes
+  // egyéni profil funnel-belépő, ezért annak tranzakciós keresési szándéka a
+  // /try oldalon él; így a két lap nem versenyez ugyanarra a kifejezésre.
   home: {
     path: "/",
-    primary: "személyiségteszt magyarul",
+    primary: "csapatintelligencia",
     topics: [
-      "Személyiségteszt magyarul",
-      "Önismereti személyiségteszt",
-      "Egyéni személyiségprofil",
-      "Hatfaktoros személyiségmodell",
       "Csapatintelligencia",
+      "Csapatdinamika",
+      "Csapatműködés",
+      "Közös csapatkép",
+      "Egyéni profilok a csapatban",
     ],
   },
   teamDynamics: {

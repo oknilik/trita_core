@@ -8,13 +8,13 @@ import { CtaSection } from "@/components/landing/CtaSection";
 import { SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 
 /**
- * A főoldal — egyetlen, egyéni ígérettel (2026-09-03).
+ * A főoldal — csapatintelligencia-ígérettel, egyéni funnel-belépővel.
  *
  * Sorrend és szerep:
- *   1. Hero + profil-előnézet: mit kapsz, mennyi idő, mibe kerül (semmibe).
- *   2. Három lépés: hogyan jutsz el odáig.
- *   3. Miért több egy átlagos tesztnél: bizalom + idézet.
- *   4. Csapatos átvezető: ha csapatként folytatnátok — pilot és mélyoldal.
+ *   1. Hero: a csapatérték az ígéret, a saját profil az első lépés.
+ *   2. Csapatos ajánlat: közös kép, mérési rétegek, tanácsadói értelmezés.
+ *   3. Egyéni funnel: hogyan készül el a kiinduló saját profil.
+ *   4. Miért több egy átlagos tesztnél: bizalom + idézet.
  *   5. Záró CTA.
  *
  * A korábbi self/team módváltó és a Features/StatsBar szekció kivezetve: a
@@ -26,6 +26,7 @@ export function LandingContent() {
   return (
     <>
       <HeroSection mode="self" />
+      <TeamPathway />
       <HowItWorks mode="self" />
       {/* Csillagos brand-motívum a lépések és a bizonyíték közt (formanyelv
           2. szint); a negatív margó a két szekció közé úsztatja. */}
@@ -33,7 +34,6 @@ export function LandingContent() {
         <SectionTransition artKey={artKeyFrom("landing", "steps-proof", "self")} />
       </div>
       <ProofSection mode="self" />
-      <TeamPathway />
       <CtaSection mode="self" />
     </>
   );

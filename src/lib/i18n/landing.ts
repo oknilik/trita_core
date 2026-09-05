@@ -1,8 +1,8 @@
 export const landingTranslations = {
   landing: {
     heroTitle: {
-      hu: "trita – személyiség- és csapatintelligencia platform",
-      en: "trita – personality and team intelligence platform",
+      hu: "trita – csapatintelligencia az eredményesebb közös munkához",
+      en: "trita – team intelligence for better work together",
     },
 
     // ─── New landing page (self/team) ────────────────────────────────
@@ -35,14 +35,14 @@ export const landingTranslations = {
     selfTeamRoleRank2: { hu: "Másodlagos", en: "Secondary" },
     selfTeamRolesNote: { hu: "A pontos képhez külön csapatszerep-kérdőív tartozik.", en: "A separate team-role questionnaire provides the precise picture." },
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
-    // Fókuszált főoldal (2026-09-03) — az egyéni belépő az elsődleges, a
-    // csapatos út egyetlen statikus átvezetést kap a korábbi módváltó helyett.
-    focusedEyebrow: { hu: "ÖNISMERET ÉS CSAPATMŰKÖDÉS", en: "SELF-AWARENESS AND TEAMWORK" },
+    // A főoldal csapatintelligencia-ígéretét az egyéni profil teszi
+    // kézzelfoghatóvá: ez a funnel első lépése, nem a végtermék.
+    focusedEyebrow: { hu: "CSAPATINTELLIGENCIA AZ EGYÉNI MŰKÖDÉSTŐL", en: "TEAM INTELLIGENCE STARTS WITH THE INDIVIDUAL" },
     focusedHeroSub: {
-      hu: "Ismerd meg a fő mintázataidat, erősségeidet és azt, mit viszel egy csapatba.",
-      en: "Discover your key patterns, strengths, and what you bring to a team.",
+      hu: "A trita az egyéni működésből, a csapatszerepekből és a kapcsolatokról adott visszajelzésekből közös csapatképet épít. Az ingyenes saját profil az első lépés.",
+      en: "trita turns individual patterns, team roles, and relationship feedback into a shared team picture. Your free personal profile is the first step.",
     },
-    focusedHeroCta: { hu: "Elindítom az ingyenes tesztet", en: "Start the free assessment" },
+    focusedHeroCta: { hu: "Elkészítem az ingyenes saját profilom", en: "Create my free personal profile" },
     focusedTeamEyebrow: { hu: "Tanácsadóval kísért program", en: "Consultant-guided program" },
     focusedTeamTitle: { hu: "Csapatként folytatnátok?", en: "Ready to continue as a team?" },
     focusedTeamSub: {
@@ -173,9 +173,10 @@ export const landingTranslations = {
     // felület parkolt, és a playbook szerint a minta „értelmezési nyelv, nem
     // validált csapattípus" – a stat a Scan v1 tényleges rétegeit mondja.
     statTeamLayersLabel: { hu: "mérési réteg", en: "measurement layers" },
-    // A főoldal hero H1-e (2026-09-03 óta): a leggyorsabban érthető ígéret.
-    ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban megérted, ", en: "In ~10 minutes, better understand " },
-    ctaSelfHeadlineEm: { hu: "hogyan működsz.", en: "how you operate." },
+    // A főoldal H1-e: a csapatszintű végérték az első, az egyéni profil csak
+    // az alatta lévő szövegben és CTA-ban jelenik meg belépőként.
+    ctaSelfHeadlineBefore: { hu: "Értsd meg, mitől működik igazán ", en: "Understand what makes " },
+    ctaSelfHeadlineEm: { hu: "egy csapat.", en: "a team truly work." },
     // CtaSection — a záró blokk nem ismétli a hero címét.
     ctaSelfClosingBefore: { hu: "Egy kérdőív, és tisztábban látod, ", en: "One questionnaire, and you see more clearly " },
     ctaSelfClosingEm: { hu: "mire építhetsz.", en: "what you can build on." },

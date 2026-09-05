@@ -76,8 +76,8 @@ export function webPageId(path: string): string {
  * hitelesít, a marketing-szövegben viszont csak zajt visz.
  */
 const ORG_DESCRIPTION: Record<Locale, string> = {
-  hu: "A trita személyiség- és csapatintelligencia platform: személyiségfelmérés hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika, tanácsadói értelmezéssel.",
-  en: "trita is a personality and team intelligence platform: personality assessment across six dimensions, 360° feedback and team diagnostics with consultant-led interpretation.",
+  hu: "A trita csapatintelligencia-platform: egyéni profilokból, csapatszerepekből, 360°-os visszajelzésből és közös mérésekből tanácsadó által értelmezett csapatképet készít.",
+  en: "trita is a team intelligence platform that combines individual profiles, team roles, 360° feedback, and shared measures into a consultant-interpreted team picture.",
 };
 
 /**
