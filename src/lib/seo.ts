@@ -10,6 +10,43 @@ export const OG_LOCALES: Record<Locale, string> = {
 export const SITE_NAME = "trita";
 
 /**
+ * Keresési találatok elsődleges ikonja.
+ *
+ * A Google stabil favicon-URL-t kér a host főoldalán. Ezt ezért nem Next
+ * metadata-image route-ként adjuk ki (ami build-hash queryt tehet az URL-re),
+ * hanem fix public assetként. A sorrend is szándékos: az univerzális ICO az
+ * első jelölt, utána jönnek a nagyobb, négyzetes PNG alternatívák.
+ */
+export const SEARCH_FAVICON_PATH = "/favicon.ico";
+export const BRAND_LOGO_PATH = "/brand/trita-logo-512.png";
+
+export interface SiteIconLink {
+  url: string;
+  type: string;
+  sizes?: string;
+}
+
+export const SITE_ICON_LINKS: readonly SiteIconLink[] = [
+  { url: SEARCH_FAVICON_PATH, type: "image/x-icon" },
+  {
+    url: "/brand/trita-favicon-48.png",
+    type: "image/png",
+    sizes: "48x48",
+  },
+  {
+    url: BRAND_LOGO_PATH,
+    type: "image/png",
+    sizes: "512x512",
+  },
+];
+
+export const APPLE_TOUCH_ICON = {
+  url: "/brand/apple-touch-icon.png",
+  type: "image/png",
+  sizes: "180x180",
+} as const;
+
+/**
  * A gyökér `src/app/opengraph-image.tsx` route-ja (1200×630 PNG). Ez a
  * márka-alapértelmezett közösségi kép minden olyan publikus laphoz, amelynek
  * nincs saját, egy mappában lévő `opengraph-image.tsx`-e.

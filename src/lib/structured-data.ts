@@ -26,6 +26,7 @@
 
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/core";
 import {
+  BRAND_LOGO_PATH,
   DEFAULT_OG_IMAGE_PATH,
   SITE_NAME,
   getAbsoluteUrl,
@@ -134,8 +135,8 @@ export function buildOrganizationJsonLd(locale: Locale = DEFAULT_LOCALE): JsonLd
     url: siteUrl,
     logo: {
       "@type": "ImageObject",
-      url: `${siteUrl}/brand/trita-logo-512.png`,
-      contentUrl: `${siteUrl}/brand/trita-logo-512.png`,
+      url: `${siteUrl}${BRAND_LOGO_PATH}`,
+      contentUrl: `${siteUrl}${BRAND_LOGO_PATH}`,
       width: 512,
       height: 512,
     },
