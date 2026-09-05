@@ -14,7 +14,7 @@ import { t } from "@/lib/i18n/public";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { PRICING_FAQ_INDEXES } from "./faq";
 
-const WORKFLOW_STEPS = [1, 2, 3] as const;
+const WORKFLOW_STEPS = [1, 2, 3, 4, 5] as const;
 const OFFER_FACTORS = [1, 2, 3] as const;
 
 function CollaborationVisual() {
@@ -27,8 +27,8 @@ function CollaborationVisual() {
 
 function Workflow({ locale }: { locale: "hu" | "en" }) {
   return (
-    <ol className="relative mt-9 grid gap-4 lg:grid-cols-3 lg:gap-0">
-      <div className="absolute left-[16.66%] right-[16.66%] top-7 hidden h-px bg-sand lg:block" />
+    <ol className="relative mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-0">
+      <div className="absolute left-[10%] right-[10%] top-7 hidden h-px bg-sand lg:block" />
       {WORKFLOW_STEPS.map((step) => (
         <li key={step} className="relative flex gap-4 rounded-[22px] border border-sand bg-surface-card p-5 shadow-[0_14px_35px_rgba(26,26,46,0.04)] lg:block lg:border-0 lg:bg-transparent lg:px-8 lg:py-0 lg:text-center lg:shadow-none">
           <span className="relative z-10 flex size-14 shrink-0 items-center justify-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-[var(--color-layer-team-soft)] font-fraunces text-xl text-[var(--color-layer-team-accent)] lg:mx-auto">
@@ -85,7 +85,7 @@ export function PricingContent() {
           <div className="mx-auto max-w-2xl text-center">
             <SectionEyebrow>{t("pricing.workflowEyebrow", locale)}</SectionEyebrow>
             <h2 className="mt-4 font-fraunces text-fluid-title tracking-tight text-ink">
-              {locale === "hu" ? "Három lépés a tisztább csapatképig." : "Three steps to a clearer team picture."}
+              {locale === "hu" ? "A helyzetképtől a mérhető változásig." : "From understanding the situation to measurable change."}
             </h2>
           </div>
           <Workflow locale={locale} />

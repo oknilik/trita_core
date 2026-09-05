@@ -10,6 +10,12 @@ test("minden fő keresési céloldalnak egyedi elsődleges keresési szándéka 
   assert.equal(new Set(primaryKeywords).size, primaryKeywords.length);
 });
 
+test("a főoldal a csapatintelligenciát pozicionálja, az ingyenes teszt a funnel oldalon marad", () => {
+  assert.equal(SEO_INTENTS.home.primary, "csapatintelligencia");
+  assert.ok(SEO_INTENTS.home.topics.includes("Csapatműködés"));
+  assert.equal(SEO_INTENTS.tryAssessment.primary, "ingyenes személyiségteszt");
+});
+
 test("minden keresési céloldal szerepel a sitemapben", () => {
   const sitemapPaths = new Set(sitemap().map((entry) => new URL(entry.url).pathname));
 
