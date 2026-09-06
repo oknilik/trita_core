@@ -54,8 +54,8 @@ a márka-pozicionálást hordozza:
   csapat-témájú cikk záró szakasza leíró horgonyszöveggel linkel a pillarra
   és/vagy az együttműködés oldalra. Az adatvédelmi szerződésmondatokhoz
   (`team-report-privacy.test.ts`) nem nyúltunk.
-- **3 új cikk-pár, PISZKOZATBAN** (`status: "draft"`, élesben 404, adminban
-  látszik, sitemap/llms.txt kihagyja):
+- **3 új cikk-pár, PUBLIKÁLVA** (2026-09-06-án piszkozatból átállítva;
+  sitemap, llms.txt és a napi hírlevél-digest is felveszi):
   - `csapatszerep-kerdoiv-mit-mer-es-mit-nem` /
     `team-role-questionnaire-what-it-measures` — referenciacikk a 27 itemes,
     9 szerepes, self+peer kérdőívről (Stewart–Fulmer–Barrick 2005, Mathieu
@@ -68,8 +68,7 @@ a márka-pozicionálást hordozza:
     `what-the-team-picture-shows-a-leader` — narratív, anonimizált
     összerakott eset (Edmondson 1999, Kozlowski–Ilgen 2006, Hackman–Wageman
     2005).
-  Publikálás előtt: hivatkozások és évszámok ellenőrzése, borító
-  (generatív fallback él), `publishedAt` frissítése.
+  Borító nincs, a generatív vizuál (`artFamily`/`artConcept`) él.
 - **Sitemap** `CONTENT_REVIEWED_AT` → 2026-09-05.
 - **#90-ből megtartva**: stabil `/favicon.ico` elsődleges ikon
   (`SITE_ICON_LINKS`, hash-elt route törölve), Organization/WebSite
@@ -91,7 +90,7 @@ kifejezés — az EN pillar ott már célozhat rá.
 
 - Search Console: mely lekérdezésekre kap impressziót a `/team-dynamics`,
   mely pozíciókban — a 8–15. hely közti kifejezések a legjobb célpontok.
-- A három piszkozat átolvasása, hivatkozás-ellenőrzés, publikálás.
+- A három cikk hivatkozásainak és évszámainak utólagos ellenőrzése.
 
 ## Ellenőrzés
 
