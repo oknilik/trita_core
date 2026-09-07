@@ -23,7 +23,10 @@
   ár-jegyzet helyén a `TeamPricingConfigurator` (szint-váltó + létszám-
   csúszka 5–40 fő + fejenkénti ár és csapat-összeg + tartalom-lista + CTA),
   alatta három rövid válasz (több csapat, egész napos workshop, mitől
-  változik az ár) és az ingyenes egyéni felmérés sora. GYIK: „Mennyibe
+  változik az ár) és az ingyenes egyéni felmérés sora. A csúszka utolsó
+  foka „40+": ott a panel szám helyett „Egyedi ajánlat" + „Beszéljünk"
+  állapotra vált (`PUBLIC_HEADCOUNT_OVER`, `isOverPublicMax`; az
+  analitika-sáv `40+`). GYIK: „Mennyibe
   kerül?" a számokkal, „Miért nincsenek listaárak?" → „Mit tartalmaz az
   ár?". Service JSON-LD: a két szint `UnitPriceSpecification`-nel.
 - **Főoldal csapat-blokk (`TeamPathway`):** ár-horgony „35 000 Ft / fő-től*"

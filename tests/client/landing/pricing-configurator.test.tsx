@@ -55,6 +55,17 @@ describe("TeamPricingConfigurator", () => {
     ).toBeInTheDocument();
   });
 
+  it("a csúszka végén (40+) szám helyett egyedi ajánlatot kínál", () => {
+    render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
+
+    fireEvent.change(screen.getByRole("slider"), { target: { value: "41" } });
+
+    expect(screen.getByText("Egyedi ajánlat")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Beszéljünk" })).toHaveAttribute("href", "/contact");
+    expect(screen.queryByText(/Összesen .* Ft a csapatra/)).not.toBeInTheDocument();
+    expect(screen.getByRole("slider")).toHaveAttribute("aria-valuetext", "40+ fő");
+  });
+
   it("az első beállítás egyetlen pricing.configure eseményt küld, létszám-sávval", () => {
     track.mockClear();
     render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);

@@ -92,11 +92,22 @@ export function formatHuf(value: number): string {
 export const PUBLIC_HEADCOUNT_MIN = 5;
 export const PUBLIC_HEADCOUNT_MAX = 40;
 export const PUBLIC_HEADCOUNT_DEFAULT = 10;
+/**
+ * A csúszka utolsó lépése: „40+". Ezen a fokon a felület nem számol
+ * árat, hanem egyedi ajánlatot kínál — nagy létszámnál a szerkezet
+ * (több csapat, szervezet) dönt, nem a fejenkénti sáv.
+ */
+export const PUBLIC_HEADCOUNT_OVER = PUBLIC_HEADCOUNT_MAX + 1;
+
+export function isOverPublicMax(headcount: number): boolean {
+  return headcount > PUBLIC_HEADCOUNT_MAX;
+}
 
 /** Az analitikába küldött létszám-sáv (nem pontos szám — mintázat, nem PII). */
-export function headcountBand(headcount: number): "5-8" | "9-12" | "13-20" | "21-40" {
+export function headcountBand(headcount: number): "5-8" | "9-12" | "13-20" | "21-40" | "40+" {
   if (headcount <= 8) return "5-8";
   if (headcount <= 12) return "9-12";
   if (headcount <= 20) return "13-20";
-  return "21-40";
+  if (headcount <= PUBLIC_HEADCOUNT_MAX) return "21-40";
+  return "40+";
 }
