@@ -15,10 +15,12 @@ test("quoteInputSchema", async (t) => {
     assert.ok(parsed.success, JSON.stringify(parsed.success ? null : parsed.error.issues));
   });
 
-  await t.test("érvényes: kedvezmény + minden lépés", () => {
+  await t.test("érvényes: kedvezmény + Csapatkép + extrák", () => {
     const parsed = quoteInputSchema.safeParse({
       ...emptyQuoteInput(),
-      steps: ["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY"],
+      tier: "kep",
+      extraWorkshopDays: 1,
+      extraWaves: 2,
       discountPct: 10,
       discountKind: "pilot",
       discountReason: "Alapító partner",
@@ -32,13 +34,13 @@ test("quoteInputSchema", async (t) => {
       ["negatív létszám", { ...base, headcount: -1 }],
       ["0 csapat", { ...base, teams: 0 }],
       ["tört létszám", { ...base, headcount: 12.5 }],
-      ["ismeretlen lépés", { ...base, steps: ["OBSERVER_360", "BOGUS_STEP"] }],
-      ["duplikált lépés", { ...base, steps: ["OBSERVER_360", "OBSERVER_360"] }],
+      ["ismeretlen szint", { ...base, tier: "premium" }],
+      ["tört workshop-nap", { ...base, extraWorkshopDays: 0.5 }],
       ["101% kedvezmény", { ...base, discountPct: 101 }],
       ["ismeretlen kedvezmény-fajta", { ...base, discountKind: "friends" }],
       [
         "hiányzó mező",
-        Object.fromEntries(Object.entries(base).filter(([key]) => key !== "waves")),
+        Object.fromEntries(Object.entries(base).filter(([key]) => key !== "extraWaves")),
       ],
       ["nem objektum", "not-an-object"],
     ];

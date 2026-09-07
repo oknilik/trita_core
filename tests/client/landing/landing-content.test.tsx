@@ -1,3 +1,5 @@
+import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
+import { derivePublicLadder } from "@/lib/pricing/team-ladder";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { LandingContent } from "@/components/landing/LandingContent";
@@ -17,7 +19,7 @@ vi.mock("@/lib/analytics/client", () => ({
  */
 describe("főoldal – egy ígéret, egy oldal", () => {
   it("egyetlen H1-gyel, egyéni ígérettel nyit, és a profil-előnézetet rögtön mutatja", () => {
-    const { container } = render(<LandingContent />);
+    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     const headings = screen.getAllByRole("heading", { level: 1 });
     expect(headings).toHaveLength(1);
@@ -47,7 +49,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("a hero pirulái hordozzák a tényszerű ígéreteket (a korábbi StatsBar helyett)", () => {
-    const { container } = render(<LandingContent />);
+    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     const meta = container.querySelector("[data-landing-hero-meta]") as HTMLElement;
     expect(meta).not.toBeNull();
@@ -57,7 +59,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("a visszajelzés szerinti tömör sorrendet rendereli: hero → lépések → bizonyíték → csapat → zárás", () => {
-    const { container } = render(<LandingContent />);
+    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     const h1 = screen.getByRole("heading", { level: 1 });
     const steps = screen.getByRole("heading", { name: /Három lépésben kapsz használható képet/ });
@@ -80,7 +82,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("nem duplázza meg a szekcióközt a riport- és csapatkártyák után", () => {
-    const { container } = render(<LandingContent />);
+    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     const heroInner = container.querySelector("[data-landing-hero-inner]");
     const teamPathway = container.querySelector("[data-landing-team-pathway]");
@@ -94,7 +96,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("minden egyéni CTA a tesztre visz, a záró blokk megtartja az együttműködés útját", () => {
-    render(<LandingContent />);
+    render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     expect(screen.getByRole("link", { name: "Elindítom az ingyenes tesztet" })).toHaveAttribute("href", "/try");
     expect(screen.getByRole("link", { name: "Elindítom a tesztet" })).toHaveAttribute("href", "/try");
@@ -102,7 +104,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("a csapatos átvezető elsődlegesen a /team-dynamics oldalra, másodlagosan a pilotra visz", () => {
-    const { container } = render(<LandingContent />);
+    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     const pathway = container.querySelector("[data-landing-team-pathway]") as HTMLElement;
     expect(pathway).not.toBeNull();

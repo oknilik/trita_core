@@ -3,21 +3,30 @@ import assert from "node:assert/strict";
 import {
   calculateQuote,
   emptyQuoteInput,
-  perHeadTotal,
+  estimateHours,
   type QuoteInput,
 } from "@/lib/quote/calculate";
-import { DEFAULT_RATE_CARD, rateCardSchema } from "@/lib/quote/rate-card";
+import { DEFAULT_RATE_CARD, rateCardSchema, readQuoteInput } from "@/lib/quote/rate-card";
+import {
+  derivePublicLadder,
+  ladderEntryPerHead,
+  ladderPrice,
+  pilotPerHead,
+} from "@/lib/pricing/team-ladder";
 
 // Az ajánlat-kalkulátor szerződése.
 //
-// Ez a fájl azt védi, amitől az ajánlat védhető: a sávos árazás ne legyen
-// szakadásos, a kedvezmény ne ehesse meg a fedezetet észrevétlenül, és a
-// továbbhárított költség ne szépítse az effektív óradíjat.
+// Ez a fájl azt védi, amitől az ajánlat védhető: a fejenkénti ár a
+// publikus árlétrával azonos, a sávhatáron nincs szakadás, a kedvezmény ne
+// ehesse meg a fedezetet észrevétlenül, és a továbbhárított költség ne
+// szépítse az effektív óradíjat.
 
 const input = (overrides: Partial<QuoteInput> = {}): QuoteInput => ({
   ...emptyQuoteInput(),
   ...overrides,
 });
+
+const ladder = derivePublicLadder(DEFAULT_RATE_CARD);
 
 test("a díjtételek megfelelnek a saját sémájuknak", () => {
   // A felületről mentett kártya ugyanezen a sémán megy át — ha az
@@ -25,24 +34,59 @@ test("a díjtételek megfelelnek a saját sémájuknak", () => {
   assert.doesNotThrow(() => rateCardSchema.parse(DEFAULT_RATE_CARD));
 });
 
-test("a fejenkénti díj marginális: nincs szakadás a sávhatáron", () => {
-  // Sávhatár körül a teljes ár nem eshet vissza. Ha esne, 26 fő olcsóbb
-  // lenne, mint 25 — ez az első alkunál kiderül, és hiteltelenít.
-  for (let heads = 1; heads < 120; heads += 1) {
-    const here = perHeadTotal(heads, DEFAULT_RATE_CARD);
-    const next = perHeadTotal(heads + 1, DEFAULT_RATE_CARD);
-    assert.ok(next >= here, `${heads} → ${heads + 1} fő között visszaesik az ár`);
+test("az ajánlat fejenkénti része AZONOS a publikus árlétrával", () => {
+  // Ez a modell lényege: amit a vevő a /how-we-work oldalon lát, az kerül
+  // az ajánlatba. Ha a két szám eltérne, az első ajánlatnál kiderülne.
+  for (const tier of ["kep", "prog"] as const) {
+    for (const heads of [5, 8, 10, 12, 25, 40]) {
+      const result = calculateQuote(input({ tier, headcount: heads }), DEFAULT_RATE_CARD);
+      const tierLines = result.lines
+        .filter((line) => line.key === "tier" || line.key === "tierOver")
+        .reduce((sum, line) => sum + line.amount, 0);
+      assert.equal(tierLines, ladderPrice(ladder, tier, heads).total, `${tier} ${heads} fő`);
+    }
   }
 });
 
-test("a fejenkénti átlagár csökken a létszámmal", () => {
-  // Ez a degresszió lényege: a 40. ember elemzése nem kerül annyiba, mint
-  // a 4. Ha nem csökkenne, a nagy ügyfélnek irreális árat mondanánk.
-  const small = perHeadTotal(8, DEFAULT_RATE_CARD) / 8;
-  const mid = perHeadTotal(30, DEFAULT_RATE_CARD) / 30;
-  const large = perHeadTotal(80, DEFAULT_RATE_CARD) / 80;
-  assert.ok(mid < small);
-  assert.ok(large < mid);
+test("a fejenkénti díj marginális: nincs szakadás a sávhatáron", () => {
+  for (const tier of ["kep", "prog"] as const) {
+    for (let heads = 1; heads < 80; heads += 1) {
+      const here = ladderPrice(ladder, tier, heads).total;
+      const next = ladderPrice(ladder, tier, heads + 1).total;
+      assert.ok(next >= here, `${tier}: ${heads} → ${heads + 1} fő között visszaesik az ár`);
+    }
+  }
+});
+
+test("a sávon belül a fejenkénti ár pontosan a hirdetett, felette csökken", () => {
+  const band = ladder.firstBandHeads;
+  const within = ladderPrice(ladder, "kep", band);
+  assert.equal(within.perHeadAverage, ladder.tiers.kep.perHead);
+  const above = ladderPrice(ladder, "kep", band * 2);
+  assert.ok((above.perHeadAverage as number) < ladder.tiers.kep.perHead);
+  assert.equal(above.overHeads, band);
+});
+
+test("a belépő ár a szintek közül a legolcsóbb, a pilot-ár a kedvezménnyel számolt", () => {
+  const entry = ladderEntryPerHead(ladder);
+  assert.equal(entry.tier, "kep");
+  assert.equal(entry.perHead, DEFAULT_RATE_CARD.tiers.kep.perHead);
+  assert.equal(
+    pilotPerHead(ladder, "prog"),
+    Math.round((DEFAULT_RATE_CARD.tiers.prog.perHead * (100 - DEFAULT_RATE_CARD.pilotDiscountPct)) / 100),
+  );
+});
+
+test("a Csapatprogram drágább és több órát visz, mint a Csapatkép", () => {
+  const kep = calculateQuote(input({ tier: "kep" }), DEFAULT_RATE_CARD);
+  const prog = calculateQuote(input({ tier: "prog" }), DEFAULT_RATE_CARD);
+  assert.ok(prog.netTotal > kep.netTotal);
+  assert.ok(prog.estimatedHours > kep.estimatedHours);
+  assert.equal(
+    estimateHours(input({ tier: "prog" }), DEFAULT_RATE_CARD) -
+      estimateHours(input({ tier: "kep" }), DEFAULT_RATE_CARD),
+    DEFAULT_RATE_CARD.hours.halfDayWorkshop + DEFAULT_RATE_CARD.hours.followUp,
+  );
 });
 
 test("a kiszállásra nem vonatkozik kedvezmény", () => {
@@ -62,46 +106,22 @@ test("a kiszállásra nem vonatkozik kedvezmény", () => {
   );
 });
 
-test("az alapító kedvezmény alapértelmezetten nem csökkenti a fejdíjat", () => {
-  const small = calculateQuote(
-    input({ headcount: 8, discountPct: 20, discountReason: "alapító partner" }),
+test("a kedvezmény minden nem-továbbhárított tételre vonatkozik", () => {
+  const result = calculateQuote(
+    input({ extraWorkshopDays: 1, discountPct: 10, discountReason: "több csapat" }),
     DEFAULT_RATE_CARD,
   );
-  const larger = calculateQuote(
-    input({ headcount: 18, discountPct: 20, discountReason: "alapító partner" }),
-    DEFAULT_RATE_CARD,
-  );
-  assert.equal(
-    small.discountAmount,
-    Math.round(
-      (DEFAULT_RATE_CARD.baseFee + DEFAULT_RATE_CARD.workshopDayFee) * 0.2,
-    ),
-  );
-  assert.equal(larger.discountAmount, small.discountAmount);
+  assert.equal(result.discountAmount, Math.round(result.discountableSubtotal * 0.1));
+  assert.equal(result.discountableSubtotal, result.listTotal - result.passThroughSubtotal);
 });
 
-test("a teljes-program kedvezmény a szakmai díjtételekre is vonatkozik", () => {
-  const selected = calculateQuote(
-    input({ discountPct: 20, discountScope: "base_workshop", discountReason: "pilot" }),
-    DEFAULT_RATE_CARD,
-  );
-  const all = calculateQuote(
-    input({ discountPct: 20, discountScope: "all", discountReason: "pilot" }),
-    DEFAULT_RATE_CARD,
-  );
-  assert.ok(all.discountAmount > selected.discountAmount);
-  assert.ok(all.netTotal < selected.netTotal);
-});
-
-test("a nettó, ÁFA és bruttó összeg összezár", () => {
+test("ÁFA és bruttó a nettóból", () => {
   const result = calculateQuote(input({ vatRate: 27 }), DEFAULT_RATE_CARD);
   assert.equal(result.vatAmount, Math.round(result.netTotal * 0.27));
   assert.equal(result.grossTotal, result.netTotal + result.vatAmount);
 });
 
 test("a továbbhárított költség nem szépíti az effektív óradíjat", () => {
-  // A kiszállás nem tanácsadói bevétel. Ha beleszámítana, a kalkulátor
-  // pont a legfontosabb számot mutatná túl kedvezőnek.
   const base = calculateQuote(input({ travelDays: 0 }), DEFAULT_RATE_CARD);
   const travelled = calculateQuote(input({ travelDays: 3 }), DEFAULT_RATE_CARD);
   assert.ok(travelled.effectiveHourlyRate != null && base.effectiveHourlyRate != null);
@@ -113,7 +133,7 @@ test("a továbbhárított költség nem szépíti az effektív óradíjat", () =
 
 test("a mély kedvezmény figyelmeztetést hoz, nem csendes fedezet-vesztést", () => {
   const deep = calculateQuote(
-    input({ discountPct: 60, discountScope: "all", discountReason: "" }),
+    input({ discountPct: 60, discountReason: "" }),
     DEFAULT_RATE_CARD,
   );
   assert.ok(deep.warnings.includes("DISCOUNT_OVER_CAP"));
@@ -130,28 +150,26 @@ test("indoklás nélküli kedvezmény akkor is jelez, ha a kereten belül van", 
   assert.ok(!modest.warnings.includes("DISCOUNT_OVER_CAP"));
 });
 
-test("az utánkövetés hiánya jelzés – ebből lesz az egyszeri munka", () => {
-  const oneOff = calculateQuote(
-    input({ waves: 0, retainerMonths: 0 }),
-    DEFAULT_RATE_CARD,
-  );
+test("a visszamérés hiánya jelzés – csak a Csapatképnél, kör és kísérés nélkül", () => {
+  const oneOff = calculateQuote(input({ tier: "kep" }), DEFAULT_RATE_CARD);
   assert.ok(oneOff.warnings.includes("NO_FOLLOW_UP"));
 
-  const followed = calculateQuote(input({ waves: 2 }), DEFAULT_RATE_CARD);
-  assert.ok(!followed.warnings.includes("NO_FOLLOW_UP"));
-  assert.ok(followed.netTotal > oneOff.netTotal);
+  const program = calculateQuote(input({ tier: "prog" }), DEFAULT_RATE_CARD);
+  assert.ok(!program.warnings.includes("NO_FOLLOW_UP"));
+
+  const withWave = calculateQuote(input({ tier: "kep", extraWaves: 1 }), DEFAULT_RATE_CARD);
+  assert.ok(!withWave.warnings.includes("NO_FOLLOW_UP"));
+  assert.ok(withWave.netTotal > oneOff.netTotal);
 });
 
-test("az ismételt hullám olcsóbb, mint a baseline mérés", () => {
-  // A setup és a csapat megismerése egyszeri munka: ha egy hullám ugyanannyi
+test("a további mérési kör olcsóbb, mint a szint fejenkénti díja", () => {
+  // A setup és a csapat megismerése egyszeri munka: ha egy kör ugyanannyi
   // lenne, a vevőnek nem érné meg utánkövetést rendelni.
-  const one = calculateQuote(input({ waves: 1 }), DEFAULT_RATE_CARD);
-  const none = calculateQuote(input({ waves: 0 }), DEFAULT_RATE_CARD);
+  const one = calculateQuote(input({ extraWaves: 1 }), DEFAULT_RATE_CARD);
+  const none = calculateQuote(input({ extraWaves: 0 }), DEFAULT_RATE_CARD);
   const waveCost = one.netTotal - none.netTotal;
-  const baselineMeasurement =
-    none.lines.find((line) => line.key === "measurement")!.amount +
-    none.lines.find((line) => line.key === "steps")!.amount;
-  assert.ok(waveCost < baselineMeasurement + DEFAULT_RATE_CARD.baseFee);
+  assert.ok(waveCost > 0);
+  assert.ok(waveCost < ladderPrice(ladder, "prog", 10).total);
 });
 
 test("a padló-ár a becsült órákból és a cél-óradíjból jön", () => {
@@ -166,5 +184,39 @@ test("a padló-ár a becsült órákból és a cél-óradíjból jön", () => {
 test("nulla létszámnál sem omlik össze a számítás", () => {
   const result = calculateQuote(input({ headcount: 0 }), DEFAULT_RATE_CARD);
   assert.equal(result.perHeadEffective, null);
-  assert.ok(result.netTotal >= DEFAULT_RATE_CARD.baseFee);
+  assert.equal(result.netTotal, 0);
+  assert.ok(result.estimatedHours > 0);
+});
+
+test("az örökség-bemenet (programdíjas) átfordul a létrára", () => {
+  const legacy = {
+    headcount: 12,
+    teams: 1,
+    steps: ["OBSERVER_360", "TEAM_ROLE"],
+    workshopDays: 1.5,
+    travelDays: 1,
+    waves: 2,
+    retainerMonths: 3,
+    otherFee: 0,
+    otherFeeLabel: "Egyéb díj",
+    discountPct: 10,
+    discountKind: "pilot",
+    discountScope: "base_workshop",
+    discountReason: "pilot",
+    vatRate: 27,
+  };
+  const converted = readQuoteInput(legacy);
+  assert.ok(converted);
+  assert.equal(converted.tier, "prog");
+  assert.equal(converted.extraWorkshopDays, 1);
+  assert.equal(converted.extraWaves, 1);
+  assert.equal(converted.retainerMonths, 3);
+  assert.equal(converted.discountKind, "pilot");
+
+  const measurementOnly = readQuoteInput({ ...legacy, workshopDays: 0, waves: 0 });
+  assert.equal(measurementOnly?.tier, "kep");
+  assert.equal(measurementOnly?.extraWaves, 0);
+
+  assert.equal(readQuoteInput({ nonsense: true }), null);
+  assert.equal(readQuoteInput(emptyQuoteInput())?.tier, "prog");
 });

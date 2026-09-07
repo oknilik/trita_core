@@ -1,6 +1,6 @@
 # Trita — Project Context
 
-> Utolsó mélyfrissítés: 2026-07-10. Napi részletek: `docs/development/changelog/`.
+> Utolsó mélyfrissítés: 2026-09-07. Napi részletek: `docs/development/changelog/`.
 
 ## Mi ez a projekt?
 
@@ -20,6 +20,15 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
   `POST /api/admin/org-access` (activate/trial/extend/deactivate/set_credits,
   assign_consultant/remove_consultant).
 - Minden upgrade/checkout CTA a `/contact`-ra mutat.
+- **Publikus árlétra (2026-09-07):** két fejenkénti szint, minden méréssel
+  — Csapatkép (35 e Ft/fő) · Csapatprogram (50 e Ft/fő), 10 fő felett
+  20 e, pilot −50%. EGY forrás: a díjkártya (`src/lib/quote/rate-card.ts`,
+  DB-ben az admin `/admin/quote` → Díjtételek). Publikus részhalmaz:
+  `src/lib/pricing/team-ladder.ts` (`derivePublicLadder`); fogyasztók:
+  `/how-we-work` árblokk (`TeamPricingConfigurator`), főoldal csapat-blokk
+  ár-horgony, `/pilot` ténysáv, Service JSON-LD, admin ajánlat-kalkulátor.
+  Mentés → `revalidatePath` (ISR 1 óra). Új publikus árat SOHA ne írj
+  literálként — a létrából olvasd. Doksi: `docs/product/pricing-ladder-2026-09.md`.
 - A korábbi kutatás-platform narratíva a publikus felületről eltávolítva;
   a platform termékként kommunikál.
 

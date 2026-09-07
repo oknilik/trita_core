@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import { calculateQuote, type QuoteInput } from "@/lib/quote/calculate";
-import { quoteInputSchema, type RateCard } from "@/lib/quote/rate-card";
+import { readQuoteInput, type RateCard } from "@/lib/quote/rate-card";
 import { loadRateCard } from "@/lib/quote/rate-card.server";
 import { QUOTE_DEFAULT_VALIDITY_DAYS } from "@/lib/crm/constants";
 import { canTransitionQuote, formatQuoteNo, isOpenStage } from "@/lib/crm/guards";
@@ -20,9 +20,11 @@ import { CrmServiceError } from "@/lib/crm/errors";
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 function parseQuoteInput(input: unknown): QuoteInput {
-  const parsed = quoteInputSchema.safeParse(input);
-  if (!parsed.success) throw new CrmServiceError("VALIDATION_ERROR");
-  return parsed.data;
+  // Az örökség-forma (2026-09-07 előtti programdíjas bemenet) is átmegy:
+  // a másolat-alap és a piszkozat-betöltés ne haljon el a régi sorokon.
+  const parsed = readQuoteInput(input);
+  if (!parsed) throw new CrmServiceError("VALIDATION_ERROR");
+  return parsed;
 }
 
 function computeSnapshot(input: QuoteInput, rate: RateCard) {

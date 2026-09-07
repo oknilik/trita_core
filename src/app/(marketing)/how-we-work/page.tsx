@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { DEFAULT_LOCALE, t } from "@/lib/i18n";
+import { DEFAULT_LOCALE, t, tf } from "@/lib/i18n";
 import { buildPageMetadata } from "@/lib/seo";
 import {
   buildFaqJsonLd,
@@ -11,6 +11,12 @@ import {
 import { PricingContent } from "../pricing/PricingContent";
 import { PRICING_FAQ_INDEXES } from "../pricing/faq";
 import { SEO_INTENTS } from "@/lib/seo-intents";
+import { loadPublicLadder } from "@/lib/pricing/team-ladder.server";
+import { formatHuf } from "@/lib/pricing/team-ladder";
+
+// Az árak a díjkártyából jönnek (admin: /admin/quote). ISR: a mentés
+// azonnal revalidál (saveRateCard), ezen felül óránként frissül.
+export const revalidate = 3600;
 
 const seoIntent = SEO_INTENTS.howWeWork;
 const CANONICAL_PATH = seoIntent.path;
@@ -21,10 +27,16 @@ export const metadata: Metadata = buildPageMetadata({
   description: t("pricing.metaDescription", DEFAULT_LOCALE),
 });
 
-export default function HowWeWorkPage() {
+export default async function HowWeWorkPage() {
+  const ladder = await loadPublicLadder();
+  const faqVars = {
+    kep: formatHuf(ladder.tiers.kep.perHead),
+    prog: formatHuf(ladder.tiers.prog.perHead),
+    band: ladder.firstBandHeads,
+  };
   const faqItems: FaqItem[] = PRICING_FAQ_INDEXES.map((i) => ({
     question: t(`pricing.faqQ${i}`, DEFAULT_LOCALE),
-    answer: t(`pricing.faqA${i}`, DEFAULT_LOCALE),
+    answer: tf(`pricing.faqA${i}`, DEFAULT_LOCALE, faqVars),
   }));
 
   return (
@@ -60,9 +72,16 @@ export default function HowWeWorkPage() {
                   "Ismerősi és kollégai visszajelzés az önértékelés mellé, megbízhatóság-jelöléssel.",
               },
               {
-                name: "Csapatkép és csapatszerep-térkép",
+                name: "Csapatkép",
                 description:
-                  "Személyiség-alapú csapatdinamika és mért csapatszerepek egy csapatszintű riportban.",
+                  "Személyiség-alapú csapatdinamika, mért csapatszerepek, bizalmi kör és pszichológiai biztonság egy validált csapatriportban, online közös értelmezéssel.",
+                price: ladder.tiers.kep.perHead,
+              },
+              {
+                name: "Csapatprogram",
+                description:
+                  "A Csapatkép félnapos értelmező workshoppal és utánkövető méréssel.",
+                price: ladder.tiers.prog.perHead,
               },
               {
                 name: "Pszichológiai biztonság pulzusmérés",
@@ -77,7 +96,7 @@ export default function HowWeWorkPage() {
           }),
         ]}
       />
-      <PricingContent />
+      <PricingContent ladder={ladder} />
     </>
   );
 }

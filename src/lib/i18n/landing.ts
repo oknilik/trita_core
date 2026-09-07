@@ -65,6 +65,14 @@ export const landingTranslations = {
     teamMicrocopy: { hu: "Személyes onboarding · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
     teamMetaOnboarding: { hu: "Személyes onboarding", en: "Personal onboarding" },
     teamMetaTiming: { hu: "Első csapatkép néhány napon belül", en: "First team picture within days" },
+    // Ár-horgony a csapat-blokkon (2026-09-07): a szám a díjkártyából jön.
+    teamPriceLead: { hu: "Csapatprogramok", en: "Team programs" },
+    teamPriceFrom: { hu: "Ft / fő-től", en: "Ft / person and up" },
+    teamPriceFootnote: {
+      hu: "Nettó ár, minden mérést tartalmaz. Egy tipikus, 5–{band} fős kkv-csapatra: a {tier} szint, online közös értelmezéssel. Workshoppal és visszaméréssel {prog} Ft/fő. Nagyobb csapatnak fejenként kevesebb.",
+      en: "Net price, every measurement included. For a typical SME team of 5–{band}: the {tier} level with an online joint debrief. With a workshop and remeasurement {prog} Ft/person. Larger teams pay less per person.",
+    },
+    teamPriceDetails: { hu: "Részletes árak", en: "Detailed pricing" },
     teamMetaOffer: { hu: "Csapatra szabott ajánlat", en: "Tailored team proposal" },
     teamFadeCta: { hu: "Ízelítő a csapatképből", en: "A taste of your team picture" },
     // Team hero panel – a valódi publikált riport (TeamReportView) kicsinyített mása
@@ -193,14 +201,15 @@ export const landingTranslations = {
     // SEO: a cím a keresett „csapatfejlesztés" szolgáltatás-megnevezéssel
     // kezdődik, majd a trita személyes, rugalmas működését ígéri. A description
     // kihasználja a snippet-hosszt (~155 kar.), és előre hozza a két
-    // döntési tényt: az egyéni rész ingyenes, listaár nincs.
+    // döntési tényt: az egyéni rész ingyenes, a csapatprogram fejenkénti
+    // árú (a konkrét szám a díjkártyából jön, ezért itt nem szerepel).
     metaTitle: {
       hu: "Csapatfejlesztés, a csapatotokra szabva | trita",
       en: "Team development and diagnostics | trita",
     },
     metaDescription: {
-      hu: "Az egyéni személyiségfelmérés ingyenes; a csapat- és szervezeti programok ára a létszámtól és a program mélységétől függ – listaár helyett egyedi ajánlat.",
-      en: "The individual personality assessment is free; team and organizational program pricing depends on headcount and depth – an individual quote instead of list prices.",
+      hu: "Az egyéni személyiségfelmérés ingyenes; a csapatprogram fejenkénti áron, minden méréssel – két szint, a létszámra számolt, átlátható árral.",
+      en: "The individual personality assessment is free; the team program is priced per person with every measurement included – two levels, a transparent price for your headcount.",
     },
     heroEyebrow: { hu: "Együttműködés", en: "How we work" },
     heroHeading: { hu: "Minden csapat más – ezért a közös munka is ", en: "Every team is different – so the way we work together " },
@@ -227,11 +236,6 @@ export const landingTranslations = {
       en: "The responses become a reviewed team picture, then we identify the next step together.",
     },
     offerEyebrow: { hu: "Hogyan vághatsz bele", en: "How to get started" },
-    offerTitle: { hu: "Kezdd magadon, folytassátok csapatként.", en: "Start with yourself, continue as a team." },
-    offerBody: {
-      hu: "Az egyéni felmérést azonnal elkezdheted. A csapatprogram keretét a célotokhoz, a létszámhoz és a választott mérésekhez igazítjuk.",
-      en: "You can start the individual assessment right away. We tailor the team program to your goals, headcount, and selected measurements.",
-    },
     offerFactor1: { hu: "Csapatok és résztvevők", en: "Teams and participants" },
     offerFactor2: { hu: "A célhoz illő mérések", en: "Measurements that fit the goal" },
     offerFactor3: { hu: "Közös értelmezés és következő lépés", en: "Joint debrief and next step" },
@@ -241,32 +245,61 @@ export const landingTranslations = {
       hu: "Az egyéni felmérés a kipróbálás, a csapatprogram a közös munka belépője.",
       en: "The individual assessment is how you try it; the team program is how we work together.",
     },
-    offerPilotCta: { hu: "Így működik a pilotprogramunk", en: "See how the pilot works" },
-    selfEyebrow: { hu: "egyéni · ingyenes", en: "individual · free" },
-    selfTitle: { hu: "Ismerd meg, hogyan működsz", en: "Understand how you operate" },
-    selfBody: {
-      hu: "Töltsd ki a körülbelül 10 perces személyiségfelmérést, és kapj részletes képet a jellemző mintázataidról, a munkastílusodról és a csapatban betöltött szerepeidről. Az eredményt később mások visszajelzéseivel is árnyalhatod.",
-      en: "Complete the approximately 10-minute personality assessment to get a detailed picture of your characteristic patterns, work style, and roles in a team. Later, you can add nuance with feedback from others.",
-    },
     // P3-1: a jobb oldali csapat-kártya pipasorának párja — enélkül az
     // egyéni kártyán nagy üres blokk maradt a szöveg és a CTA között.
-    selfCheck1: { hu: "~10 perces kitöltés", en: "~10-minute assessment" },
-    selfCheck2: { hu: "Azonnali, dimenziónkénti eredmény", en: "Instant, per-dimension results" },
-    selfCheck3: { hu: "Ingyenes, regisztrációval", en: "Free, with registration" },
-    selfCta: { hu: "Elindítom az ingyenes felmérést", en: "Start the free assessment" },
-    teamEyebrow: { hu: "csapat és szervezet · egyedi program", en: "team & organization · tailored program" },
-    teamTitle: { hu: "Tisztább csapatkép, közös következő lépéssel", en: "A clearer team picture, with a shared next step" },
     teamBody: {
       hu: "A csapattagok kitöltéseiből és a három közös mérési területből tanácsadó által ellenőrzött csapatkép készül. Együtt értelmezzük az eredményeket, majd konkrét következő lépést választunk, amelynek hatását később visszamérjük.",
       en: "Team members' responses across three shared measurement areas become a consultant-reviewed team picture. Together we interpret the results, choose a concrete next step, and later measure its impact.",
     },
-    teamHow1: { hu: "Személyes mintázatok; igény szerint csapatszerepek", en: "Individual patterns; team roles when needed" },
-    teamHow2: { hu: "Bizalmi kapcsolatok és pszichológiai biztonság", en: "Trust relationships and psychological safety" },
-    teamHow3: { hu: "Közös értelmezés, akció és visszamérés", en: "Joint debrief, action, and remeasurement" },
-    teamPriceNote: {
-      hu: "Mitől függ az ajánlat? A résztvevők számától, a választott mérésektől és a közös feldolgozás mélységétől. Az első beszélgetés után pontos keretet és árat kaptok.",
-      en: "What shapes the quote? The number of participants, the selected measurements, and the depth of the joint debrief. After the first conversation, you receive a precise scope and price.",
+    // Árblokk (2026-09-07): a számok a díjkártyából jönnek (admin), a
+    // szövegek innen. A szintek tartalma az admin/PDF oldali
+    // QUOTE_TIER_INCLUDES-szal tartalmilag azonos — együtt karbantartandó.
+    configuratorA11y: { hu: "Árkalkulátor", en: "Price calculator" },
+    configuratorTitle: { hu: "Egy szám, ami a csapatodra igaz.", en: "One number that is true for your team." },
+    configuratorLead: {
+      hu: "Válaszd ki, meddig mennétek, és állítsd be a létszámot. Az ár fejenként értendő, minden mérést tartalmaz, és nagyobb csapatnál fejenként kevesebb. Az első beszélgetés után ugyanezt kapjátok írásban, meglepetés nélkül.",
+      en: "Choose how far you want to go and set the headcount. The price is per person, includes every measurement, and is lower per person for larger teams. After the first conversation you get the same in writing, no surprises.",
     },
+    tierGroupLabel: { hu: "A program szintje", en: "Program level" },
+    tier_kep_name: { hu: "Csapatkép", en: "Team Picture" },
+    tier_kep_short: { hu: "Mérés, riport, közös értelmezés online", en: "Measurement, report, joint debrief online" },
+    tier_prog_name: { hu: "Csapatprogram", en: "Team Program" },
+    tier_prog_short: { hu: "+ workshop és visszamérés fél év múlva", en: "+ workshop and remeasurement after six months" },
+    tier_kep_item1: { hu: "Személyiségfelmérés hat dimenzió mentén, mindenkinek saját riporttal", en: "Personality assessment across six dimensions, with an individual report for everyone" },
+    tier_kep_item2: { hu: "Csapatszerep-kérdőív, bizalmi kör, pszichológiai biztonság mérés és observer-visszajelzés", en: "Team role questionnaire, trust circle, psychological safety pulse and observer feedback" },
+    tier_kep_item3: { hu: "Tanácsadó által ellenőrzött csapatkép és vezetői visszajelző beszélgetés", en: "Consultant-reviewed team picture and a leader debrief" },
+    tier_kep_item4: { hu: "90 perces online közös értelmezés a csapattal", en: "A 90-minute online joint debrief with the team" },
+    tier_prog_item1: { hu: "Félnapos értelmező workshop a csapattal, személyesen", en: "A half-day interpretation workshop with the team, in person" },
+    tier_prog_item2: { hu: "Utánkövető mérés fél év múlva: mi változott, mi nem", en: "A follow-up measurement after six months: what changed, what did not" },
+    tier_kep_time: { hu: "~10 perc / fő + 90 perc együtt", en: "~10 min / person + 90 min together" },
+    tier_prog_time: { hu: "~10 perc / fő + fél nap együtt", en: "~10 min / person + half a day together" },
+    headcountLabel: { hu: "Hányan vagytok a csapatban?", en: "How many people are on the team?" },
+    headcountUnit: { hu: "fő", en: "people" },
+    headcountNote: {
+      hu: "{band} fő felett minden további ember {over} Ft. {max} fő fölött vagy több csapatra írj nekünk.",
+      en: "Above {band} people, each additional person is {over} Ft. For more than {max} people or several teams, write to us.",
+    },
+    includesTitle: { hu: "A {tier} szintben benne van", en: "Included in {tier}" },
+    perHeadUnit: { hu: "Ft / fő", en: "Ft / person" },
+    totalForTeam: { hu: "Összesen {total} Ft a csapatra", en: "{total} Ft in total for the team" },
+    vatNote: { hu: "Nettó árak, + 27% ÁFA. Egy összegben, a program indulásakor.", en: "Net prices, + 27% VAT. One payment at the start of the program." },
+    breakdownFirst: { hu: "Első {band} fő", en: "First {band} people" },
+    breakdownOver: { hu: "További fők", en: "Additional people" },
+    timeLabel: { hu: "Időigény a csapattól", en: "Time needed from the team" },
+    ctaNote: { hu: "Egy munkanapon belül válaszolunk. Írásos ajánlat, a ti létszámotokra.", en: "We reply within one business day. A written quote for your headcount." },
+    pilotNote: {
+      hu: "Pilot-partnereinknek az első körben {pct}% kedvezmény jár, cserébe visszajelzést kérünk a programról.",
+      en: "Our pilot partners get {pct}% off in the first round; in return we ask for feedback on the program.",
+    },
+    belowMultiTeamTitle: { hu: "Több csapat vagy egész szervezet?", en: "Several teams or a whole organization?" },
+    belowMultiTeamBody: { hu: "Csapatonként számolunk, a második csapattól kedvezőbb fejenkénti áron. Írj, és összerakjuk.", en: "We price per team, at a lower per-person rate from the second team. Write to us and we put it together." },
+    belowWorkshopTitle: { hu: "Kell egy egész napos workshop?", en: "Need a full-day workshop?" },
+    belowWorkshopBody: { hu: "Helyszíni, egész napos alkalom {fee} Ft. Ha a mérések száma indokolja, a tanácsadó javasolja.", en: "An on-site, full-day session is {fee} Ft. The consultant suggests it when the number of measurements calls for it." },
+    belowDriversTitle: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
+    belowDriversBody: { hu: "Csak a létszámtól és a szinttől. A mérések száma nem növeli az árat.", en: "Only headcount and the level. The number of measurements does not raise the price." },
+    selfFreeLine: { hu: "Az egyéni felmérés ingyenes.", en: "The individual assessment is free." },
+    selfFreeBody: { hu: "Töltsd ki 10 perc alatt, és nézd meg, mit adna a csapatodnak.", en: "Complete it in 10 minutes and see what it would give your team." },
+    selfFreeCta: { hu: "Kipróbálom", en: "Try it" },
     teamCta: { hu: "Egyeztessünk a csapatotokról", en: "Talk to us about your team" },
     pilotEyebrow: { hu: "pilotprogram", en: "pilot program" },
     pilotSectionTitle: {
@@ -282,13 +315,13 @@ export const landingTranslations = {
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
     faqQ1: { hu: "Mennyibe kerül?", en: "How much does it cost?" },
     faqA1: {
-      hu: "Az egyéni felmérés ingyenes. A csapat- és szervezeti programok ára a létszámtól és a program terjedelmétől függ – az első egyeztetés után egyedi ajánlatot kapsz.",
-      en: "The individual assessment is free. Team and organizational program pricing depends on headcount and scope – you get an individual quote after the first conversation.",
+      hu: "Az egyéni felmérés ingyenes. A csapatprogramok fejenkénti áron mennek: a Csapatkép {kep} Ft/fő, a Csapatprogram {prog} Ft/fő nettó, {band} fő felett fejenként kevesebb. Minden mérés benne van – a fenti kalkulátor a ti létszámotokra mutatja az összeget.",
+      en: "The individual assessment is free. Team programs are priced per person: Team Picture is {kep} Ft/person, Team Program {prog} Ft/person net, with a lower rate above {band} people. Every measurement is included – the calculator above shows the total for your headcount.",
     },
-    faqQ2: { hu: "Miért nincsenek listaárak?", en: "Why are there no list prices?" },
+    faqQ2: { hu: "Mit tartalmaz az ár?", en: "What does the price include?" },
     faqA2: {
-      hu: "Mert nem dobozos terméket adunk: minden program tanácsadói munkával – validálással, értelmezéssel, workshoppal – jár, és ennek terjedelme csapatonként más. Listaár helyett azt mondjuk meg pontosan, mit kapsz, és mitől függ az ár.",
-      en: "Because this is not an off-the-shelf product: every program includes consultant work – validation, interpretation, workshops – and its scope differs by team. Instead of list prices, we tell you exactly what you get and what the price depends on.",
+      hu: "Mindent, ami a csapatképhez kell: a felmérést, a csapatszerep-, bizalmi és pszichológiai biztonság méréseket, a tanácsadói validálást, a riportot és a közös értelmezést. A Csapatprogram ezen felül félnapos workshopot és visszamérést is tartalmaz. Külön tétel csak a további workshop-nap, a havi kísérés és a kiszállás.",
+      en: "Everything needed for the team picture: the assessment, the team role, trust and psychological safety measurements, consultant validation, the report and the joint debrief. Team Program adds a half-day workshop and a remeasurement. Only extra workshop days, monthly support and travel are separate items.",
     },
     faqQ3: { hu: "Hogyan indul az együttműködés?", en: "How does the engagement start?" },
     faqA3: {
@@ -297,8 +330,8 @@ export const landingTranslations = {
     },
     faqQ4: { hu: "Mi ingyenes, és mi tartozik a programhoz?", en: "What's free and what's part of the program?" },
     faqA4: {
-      hu: "Minden egyéni funkció ingyenes: felmérés, riport, observer-visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói validálás és a workshopok a fizetős program részei.",
-      en: "All individual features are free: assessment, report, observer feedback. Team-level measurements – team picture, team role map, psychological safety –, consultant validation and workshops are part of the paid program.",
+      hu: "Minden egyéni funkció ingyenes: felmérés, riport, observer-visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói validálás és a közös értelmezés a fejenkénti árú csapatprogram részei.",
+      en: "All individual features are free: assessment, report, observer feedback. Team-level measurements – team picture, team role map, psychological safety –, consultant validation and the joint debrief are part of the per-person team program.",
     },
     // P0-4: a bevezetés ezen a kérdésen áll vagy bukik — a pontos, védhető
     // megfogalmazás üzleti/jogi döntés, addig {{TODO}}.
@@ -579,11 +612,18 @@ export const landingTranslations = {
     fact2Value: { hu: "{left}", en: "{left}" },
     fact2Unit: { hu: "/ {total}", en: "/ {total}" },
     fact2Label: { hu: "szabad partnercsapat-hely", en: "open partner team spots" },
-    fact3Value: { hu: "Egyedi", en: "Custom" },
-    fact3Unit: { hu: "ár", en: "price" },
+    // A 3. tény (2026-09-07): áthúzott listaár + partneri ár a díjkártyából.
+    fact3Value: { hu: "{pilot}", en: "{pilot}" },
+    fact3Unit: { hu: "Ft / fő", en: "Ft / person" },
     fact3Label: {
-      hu: "kedvezményes partneri feltételekkel",
-      en: "with discounted partner terms",
+      hu: "partneri ár az első {total} csapatnak",
+      en: "partner price for the first {total} teams",
+    },
+    fact3Was: { hu: "{full}", en: "{full}" },
+    fact3Off: { hu: "−{pct}%", en: "−{pct}%" },
+    fact3Foot: {
+      hu: "Nettó, a Csapatprogram teljes tartalmával: minden mérés, félnapos workshop, visszamérés.",
+      en: "Net, with the full Team Program: every measurement, a half-day workshop, remeasurement.",
     },
     fact4Value: { hu: "2+1", en: "2+1" },
     fact4Unit: { hu: "alkalom", en: "sessions" },

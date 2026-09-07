@@ -14,13 +14,12 @@ import {
 import {
   DISCOUNT_KINDS,
   DISCOUNT_LABELS,
-  DISCOUNT_SCOPES,
-  DISCOUNT_SCOPE_LABELS,
-  QUOTE_STEPS,
-  QUOTE_STEP_LABELS,
+  QUOTE_TIERS,
+  QUOTE_TIER_INCLUDES,
+  QUOTE_TIER_LABELS,
   quoteInputSchema,
   type DiscountKind,
-  type QuoteStep,
+  type QuoteTier,
   type RateCard,
 } from "@/lib/quote/rate-card";
 import { formatQuoteNo } from "@/lib/crm/guards";
@@ -33,9 +32,11 @@ import {
 
 // Belső ajánlat-kalkulátor.
 //
-// Nem árlista: azt mutatja meg, mennyi marad a munkán. A legfontosabb szám
-// az EFFEKTÍV ÓRADÍJ — ezen dől el az alku, ezért az van kiemelve, nem a
-// végösszeg.
+// Az ár a publikus árlétrából jön (szint × létszám — ugyanaz, amit a vevő a
+// /how-we-work oldalon lát), a szint tartalmán felüli tételekkel. Amit a
+// kalkulátor hozzátesz: mennyi marad a munkán. A legfontosabb szám az
+// EFFEKTÍV ÓRADÍJ — ezen dől el az alku, ezért az van kiemelve, nem a
+// végösszeg. A díjtételek mentése a publikus oldalak árait is frissíti.
 //
 // CRM-integráció (2026-08): `deal` prop mellett a kalkulátor perzisztálni
 // tud — „Mentés ajánlatként" → DRAFT Quote a dealen (a szerver újraszámol,
@@ -55,7 +56,7 @@ const WARNING_TEXT: Record<QuoteWarning, string> = {
   DISCOUNT_OVER_CAP: "A kedvezmény meghaladja a keretet – ez külön döntés.",
   DISCOUNT_WITHOUT_REASON: "Indoklás nélküli kedvezmény: később nem lesz mire hivatkozni.",
   NO_FOLLOW_UP:
-    "Nincs utánkövetés. Egyszeri mérésből nem lesz üzlet – legalább egy hullámot érdemes betenni.",
+    "Nincs visszamérés. Egyszeri mérésből nem lesz üzlet – a Csapatprogram szint vagy legalább egy további mérési kör kell.",
 };
 
 function NumberField({
@@ -127,6 +128,8 @@ export function QuoteCalculator({
   const router = useRouter();
   const [input, setInput] = useState<QuoteInput>(initialInput ?? emptyQuoteInput());
   const [rate, setRate] = useState<RateCard>(initialRate);
+  const setTierRate = (tier: QuoteTier, patchRate: Partial<RateCard["tiers"][QuoteTier]>) =>
+    setRate({ ...rate, tiers: { ...rate.tiers, [tier]: { ...rate.tiers[tier], ...patchRate } } });
   const [saved, setSaved] = useState(storedRate);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -241,13 +244,6 @@ export function QuoteCalculator({
     router.push(`/admin/crm/${deal.id}`);
   }
 
-  const toggleStep = (step: QuoteStep) =>
-    patch({
-      steps: input.steps.includes(step)
-        ? input.steps.filter((item) => item !== step)
-        : [...input.steps, step],
-    });
-
   async function saveRates() {
     setSaving(true);
     setSaveError(null);
@@ -281,8 +277,12 @@ export function QuoteCalculator({
     const rows = result.lines
       .filter((line) => line.key !== "travel")
       .map((line) => `· ${line.label}: ${huf(line.amount)}`);
+    const includes = QUOTE_TIER_INCLUDES[input.tier].map((item) => `  – ${item}`);
     const parts = [
-      `Ajánlat${savedQuote ? ` (${savedQuote.label})` : ""} – ${input.headcount} fő, ${input.teams} csapat`,
+      `Ajánlat${savedQuote ? ` (${savedQuote.label})` : ""} – ${QUOTE_TIER_LABELS[input.tier]}, ${input.headcount} fő, ${input.teams} csapat`,
+      "",
+      "A program tartalma:",
+      ...includes,
       "",
       ...rows,
       result.passThroughSubtotal > 0
@@ -300,6 +300,7 @@ export function QuoteCalculator({
         : null,
       "",
       validUntilDay ? `Az ajánlat érvényes: ${formatDay(dayInputToIso(validUntilDay))}-ig.` : null,
+      "Minden mérés benne van – a mérések száma nem növeli az árat.",
       "A díjak nettó összegek. A számlázás átutalással történik.",
     ].filter((row): row is string => row !== null);
     return parts.join("\n");
@@ -310,7 +311,36 @@ export function QuoteCalculator({
       {/* ── Bemenetek ─────────────────────────────────────────────── */}
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
-          <h2 className="font-fraunces text-lg text-ink">Terjedelem</h2>
+          <h2 className="font-fraunces text-lg text-ink">Program</h2>
+          <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
+            A publikus árlétra két szintje. Minden mérés benne van; a több mérés
+            több magyarázatot igényel, ami a workshop-időben jön vissza.
+          </p>
+          <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {QUOTE_TIERS.map((tier) => (
+              <button
+                key={tier}
+                type="button"
+                aria-pressed={input.tier === tier}
+                onClick={() => patch({ tier })}
+                className={`min-h-[44px] rounded-lg border px-3 py-2 text-left text-sm transition ${
+                  input.tier === tier
+                    ? "border-sage bg-sage-soft text-ink"
+                    : "border-sand bg-surface-card text-muted hover:border-bronze-edge"
+                }`}
+              >
+                <span className="block font-semibold">{QUOTE_TIER_LABELS[tier]}</span>
+                <span className="block text-xs text-muted">
+                  {huf(rate.tiers[tier].perHead)} / fő · {rate.firstBandHeads} fő felett {huf(rate.tiers[tier].perHeadOver)}
+                </span>
+              </button>
+            ))}
+          </div>
+          <ul className="mt-3 flex flex-col gap-1 text-xs leading-relaxed text-ink-body">
+            {QUOTE_TIER_INCLUDES[input.tier].map((item) => (
+              <li key={item}>· {item}</li>
+            ))}
+          </ul>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NumberField
               label="Létszám"
@@ -325,56 +355,26 @@ export function QuoteCalculator({
               onChange={(teams) => patch({ teams })}
               suffix="db"
             />
-            <NumberField
-              label="Workshop"
-              value={input.workshopDays}
-              step={0.5}
-              onChange={(workshopDays) => patch({ workshopDays })}
-              suffix="nap"
-            />
-            <NumberField
-              label="Kiszállás"
-              value={input.travelDays}
-              onChange={(travelDays) => patch({ travelDays })}
-              suffix="nap"
-            />
-          </div>
-
-          <p className="mt-5 font-mono text-xs uppercase tracking-widest text-muted">
-            Mérés-lépések
-          </p>
-          <div className="mt-2 flex flex-wrap gap-2">
-            {QUOTE_STEPS.map((step) => {
-              const active = input.steps.includes(step);
-              return (
-                <button
-                  key={step}
-                  type="button"
-                  onClick={() => toggleStep(step)}
-                  className={`min-h-[40px] rounded-full border px-3.5 text-sm transition ${
-                    active
-                      ? "border-sage bg-sage-soft text-ink"
-                      : "border-sand bg-surface-card text-muted hover:border-bronze-edge"
-                  }`}
-                >
-                  {QUOTE_STEP_LABELS[step]}
-                </button>
-              );
-            })}
           </div>
         </section>
 
         <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
-          <h2 className="font-fraunces text-lg text-ink">Utánkövetés</h2>
+          <h2 className="font-fraunces text-lg text-ink">A szint tartalmán felül</h2>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
-            Az ismételt hullám a mérési díj {rate.waveRatePct}%-áért megy: a setup és a
-            csapat megismerése egyszeri munka. A havi kísérés ettől független tétel.
+            További egész napos, helyszíni workshop; további mérési kör (a fejenkénti díj{" "}
+            {rate.extraWaveRatePct}%-áért); havi kísérés; kiszállás (továbbhárítva).
           </p>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NumberField
-              label="Hullámok"
-              value={input.waves}
-              onChange={(waves) => patch({ waves })}
+              label="További workshop-nap"
+              value={input.extraWorkshopDays}
+              onChange={(extraWorkshopDays) => patch({ extraWorkshopDays })}
+              suffix="nap"
+            />
+            <NumberField
+              label="További mérési kör"
+              value={input.extraWaves}
+              onChange={(extraWaves) => patch({ extraWaves })}
               suffix="db"
             />
             <NumberField
@@ -382,6 +382,12 @@ export function QuoteCalculator({
               value={input.retainerMonths}
               onChange={(retainerMonths) => patch({ retainerMonths })}
               suffix="hó"
+            />
+            <NumberField
+              label="Kiszállás"
+              value={input.travelDays}
+              onChange={(travelDays) => patch({ travelDays })}
+              suffix="nap"
             />
           </div>
         </section>
@@ -407,25 +413,6 @@ export function QuoteCalculator({
                 }`}
               >
                 {DISCOUNT_LABELS[kind]}
-              </button>
-            ))}
-          </div>
-          <p className="mt-4 font-mono text-xs uppercase tracking-widest text-muted">
-            Kedvezmény hatóköre
-          </p>
-          <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {DISCOUNT_SCOPES.map((scope) => (
-              <button
-                key={scope}
-                type="button"
-                onClick={() => patch({ discountScope: scope })}
-                className={`min-h-[44px] rounded-lg border px-3 text-left text-sm transition ${
-                  input.discountScope === scope
-                    ? "border-sage bg-sage-soft text-ink"
-                    : "border-sand bg-surface-card text-muted hover:border-bronze-edge"
-                }`}
-              >
-                {DISCOUNT_SCOPE_LABELS[scope]}
               </button>
             ))}
           </div>
@@ -490,56 +477,78 @@ export function QuoteCalculator({
               {showRates ? "Elrejtem" : "Szerkesztem"}
             </button>
           </div>
+          <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
+            A fejenkénti árak, a sávhatár, a további workshop-nap és a pilot-kedvezmény
+            PUBLIKUSAK: a /how-we-work árblokk, a főoldal csapat-blokkja és a /pilot
+            ténysáv ezekből mutat számot. Mentés után a publikus oldalak azonnal frissülnek.
+            Az óra-becslés, a cél-óradíj és a kedvezmény-keret belső.
+          </p>
           {!saved && (
             <p className="mt-2 rounded-lg border border-bronze-edge bg-bronze-soft/40 p-3 text-xs leading-relaxed text-ink-body">
-              Ezek még a beépített PLACEHOLDER értékek – nincs mögöttük valós költségadat.
-              Állítsd át és mentsd el, mielőtt ajánlatot adsz belőle.
+              Még a beépített alapértelmezett díjkártya él (nincs mentett, vagy a mentett
+              a régi, programdíjas formában van). Ellenőrizd, és mentsd el.
             </p>
           )}
 
           {showRates && (
             <div className="mt-4 flex flex-col gap-4">
+              <div>
+                <p className="font-mono text-xs uppercase tracking-widest text-muted">
+                  Publikus árlétra (nettó Ft / fő)
+                </p>
+                <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {QUOTE_TIERS.map((tier) => (
+                    <div key={tier} className="rounded-xl border border-sand bg-cream p-3">
+                      <p className="text-sm font-semibold text-ink">{QUOTE_TIER_LABELS[tier]}</p>
+                      <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <NumberField
+                          label={`Első ${rate.firstBandHeads} fő`}
+                          value={rate.tiers[tier].perHead}
+                          step={1_000}
+                          onChange={(perHead) => setTierRate(tier, { perHead })}
+                          suffix="Ft/fő"
+                        />
+                        <NumberField
+                          label="Felette"
+                          value={rate.tiers[tier].perHeadOver}
+                          step={1_000}
+                          onChange={(perHeadOver) => setTierRate(tier, { perHeadOver })}
+                          suffix="Ft/fő"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <NumberField
-                  label="Programdíj"
-                  value={rate.baseFee}
-                  step={10_000}
-                  onChange={(baseFee) => setRate({ ...rate, baseFee })}
-                  suffix="Ft"
+                  label="Sávhatár"
+                  value={rate.firstBandHeads}
+                  min={1}
+                  onChange={(firstBandHeads) => setRate({ ...rate, firstBandHeads })}
+                  suffix="fő"
                 />
                 <NumberField
-                  label="Cél-óradíj"
-                  value={rate.targetHourlyRate}
-                  step={1_000}
-                  onChange={(targetHourlyRate) => setRate({ ...rate, targetHourlyRate })}
-                  suffix="Ft/h"
-                />
-                <NumberField
-                  label="Workshop-nap"
-                  value={rate.workshopDayFee}
-                  step={10_000}
-                  onChange={(workshopDayFee) => setRate({ ...rate, workshopDayFee })}
-                  suffix="Ft"
-                />
-                <NumberField
-                  label="Kiszállás-nap"
-                  value={rate.travelDayFee}
-                  step={5_000}
-                  onChange={(travelDayFee) => setRate({ ...rate, travelDayFee })}
-                  suffix="Ft"
-                />
-                <NumberField
-                  label="Hullám-arány"
-                  value={rate.waveRatePct}
-                  onChange={(waveRatePct) => setRate({ ...rate, waveRatePct })}
+                  label="Pilot-kedvezmény (publikus)"
+                  value={rate.pilotDiscountPct}
+                  step={5}
+                  onChange={(pilotDiscountPct) => setRate({ ...rate, pilotDiscountPct })}
                   suffix="%"
                 />
                 <NumberField
-                  label="Hullám fix díj"
-                  value={rate.waveFixedFee}
+                  label="További workshop-nap (publikus)"
+                  value={rate.extraWorkshopDayFee}
                   step={10_000}
-                  onChange={(waveFixedFee) => setRate({ ...rate, waveFixedFee })}
+                  onChange={(extraWorkshopDayFee) => setRate({ ...rate, extraWorkshopDayFee })}
                   suffix="Ft"
+                />
+                <NumberField
+                  label="További mérési kör"
+                  value={rate.extraWaveRatePct}
+                  step={5}
+                  onChange={(extraWaveRatePct) => setRate({ ...rate, extraWaveRatePct })}
+                  suffix="% a fejenkénti díjból"
                 />
                 <NumberField
                   label="Havi kísérés"
@@ -549,78 +558,26 @@ export function QuoteCalculator({
                   suffix="Ft/hó"
                 />
                 <NumberField
-                  label="Kedvezmény-keret"
+                  label="Kiszállás-nap"
+                  value={rate.travelDayFee}
+                  step={5_000}
+                  onChange={(travelDayFee) => setRate({ ...rate, travelDayFee })}
+                  suffix="Ft"
+                />
+                <NumberField
+                  label="Cél-óradíj (belső)"
+                  value={rate.targetHourlyRate}
+                  step={1_000}
+                  onChange={(targetHourlyRate) => setRate({ ...rate, targetHourlyRate })}
+                  suffix="Ft/h"
+                />
+                <NumberField
+                  label="Kedvezmény-keret (belső)"
                   value={rate.maxDiscountPct}
+                  step={5}
                   onChange={(maxDiscountPct) => setRate({ ...rate, maxDiscountPct })}
                   suffix="%"
                 />
-              </div>
-
-              <div>
-                <p className="font-mono text-xs uppercase tracking-widest text-muted">
-                  Létszám-sávok (marginális, fő/Ft)
-                </p>
-                <div className="mt-2 flex flex-col gap-2">
-                  {rate.headBands.map((band, index) => (
-                    <div key={index} className="flex flex-wrap items-center gap-2">
-                      <span className="w-24 shrink-0 text-xs text-muted">
-                        {band.upTo == null ? "afölött" : `${band.upTo} főig`}
-                      </span>
-                      <input
-                        type="number"
-                        value={band.perHead}
-                        step={500}
-                        onChange={(event) => {
-                          const headBands = [...rate.headBands];
-                          headBands[index] = {
-                            ...band,
-                            perHead: Number(event.target.value),
-                          };
-                          setRate({ ...rate, headBands });
-                        }}
-                        className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-32 md:flex-none md:basis-auto"
-                      />
-                      <span className="shrink-0 text-xs text-muted">Ft / fő</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <p className="font-mono text-xs uppercase tracking-widest text-muted">
-                  Mérés-lépések felára (fő / fix)
-                </p>
-                <div className="mt-2 flex flex-col gap-2">
-                  {QUOTE_STEPS.map((step) => {
-                    const stepRate = rate.stepRates[step];
-                    if (!stepRate) return null;
-                    return (
-                      <div key={step} className="flex flex-wrap items-center gap-2">
-                        <span className="w-full text-xs text-muted md:w-44 md:shrink-0">
-                          {QUOTE_STEP_LABELS[step]}
-                        </span>
-                        {(["perHead", "fixed"] as const).map((field) => (
-                          <input
-                            key={field}
-                            type="number"
-                            value={stepRate[field]}
-                            step={500}
-                            onChange={(event) =>
-                              setRate({
-                                ...rate,
-                                stepRates: {
-                                  ...rate.stepRates,
-                                  [step]: { ...stepRate, [field]: Number(event.target.value) },
-                                },
-                              })
-                            }
-                            className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-28 md:flex-none md:basis-auto"
-                          />
-                        ))}
-                      </div>
-                    );
-                  })}
-                </div>
               </div>
 
               <div>
@@ -630,11 +587,14 @@ export function QuoteCalculator({
                 <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                   {(
                     [
-                      ["setup", "Setup"],
+                      ["setup", "Setup, kampány"],
                       ["perTeam", "Csapatonként"],
                       ["perTenHeads", "10 főnként"],
-                      ["perWorkshopDay", "Workshop-nap"],
-                      ["perWave", "Hullámonként"],
+                      ["onlineDebrief", "Online értelmezés"],
+                      ["halfDayWorkshop", "Félnapos workshop"],
+                      ["followUp", "Utánkövető mérés"],
+                      ["perExtraWorkshopDay", "További workshop-nap"],
+                      ["perExtraWave", "További mérési kör"],
                       ["perRetainerMonth", "Kísérés-hó"],
                       ["perTravelDay", "Kiszállás-nap"],
                     ] as const

@@ -1,3 +1,5 @@
+import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
+import { derivePublicLadder } from "@/lib/pricing/team-ladder";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -40,7 +42,7 @@ describe("public form state contracts", () => {
   });
 
   it("kiemeli a következő pilot-helyet a brand-csillagos kapacitáskártyán", () => {
-    const { container } = render(<PilotContent />);
+    const { container } = render(<PilotContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     const capacity = container.querySelector("[data-pilot-spots]");
     const nextSpot = container.querySelector('[data-pilot-spot="next"]');
@@ -118,7 +120,7 @@ describe("public form state contracts", () => {
       .mockReturnValueOnce(pending.promise)
       .mockResolvedValueOnce({ ok: true, status: 200 });
     vi.stubGlobal("fetch", fetchMock);
-    render(<PilotContent />);
+    render(<PilotContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     const name = screen.getByRole("textbox", { name: t("pilot.labelName", "en") });
     const email = screen.getByRole("textbox", { name: t("pilot.labelEmail", "en") });

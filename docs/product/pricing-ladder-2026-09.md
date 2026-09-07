@@ -1,0 +1,113 @@
+# Publikus árlétra — döntési dokumentum (2026-09-07)
+
+> Állapot: **bevezetve** (branch: `claude/pricing-details-per-person`).
+> A számok forrása a díjkártya (`src/lib/quote/rate-card.ts`,
+> `DEFAULT_RATE_CARD`), az élő érték az admin felületen mentett kártya
+> (`/admin/quote` → Díjtételek). Ez a doksi az indoklást őrzi.
+
+## 1. Mi változott
+
+A platform 2026-09-07-től **publikál fejenkénti árat**. A korábbi
+„egyedi ajánlat az első beszélgetés után" modell (programdíj + sávos
+mérési díj + mérés-lépésenkénti felárak + workshop-nap) egy kétszintes,
+fejenkénti létrára cserélődött:
+
+| Szint | Tartalom | Alapértelmezett ár (nettó) |
+|---|---|---|
+| **Csapatkép** | minden mérés (személyiség, csapatszerep, bizalmi kör, pszichológiai biztonság, observer), validált csapatriport, vezetői visszajelzés, 90 perces online közös értelmezés | **35 000 Ft/fő** |
+| **Csapatprogram** | Csapatkép + félnapos értelmező workshop + utánkövető mérés fél év múlva | **50 000 Ft/fő** |
+| 10 fő feletti tagok | mindkét szinten | 20 000 Ft/fő |
+| További egész napos, helyszíni workshop | | 180 000 Ft |
+| Pilot-partneri kedvezmény (/pilot ténysáv) | a Csapatprogram árából | 50% |
+
+Belső (nem publikus) tételek: további mérési kör (a fejenkénti díj 35%-a),
+havi kísérés (120 000 Ft/hó), kiszállás (60 000 Ft/nap, továbbhárítva),
+óra-becslés, cél-óradíj (25 000 Ft/óra), kedvezmény-keret (30%).
+
+**Elv:** a mérések száma nem növeli az árat. A több mérés több
+magyarázatot igényel, ami a workshop-időben (a felső szintben és az
+extra napokban) jön vissza — így az ügyfél szabadon választhat mérést,
+az ár pedig egy mondatban elmondható.
+
+## 2. Miért ez a nagyságrend
+
+A korábbi (placeholder) díjkártya egy 10 fős, teljes mérést kérő csapatra
+1,4 M Ft listaárat adott (140 e Ft/fő), 30%-os pilot-kedvezménnyel is
+~1 M Ft-ot. Ez az UK/US practitioner-piac szintje, nem a magyar kkv-é.
+
+Piaci viszonyítás (2026-09, nettó, hozzávetőleges Ft-átváltással —
+1 £ ≈ 450, 1 $ ≈ 350, 1 € ≈ 400 Ft):
+
+| Eszköz | Publikált ár / fő | kb. Ft / fő |
+|---|---|---|
+| Innermetrix DISC (HU) | 30 000 Ft | 30 000 (riport, konzultáció nélkül) |
+| Belbin egyéni riport | £49 + VAT | 22 000 |
+| Everything DiSC Workplace | $73–90 | 26–32 000 |
+| Insights Discovery profil | £85–130 | 38–60 000 |
+| Five Behaviors Team Profile | $171–210 | 60–75 000 |
+| Lumina Spark portré + debrief | £285-től | 130 000-től |
+
+Facilitáció: magyar tréneri napidíj 150–200 e (kisvállalati) → 333 e Ft
+(vállalati benchmark, HR Portál 2024); OD-tanácsadó ~205 e Ft/nap.
+Egy 10 fős csapatdiagnosztika + egynapos feldolgozás a magyar piacon
+500–900 e Ft között hihető.
+
+A Csapatkép 35 000 Ft/fő-vel egy DISC-riport áráért csapatriportot és
+közös értelmezést is ad; a Csapatprogram 500 000 Ft egy 10 fős csapatra
+egy jobb tréningnap ára, méréssel, riporttal és visszaméréssel.
+
+## 3. A padló (saját költség)
+
+A kalkulátor óra-modellje (mind belső, az admin felületen állítható):
+setup 4 + csapatonként 2 + minden 10 főre 2 + online értelmezés 2;
+Csapatprogramnál + félnapos workshop 5 + utánkövető mérés 3; extra
+workshop-nap 10, extra mérési kör 3, kísérés-hó 3, kiszállás-nap 4.
+
+| 10 fős csapat | Ár | Óra | Effektív óradíj | Cél 25 000 |
+|---|---|---|---|---|
+| Csapatkép | 350 000 | 10 | 35 000 | ✓ |
+| Csapatprogram | 500 000 | 18 | 27 800 | ✓ |
+| Csapatprogram, pilot −50% | 250 000 | 18 | 13 900 | ✗ tudatos befektetés az első 10 csapatra |
+| 6 fős Csapatkép | 210 000 | 10 | 21 000 | ✗ a legkisebb csapat a padló alatt |
+
+A 6–8 fős csapatok a padló alatt vannak: ezt tudatosan vállaljuk (a
+magyar kkv-csapat tipikusan 5–8 fő, és nem akarunk „minimum létszámot"
+az első számban). Ha ez fáj, a kártyán a Csapatkép ára vagy az óra-modell
+állítandó, nem a kód.
+
+## 4. Kkv-létszám, amire a főoldali csillag épül
+
+~900 ezer kkv Magyarországon (2024), ebből ~240 ezer foglalkoztat 1 főnél
+többet; a foglalkoztató cégek 85%-a 2–9 fős mikrovállalkozás (átlag ~6 fő,
+becslés a KSH megoszlásból); a kisvállalkozás (10–49 fő) sávjában
+jellemzően 5–12 fős csapategységek. Ezért a főoldal lábjegyzete
+„5–10 fős kkv-csapatra" mond árat — ez a sáv, ahol a 35 000 Ft/fő igaz.
+Források: GKI „Kicsi a bors, de erős" (2024-12), Makronóm (2024-12),
+KSH STADAT 9.1.1.17.
+
+## 5. Hol jelenik meg, és honnan jön a szám
+
+Egyetlen forrás: a díjkártya (`QuoteRateCard` tábla, `key = "default"`),
+ebből `derivePublicLadder()` vágja ki a publikus részhalmazt
+(`src/lib/pricing/team-ladder.ts`). Fogyasztók:
+
+| Felület | Mit mutat |
+|---|---|
+| `/how-we-work` „Ajánlat" szekció | `TeamPricingConfigurator`: szint-váltó + létszám-csúszka + fejenkénti ár + tartalom; GYIK „Mennyibe kerül?" / „Mit tartalmaz az ár?" a számokkal; Service JSON-LD `UnitPriceSpecification` |
+| `/` csapat-blokk (`TeamPathway`) | egy horgony-szám: a belépő szint ára „Ft/fő-től*", csillagos lábjegyzettel |
+| `/pilot` ténysáv 3. cella | a Csapatprogram listaára áthúzva, −50% jelvény, partneri ár |
+| `/admin/quote` | ugyanebből számol az ajánlat (szint × létszám + extrák); a díjtételek mentése `revalidatePath`-tal frissíti a három publikus oldalt (ISR, 1 óra) |
+
+A CRM-ben mentett, 2026-09-07 előtti ajánlatok bemenete (programdíjas
+forma) olvasáskor átfordul a létrára (`readQuoteInput`): workshop vagy
+hullám → Csapatprogram, egyébként Csapatkép. A régi díjkártya-pillanatképből
+dokumentum már nem generálható (`QUOTE_SNAPSHOT_MISMATCH`) — másolat kell
+friss kártyával.
+
+## 6. Ami tudatosan NEM került be
+
+- **Kkv- vs. szervezeti tarifa** (cégméret szerinti két ár, keresztfinanszírozással):
+  megfontolt, de a kétszintes létra egyszerűbb. Ha a nagy szervezetek
+  aránya nő, ez a következő lépés — a kártya `tiers` szerkezete bővíthető.
+- **Kapcsolat-űrlap előtöltés** a csúszka állásával: a CTA ma sima
+  `/contact`, a paraméterezés akkor éri meg, ha az űrlap tudja fogadni.

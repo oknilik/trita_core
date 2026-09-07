@@ -1,3 +1,5 @@
+import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
+import { derivePublicLadder } from "@/lib/pricing/team-ladder";
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ContactContent } from "@/app/(marketing)/contact/ContactContent";
@@ -34,7 +36,7 @@ describe("the separate contact and collaboration art directions", () => {
   });
 
   it("uses the shared-rhythm motif and routes the closing decision to contact", () => {
-    const { container } = render(<PricingContent />);
+    const { container } = render(<PricingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     expect(container.querySelector("[data-collaboration-rhythm-art]")).not.toBeNull();
     expect(screen.queryByText("Tisztább csapatkép")).not.toBeInTheDocument();

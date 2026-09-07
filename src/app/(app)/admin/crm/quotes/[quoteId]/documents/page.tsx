@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { quoteInputSchema } from "@/lib/quote/rate-card";
+import { readQuoteInput } from "@/lib/quote/rate-card";
 import {
   commercialDocumentSnapshotSchema,
 } from "@/lib/crm/commercial-document-schema";
@@ -34,7 +34,8 @@ export default async function QuoteDocumentsPage({
   });
   if (!quote) notFound();
 
-  const input = quoteInputSchema.parse(quote.input);
+  const input = readQuoteInput(quote.input);
+  if (!input) notFound();
   const fallbackForm = defaultCommercialDocumentForm({
     company: quote.deal.company,
     contactName: quote.deal.contactName,

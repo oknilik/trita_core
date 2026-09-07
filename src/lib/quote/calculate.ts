@@ -1,10 +1,10 @@
 import {
-  QUOTE_STEPS,
+  QUOTE_TIER_LABELS,
   type DiscountKind,
-  type DiscountScope,
-  type QuoteStep,
+  type QuoteTier,
   type RateCard,
 } from "@/lib/quote/rate-card";
+import { derivePublicLadder, ladderPrice } from "@/lib/pricing/team-ladder";
 
 // Ajánlat-számítás — tiszta függvény, hogy tesztelhető és átlátható legyen.
 //
@@ -13,22 +13,27 @@ import {
 //   · becsült tanácsadói óra,
 //   · effektív óradíj — EZEN dől el az alku. Ha a cél alá esik, a
 //     kedvezmény nem üzleti döntés, hanem önkizsákmányolás.
+//
+// Az ár a publikus árlétrából jön (team-ladder.ts): szint × létszám, plusz
+// a szint tartalmán felüli tételek (extra workshop-nap, extra mérési kör,
+// havi kísérés, egyéb, kiszállás). Ugyanaz a szám, amit a vevő a
+// /how-we-work oldalon lát — az ajánlat nem lehet más.
 
 export interface QuoteInput {
   headcount: number;
   teams: number;
-  steps: QuoteStep[];
-  workshopDays: number;
+  tier: QuoteTier;
+  /** További helyszíni workshop-napok a szint tartalmán felül. */
+  extraWorkshopDays: number;
   travelDays: number;
-  /** Ismételt mérési hullámok száma a baseline UTÁN (0 = nincs utánkövetés). */
-  waves: number;
+  /** További utánkövető mérési körök a szint tartalmán felül. */
+  extraWaves: number;
   /** Havi kísérés hónapjai (0 = nincs). */
   retainerMonths: number;
   otherFee: number;
   otherFeeLabel: string;
   discountPct: number;
   discountKind: DiscountKind | null;
-  discountScope: DiscountScope;
   discountReason: string;
   vatRate: number;
 }
@@ -43,7 +48,7 @@ export interface QuoteLine {
 
 export interface QuoteResult {
   lines: QuoteLine[];
-  /** Kedvezményezhető rész (program + mérés + workshop + utánkövetés). */
+  /** Kedvezményezhető rész (minden, ami nem továbbhárított). */
   discountableSubtotal: number;
   /** Továbbhárított tételek (kiszállás) — ezen nincs kedvezmény. */
   passThroughSubtotal: number;
@@ -52,7 +57,7 @@ export interface QuoteResult {
   netTotal: number;
   vatAmount: number;
   grossTotal: number;
-  /** Egyszeri rész (baseline + hullámok), retainer nélkül. */
+  /** Egyszeri rész, retainer nélkül. */
   oneOffTotal: number;
   retainerTotal: number;
   estimatedHours: number;
@@ -70,89 +75,72 @@ export type QuoteWarning =
   | "NO_FOLLOW_UP";
 
 /**
- * Fejenkénti mérési díj MARGINÁLIS sávokkal (mint az adósávok): az első N
- * fő drágább, a következők olcsóbbak.
- *
- * Miért nem sima „a létszám sávja szerint mindenki ugyanannyi": ott a
- * sávhatáron szakadás keletkezne — 26 fő olcsóbb lenne, mint 25. Egy ilyen
- * ártábla az első alkunál kiderül, és hiteltelenít.
+ * Becsült tanácsadói óra — a saját költség kalkulátora. A Csapatprogram az
+ * online értelmezésen felül félnapos workshopot és utánkövető kiértékelést
+ * is visz; a mérés-lépések száma NEM számít, mert a több magyarázat a
+ * workshop-időben jelenik meg (ezért kerül a workshop a felső szintre).
  */
-export function perHeadTotal(headcount: number, rate: RateCard): number {
-  if (headcount <= 0) return 0;
-  let remaining = headcount;
-  let covered = 0;
-  let total = 0;
-
-  for (const band of rate.headBands) {
-    if (remaining <= 0) break;
-    const bandCapacity = band.upTo == null ? remaining : Math.max(0, band.upTo - covered);
-    const take = Math.min(remaining, bandCapacity);
-    total += take * band.perHead;
-    remaining -= take;
-    covered += take;
-  }
-
-  // Ha az utolsó sáv zárt volt és maradt fő, az utolsó sáv díjával megyünk
-  // tovább — így a függvény sosem ad kevesebbet nagyobb létszámra.
-  if (remaining > 0) {
-    total += remaining * rate.headBands[rate.headBands.length - 1].perHead;
-  }
-  return total;
-}
-
-function stepsTotal(input: QuoteInput, rate: RateCard): { perHead: number; fixed: number } {
-  let perHead = 0;
-  let fixed = 0;
-  for (const step of input.steps) {
-    const stepRate = rate.stepRates[step];
-    if (!stepRate) continue;
-    perHead += stepRate.perHead * input.headcount;
-    fixed += stepRate.fixed;
-  }
-  return { perHead, fixed };
+export function estimateHours(input: QuoteInput, rate: RateCard): number {
+  const heads = Math.max(0, Math.round(input.headcount));
+  const teams = Math.max(1, Math.round(input.teams));
+  const h = rate.hours;
+  const tierHours =
+    input.tier === "prog"
+      ? h.onlineDebrief + h.halfDayWorkshop + h.followUp
+      : h.onlineDebrief;
+  return (
+    h.setup +
+    h.perTeam * teams +
+    h.perTenHeads * Math.ceil(heads / 10) +
+    tierHours +
+    h.perExtraWorkshopDay * Math.max(0, input.extraWorkshopDays) +
+    h.perExtraWave * Math.max(0, input.extraWaves) +
+    h.perRetainerMonth * Math.max(0, input.retainerMonths) +
+    h.perTravelDay * Math.max(0, input.travelDays)
+  );
 }
 
 export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
   const heads = Math.max(0, Math.round(input.headcount));
-  const teams = Math.max(1, Math.round(input.teams));
-  const measurement = perHeadTotal(heads, rate);
-  const steps = stepsTotal({ ...input, headcount: heads }, rate);
+  const ladder = derivePublicLadder(rate);
+  const price = ladderPrice(ladder, input.tier, heads);
+  const tierRate = rate.tiers[input.tier];
+  const tierLabel = QUOTE_TIER_LABELS[input.tier];
 
-  const workshop = rate.workshopDayFee * input.workshopDays;
-  const travel = rate.travelDayFee * input.travelDays;
-
-  // Egy ismételt hullám a mérési díj csökkentett hányada: a setup, a
-  // csapat megismerése és a módszertani döntések már megvannak.
-  const waveUnit =
-    Math.round(((measurement + steps.perHead) * rate.waveRatePct) / 100) + rate.waveFixedFee;
-  const waves = waveUnit * Math.max(0, Math.round(input.waves));
+  const extraWorkshop = rate.extraWorkshopDayFee * Math.max(0, Math.round(input.extraWorkshopDays));
+  // Az extra mérési kör a szint fejenkénti díjának hányada: a setup és a
+  // csapat megismerése már megvan, a platformon az ismételt mérés olcsó.
+  const waveUnit = Math.round((price.total * rate.extraWaveRatePct) / 100);
+  const extraWaves = waveUnit * Math.max(0, Math.round(input.extraWaves));
   const retainer = rate.retainerMonthlyFee * Math.max(0, Math.round(input.retainerMonths));
   const otherFee = Math.max(0, Math.round(input.otherFee));
+  const travel = rate.travelDayFee * Math.max(0, Math.round(input.travelDays));
 
   const lines: QuoteLine[] = [
-    { key: "base", label: "Programdíj", amount: rate.baseFee },
-    { key: "measurement", label: `Mérési díj (${heads} fő)`, amount: measurement },
-    { key: "steps", label: "Mérés-lépések felára", amount: steps.perHead + steps.fixed },
-    { key: "workshop", label: `Workshop (${input.workshopDays} nap)`, amount: workshop },
-    { key: "waves", label: `Utánkövetés (${input.waves} hullám)`, amount: waves },
+    {
+      key: "tier",
+      label: `${tierLabel} · ${price.firstHeads} fő × ${tierRate.perHead.toLocaleString("hu-HU")} Ft`,
+      amount: price.firstHeads * tierRate.perHead,
+    },
+    {
+      key: "tierOver",
+      label: `${ladder.firstBandHeads} fő felett · ${price.overHeads} fő × ${tierRate.perHeadOver.toLocaleString("hu-HU")} Ft`,
+      amount: price.overHeads * tierRate.perHeadOver,
+    },
+    { key: "extraWorkshop", label: `További workshop-nap (${input.extraWorkshopDays})`, amount: extraWorkshop },
+    { key: "extraWaves", label: `További mérési kör (${input.extraWaves})`, amount: extraWaves },
     { key: "retainer", label: `Havi kísérés (${input.retainerMonths} hó)`, amount: retainer },
     { key: "other", label: input.otherFeeLabel.trim() || "Egyéb díj", amount: otherFee },
     { key: "travel", label: `Kiszállás (${input.travelDays} nap)`, amount: travel, passThrough: true },
   ].filter((line) => line.amount > 0);
 
-  const discountableKeys =
-    input.discountScope === "all"
-      ? null
-      : new Set(["base", "workshop"]);
   const discountableSubtotal = lines
-    .filter((line) => !line.passThrough && (!discountableKeys || discountableKeys.has(line.key)))
+    .filter((line) => !line.passThrough)
     .reduce((sum, line) => sum + line.amount, 0);
   const passThroughSubtotal = lines
     .filter((line) => line.passThrough)
     .reduce((sum, line) => sum + line.amount, 0);
 
-  // A listaár minden tétel összege. A discountableSubtotal szándékosan csak
-  // a választott kedvezményalap; a fejdíj attól még a listaár része marad.
   const listTotal = lines.reduce((sum, line) => sum + line.amount, 0);
   const discountPct = Math.min(100, Math.max(0, input.discountPct));
   const discountAmount = Math.round((discountableSubtotal * discountPct) / 100);
@@ -161,14 +149,7 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
   const vatAmount = Math.round((netTotal * vatRate) / 100);
   const grossTotal = netTotal + vatAmount;
 
-  const estimatedHours =
-    rate.hours.setup +
-    rate.hours.perTeam * teams +
-    rate.hours.perTenHeads * Math.ceil(heads / 10) +
-    rate.hours.perWorkshopDay * input.workshopDays +
-    rate.hours.perWave * Math.max(0, input.waves) +
-    rate.hours.perRetainerMonth * Math.max(0, input.retainerMonths) +
-    rate.hours.perTravelDay * input.travelDays;
+  const estimatedHours = estimateHours(input, rate);
 
   // A kiszállás továbbhárított költség, nem tanácsadói bevétel: az
   // óradíjból kivesszük, különben szépítené a képet.
@@ -184,7 +165,11 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
   if (discountPct > 0 && input.discountReason.trim().length === 0) {
     warnings.push("DISCOUNT_WITHOUT_REASON");
   }
-  if (input.waves === 0 && input.retainerMonths === 0) warnings.push("NO_FOLLOW_UP");
+  // A Csapatképben nincs visszamérés; ha extra kört és kísérést sem kér,
+  // egyszeri munka lesz belőle — ebből nem lesz üzlet.
+  if (input.tier === "kep" && input.extraWaves === 0 && input.retainerMonths === 0) {
+    warnings.push("NO_FOLLOW_UP");
+  }
 
   return {
     lines,
@@ -208,18 +193,17 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
 /** Üres bemenet – a felület ebből indul. */
 export function emptyQuoteInput(): QuoteInput {
   return {
-    headcount: 12,
+    headcount: 10,
     teams: 1,
-    steps: [...QUOTE_STEPS].filter((step) => step !== "TRUST_360"),
-    workshopDays: 1,
+    tier: "prog",
+    extraWorkshopDays: 0,
     travelDays: 0,
-    waves: 1,
+    extraWaves: 0,
     retainerMonths: 0,
     otherFee: 0,
     otherFeeLabel: "Egyéb díj",
     discountPct: 0,
     discountKind: null,
-    discountScope: "base_workshop",
     discountReason: "",
     vatRate: 27,
   };

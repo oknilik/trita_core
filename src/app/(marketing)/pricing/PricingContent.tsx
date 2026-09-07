@@ -7,10 +7,12 @@ import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { PilotSpotsIndicator } from "@/components/marketing/PilotSpotsIndicator";
-import { CheckIcon, ChevronRightIcon } from "@/components/ui/icons";
+import { TeamPricingConfigurator } from "@/components/pricing/TeamPricingConfigurator";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
-import { t } from "@/lib/i18n/public";
+import { t, tf } from "@/lib/i18n/public";
+import { formatHuf, type PublicLadder } from "@/lib/pricing/team-ladder";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { PRICING_FAQ_INDEXES } from "./faq";
 
@@ -44,8 +46,13 @@ function Workflow({ locale }: { locale: "hu" | "en" }) {
   );
 }
 
-export function PricingContent() {
+export function PricingContent({ ladder }: { ladder: PublicLadder }) {
   const { locale } = useLocale();
+  const faqVars = {
+    kep: formatHuf(ladder.tiers.kep.perHead),
+    prog: formatHuf(ladder.tiers.prog.perHead),
+    band: ladder.firstBandHeads,
+  };
 
   return (
     <main className="overflow-hidden bg-cream text-ink selection:bg-bronze/20">
@@ -101,44 +108,36 @@ export function PricingContent() {
             </p>
           </div>
           <div>
-            <h2 className="max-w-[17ch] font-fraunces text-fluid-title tracking-tight text-ink">{t("pricing.offerTitle", locale)}</h2>
-            <p className="mt-5 max-w-[64ch] text-base leading-relaxed text-ink-body">{t("pricing.offerBody", locale)}</p>
-            <div className="mt-9 grid gap-5 md:grid-cols-2">
-              <article className="flex flex-col rounded-[24px] border border-sage/15 bg-sage-soft p-6 md:p-7">
-                <SectionEyebrow tone="self">{t("pricing.selfEyebrow", locale)}</SectionEyebrow>
-                <h3 className="mt-4 font-fraunces text-2xl text-ink">{t("pricing.selfTitle", locale)}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink-body">{t("pricing.selfBody", locale)}</p>
-                <ul className="mt-5 flex-1 space-y-3">
-                  {[1, 2, 3].map((item) => (
-                    <li key={item} className="flex gap-2.5 text-caption leading-relaxed text-ink-body">
-                      <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-sage" />{t(`pricing.selfCheck${item}`, locale)}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/try" className={`mt-6 inline-flex min-h-11 items-center self-start font-semibold text-sage-dark transition-colors hover:text-sage ${FOCUS_RING_CLASS}`}>
-                  {t("pricing.selfCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
-                </Link>
-              </article>
+            <h2 className="max-w-[17ch] font-fraunces text-fluid-title tracking-tight text-ink">{t("pricing.configuratorTitle", locale)}</h2>
+            <p className="mt-5 max-w-[64ch] text-base leading-relaxed text-ink-body">{t("pricing.configuratorLead", locale)}</p>
 
-              <article className="relative flex flex-col overflow-hidden rounded-[24px] bg-[var(--color-layer-team-hero-from)] p-6 text-[var(--color-text-on-inverse)] shadow-[0_20px_50px_rgba(26,26,46,0.12)] md:p-7">
-                <div className="absolute -right-12 -top-12 size-40 rounded-full border border-white/10" />
-                <SectionEyebrow tone="onDark">{t("pricing.teamEyebrow", locale)}</SectionEyebrow>
-                <h3 className="relative mt-4 font-fraunces text-2xl">{t("pricing.teamTitle", locale)}</h3>
-                <p className="relative mt-3 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">{t("pricing.teamBody", locale)}</p>
-                <ul className="relative mt-5 space-y-3">
-                  {[1, 2, 3].map((item) => (
-                    <li key={item} className="flex gap-2.5 text-caption leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-                      <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-[var(--color-layer-team-badge)]" />{t(`pricing.teamHow${item}`, locale)}
-                    </li>
-                  ))}
-                </ul>
-                <Link href="/contact" onClick={() => track("cta.click", { cta_id: "pricing_team", surface: "pricing" })} className={`relative mt-6 inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--color-layer-team-badge)] px-5 text-center text-caption font-semibold text-[var(--color-layer-team-hero-to)] transition hover:-translate-y-0.5 hover:brightness-105 ${FOCUS_RING_CLASS}`}>
-                  {t("pricing.teamCta", locale)}
-                </Link>
-              </article>
+            <div className="mt-9">
+              <TeamPricingConfigurator ladder={ladder} locale={locale} />
             </div>
-            <div className="mt-5 rounded-[20px] border border-sand bg-warm px-5 py-5 md:px-6">
-              <p className="text-sm leading-relaxed text-ink-body">{t("pricing.teamPriceNote", locale)}</p>
+
+            <div className="mt-5 grid gap-4 rounded-[20px] border border-sand bg-warm px-5 py-5 text-sm leading-relaxed text-ink-body md:grid-cols-3 md:gap-7 md:px-6">
+              <div>
+                <p className="font-semibold text-ink">{t("pricing.belowMultiTeamTitle", locale)}</p>
+                <p className="mt-1">{t("pricing.belowMultiTeamBody", locale)}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-ink">{t("pricing.belowWorkshopTitle", locale)}</p>
+                <p className="mt-1">{tf("pricing.belowWorkshopBody", locale, { fee: formatHuf(ladder.extraWorkshopDayFee) })}</p>
+              </div>
+              <div>
+                <p className="font-semibold text-ink">{t("pricing.belowDriversTitle", locale)}</p>
+                <p className="mt-1">{t("pricing.belowDriversBody", locale)}</p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-sage/15 bg-sage-soft px-5 py-4 text-sm text-ink-body">
+              <p>
+                <span className="font-semibold text-ink">{t("pricing.selfFreeLine", locale)}</span>{" "}
+                {t("pricing.selfFreeBody", locale)}
+              </p>
+              <Link href="/try" className={`inline-flex min-h-11 items-center whitespace-nowrap font-semibold text-sage-dark transition-colors hover:text-sage ${FOCUS_RING_CLASS}`}>
+                {t("pricing.selfFreeCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
+              </Link>
             </div>
           </div>
         </div>
@@ -174,7 +173,7 @@ export function PricingContent() {
                 <summary className={`flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-[18px] px-5 py-4 text-sm font-semibold text-ink ${FOCUS_RING_CLASS}`}>
                   {t(`pricing.faqQ${i}`, locale)}<span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-warm text-lg font-normal text-ink-body transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <p className="px-5 pb-5 pr-14 text-sm leading-relaxed text-ink-body">{t(`pricing.faqA${i}`, locale)}</p>
+                <p className="px-5 pb-5 pr-14 text-sm leading-relaxed text-ink-body">{tf(`pricing.faqA${i}`, locale, faqVars)}</p>
               </details>
             ))}
           </div>

@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { calculateQuote } from "@/lib/quote/calculate";
-import { quoteInputSchema, rateCardSchema } from "@/lib/quote/rate-card";
+import { rateCardSchema, readQuoteInput } from "@/lib/quote/rate-card";
 import {
   COMMERCIAL_DOCUMENT_KINDS,
   commercialDocumentFormSchema,
@@ -53,8 +53,13 @@ export async function generateCommercialDocument(params: {
       throw new CrmServiceError("ORDER_FORM_REQUIRES_ACCEPTED_QUOTE");
     }
 
-    const input = quoteInputSchema.parse(quote.input);
-    const rateCard = rateCardSchema.parse(quote.rateCardSnapshot);
+    // Örökség-bemenet (programdíjas) + régi díjkártya-pillanatkép: az
+    // újraszámolás nem tudná visszaadni a mentett összeget, ezért az ilyen
+    // ajánlatból nem generálunk dokumentumot — másolat kell friss kártyával.
+    const input = readQuoteInput(quote.input);
+    const rateCardParsed = rateCardSchema.safeParse(quote.rateCardSnapshot);
+    if (!input || !rateCardParsed.success) throw new CrmServiceError("QUOTE_SNAPSHOT_MISMATCH");
+    const rateCard = rateCardParsed.data;
     const result = calculateQuote(input, rateCard);
     if (result.netTotal !== quote.netTotal) {
       throw new CrmServiceError("QUOTE_SNAPSHOT_MISMATCH");

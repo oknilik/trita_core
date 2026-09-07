@@ -1,0 +1,228 @@
+"use client";
+
+import Link from "next/link";
+import { useId, useMemo, useRef, useState, type CSSProperties } from "react";
+import { CheckIcon } from "@/components/ui/icons";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { track } from "@/lib/analytics/client";
+import { t, tf, type Locale } from "@/lib/i18n/public";
+import {
+  PUBLIC_HEADCOUNT_DEFAULT,
+  PUBLIC_HEADCOUNT_MAX,
+  PUBLIC_HEADCOUNT_MIN,
+  formatHuf,
+  headcountBand,
+  ladderPrice,
+  type PublicLadder,
+} from "@/lib/pricing/team-ladder";
+import { QUOTE_TIERS, type QuoteTier } from "@/lib/quote/rate-card";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+
+/**
+ * Publikus árblokk a /how-we-work „Ajánlat" szekciójában.
+ *
+ * Váltó a két szint (Csapatkép / Csapatprogram) közt, csúszka a létszámra,
+ * jobb oldalon a fejenkénti ár és a csapatra jutó összeg. A számok a
+ * díjkártyából jönnek (`ladder` prop, szerverről), a tartalom-lista az
+ * i18n-kulcsokból — a két helyet együtt kell karbantartani
+ * (`QUOTE_TIER_INCLUDES` az admin/PDF oldalon).
+ *
+ * Analitika: az első beállítás-változás `pricing.configure` eseményt küld
+ * szinttel és létszám-SÁVVAL (nem pontos számmal) — csak mintázatra.
+ */
+
+const KEP_ITEMS = [1, 2, 3, 4] as const;
+const PROG_ITEMS = [1, 2] as const;
+
+export function TeamPricingConfigurator({
+  ladder,
+  locale,
+}: {
+  ladder: PublicLadder;
+  locale: Locale;
+}) {
+  const [tier, setTier] = useState<QuoteTier>("kep");
+  const [headcount, setHeadcount] = useState(PUBLIC_HEADCOUNT_DEFAULT);
+  const sliderId = useId();
+  const noteId = useId();
+  const tracked = useRef(false);
+
+  const price = useMemo(() => ladderPrice(ladder, tier, headcount), [ladder, tier, headcount]);
+  const tierRate = ladder.tiers[tier];
+  const tierName = t(`pricing.tier_${tier}_name`, locale);
+
+  const configure = (nextTier: QuoteTier, nextHeads: number) => {
+    setTier(nextTier);
+    setHeadcount(nextHeads);
+    if (tracked.current) return;
+    tracked.current = true;
+    track("pricing.configure", { tier: nextTier, heads_band: headcountBand(nextHeads) });
+  };
+
+  const sliderPct = ((headcount - PUBLIC_HEADCOUNT_MIN) / (PUBLIC_HEADCOUNT_MAX - PUBLIC_HEADCOUNT_MIN)) * 100;
+
+  return (
+    <div
+      className="grid overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_20px_50px_rgba(26,26,46,0.12)] md:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)]"
+      aria-label={t("pricing.configuratorA11y", locale)}
+    >
+      {/* ── Beállítás ─────────────────────────────────────────── */}
+      <div className="flex flex-col gap-6 p-6 md:p-7">
+        <div
+          role="group"
+          aria-label={t("pricing.tierGroupLabel", locale)}
+          className="grid grid-cols-2 gap-1 rounded-2xl border border-sand bg-warm p-1"
+        >
+          {QUOTE_TIERS.map((option) => {
+            const active = option === tier;
+            return (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={active}
+                onClick={() => configure(option, headcount)}
+                className={`grid min-h-[60px] gap-0.5 rounded-xl px-3.5 py-2.5 text-left transition ${
+                  active ? "bg-surface-card shadow-[0_6px_18px_rgba(26,26,46,0.08)]" : "hover:bg-surface-card/60"
+                } ${FOCUS_RING_CLASS}`}
+              >
+                <span
+                  className={`font-fraunces text-heading ${
+                    active ? "text-[var(--color-layer-team-accent)]" : "text-ink"
+                  }`}
+                >
+                  {t(`pricing.tier_${option}_name`, locale)}
+                </span>
+                <span className="text-caption text-ink-body">{t(`pricing.tier_${option}_short`, locale)}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div>
+          <div className="flex items-baseline justify-between gap-3">
+            <label htmlFor={sliderId} className="text-sm font-semibold text-ink">
+              {t("pricing.headcountLabel", locale)}
+            </label>
+            <output htmlFor={sliderId} className="font-fraunces text-title leading-none tabular-nums text-ink">
+              {headcount}
+              <span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.headcountUnit", locale)}</span>
+            </output>
+          </div>
+          <input
+            id={sliderId}
+            type="range"
+            min={PUBLIC_HEADCOUNT_MIN}
+            max={PUBLIC_HEADCOUNT_MAX}
+            step={1}
+            value={headcount}
+            aria-describedby={noteId}
+            aria-valuetext={`${headcount} ${t("pricing.headcountUnit", locale)}`}
+            onChange={(event) => configure(tier, Number(event.target.value))}
+            style={{ "--pct": `${sliderPct}%` } as CSSProperties}
+            className="pricing-slider mt-2 w-full"
+          />
+          <div aria-hidden className="mt-1 flex justify-between text-micro tabular-nums text-ink-body/70">
+            <span>{PUBLIC_HEADCOUNT_MIN}</span>
+            <span>10</span>
+            <span>20</span>
+            <span>30</span>
+            <span>{PUBLIC_HEADCOUNT_MAX}</span>
+          </div>
+          <p id={noteId} className="mt-2 text-caption leading-relaxed text-ink-body">
+            {tf("pricing.headcountNote", locale, {
+              band: ladder.firstBandHeads,
+              over: formatHuf(tierRate.perHeadOver),
+              max: PUBLIC_HEADCOUNT_MAX,
+            })}
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-ink">
+            {tf("pricing.includesTitle", locale, { tier: tierName })}
+          </h3>
+          <ul className="mt-3 space-y-2">
+            {KEP_ITEMS.map((item) => (
+              <li key={`kep-${item}`} className="flex gap-2.5 text-caption leading-relaxed text-ink-body">
+                <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
+                {t(`pricing.tier_kep_item${item}`, locale)}
+              </li>
+            ))}
+            {PROG_ITEMS.map((item) => {
+              const on = tier === "prog";
+              return (
+                <li
+                  key={`prog-${item}`}
+                  className={`flex gap-2.5 text-caption leading-relaxed ${on ? "text-ink-body" : "text-ink-body/55"}`}
+                >
+                  <CheckIcon className={`mt-0.5 h-4 w-4 shrink-0 ${on ? "text-sage" : "text-sand"}`} />
+                  <span>
+                    {t(`pricing.tier_prog_item${item}`, locale)}
+                    {!on && (
+                      <span className="ml-1.5 whitespace-nowrap rounded-full bg-[var(--color-layer-team-soft)] px-2 py-0.5 text-micro uppercase tracking-wide text-[var(--color-layer-team-accent)]">
+                        {t("pricing.tier_prog_name", locale)}
+                      </span>
+                    )}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+
+      {/* ── Ár ───────────────────────────────────────────────── */}
+      <div
+        aria-live="polite"
+        className="relative flex flex-col gap-4 overflow-hidden bg-gradient-to-br from-[var(--color-layer-team-hero-from)] to-[var(--color-layer-team-hero-to)] p-6 text-[var(--color-text-on-inverse)] md:p-7"
+      >
+        <div aria-hidden className="absolute -right-14 -top-14 size-48 rounded-full border border-white/10" />
+        <div aria-hidden className="absolute -bottom-20 -right-6 size-56 rounded-full border border-white/[0.07]" />
+        <SectionEyebrow tone="onDark" className="relative">
+          {tierName} · {headcount} {t("pricing.headcountUnit", locale)}
+        </SectionEyebrow>
+        <p className="relative font-fraunces text-fluid-display leading-none tracking-tight tabular-nums">
+          {formatHuf(price.perHeadAverage ?? tierRate.perHead)}
+          <span className="ml-1.5 font-sans text-base text-[var(--color-text-on-inverse-muted)]">
+            {t("pricing.perHeadUnit", locale)}
+          </span>
+        </p>
+        <p className="relative text-sm text-[var(--color-text-on-inverse-muted)]">
+          {tf("pricing.totalForTeam", locale, { total: formatHuf(price.total) })}
+        </p>
+        <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">{t("pricing.vatNote", locale)}</p>
+        <dl className="relative grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 border-t border-white/15 pt-4 text-caption">
+          <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
+            {tf("pricing.breakdownFirst", locale, { band: ladder.firstBandHeads })}
+          </dt>
+          <dd className="m-0 text-right tabular-nums">
+            {price.firstHeads} × {formatHuf(tierRate.perHead)} Ft
+          </dd>
+          {price.overHeads > 0 && (
+            <>
+              <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
+                {t("pricing.breakdownOver", locale)}
+              </dt>
+              <dd className="m-0 text-right tabular-nums">
+                {price.overHeads} × {formatHuf(tierRate.perHeadOver)} Ft
+              </dd>
+            </>
+          )}
+          <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">{t("pricing.timeLabel", locale)}</dt>
+          <dd className="m-0 text-right">{t(`pricing.tier_${tier}_time`, locale)}</dd>
+        </dl>
+        <Link
+          href="/contact"
+          onClick={() => track("cta.click", { cta_id: "pricing_configurator", surface: "pricing" })}
+          className={`relative mt-1 inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--color-layer-team-badge)] px-5 text-center text-caption font-semibold text-[var(--color-layer-team-hero-to)] transition hover:-translate-y-0.5 hover:brightness-105 ${FOCUS_RING_CLASS}`}
+        >
+          {t("pricing.teamCta", locale)}
+        </Link>
+        <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">{t("pricing.ctaNote", locale)}</p>
+        <p className="relative rounded-xl bg-white/[0.07] px-3 py-2.5 text-caption text-[var(--color-text-on-inverse-muted)]">
+          {tf("pricing.pilotNote", locale, { pct: ladder.pilotDiscountPct })}
+        </p>
+      </div>
+    </div>
+  );
+}

@@ -260,7 +260,18 @@ test("CRM flow", async (t) => {
     // Rate card-módosítás a pillanatképet nem érinti, a másolat viszont
     // már a friss kártyával számol újra.
     const { rate: currentRate } = await loadRateCard();
-    await saveRateCard({ ...currentRate, baseFee: currentRate.baseFee + 100_000 }, null);
+    // A Csapatprogram fejenkénti ára +10 000 Ft → az üres bemenet (10 fő, a
+    // sávon belül) nettója pont 100 000 Ft-tal nő.
+    await saveRateCard(
+      {
+        ...currentRate,
+        tiers: {
+          ...currentRate.tiers,
+          prog: { ...currentRate.tiers.prog, perHead: currentRate.tiers.prog.perHead + 10_000 },
+        },
+      },
+      null,
+    );
     const stillUntouched = await prisma.quote.findUniqueOrThrow({ where: { id: quote.id } });
     assert.equal(stillUntouched.netTotal, quote.netTotal);
     const copy = await duplicateQuote(quote.id);
@@ -435,5 +446,5 @@ test("CRM flow", async (t) => {
 
   // A DEFAULT_RATE_CARD referencia életben tartása: a teszt a mentett kártya
   // visszaállítása után is determinisztikus marad (lásd quote-életciklus).
-  assert.ok(DEFAULT_RATE_CARD.baseFee > 0);
+  assert.ok(DEFAULT_RATE_CARD.tiers.prog.perHead > 0);
 });

@@ -15,6 +15,7 @@ import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { PilotSpotsIndicator } from "@/components/marketing/PilotSpotsIndicator";
 import { t, tf, type Locale } from "@/lib/i18n/public";
 import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
+import { formatHuf, pilotPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
@@ -155,7 +156,7 @@ function PartnerVisual({ locale }: { locale: Locale }) {
   );
 }
 
-export function PilotContent() {
+export function PilotContent({ ladder }: { ladder: PublicLadder }) {
   const { locale } = useLocale();
   const fieldIdPrefix = useId().replaceAll(":", "");
   const [form, setForm] = useState<PilotFormValues>({ name: "", email: "", company: "", size: "", message: "" });
@@ -284,7 +285,7 @@ export function PilotContent() {
         </div>
       </section>
 
-      <PilotFactBar locale={locale} />
+      <PilotFactBar locale={locale} ladder={ladder} />
 
       <EditorialSection
         eyebrow={t("pilot.exchangeEyebrow", locale)}
@@ -625,13 +626,23 @@ const PILOT_FACTS = [1, 2, 3, 4] as const;
 
 // Ténysáv a hero alatt (P0-1): a nagy szám tipográfiája a /how-we-work
 // pilot-teaser „90 NAP" motívumát követi (font-fraunces + text-label unit).
-function PilotFactBar({ locale }: { locale: Locale }) {
+function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder }) {
+  // A 3. tény: a Csapatprogram listaára áthúzva, mellette a partneri ár —
+  // a pilot tartalma (workshop + visszamérés) a Csapatprogramé.
+  const fullPerHead = ladder.tiers.prog.perHead;
+  const partnerPerHead = pilotPerHead(ladder, "prog");
   return (
     <section aria-label={t("pilot.factsA11y", locale)} className="bg-cream">
       <div className="mx-auto max-w-[1120px] px-7 pb-16 md:pb-24">
         <dl className="grid grid-cols-2 overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_16px_40px_rgba(26,26,46,0.05)] lg:grid-cols-4">
           {PILOT_FACTS.map((fact) => {
-            const vars = { total: PILOT_TOTAL_TEAMS, left: PILOT_SPOTS_LEFT };
+            const vars = {
+              total: PILOT_TOTAL_TEAMS,
+              left: PILOT_SPOTS_LEFT,
+              full: formatHuf(fullPerHead),
+              pilot: formatHuf(partnerPerHead),
+              pct: ladder.pilotDiscountPct,
+            };
             const unit = tf(`pilot.fact${fact}Unit`, locale, vars);
             return (
               <div
@@ -640,8 +651,18 @@ function PilotFactBar({ locale }: { locale: Locale }) {
                   fact === 2 ? "bg-[var(--color-layer-team-soft)]/45" : ""
                 }`}
               >
+                {fact === 3 && (
+                  <dd className="mb-2 flex items-center gap-2">
+                    <s className="font-fraunces text-heading tabular-nums text-ink-body/70 decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
+                      {tf("pilot.fact3Was", locale, vars)}
+                    </s>
+                    <span className="inline-flex items-center rounded-full bg-[var(--color-layer-team-accent)] px-2 py-0.5 text-micro font-semibold tracking-wide text-[var(--color-text-on-inverse)]">
+                      {tf("pilot.fact3Off", locale, vars)}
+                    </span>
+                  </dd>
+                )}
                 <dd className="flex items-baseline gap-1.5">
-                  <span className="font-fraunces text-display leading-none text-[var(--color-layer-team-accent)] md:text-hero">
+                  <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)] md:text-hero">
                     {tf(`pilot.fact${fact}Value`, locale, vars)}
                   </span>
                   {unit ? (
@@ -653,6 +674,11 @@ function PilotFactBar({ locale }: { locale: Locale }) {
                 <dt className="mt-2 text-sm leading-relaxed text-ink-body">
                   {tf(`pilot.fact${fact}Label`, locale, vars)}
                 </dt>
+                {fact === 3 && (
+                  <dd className="mt-2 text-note leading-relaxed text-ink-body/70">
+                    {t("pilot.fact3Foot", locale)}
+                  </dd>
+                )}
               </div>
             );
           })}

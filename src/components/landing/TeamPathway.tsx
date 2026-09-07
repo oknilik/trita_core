@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n/public";
+import { t, tf } from "@/lib/i18n/public";
+import { formatHuf, ladderEntryPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
 import { TeamPathwayArt } from "@/components/landing/TeamPathwayArt";
 import { track } from "@/lib/analytics/client";
 import { ChevronRightIcon } from "@/components/ui/icons";
@@ -19,8 +20,11 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
  * szerepel itt (2026-09-03): a mélyoldalon dolgozik, a főoldalon csak
  * elvitte a figyelmet a döntéstől.
  */
-export function TeamPathway() {
+export function TeamPathway({ ladder }: { ladder: PublicLadder }) {
   const { locale } = useLocale();
+  // Egyetlen horgony-szám: a létra belépő szintje (a szintek közül a
+  // legolcsóbb fejenkénti ár). A csillag mondja ki, kire igaz.
+  const entry = ladderEntryPerHead(ladder);
 
   const layers = [
     t("landing.focusedTeamProfilesTitle", locale),
@@ -69,6 +73,32 @@ export function TeamPathway() {
           </ul>
 
           <p className="mt-5 text-note text-white/60">{facts.join(" · ")}</p>
+
+          <div className="mt-5 border-t border-white/15 pt-4">
+            <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="text-caption text-white/70">{t("landing.teamPriceLead", locale)}</span>
+              <span className="font-fraunces text-title leading-none tabular-nums text-white">
+                {formatHuf(entry.perHead)}
+                <span className="ml-1 font-sans text-caption text-white/70">{t("landing.teamPriceFrom", locale)}</span>
+                <span aria-hidden className="ml-0.5 align-super text-caption text-[var(--color-layer-team-badge)]">*</span>
+              </span>
+            </p>
+            <p className="mt-2 max-w-[60ch] text-note leading-relaxed text-white/55">
+              <span className="text-[var(--color-layer-team-badge)]">* </span>
+              {tf("landing.teamPriceFootnote", locale, {
+                band: ladder.firstBandHeads,
+                tier: t(`pricing.tier_${entry.tier}_name`, locale),
+                prog: formatHuf(ladder.tiers.prog.perHead),
+              })}{" "}
+              <Link
+                href="/how-we-work"
+                onClick={() => track("cta.click", { cta_id: "team_pathway_price", surface: "landing", mode: "team" })}
+                className={`font-semibold text-white/80 underline underline-offset-2 hover:text-white ${FOCUS_RING_CLASS}`}
+              >
+                {t("landing.teamPriceDetails", locale)}
+              </Link>
+            </p>
+          </div>
 
           {/* A két út egy sorban, amíg elfér; szűk oszlopban a másodlagos
               link a gomb ALÁ kerül, a gomb felirata nem törik két sorba. */}
