@@ -22,7 +22,7 @@ describe("TeamPricingConfigurator", () => {
   it("a Csapatkép szinttel és 10 fővel nyit, a hirdetett fejenkénti árral", () => {
     render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
 
-    const kep = screen.getByRole("button", { name: /Csapatkép/ });
+    const kep = screen.getByRole("button", { name: /^Csapatkép/ });
     expect(kep).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("slider")).toHaveValue("10");
     expect(

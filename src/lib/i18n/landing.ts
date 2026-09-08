@@ -220,11 +220,13 @@ export const landingTranslations = {
     // /pricing (2026-09-08): önálló Árak oldal. A számok a díjkártyából
     // jönnek, a szövegek innen.
     pageEyebrow: { hu: "Árak", en: "Pricing" },
-    pageTitle: { hu: "Átlátható ár, ", en: "A transparent price, " },
-    pageTitleEm: { hu: "fejenként.", en: "per person." },
+    // Szalagcím (2026-09-08): a létszám-elv a címben; a bevezető az egyéni
+    // (ingyenes) és a csapatszintű (létszámhoz igazodó) réteget állítja szembe.
+    pageTitle: { hu: "Létszám alapú, átlátható ", en: "Headcount-based, transparent " },
+    pageTitleEm: { hu: "árazási struktúra.", en: "pricing structure." },
     pageLead: {
-      hu: "Két szint, minden méréssel. A résztvevők létszáma adja az összeget – egy csapatra vagy többre ugyanúgy –, {band} fő felett fejenként kevesebb. Az egyéni felmérés ingyenes.",
-      en: "Two levels, every measurement included. The number of participants gives the total – for one team or several alike – with a lower rate above {band} people. The individual assessment is free.",
+      hu: "Az egyéni szint teljesen ingyenes. A kibővített, csapatszintű mérési ciklusok pedig a csapat méretéhez idomulnak: a résztvevők létszáma adja az összeget, {band} fő felett fejenként kevesebb.",
+      en: "The individual level is completely free. The extended, team-level measurement cycles scale with the size of the team: the number of participants gives the total, with a lower rate above {band} people.",
     },
     pageCalculatorLink: { hu: "Kalkulátor", en: "Calculator" },
     tileNote: {
@@ -306,7 +308,7 @@ export const landingTranslations = {
     tier_kep_name: { hu: "Csapatkép", en: "Team Picture" },
     tier_kep_short: { hu: "Mérés, riport, közös értelmezés online", en: "Measurement, report, joint debrief online" },
     tier_prog_name: { hu: "Csapatprogram", en: "Team Program" },
-    tier_prog_short: { hu: "+ workshop és visszamérés fél év múlva", en: "+ workshop and remeasurement after six months" },
+    tier_prog_short: { hu: "Csapatkép + workshop és visszamérés fél év múlva", en: "Team Picture + workshop and remeasurement after six months" },
     tier_kep_item1: { hu: "Személyiségfelmérés hat dimenzió mentén, mindenkinek saját riporttal", en: "Personality assessment across six dimensions, with an individual report for everyone" },
     tier_kep_item2: { hu: "Csapatszerep-kérdőív, bizalmi kör, pszichológiai biztonság mérés és observer-visszajelzés", en: "Team role questionnaire, trust circle, psychological safety pulse and observer feedback" },
     tier_kep_item3: { hu: "Tanácsadó által ellenőrzött csapatkép és vezetői visszajelző beszélgetés", en: "Consultant-reviewed team picture and a leader debrief" },
