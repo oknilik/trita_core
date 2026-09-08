@@ -69,8 +69,8 @@ export const landingTranslations = {
     teamPriceLead: { hu: "Csapatprogramok", en: "Team programs" },
     teamPriceFrom: { hu: "Ft / fő-től", en: "Ft / person and up" },
     teamPriceFootnote: {
-      hu: "Nettó ár, minden mérést tartalmaz, egy tipikus 5–{band} fős kkv-csapatra.",
-      en: "Net price, every measurement included, for a typical SME team of 5–{band}.",
+      hu: "Nettó ár. Minden mérést tartalmaz, egy tipikus 5–{band} fős kkv-csapat számára.",
+      en: "Net price. Every measurement included, for a typical SME team of 5–{band}.",
     },
     teamPriceDetails: { hu: "Részletes árak", en: "Detailed pricing" },
     teamMetaOffer: { hu: "Csapatra szabott ajánlat", en: "Tailored team proposal" },

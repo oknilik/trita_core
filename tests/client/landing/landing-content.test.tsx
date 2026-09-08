@@ -15,7 +15,7 @@ vi.mock("@/lib/analytics/client", () => ({
 /**
  * A főoldal 2026-09-03 óta egyetlen, egyéni ígérettel nyit: nincs self/team
  * módváltó, nincs automatikus tab-bemutató. A csapatos út egy statikus
- * átvezető blokk, amely a pilotra és a /team-dynamics mélyoldalra visz.
+ * átvezető blokk, amely a /team-dynamics mélyoldalra visz, árkártyával.
  */
 describe("főoldal – egy ígéret, egy oldal", () => {
   it("egyetlen H1-gyel, egyéni ígérettel nyit, és a profil-előnézetet rögtön mutatja", () => {
@@ -103,18 +103,20 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     expect(screen.getByRole("link", { name: "Együttműködés részletei" })).toHaveAttribute("href", "/how-we-work");
   });
 
-  it("a csapatos átvezető elsődlegesen a /team-dynamics oldalra, másodlagosan a pilotra visz", () => {
+  it("a csapatos átvezető a /team-dynamics oldalra visz, az árkártya a gomb alatt áll", () => {
     const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
 
     const pathway = container.querySelector("[data-landing-team-pathway]") as HTMLElement;
     expect(pathway).not.toBeNull();
     const primaryCta = within(pathway).getByRole("link", { name: /A csapatdiagnosztika részletei/ });
-    const secondaryCta = within(pathway).getByRole("link", { name: /Megnézem a pilotprogramot/ });
     expect(primaryCta).toHaveAttribute("href", "/team-dynamics");
     expect(primaryCta).toHaveClass("bg-[var(--color-accent-primary-soft)]");
-    expect(secondaryCta).toHaveAttribute("href", "/pilot");
-    expect(secondaryCta).not.toHaveClass("bg-[var(--color-accent-primary-soft)]");
-    expect(primaryCta.compareDocumentPosition(secondaryCta)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    // A pilot-link 2026-09-08-án kikerült a blokkból.
+    expect(within(pathway).queryByRole("link", { name: /Megnézem a pilotprogramot/ })).toBeNull();
+    // Az árkártya (a „Részletes árak" linkkel) a gomb UTÁN jön.
+    const priceLink = within(pathway).getByRole("link", { name: /Részletes árak/ });
+    expect(priceLink).toHaveAttribute("href", "/how-we-work");
+    expect(primaryCta.compareDocumentPosition(priceLink)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 
     // Az egyéni profilok, a három mérési réteg és az átfutási ígéret a blokkban él.
     for (const layer of ["Egyéni személyiségprofilok", "Mért bizalmi háló", "Pszichológiai biztonság", "Közösen értelmezett csapatkép"]) {

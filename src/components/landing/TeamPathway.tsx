@@ -16,7 +16,8 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
  * korábbi csapat-módú landing Features-, StatsBar- és HowItWorks-szekcióiból
  * a döntéshez kell: az egyéni profilok és a három mérési réteg, az idő- és
  * átfutási ígéret, valamint a tanácsadói értelmezés. Az elsődleges út a
- * /team-dynamics mélyoldal, a pilot a másodlagos CTA. A csapatkép-előnézet szándékosan NEM
+ * /team-dynamics mélyoldal (a pilot-link 2026-09-08-án kikerült innen; a
+ * pilot a /how-we-work és a /pilot oldalon él tovább). A csapatkép-előnézet szándékosan NEM
  * szerepel itt (2026-09-03): a mélyoldalon dolgozik, a főoldalon csak
  * elvitte a figyelmet a döntéstől.
  */
@@ -74,9 +75,20 @@ export function TeamPathway({ ladder }: { ladder: PublicLadder }) {
 
           <p className="mt-5 text-note text-white/60">{facts.join(" · ")}</p>
 
-          {/* Ár-horgony: krém árkártya a sötét blokkban — az egyetlen világos
-              folt a bal oszlopban, ezért a szem a cím után ide ugrik. A CTA
-              marad barack, hogy a két folt ne versenyezzen. A csillag a
+          <div className="mt-7">
+            <Link
+              href="/team-dynamics"
+              onClick={() => track("cta.click", { cta_id: "team_pathway_details", surface: "landing", mode: "team" })}
+              className={`inline-flex min-h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[var(--color-accent-primary-soft)] px-6 text-sm font-semibold text-[var(--color-layer-team-hero-from)] shadow-md transition-all hover:-translate-y-px hover:brightness-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-layer-team-hero-from)]`}
+            >
+              {t("landing.focusedTeamCta", locale)}
+              <ChevronRightIcon className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
+
+          {/* Ár-horgony: krém árkártya a gomb ALATT, a blokk lezárásaként —
+              az egyetlen világos folt a bal oszlopban. A CTA marad barack,
+              hogy a két folt ne versenyezzen. A csillag a
               lábjegyzetre mutat, a részletek a /how-we-work árblokkjára. */}
           <div className="mt-6 flex max-w-[440px] flex-col gap-1.5 rounded-2xl bg-cream px-5 py-4 text-ink shadow-[0_14px_34px_rgba(0,0,0,0.22)]">
             <p className="text-micro font-semibold uppercase tracking-wide text-[var(--color-layer-team-accent)]">
@@ -105,31 +117,11 @@ export function TeamPathway({ ladder }: { ladder: PublicLadder }) {
             </Link>
           </div>
 
-          {/* A két út egy sorban, amíg elfér; szűk oszlopban a másodlagos
-              link a gomb ALÁ kerül, a gomb felirata nem törik két sorba. */}
-          <div className="mt-7 flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center">
-            <Link
-              href="/team-dynamics"
-              onClick={() => track("cta.click", { cta_id: "team_pathway_details", surface: "landing", mode: "team" })}
-              className={`inline-flex min-h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[var(--color-accent-primary-soft)] px-6 text-sm font-semibold text-[var(--color-layer-team-hero-from)] shadow-md transition-all hover:-translate-y-px hover:brightness-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-layer-team-hero-from)]`}
-            >
-              {t("landing.focusedTeamCta", locale)}
-              <ChevronRightIcon className="ml-2 h-4 w-4" />
-            </Link>
-            <Link
-              href="/pilot"
-              onClick={() => track("cta.click", { cta_id: "team_pathway", surface: "landing", mode: "team" })}
-              className={`group inline-flex min-h-[44px] items-center justify-center rounded-lg px-3 text-sm font-semibold text-white/85 transition-colors hover:text-white ${FOCUS_RING_CLASS}`}
-            >
-              {t("landing.teamCta", locale)}
-              <ChevronRightIcon className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
         </div>
 
         {/* A csapatkép-előnézet a /team-dynamics hero-jában él; itt egy
             szerkesztői „kapcsolódás" rajz áll a helyén — a látogató nem keres
-            benne adatot, a figyelme a három rétegen és a két úton marad. */}
+            benne adatot, a figyelme a rétegeken, az egy úton és az áron marad. */}
         <div
           data-landing-team-art
           className="relative z-10 mx-auto mt-6 w-full max-w-[300px] sm:max-w-[360px] md:mt-0 md:max-w-[440px]"
