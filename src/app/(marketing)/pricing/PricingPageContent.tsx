@@ -55,6 +55,7 @@ function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLad
         {formatHuf(ladder.tiers[tier].perHead)}
         <span className={`ml-1.5 font-sans text-caption ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
           {t("pricing.perHeadUnit", locale)}
+          <span aria-hidden>*</span>
         </span>
       </p>
       <p className={`text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
@@ -157,9 +158,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
             {QUOTE_TIERS.map((tier) => (
               <TierTile key={tier} tier={tier} ladder={ladder} locale={locale} />
             ))}
-            <p className="rounded-[16px] border border-sand bg-surface-card px-4 py-3 text-caption leading-relaxed text-ink-body sm:col-span-2">
-              {tf("pricing.tileNote", locale, { band: ladder.firstBandHeads, over: formatHuf(ladder.tiers.kep.perHeadOver), max: PUBLIC_HEADCOUNT_MAX })}
-            </p>
+            <p className="px-1 text-note text-ink-body sm:col-span-2">{t("pricing.tileNote", locale)}</p>
           </div>
         </div>
       </section>

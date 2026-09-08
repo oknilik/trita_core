@@ -225,14 +225,13 @@ export const landingTranslations = {
     pageTitle: { hu: "Létszám alapú, átlátható ", en: "Headcount-based, transparent " },
     pageTitleEm: { hu: "árazási struktúra.", en: "pricing structure." },
     pageLead: {
-      hu: "Az egyéni szint teljesen ingyenes. A kibővített, csapatszintű mérési ciklusok pedig a csapat méretéhez idomulnak: a résztvevők létszáma adja az összeget, {band} fő felett fejenként kevesebb.",
-      en: "The individual level is completely free. The extended, team-level measurement cycles scale with the size of the team: the number of participants gives the total, with a lower rate above {band} people.",
+      hu: "Az egyéni szint teljesen ingyenes. A kibővített, csapatszintű mérési ciklusoknál a résztvevők létszáma adja az alapot – a csapatmérettel arányosan csökken az egy főre vetített ár is.",
+      en: "The individual level is completely free. For the extended, team-level measurement cycles the number of participants is the basis – and the price per person falls as the team grows.",
     },
     pageCalculatorLink: { hu: "Kalkulátor", en: "Calculator" },
-    tileNote: {
-      hu: "Nettó árak, + 27% ÁFA · {band} fő felett minden további ember {over} Ft · {max} fő fölött egyedi ajánlat",
-      en: "Net prices, + 27% VAT · above {band} people each additional person is {over} Ft · above {max} people a custom quote",
-    },
+    // A csempék alatt csak egy csillagos, kisbetűs sor (2026-09-08): a
+    // sávos és az egyedi-ajánlat részletet a kalkulátor és a tábla mondja.
+    tileNote: { hu: "* Nettó ár, erre jön a 27% ÁFA.", en: "* Net price, 27% VAT is added." },
     calculatorEyebrow: { hu: "Kalkulátor", en: "Calculator" },
     compareEyebrow: { hu: "Mit tartalmaz", en: "What is included" },
     compareTitle: { hu: "A két szint egymás mellett.", en: "The two levels side by side." },
