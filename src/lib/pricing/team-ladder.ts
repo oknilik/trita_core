@@ -103,6 +103,21 @@ export function isOverPublicMax(headcount: number): boolean {
   return headcount > PUBLIC_HEADCOUNT_MAX;
 }
 
+/**
+ * Hány csapat lehet egy adott létszám — a kalkulátor tájékoztató sora.
+ *
+ * Az ár a LÉTSZÁMRA megy, nem a csapatok számára: 35 fő lehet egy nagy
+ * egység, de jellemzően 5–8 kisebb csapat, és mindegyik saját csapatképet
+ * és közös értelmezést kap. A sáv a tipikus csapatméretből jön (4–8 fő);
+ * legfeljebb 12 főig egyetlen csapat is hihető, ezért ott az alsó határ 1.
+ */
+export function estimateTeamRange(headcount: number): { min: number; max: number } {
+  const heads = Math.max(1, Math.round(headcount));
+  const max = Math.max(1, Math.floor(heads / 4));
+  const min = heads <= 12 ? 1 : Math.max(1, Math.ceil(heads / 8));
+  return { min: Math.min(min, max), max };
+}
+
 /** Az analitikába küldött létszám-sáv (nem pontos szám — mintázat, nem PII). */
 export function headcountBand(headcount: number): "5-8" | "9-12" | "13-20" | "21-40" | "40+" {
   if (headcount <= 8) return "5-8";

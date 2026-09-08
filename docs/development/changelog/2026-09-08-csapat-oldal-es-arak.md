@@ -34,6 +34,15 @@
   (a /team-dynamics is kap kontextust), súgó-téma („Mennyibe kerül?" a
   fejenkénti modellel), /about másodlagos CTA és a főoldali záró CTA
   („Csapatoknak: így dolgozunk együtt") átirányítva.
+- **Létszám, nem csapatszám:** a publikus ár a résztvevők létszámára megy,
+  és ez több csapatot is jelenthet (35 fő ≈ 5–8 csapat). A kalkulátor a
+  létszám mellett mutatja a lehetséges csapatszámot (`estimateTeamRange`),
+  a jobb panel egy mondatban kimondja, hogy minden csapat saját
+  csapatképet és értelmezést kap; a szint-tartalmak „a csapattal" helyett
+  „csapatonként" mondják a közös értelmezést és a workshopot (admin/PDF
+  `QUOTE_TIER_INCLUDES` is). A korábbi, ellentmondó „csapatonként
+  számolunk, a második csapattól kedvezőbb" szöveg (ezen felül-kártya,
+  GYIK 11–12) a létszám-alapú modellre íródott át.
 - **Csapat-oldal CTA-k:** hero elsődleges „Egyeztessünk" → /contact,
   másodlagos „Árak és kalkulátor" → /pricing; a záró CTA „Egyeztessünk a
   csapatotokról" → /contact, alatta „Vagy nézd meg a pilotprogramot".

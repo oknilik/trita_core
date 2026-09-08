@@ -197,7 +197,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowMultiTeamTitle", locale)}</p>
               <p className="mt-1 font-fraunces text-heading text-[var(--color-layer-team-accent)]">{t("pricing.extraMultiValue", locale)}</p>
-              <p className="mt-2 text-caption leading-relaxed text-ink-body">{t("pricing.belowMultiTeamBody", locale)}</p>
+              <p className="mt-2 text-caption leading-relaxed text-ink-body">{tf("pricing.belowMultiTeamBody", locale, { max: PUBLIC_HEADCOUNT_MAX })}</p>
             </div>
             <div className="rounded-[18px] border border-sage/15 bg-sage-soft p-5">
               <p className="font-semibold text-ink">{t("pricing.selfFreeLine", locale)}</p>

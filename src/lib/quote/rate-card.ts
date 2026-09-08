@@ -47,11 +47,11 @@ export const QUOTE_TIER_INCLUDES: Record<QuoteTier, readonly string[]> = {
     "Személyiségfelmérés hat dimenzió mentén, mindenkinek saját riporttal",
     "Csapatszerep-kérdőív, bizalmi kör, pszichológiai biztonság, observer-visszajelzés",
     "Tanácsadó által ellenőrzött csapatkép és vezetői visszajelző beszélgetés",
-    "90 perces online közös értelmezés a csapattal",
+    "90 perces online közös értelmezés, csapatonként",
   ],
   prog: [
     "Minden, ami a Csapatképben",
-    "Félnapos értelmező workshop a csapattal, személyesen",
+    "Félnapos értelmező workshop csapatonként, személyesen",
     "Utánkövető mérés fél év múlva: mi változott, mi nem",
   ],
 };

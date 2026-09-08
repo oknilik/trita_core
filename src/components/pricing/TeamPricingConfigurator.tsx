@@ -11,6 +11,7 @@ import {
   PUBLIC_HEADCOUNT_MAX,
   PUBLIC_HEADCOUNT_MIN,
   PUBLIC_HEADCOUNT_OVER,
+  estimateTeamRange,
   formatHuf,
   headcountBand,
   isOverPublicMax,
@@ -24,7 +25,7 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
  * Publikus árblokk az /pricing oldal „Kalkulátor" szekciójában.
  *
  * Váltó a két szint (Csapatkép / Csapatprogram) közt, csúszka a létszámra,
- * jobb oldalon a fejenkénti ár és a csapatra jutó összeg. A számok a
+ * jobb oldalon a fejenkénti ár és a teljes létszámra jutó összeg. A számok a
  * díjkártyából jönnek (`ladder` prop, szerverről), a tartalom-lista az
  * i18n-kulcsokból — a két helyet együtt kell karbantartani
  * (`QUOTE_TIER_INCLUDES` az admin/PDF oldalon).
@@ -57,6 +58,11 @@ export function TeamPricingConfigurator({
   const tierName = t(`pricing.tier_${tier}_name`, locale);
   // A csúszka utolsó foka („40+"): nincs szám, egyedi ajánlat.
   const over = isOverPublicMax(headcount);
+  const teamRange = estimateTeamRange(headcount);
+  const teamsHint =
+    teamRange.max <= 1
+      ? t("pricing.teamsHintOne", locale)
+      : tf("pricing.teamsHintRange", locale, { min: teamRange.min, max: teamRange.max });
   const headcountLabel = over
     ? tf("pricing.headcountOver", locale, { max: PUBLIC_HEADCOUNT_MAX })
     : String(headcount);
@@ -130,12 +136,22 @@ export function TeamPricingConfigurator({
             </label>
             <output
               htmlFor={sliderId}
-              className="font-fraunces text-title leading-none tabular-nums text-ink"
+              className="text-right font-fraunces text-title leading-none tabular-nums text-ink"
             >
               {headcountLabel}
               <span className="ml-1 font-sans text-caption text-ink-body">
                 {t("pricing.headcountUnit", locale)}
               </span>
+              {/* A létszám nem csapatszám: ugyanennyi ember lehet egy
+                  csapat vagy több kisebb — az ár nem függ tőle. */}
+              {!over && (
+                <span
+                  data-pricing-teams-hint
+                  className="mt-1 block font-sans text-caption font-normal text-ink-body"
+                >
+                  {teamsHint}
+                </span>
+              )}
             </output>
           </div>
           <input
@@ -270,6 +286,11 @@ export function TeamPricingConfigurator({
               {tf("pricing.totalForTeam", locale, {
                 total: formatHuf(price.total),
               })}
+            </p>
+            <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
+              {teamRange.max <= 1
+                ? t("pricing.teamsLineOne", locale)
+                : tf("pricing.teamsLine", locale, { heads: headcount, min: teamRange.min, max: teamRange.max })}
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {t("pricing.vatNote", locale)}

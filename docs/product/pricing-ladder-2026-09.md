@@ -24,6 +24,16 @@ Belső (nem publikus) tételek: további mérési kör (a fejenkénti díj 35%-a
 havi kísérés (120 000 Ft/hó), kiszállás (60 000 Ft/nap, továbbhárítva),
 óra-becslés, cél-óradíj (25 000 Ft/óra), kedvezmény-keret (30%).
 
+**Elv (létszám, nem csapatszám — 2026-09-08):** az ár a RÉSZTVEVŐK
+létszámára megy, nem a csapatok számára. 35 fő lehet egy egység, de
+jellemzően 5–8 kisebb csapat — mindegyik saját csapatképet, riportot és
+közös értelmezést (csapatonként 90 perc, a Csapatprogramban csapatonként
+félnapos workshop) kap, az ár nem változik. A kalkulátor a létszám mellett
+mutatja, hány csapat lehet belőle (`estimateTeamRange`, tipikus 4–8 fős
+csapatméretből; 12 főig egy csapat is hihető). A több csapatból adódó
+tanácsadói többletidőt a belső óra-modell `perTeam` tétele viszi, az admin
+kalkulátorban a csapatok száma külön mező — ez a publikus árat nem érinti.
+
 **Elv:** a mérések száma nem növeli az árat. A több mérés több
 magyarázatot igényel, ami a workshop-időben (a felső szintben és az
 extra napokban) jön vissza — így az ügyfél szabadon választhat mérést,
