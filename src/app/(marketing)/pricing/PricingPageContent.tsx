@@ -73,10 +73,17 @@ function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Loc
     on ? (
       <CheckIcon className="mx-auto h-4 w-4 text-sage" aria-label="✓" />
     ) : (
-      <span className="text-ink-body/50" aria-label="–">–</span>
+      <span className="text-ink-body" aria-label="–">–</span>
     );
   return (
-    <div className="overflow-x-auto rounded-[20px] border border-sand bg-surface-card">
+    // Görgethető régió: fókuszálható, hogy billentyűzettel is végig lehessen
+    // menni a táblán (axe: scrollable-region-focusable).
+    <div
+      role="region"
+      aria-label={t("pricing.compareTitle", locale)}
+      tabIndex={0}
+      className={`overflow-x-auto rounded-[20px] border border-sand bg-surface-card ${FOCUS_RING_CLASS}`}
+    >
       <table className="w-full min-w-[560px] border-collapse text-sm">
         <thead>
           <tr className="bg-warm text-left">
@@ -214,7 +221,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
             <div>
               <SectionEyebrow tone="team">{tf("pricing.pilotStripEyebrow", locale, { total: PILOT_TOTAL_TEAMS })}</SectionEyebrow>
               <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <s className="font-fraunces text-heading tabular-nums text-ink-body/70 decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
+                <s className="font-fraunces text-heading tabular-nums text-ink-body decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
                   {formatHuf(ladder.tiers.prog.perHead)}
                 </s>
                 <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">

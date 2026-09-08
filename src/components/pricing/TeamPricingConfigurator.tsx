@@ -153,7 +153,7 @@ export function TeamPricingConfigurator({
           />
           <div
             aria-hidden
-            className="mt-1 flex justify-between text-micro tabular-nums text-ink-body/70"
+            className="mt-1 flex justify-between text-micro tabular-nums text-ink-body"
           >
             <span>{PUBLIC_HEADCOUNT_MIN}</span>
             <span>10</span>
@@ -196,7 +196,9 @@ export function TeamPricingConfigurator({
               return (
                 <li
                   key={`prog-${item}`}
-                  className={`flex gap-2.5 text-caption leading-relaxed ${on ? "text-ink-body" : "text-ink-body/55"}`}
+                  // A nem választott szint tétele NEM halványítva (a kontraszt
+                  // 4,5:1 alá esne, axe): a homok-pipa és a szint-jelvény jelzi.
+                  className="flex gap-2.5 text-caption leading-relaxed text-ink-body"
                 >
                   <CheckIcon
                     className={`mt-0.5 h-4 w-4 shrink-0 ${on ? "text-sage" : "text-sand"}`}

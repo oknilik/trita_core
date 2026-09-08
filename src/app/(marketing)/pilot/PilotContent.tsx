@@ -653,10 +653,13 @@ function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder
               >
                 {fact === 3 && (
                   <dd className="mb-2 flex items-center gap-2">
-                    <s className="font-fraunces text-heading tabular-nums text-ink-body/70 decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
+                    <s className="font-fraunces text-heading tabular-nums text-ink-body decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
                       {tf("pilot.fact3Was", locale, vars)}
                     </s>
-                    <span className="inline-flex items-center rounded-full bg-[var(--color-layer-team-accent)] px-2 py-0.5 text-micro font-semibold tracking-wide text-[var(--color-text-on-inverse)]">
+                    {/* Körvonalas jelvény: az akcentus-szín szövegként mindkét
+                        témában olvasható a kártyán; kitöltésként a sötét témában
+                        (világos akcentus + világos betű) 2,5:1 alá esett (axe). */}
+                    <span className="inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)] px-2 py-0.5 text-micro font-semibold tracking-wide text-[var(--color-layer-team-accent)]">
                       {tf("pilot.fact3Off", locale, vars)}
                     </span>
                   </dd>
@@ -675,7 +678,7 @@ function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder
                   {tf(`pilot.fact${fact}Label`, locale, vars)}
                 </dt>
                 {fact === 3 && (
-                  <dd className="mt-2 text-note leading-relaxed text-ink-body/70">
+                  <dd className="mt-2 text-note leading-relaxed text-ink-body">
                     {t("pilot.fact3Foot", locale)}
                   </dd>
                 )}

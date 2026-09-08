@@ -15,7 +15,6 @@ const ROUTES = [
   { name: "contact", path: "/contact" },
   { name: "blog", path: "/blog" },
   { name: "patterns", path: "/patterns" },
-  { name: "pricing", path: "/pricing" },
   { name: "privacy", path: "/privacy" },
   { name: "try", path: "/try" },
 ] as const;
