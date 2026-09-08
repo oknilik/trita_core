@@ -10,8 +10,8 @@ import {
   buildWebPageJsonLd,
   type FaqItem,
 } from "@/lib/structured-data";
-import { PRICING_PAGE_FAQ_INDEXES } from "./faq";
-import { PricingPageContent, pricingFaqVars } from "./PricingPageContent";
+import { PRICING_PAGE_FAQ_INDEXES, pricingFaqVars } from "./faq";
+import { PricingPageContent } from "./PricingPageContent";
 
 // /pricing — az önálló Árak oldal (2026-09-08). Korábban a /how-we-work-re
 // irányított; most ez az oldal a kereshető, egyértelmű ár-belépő. Az árak a

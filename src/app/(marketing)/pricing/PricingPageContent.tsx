@@ -20,7 +20,7 @@ import {
 } from "@/lib/pricing/team-ladder";
 import { QUOTE_TIERS, type QuoteTier } from "@/lib/quote/rate-card";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
-import { PRICING_PAGE_FAQ_INDEXES } from "./faq";
+import { PRICING_PAGE_FAQ_INDEXES, pricingFaqVars } from "./faq";
 
 /**
  * /pricing — az önálló Árak oldal (2026-09-08).
@@ -34,19 +34,6 @@ import { PRICING_PAGE_FAQ_INDEXES } from "./faq";
 
 const KEP_ITEMS = [1, 2, 3, 4] as const;
 const PROG_ITEMS = [1, 2] as const;
-
-/** A GYIK válaszaiba behelyettesített számok — egy helyen, hogy a szerver (JSON-LD) és a kliens azonos szöveget adjon. */
-export function pricingFaqVars(ladder: PublicLadder): Record<string, string | number> {
-  return {
-    kep: formatHuf(ladder.tiers.kep.perHead),
-    prog: formatHuf(ladder.tiers.prog.perHead),
-    band: ladder.firstBandHeads,
-    over: formatHuf(ladder.tiers.kep.perHeadOver),
-    max: PUBLIC_HEADCOUNT_MAX,
-    total: PILOT_TOTAL_TEAMS,
-    pct: ladder.pilotDiscountPct,
-  };
-}
 
 function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLadder; locale: Locale }) {
   const highlight = tier === "prog";

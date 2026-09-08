@@ -17,6 +17,27 @@
  * oldalon élnek — egy kérdés csak egy helyen.
  */
 
+import { PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
+import { PUBLIC_HEADCOUNT_MAX, formatHuf, type PublicLadder } from "@/lib/pricing/team-ladder";
+
+/**
+ * A GYIK válaszaiba behelyettesített számok — egy helyen, hogy a szerver
+ * (JSON-LD) és a kliens (FaqList) azonos szöveget adjon. Itt, és nem a
+ * kliens-komponensben: egy `"use client"` modulból exportált függvény a
+ * szerveren nem hívható (a build elhasal rajta).
+ */
+export function pricingFaqVars(ladder: PublicLadder): Record<string, string | number> {
+  return {
+    kep: formatHuf(ladder.tiers.kep.perHead),
+    prog: formatHuf(ladder.tiers.prog.perHead),
+    band: ladder.firstBandHeads,
+    over: formatHuf(ladder.tiers.kep.perHeadOver),
+    max: PUBLIC_HEADCOUNT_MAX,
+    total: PILOT_TOTAL_TEAMS,
+    pct: ladder.pilotDiscountPct,
+  };
+}
+
 /** /pricing — csak az árról: mennyibe kerül, mit tartalmaz, mitől függ, fizetés, több csapat, kedvezmény, mi ingyenes. */
 export const PRICING_PAGE_FAQ_INDEXES = [1, 2, 9, 10, 11, 12, 4] as const;
 
