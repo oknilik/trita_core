@@ -117,7 +117,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     expect(primaryCta.compareDocumentPosition(secondaryCta)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 
     // Az egyéni profilok, a három mérési réteg és az átfutási ígéret a blokkban él.
-    for (const layer of ["Egyéni személyiségprofilok", "Mért bizalmi háló", "Pszichológiai biztonság", "Jóváhagyott csapatkép"]) {
+    for (const layer of ["Egyéni személyiségprofilok", "Mért bizalmi háló", "Pszichológiai biztonság", "Közösen értelmezett csapatkép"]) {
       expect(within(pathway).getByText(layer)).toBeInTheDocument();
     }
     expect(within(pathway).getByText(/~30 perc tagonkénti kitöltés/)).toBeInTheDocument();

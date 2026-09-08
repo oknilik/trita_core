@@ -42,7 +42,7 @@ describe("csapatdiagnosztika-mélyoldal", () => {
   it("megtartja a három mérési réteget és a csapatos „miért más” történetet", () => {
     render(<TeamLandingContent />);
 
-    for (const title of ["Mért bizalmi háló", "Pszichológiai biztonság", "Jóváhagyott csapatkép"]) {
+    for (const title of ["Mért bizalmi háló", "Pszichológiai biztonság", "Közösen értelmezett csapatkép"]) {
       expect(screen.getByRole("heading", { name: title })).toBeInTheDocument();
     }
     expect(screen.getByRole("heading", { name: /hagyományos csapatfelmérésnél/ })).toBeInTheDocument();

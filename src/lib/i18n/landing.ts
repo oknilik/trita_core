@@ -69,8 +69,8 @@ export const landingTranslations = {
     teamPriceLead: { hu: "Csapatprogramok", en: "Team programs" },
     teamPriceFrom: { hu: "Ft / fő-től", en: "Ft / person and up" },
     teamPriceFootnote: {
-      hu: "Nettó ár, minden mérést tartalmaz. Egy tipikus, 5–{band} fős kkv-csapatra: a {tier} szint, online közös értelmezéssel. Workshoppal és visszaméréssel {prog} Ft/fő. Nagyobb csapatnak fejenként kevesebb.",
-      en: "Net price, every measurement included. For a typical SME team of 5–{band}: the {tier} level with an online joint debrief. With a workshop and remeasurement {prog} Ft/person. Larger teams pay less per person.",
+      hu: "Nettó ár, minden mérést tartalmaz, egy tipikus 5–{band} fős kkv-csapatra.",
+      en: "Net price, every measurement included, for a typical SME team of 5–{band}.",
     },
     teamPriceDetails: { hu: "Részletes árak", en: "Detailed pricing" },
     teamMetaOffer: { hu: "Csapatra szabott ajánlat", en: "Tailored team proposal" },
@@ -139,7 +139,7 @@ export const landingTranslations = {
     teamFeat2Title: { hu: "Pszichológiai biztonság", en: "Psychological Safety" },
     teamFeat2Desc: { hu: "Névtelen pulzusmérés arról, mennyire biztonságos a csapatban hibázni, kérdezni vagy ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
     teamFeat3Badge: { hu: "Csapatkép", en: "Team picture" },
-    teamFeat3Title: { hu: "Jóváhagyott csapatkép", en: "Reviewed team picture" },
+    teamFeat3Title: { hu: "Közösen értelmezett csapatkép", en: "Jointly interpreted team picture" },
     teamFeat3Desc: { hu: "Egyéni profilok és közös csapatkép: erősségek, kockázatok és konkrét javaslatok.", en: "Executive summary: strengths, risks, recommendations." },
     // ProofSection
     proofTitleBefore: { hu: "Mitől több ez egy ", en: "What makes this more than an " },

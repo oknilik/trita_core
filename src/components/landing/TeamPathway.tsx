@@ -74,30 +74,36 @@ export function TeamPathway({ ladder }: { ladder: PublicLadder }) {
 
           <p className="mt-5 text-note text-white/60">{facts.join(" · ")}</p>
 
-          <div className="mt-5 border-t border-white/15 pt-4">
-            <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="text-caption text-white/70">{t("landing.teamPriceLead", locale)}</span>
-              <span className="font-fraunces text-title leading-none tabular-nums text-white">
-                {formatHuf(entry.perHead)}
-                <span className="ml-1 font-sans text-caption text-white/70">{t("landing.teamPriceFrom", locale)}</span>
-                <span aria-hidden className="ml-0.5 align-super text-caption text-[var(--color-layer-team-badge)]">*</span>
-              </span>
-            </p>
-            <p className="mt-2 max-w-[60ch] text-note leading-relaxed text-white/55">
-              <span className="text-[var(--color-layer-team-badge)]">* </span>
-              {tf("landing.teamPriceFootnote", locale, {
-                band: ladder.firstBandHeads,
-                tier: t(`pricing.tier_${entry.tier}_name`, locale),
-                prog: formatHuf(ladder.tiers.prog.perHead),
-              })}{" "}
-              <Link
-                href="/how-we-work"
-                onClick={() => track("cta.click", { cta_id: "team_pathway_price", surface: "landing", mode: "team" })}
-                className={`font-semibold text-white/80 underline underline-offset-2 hover:text-white ${FOCUS_RING_CLASS}`}
-              >
-                {t("landing.teamPriceDetails", locale)}
-              </Link>
-            </p>
+          {/* Ár-horgony: saját sávban, hogy a szám a blokk második fókusza
+              legyen a cím után. A csillag a lábjegyzetre mutat, a részletek
+              a /how-we-work árblokkjára. */}
+          <div className="mt-6 flex flex-col gap-2 rounded-2xl border border-white/12 bg-white/[0.07] px-5 py-4">
+            <div>
+              <p className="text-micro font-semibold uppercase tracking-wide text-white/60">
+                {t("landing.teamPriceLead", locale)}
+              </p>
+              <p className="mt-1 flex items-baseline gap-x-2">
+                <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-badge)]">
+                  {formatHuf(entry.perHead)}
+                </span>
+                <span className="text-sm text-white/75">
+                  {t("landing.teamPriceFrom", locale)}
+                  <span aria-hidden className="ml-0.5 align-super text-caption text-[var(--color-layer-team-badge)]">*</span>
+                </span>
+              </p>
+              <p className="mt-1.5 max-w-[46ch] text-note leading-relaxed text-white/55">
+                <span className="text-[var(--color-layer-team-badge)]">* </span>
+                {tf("landing.teamPriceFootnote", locale, { band: ladder.firstBandHeads })}
+              </p>
+            </div>
+            <Link
+              href="/how-we-work"
+              onClick={() => track("cta.click", { cta_id: "team_pathway_price", surface: "landing", mode: "team" })}
+              className={`group inline-flex min-h-[44px] items-center gap-1 self-start rounded-lg text-sm font-semibold text-white/85 transition-colors hover:text-white ${FOCUS_RING_CLASS}`}
+            >
+              {t("landing.teamPriceDetails", locale)}
+              <ChevronRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </Link>
           </div>
 
           {/* A két út egy sorban, amíg elfér; szűk oszlopban a másodlagos
