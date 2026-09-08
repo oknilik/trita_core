@@ -229,9 +229,10 @@ export const landingTranslations = {
       en: "The individual level is completely free. For the extended, team-level measurement cycles the number of participants is the basis – and the price per person falls as the team grows.",
     },
     pageCalculatorLink: { hu: "Kalkulátor", en: "Calculator" },
-    // A csempék alatt csak egy csillagos, kisbetűs sor (2026-09-08): a
-    // sávos és az egyedi-ajánlat részletet a kalkulátor és a tábla mondja.
-    tileNote: { hu: "* Nettó ár, erre jön a 27% ÁFA.", en: "* Net price, 27% VAT is added." },
+    // A csempéken az összeg mellett „+ ÁFA" (2026-09-08), lábjegyzet és
+    // csillag nélkül; a sávos és az egyedi-ajánlat részletet a kalkulátor
+    // és a tábla mondja.
+    tilePlusVat: { hu: "+ ÁFA", en: "+ VAT" },
     calculatorEyebrow: { hu: "Kalkulátor", en: "Calculator" },
     compareEyebrow: { hu: "Mit tartalmaz", en: "What is included" },
     compareTitle: { hu: "A két szint egymás mellett.", en: "The two levels side by side." },
