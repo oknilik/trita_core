@@ -54,7 +54,7 @@ function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLad
       >
         {formatHuf(ladder.tiers[tier].perHead)}
         <span className={`ml-1.5 font-sans text-caption ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
-          {t("pricing.perHeadUnit", locale)} {t("pricing.tilePlusVat", locale)}
+          {t("pricing.perHeadUnit", locale)} {t("pricing.plusVat", locale)}
         </span>
       </p>
       <p className={`text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
@@ -113,6 +113,7 @@ function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Loc
             {QUOTE_TIERS.map((tier) => (
               <td key={tier} className="px-4 py-4 text-center font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">
                 {formatHuf(ladder.tiers[tier].perHead)} {t("pricing.perHeadUnit", locale)}
+                <span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span>
               </td>
             ))}
           </tr>
@@ -188,7 +189,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowWorkshopTitle", locale)}</p>
-              <p className="mt-1 font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">{formatHuf(ladder.extraWorkshopDayFee)} Ft</p>
+              <p className="mt-1 font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">{formatHuf(ladder.extraWorkshopDayFee)} Ft<span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span></p>
               <p className="mt-2 text-caption leading-relaxed text-ink-body">{tf("pricing.belowWorkshopBody", locale, { fee: formatHuf(ladder.extraWorkshopDayFee) })}</p>
             </div>
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
@@ -223,7 +224,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
                 </s>
                 <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
                   {formatHuf(partnerPerHead)}
-                  <span className="ml-1.5 font-sans text-caption text-ink-body">{t("pricing.perHeadUnit", locale)}</span>
+                  <span className="ml-1.5 font-sans text-caption text-ink-body">{t("pricing.perHeadUnit", locale)} {t("pricing.plusVat", locale)}</span>
                 </span>
               </p>
               <p className="mt-2 max-w-[60ch] text-sm leading-relaxed text-ink-body">

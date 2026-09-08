@@ -26,7 +26,7 @@ describe("TeamPricingConfigurator", () => {
     expect(kep).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("slider")).toHaveValue("10");
     expect(
-      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "kep", 10).total)} Ft a teljes létszámra`)),
+      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "kep", 10).total)} Ft + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
   });
 
@@ -38,7 +38,7 @@ describe("TeamPricingConfigurator", () => {
     expect(screen.getByRole("button", { name: /Csapatprogram/ })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: /A Csapatprogram szintben benne van/ })).toBeInTheDocument();
     expect(
-      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "prog", 10).total)} Ft a teljes létszámra`)),
+      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "prog", 10).total)} Ft + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
   });
 
@@ -65,7 +65,7 @@ describe("TeamPricingConfigurator", () => {
     expect(screen.getByText(/35 fő lehet egy csapat vagy 5–8 kisebb/)).toBeInTheDocument();
     // Az ár nem függ a csapatok számától: ugyanaz a létszám-alapú összeg.
     expect(
-      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "kep", 35).total)} Ft a teljes létszámra`)),
+      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "kep", 35).total)} Ft + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
     fireEvent.change(screen.getByRole("slider"), { target: { value: "5" } });
     expect(hint()).toBe("egy csapat");
@@ -78,7 +78,7 @@ describe("TeamPricingConfigurator", () => {
 
     expect(screen.getByText("Egyedi ajánlat")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Beszéljünk" })).toHaveAttribute("href", "/contact");
-    expect(screen.queryByText(/Összesen .* Ft a teljes létszámra/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Összesen .* Ft \+ ÁFA a teljes létszámra/)).not.toBeInTheDocument();
     expect(screen.getByRole("slider")).toHaveAttribute("aria-valuetext", "40+ fő");
   });
 

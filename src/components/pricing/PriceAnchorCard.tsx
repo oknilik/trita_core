@@ -43,13 +43,10 @@ export function PriceAnchorCard({
         <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
           {formatHuf(entry.perHead)}
         </span>
-        <span className="text-sm text-ink-body">
-          {t("landing.teamPriceFrom", locale)}
-          <span aria-hidden className="ml-0.5 align-super text-caption text-[var(--color-layer-team-glow)]">*</span>
-        </span>
+        <span className="text-sm text-ink-body">{t("landing.teamPriceFrom", locale)}</span>
       </p>
+      {/* Nincs csillag és nettó-lábjegyzet (2026-09-08): az ÁFA az ár mellett áll. */}
       <p className="max-w-[46ch] text-note leading-relaxed text-ink-body">
-        <span className="text-[var(--color-layer-team-glow)]">* </span>
         {tf("landing.teamPriceFootnote", locale, { band: ladder.firstBandHeads })}
       </p>
       <Link

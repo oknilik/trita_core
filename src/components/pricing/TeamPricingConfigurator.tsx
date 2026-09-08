@@ -279,7 +279,7 @@ export function TeamPricingConfigurator({
             <p className="relative font-fraunces text-fluid-display leading-none tracking-tight tabular-nums">
               {formatHuf(price.perHeadAverage ?? tierRate.perHead)}
               <span className="ml-1.5 font-sans text-base text-[var(--color-text-on-inverse-muted)]">
-                {t("pricing.perHeadUnit", locale)}
+                {t("pricing.perHeadUnit", locale)} {t("pricing.plusVat", locale)}
               </span>
             </p>
             <p className="relative text-sm text-[var(--color-text-on-inverse-muted)]">
