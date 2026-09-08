@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { t, tf } from "@/lib/i18n/public";
-import { formatHuf, ladderEntryPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
+import { t } from "@/lib/i18n/public";
+import { PriceAnchorCard } from "@/components/pricing/PriceAnchorCard";
+import type { PublicLadder } from "@/lib/pricing/team-ladder";
 import { TeamPathwayArt } from "@/components/landing/TeamPathwayArt";
 import { track } from "@/lib/analytics/client";
 import { ChevronRightIcon } from "@/components/ui/icons";
-import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 /**
  * A főoldal csapatos átvezetője. A látogató itt találkozik először a
@@ -17,15 +17,12 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
  * a döntéshez kell: az egyéni profilok és a három mérési réteg, az idő- és
  * átfutási ígéret, valamint a tanácsadói értelmezés. Az elsődleges út a
  * /team-dynamics mélyoldal (a pilot-link 2026-09-08-án kikerült innen; a
- * pilot a /how-we-work és a /pilot oldalon él tovább). A csapatkép-előnézet szándékosan NEM
+ * pilot a /team-dynamics és a /pilot oldalon él tovább). A csapatkép-előnézet szándékosan NEM
  * szerepel itt (2026-09-03): a mélyoldalon dolgozik, a főoldalon csak
  * elvitte a figyelmet a döntéstől.
  */
 export function TeamPathway({ ladder }: { ladder: PublicLadder }) {
   const { locale } = useLocale();
-  // Egyetlen horgony-szám: a létra belépő szintje (a szintek közül a
-  // legolcsóbb fejenkénti ár). A csillag mondja ki, kire igaz.
-  const entry = ladderEntryPerHead(ladder);
 
   const layers = [
     t("landing.focusedTeamProfilesTitle", locale),
@@ -88,35 +85,9 @@ export function TeamPathway({ ladder }: { ladder: PublicLadder }) {
 
           {/* Ár-horgony: krém árkártya a gomb ALATT, a blokk lezárásaként —
               az egyetlen világos folt a bal oszlopban. A CTA marad barack,
-              hogy a két folt ne versenyezzen. A csillag a
-              lábjegyzetre mutat, a részletek a /how-we-work árblokkjára. */}
-          <div className="mt-6 flex max-w-[440px] flex-col gap-1.5 rounded-2xl bg-cream px-5 py-4 text-ink shadow-[0_14px_34px_rgba(0,0,0,0.22)]">
-            <p className="text-micro font-semibold uppercase tracking-wide text-[var(--color-layer-team-accent)]">
-              {t("landing.teamPriceLead", locale)}
-            </p>
-            <p className="flex items-baseline gap-x-2">
-              <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
-                {formatHuf(entry.perHead)}
-              </span>
-              <span className="text-sm text-ink-body">
-                {t("landing.teamPriceFrom", locale)}
-                <span aria-hidden className="ml-0.5 align-super text-caption text-[var(--color-layer-team-glow)]">*</span>
-              </span>
-            </p>
-            <p className="max-w-[46ch] text-note leading-relaxed text-ink-body/80">
-              <span className="text-[var(--color-layer-team-glow)]">* </span>
-              {tf("landing.teamPriceFootnote", locale, { band: ladder.firstBandHeads })}
-            </p>
-            <Link
-              href="/how-we-work"
-              onClick={() => track("cta.click", { cta_id: "team_pathway_price", surface: "landing", mode: "team" })}
-              className={`group mt-1 inline-flex min-h-[44px] items-center gap-1 self-start rounded-lg text-sm font-semibold text-[var(--color-layer-team-accent)] transition-opacity hover:opacity-80 ${FOCUS_RING_CLASS}`}
-            >
-              {t("landing.teamPriceDetails", locale)}
-              <ChevronRightIcon className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-            </Link>
-          </div>
-
+              hogy a két folt ne versenyezzen. Ugyanez a kártya él a
+              /team-dynamics ár-szekciójában; a részletek az /pricing oldalon. */}
+          <PriceAnchorCard ladder={ladder} locale={locale} ctaId="team_pathway_price" surface="landing" className="mt-6" />
         </div>
 
         {/* A csapatkép-előnézet a /team-dynamics hero-jában él; itt egy

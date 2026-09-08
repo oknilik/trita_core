@@ -26,7 +26,7 @@ export async function loadRateCard(): Promise<{ rate: RateCard; stored: boolean 
 }
 
 /** A publikus felületek, amelyek a díjkártyából mutatnak árat (ISR-rel). */
-export const PRICE_LADDER_PUBLIC_PATHS = ["/", "/how-we-work", "/pilot"] as const;
+export const PRICE_LADDER_PUBLIC_PATHS = ["/", "/team-dynamics", "/pricing", "/pilot"] as const;
 
 export async function saveRateCard(rate: RateCard, updatedById: string | null) {
   await prisma.quoteRateCard.upsert({

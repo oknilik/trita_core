@@ -112,7 +112,7 @@ test("az llms.txt nem sorol fel privát útvonalat linkként", async () => {
 test("az llms.txt csak az aktív fő lapokat tartalmazza", async () => {
   const body = await llmsTxt().text();
 
-  for (const path of ["/try", "/team-dynamics", "/how-we-work", "/pilot"]) {
+  for (const path of ["/try", "/team-dynamics", "/pricing", "/pilot"]) {
     assert.ok(body.includes(`${path})`), `hiányzó publikus lap az llms.txt-ből: ${path}`);
   }
   // A /self-awareness tükör-oldal 2026-09-03-án a főoldalba olvadt

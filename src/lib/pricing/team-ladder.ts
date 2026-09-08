@@ -4,7 +4,7 @@ import type { QuoteTier, RateCard } from "@/lib/quote/rate-card";
 // Publikus árlétra — a díjkártya KIFELÉ mutatható részhalmaza.
 //
 // Keretmentes modul (nincs React, nincs Prisma): ugyanebből számol a
-// szerver-oldali JSON-LD, a /how-we-work árblokk (kliens), a főoldal
+// szerver-oldali JSON-LD, az /pricing árblokk (kliens), a főoldal
 // csapat-blokkja, a /pilot ténysáv és az admin ajánlat-kalkulátor. Így a
 // publikus szám és az ajánlat sosem csúszhat szét.
 //

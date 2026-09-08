@@ -624,7 +624,7 @@ function FounderSection({ locale }: { locale: Locale }) {
 
 const PILOT_FACTS = [1, 2, 3, 4] as const;
 
-// Ténysáv a hero alatt (P0-1): a nagy szám tipográfiája a /how-we-work
+// Ténysáv a hero alatt (P0-1): a nagy szám tipográfiája a /team-dynamics
 // pilot-teaser „90 NAP" motívumát követi (font-fraunces + text-label unit).
 function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder }) {
   // A 3. tény: a Csapatprogram listaára áthúzva, mellette a partneri ár —

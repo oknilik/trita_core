@@ -43,7 +43,7 @@ const CONTEXTUAL_ENTRY_IDS: Array<{ prefix: string; ids: string[] }> = [
   { prefix: "/org", ids: ["manage-org", "track-progress", "start-campaign"] },
   { prefix: "/dashboard", ids: ["track-progress", "when-team-results", "start-campaign"] },
   { prefix: "/privacy", ids: ["data-handling"] },
-  { prefix: "/how-we-work", ids: ["pricing", "how-to-start", "what-teams-get"] },
+  { prefix: "/team-dynamics", ids: ["what-teams-get", "how-to-start", "pricing"] },
   { prefix: "/pricing", ids: ["pricing", "how-to-start", "what-teams-get"] },
 ];
 

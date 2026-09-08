@@ -35,8 +35,9 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
               {t("landing.ctaTeamMicrocopy", locale)}
             </p>
           </div>
+          <div className="flex flex-col items-start gap-2 md:items-end">
           <Link
-            href="/pilot"
+            href="/contact"
             onClick={() =>
               track("cta.click", {
                 cta_id: "closing",
@@ -48,6 +49,15 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
           >
             {t("landing.ctaTeamCta", locale)}
           </Link>
+          <Link
+            href="/pilot"
+            onClick={() => track("cta.click", { cta_id: "cta_team_pilot", surface: "landing", mode: "team" })}
+            className={`inline-flex min-h-11 items-center rounded-lg px-2 text-sm font-semibold text-[var(--color-layer-team-accent)] transition-opacity hover:opacity-80 ${FOCUS_RING_CLASS}`}
+          >
+            {t("landing.ctaTeamPilot", locale)}
+            <ChevronRightIcon className="ml-1 h-4 w-4" />
+          </Link>
+          </div>
         </div>
       </section>
     );
@@ -88,7 +98,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
             {cta}
           </Link>
           <Link
-            href="/how-we-work"
+            href="/team-dynamics"
             className={`inline-flex min-h-11 items-center justify-center rounded-lg px-2 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
           >
             {t("landing.ctaSelfSecondary", locale)}

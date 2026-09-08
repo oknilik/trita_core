@@ -17,7 +17,7 @@ import { z } from "zod";
 // több magyarázatot igényel, ami a workshop-időben jön vissza.
 //
 // A kártya EGY helyen él (admin: /admin/quote, „Díjtételek"), a DB-ben
-// mentve; ebből olvas a /how-we-work árblokk, a főoldal csapat-blokkja, a
+// mentve; ebből olvas az /pricing kalkulátor, a főoldal és a /team-dynamics ár-horgonya, a
 // /pilot ténysáv és a Service JSON-LD — ld. src/lib/pricing/. A belső
 // tételek (óra-becslés, cél-óradíj, kedvezmény-keret) SOHA nem kerülnek
 // publikus felületre; a publikus részhalmazt a `derivePublicLadder` vágja

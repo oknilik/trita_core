@@ -100,7 +100,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
 
     expect(screen.getByRole("link", { name: "Elindítom az ingyenes tesztet" })).toHaveAttribute("href", "/try");
     expect(screen.getByRole("link", { name: "Elindítom a tesztet" })).toHaveAttribute("href", "/try");
-    expect(screen.getByRole("link", { name: "Együttműködés részletei" })).toHaveAttribute("href", "/how-we-work");
+    expect(screen.getByRole("link", { name: "Csapatoknak: így dolgozunk együtt" })).toHaveAttribute("href", "/team-dynamics");
   });
 
   it("a csapatos átvezető a /team-dynamics oldalra visz, az árkártya a gomb alatt áll", () => {
@@ -115,7 +115,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     expect(within(pathway).queryByRole("link", { name: /Megnézem a pilotprogramot/ })).toBeNull();
     // Az árkártya (a „Részletes árak" linkkel) a gomb UTÁN jön.
     const priceLink = within(pathway).getByRole("link", { name: /Részletes árak/ });
-    expect(priceLink).toHaveAttribute("href", "/how-we-work");
+    expect(priceLink).toHaveAttribute("href", "/pricing");
     expect(primaryCta.compareDocumentPosition(priceLink)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 
     // Az egyéni profilok, a három mérési réteg és az átfutási ígéret a blokkban él.

@@ -21,7 +21,7 @@ import { QUOTE_TIERS, type QuoteTier } from "@/lib/quote/rate-card";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 /**
- * Publikus árblokk a /how-we-work „Ajánlat" szekciójában.
+ * Publikus árblokk az /pricing oldal „Kalkulátor" szekciójában.
  *
  * Váltó a két szint (Csapatkép / Csapatprogram) közt, csúszka a létszámra,
  * jobb oldalon a fejenkénti ár és a csapatra jutó összeg. A számok a

@@ -18,7 +18,7 @@ const PUBLIC_PATHS = [
   ...(isPortfolioSurfaceActive("patternExplorer") ? ["/patterns"] : []),
   "/pilot",
   "/team-dynamics",
-  "/how-we-work",
+  "/pricing",
   // A hatályos jogi dokumentumok indexelhetők és a sitemapben is szerepelnek.
   "/legal",
   // A /privacy tervezet-állapotban is BEJÁRHATÓ marad (nem tesszük a

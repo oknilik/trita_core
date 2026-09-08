@@ -177,9 +177,12 @@ const nextConfig: NextConfig = {
     };
 
     return [
+      // 2026-09-08: a /how-we-work („Együttműködés") a /team-dynamics
+      // csapat-oldalba olvadt; az ár a saját /pricing oldalára került. A régi
+      // URL indexelt, ezért állandó átirányítás.
       {
-        source: "/pricing",
-        destination: "/how-we-work",
+        source: "/how-we-work",
+        destination: "/team-dynamics",
         permanent: true,
       },
       // 2026-09-03: a landing egyszerűsítésével az önismereti tükör-oldal

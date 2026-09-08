@@ -17,7 +17,7 @@ import { derivePublicLadder, ladderPrice } from "@/lib/pricing/team-ladder";
 // Az ár a publikus árlétrából jön (team-ladder.ts): szint × létszám, plusz
 // a szint tartalmán felüli tételek (extra workshop-nap, extra mérési kör,
 // havi kísérés, egyéb, kiszállás). Ugyanaz a szám, amit a vevő a
-// /how-we-work oldalon lát — az ajánlat nem lehet más.
+// /pricing oldalon lát — az ajánlat nem lehet más.
 
 export interface QuoteInput {
   headcount: number;

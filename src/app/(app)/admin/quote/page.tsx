@@ -11,7 +11,7 @@ import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHea
 // Ajánlat-kalkulátor — BELSŐ eszköz.
 //
 // Az ár a publikus árlétrából jön (Csapatkép / Csapatprogram, fejenként —
-// ugyanaz, amit a vevő a /how-we-work oldalon lát), a díjtételek itt
+// ugyanaz, amit a vevő az /pricing oldalon lát), a díjtételek itt
 // szerkeszthetők és mentésük a publikus oldalakat is frissíti. A felület
 // admin-only, mert a belső számok (óra-becslés, cél-óradíj, kedvezmény-
 // keret) is itt élnek: a célja nem az árazás automatizálása, hanem hogy az

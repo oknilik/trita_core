@@ -204,7 +204,7 @@ export function NavBar({
     ...(isPortfolioSurfaceActive("blog")
       ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
       : []),
-    { id: "pricing", href: "/how-we-work", label: t("nav.pricing", locale) },
+    { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
 
   const authLinks = [
@@ -215,7 +215,7 @@ export function NavBar({
     ...(isPortfolioSurfaceActive("blog")
       ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
       : []),
-    { id: "pricing", href: "/how-we-work", label: t("nav.pricing", locale) },
+    { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
 
   const links = isSignedIn ? authLinks : publicLinks;

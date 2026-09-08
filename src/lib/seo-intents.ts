@@ -20,15 +20,23 @@ export const SEO_INTENTS = {
       "Csapatintelligencia",
     ],
   },
+  // 2026-09-08: a /how-we-work („Együttműködés") ide olvadt — a
+  // csapatfejlesztés témái is ezen az oldalon élnek.
   teamDynamics: {
     path: "/team-dynamics",
     primary: "csapatdiagnosztika",
-    topics: ["Csapatdiagnosztika", "Csapatdinamika", "Bizalmi háló", "Pszichológiai biztonság"],
+    topics: [
+      "Csapatdiagnosztika",
+      "Csapatfejlesztés",
+      "Csapatdinamika",
+      "Bizalmi háló",
+      "Pszichológiai biztonság",
+    ],
   },
-  howWeWork: {
-    path: "/how-we-work",
-    primary: "csapatfejlesztés",
-    topics: ["Csapatfejlesztés", "Szervezetfejlesztés", "Csapatdiagnosztikai program"],
+  pricing: {
+    path: "/pricing",
+    primary: "csapatdiagnosztika ár",
+    topics: ["Csapatdiagnosztika ár", "Csapatfejlesztés ár", "Fejenkénti ár", "Csapatprogram"],
   },
   tryAssessment: {
     path: "/try",

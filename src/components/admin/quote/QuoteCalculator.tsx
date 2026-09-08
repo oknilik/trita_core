@@ -33,7 +33,7 @@ import {
 // Belső ajánlat-kalkulátor.
 //
 // Az ár a publikus árlétrából jön (szint × létszám — ugyanaz, amit a vevő a
-// /how-we-work oldalon lát), a szint tartalmán felüli tételekkel. Amit a
+// /pricing oldalon lát), a szint tartalmán felüli tételekkel. Amit a
 // kalkulátor hozzátesz: mennyi marad a munkán. A legfontosabb szám az
 // EFFEKTÍV ÓRADÍJ — ezen dől el az alku, ezért az van kiemelve, nem a
 // végösszeg. A díjtételek mentése a publikus oldalak árait is frissíti.
@@ -479,7 +479,7 @@ export function QuoteCalculator({
           </div>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
             A fejenkénti árak, a sávhatár, a további workshop-nap és a pilot-kedvezmény
-            PUBLIKUSAK: a /how-we-work árblokk, a főoldal csapat-blokkja és a /pilot
+            PUBLIKUSAK: az /pricing kalkulátor, a főoldal és a /team-dynamics ár-horgonya, a /pilot
             ténysáv ezekből mutat számot. Mentés után a publikus oldalak azonnal frissülnek.
             Az óra-becslés, a cél-óradíj és a kedvezmény-keret belső.
           </p>

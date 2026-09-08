@@ -93,8 +93,9 @@ ebből `derivePublicLadder()` vágja ki a publikus részhalmazt
 
 | Felület | Mit mutat |
 |---|---|
-| `/how-we-work` „Ajánlat" szekció | `TeamPricingConfigurator`: szint-váltó + létszám-csúszka + fejenkénti ár + tartalom; GYIK „Mennyibe kerül?" / „Mit tartalmaz az ár?" a számokkal; Service JSON-LD `UnitPriceSpecification` |
-| `/` csapat-blokk (`TeamPathway`) | egy horgony-szám: a belépő szint ára „Ft/fő-től*", csillagos lábjegyzettel |
+| `/pricing` (2026-09-08-tól önálló Árak oldal) | két szint csempéi · `TeamPricingConfigurator` (szint-váltó + létszám-csúszka + fejenkénti ár + tartalom) · összehasonlító tábla · ezen felül · pilot-ár sáv · ár-GYIK a számokkal; Service JSON-LD `UnitPriceSpecification` |
+| `/team-dynamics` ár-szekció | `PriceAnchorCard`: a belépő szint ára „Ft/fő-től*", link az /pricing-re; a hero pirulája ugyanezt a számot viszi |
+| `/` csapat-blokk (`TeamPathway`) | ugyanaz a `PriceAnchorCard` |
 | `/pilot` ténysáv 3. cella | a Csapatprogram listaára áthúzva, −50% jelvény, partneri ár |
 | `/admin/quote` | ugyanebből számol az ajánlat (szint × létszám + extrák); a díjtételek mentése `revalidatePath`-tal frissíti a három publikus oldalt (ISR, 1 óra) |
 

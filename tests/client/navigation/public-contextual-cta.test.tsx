@@ -66,10 +66,10 @@ describe("publikus fejléc – landing kontextusú CTA", () => {
     expect(screen.getByRole("link", { name: "Főoldal" })).not.toHaveAttribute("aria-current");
   });
 
-  it("az Együttműködés menüpont a két kör közös terét használja ikonként", () => {
+  it("az Árak menüpont a két kör közös terét használja ikonként", () => {
     render(<NavBar />);
 
-    const collaborationLink = screen.getByRole("link", { name: "Együttműködés" });
+    const collaborationLink = screen.getByRole("link", { name: "Árak" });
     const icon = collaborationLink.querySelector('[data-nav-icon="shared-space"]');
     expect(icon).not.toBeNull();
     expect(icon?.querySelectorAll("circle")).toHaveLength(2);
@@ -109,7 +109,7 @@ describe("publikus footer – menüstruktúra", () => {
       ["Főoldal", "/"],
       ["Csapatoknak", "/team-dynamics"],
       ["Blog", "/blog"],
-      ["Együttműködés", "/how-we-work"],
+      ["Árak", "/pricing"],
     ]);
   });
 });

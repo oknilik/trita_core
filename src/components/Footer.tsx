@@ -42,7 +42,7 @@ export function Footer() {
         ...(isPortfolioSurfaceActive("blog")
           ? [{ label: t("footer.blog", locale), href: "/blog" }]
           : []),
-        { label: t("footer.pricing", locale), href: "/how-we-work" },
+        { label: t("footer.pricing", locale), href: "/pricing" },
       ],
     },
     {
@@ -73,7 +73,7 @@ export function Footer() {
     // A footer saját, route-független védősávot kap. Korábban -mt-10/-mt-14
     // negatív margóval az oldal fölé húztuk a hullámot, ezért minden egyes
     // route-nak külön legalább 56 px alsó paddinget kellett biztosítania.
-    // Amelyik oldal ezt elmulasztotta (pl. /how-we-work), annak az utolsó
+    // Amelyik oldal ezt elmulasztotta (pl. a korábbi /how-we-work), annak az utolsó
     // kártyájába belecsúszott a footer. A hullám most normál dokumentum-
     // folyamban él, előtte pedig a közös vászonból képzett fix védősáv van:
     // így sem viewport-, sem oldaltartalom-függő átfedés nem lehetséges.

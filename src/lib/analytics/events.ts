@@ -88,7 +88,7 @@ const publicEvents = {
       .strict(),
     origin: "client",
     description:
-      "A /how-we-work árblokk első beállítása (szint + létszám-sáv) – milyen csapatméret és szint érdekli a látogatót.",
+      "Az /pricing árblokk első beállítása (szint + létszám-sáv) – milyen csapatméret és szint érdekli a látogatót.",
     question: "P2",
   }),
   "faq.open": spec({

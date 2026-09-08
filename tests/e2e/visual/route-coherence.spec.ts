@@ -9,7 +9,8 @@ import { expect, test } from "@playwright/test";
 const ROUTES = [
   { name: "home", path: "/" },
   { name: "about", path: "/about" },
-  { name: "how-we-work", path: "/how-we-work" },
+  { name: "team-dynamics", path: "/team-dynamics" },
+  { name: "pricing", path: "/pricing" },
   { name: "pilot", path: "/pilot" },
   { name: "contact", path: "/contact" },
   { name: "blog", path: "/blog" },
