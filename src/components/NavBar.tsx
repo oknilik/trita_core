@@ -36,6 +36,25 @@ function HomeIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
+/** Egy alak: az egyéni belépő (a főoldal) — párja a Csapatoknak két alakja. */
+function PersonIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg
+      data-nav-icon="person"
+      className={className}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="8" cy="5" r="2.75" />
+      <path d="M2.75 14.25a5.25 5.25 0 0 1 10.5 0" />
+    </svg>
+  );
+}
+
 function BlogIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
@@ -85,7 +104,7 @@ function SharedSpaceIcon({ className = "h-3.5 w-3.5" }: { className?: string }) 
 }
 
 const LINK_ICONS: Record<string, (p: { className?: string }) => React.ReactNode> = {
-  home: HomeIcon,
+  home: PersonIcon,
   dashboard: GridIcon,
   blog: BlogIcon,
   teamsFor: CollabIcon,
@@ -197,6 +216,8 @@ export function NavBar({
   }
 
   const publicLinks = [
+    // A főoldal az egyéni belépő, a menü is ezt mondja („Egyéni"), egy
+    // alakkal — a „Csapatoknak" két alakjának párjaként. A logó viszi haza.
     { id: "home", href: "/", label: t("nav.publicHome", locale) },
     // A tartós csapatos ajánlat önálló főmenüpont. A Pilotprogram ennek
     // konkrét belépője, ezért a /team-dynamics oldalon marad CTA-ként.

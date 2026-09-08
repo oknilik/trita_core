@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { LandingContent } from "@/components/landing/LandingContent";
-import { loadPublicLadder } from "@/lib/pricing/team-ladder.server";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 import { SEO_INTENTS } from "@/lib/seo-intents";
@@ -33,13 +32,9 @@ export const metadata: Metadata = buildPageMetadata({
 // handoffra. A landing nem használ useSearchParams-t, ezért nem kell
 // Suspense-határ: a teljes oldal — a hero H1-gyel, ami az LCP-elem —
 // bekerül a prerenderelt HTML-be. A korábbi /self-awareness tükör-oldal ide
-// irányít (next.config.ts): az egyéni ígéret egyetlen lapon él.
-// Az ár-horgony a csapat-blokkon a díjkártyából jön (admin: /admin/quote):
-// ISR óránként, plusz azonnali revalidálás mentéskor (saveRateCard).
-export const revalidate = 3600;
-
-export default async function Home() {
-  const ladder = await loadPublicLadder();
+// irányít (next.config.ts): az egyéni ígéret egyetlen lapon él. Ár nincs a
+// főoldalon (2026-09-08): a lap teljesen statikus, a díjkártya nem érinti.
+export default function Home() {
   // A gyökér-lapon él a márka- és site-entitás (`@id` horgonyokkal); az összes
   // többi lap ezekre HIVATKOZIK ahelyett, hogy újra kihirdetné őket.
   return (
@@ -56,7 +51,7 @@ export default async function Home() {
           }),
         ]}
       />
-      <LandingContent ladder={ladder} />
+      <LandingContent />
     </main>
   );
 }

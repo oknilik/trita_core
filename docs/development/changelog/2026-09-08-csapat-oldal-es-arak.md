@@ -7,8 +7,8 @@
   lépés, saját záró CTA, számsáv mindkettőn). Az egyesített oldal sorrendje:
   hero (ár-pirulával) · három lépés (a két oldal lépései összefésülve:
   cél és keret → kitöltés és tanácsadói ellenőrzés → közös értelmezés és
-  visszamérés) · mit mérünk · **ár-horgony** (a főoldali krém kártya,
-  kalkulátor nélkül) · miért hiteles + számsáv · pilot-helyek · program-GYIK ·
+  visszamérés) · mit mérünk · **ár-horgony** (krém kártya egyetlen
+  „-től" számmal, kalkulátor nélkül) · miért hiteles + számsáv · pilot-helyek · program-GYIK ·
   egy záró CTA. A `/how-we-work` és a korábbi `/pricing`-átirányítás helyett
   `/how-we-work` → `/team-dynamics` 308 (`next.config.ts`).
 - **Új, önálló `/pricing` („Árak") oldal** — kereshető, egyértelmű ár-belépő
@@ -19,13 +19,18 @@
   árról (új tételek: mitől drágább/olcsóbb, fizetés, több csapat,
   kedvezmény — `faqQ9–12`) · záró CTA. Service + FAQ + WebPage JSON-LD ide
   került; SEO-szándék: `SEO_INTENTS.pricing`.
-- **Ár-horgony egy komponensben** (`PriceAnchorCard`): a főoldal csapat-
-  blokkja és a csapat-oldal ár-szekciója ugyanazt a krém kártyát mutatja,
-  linkje az /pricing-re. GYIK-lista is közös (`FaqList`), a tételek két
+- **Ár-horgony egy komponensben** (`PriceAnchorCard`): a csapat-oldal
+  ár-szekciójának krém kártyája, linkje az /pricing-re. **A főoldalról az
+  árkártya lekerült** (a csapat-blokk egyetlen döntése a „részletek" gomb;
+  a főoldal az egyéni ígéretről szól) — így a főoldal újra teljesen
+  statikus, a díjkártya-mentés nem revalidálja. GYIK-lista is közös (`FaqList`), a tételek két
   listában (`PRICING_PAGE_FAQ_INDEXES`, `TEAM_PAGE_FAQ_INDEXES`) — egy kérdés
   csak egy oldalon.
-- **Fejléc/lábléc:** „Csapatoknak" (/team-dynamics) + „Árak" (/pricing); az
-  „Együttműködés" menüpont megszűnt. Sitemap, robots, llms.txt, HelpWidget
+- **Fejléc/lábléc:** „Egyéni" (/, egy-alak ikonnal — a korábbi „Főoldal"
+  ház-ikon helyett, hogy az „Egyéni · Csapatoknak" pár mondja meg, kinek
+  melyik lap szól) + „Csapatoknak" (/team-dynamics) + „Árak" (/pricing); az
+  „Együttműködés" menüpont megszűnt. A láblécben a „Kapcsolat" a Jogi
+  oszlop aljáról „A tritáról" oszlopba került. Sitemap, robots, llms.txt, HelpWidget
   (a /team-dynamics is kap kontextust), súgó-téma („Mennyibe kerül?" a
   fejenkénti modellel), /about másodlagos CTA és a főoldali záró CTA
   („Csapatoknak: így dolgozunk együtt") átirányítva.

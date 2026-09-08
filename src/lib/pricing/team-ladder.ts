@@ -4,8 +4,8 @@ import type { QuoteTier, RateCard } from "@/lib/quote/rate-card";
 // Publikus árlétra — a díjkártya KIFELÉ mutatható részhalmaza.
 //
 // Keretmentes modul (nincs React, nincs Prisma): ugyanebből számol a
-// szerver-oldali JSON-LD, az /pricing árblokk (kliens), a főoldal
-// csapat-blokkja, a /pilot ténysáv és az admin ajánlat-kalkulátor. Így a
+// szerver-oldali JSON-LD, az /pricing árblokk (kliens), a /team-dynamics
+// ár-horgonya, a /pilot ténysáv és az admin ajánlat-kalkulátor. Így a
 // publikus szám és az ajánlat sosem csúszhat szét.
 //
 // Ami NINCS benne, és nem is kerülhet ide: óra-becslés, cél-óradíj,
@@ -75,7 +75,7 @@ export function pilotPerHead(ladder: PublicLadder, tier: QuoteTier): number {
 /**
  * A publikusan hirdethető legalacsonyabb belépő ár: a szintek közül a
  * legolcsóbb fejenkénti ár a sávon belül (a „-tól" a szintekre vonatkozik,
- * nem a létszámra). A főoldal horgony-száma ebből jön.
+ * nem a létszámra). A csapat-oldal horgony-száma ebből jön.
  */
 export function ladderEntryPerHead(ladder: PublicLadder): { tier: QuoteTier; perHead: number } {
   const kep = ladder.tiers.kep.perHead;

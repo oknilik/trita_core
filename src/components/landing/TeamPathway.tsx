@@ -3,8 +3,6 @@
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
-import { PriceAnchorCard } from "@/components/pricing/PriceAnchorCard";
-import type { PublicLadder } from "@/lib/pricing/team-ladder";
 import { TeamPathwayArt } from "@/components/landing/TeamPathwayArt";
 import { track } from "@/lib/analytics/client";
 import { ChevronRightIcon } from "@/components/ui/icons";
@@ -19,9 +17,11 @@ import { ChevronRightIcon } from "@/components/ui/icons";
  * /team-dynamics mélyoldal (a pilot-link 2026-09-08-án kikerült innen; a
  * pilot a /team-dynamics és a /pilot oldalon él tovább). A csapatkép-előnézet szándékosan NEM
  * szerepel itt (2026-09-03): a mélyoldalon dolgozik, a főoldalon csak
- * elvitte a figyelmet a döntéstől.
+ * elvitte a figyelmet a döntéstől. Ár SINCS itt (2026-09-08): a főoldal az
+ * egyéni ígéretről szól, az árat a csapat-oldal horgonya és az /pricing
+ * mondja — a blokk egyetlen döntése a „részletek" gomb.
  */
-export function TeamPathway({ ladder }: { ladder: PublicLadder }) {
+export function TeamPathway() {
   const { locale } = useLocale();
 
   const layers = [
@@ -82,17 +82,11 @@ export function TeamPathway({ ladder }: { ladder: PublicLadder }) {
               <ChevronRightIcon className="ml-2 h-4 w-4" />
             </Link>
           </div>
-
-          {/* Ár-horgony: krém árkártya a gomb ALATT, a blokk lezárásaként —
-              az egyetlen világos folt a bal oszlopban. A CTA marad barack,
-              hogy a két folt ne versenyezzen. Ugyanez a kártya él a
-              /team-dynamics ár-szekciójában; a részletek az /pricing oldalon. */}
-          <PriceAnchorCard ladder={ladder} locale={locale} ctaId="team_pathway_price" surface="landing" className="mt-6" />
         </div>
 
         {/* A csapatkép-előnézet a /team-dynamics hero-jában él; itt egy
             szerkesztői „kapcsolódás" rajz áll a helyén — a látogató nem keres
-            benne adatot, a figyelme a rétegeken, az egy úton és az áron marad. */}
+            benne adatot, a figyelme a rétegeken és az egy úton marad. */}
         <div
           data-landing-team-art
           className="relative z-10 mx-auto mt-6 w-full max-w-[300px] sm:max-w-[360px] md:mt-0 md:max-w-[440px]"

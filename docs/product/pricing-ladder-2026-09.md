@@ -75,12 +75,12 @@ magyar kkv-csapat tipikusan 5–8 fő, és nem akarunk „minimum létszámot"
 az első számban). Ha ez fáj, a kártyán a Csapatkép ára vagy az óra-modell
 állítandó, nem a kód.
 
-## 4. Kkv-létszám, amire a főoldali csillag épül
+## 4. Kkv-létszám, amire az ár-horgony csillaga épül
 
 ~900 ezer kkv Magyarországon (2024), ebből ~240 ezer foglalkoztat 1 főnél
 többet; a foglalkoztató cégek 85%-a 2–9 fős mikrovállalkozás (átlag ~6 fő,
 becslés a KSH megoszlásból); a kisvállalkozás (10–49 fő) sávjában
-jellemzően 5–12 fős csapategységek. Ezért a főoldal lábjegyzete
+jellemzően 5–12 fős csapategységek. Ezért az ár-horgony lábjegyzete
 „5–10 fős kkv-csapatra" mond árat — ez a sáv, ahol a 35 000 Ft/fő igaz.
 Források: GKI „Kicsi a bors, de erős" (2024-12), Makronóm (2024-12),
 KSH STADAT 9.1.1.17.
@@ -94,8 +94,7 @@ ebből `derivePublicLadder()` vágja ki a publikus részhalmazt
 | Felület | Mit mutat |
 |---|---|
 | `/pricing` (2026-09-08-tól önálló Árak oldal) | két szint csempéi · `TeamPricingConfigurator` (szint-váltó + létszám-csúszka + fejenkénti ár + tartalom) · összehasonlító tábla · ezen felül · pilot-ár sáv · ár-GYIK a számokkal; Service JSON-LD `UnitPriceSpecification` |
-| `/team-dynamics` ár-szekció | `PriceAnchorCard`: a belépő szint ára „Ft/fő-től*", link az /pricing-re; a hero pirulája ugyanezt a számot viszi |
-| `/` csapat-blokk (`TeamPathway`) | ugyanaz a `PriceAnchorCard` |
+| `/team-dynamics` ár-szekció | `PriceAnchorCard`: a belépő szint ára „Ft/fő-től*", link az /pricing-re; a hero pirulája ugyanezt a számot viszi. A főoldalon (`/`) nincs ár (2026-09-08-tól): az egyéni ígéretről szól, statikus marad |
 | `/pilot` ténysáv 3. cella | a Csapatprogram listaára áthúzva, −50% jelvény, partneri ár |
 | `/admin/quote` | ugyanebből számol az ajánlat (szint × létszám + extrák); a díjtételek mentése `revalidatePath`-tal frissíti a három publikus oldalt (ISR, 1 óra) |
 
@@ -104,6 +103,10 @@ forma) olvasáskor átfordul a létrára (`readQuoteInput`): workshop vagy
 hullám → Csapatprogram, egyébként Csapatkép. A régi díjkártya-pillanatképből
 dokumentum már nem generálható (`QUOTE_SNAPSHOT_MISMATCH`) — másolat kell
 friss kártyával.
+
+A díjtételek mentése a `/team-dynamics`, `/pricing` és `/pilot` lapot
+revalidálja (`PRICE_LADDER_PUBLIC_PATHS`); a főoldal nincs a listán, mert
+nem mutat árat.
 
 ## 6. Ami tudatosan NEM került be
 

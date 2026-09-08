@@ -53,6 +53,9 @@ export function Footer() {
         ...(isPortfolioSurfaceActive("patternExplorer")
           ? [{ label: t("footer.patterns", locale), href: "/patterns" }]
           : []),
+        // A Kapcsolat a cégről szóló oszlopban (2026-09-08): korábban a
+        // Jogi oszlop alján bújt meg, ahol senki nem keresi.
+        { label: t("footer.contact", locale), href: "/contact" },
       ],
     },
     {
@@ -64,7 +67,6 @@ export function Footer() {
       links: [
         { label: t("footer.legalDocuments", locale), href: "/legal" },
         { label: t("footer.privacy", locale), href: "/privacy" },
-        { label: t("footer.contact", locale), href: "/contact" },
       ],
     },
   ];

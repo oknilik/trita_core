@@ -1,5 +1,3 @@
-import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
-import { derivePublicLadder } from "@/lib/pricing/team-ladder";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { LandingContent } from "@/components/landing/LandingContent";
@@ -19,7 +17,7 @@ vi.mock("@/lib/analytics/client", () => ({
  */
 describe("főoldal – egy ígéret, egy oldal", () => {
   it("egyetlen H1-gyel, egyéni ígérettel nyit, és a profil-előnézetet rögtön mutatja", () => {
-    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
+    const { container } = render(<LandingContent />);
 
     const headings = screen.getAllByRole("heading", { level: 1 });
     expect(headings).toHaveLength(1);
@@ -49,7 +47,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("a hero pirulái hordozzák a tényszerű ígéreteket (a korábbi StatsBar helyett)", () => {
-    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
+    const { container } = render(<LandingContent />);
 
     const meta = container.querySelector("[data-landing-hero-meta]") as HTMLElement;
     expect(meta).not.toBeNull();
@@ -59,7 +57,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("a visszajelzés szerinti tömör sorrendet rendereli: hero → lépések → bizonyíték → csapat → zárás", () => {
-    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
+    const { container } = render(<LandingContent />);
 
     const h1 = screen.getByRole("heading", { level: 1 });
     const steps = screen.getByRole("heading", { name: /Három lépésben kapsz használható képet/ });
@@ -82,7 +80,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("nem duplázza meg a szekcióközt a riport- és csapatkártyák után", () => {
-    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
+    const { container } = render(<LandingContent />);
 
     const heroInner = container.querySelector("[data-landing-hero-inner]");
     const teamPathway = container.querySelector("[data-landing-team-pathway]");
@@ -96,15 +94,15 @@ describe("főoldal – egy ígéret, egy oldal", () => {
   });
 
   it("minden egyéni CTA a tesztre visz, a záró blokk megtartja az együttműködés útját", () => {
-    render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
+    render(<LandingContent />);
 
     expect(screen.getByRole("link", { name: "Elindítom az ingyenes tesztet" })).toHaveAttribute("href", "/try");
     expect(screen.getByRole("link", { name: "Elindítom a tesztet" })).toHaveAttribute("href", "/try");
     expect(screen.getByRole("link", { name: "Csapatoknak: így dolgozunk együtt" })).toHaveAttribute("href", "/team-dynamics");
   });
 
-  it("a csapatos átvezető a /team-dynamics oldalra visz, az árkártya a gomb alatt áll", () => {
-    const { container } = render(<LandingContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
+  it("a csapatos átvezető a /team-dynamics oldalra visz, ár nélkül", () => {
+    const { container } = render(<LandingContent />);
 
     const pathway = container.querySelector("[data-landing-team-pathway]") as HTMLElement;
     expect(pathway).not.toBeNull();
@@ -113,10 +111,9 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     expect(primaryCta).toHaveClass("bg-[var(--color-accent-primary-soft)]");
     // A pilot-link 2026-09-08-án kikerült a blokkból.
     expect(within(pathway).queryByRole("link", { name: /Megnézem a pilotprogramot/ })).toBeNull();
-    // Az árkártya (a „Részletes árak" linkkel) a gomb UTÁN jön.
-    const priceLink = within(pathway).getByRole("link", { name: /Részletes árak/ });
-    expect(priceLink).toHaveAttribute("href", "/pricing");
-    expect(primaryCta.compareDocumentPosition(priceLink)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    // Ár nincs a főoldalon (2026-09-08): sem árkártya, sem „Ft / fő".
+    expect(within(pathway).queryByRole("link", { name: /Részletes árak/ })).toBeNull();
+    expect(within(pathway).queryByText(/Ft \/ fő/)).toBeNull();
 
     // Az egyéni profilok, a három mérési réteg és az átfutási ígéret a blokkban él.
     for (const layer of ["Egyéni személyiségprofilok", "Mért bizalmi háló", "Pszichológiai biztonság", "Közösen értelmezett csapatkép"]) {

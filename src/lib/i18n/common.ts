@@ -143,7 +143,9 @@ export const commonTranslations = {
   },
   nav: {
     home: { hu: "Főoldal", en: "Home" },
-    publicHome: { hu: "Főoldal", en: "Home" },
+    // A publikus fejlécben a főoldal az EGYÉNI belépő (2026-09-08): a
+    // „Egyéni · Csapatoknak" pár mondja meg, kinek melyik lap szól.
+    publicHome: { hu: "Egyéni", en: "Individuals" },
     dashboard: { hu: "Vezérlő", en: "Dashboard" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
     signOut: { hu: "Kijelentkezés", en: "Sign out" },
@@ -184,7 +186,7 @@ export const commonTranslations = {
     colAbout: { hu: "A tritáról", en: "About trita" },
     colAccount: { hu: "Fiók", en: "Account" },
     colLegal: { hu: "Jogi", en: "Legal" },
-    home: { hu: "Főoldal", en: "Home" },
+    home: { hu: "Egyéni", en: "Individuals" },
     teams: { hu: "Csapatoknak", en: "For teams" },
     blog: { hu: "Blog", en: "Blog" },
     about: { hu: "Rólunk", en: "About" },

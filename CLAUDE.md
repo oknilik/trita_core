@@ -26,9 +26,9 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
   DB-ben az admin `/admin/quote` → Díjtételek). Publikus részhalmaz:
   `src/lib/pricing/team-ladder.ts` (`derivePublicLadder`); fogyasztók:
   `/pricing` árblokk (`TeamPricingConfigurator`, két szint csempéi,
-  összehasonlító tábla, pilot-ár), főoldal + `/team-dynamics` ár-horgony
+  összehasonlító tábla, pilot-ár), `/team-dynamics` ár-horgony
   (`PriceAnchorCard`), `/pilot` ténysáv, Service JSON-LD, admin
-  ajánlat-kalkulátor.
+  ajánlat-kalkulátor. A főoldalon NINCS ár (2026-09-08, statikus lap).
   Mentés → `revalidatePath` (ISR 1 óra). Új publikus árat SOHA ne írj
   literálként — a létrából olvasd. Doksi: `docs/product/pricing-ladder-2026-09.md`.
 - A korábbi kutatás-platform narratíva a publikus felületről eltávolítva;

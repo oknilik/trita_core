@@ -6,7 +6,6 @@ import { ProofSection } from "@/components/landing/ProofSection";
 import { TeamPathway } from "@/components/landing/TeamPathway";
 import { CtaSection } from "@/components/landing/CtaSection";
 import { SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
-import type { PublicLadder } from "@/lib/pricing/team-ladder";
 
 /**
  * A főoldal — egyetlen, egyéni ígérettel (2026-09-03).
@@ -23,7 +22,7 @@ import type { PublicLadder } from "@/lib/pricing/team-ladder";
  * Nincs useSearchParams, ezért nincs Suspense-határ: a hero H1 (LCP-elem)
  * benne van a prerenderelt HTML-ben.
  */
-export function LandingContent({ ladder }: { ladder: PublicLadder }) {
+export function LandingContent() {
   return (
     <>
       <HeroSection mode="self" />
@@ -34,7 +33,7 @@ export function LandingContent({ ladder }: { ladder: PublicLadder }) {
         <SectionTransition artKey={artKeyFrom("landing", "steps-proof", "self")} />
       </div>
       <ProofSection mode="self" />
-      <TeamPathway ladder={ladder} />
+      <TeamPathway />
       <CtaSection mode="self" />
     </>
   );

@@ -58,12 +58,21 @@ describe("publikus fejléc – landing kontextusú CTA", () => {
     expect(teamLinks.every((link) => link.getAttribute("href") === "/team-dynamics")).toBe(true);
   });
 
-  it("a csapatoldalon a Csapatoknak menüpont aktív, nem a Főoldal", () => {
+  it("a csapatoldalon a Csapatoknak menüpont aktív, nem az Egyéni", () => {
     pathnameMock.mockReturnValue("/team-dynamics");
     render(<NavBar />);
 
     expect(screen.getByRole("link", { name: "Csapatoknak" })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: "Főoldal" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "Egyéni" })).not.toHaveAttribute("aria-current");
+  });
+
+  it("az Egyéni menüpont a főoldalra visz, egy alak az ikonja", () => {
+    render(<NavBar />);
+
+    const individualLink = screen.getByRole("link", { name: "Egyéni" });
+    expect(individualLink).toHaveAttribute("href", "/");
+    expect(individualLink.querySelector('[data-nav-icon="person"]')).not.toBeNull();
+    expect(screen.queryByRole("link", { name: "Főoldal" })).toBeNull();
   });
 
   it("az Árak menüpont a két kör közös terét használja ikonként", () => {
@@ -106,10 +115,20 @@ describe("publikus footer – menüstruktúra", () => {
     const exploreLinks = Array.from(container.querySelectorAll("ul"))[0]?.querySelectorAll("a");
 
     expect(Array.from(exploreLinks ?? []).map((link) => [link.textContent, link.getAttribute("href")])).toEqual([
-      ["Főoldal", "/"],
+      ["Egyéni", "/"],
       ["Csapatoknak", "/team-dynamics"],
       ["Blog", "/blog"],
       ["Árak", "/pricing"],
     ]);
+  });
+
+  it("a Kapcsolat a tritáról szóló oszlopban áll, nem a jogi linkek közt", () => {
+    const { container } = render(<Footer />);
+    const lists = Array.from(container.querySelectorAll("ul"));
+    const aboutLinks = Array.from(lists[1]?.querySelectorAll("a") ?? []).map((link) => link.textContent);
+    const legalLinks = Array.from(lists[3]?.querySelectorAll("a") ?? []).map((link) => link.textContent);
+
+    expect(aboutLinks).toEqual(["Rólunk", "Pilotprogram", "Kapcsolat"]);
+    expect(legalLinks).not.toContain("Kapcsolat");
   });
 });
