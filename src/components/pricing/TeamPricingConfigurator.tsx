@@ -6,13 +6,13 @@ import { CheckIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
 import { t, tf, type Locale } from "@/lib/i18n/public";
+import { formatMoney, moneyDisplay } from "@/lib/pricing/fx";
 import {
   PUBLIC_HEADCOUNT_DEFAULT,
   PUBLIC_HEADCOUNT_MAX,
   PUBLIC_HEADCOUNT_MIN,
   PUBLIC_HEADCOUNT_OVER,
   estimateTeamRange,
-  formatHuf,
   headcountBand,
   isOverPublicMax,
   ladderPrice,
@@ -59,6 +59,12 @@ export function TeamPricingConfigurator({
   // A csúszka utolsó foka („40+"): nincs szám, egyedi ajánlat.
   const over = isOverPublicMax(headcount);
   const teamRange = estimateTeamRange(headcount);
+  const perHeadMoney = moneyDisplay(
+    price.perHeadAverage ?? tierRate.perHead,
+    locale,
+    ladder.fx,
+    `${t("pricing.perHeadUnit", locale)} ${t("pricing.plusVat", locale)}`,
+  );
   const teamsHint =
     teamRange.max <= 1
       ? t("pricing.teamsHintOne", locale)
@@ -187,7 +193,7 @@ export function TeamPricingConfigurator({
           >
             {tf("pricing.headcountNote", locale, {
               band: ladder.firstBandHeads,
-              over: formatHuf(tierRate.perHeadOver),
+              over: formatMoney(tierRate.perHeadOver, locale, ladder.fx),
               max: PUBLIC_HEADCOUNT_MAX,
             })}
           </p>
@@ -277,14 +283,14 @@ export function TeamPricingConfigurator({
         ) : (
           <>
             <p className="relative font-fraunces text-fluid-display leading-none tracking-tight tabular-nums">
-              {formatHuf(price.perHeadAverage ?? tierRate.perHead)}
+              {perHeadMoney.big}
               <span className="ml-1.5 font-sans text-base text-[var(--color-text-on-inverse-muted)]">
-                {t("pricing.perHeadUnit", locale)} {t("pricing.plusVat", locale)}
+                {perHeadMoney.small}
               </span>
             </p>
             <p className="relative text-sm text-[var(--color-text-on-inverse-muted)]">
               {tf("pricing.totalForTeam", locale, {
-                total: formatHuf(price.total),
+                total: formatMoney(price.total, locale, ladder.fx),
               })}
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
@@ -302,7 +308,7 @@ export function TeamPricingConfigurator({
                 })}
               </dt>
               <dd className="m-0 text-right tabular-nums">
-                {price.firstHeads} × {formatHuf(tierRate.perHead)} Ft
+                {price.firstHeads} × {formatMoney(tierRate.perHead, locale, ladder.fx)}
               </dd>
               {price.overHeads > 0 && (
                 <>
@@ -310,7 +316,7 @@ export function TeamPricingConfigurator({
                     {t("pricing.breakdownOver", locale)}
                   </dt>
                   <dd className="m-0 text-right tabular-nums">
-                    {price.overHeads} × {formatHuf(tierRate.perHeadOver)} Ft
+                    {price.overHeads} × {formatMoney(tierRate.perHeadOver, locale, ladder.fx)}
                   </dd>
                 </>
               )}

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { track } from "@/lib/analytics/client";
 import { t, tf, type Locale } from "@/lib/i18n/public";
-import { formatHuf, ladderEntryPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
+import { moneyDisplay } from "@/lib/pricing/fx";
+import { ladderEntryPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 /**
@@ -31,6 +32,7 @@ export function PriceAnchorCard({
   className?: string;
 }) {
   const entry = ladderEntryPerHead(ladder);
+  const money = moneyDisplay(entry.perHead, locale, ladder.fx, t("landing.teamPriceFrom", locale));
   return (
     <div
       data-price-anchor
@@ -41,13 +43,14 @@ export function PriceAnchorCard({
       </p>
       <p className="flex items-baseline gap-x-2">
         <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
-          {formatHuf(entry.perHead)}
+          {money.big}
         </span>
-        <span className="text-sm text-ink-body">{t("landing.teamPriceFrom", locale)}</span>
+        <span className="text-sm text-ink-body">{money.small}</span>
       </p>
       {/* Nincs csillag és nettó-lábjegyzet (2026-09-08): az ÁFA az ár mellett áll. */}
       <p className="max-w-[46ch] text-note leading-relaxed text-ink-body">
         {tf("landing.teamPriceFootnote", locale, { band: ladder.firstBandHeads })}
+        {locale !== "hu" && <> {t("pricing.fxNoteShort", locale)}</>}
       </p>
       <Link
         href="/pricing"

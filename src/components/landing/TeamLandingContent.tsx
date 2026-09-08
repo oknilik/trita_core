@@ -15,7 +15,8 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 import { track } from "@/lib/analytics/client";
 import { t, tf } from "@/lib/i18n/public";
-import { formatHuf, ladderEntryPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
+import { formatMoney } from "@/lib/pricing/fx";
+import { ladderEntryPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { TEAM_PAGE_FAQ_INDEXES } from "@/app/(marketing)/pricing/faq";
 import Link from "next/link";
@@ -38,7 +39,7 @@ export function TeamLandingContent({ ladder }: { ladder: PublicLadder }) {
     <>
       <HeroSection
         mode="team"
-        priceChip={tf("landing.teamMetaPrice", locale, { price: formatHuf(entry.perHead) })}
+        priceChip={tf("landing.teamMetaPrice", locale, { price: formatMoney(entry.perHead, locale, ladder.fx) })}
       />
       <HowItWorks mode="team" />
       <SectionTransition artKey={artKeyFrom("landing", "how-features", "team")} />

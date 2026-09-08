@@ -1,4 +1,5 @@
 import type { QuoteTier, RateCard } from "@/lib/quote/rate-card";
+import { FALLBACK_FX, type FxRate } from "@/lib/pricing/fx";
 
 // ─────────────────────────────────────────────────────────────────────
 // Publikus árlétra — a díjkártya KIFELÉ mutatható részhalmaza.
@@ -22,9 +23,15 @@ export interface PublicLadder {
   firstBandHeads: number;
   extraWorkshopDayFee: number;
   pilotDiscountPct: number;
+  /**
+   * Napi középárfolyam az angol felület euró-összegeihez. Az ár forintban
+   * rögzített; az euró tájékoztató. A szerver tölti (fx.server.ts), a
+   * tiszta számításokhoz a tartalék-árfolyam az alapértelmezés.
+   */
+  fx: FxRate;
 }
 
-export function derivePublicLadder(rate: RateCard): PublicLadder {
+export function derivePublicLadder(rate: RateCard, fx: FxRate = FALLBACK_FX): PublicLadder {
   return {
     tiers: {
       kep: { perHead: rate.tiers.kep.perHead, perHeadOver: rate.tiers.kep.perHeadOver },
@@ -33,6 +40,7 @@ export function derivePublicLadder(rate: RateCard): PublicLadder {
     firstBandHeads: rate.firstBandHeads,
     extraWorkshopDayFee: rate.extraWorkshopDayFee,
     pilotDiscountPct: rate.pilotDiscountPct,
+    fx,
   };
 }
 

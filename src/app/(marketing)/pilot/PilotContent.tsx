@@ -15,7 +15,8 @@ import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { PilotSpotsIndicator } from "@/components/marketing/PilotSpotsIndicator";
 import { t, tf, type Locale } from "@/lib/i18n/public";
 import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
-import { formatHuf, pilotPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
+import { formatMoney, moneyDisplay } from "@/lib/pricing/fx";
+import { pilotPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
@@ -631,6 +632,9 @@ function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder
   // a pilot tartalma (workshop + visszamérés) a Csapatprogramé.
   const fullPerHead = ladder.tiers.prog.perHead;
   const partnerPerHead = pilotPerHead(ladder, "prog");
+  // A partneri ár nagy szám + kis egység (hu: „25 000" + „Ft / fő + ÁFA",
+  // en: „€63" + „/ person + VAT"); az áthúzott listaár pénznemmel együtt.
+  const partnerMoney = moneyDisplay(partnerPerHead, locale, ladder.fx, t("pilot.fact3Unit", locale));
   return (
     <section aria-label={t("pilot.factsA11y", locale)} className="bg-cream">
       <div className="mx-auto max-w-[1120px] px-7 pb-16 md:pb-24">
@@ -639,11 +643,11 @@ function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder
             const vars = {
               total: PILOT_TOTAL_TEAMS,
               left: PILOT_SPOTS_LEFT,
-              full: formatHuf(fullPerHead),
-              pilot: formatHuf(partnerPerHead),
+              full: formatMoney(fullPerHead, locale, ladder.fx),
+              pilot: partnerMoney.big,
               pct: ladder.pilotDiscountPct,
             };
-            const unit = tf(`pilot.fact${fact}Unit`, locale, vars);
+            const unit = fact === 3 ? partnerMoney.small : tf(`pilot.fact${fact}Unit`, locale, vars);
             return (
               <div
                 key={fact}

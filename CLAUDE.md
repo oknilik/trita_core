@@ -30,7 +30,11 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
   (`PriceAnchorCard`), `/pilot` ténysáv, Service JSON-LD, admin
   ajánlat-kalkulátor. A főoldalon NINCS ár (2026-09-08, statikus lap).
   Mentés → `revalidatePath` (ISR 1 óra). Új publikus árat SOHA ne írj
-  literálként — a létrából olvasd. Doksi: `docs/product/pricing-ladder-2026-09.md`.
+  literálként — a létrából olvasd. Minden kirakott ár mellett „+ ÁFA"; az
+  angol felület euróban mutat (napi középárfolyam MNB→EKB→tartalék,
+  `src/lib/pricing/fx.ts` + `fx.server.ts`, a létra `fx` mezője) —
+  pénznemet a `formatMoney`/`moneyDisplay` ad, az egység-címkék pénznem
+  nélküliek. Doksi: `docs/product/pricing-ladder-2026-09.md`.
 - A korábbi kutatás-platform narratíva a publikus felületről eltávolítva;
   a platform termékként kommunikál.
 

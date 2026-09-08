@@ -118,7 +118,37 @@ A díjtételek mentése a `/team-dynamics`, `/pricing` és `/pilot` lapot
 revalidálja (`PRICE_LADDER_PUBLIC_PATHS`); a főoldal nincs a listán, mert
 nem mutat árat.
 
-## 6. Ami tudatosan NEM került be
+## 6. Euró az angol felületen (2026-09-08)
+
+Az ár FORINTBAN rögzített és forintban számlázunk. Az angol felület
+(`locale = "en"`) ugyanazt az összeget tájékoztató jelleggel EURÓBAN
+mutatja, **napi középárfolyamon** váltva, egész euróra kerekítve, minden
+ár mellett „+ VAT"-tal:
+
+| | HU | EN |
+|---|---|---|
+| Csempe / kalkulátor / horgony | 35 000 **Ft / fő + ÁFA** | **€88** / person + VAT |
+| Összesen-sor | Összesen 350 000 Ft + ÁFA … | €875 + VAT in total … |
+
+Forrás-sorrend (`src/lib/pricing/fx.server.ts`, fail-open): **MNB**
+`GetCurrentExchangeRates` SOAP → **EKB** napi referencia-árfolyam →
+tartalék `FALLBACK_HUF_PER_EUR` (400). A betöltés a `loadPublicLadder()`
+része, az ISR miatt legfeljebb óránként fut; a létra `fx` mezője viszi a
+kliensre. A parser-ek és a formázók keretmentesek (`src/lib/pricing/fx.ts`,
+teszt: `tests/unit/pricing/fx.test.ts`). Az angol /pricing csempéi alatt
+egy sor mondja, hogy forintban számlázunk és melyik napi árfolyamon
+váltottunk (tartalék-árfolyamnál „approximate rate"); az ár-horgony és a
+pilot lábjegyzete rövidebben ugyanezt. A JSON-LD forintban marad (a HU
+lokál a kanonikus). Az admin ajánlat és a PDF forintos — a tanácsadói
+számlázás forintban megy.
+
+Az egység-címkék (`pricing.perHeadUnit`, `landing.teamPriceFrom`,
+`pilot.fact3Unit` …) PÉNZNEM NÉLKÜLIEK: a pénznemet a lokál adja
+(`moneyDisplay` / `formatMoney`), így egy kulcs szolgálja mindkét
+pénznemet. Új publikus árat ezért soha ne írj „… Ft" formában — a
+`formatMoney(huf, locale, ladder.fx)` adja a pénznemet.
+
+## 7. Ami tudatosan NEM került be
 
 - **Kkv- vs. szervezeti tarifa** (cégméret szerinti két ár, keresztfinanszírozással):
   megfontolt, de a kétszintes létra egyszerűbb. Ha a nagy szervezetek

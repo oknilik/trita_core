@@ -17,8 +17,10 @@
  * oldalon élnek — egy kérdés csak egy helyen.
  */
 
+import type { Locale } from "@/lib/i18n/core";
 import { PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
-import { PUBLIC_HEADCOUNT_MAX, formatHuf, type PublicLadder } from "@/lib/pricing/team-ladder";
+import { formatMoney } from "@/lib/pricing/fx";
+import { PUBLIC_HEADCOUNT_MAX, type PublicLadder } from "@/lib/pricing/team-ladder";
 
 /**
  * A GYIK válaszaiba behelyettesített számok — egy helyen, hogy a szerver
@@ -26,12 +28,14 @@ import { PUBLIC_HEADCOUNT_MAX, formatHuf, type PublicLadder } from "@/lib/pricin
  * kliens-komponensben: egy `"use client"` modulból exportált függvény a
  * szerveren nem hívható (a build elhasal rajta).
  */
-export function pricingFaqVars(ladder: PublicLadder): Record<string, string | number> {
+export function pricingFaqVars(ladder: PublicLadder, locale: Locale = "hu"): Record<string, string | number> {
   return {
-    kep: formatHuf(ladder.tiers.kep.perHead),
-    prog: formatHuf(ladder.tiers.prog.perHead),
+    // Pénznemmel együtt (hu: „35 000 Ft", en: „€88"): az angol felület
+    // euróban, a napi középárfolyamon mutatja a forint-árat.
+    kep: formatMoney(ladder.tiers.kep.perHead, locale, ladder.fx),
+    prog: formatMoney(ladder.tiers.prog.perHead, locale, ladder.fx),
     band: ladder.firstBandHeads,
-    over: formatHuf(ladder.tiers.kep.perHeadOver),
+    over: formatMoney(ladder.tiers.kep.perHeadOver, locale, ladder.fx),
     max: PUBLIC_HEADCOUNT_MAX,
     total: PILOT_TOTAL_TEAMS,
     pct: ladder.pilotDiscountPct,

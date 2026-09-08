@@ -70,7 +70,8 @@ export const landingTranslations = {
     teamMetaTiming: { hu: "Első csapatkép néhány napon belül", en: "First team picture within days" },
     // Ár-horgony a csapat-blokkon (2026-09-07): a szám a díjkártyából jön.
     teamPriceLead: { hu: "Csapatprogramok", en: "Team programs" },
-    teamPriceFrom: { hu: "Ft / fő-től + ÁFA", en: "Ft / person and up + VAT" },
+    // Egység PÉNZNEM NÉLKÜL: a pénznemet a lokál adja (hu: „Ft" utána, en: „€" elé; fx.ts).
+    teamPriceFrom: { hu: "/ fő-től + ÁFA", en: "/ person and up + VAT" },
     teamPriceFootnote: {
       hu: "Minden mérést tartalmaz, egy tipikus 5–{band} fős kkv-csapat számára.",
       en: "Every measurement included, for a typical SME team of 5–{band}.",
@@ -78,7 +79,7 @@ export const landingTranslations = {
     teamPriceDetails: { hu: "Részletes árak", en: "Detailed pricing" },
     teamMetaOffer: { hu: "Csapatra szabott ajánlat", en: "Tailored team proposal" },
     /** Hero-pirula az árral: „{price} Ft / fő-től". */
-    teamMetaPrice: { hu: "{price} Ft / fő-től + ÁFA", en: "From {price} Ft / person + VAT" },
+    teamMetaPrice: { hu: "{price} / fő-től + ÁFA", en: "From {price} / person + VAT" },
     teamFadeCta: { hu: "Ízelítő a csapatképből", en: "A taste of your team picture" },
     // Team hero panel – a valódi publikált riport (TeamReportView) kicsinyített mása
     teamPanelEyebrow: { hu: "jóváhagyott csapatkép", en: "reviewed team picture" },
@@ -234,11 +235,25 @@ export const landingTranslations = {
     // ár-horgony, hero-pirula, /pilot ténysáv. A sávos és az egyedi-
     // ajánlat részletet a kalkulátor és a tábla mondja.
     plusVat: { hu: "+ ÁFA", en: "+ VAT" },
+    // Az angol felület euróban mutat (napi középárfolyam, fx.ts); a HU
+    // változat itt csak a teljesség kedvéért — magyarul nem jelenik meg.
+    fxNote: {
+      hu: "Az árak forintban rögzítettek és forintban számlázunk; az euró-összegek tájékoztató jellegűek, a {source} {date}-i napi középárfolyamán ({rate} Ft/€) váltva.",
+      en: "Prices are set and invoiced in Hungarian forint. Euro amounts are indicative, converted at the {source} daily mid rate of {rate} HUF/EUR on {date}.",
+    },
+    fxNoteFallback: {
+      hu: "Az árak forintban rögzítettek és forintban számlázunk; az euró-összegek tájékoztató jellegűek ({rate} Ft/€).",
+      en: "Prices are set and invoiced in Hungarian forint. Euro amounts are indicative, converted at an approximate rate of {rate} HUF/EUR.",
+    },
+    fxNoteShort: {
+      hu: "Az euró-összeg tájékoztató, napi középárfolyamon; forintban számlázunk.",
+      en: "Euro amount indicative, at the daily mid rate; invoiced in HUF.",
+    },
     calculatorEyebrow: { hu: "Kalkulátor", en: "Calculator" },
     compareEyebrow: { hu: "Mit tartalmaz", en: "What is included" },
     compareTitle: { hu: "A két szint egymás mellett.", en: "The two levels side by side." },
     comparePriceRow: { hu: "Ár az első {band} főre", en: "Price for the first {band} people" },
-    comparePriceNote: { hu: "{band} fő felett {over} Ft / fő + ÁFA mindkét szinten", en: "Above {band} people {over} Ft / person + VAT on both levels" },
+    comparePriceNote: { hu: "{band} fő felett {over} / fő + ÁFA mindkét szinten", en: "Above {band} people {over} / person + VAT on both levels" },
     extrasEyebrow: { hu: "Ezen felül", en: "On top of that" },
     extraMultiValue: { hu: "létszám szerint", en: "by headcount" },
     extraSelfValue: { hu: "ingyenes", en: "free" },
@@ -333,8 +348,8 @@ export const landingTranslations = {
     },
     headcountUnit: { hu: "fő", en: "people" },
     headcountNote: {
-      hu: "{band} fő felett minden további ember {over} Ft + ÁFA, akárhány csapatra osztjátok. {max} fő fölé húzd a csúszkát a végére.",
-      en: "Above {band} people, each additional person is {over} Ft + VAT, however many teams you split them into. For more than {max} people, drag the slider to the end.",
+      hu: "{band} fő felett minden további ember {over} + ÁFA, akárhány csapatra osztjátok. {max} fő fölé húzd a csúszkát a végére.",
+      en: "Above {band} people, each additional person is {over} + VAT, however many teams you split them into. For more than {max} people, drag the slider to the end.",
     },
     headcountOver: { hu: "{max}+", en: "{max}+" },
     customTitle: { hu: "Egyedi ajánlat", en: "Custom quote" },
@@ -345,8 +360,9 @@ export const landingTranslations = {
     customCta: { hu: "Beszéljünk", en: "Let's talk" },
     customNote: { hu: "Egy munkanapon belül válaszolunk.", en: "We reply within one business day." },
     includesTitle: { hu: "A {tier} szintben benne van", en: "Included in {tier}" },
-    perHeadUnit: { hu: "Ft / fő", en: "Ft / person" },
-    totalForTeam: { hu: "Összesen {total} Ft + ÁFA a teljes létszámra", en: "{total} Ft + VAT in total for everyone taking part" },
+    // Egység pénznem nélkül — a pénznemet a lokál adja (fx.ts: „35 000 Ft" / „€88").
+    perHeadUnit: { hu: "/ fő", en: "/ person" },
+    totalForTeam: { hu: "Összesen {total} + ÁFA a teljes létszámra", en: "{total} + VAT in total for everyone taking part" },
     vatNote: { hu: "Egy összegben, a program indulásakor.", en: "One payment at the start of the program." },
     breakdownFirst: { hu: "Első {band} fő", en: "First {band} people" },
     breakdownOver: { hu: "További fők", en: "Additional people" },
@@ -359,7 +375,7 @@ export const landingTranslations = {
     belowMultiTeamTitle: { hu: "Több csapat egyszerre?", en: "Several teams at once?" },
     belowMultiTeamBody: { hu: "Ugyanaz a fejenkénti ár: a résztvevők létszáma számít, nem a csapatok száma. 35 fő lehet 5–8 csapat is, mindegyik saját csapatképpel és közös értelmezéssel. {max} fő fölött egyedi ajánlatot adunk.", en: "The same per-person price: what counts is the number of participants, not the number of teams. 35 people can be 5–8 teams, each with its own team picture and joint debrief. Above {max} people we prepare a custom quote." },
     belowWorkshopTitle: { hu: "Kell egy egész napos workshop?", en: "Need a full-day workshop?" },
-    belowWorkshopBody: { hu: "Helyszíni, egész napos alkalom {fee} Ft + ÁFA. Ha a mérések száma indokolja, a tanácsadó javasolja.", en: "An on-site, full-day session is {fee} Ft + VAT. The consultant suggests it when the number of measurements calls for it." },
+    belowWorkshopBody: { hu: "Helyszíni, egész napos alkalom {fee} + ÁFA. Ha a mérések száma indokolja, a tanácsadó javasolja.", en: "An on-site, full-day session is {fee} + VAT. The consultant suggests it when the number of measurements calls for it." },
     belowDriversTitle: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
     belowDriversBody: { hu: "Csak a létszámtól és a szinttől. A mérések száma nem növeli az árat.", en: "Only headcount and the level. The number of measurements does not raise the price." },
     selfFreeLine: { hu: "Az egyéni felmérés ingyenes.", en: "The individual assessment is free." },
@@ -380,8 +396,8 @@ export const landingTranslations = {
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
     faqQ1: { hu: "Mennyibe kerül?", en: "How much does it cost?" },
     faqA1: {
-      hu: "Az egyéni felmérés ingyenes. A csapatprogramok fejenkénti áron mennek: a Csapatkép {kep} Ft/fő, a Csapatprogram {prog} Ft/fő nettó, {band} fő felett fejenként kevesebb. Minden mérés benne van – a fenti kalkulátor a ti létszámotokra mutatja az összeget.",
-      en: "The individual assessment is free. Team programs are priced per person: Team Picture is {kep} Ft/person, Team Program {prog} Ft/person net, with a lower rate above {band} people. Every measurement is included – the calculator above shows the total for your headcount.",
+      hu: "Az egyéni felmérés ingyenes. A csapatprogramok fejenkénti áron mennek: a Csapatkép {kep} / fő, a Csapatprogram {prog} / fő + ÁFA, {band} fő felett fejenként kevesebb. Minden mérés benne van – a fenti kalkulátor a ti létszámotokra mutatja az összeget.",
+      en: "The individual assessment is free. Team programs are priced per person: Team Picture is {kep} / person, Team Program {prog} / person + VAT, with a lower rate above {band} people. Every measurement is included – the calculator above shows the total for your headcount.",
     },
     faqQ2: { hu: "Mit tartalmaz az ár?", en: "What does the price include?" },
     faqA2: {
@@ -433,8 +449,8 @@ export const landingTranslations = {
     },
     faqQ9: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
     faqA9: {
-      hu: "Csak a létszámtól és a szinttől. A mérések száma nem növeli az árat; {band} fő felett minden további ember {over} Ft. Külön tétel a további helyszíni workshop-nap, a havi kísérés és a kiszállás.",
-      en: "Only headcount and the level. The number of measurements does not raise the price; above {band} people each additional person is {over} Ft. Extra on-site workshop days, monthly support and travel are separate items.",
+      hu: "Csak a létszámtól és a szinttől. A mérések száma nem növeli az árat; {band} fő felett minden további ember {over} + ÁFA. Külön tétel a további helyszíni workshop-nap, a havi kísérés és a kiszállás.",
+      en: "Only headcount and the level. The number of measurements does not raise the price; above {band} people each additional person is {over} + VAT. Extra on-site workshop days, monthly support and travel are separate items.",
     },
     faqQ10: { hu: "Hogyan és mikor fizetünk?", en: "How and when do we pay?" },
     faqA10: {
@@ -699,7 +715,7 @@ export const landingTranslations = {
     fact2Label: { hu: "szabad partnercsapat-hely", en: "open partner team spots" },
     // A 3. tény (2026-09-07): áthúzott listaár + partneri ár a díjkártyából.
     fact3Value: { hu: "{pilot}", en: "{pilot}" },
-    fact3Unit: { hu: "Ft / fő + ÁFA", en: "Ft / person + VAT" },
+    fact3Unit: { hu: "/ fő + ÁFA", en: "/ person + VAT" },
     fact3Label: {
       hu: "partneri ár az első {total} csapatnak",
       en: "partner price for the first {total} teams",
@@ -708,7 +724,7 @@ export const landingTranslations = {
     fact3Off: { hu: "−{pct}%", en: "−{pct}%" },
     fact3Foot: {
       hu: "A Csapatprogram teljes tartalmával: minden mérés, félnapos workshop, visszamérés.",
-      en: "With the full Team Program: every measurement, a half-day workshop, remeasurement.",
+      en: "With the full Team Program: every measurement, a half-day workshop, remeasurement. Euro amount indicative, at the daily mid rate; invoiced in HUF.",
     },
     fact4Value: { hu: "2+1", en: "2+1" },
     fact4Unit: { hu: "alkalom", en: "sessions" },

@@ -71,6 +71,16 @@ describe("TeamPricingConfigurator", () => {
     expect(hint()).toBe("egy csapat");
   });
 
+  it("angolul euróban mutat, a létra árfolyamán váltva, plusz VAT-tal", () => {
+    // 400 Ft/€ tartalék-árfolyam: 35 000 Ft → €88, 10 fő → €875.
+    render(<TeamPricingConfigurator ladder={ladder} locale="en" />);
+
+    expect(screen.getByText("€88")).toBeInTheDocument();
+    expect(screen.getByText("/ person + VAT")).toBeInTheDocument();
+    expect(screen.getByText("€875 + VAT in total for everyone taking part")).toBeInTheDocument();
+    expect(screen.queryByText(/Ft/)).not.toBeInTheDocument();
+  });
+
   it("a csúszka végén (40+) szám helyett egyedi ajánlatot kínál", () => {
     render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
 

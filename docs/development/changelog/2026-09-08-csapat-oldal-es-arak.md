@@ -43,6 +43,15 @@
   `QUOTE_TIER_INCLUDES` is). A korábbi, ellentmondó „csapatonként
   számolunk, a második csapattól kedvezőbb" szöveg (ezen felül-kártya,
   GYIK 11–12) a létszám-alapú modellre íródott át.
+- **„+ ÁFA" minden kirakott ár mellett, csillag és nettó-lábjegyzet nélkül**
+  (`pricing.plusVat`): csempék, kalkulátor, tábla, extrák, pilot-sáv,
+  ár-horgony, hero-pirula, /pilot ténysáv.
+- **Euró az angol felületen:** a HU-forintár az `en` lokálon egész euróra
+  kerekítve, napi középárfolyamon (MNB → EKB → tartalék 400) jelenik meg,
+  „+ VAT"-tal, és egy sor mondja, hogy forintban számlázunk. Új modulok:
+  `src/lib/pricing/fx.ts` (parser-ek, `formatMoney`, `moneyDisplay`),
+  `fx.server.ts` (betöltés, fail-open); a létra `fx` mezőt kapott. Az
+  egység-címkék pénznem nélküliek lettek. Doksi: árlétra-doksi 6. pont.
 - **Csapat-oldal CTA-k:** hero elsődleges „Egyeztessünk" → /contact,
   másodlagos „Árak és kalkulátor" → /pricing; a záró CTA „Egyeztessünk a
   csapatotokról" → /contact, alatta „Vagy nézd meg a pilotprogramot".

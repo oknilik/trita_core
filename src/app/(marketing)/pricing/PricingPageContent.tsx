@@ -12,9 +12,9 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
 import { t, tf, type Locale } from "@/lib/i18n/public";
 import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
+import { formatFxDate, formatMoney, moneyDisplay } from "@/lib/pricing/fx";
 import {
   PUBLIC_HEADCOUNT_MAX,
-  formatHuf,
   pilotPerHead,
   type PublicLadder,
 } from "@/lib/pricing/team-ladder";
@@ -37,6 +37,12 @@ const PROG_ITEMS = [1, 2] as const;
 
 function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLadder; locale: Locale }) {
   const highlight = tier === "prog";
+  const money = moneyDisplay(
+    ladder.tiers[tier].perHead,
+    locale,
+    ladder.fx,
+    `${t("pricing.perHeadUnit", locale)} ${t("pricing.plusVat", locale)}`,
+  );
   return (
     <div
       data-pricing-tile={tier}
@@ -52,9 +58,9 @@ function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLad
           highlight ? "text-[var(--color-layer-team-badge)]" : "text-[var(--color-layer-team-accent)]"
         }`}
       >
-        {formatHuf(ladder.tiers[tier].perHead)}
+        {money.big}
         <span className={`ml-1.5 font-sans text-caption ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
-          {t("pricing.perHeadUnit", locale)} {t("pricing.plusVat", locale)}
+          {money.small}
         </span>
       </p>
       <p className={`text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
@@ -107,12 +113,12 @@ function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Loc
             <td className="px-5 py-4">
               <p className="font-semibold text-ink">{tf("pricing.comparePriceRow", locale, { band: ladder.firstBandHeads })}</p>
               <p className="mt-0.5 text-caption text-ink-body">
-                {tf("pricing.comparePriceNote", locale, { band: ladder.firstBandHeads, over: formatHuf(ladder.tiers.kep.perHeadOver) })}
+                {tf("pricing.comparePriceNote", locale, { band: ladder.firstBandHeads, over: formatMoney(ladder.tiers.kep.perHeadOver, locale, ladder.fx) })}
               </p>
             </td>
             {QUOTE_TIERS.map((tier) => (
               <td key={tier} className="px-4 py-4 text-center font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">
-                {formatHuf(ladder.tiers[tier].perHead)} {t("pricing.perHeadUnit", locale)}
+                {formatMoney(ladder.tiers[tier].perHead, locale, ladder.fx)} {t("pricing.perHeadUnit", locale)}
                 <span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span>
               </td>
             ))}
@@ -125,8 +131,26 @@ function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Loc
 
 export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
   const { locale } = useLocale();
-  const vars = pricingFaqVars(ladder);
+  const vars = pricingFaqVars(ladder, locale);
   const partnerPerHead = pilotPerHead(ladder, "prog");
+  const partnerMoney = moneyDisplay(
+    partnerPerHead,
+    locale,
+    ladder.fx,
+    `${t("pricing.perHeadUnit", locale)} ${t("pricing.plusVat", locale)}`,
+  );
+  // Az angol felület euróban mutat: egy sor mondja, hogy forintban
+  // számlázunk, és melyik napi középárfolyamon váltottunk.
+  const fxNote =
+    locale === "hu"
+      ? null
+      : ladder.fx.date
+        ? tf("pricing.fxNote", locale, {
+            source: ladder.fx.source.toUpperCase(),
+            rate: Math.round(ladder.fx.hufPerEur),
+            date: formatFxDate(ladder.fx.date, locale),
+          })
+        : tf("pricing.fxNoteFallback", locale, { rate: Math.round(ladder.fx.hufPerEur) });
 
   return (
     <main className="overflow-hidden bg-cream text-ink selection:bg-bronze/20">
@@ -158,6 +182,11 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
             {QUOTE_TIERS.map((tier) => (
               <TierTile key={tier} tier={tier} ladder={ladder} locale={locale} />
             ))}
+            {fxNote && (
+              <p data-pricing-fx-note className="px-1 text-note leading-relaxed text-ink-body sm:col-span-2">
+                {fxNote}
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -189,8 +218,8 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowWorkshopTitle", locale)}</p>
-              <p className="mt-1 font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">{formatHuf(ladder.extraWorkshopDayFee)} Ft<span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span></p>
-              <p className="mt-2 text-caption leading-relaxed text-ink-body">{tf("pricing.belowWorkshopBody", locale, { fee: formatHuf(ladder.extraWorkshopDayFee) })}</p>
+              <p className="mt-1 font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">{formatMoney(ladder.extraWorkshopDayFee, locale, ladder.fx)}<span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span></p>
+              <p className="mt-2 text-caption leading-relaxed text-ink-body">{tf("pricing.belowWorkshopBody", locale, { fee: formatMoney(ladder.extraWorkshopDayFee, locale, ladder.fx) })}</p>
             </div>
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowMultiTeamTitle", locale)}</p>
@@ -220,11 +249,11 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
               <SectionEyebrow tone="team">{tf("pricing.pilotStripEyebrow", locale, { total: PILOT_TOTAL_TEAMS })}</SectionEyebrow>
               <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <s className="font-fraunces text-heading tabular-nums text-ink-body decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
-                  {formatHuf(ladder.tiers.prog.perHead)}
+                  {formatMoney(ladder.tiers.prog.perHead, locale, ladder.fx)}
                 </s>
                 <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
-                  {formatHuf(partnerPerHead)}
-                  <span className="ml-1.5 font-sans text-caption text-ink-body">{t("pricing.perHeadUnit", locale)} {t("pricing.plusVat", locale)}</span>
+                  {partnerMoney.big}
+                  <span className="ml-1.5 font-sans text-caption text-ink-body">{partnerMoney.small}</span>
                 </span>
               </p>
               <p className="mt-2 max-w-[60ch] text-sm leading-relaxed text-ink-body">
