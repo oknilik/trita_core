@@ -476,7 +476,7 @@ export const landingTranslations = {
     },
     faqQ9: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
     faqA9: { hu: "A létszámtól, a csomagtól és a csapatok számától. Minden csapat alapdíja Csapatképnél {kepTeam}, Csapatprogramnál {progTeam} + ÁFA. Ehhez résztvevőnkénti díj társul; az összlétszám {band}. fője felett {over} / fő + ÁFA. A kalkulátorban ezek együttes, fejenkénti átlagát látjátok.", en: "Headcount, package and team count determine the price. Each team's base fee is {kepTeam} for Team Picture or {progTeam} + VAT for Team Program. Participant fees are added, at {over} / person + VAT above {band} participants overall. The calculator shows the combined average per person." },
-    faqQ10: { hu: "Hogyan és mikor fizetünk?", en: "How and when do we pay?" },
+    faqQ10: { hu: "Van lehetőség több részletben fizetni?", en: "Can we pay in instalments?" },
     faqA10: {
       hu: "Az elfogadott ajánlat alapján, átutalással; a program díja akár több részletben is fizethető. A díjak nettó összegek, ÁFA-val számlázzuk. Szerződést és megrendelőt írásban kaptok.",
       en: "Based on the accepted quote, by bank transfer; the program fee can be paid in several instalments. Prices are net and invoiced with VAT. You receive the contract and order form in writing.",
