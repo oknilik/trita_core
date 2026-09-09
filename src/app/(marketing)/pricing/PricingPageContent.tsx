@@ -75,11 +75,15 @@ function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Loc
     ...KEP_ITEMS.map((i) => ({ key: `kep${i}`, label: t(`pricing.tier_kep_item${i}`, locale), kep: true, prog: true })),
     ...PROG_ITEMS.map((i) => ({ key: `prog${i}`, label: t(`pricing.tier_prog_item${i}`, locale), kep: false, prog: true })),
   ];
+  // A cella jelentése felolvasva is érthető legyen: a „✓" és a „–" karakter
+  // önmagában nem mondja meg, hogy az adott csomag tartalmazza-e az elemet.
   const cell = (on: boolean) =>
     on ? (
-      <CheckIcon className="mx-auto h-4 w-4 text-sage" aria-label="✓" />
+      <CheckIcon className="mx-auto h-4 w-4 text-sage" aria-label={t("pricing.compareIncluded", locale)} />
     ) : (
-      <span className="text-ink-body" aria-label="–">–</span>
+      <span className="text-ink-body" aria-label={t("pricing.compareExcluded", locale)}>
+        –
+      </span>
     );
   return (
     // Görgethető régió: fókuszálható, hogy billentyűzettel is végig lehessen
@@ -124,7 +128,7 @@ function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Loc
               olvasható volt, mintha onnantól MINDENKIRE ez az ár vonatkozna. */}
           <tr className="border-t border-sand">
             <td className="px-5 py-4 font-semibold text-ink">
-              {tf("pricing.comparePriceRowOver", locale, { next: ladder.firstBandHeads + 1 })}
+              {tf("pricing.comparePriceRowOver", locale, { band: ladder.firstBandHeads, next: ladder.firstBandHeads + 1 })}
             </td>
             {QUOTE_TIERS.map((tier) => (
               <td key={tier} className="px-4 py-4 text-center font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">
@@ -180,7 +184,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
               <em className="not-italic text-[var(--color-layer-team-accent)]">{t("pricing.pageTitleEm", locale)}</em>
             </h1>
             <p className="mt-6 max-w-[58ch] text-base leading-relaxed text-ink-body">
-              {tf("pricing.pageLead", locale, { band: ladder.firstBandHeads })}
+              {t("pricing.pageLead", locale)}
             </p>
             <MarketingActions
               className="mt-8"
@@ -229,7 +233,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowWorkshopTitle", locale)}</p>
               <p className="mt-1 font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">{formatMoney(ladder.extraWorkshopDayFee, locale, ladder.fx)}<span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)} {t("pricing.belowWorkshopUnit", locale)}</span></p>
-              <p className="mt-2 text-caption leading-relaxed text-ink-body">{tf("pricing.belowWorkshopBody", locale, { fee: formatMoney(ladder.extraWorkshopDayFee, locale, ladder.fx) })}</p>
+              <p className="mt-2 text-caption leading-relaxed text-ink-body">{t("pricing.belowWorkshopBody", locale)}</p>
             </div>
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowMultiTeamTitle", locale)}</p>

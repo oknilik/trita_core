@@ -2,7 +2,8 @@ import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { TeamLandingContent } from "@/components/landing/TeamLandingContent";
 import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
-import { derivePublicLadder, formatHuf } from "@/lib/pricing/team-ladder";
+import { formatMoneyParts } from "@/lib/pricing/fx";
+import { derivePublicLadder } from "@/lib/pricing/team-ladder";
 
 vi.mock("@/components/LocaleProvider", () => ({
   useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
@@ -13,6 +14,9 @@ vi.mock("@/lib/analytics/client", () => ({
 }));
 
 const ladder = derivePublicLadder(DEFAULT_RATE_CARD);
+// A nagy szám pénznem NÉLKÜL jelenik meg (a pénznem külön elem): a
+// formázást ugyanaz a modul adja, mint a felületen.
+const hufAmount = (value: number) => formatMoneyParts(value, "hu", ladder.fx).amount;
 const plain = (value: string) => value.replace(/ /g, " ");
 
 /**
@@ -55,7 +59,7 @@ describe("csapat-oldal (egyesített)", () => {
 
     const anchor = container.querySelector("[data-team-price-anchor]") as HTMLElement;
     expect(anchor).not.toBeNull();
-    expect(within(anchor).getByText(plain(formatHuf(ladder.tiers.kep.perHead)))).toBeInTheDocument();
+    expect(within(anchor).getByText(plain(hufAmount(ladder.tiers.kep.perHead)))).toBeInTheDocument();
     expect(within(anchor).getByRole("link", { name: /Részletes árak/ })).toHaveAttribute("href", "/pricing");
     expect(screen.queryByRole("slider")).not.toBeInTheDocument();
   });

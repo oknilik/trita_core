@@ -1,5 +1,6 @@
 import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
-import { derivePublicLadder, formatHuf, pilotPerHead } from "@/lib/pricing/team-ladder";
+import { formatMoneyParts } from "@/lib/pricing/fx";
+import { derivePublicLadder, pilotPerHead } from "@/lib/pricing/team-ladder";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ContactContent } from "@/app/(marketing)/contact/ContactContent";
@@ -19,6 +20,9 @@ vi.mock("@/components/LocaleProvider", () => ({
 vi.mock("@/lib/analytics/client", () => ({ track: vi.fn() }));
 
 const ladder = derivePublicLadder(DEFAULT_RATE_CARD);
+// A nagy szám pénznem NÉLKÜL jelenik meg (a pénznem külön elem): a
+// formázást ugyanaz a modul adja, mint a felületen.
+const hufAmount = (value: number) => formatMoneyParts(value, "hu", ladder.fx).amount;
 const plain = (value: string) => value.replace(/ /g, " ");
 
 describe("the separate contact and pricing art directions", () => {
@@ -47,15 +51,15 @@ describe("the separate contact and pricing art directions", () => {
 
     // A két szint csempéje a díjkártya áraival.
     const tiles = container.querySelector("[data-pricing-tiles]") as HTMLElement;
-    expect(within(tiles).getByText(plain(formatHuf(ladder.tiers.kep.perHead)))).toBeInTheDocument();
-    expect(within(tiles).getByText(plain(formatHuf(ladder.tiers.prog.perHead)))).toBeInTheDocument();
+    expect(within(tiles).getByText(plain(hufAmount(ladder.tiers.kep.perHead)))).toBeInTheDocument();
+    expect(within(tiles).getByText(plain(hufAmount(ladder.tiers.prog.perHead)))).toBeInTheDocument();
 
     // Kalkulátor a horgonnyal, összehasonlító tábla, pilot-ár.
     expect(container.querySelector("#kalkulator")).not.toBeNull();
     expect(screen.getByRole("slider")).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();
     const pilot = container.querySelector("[data-pricing-pilot]") as HTMLElement;
-    expect(within(pilot).getByText(plain(formatHuf(pilotPerHead(ladder, "prog"))))).toBeInTheDocument();
+    expect(within(pilot).getByText(plain(hufAmount(pilotPerHead(ladder, "prog"))))).toBeInTheDocument();
     expect(within(pilot).getByRole("link", { name: t("pricing.pilotStripCta", "hu") })).toHaveAttribute("href", "/pilot");
 
     // Csak az árról szóló GYIK; a program-GYIK a csapat-oldalon.

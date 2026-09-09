@@ -256,8 +256,16 @@ export const landingTranslations = {
       hu: "A Csapatkép segít megérteni a csapat működését. A Csapatprogram ezen felül személyes workshopot és hat hónappal későbbi újramérést is tartalmaz.",
       en: "Team Picture helps you understand how the team works. Team Program adds an in-person workshop and a remeasurement six months later.",
     },
+    // Az összehasonlító tábla pipa/gondolatjel cellájának felolvasott jelentése.
+    compareIncluded: { hu: "Tartalmazza", en: "Included" },
+    compareExcluded: { hu: "Nem tartalmazza", en: "Not included" },
     comparePriceRow: { hu: "Az első {band} résztvevő díja, fejenként", en: "Price for each of the first {band} participants" },
-    comparePriceRowOver: { hu: "Minden további résztvevő díja a {next}. főtől", en: "Price for each additional participant from person {next}" },
+    comparePriceRowOver: {
+      hu: "Minden további résztvevő díja a {next}. főtől",
+      // Angolul a sorszám ragozása nyelvenként csúszna („from person 11"),
+      // ezért a sávra hivatkozunk: „a first {band} után".
+      en: "Price for each additional participant after the first {band}",
+    },
     extraSelfValue: { hu: "Ingyenes · körülbelül 10 perc", en: "Free · about 10 minutes" },
     pilotStripEyebrow: { hu: "Pilotprogram · az első {total} csapatnak", en: "Pilot program · for the first {total} teams" },
     pilotStripBody: { hu: "Csapatprogram, partneri áron, −{pct}%. {left} / {total} hely szabad. Cserébe visszajelzést kérünk a programról.", en: "Team Program at the partner price, −{pct}%. {left} / {total} spots open. In return we ask for feedback on the program." },
@@ -387,7 +395,7 @@ export const landingTranslations = {
       hu: "A díjat az összes résztvevő száma alapján számoljuk. Minden csapat saját csapatképet és külön eredménymegbeszélést kap. {max} fő felett egyedi ajánlatot készítünk.",
       en: "We calculate the fee from the total number of participants. Every team gets its own team picture and its own results discussion. Above {max} people we prepare a custom quote.",
     },
-    belowWorkshopTitle: { hu: "További személyes workshop alkalom", en: "An additional in-person workshop session" },
+    belowWorkshopTitle: { hu: "További személyes workshop", en: "An additional in-person workshop" },
     belowWorkshopUnit: { hu: "/ alkalom", en: "/ session" },
     belowWorkshopBody: {
       hu: "Ha hosszabb közös munkára van szükségetek, egész napos workshop is kérhető. Ez egy önálló alkalom teljes díja – a csomagban lévő félnapos workshopon felül –, és több csapat is részt vehet rajta. Az egyeztetésen közösen eldöntjük, melyik forma illik hozzátok.",
@@ -741,7 +749,7 @@ export const landingTranslations = {
     fact3Off: { hu: "−{pct}%", en: "−{pct}%" },
     fact3Foot: {
       hu: "A Csapatprogram teljes tartalmával: minden mérés, félnapos workshop, visszamérés.",
-      en: "With the full Team Program: every measurement, a half-day workshop, remeasurement. Euro amount indicative, at the daily mid rate; invoiced in HUF.",
+      en: "With the full Team Program: every measurement, a half-day workshop, remeasurement.",
     },
     fact4Value: { hu: "2+1", en: "2+1" },
     fact4Unit: { hu: "alkalom", en: "sessions" },

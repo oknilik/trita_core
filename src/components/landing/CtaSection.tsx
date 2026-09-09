@@ -24,7 +24,10 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
   if (!isSelf) {
     return (
       <section className="px-7 py-16 md:py-24">
-        <div className="mx-auto flex max-w-[960px] flex-col gap-6 rounded-[28px] bg-[var(--color-surface-muted)] px-6 py-8 md:flex-row md:items-center md:justify-between md:px-9">
+        {/* A gomb-oszlop csak akkor kerül a szöveg MELLÉ, ha a leghosszabb
+            (magyar) gombfelirat elfér egy sorban — 960 px alatt a két elem
+            egymás alá kerül, különben a felirat kettétörik. */}
+        <div className="mx-auto flex max-w-[960px] flex-col gap-6 rounded-[28px] bg-[var(--color-surface-muted)] px-6 py-8 lg:flex-row lg:items-center lg:justify-between lg:px-9">
           <div className="max-w-[610px]">
             <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
               {t("landing.ctaTeamHeadlineBefore", locale)}
@@ -39,28 +42,28 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
               {t("landing.ctaTeamMicrocopy", locale)}
             </p>
           </div>
-          <div className="flex flex-col items-start gap-2 md:items-end">
-          <Link
-            href="/contact"
-            onClick={() =>
-              track("cta.click", {
-                cta_id: "closing",
-                surface: "landing",
-                mode: "team",
-              })
-            }
-            className={`inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-xl bg-[var(--color-layer-team-hero-from)] px-7 text-base font-semibold text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[var(--ui-shadow-lg)] ${FOCUS_RING_CLASS}`}
-          >
-            {t("landing.ctaTeamCta", locale)}
-          </Link>
-          <Link
-            href="/pilot"
-            onClick={() => track("cta.click", { cta_id: "cta_team_pilot", surface: "landing", mode: "team" })}
-            className={`inline-flex min-h-11 items-center rounded-lg px-2 text-sm font-semibold text-[var(--color-layer-team-accent)] transition-opacity hover:opacity-80 ${FOCUS_RING_CLASS}`}
-          >
-            {t("landing.ctaTeamPilot", locale)}
-            <ChevronRightIcon className="ml-1 h-4 w-4" />
-          </Link>
+          <div className="flex shrink-0 flex-col items-start gap-2 lg:items-end">
+            <Link
+              href="/contact"
+              onClick={() =>
+                track("cta.click", {
+                  cta_id: "closing",
+                  surface: "landing",
+                  mode: "team",
+                })
+              }
+              className={`inline-flex min-h-[52px] shrink-0 items-center justify-center whitespace-nowrap rounded-xl bg-[var(--color-layer-team-hero-from)] px-7 text-base font-semibold text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[var(--ui-shadow-lg)] ${FOCUS_RING_CLASS}`}
+            >
+              {t("landing.ctaTeamCta", locale)}
+            </Link>
+            <Link
+              href="/pilot"
+              onClick={() => track("cta.click", { cta_id: "cta_team_pilot", surface: "landing", mode: "team" })}
+              className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-lg px-2 text-sm font-semibold text-[var(--color-layer-team-accent)] transition-opacity hover:opacity-80 ${FOCUS_RING_CLASS}`}
+            >
+              {t("landing.ctaTeamPilot", locale)}
+              <ChevronRightIcon className="ml-1 h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>

@@ -91,6 +91,7 @@ const publicEvents = {
       "Az /pricing árblokk első beállítása (szint + létszám-sáv) – milyen csapatméret és szint érdekli a látogatót.",
     question: "P2",
   }),
+
   "faq.open": spec({
     schema: z
       .object({

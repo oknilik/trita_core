@@ -2,7 +2,8 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { TeamPricingConfigurator } from "@/components/pricing/TeamPricingConfigurator";
 import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
-import { derivePublicLadder, formatHuf, ladderPrice } from "@/lib/pricing/team-ladder";
+import { formatMoney } from "@/lib/pricing/fx";
+import { derivePublicLadder, ladderPrice } from "@/lib/pricing/team-ladder";
 
 const track = vi.fn();
 vi.mock("@/lib/analytics/client", () => ({
@@ -15,7 +16,7 @@ const ladder = derivePublicLadder(DEFAULT_RATE_CARD);
 const plain = (value: string) => value.replace(/\u00a0/g, " ");
 
 /**
- * A /how-we-work árblokk: a látogató a két szint és a létszám alapján
+ * Az /pricing árblokk: a látogató a két szint és a létszám alapján
  * ugyanazt a számot látja, amit az admin kalkulátor az ajánlatba tesz.
  */
 describe("TeamPricingConfigurator", () => {
@@ -26,7 +27,7 @@ describe("TeamPricingConfigurator", () => {
     expect(kep).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("slider")).toHaveValue("10");
     expect(
-      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "kep", 10).total)} Ft + ÁFA a teljes létszámra`)),
+      screen.getByText(plain(`Összesen ${formatMoney(ladderPrice(ladder, "kep", 10).total, "hu", ladder.fx)} + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
   });
 
@@ -38,7 +39,7 @@ describe("TeamPricingConfigurator", () => {
     expect(screen.getByRole("button", { name: /Csapatprogram/ })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("heading", { name: /Mit tartalmaz a Csapatprogram\?/ })).toBeInTheDocument();
     expect(
-      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "prog", 10).total)} Ft + ÁFA a teljes létszámra`)),
+      screen.getByText(plain(`Összesen ${formatMoney(ladderPrice(ladder, "prog", 10).total, "hu", ladder.fx)} + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
   });
 
@@ -51,7 +52,7 @@ describe("TeamPricingConfigurator", () => {
     expect(price.perHeadAverage).toBeLessThan(ladder.tiers.kep.perHead);
     expect(screen.getByText("További fők")).toBeInTheDocument();
     expect(
-      screen.getByText(plain(`${price.overHeads} × ${formatHuf(ladder.tiers.kep.perHeadOver)} Ft`)),
+      screen.getByText(plain(`${price.overHeads} × ${formatMoney(ladder.tiers.kep.perHeadOver, "hu", ladder.fx)}`)),
     ).toBeInTheDocument();
   });
 
@@ -64,7 +65,7 @@ describe("TeamPricingConfigurator", () => {
     expect(screen.getByText(/A résztvevők több csapatból is érkezhetnek/)).toBeInTheDocument();
     expect(screen.getByText(/A 11\. résztvevőtől minden további fő díja/)).toBeInTheDocument();
     expect(
-      screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "kep", 35).total)} Ft + ÁFA a teljes létszámra`)),
+      screen.getByText(plain(`Összesen ${formatMoney(ladderPrice(ladder, "kep", 35).total, "hu", ladder.fx)} + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
   });
 

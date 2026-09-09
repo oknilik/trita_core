@@ -684,6 +684,9 @@ function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder
                 {fact === 3 && (
                   <dd className="mt-2 text-note leading-relaxed text-ink-body">
                     {t("pilot.fact3Foot", locale)}
+                    {/* Az angol felület euróban mutat: ugyanaz az egymondatos
+                        árfolyam-jelzés, mint az ár-horgony kártyán. */}
+                    {locale !== "hu" && <> {t("pricing.fxNoteShort", locale)}</>}
                   </dd>
                 )}
               </div>

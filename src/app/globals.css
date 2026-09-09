@@ -1266,8 +1266,8 @@ input[type="range"].pattern-range::-moz-range-track {
   border-radius: 9999px;
 }
 
-/* Publikus árblokk csúszkája (/how-we-work): a kitöltött track a --pct
-   változóból jön (a komponens állítja), a thumb 26px, 44px érintőfelülettel. */
+/* Publikus árblokk csúszkája (/pricing): a kitöltés a --pos arányból jön
+   (0–1, a komponens állítja), a thumb 26px, 44px érintőfelülettel. */
 input[type="range"].pricing-slider {
   -webkit-appearance: none;
   appearance: none;

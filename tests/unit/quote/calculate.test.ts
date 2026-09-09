@@ -35,7 +35,7 @@ test("a díjtételek megfelelnek a saját sémájuknak", () => {
 });
 
 test("az ajánlat fejenkénti része AZONOS a publikus árlétrával", () => {
-  // Ez a modell lényege: amit a vevő a /how-we-work oldalon lát, az kerül
+  // Ez a modell lényege: amit a vevő az /pricing oldalon lát, az kerül
   // az ajánlatba. Ha a két szám eltérne, az első ajánlatnál kiderülne.
   for (const tier of ["kep", "prog"] as const) {
     for (const heads of [5, 8, 10, 12, 25, 40]) {

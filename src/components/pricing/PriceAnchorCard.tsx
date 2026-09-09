@@ -9,8 +9,8 @@ import { ladderEntryPerHead, type PublicLadder } from "@/lib/pricing/team-ladder
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 /**
- * Ár-horgony: krém árkártya egyetlen belépő számmal („35 000 Ft / fő-től*"),
- * csillagos lábjegyzettel és „Részletes árak" linkkel az /pricing oldalra.
+ * Ár-horgony: krém árkártya egyetlen belépő számmal („35 000 Ft / fő-től
+ * + ÁFA"), rövid lábjegyzettel és „Részletes árak" linkkel az /pricing oldalra.
  *
  * A /team-dynamics ár-szekciójában él (a főoldal csapat-blokkjáról
  * 2026-09-08-án lekerült: ott nem kell ár). A szám a díjkártyából jön

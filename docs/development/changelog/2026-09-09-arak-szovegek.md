@@ -58,3 +58,32 @@
   „létszám szerint" kiemelés (a szöveg magában érthető) és az 5–8 csapatos
   példa; az egyéni próba kártya azt ígéri, amit ad: saját eredmények.
 - Az admin/PDF `QUOTE_TIER_INCLUDES` a publikus listát tükrözi.
+
+## Csúszka, időigény, záró CTA és PR-átnézés (ugyanaznap, második kör)
+
+- **A létszám-csúszka skálája elcsúszott**: a feliratok egyenletesen
+  oszlottak el (`justify-between`), a skála viszont 5-től 41-ig megy, így a
+  „10" felirat kb. 14 fő fölé esett. A feliratok és a sáv kitöltése mostantól
+  a fogantyú tényleges középpontjához igazodik
+  (`calc(13px + (100% − 26px) × arány)`, `--pct` helyett `--pos`); a Firefox-
+  fogantyú is 26 px, hogy ugyanaz a korrekció érvényes legyen. Mérve: 10 főnél
+  a fogantyú középpontja és a „10" felirat középpontja ugyanaz a pixel.
+- **Időigény ~10 perc → ~30 perc / fő** mindkét csomagnál és a GYIK-ben: a
+  csapatcsomagban a személyiségfelmérés mellett a csapatszerep-, bizalmi és
+  pszichológiai biztonság kérdőív is megy.
+- **Kiegészítő kártyák**: az „Ezen felül" eyebrow lekerült; a workshop-kártya
+  címe „További személyes workshop", és a szöveg már nem köti csapatonkénti
+  alkalomhoz (több csapat is részt vehet rajta).
+- **Záró CTA gomb-oszlopa**: a „Egyeztessünk a csapatotokról" felirat 960 px
+  alatt kettétört. A gomb-oszlop csak `lg`-től kerül a szöveg mellé,
+  `shrink-0` + `whitespace-nowrap` — 430–1440 px között egy sor.
+- **Angol szövegek**: a tábla „a {band+1}. főtől" sora angolul a sávra
+  hivatkozik („after the first {band}"), mert a sorszám ragozása nyelvenként
+  csúszna; a /pilot ténysáv euró-jelzése a komponensből jön (mint az
+  ár-horgonyon), nem a lefordított mondatba építve.
+- **Átnézés nyomán**: a pipa/gondolatjel cella felolvasva is érthető
+  (`compareIncluded` / `compareExcluded`) a „✓"/„–" karakter helyett; halott
+  behelyettesítések (`pageLead` `{band}`, `belowWorkshopBody` `{fee}`)
+  kivezetve; a csak tesztekben élő `formatHuf` helyett a pénzformázás egyetlen
+  forrása az `fx.ts`; elavult kommentek (`/how-we-work`, `--pct`, csillagos
+  lábjegyzet) frissítve.

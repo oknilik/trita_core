@@ -91,11 +91,6 @@ export function ladderEntryPerHead(ladder: PublicLadder): { tier: QuoteTier; per
   return kep <= prog ? { tier: "kep", perHead: kep } : { tier: "prog", perHead: prog };
 }
 
-/** Nettó Ft, magyar ezres tagolással, pénznem-jel nélkül: „35 000". */
-export function formatHuf(value: number): string {
-  return new Intl.NumberFormat("hu-HU", { maximumFractionDigits: 0 }).format(Math.round(value));
-}
-
 /** A publikus létszám-csúszka határai — a kalkulátor és a JSON-LD is ezt használja. */
 export const PUBLIC_HEADCOUNT_MIN = 5;
 export const PUBLIC_HEADCOUNT_MAX = 40;
