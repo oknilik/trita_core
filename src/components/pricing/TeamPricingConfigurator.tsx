@@ -104,10 +104,12 @@ export function TeamPricingConfigurator({
     >
       {/* ── Beállítás ─────────────────────────────────────────── */}
       <div className="flex flex-col gap-6 p-6 md:p-7">
+        {/* Mobilon egymás alatt: két hasábban a „Csapatprogram" szó (Fraunces
+            20px) szélesebb, mint a hasáb, és kilógott a kártyából. */}
         <div
           role="group"
           aria-label={t("pricing.tierGroupLabel", locale)}
-          className="grid grid-cols-2 gap-1 rounded-2xl border border-sand bg-warm p-1"
+          className="grid gap-1 rounded-2xl border border-sand bg-warm p-1 sm:grid-cols-2"
         >
           {QUOTE_TIERS.map((option) => {
             const active = option === tier;
@@ -117,7 +119,7 @@ export function TeamPricingConfigurator({
                 type="button"
                 aria-pressed={active}
                 onClick={() => configure(option, headcount)}
-                className={`grid min-h-[60px] gap-0.5 rounded-xl px-3.5 py-2.5 text-left transition ${
+                className={`grid min-h-[60px] min-w-0 gap-0.5 rounded-xl px-3.5 py-2.5 text-left transition ${
                   active
                     ? "bg-surface-card shadow-[0_6px_18px_rgba(26,26,46,0.08)]"
                     : "hover:bg-surface-card/60"

@@ -87,3 +87,9 @@
   kivezetve; a csak tesztekben élő `formatHuf` helyett a pénzformázás egyetlen
   forrása az `fx.ts`; elavult kommentek (`/how-we-work`, `--pct`, csillagos
   lábjegyzet) frissítve.
+- **Mobil**: a kalkulátor csomagválasztója két hasábban volt; 640 px alatt a
+  „Csapatprogram" szó (Fraunces 20 px) szélesebb, mint a hasáb, ezért kilógott
+  a kártyából. A két gomb `sm` alatt egymás alá kerül (`min-w-0` a hasáb-alsó
+  határ miatt). Ellenőrizve 360/390/430/640/768/1024/1280 px-en: nincs sem
+  gomb-, sem oldalszintű vízszintes túlcsordulás (a tábla a saját görgethető
+  régióján belül marad).
