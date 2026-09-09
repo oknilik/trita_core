@@ -103,7 +103,7 @@ export function TeamPricingConfigurator({
       aria-label={t("pricing.configuratorA11y", locale)}
     >
       {/* ── Beállítás ─────────────────────────────────────────── */}
-      <div className="flex flex-col gap-6 p-6 md:p-7">
+      <div className="flex flex-col gap-6 p-6 md:col-start-1 md:row-start-1 md:p-7 md:pb-0">
         {/* Mobilon egymás alatt: két hasábban a „Csapatprogram" szó (Fraunces
             20px) szélesebb, mint a hasáb, és kilógott a kártyából. */}
         <div
@@ -202,52 +202,14 @@ export function TeamPricingConfigurator({
             })}
           </p>
         </div>
-
-        <div>
-          <h3 className="text-sm font-semibold text-ink">
-            {tf("pricing.includesTitle", locale, { tier: tierName })}
-          </h3>
-          <ul className="mt-3 space-y-2">
-            {KEP_ITEMS.map((item) => (
-              <li
-                key={`kep-${item}`}
-                className="flex gap-2.5 text-caption leading-relaxed text-ink-body"
-              >
-                <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
-                {t(`pricing.tier_kep_item${item}`, locale)}
-              </li>
-            ))}
-            {PROG_ITEMS.map((item) => {
-              const on = tier === "prog";
-              return (
-                <li
-                  key={`prog-${item}`}
-                  // A nem választott szint tétele NEM halványítva (a kontraszt
-                  // 4,5:1 alá esne, axe): a homok-pipa és a szint-jelvény jelzi.
-                  className="flex gap-2.5 text-caption leading-relaxed text-ink-body"
-                >
-                  <CheckIcon
-                    className={`mt-0.5 h-4 w-4 shrink-0 ${on ? "text-sage" : "text-sand"}`}
-                  />
-                  <span>
-                    {t(`pricing.tier_prog_item${item}`, locale)}
-                    {!on && (
-                      <span className="ml-1.5 whitespace-nowrap rounded-full bg-[var(--color-layer-team-soft)] px-2 py-0.5 text-micro uppercase tracking-wide text-[var(--color-layer-team-accent)]">
-                        {t("pricing.tier_prog_name", locale)}
-                      </span>
-                    )}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
       </div>
 
-      {/* ── Ár ───────────────────────────────────────────────── */}
+      {/* ── Ár ─────────────────────────────────────────────────
+          Mobilon KÖZVETLENÜL a csúszka után jön (a tartalom-lista utána):
+          a beállítás eredménye legyen látható görgetés nélkül. */}
       <div
         aria-live="polite"
-        className="relative flex flex-col gap-4 overflow-hidden bg-gradient-to-br from-[var(--color-layer-team-hero-from)] to-[var(--color-layer-team-hero-to)] p-6 text-[var(--color-text-on-inverse)] md:p-7"
+        className="relative flex flex-col gap-4 overflow-hidden bg-gradient-to-br from-[var(--color-layer-team-hero-from)] to-[var(--color-layer-team-hero-to)] p-6 text-[var(--color-text-on-inverse)] md:col-start-2 md:row-span-2 md:row-start-1 md:p-7"
       >
         <div
           aria-hidden
@@ -356,6 +318,46 @@ export function TeamPricingConfigurator({
             </p>
           </>
         )}
+      </div>
+
+      <div className="p-6 md:col-start-1 md:row-start-2 md:p-7 md:pt-6">
+        <h3 className="text-sm font-semibold text-ink">
+          {tf("pricing.includesTitle", locale, { tier: tierName })}
+        </h3>
+        <ul className="mt-3 space-y-2">
+          {KEP_ITEMS.map((item) => (
+            <li
+              key={`kep-${item}`}
+              className="flex gap-2.5 text-caption leading-relaxed text-ink-body"
+            >
+              <CheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-sage" />
+              {t(`pricing.tier_kep_item${item}`, locale)}
+            </li>
+          ))}
+          {PROG_ITEMS.map((item) => {
+            const on = tier === "prog";
+            return (
+              <li
+                key={`prog-${item}`}
+                // A nem választott szint tétele NEM halványítva (a kontraszt
+                // 4,5:1 alá esne, axe): a homok-pipa és a szint-jelvény jelzi.
+                className="flex gap-2.5 text-caption leading-relaxed text-ink-body"
+              >
+                <CheckIcon
+                  className={`mt-0.5 h-4 w-4 shrink-0 ${on ? "text-sage" : "text-sand"}`}
+                />
+                <span>
+                  {t(`pricing.tier_prog_item${item}`, locale)}
+                  {!on && (
+                    <span className="ml-1.5 whitespace-nowrap rounded-full bg-[var(--color-layer-team-soft)] px-2 py-0.5 text-micro uppercase tracking-wide text-[var(--color-layer-team-accent)]">
+                      {t("pricing.tier_prog_name", locale)}
+                    </span>
+                  )}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );

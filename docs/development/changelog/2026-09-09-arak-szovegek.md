@@ -93,3 +93,8 @@
   határ miatt). Ellenőrizve 360/390/430/640/768/1024/1280 px-en: nincs sem
   gomb-, sem oldalszintű vízszintes túlcsordulás (a tábla a saját görgethető
   régióján belül marad).
+- **Mobil sorrend**: a kalkulátor három rács-blokkra bomlott (beállítás ·
+  ár · tartalom). Mobilon a sorrend beállítás → ár → tartalom, hogy a
+  csúszka eredménye görgetés nélkül látszódjon; korábban a hosszú
+  tartalom-lista kitolta az árat a képernyőről. `md`-től a rácsban változatlan
+  a kép: bal hasáb beállítás + tartalom, jobb hasáb az ár, két sort átfogva.
