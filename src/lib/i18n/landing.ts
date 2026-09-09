@@ -266,10 +266,11 @@ export const landingTranslations = {
     endTitle: { hu: "Ugyanezt kapjátok írásban, a ti létszámotokra.", en: "You get the same in writing, for your headcount." },
     // /team-dynamics ár-szekció: a horgony-kártya mellé
     anchorEyebrow: { hu: "Mennyibe kerül", en: "What it costs" },
-    anchorTitle: { hu: "Fejenkénti ár, minden méréssel.", en: "A per-person price, every measurement included." },
+    // Ugyanaz a cím és bevezető, mint az /pricing oldal fejlécében (2026-09-09).
+    anchorTitle: { hu: "Létszám alapú, átlátható árazási struktúra.", en: "Headcount-based, transparent pricing structure." },
     anchorBody: {
-      hu: "Két szint közül választotok, a résztvevők létszáma adja az összeget – akár egy csapat, akár több. Nincs rejtett tétel: a mérések száma nem növeli az árat, a különbség a közös feldolgozás mélysége.",
-      en: "You choose one of two levels and the number of participants gives the total – whether one team or several. No hidden items: the number of measurements does not raise the price, the difference is the depth of the joint work.",
+      hu: "Az egyéni szint teljesen ingyenes. A kibővített, csapatszintű mérési ciklusoknál a résztvevők létszáma adja az alapot – a csapatmérettel arányosan csökken az egy főre vetített ár is.",
+      en: "The individual level is completely free. For the extended, team-level measurement cycles the number of participants is the basis – and the price per person falls as the team grows.",
     },
     anchorLink: { hu: "Árak és kalkulátor", en: "Pricing and calculator" },
     heroHeading: { hu: "Minden csapat más – ezért a közös munka is ", en: "Every team is different – so the way we work together " },
