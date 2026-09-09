@@ -717,7 +717,7 @@ export const landingTranslations = {
       hu: "{taken} hely már foglalt · a következő lehet a tiétek",
       en: "{taken} spots are taken · the next one could be yours",
     },
-    spotsPanelCta: { hu: "Jelentkezem", en: "Apply now" },
+    spotsPanelCta: { hu: "Részletek", en: "Details" },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
     metaChip1: { hu: "Közvetlen kapcsolat", en: "Direct contact" },
     metaChip2: { hu: "Egymásra figyelünk", en: "Open feedback" },
