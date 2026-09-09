@@ -16,6 +16,7 @@ import { FALLBACK_FX, type FxRate } from "@/lib/pricing/fx";
 export interface PublicTierPrice {
   perHead: number;
   perHeadOver: number;
+  additionalTeamFee: number;
 }
 
 export interface PublicLadder {
@@ -34,8 +35,8 @@ export interface PublicLadder {
 export function derivePublicLadder(rate: RateCard, fx: FxRate = FALLBACK_FX): PublicLadder {
   return {
     tiers: {
-      kep: { perHead: rate.tiers.kep.perHead, perHeadOver: rate.tiers.kep.perHeadOver },
-      prog: { perHead: rate.tiers.prog.perHead, perHeadOver: rate.tiers.prog.perHeadOver },
+      kep: { ...rate.tiers.kep },
+      prog: { ...rate.tiers.prog },
     },
     firstBandHeads: rate.firstBandHeads,
     extraWorkshopDayFee: rate.extraWorkshopDayFee,
@@ -45,10 +46,15 @@ export function derivePublicLadder(rate: RateCard, fx: FxRate = FALLBACK_FX): Pu
 }
 
 export interface LadderPrice {
-  /** Fők a teljes fejenkénti áron. */
+  /** A minimumdíj által lefedett tényleges résztvevők. */
   firstHeads: number;
   /** Fők a sáv feletti áron. */
   overHeads: number;
+  /** Minimum projektár egy csapatra, legfelj `firstBandHeads` főig. */
+  baseFee: number;
+  /** Az elsőn felüli csapatok díja. */
+  additionalTeams: number;
+  additionalTeamsFee: number;
   /** A szint fejenkénti díja összesen (nettó Ft). */
   total: number;
   /** Átlagos fejenkénti ár a megadott létszámra (nettó Ft), 0 főnél null. */
@@ -56,19 +62,31 @@ export interface LadderPrice {
 }
 
 /**
- * A szint ára egy adott létszámra. Marginális: az első `firstBandHeads` fő a
- * teljes, a többi a sáv feletti fejenkénti áron — így a teljes ár mindig
- * monoton nő a létszámmal, és a fejenkénti átlag csökken.
+ * A szint ára egy adott létszámra és csapatszámra. Egy csapat minimumdíja
+ * az első `firstBandHeads` fő teljes sávdíja; efölött fejenkénti, az elsőn
+ * felüli csapatokra pedig csapatonkénti díj kerül rá.
  */
-export function ladderPrice(ladder: PublicLadder, tier: QuoteTier, headcount: number): LadderPrice {
+export function ladderPrice(
+  ladder: PublicLadder,
+  tier: QuoteTier,
+  headcount: number,
+  teamCount = 1,
+): LadderPrice {
   const heads = Math.max(0, Math.round(headcount));
   const firstHeads = Math.min(heads, ladder.firstBandHeads);
   const overHeads = Math.max(0, heads - ladder.firstBandHeads);
+  const teams = Math.max(1, Math.round(teamCount));
+  const additionalTeams = Math.max(0, teams - 1);
   const price = ladder.tiers[tier];
-  const total = firstHeads * price.perHead + overHeads * price.perHeadOver;
+  const baseFee = heads > 0 ? ladder.firstBandHeads * price.perHead : 0;
+  const additionalTeamsFee = heads > 0 ? additionalTeams * price.additionalTeamFee : 0;
+  const total = baseFee + overHeads * price.perHeadOver + additionalTeamsFee;
   return {
     firstHeads,
     overHeads,
+    baseFee,
+    additionalTeams,
+    additionalTeamsFee,
     total,
     perHeadAverage: heads > 0 ? Math.round(total / heads) : null,
   };
@@ -80,15 +98,26 @@ export function pilotPerHead(ladder: PublicLadder, tier: QuoteTier): number {
   return Math.round((full * (100 - ladder.pilotDiscountPct)) / 100);
 }
 
+/** Egy csapat minimum projektára, legfelj a sávhatárig. */
+export function ladderBaseFee(ladder: PublicLadder, tier: QuoteTier): number {
+  return ladder.firstBandHeads * ladder.tiers[tier].perHead;
+}
+
+/** A pilotpartneri minimum projektár egy csapatra. */
+export function pilotBaseFee(ladder: PublicLadder, tier: QuoteTier): number {
+  return Math.round((ladderBaseFee(ladder, tier) * (100 - ladder.pilotDiscountPct)) / 100);
+}
+
 /**
  * A publikusan hirdethető legalacsonyabb belépő ár: a szintek közül a
  * legolcsóbb fejenkénti ár a sávon belül (a „-tól" a szintekre vonatkozik,
  * nem a létszámra). A csapat-oldal horgony-száma ebből jön.
  */
-export function ladderEntryPerHead(ladder: PublicLadder): { tier: QuoteTier; perHead: number } {
+export function ladderEntryPerHead(ladder: PublicLadder): { tier: QuoteTier; perHead: number; baseFee: number } {
   const kep = ladder.tiers.kep.perHead;
   const prog = ladder.tiers.prog.perHead;
-  return kep <= prog ? { tier: "kep", perHead: kep } : { tier: "prog", perHead: prog };
+  const tier = kep <= prog ? "kep" : "prog";
+  return { tier, perHead: ladder.tiers[tier].perHead, baseFee: ladderBaseFee(ladder, tier) };
 }
 
 /** A publikus létszám-csúszka határai — a kalkulátor és a JSON-LD is ezt használja. */

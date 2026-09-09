@@ -342,8 +342,10 @@ export function buildArticleJsonLd(input: ArticleInput): JsonLdObject {
 export interface ServiceOffering {
   name: string;
   description: string;
-  /** Fejenkénti nettó ár (HUF) — a publikus árlétrából; nélküle nincs ár az Offer-ben. */
+  /** Nettó ár (HUF) — a publikus árlétrából; nélküle nincs ár az Offer-ben. */
   price?: number;
+  /** Az ár egysége; alapértelmezésben fő. */
+  priceUnit?: string;
 }
 
 /**
@@ -388,7 +390,7 @@ export function buildServiceJsonLd(input: {
                 "@type": "UnitPriceSpecification",
                 price: offering.price,
                 priceCurrency: "HUF",
-                unitText: "fő",
+                unitText: offering.priceUnit ?? "fő",
                 valueAddedTaxIncluded: false,
               },
             }

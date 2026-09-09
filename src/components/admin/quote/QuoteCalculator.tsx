@@ -32,7 +32,7 @@ import {
 
 // Belső ajánlat-kalkulátor.
 //
-// Az ár a publikus árlétrából jön (szint × létszám — ugyanaz, amit a vevő a
+// Az ár a publikus árlétrából jön (minimumdíj + létszám + csapatszám — ugyanaz, amit a vevő a
 // /pricing oldalon lát), a szint tartalmán felüli tételekkel. Amit a
 // kalkulátor hozzátesz: mennyi marad a munkán. A legfontosabb szám az
 // EFFEKTÍV ÓRADÍJ — ezen dől el az alku, ezért az van kiemelve, nem a
@@ -331,7 +331,7 @@ export function QuoteCalculator({
               >
                 <span className="block font-semibold">{QUOTE_TIER_LABELS[tier]}</span>
                 <span className="block text-xs text-muted">
-                  {huf(rate.tiers[tier].perHead)} / fő · {rate.firstBandHeads} fő felett {huf(rate.tiers[tier].perHeadOver)}
+                  {huf(rate.tiers[tier].perHead * rate.firstBandHeads)} alapdíj · {rate.firstBandHeads} fő felett {huf(rate.tiers[tier].perHeadOver)} / fő · további csapat {huf(rate.tiers[tier].additionalTeamFee)}
                 </span>
               </button>
             ))}
@@ -478,7 +478,7 @@ export function QuoteCalculator({
             </button>
           </div>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
-            A fejenkénti árak, a sávhatár, a további workshop-nap és a pilot-kedvezmény
+            A minimumdíjak, a létszámsáv, a további csapat, a workshop-nap és a pilot-kedvezmény
             PUBLIKUSAK: az /pricing kalkulátor, a főoldal és a /team-dynamics ár-horgonya, a /pilot
             ténysáv ezekből mutat számot. Mentés után a publikus oldalak azonnal frissülnek.
             Az óra-becslés, a cél-óradíj és a kedvezmény-keret belső.
@@ -494,7 +494,7 @@ export function QuoteCalculator({
             <div className="mt-4 flex flex-col gap-4">
               <div>
                 <p className="font-mono text-xs uppercase tracking-widest text-muted">
-                  Publikus árlétra (nettó Ft / fő)
+                  Publikus árlétra (nettó Ft)
                 </p>
                 <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-2">
                   {QUOTE_TIERS.map((tier) => (
@@ -502,7 +502,7 @@ export function QuoteCalculator({
                       <p className="text-sm font-semibold text-ink">{QUOTE_TIER_LABELS[tier]}</p>
                       <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <NumberField
-                          label={`Első ${rate.firstBandHeads} fő`}
+                          label={`Alapdíj osztója · ${rate.firstBandHeads} fő`}
                           value={rate.tiers[tier].perHead}
                           step={1_000}
                           onChange={(perHead) => setTierRate(tier, { perHead })}
@@ -514,6 +514,13 @@ export function QuoteCalculator({
                           step={1_000}
                           onChange={(perHeadOver) => setTierRate(tier, { perHeadOver })}
                           suffix="Ft/fő"
+                        />
+                        <NumberField
+                          label="További csapat"
+                          value={rate.tiers[tier].additionalTeamFee}
+                          step={10_000}
+                          onChange={(additionalTeamFee) => setTierRate(tier, { additionalTeamFee })}
+                          suffix="Ft/csapat"
                         />
                       </div>
                     </div>

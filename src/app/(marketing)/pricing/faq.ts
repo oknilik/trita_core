@@ -32,8 +32,10 @@ export function pricingFaqVars(ladder: PublicLadder, locale: Locale = "hu"): Rec
   return {
     // Pénznemmel együtt (hu: „35 000 Ft", en: „€88"): az angol felület
     // euróban, a napi középárfolyamon mutatja a forint-árat.
-    kep: formatMoney(ladder.tiers.kep.perHead, locale, ladder.fx),
-    prog: formatMoney(ladder.tiers.prog.perHead, locale, ladder.fx),
+    kepBase: formatMoney(ladder.firstBandHeads * ladder.tiers.kep.perHead, locale, ladder.fx),
+    progBase: formatMoney(ladder.firstBandHeads * ladder.tiers.prog.perHead, locale, ladder.fx),
+    kepTeam: formatMoney(ladder.tiers.kep.additionalTeamFee, locale, ladder.fx),
+    progTeam: formatMoney(ladder.tiers.prog.additionalTeamFee, locale, ladder.fx),
     band: ladder.firstBandHeads,
     // A sáv feletti díj ma mindkét csomagnál azonos; ha valaha eltérnek, a
     // GYIK a magasabbat mondja, hogy ne ígérjünk a valóságosnál olcsóbbat.

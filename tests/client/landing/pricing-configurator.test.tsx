@@ -56,16 +56,24 @@ describe("TeamPricingConfigurator", () => {
     ).toBeInTheDocument();
   });
 
-  it("a sáv felett a nagy szám átlagár, és a csapatok száma nem korlát", () => {
+  it("a sáv felett átlagárat mutat, a további csapat pedig növeli a díjat", () => {
     render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
 
-    expect(screen.getByText("Egy főre jutó ár")).toBeInTheDocument();
-    fireEvent.change(screen.getByRole("slider"), { target: { value: "35" } });
     expect(screen.getByText("Egy főre jutó átlagár")).toBeInTheDocument();
-    expect(screen.getByText(/A résztvevők több csapatból is érkezhetnek/)).toBeInTheDocument();
+    fireEvent.change(screen.getByRole("slider"), { target: { value: "35" } });
+    expect(screen.getByText(/Az alapdíj egy csapatot tartalmaz/)).toBeInTheDocument();
     expect(screen.getByText(/A 11\. résztvevőtől minden további fő díja/)).toBeInTheDocument();
     expect(
       screen.getByText(plain(`Összesen ${formatMoney(ladderPrice(ladder, "kep", 35).total, "hu", ladder.fx)} + ÁFA a teljes létszámra`)),
+    ).toBeInTheDocument();
+
+    fireEvent.change(screen.getByRole("combobox", { name: "Hány külön csapat vesz részt?" }), {
+      target: { value: "3" },
+    });
+    const multiTeam = ladderPrice(ladder, "kep", 35, 3);
+    expect(screen.getByText("További csapatok")).toBeInTheDocument();
+    expect(
+      screen.getByText(plain(`Összesen ${formatMoney(multiTeam.total, "hu", ladder.fx)} + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
   });
 

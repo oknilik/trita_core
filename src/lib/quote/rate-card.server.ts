@@ -20,7 +20,34 @@ export async function loadRateCard(): Promise<{ rate: RateCard; stored: boolean 
   const row = await prisma.quoteRateCard.findUnique({ where: { key: RATE_CARD_KEY } });
   if (!row) return { rate: DEFAULT_RATE_CARD, stored: false };
 
-  const parsed = rateCardSchema.safeParse(row.data);
+  // A 2026-09-09 előtt mentett v2 kártyák még nem tartalmaztak
+  // csapatonkénti felárat. Betöltéskor az új alapértékkel egészítjük ki
+  // őket, így a deploy után a publikus és az admin kalkulátor azonnal az
+  // új, fedezetvédett képletet használja, újramentés nélkül is.
+  const stored = (typeof row.data === "object" && row.data !== null ? row.data : {}) as Partial<RateCard> & {
+    tiers?: Partial<Record<"kep" | "prog", Partial<RateCard["tiers"]["kep"]>>>;
+  };
+  const needsUnitEconomicsMigration =
+    stored.version === 2 &&
+    (stored.tiers?.kep?.additionalTeamFee == null || stored.tiers?.prog?.additionalTeamFee == null);
+  const candidate = {
+    ...stored,
+    extraWorkshopDayFee: needsUnitEconomicsMigration
+      ? DEFAULT_RATE_CARD.extraWorkshopDayFee
+      : stored.extraWorkshopDayFee,
+    retainerMonthlyFee: needsUnitEconomicsMigration
+      ? DEFAULT_RATE_CARD.retainerMonthlyFee
+      : stored.retainerMonthlyFee,
+    tiers: {
+      kep: needsUnitEconomicsMigration
+        ? DEFAULT_RATE_CARD.tiers.kep
+        : { ...DEFAULT_RATE_CARD.tiers.kep, ...stored.tiers?.kep },
+      prog: needsUnitEconomicsMigration
+        ? DEFAULT_RATE_CARD.tiers.prog
+        : { ...DEFAULT_RATE_CARD.tiers.prog, ...stored.tiers?.prog },
+    },
+  };
+  const parsed = rateCardSchema.safeParse(candidate);
   if (!parsed.success) return { rate: DEFAULT_RATE_CARD, stored: false };
   return { rate: parsed.data, stored: true };
 }

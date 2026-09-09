@@ -14,7 +14,8 @@ import { derivePublicLadder, ladderPrice } from "@/lib/pricing/team-ladder";
 //   · effektív óradíj — EZEN dől el az alku. Ha a cél alá esik, a
 //     kedvezmény nem üzleti döntés, hanem önkizsákmányolás.
 //
-// Az ár a publikus árlétrából jön (team-ladder.ts): szint × létszám, plusz
+// Az ár a publikus árlétrából jön (team-ladder.ts): minimum projektár,
+// létszám és csapatszám, plusz
 // a szint tartalmán felüli tételek (extra workshop-nap, extra mérési kör,
 // havi kísérés, egyéb, kiszállás). Ugyanaz a szám, amit a vevő a
 // /pricing oldalon lát — az ajánlat nem lehet más.
@@ -85,8 +86,8 @@ export type QuoteWarning =
  * személyes workshop minden csapatnak". Ha egyszer számolnánk őket, több
  * csapatnál az effektív óradíj és a kedvezmény-alsóhatár (floorPrice) túl
  * kedvező képet mutatna, és a BELOW_TARGET_HOURLY figyelmeztetés elmaradna.
- * Az ár ezzel szemben a LÉTSZÁMTÓL függ, nem a csapatszámtól: épp ezért kell
- * a belső óra-becslésnek látnia a különbséget.
+ * Az ár is látja a csapatszámot: minden további csapat külön elemzést,
+ * riportot és alkalmakat jelent.
  */
 export function estimateHours(input: QuoteInput, rate: RateCard): number {
   const heads = Math.max(0, Math.round(input.headcount));
@@ -111,7 +112,8 @@ export function estimateHours(input: QuoteInput, rate: RateCard): number {
 export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
   const heads = Math.max(0, Math.round(input.headcount));
   const ladder = derivePublicLadder(rate);
-  const price = ladderPrice(ladder, input.tier, heads);
+  const teams = Math.max(1, Math.round(input.teams));
+  const price = ladderPrice(ladder, input.tier, heads, teams);
   const tierRate = rate.tiers[input.tier];
   const tierLabel = QUOTE_TIER_LABELS[input.tier];
 
@@ -127,13 +129,18 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
   const lines: QuoteLine[] = [
     {
       key: "tier",
-      label: `${tierLabel} · ${price.firstHeads} fő × ${tierRate.perHead.toLocaleString("hu-HU")} Ft`,
-      amount: price.firstHeads * tierRate.perHead,
+      label: `${tierLabel} alapdíj · 1 csapat, legfelj ${ladder.firstBandHeads} fő`,
+      amount: price.baseFee,
     },
     {
       key: "tierOver",
       label: `${ladder.firstBandHeads} fő felett · ${price.overHeads} fő × ${tierRate.perHeadOver.toLocaleString("hu-HU")} Ft`,
       amount: price.overHeads * tierRate.perHeadOver,
+    },
+    {
+      key: "additionalTeams",
+      label: `További csapat (${price.additionalTeams}) · ${tierRate.additionalTeamFee.toLocaleString("hu-HU")} Ft / csapat`,
+      amount: price.additionalTeamsFee,
     },
     { key: "extraWorkshop", label: `További workshop-nap (${input.extraWorkshopDays})`, amount: extraWorkshop },
     { key: "extraWaves", label: `További mérési kör (${input.extraWaves})`, amount: extraWaves },

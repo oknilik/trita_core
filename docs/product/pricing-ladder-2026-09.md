@@ -1,39 +1,36 @@
-# Publikus árlétra — döntési dokumentum (2026-09-07)
+# Publikus árlétra — döntési dokumentum (2026-09-09)
 
-> Állapot: **bevezetve** (branch: `claude/pricing-details-per-person`).
+> Állapot: **minimumdíjjal és csapatszám-árazással frissítve**.
 > A számok forrása a díjkártya (`src/lib/quote/rate-card.ts`,
 > `DEFAULT_RATE_CARD`), az élő érték az admin felületen mentett kártya
 > (`/admin/quote` → Díjtételek). Ez a doksi az indoklást őrzi.
 
 ## 1. Mi változott
 
-A platform 2026-09-07-től **publikál fejenkénti árat**. A korábbi
+A platform publikus minimum projektárat, létszám- és csapatszám-alapú felárat használ. A korábbi
 „egyedi ajánlat az első beszélgetés után" modell (programdíj + sávos
 mérési díj + mérés-lépésenkénti felárak + workshop-nap) egy kétszintes,
-fejenkénti létrára cserélődött:
+kétszintes létrára cserélődött:
 
 | Szint | Tartalom | Alapértelmezett ár (nettó) |
 |---|---|---|
-| **Csapatkép** | minden mérés (személyiség, csapatszerep, bizalmi kör, pszichológiai biztonság, observer), validált csapatriport, vezetői visszajelzés, 90 perces online közös értelmezés | **35 000 Ft/fő** |
-| **Csapatprogram** | Csapatkép + félnapos értelmező workshop + utánkövető mérés fél év múlva | **50 000 Ft/fő** |
+| **Csapatkép** | minden mérés (személyiség, csapatszerep, bizalmi kör, pszichológiai biztonság, observer), validált csapatriport, vezetői visszajelzés, 90 perces online közös értelmezés | **350 000 Ft/csapat, 10 főig** |
+| **Csapatprogram** | Csapatkép + félnapos értelmező workshop + utánkövető mérés fél év múlva | **650 000 Ft/csapat, 10 főig** |
 | 10 fő feletti tagok | mindkét szinten | 20 000 Ft/fő |
-| További egész napos, helyszíni workshop | | 180 000 Ft |
+| További csapat | Csapatkép / Csapatprogram | 200 000 / 350 000 Ft |
+| További egész napos, helyszíni workshop | | 260 000 Ft |
 | Pilot-partneri kedvezmény (/pilot ténysáv) | a Csapatprogram árából | 50% |
 
 Belső (nem publikus) tételek: további mérési kör (a fejenkénti díj 35%-a),
-havi kísérés (120 000 Ft/hó), kiszállás (60 000 Ft/nap, továbbhárítva),
+havi kísérés (150 000 Ft/hó), kiszállás (60 000 Ft/nap, továbbhárítva),
 óra-becslés, cél-óradíj (25 000 Ft/óra), kedvezmény-keret (30%).
 
-**Elv (létszám, nem csapatszám — 2026-09-08):** az ár a RÉSZTVEVŐK
-létszámára megy, nem a csapatok számára. 35 fő lehet egy egység, de
-jellemzően 5–8 kisebb csapat — mindegyik saját csapatképet, riportot és
-közös értelmezést (csapatonként 90 perc, a Csapatprogramban csapatonként
-félnapos workshop) kap, az ár nem változik. A kalkulátor egy mondatban
-mondja ki, hogy a résztvevők több csapatból is érkezhetnek, és minden
-csapat saját csapatképet és eredménymegbeszélést kap (csapatszám-sáv
-nincs, mert korlátozónak hatott). A több csapatból adódó
-tanácsadói többletidőt a belső óra-modell `perTeam` tétele viszi, az admin
-kalkulátorban a csapatok száma külön mező — ez a publikus árat nem érinti.
+**Elv (létszám és csapatszám — 2026-09-09):** az alapdíj egy csapatot és
+legfelj 10 résztvevőt tartalmaz. A 11. főtől résztvevőnkénti felár, az
+elsőn felüli csapatokra pedig csapatonkénti díj kerül. Minden csapat saját
+csapatképet, riportot és közös értelmezést kap; a Csapatprogram workshopja
+is csapatonként ismétlődik. A publikus és a belső kalkulátor ugyanabból a
+képletből számol.
 
 **Elv:** a mérések száma nem növeli az árat. A több mérés több
 magyarázatot igényel, ami a workshop-időben (a felső szintben és az
@@ -77,14 +74,12 @@ workshop-nap 10, extra mérési kör 3, kísérés-hó 3, kiszállás-nap 4.
 | 10 fős csapat | Ár | Óra | Effektív óradíj | Cél 25 000 |
 |---|---|---|---|---|
 | Csapatkép | 350 000 | 10 | 35 000 | ✓ |
-| Csapatprogram | 500 000 | 18 | 27 800 | ✓ |
-| Csapatprogram, pilot −50% | 250 000 | 18 | 13 900 | ✗ tudatos befektetés az első 10 csapatra |
-| 6 fős Csapatkép | 210 000 | 10 | 21 000 | ✗ a legkisebb csapat a padló alatt |
+| Csapatprogram | 650 000 | 18 | 36 100 | ✓ |
+| Csapatprogram, pilot −50% | 325 000 | 18 | 18 100 | ✗ tudatos befektetés az első 10 csapatra |
+| 6 fős Csapatkép | 350 000 | 10 | 35 000 | ✓ |
 
-A 6–8 fős csapatok a padló alatt vannak: ezt tudatosan vállaljuk (a
-magyar kkv-csapat tipikusan 5–8 fő, és nem akarunk „minimum létszámot"
-az első számban). Ha ez fáj, a kártyán a Csapatkép ára vagy az óra-modell
-állítandó, nem a kód.
+A minimumdíj megszünteti a kis csapatok veszteséges árazását. A pilot
+továbbra is tudatos befektetés az első 10 partnercsapat megszerzésébe.
 
 ## 4. Kkv-létszám, amire az ár-horgony csillaga épül
 
@@ -92,7 +87,7 @@ az első számban). Ha ez fáj, a kártyán a Csapatkép ára vagy az óra-model
 többet; a foglalkoztató cégek 85%-a 2–9 fős mikrovállalkozás (átlag ~6 fő,
 becslés a KSH megoszlásból); a kisvállalkozás (10–49 fő) sávjában
 jellemzően 5–12 fős csapategységek. Ezért az ár-horgony lábjegyzete
-„5–10 fős kkv-csapatra" mond árat — ez a sáv, ahol a 35 000 Ft/fő igaz.
+„legfelj 10 fős kkv-csapatra" mond minimumárat.
 Források: GKI „Kicsi a bors, de erős" (2024-12), Makronóm (2024-12),
 KSH STADAT 9.1.1.17.
 
@@ -104,8 +99,8 @@ ebből `derivePublicLadder()` vágja ki a publikus részhalmazt
 
 | Felület | Mit mutat |
 |---|---|
-| `/pricing` (2026-09-08-tól önálló Árak oldal) | két szint csempéi · `TeamPricingConfigurator` (szint-váltó + létszám-csúszka + fejenkénti ár + tartalom) · összehasonlító tábla · ezen felül · pilot-ár sáv · ár-GYIK a számokkal; Service JSON-LD `UnitPriceSpecification` |
-| `/team-dynamics` ár-szekció | `PriceAnchorCard`: a belépő szint ára „Ft/fő-től*", link az /pricing-re; a hero pirulája ugyanezt a számot viszi. A főoldalon (`/`) nincs ár (2026-09-08-tól): az egyéni ígéretről szól, statikus marad |
+| `/pricing` | két szint csempéi · `TeamPricingConfigurator` (szint, létszám, csapatszám, átlagár) · összehasonlító tábla · pilot-ár · ár-GYIK; Service JSON-LD minimum csapatárral |
+| `/team-dynamics` ár-szekció | `PriceAnchorCard`: a belépő minimum projektár „Ft/csapattól", link az /pricing-re; a hero pirulája ugyanezt a számot viszi |
 | `/pilot` ténysáv 3. cella | a Csapatprogram listaára áthúzva, −50% jelvény, partneri ár |
 | `/admin/quote` | ugyanebből számol az ajánlat (szint × létszám + extrák); a díjtételek mentése `revalidatePath`-tal frissíti a három publikus oldalt (ISR, 1 óra) |
 
@@ -128,7 +123,7 @@ mutatja, **napi középárfolyamon** váltva, egész euróra kerekítve, minden
 
 | | HU | EN |
 |---|---|---|
-| Csempe / kalkulátor / horgony | 35 000 **Ft / fő + ÁFA** | **€88** / person + VAT |
+| Csempe / horgony | 350 000 **Ft / csapat + ÁFA** | **€875** / team + VAT |
 | Összesen-sor | Összesen 350 000 Ft + ÁFA … | €875 + VAT in total … |
 
 Forrás-sorrend (`src/lib/pricing/fx.server.ts`, fail-open): **MNB**

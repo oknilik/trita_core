@@ -11,8 +11,9 @@ import { z } from "zod";
 //   · CSAPATPROGRAM — a Csapatkép + félnapos értelmező workshop + egy
 //                     utánkövető mérés fél év múlva.
 //
-// Fejenkénti ár az első `firstBandHeads` főre, felette olcsóbb marginális
-// ár (a fix munka már megvan). A mérés-lépések (observer, csapatszerep,
+// Az első `firstBandHeads` főre minimum projektár érvényes, felette
+// olcsóbb marginális ár. Minden további csapat külön díjas, mert külön
+// elemzést, riportot és közös alkalmakat igényel. A mérés-lépések (observer, csapatszerep,
 // bizalmi kör, pszichológiai biztonság) NEM növelik az árat: a több mérés
 // több magyarázatot igényel, ami a workshop-időben jön vissza.
 //
@@ -71,10 +72,12 @@ export const DISCOUNT_LABELS: Record<DiscountKind, string> = {
 };
 
 const tierRateSchema = z.object({
-  /** Fejenkénti ár az első `firstBandHeads` főre (Ft, nettó). */
+  /** A minimum projektár fejenkénti alapja az első `firstBandHeads` főre. */
   perHead: z.number().int().min(0),
   /** Fejenkénti ár a sáv feletti további főkre (Ft, nettó). */
   perHeadOver: z.number().int().min(0),
+  /** Minden további csapat díja az elsőn felül (Ft, nettó). */
+  additionalTeamFee: z.number().int().min(0).default(0),
 });
 
 export const rateCardSchema = z.object({
@@ -124,13 +127,13 @@ export type RateCard = z.infer<typeof rateCardSchema>;
 export const DEFAULT_RATE_CARD: RateCard = {
   version: 2,
   tiers: {
-    kep: { perHead: 35_000, perHeadOver: 20_000 },
-    prog: { perHead: 50_000, perHeadOver: 20_000 },
+    kep: { perHead: 35_000, perHeadOver: 20_000, additionalTeamFee: 200_000 },
+    prog: { perHead: 65_000, perHeadOver: 20_000, additionalTeamFee: 350_000 },
   },
   firstBandHeads: 10,
-  extraWorkshopDayFee: 180_000,
+  extraWorkshopDayFee: 260_000,
   extraWaveRatePct: 35,
-  retainerMonthlyFee: 120_000,
+  retainerMonthlyFee: 150_000,
   travelDayFee: 60_000,
   pilotDiscountPct: 50,
   hours: {

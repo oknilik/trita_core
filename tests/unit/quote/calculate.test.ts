@@ -10,7 +10,9 @@ import { DEFAULT_RATE_CARD, rateCardSchema, readQuoteInput } from "@/lib/quote/r
 import {
   derivePublicLadder,
   ladderEntryPerHead,
+  ladderBaseFee,
   ladderPrice,
+  pilotBaseFee,
   pilotPerHead,
 } from "@/lib/pricing/team-ladder";
 
@@ -58,6 +60,15 @@ test("a fejenkénti díj marginális: nincs szakadás a sávhatáron", () => {
   }
 });
 
+test("a sávhatár alatt is a minimum projektár érvényes", () => {
+  for (const tier of ["kep", "prog"] as const) {
+    const five = ladderPrice(ladder, tier, 5);
+    const ten = ladderPrice(ladder, tier, 10);
+    assert.equal(five.total, ladderBaseFee(ladder, tier));
+    assert.equal(five.total, ten.total);
+  }
+});
+
 test("a sávon belül a fejenkénti ár pontosan a hirdetett, felette csökken", () => {
   const band = ladder.firstBandHeads;
   const within = ladderPrice(ladder, "kep", band);
@@ -99,16 +110,23 @@ test("a csapatonként ismétlődő alkalmak órái a csapatszámmal nőnek", () 
   const five = estimateHours(input({ tier: "prog", headcount: 35, teams: 5 }), DEFAULT_RATE_CARD);
   assert.equal(five - one, 4 * (perTeamTierHours + h.perTeam));
 
-  // Ugyanaz az ár (a létszám azonos), lényegesen kevesebb fedezet: ezt a
-  // kalkulátornak látnia kell.
+  // A létszám azonos, de minden további csapat külön díjas, mert külön
+  // riportot és alkalmakat kap.
   const singleTeam = calculateQuote(input({ tier: "prog", headcount: 35, teams: 1 }), DEFAULT_RATE_CARD);
   const manyTeams = calculateQuote(input({ tier: "prog", headcount: 35, teams: 5 }), DEFAULT_RATE_CARD);
-  assert.equal(singleTeam.netTotal, manyTeams.netTotal);
-  assert.ok(manyTeams.effectiveHourlyRate! < singleTeam.effectiveHourlyRate!);
+  assert.equal(
+    manyTeams.netTotal - singleTeam.netTotal,
+    4 * DEFAULT_RATE_CARD.tiers.prog.additionalTeamFee,
+  );
+  assert.ok(manyTeams.effectiveHourlyRate! >= DEFAULT_RATE_CARD.targetHourlyRate);
   assert.ok(manyTeams.floorPrice > singleTeam.floorPrice);
-  assert.ok(
-    manyTeams.warnings.includes("BELOW_TARGET_HOURLY"),
-    "öt csapat félnapos workshopja a cél-óradíj alá viszi ezt az árat",
+  assert.ok(!manyTeams.warnings.includes("BELOW_TARGET_HOURLY"));
+});
+
+test("a pilotkedvezmény a teljes minimum projektárra érvényes", () => {
+  assert.equal(
+    pilotBaseFee(ladder, "prog"),
+    Math.round(ladderBaseFee(ladder, "prog") * 0.5),
   );
 });
 

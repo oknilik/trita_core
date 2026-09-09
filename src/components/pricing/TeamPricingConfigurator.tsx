@@ -24,7 +24,8 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 /**
  * Publikus árblokk az /pricing oldal „Kalkulátor" szekciójában.
  *
- * Váltó a két szint (Csapatkép / Csapatprogram) közt, csúszka a létszámra,
+ * Váltó a két szint (Csapatkép / Csapatprogram) közt, létszám- és
+ * csapatszám-beállítás,
  * jobb oldalon a fejenkénti ár és a teljes létszámra jutó összeg. A számok a
  * díjkártyából jönnek (`ladder` prop, szerverről), a tartalom-lista az
  * i18n-kulcsokból — a két helyet együtt kell karbantartani
@@ -63,13 +64,15 @@ export function TeamPricingConfigurator({
 }) {
   const [tier, setTier] = useState<QuoteTier>("kep");
   const [headcount, setHeadcount] = useState(PUBLIC_HEADCOUNT_DEFAULT);
+  const [teamCount, setTeamCount] = useState(1);
   const sliderId = useId();
+  const teamCountId = useId();
   const noteId = useId();
   const tracked = useRef(false);
 
   const price = useMemo(
-    () => ladderPrice(ladder, tier, headcount),
-    [ladder, tier, headcount],
+    () => ladderPrice(ladder, tier, headcount, teamCount),
+    [ladder, tier, headcount, teamCount],
   );
   const tierRate = ladder.tiers[tier];
   const tierName = t(`pricing.tier_${tier}_name`, locale);
@@ -85,9 +88,10 @@ export function TeamPricingConfigurator({
     ? tf("pricing.headcountOver", locale, { max: PUBLIC_HEADCOUNT_MAX })
     : String(headcount);
 
-  const configure = (nextTier: QuoteTier, nextHeads: number) => {
+  const configure = (nextTier: QuoteTier, nextHeads: number, nextTeams = teamCount) => {
     setTier(nextTier);
     setHeadcount(nextHeads);
+    setTeamCount(nextTeams);
     if (tracked.current) return;
     tracked.current = true;
     track("pricing.configure", {
@@ -197,10 +201,35 @@ export function TeamPricingConfigurator({
             {tf("pricing.headcountNote", locale, {
               band: ladder.firstBandHeads,
               next: ladder.firstBandHeads + 1,
-              first: formatMoney(tierRate.perHead, locale, ladder.fx),
+              base: formatMoney(ladder.firstBandHeads * tierRate.perHead, locale, ladder.fx),
               over: formatMoney(tierRate.perHeadOver, locale, ladder.fx),
             })}
           </p>
+        </div>
+
+        <div className="grid grid-cols-[minmax(0,1fr)_120px] items-center gap-4 rounded-2xl border border-sand bg-warm px-4 py-3">
+          <div>
+            <label htmlFor={teamCountId} className="text-sm font-semibold text-ink">
+              {t("pricing.teamCountLabel", locale)}
+            </label>
+            <p className="mt-0.5 text-caption leading-relaxed text-ink-body">
+              {tf("pricing.teamCountNote", locale, {
+                fee: formatMoney(tierRate.additionalTeamFee, locale, ladder.fx),
+              })}
+            </p>
+          </div>
+          <select
+            id={teamCountId}
+            value={teamCount}
+            onChange={(event) => configure(tier, headcount, Number(event.target.value))}
+            className={`min-h-11 rounded-xl border border-sand bg-surface-card px-3 text-sm font-semibold text-ink ${FOCUS_RING_CLASS}`}
+          >
+            {[1, 2, 3, 4, 5].map((count) => (
+              <option key={count} value={count}>
+                {tf("pricing.teamCountOption", locale, { count })}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -220,7 +249,7 @@ export function TeamPricingConfigurator({
           className="absolute -bottom-20 -right-6 size-56 rounded-full border border-white/[0.07]"
         />
         <SectionEyebrow tone="onDark" className="relative">
-          {tierName} · {headcountLabel} {t("pricing.headcountUnit", locale)}
+          {tierName} · {headcountLabel} {t("pricing.headcountUnit", locale)} · {tf("pricing.teamCountOption", locale, { count: teamCount })}
         </SectionEyebrow>
         {over ? (
           <>
@@ -248,9 +277,8 @@ export function TeamPricingConfigurator({
           </>
         ) : (
           <>
-            {/* A sáv felett a kiírt szám átlagár — a címke ezt nevén nevezi. */}
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
-              {t(price.overHeads > 0 ? "pricing.perHeadAverageLabel" : "pricing.perHeadLabel", locale)}
+              {t("pricing.perHeadAverageLabel", locale)}
             </p>
             <p className="relative font-fraunces text-fluid-display leading-none tracking-tight tabular-nums">
               {perHeadMoney.big}
@@ -264,19 +292,21 @@ export function TeamPricingConfigurator({
               })}
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
-              {t("pricing.teamsLine", locale)}
+              {tf("pricing.teamsLine", locale, {
+                fee: formatMoney(tierRate.additionalTeamFee, locale, ladder.fx),
+              })}
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {t("pricing.vatNote", locale)}
             </p>
             <dl className="relative grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 border-t border-white/15 pt-4 text-caption">
               <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
-                {tf("pricing.breakdownFirst", locale, {
+                {tf("pricing.breakdownBase", locale, {
                   band: ladder.firstBandHeads,
                 })}
               </dt>
               <dd className="m-0 text-right tabular-nums">
-                {price.firstHeads} × {formatMoney(tierRate.perHead, locale, ladder.fx)}
+                {formatMoney(price.baseFee, locale, ladder.fx)}
               </dd>
               {price.overHeads > 0 && (
                 <>
@@ -285,6 +315,16 @@ export function TeamPricingConfigurator({
                   </dt>
                   <dd className="m-0 text-right tabular-nums">
                     {price.overHeads} × {formatMoney(tierRate.perHeadOver, locale, ladder.fx)}
+                  </dd>
+                </>
+              )}
+              {price.additionalTeams > 0 && (
+                <>
+                  <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
+                    {t("pricing.breakdownAdditionalTeams", locale)}
+                  </dt>
+                  <dd className="m-0 text-right tabular-nums">
+                    {price.additionalTeams} × {formatMoney(tierRate.additionalTeamFee, locale, ladder.fx)}
                   </dd>
                 </>
               )}
