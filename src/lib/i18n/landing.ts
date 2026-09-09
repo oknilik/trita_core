@@ -338,15 +338,23 @@ export const landingTranslations = {
     tier_kep_item6: { hu: "Tanácsadó által ellenőrzött összefoglaló a csapat eredményeiről, külön megbeszéléssel a vezető számára", en: "A consultant-reviewed summary of the team's results, with a separate conversation for the leader" },
     tier_kep_item7: { hu: "Az eredmények közös átbeszélése a csapattal: 90 perc, online", en: "A joint discussion of the results with the team: 90 minutes, online" },
     tier_prog_item1: {
-      hu: "Félnapos személyes workshop minden csapatnak: megnevezzük a legfontosabb erősséget és feszültségpontot, és megállapodtok az első lépésben",
-      en: "A half-day in-person workshop for every team: we name the key strength and point of tension, and you agree on the first step",
+      hu: "Félnapos személyes workshop minden csapatnak: megnevezzük a legfontosabb erősséget és feszültségpontot, és közösen kiválasztjuk az első lépést",
+      en: "A half-day in-person workshop for every team: we name the key strength and point of tension, and together we choose the first step",
     },
     tier_prog_item2: { hu: "Újramérés hat hónap múlva, az első felmérés eredményeivel összehasonlítva", en: "A remeasurement six months later, compared with the results of the first survey" },
     // A csapatcsomagban a résztvevő nem csak a személyiségfelmérést tölti ki
     // (az önmagában ~10 perc), hanem a csapatszerep-, bizalmi és pszichológiai
-    // biztonság kérdőívet is — együtt ~30 perc.
-    tier_kep_time: { hu: "~30 perc / fő + 90 perc csapatonként", en: "~30 min / person + 90 min per team" },
-    tier_prog_time: { hu: "~30 perc / fő + fél nap csapatonként", en: "~30 min / person + half a day per team" },
+    // biztonság kérdőívet is — együtt ~30 perc. A sor a csomag MINDEN
+    // alkalmát felsorolja: korábban a Csapatprogramból kimaradt a 90 perces
+    // online megbeszélés és az újramérés, így kevesebbet ígért a tartalmánál.
+    tier_kep_time: {
+      hu: "Kérdőívek: kb. 30 perc / fő. Csapatonként 90 perc online eredménymegbeszélés.",
+      en: "Questionnaires: about 30 min / person. Plus a 90-minute online results discussion per team.",
+    },
+    tier_prog_time: {
+      hu: "Kérdőívek: kb. 30 perc / fő. Csapatonként 90 perc online megbeszélés és fél nap személyes workshop. Hat hónap múlva újramérés.",
+      en: "Questionnaires: about 30 min / person. Per team: a 90-minute online discussion and a half-day in-person workshop. A remeasurement six months later.",
+    },
     headcountLabel: { hu: "Hányan vesztek részt?", en: "How many of you take part?" },
     // A csapatok száma nem befolyásolja az árat (2026-09-09): egy mondat,
     // sáv és korlát nélkül.
@@ -362,8 +370,8 @@ export const landingTranslations = {
     headcountOver: { hu: "{max}+", en: "{max}+" },
     customTitle: { hu: "Egyedi ajánlat", en: "Custom quote" },
     customBody: {
-      hu: "{max} fő fölött már nem a fejenkénti sáv dönt, hanem a szerkezet: hány csapat, milyen mélységben, milyen ütemben. Egy beszélgetés után írásban kapjátok az árat.",
-      en: "Above {max} people the structure matters more than the per-person band: how many teams, at what depth, in what rhythm. After one conversation you get the price in writing.",
+      hu: "{max} fő felett a csapatok számához és a tervezett alkalmakhoz igazított ajánlatot készítünk. Egy beszélgetés után írásban kapjátok az árat.",
+      en: "Above {max} people we prepare a quote fitted to the number of teams and the planned sessions. After one conversation you get the price in writing.",
     },
     customCta: { hu: "Beszéljünk", en: "Let's talk" },
     customNote: { hu: "Egy munkanapon belül válaszolunk.", en: "We reply within one business day." },
@@ -381,9 +389,15 @@ export const landingTranslations = {
     breakdownOver: { hu: "További résztvevők", en: "Additional participants" },
     timeLabel: { hu: "Időigény a résztvevőktől", en: "Time needed from participants" },
     ctaNote: { hu: "Egy munkanapon belül válaszolunk. Az egyeztetés után írásos ajánlatot küldünk.", en: "We reply within one business day. After the conversation we send a written quote." },
+    // A kedvezmény CSAK a Csapatprogramra érvényes: a Csapatkép mellett a
+    // „fenti díjból" a rossz árra mutatna, ezért ott más mondat áll.
     pilotNote: {
       hu: "Pilotpartnerként – az első {total} csapat egyikeként – a Csapatprogram fenti díjából {pct}% kedvezményt kaptok. Cserébe visszajelzést kérünk a programról.",
       en: "As a pilot partner – one of the first {total} teams – you get {pct}% off the Team Program fee shown above. In return we ask for feedback on the program.",
+    },
+    pilotNoteOtherTier: {
+      hu: "A pilotkedvezmény a Csapatprogramra érvényes: az első {total} csapat {pct}% kedvezményt kap. Részletek a pilotprogramnál.",
+      en: "The pilot discount applies to the Team Program: the first {total} teams get {pct}% off. Details on the pilot program page.",
     },
     belowMultiTeamTitle: { hu: "Több csapattal is részt vehettek", en: "Several teams can take part" },
     belowMultiTeamBody: {

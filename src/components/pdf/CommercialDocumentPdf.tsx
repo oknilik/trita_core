@@ -292,23 +292,35 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-// A szint tartalma szavakban: a Csapatprogram félnapos workshopot és egy
-// visszamérési kört tartalmaz, az extra napok/körök ezen felül jönnek.
-function workshopSummary(
-  input: CommercialDocumentSnapshot["quote"]["input"],
-  customer: CommercialDocumentSnapshot["customer"],
-): string {
-  const parts: string[] = [];
-  if (input.tier === "prog") parts.push("félnapos értelmező workshop");
-  else parts.push("90 perces online közös értelmezés");
-  if (input.extraWorkshopDays > 0) {
-    parts.push(`${input.extraWorkshopDays} további egész nap · ${customer.workshopHoursPerDay} óra/nap`);
-  }
-  return `${parts.join(" + ")} · ${modeLabel(customer.workshopMode)}`;
+// A kiadott dokumentum azt mutatja, amit kiküldtünk: egy 2026-09-07 előtti
+// (programdíjas) pillanatképnél az EREDETI tételek és napok, egyébként a
+// szint tartalma — a Csapatprogram félnapos workshopot és egy visszamérési
+// kört tartalmaz, az extra napok/körök ezen felül jönnek.
+function scopeItems(quote: CommercialDocumentSnapshot["quote"]): readonly string[] {
+  return quote.legacyScope?.steps ?? QUOTE_TIER_INCLUDES[quote.input.tier];
 }
 
-function remeasurementLabel(input: CommercialDocumentSnapshot["quote"]["input"]): string {
-  const rounds = (input.tier === "prog" ? 1 : 0) + input.extraWaves;
+function workshopSummary(
+  quote: CommercialDocumentSnapshot["quote"],
+  customer: CommercialDocumentSnapshot["customer"],
+): string {
+  const mode = modeLabel(customer.workshopMode);
+  if (quote.legacyScope) {
+    return `${quote.legacyScope.workshopDays} nap · ${customer.workshopHoursPerDay} óra/nap · ${mode}`;
+  }
+  const parts: string[] = [];
+  if (quote.input.tier === "prog") parts.push("félnapos értelmező workshop");
+  else parts.push("90 perces online közös értelmezés");
+  if (quote.input.extraWorkshopDays > 0) {
+    parts.push(`${quote.input.extraWorkshopDays} további egész nap · ${customer.workshopHoursPerDay} óra/nap`);
+  }
+  return `${parts.join(" + ")} · ${mode}`;
+}
+
+function remeasurementLabel(quote: CommercialDocumentSnapshot["quote"]): string {
+  const rounds = quote.legacyScope
+    ? quote.legacyScope.waves
+    : (quote.input.tier === "prog" ? 1 : 0) + quote.input.extraWaves;
   return rounds > 0 ? `${rounds} kör` : "nem része";
 }
 
@@ -374,8 +386,10 @@ function Scope({ snapshot }: { snapshot: CommercialDocumentSnapshot }) {
   const { quote, customer } = snapshot;
   return (
     <>
-      <Text style={s.subhead}>Program szintje: {QUOTE_TIER_LABELS[quote.input.tier]}</Text>
-      {QUOTE_TIER_INCLUDES[quote.input.tier].map((item) => (
+      <Text style={s.subhead}>
+        {quote.legacyScope ? "Mérési kör" : `Program szintje: ${QUOTE_TIER_LABELS[quote.input.tier]}`}
+      </Text>
+      {scopeItems(quote).map((item) => (
         <Bullet key={item}>{item}</Bullet>
       ))}
       <Text style={s.subhead}>Bevont csapatok</Text>
@@ -438,16 +452,18 @@ function ProposalOverview({ snapshot }: { snapshot: CommercialDocumentSnapshot }
         <Text style={s.sectionTitle}>A teljes folyamat egyben</Text>
         <View style={s.twoCol}>
           <View style={s.half}>
-            <Text style={s.subhead}>{QUOTE_TIER_LABELS[quote.input.tier]}</Text>
-            {QUOTE_TIER_INCLUDES[quote.input.tier].map((item) => (
+            <Text style={s.subhead}>
+              {quote.legacyScope ? "Mérés és csapatkép" : QUOTE_TIER_LABELS[quote.input.tier]}
+            </Text>
+            {scopeItems(quote).map((item) => (
               <Bullet key={item}>{item}</Bullet>
             ))}
           </View>
           <View style={s.half}>
             <Text style={s.subhead}>Közös feldolgozás</Text>
             <Bullet>{`${customer.leaderDebriefMinutes} perces vezetői eredményfeldolgozás`}</Bullet>
-            <Bullet>{workshopSummary(quote.input, customer)}</Bullet>
-            <Bullet>{`${remeasurementLabel(quote.input)} · ${quote.input.retainerMonths} hónap kísérés`}</Bullet>
+            <Bullet>{workshopSummary(quote, customer)}</Bullet>
+            <Bullet>{`${remeasurementLabel(quote)} · ${quote.input.retainerMonths} hónap kísérés`}</Bullet>
           </View>
         </View>
         <View style={s.processRow}>
@@ -585,9 +601,9 @@ function OrderForm({ snapshot }: { snapshot: CommercialDocumentSnapshot }) {
         <Text style={s.subhead}>Alkalmak és szakmai közreműködés</Text>
         <Row label="Indító egyeztetés" value={`${customer.kickoffMinutes} perc · ${modeLabel(customer.workshopMode)}`} />
         <Row label="Vezetői eredményfeldolgozás" value={`${customer.leaderDebriefMinutes} perc`} />
-        <Row label="Workshop" value={workshopSummary(quote.input, customer)} />
+        <Row label="Workshop" value={workshopSummary(quote, customer)} />
         <Row label="Kísérés / konzultáció" value={`${customer.consultingSessions} alkalom · ${customer.consultingMinutes} perc/alkalom`} />
-        <Row label="Visszamérés" value={remeasurementLabel(quote.input)} />
+        <Row label="Visszamérés" value={remeasurementLabel(quote)} />
         <Row label="Záró értékelés" value={`${customer.closingMinutes} perc`} />
         <Row label="Platform-hozzáférés vége" value={date(customer.platformAccessEnd)} />
         <Text style={s.note}>

@@ -79,12 +79,20 @@ export type QuoteWarning =
  * online értelmezésen felül félnapos workshopot és utánkövető kiértékelést
  * is visz; a mérés-lépések száma NEM számít, mert a több magyarázat a
  * workshop-időben jelenik meg (ezért kerül a workshop a felső szintre).
+ *
+ * A szint alkalmai CSAPATONKÉNT ismétlődnek — ezt a publikus szöveg is így
+ * ígéri: „minden csapat saját közös eredménymegbeszélést kap", „félnapos
+ * személyes workshop minden csapatnak". Ha egyszer számolnánk őket, több
+ * csapatnál az effektív óradíj és a kedvezmény-alsóhatár (floorPrice) túl
+ * kedvező képet mutatna, és a BELOW_TARGET_HOURLY figyelmeztetés elmaradna.
+ * Az ár ezzel szemben a LÉTSZÁMTÓL függ, nem a csapatszámtól: épp ezért kell
+ * a belső óra-becslésnek látnia a különbséget.
  */
 export function estimateHours(input: QuoteInput, rate: RateCard): number {
   const heads = Math.max(0, Math.round(input.headcount));
   const teams = Math.max(1, Math.round(input.teams));
   const h = rate.hours;
-  const tierHours =
+  const tierHoursPerTeam =
     input.tier === "prog"
       ? h.onlineDebrief + h.halfDayWorkshop + h.followUp
       : h.onlineDebrief;
@@ -92,7 +100,7 @@ export function estimateHours(input: QuoteInput, rate: RateCard): number {
     h.setup +
     h.perTeam * teams +
     h.perTenHeads * Math.ceil(heads / 10) +
-    tierHours +
+    tierHoursPerTeam * teams +
     h.perExtraWorkshopDay * Math.max(0, input.extraWorkshopDays) +
     h.perExtraWave * Math.max(0, input.extraWaves) +
     h.perRetainerMonth * Math.max(0, input.retainerMonths) +

@@ -288,13 +288,14 @@ export function TeamPricingConfigurator({
                   </dd>
                 </>
               )}
-              <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
-                {t("pricing.timeLabel", locale)}
-              </dt>
-              <dd className="m-0 text-right">
-                {t(`pricing.tier_${tier}_time`, locale)}
-              </dd>
             </dl>
+            {/* Az időigény mondat hosszúságú (kérdőívek + csapatonkénti
+                alkalmak): saját, balra zárt soron olvasható, nem a
+                jobbra zárt szám-oszlopban. */}
+            <div className="relative text-caption">
+              <p className="text-[var(--color-text-on-inverse-muted)]">{t("pricing.timeLabel", locale)}</p>
+              <p className="mt-1 leading-relaxed">{t(`pricing.tier_${tier}_time`, locale)}</p>
+            </div>
             <Link
               href="/contact"
               onClick={() =>
@@ -310,8 +311,10 @@ export function TeamPricingConfigurator({
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {t("pricing.ctaNote", locale)}
             </p>
+            {/* A pilotkedvezmény a Csapatprogramra érvényes: a Csapatkép
+                mellett nem hivatkozhatunk a „fenti díjra". */}
             <p className="relative rounded-xl bg-white/[0.07] px-3 py-2.5 text-caption text-[var(--color-text-on-inverse-muted)]">
-              {tf("pricing.pilotNote", locale, {
+              {tf(tier === "prog" ? "pricing.pilotNote" : "pricing.pilotNoteOtherTier", locale, {
                 pct: ladder.pilotDiscountPct,
                 total: PILOT_TOTAL_TEAMS,
               })}

@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { readQuoteInput } from "@/lib/quote/rate-card";
 import {
-  commercialDocumentSnapshotSchema,
+  readCommercialDocumentSnapshot,
 } from "@/lib/crm/commercial-document-schema";
 import { defaultCommercialDocumentForm } from "@/lib/crm/commercial-documents";
 import { formatQuoteNo } from "@/lib/crm/guards";
@@ -45,11 +45,9 @@ export default async function QuoteDocumentsPage({
     teams: input.teams,
   });
   const latestSnapshot = quote.documents
-    .map((document) => commercialDocumentSnapshotSchema.safeParse(document.snapshot))
-    .find((parsed) => parsed.success);
-  const initialForm = latestSnapshot?.success
-    ? latestSnapshot.data.customer
-    : fallbackForm;
+    .map((document) => readCommercialDocumentSnapshot(document.snapshot))
+    .find((parsed) => parsed !== null);
+  const initialForm = latestSnapshot ? latestSnapshot.customer : fallbackForm;
   const quoteLabel = formatQuoteNo(quote.quoteNo, quote.createdAt);
 
   return (
@@ -67,15 +65,15 @@ export default async function QuoteDocumentsPage({
           quoteStatus={quote.status}
           initialForm={initialForm}
           documents={quote.documents.flatMap((document) => {
-            const parsed = commercialDocumentSnapshotSchema.safeParse(document.snapshot);
-            if (!parsed.success) return [];
+            const parsed = readCommercialDocumentSnapshot(document.snapshot);
+            if (!parsed) return [];
             return [{
               id: document.id,
               kind: document.kind,
               version: document.version,
               status: document.status,
               generatedAt: document.generatedAt.toISOString(),
-              documentNumber: parsed.data.documentNumber,
+              documentNumber: parsed.documentNumber,
             }];
           })}
         />

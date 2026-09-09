@@ -35,7 +35,13 @@ export function pricingFaqVars(ladder: PublicLadder, locale: Locale = "hu"): Rec
     kep: formatMoney(ladder.tiers.kep.perHead, locale, ladder.fx),
     prog: formatMoney(ladder.tiers.prog.perHead, locale, ladder.fx),
     band: ladder.firstBandHeads,
-    over: formatMoney(ladder.tiers.kep.perHeadOver, locale, ladder.fx),
+    // A sáv feletti díj ma mindkét csomagnál azonos; ha valaha eltérnek, a
+    // GYIK a magasabbat mondja, hogy ne ígérjünk a valóságosnál olcsóbbat.
+    over: formatMoney(
+      Math.max(ladder.tiers.kep.perHeadOver, ladder.tiers.prog.perHeadOver),
+      locale,
+      ladder.fx,
+    ),
     max: PUBLIC_HEADCOUNT_MAX,
     total: PILOT_TOTAL_TEAMS,
     pct: ladder.pilotDiscountPct,

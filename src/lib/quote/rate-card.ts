@@ -54,7 +54,7 @@ export const QUOTE_TIER_INCLUDES: Record<QuoteTier, readonly string[]> = {
   ],
   prog: [
     "Minden, ami a Csapatképben",
-    "Félnapos személyes workshop minden csapatnak: megnevezzük a legfontosabb erősséget és feszültségpontot, és megállapodtok az első lépésben",
+    "Félnapos személyes workshop minden csapatnak: megnevezzük a legfontosabb erősséget és feszültségpontot, és közösen kiválasztjuk az első lépést",
     "Újramérés hat hónap múlva, az első felmérés eredményeivel összehasonlítva",
   ],
 };
@@ -184,6 +184,19 @@ export type QuoteInputParsed = z.infer<typeof quoteInputSchema>;
 // workshop VAGY utánkövető hullám → Csapatprogram, egyébként Csapatkép.
 // ─────────────────────────────────────────────────────────────────────
 
+/**
+ * A régi mérés-lépések címkéi. ÍRÁSRA nem használjuk — a már kiadott
+ * dokumentumok eredeti tartalom-listáját kell velük visszaadni, hogy egy
+ * 2026-09-07 előtti ajánlat PDF-je ugyanazt mutassa, mint kiküldéskor.
+ */
+const LEGACY_QUOTE_STEP_LABELS: Record<string, string> = {
+  OBSERVER_360: "Observer 360°",
+  TEAM_ROLE: "Csapatszerep (self)",
+  TEAM_ROLE_360: "Csapatszerep 360°",
+  TRUST_360: "Bizalmi kör",
+  PSYCH_SAFETY: "Pszichológiai biztonság",
+};
+
 const legacyQuoteInputSchema = z
   .object({
     headcount: z.number().int().min(0),
@@ -201,6 +214,32 @@ const legacyQuoteInputSchema = z
     vatRate: z.number().int().min(0).max(100).default(27),
   })
   .passthrough();
+
+/** A már kiadott dokumentumok eredeti (átfordítás előtti) tételei. */
+export interface LegacyQuoteScope {
+  /** A mérési kör tételei, ahogy az ajánlatban szerepeltek. */
+  steps: string[];
+  /** Workshop-napok az eredeti bemenetből (lehet tört nap). */
+  workshopDays: number;
+  /** Utánkövető hullámok az eredeti bemenetből. */
+  waves: number;
+}
+
+/**
+ * Örökség-részletek egy mentett bemenetből, ha az a RÉGI formában van.
+ * `null` a mai formánál — akkor a szint tartalma (QUOTE_TIER_INCLUDES) a
+ * forrás. Csak megjelenítéshez: számolni sosem ebből számolunk.
+ */
+export function readLegacyQuoteScope(raw: unknown): LegacyQuoteScope | null {
+  if (quoteInputSchema.safeParse(raw).success) return null;
+  const legacy = legacyQuoteInputSchema.safeParse(raw);
+  if (!legacy.success) return null;
+  return {
+    steps: legacy.data.steps.map((step) => LEGACY_QUOTE_STEP_LABELS[step] ?? step),
+    workshopDays: legacy.data.workshopDays,
+    waves: legacy.data.waves,
+  };
+}
 
 /**
  * Bemenet olvasása a DB-ből: az új séma, vagy az örökség-forma átfordítva.

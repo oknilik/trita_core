@@ -104,3 +104,35 @@
 - **„További fők" → „További résztvevők"** a kalkulátor ár-bontásában; az
   első sor marad „Első {band} fő" (egyes számban természetes), angolul
   mindkettő „participants".
+
+## Review-javítások (ugyanaznap, harmadik kör)
+
+- **[P1] A korábban kiadott dokumentumok újra megnyithatók.** Az új
+  ajánlat-séma miatt a 2026-09-07 előtti pillanatképeket a rendszer
+  elutasította: a PDF-letöltés és a „kiküldve/aláírva” állapotváltás is
+  hibára futott. A pillanatkép mostantól **verziózva olvasható**
+  (`readCommercialDocumentSnapshot`): a mentett ÁRAT sosem számoljuk újra, a
+  bemenetet a mai alakra fordítjuk, az EREDETI tételeket pedig a
+  `legacyScope` viszi tovább — a régi ajánlat PDF-je ugyanazt a mérési kört,
+  workshop-napot és visszamérés-számot mutatja, mint kiküldéskor. Új
+  dokumentum `schemaVersion: 2`-vel készül. Unit tesztek: régi pillanatkép
+  megnyitása, az összeg és a tételek megőrzése.
+- **[P2] Több csapatnál reális az óra-becslés.** A szint alkalmai
+  (online eredménymegbeszélés, félnapos workshop, utánkövetés) csapatonként
+  ismétlődnek — a publikus szöveg is így ígéri —, de a becslés egyszer
+  számolta őket. 35 fő / 5 csapat: 32 óra helyett 72; az effektív óradíj és
+  a `floorPrice` így már a valóságot mutatja, és a `BELOW_TARGET_HOURLY`
+  figyelmeztetés is megjelenik. Az ÁR változatlanul a létszámtól függ.
+- **[P2] A pilotkedvezmény a helyes árra utal.** A Csapatkép mellett nem
+  hivatkozunk a „fenti díjra”: ott a `pilotNoteOtherTier` mondja, hogy a
+  kedvezmény a Csapatprogramra érvényes.
+- **[P2] Az időigény a csomag teljes tartalmát mondja.** A Csapatprogramból
+  eddig kimaradt a 90 perces online megbeszélés és az újramérés. A sor
+  mondat hosszúságú lett, ezért saját, balra zárt blokkba került a jobbra
+  zárt szám-oszlop helyett.
+- **Szöveg**: a `{max}` fő feletti egyedi ajánlat magyarázata rövidebb (a
+  csapatok számához és a tervezett alkalmakhoz igazított ajánlat); a workshop
+  záró fordulata „közösen kiválasztjuk az első lépést”.
+- **Guardok**: a publikus és az admin/PDF tartalom-lista együtt mozgását
+  teszt védi; a GYIK sáv feletti díja a két csomag közül a magasabbat mondja,
+  ha valaha eltérnének.

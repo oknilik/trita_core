@@ -89,6 +89,29 @@ test("a Csapatprogram drágább és több órát visz, mint a Csapatkép", () =>
   );
 });
 
+test("a csapatonként ismétlődő alkalmak órái a csapatszámmal nőnek", () => {
+  // A program minden csapatnak külön eredménymegbeszélést és workshopot
+  // ígér. Ha ezeket egyszer számolnánk, több csapatnál az effektív óradíj
+  // és a floorPrice túl kedvező képet adna, és elmaradna a figyelmeztetés.
+  const h = DEFAULT_RATE_CARD.hours;
+  const perTeamTierHours = h.onlineDebrief + h.halfDayWorkshop + h.followUp;
+  const one = estimateHours(input({ tier: "prog", headcount: 35, teams: 1 }), DEFAULT_RATE_CARD);
+  const five = estimateHours(input({ tier: "prog", headcount: 35, teams: 5 }), DEFAULT_RATE_CARD);
+  assert.equal(five - one, 4 * (perTeamTierHours + h.perTeam));
+
+  // Ugyanaz az ár (a létszám azonos), lényegesen kevesebb fedezet: ezt a
+  // kalkulátornak látnia kell.
+  const singleTeam = calculateQuote(input({ tier: "prog", headcount: 35, teams: 1 }), DEFAULT_RATE_CARD);
+  const manyTeams = calculateQuote(input({ tier: "prog", headcount: 35, teams: 5 }), DEFAULT_RATE_CARD);
+  assert.equal(singleTeam.netTotal, manyTeams.netTotal);
+  assert.ok(manyTeams.effectiveHourlyRate! < singleTeam.effectiveHourlyRate!);
+  assert.ok(manyTeams.floorPrice > singleTeam.floorPrice);
+  assert.ok(
+    manyTeams.warnings.includes("BELOW_TARGET_HOURLY"),
+    "öt csapat félnapos workshopja a cél-óradíj alá viszi ezt az árat",
+  );
+});
+
 test("a kiszállásra nem vonatkozik kedvezmény", () => {
   const withTravel = calculateQuote(
     input({ travelDays: 2, discountPct: 20, discountReason: "pilot" }),

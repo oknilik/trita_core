@@ -69,6 +69,16 @@ describe("TeamPricingConfigurator", () => {
     ).toBeInTheDocument();
   });
 
+  it("a pilotkedvezmény csak a Csapatprogramnál hivatkozik a fenti díjra", () => {
+    render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
+
+    // Csapatkép a nyitóállapot: a „fenti díj" ilyenkor a Csapatkép ára.
+    expect(screen.getByText(/A pilotkedvezmény a Csapatprogramra érvényes/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: /Csapatprogram/ }));
+    expect(screen.getByText(/a Csapatprogram fenti díjából/)).toBeInTheDocument();
+  });
+
   it("angolul euróban mutat, a létra árfolyamán váltva, plusz VAT-tal", () => {
     // 400 Ft/€ tartalék-árfolyam: 35 000 Ft → €88, 10 fő → €875.
     render(<TeamPricingConfigurator ladder={ladder} locale="en" />);
