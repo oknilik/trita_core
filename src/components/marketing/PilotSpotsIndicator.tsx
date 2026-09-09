@@ -11,7 +11,7 @@ type SpotsPhase = "rest" | "play" | "idle";
 
 /**
  * Közös pilot-kapacitásjelző a publikus oldalakon. A helyek és a szöveg
- * ugyanabból a forrásból érkeznek, ezért a /pilot és /how-we-work jelzése
+ * ugyanabból a forrásból érkeznek, ezért a /pilot, a /team-dynamics és az /pricing jelzése
  * mindig együtt frissül.
  */
 export function PilotSpotsIndicator({
@@ -24,7 +24,7 @@ export function PilotSpotsIndicator({
   locale: Locale;
   href: string;
   ctaId: string;
-  surface: "pilot" | "pricing";
+  surface: "pilot" | "pricing" | "team";
   className?: string;
 }) {
   const cardRef = useRef<HTMLAnchorElement>(null);

@@ -1,6 +1,6 @@
 # Trita — Project Context
 
-> Utolsó mélyfrissítés: 2026-07-10. Napi részletek: `docs/development/changelog/`.
+> Utolsó mélyfrissítés: 2026-09-07. Napi részletek: `docs/development/changelog/`.
 
 ## Mi ez a projekt?
 
@@ -20,6 +20,21 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
   `POST /api/admin/org-access` (activate/trial/extend/deactivate/set_credits,
   assign_consultant/remove_consultant).
 - Minden upgrade/checkout CTA a `/contact`-ra mutat.
+- **Publikus árlétra (2026-09-07):** két fejenkénti szint, minden méréssel
+  — Csapatkép (35 e Ft/fő) · Csapatprogram (50 e Ft/fő), 10 fő felett
+  20 e, pilot −50%. EGY forrás: a díjkártya (`src/lib/quote/rate-card.ts`,
+  DB-ben az admin `/admin/quote` → Díjtételek). Publikus részhalmaz:
+  `src/lib/pricing/team-ladder.ts` (`derivePublicLadder`); fogyasztók:
+  `/pricing` árblokk (`TeamPricingConfigurator`, két szint csempéi,
+  összehasonlító tábla, pilot-ár), `/team-dynamics` ár-horgony
+  (`PriceAnchorCard`), `/pilot` ténysáv, Service JSON-LD, admin
+  ajánlat-kalkulátor. A főoldalon NINCS ár (2026-09-08, statikus lap).
+  Mentés → `revalidatePath` (ISR 1 óra). Új publikus árat SOHA ne írj
+  literálként — a létrából olvasd. Minden kirakott ár mellett „+ ÁFA"; az
+  angol felület euróban mutat (napi középárfolyam MNB→EKB→tartalék,
+  `src/lib/pricing/fx.ts` + `fx.server.ts`, a létra `fx` mezője) —
+  pénznemet a `formatMoney`/`moneyDisplay` ad, az egység-címkék pénznem
+  nélküliek. Doksi: `docs/product/pricing-ladder-2026-09.md`.
 - A korábbi kutatás-platform narratíva a publikus felületről eltávolítva;
   a platform termékként kommunikál.
 
@@ -119,15 +134,17 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 
 ```
 PUBLIKUS:  / (landing: egyéni ígéret + csapatos átvezető; nincs self/team
-            mód — a /self-awareness 308 → /) · /team-dynamics (statikus
-            csapatdiagnosztika-mélyoldal) · /try (vendég teszt) · /how-we-work
-           (a tanácsadói ajánlat — a /pricing PERMANENSEN ide irányít,
-            next.config.ts; a PricingContent komponens itt él tovább)
-           · /about · /rolunk · /founding (307 → /pilot) · /pilot · /contact
-           · /blog (parkolható) · /observe/[token] · /join/[token]
-           · /join/org/[inviteId] · /privacy (tervezet: noindex)
-           · /newsletter/confirmed · /newsletter/unsubscribed (noindex,
-             a feliratkozás-visszajelző oldalak)
+            mód — a /self-awareness 308 → /) · /team-dynamics („Csapatoknak":
+            az egyesített csapat-oldal — mit mérünk, három lépés, ár-horgony,
+            miért hiteles, pilot-helyek, program-GYIK; a /how-we-work 308 →
+            ide, 2026-09-08) · /pricing („Árazás": két csomag, kalkulátor,
+            összehasonlító tábla, pilot-ár, ár-GYIK; korábban átirányítás
+            volt) · /try (vendég teszt) · /about · /rolunk · /founding (307 →
+            /pilot) · /pilot · /contact · /blog (parkolható)
+           · /observe/[token] · /join/[token] · /join/org/[inviteId]
+           · /privacy (tervezet: noindex) · /newsletter/confirmed
+           · /newsletter/unsubscribed (noindex, a feliratkozás-visszajelző
+             oldalak)
            PARKOLT: /patterns (ld. lentebb)
 BELÉPVE:   /dashboard → journey elosztó (soha nem renderel tartalmat)
   user:    /profile/results (tabok: results/comparison/invites) · /profile

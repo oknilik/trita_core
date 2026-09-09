@@ -18,7 +18,7 @@ describe("landing CTA-hierarchia", () => {
     expect(screen.getByRole("heading", { level: 1 })).not.toHaveClass("animate-rise-in");
   });
 
-  it("csapatmódban a pilotprogram az elsődleges út, a kapcsolatfelvétel csendes másodlagos", () => {
+  it("csapatmódban az egyeztetés az elsődleges út, az árak és a pilot másodlagosak", () => {
     render(
       <>
         <HeroSection mode="team" />
@@ -27,13 +27,17 @@ describe("landing CTA-hierarchia", () => {
     );
 
     expect(
-      screen.getAllByRole("link", { name: "Megnézem a pilotprogramot" }).every((link) =>
-        link.getAttribute("href") === "/pilot"
+      screen.getAllByRole("link", { name: /Egyeztessünk/ }).every((link) =>
+        link.getAttribute("href") === "/contact"
       ),
     ).toBe(true);
-    expect(screen.getByRole("link", { name: "Beszéljünk" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Árak és kalkulátor" })).toHaveAttribute(
       "href",
-      "/contact",
+      "/pricing",
+    );
+    expect(screen.getByRole("link", { name: "Vagy nézd meg a pilotprogramot" })).toHaveAttribute(
+      "href",
+      "/pilot",
     );
     expect(screen.queryByText("Legyetek az első partnercsapataink között")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /kipróbál/i })).not.toBeInTheDocument();
@@ -42,7 +46,7 @@ describe("landing CTA-hierarchia", () => {
   it("a hero CTA-ja a riport-előnézet előtt marad a mobil DOM-sorrendben", () => {
     const { container } = render(<HeroSection mode="team" />);
 
-    const primaryCta = screen.getByRole("link", { name: "Megnézem a pilotprogramot" });
+    const primaryCta = screen.getByRole("link", { name: "Egyeztessünk" });
     const preview = container.querySelector("[data-landing-hero-preview]");
 
     expect(preview).not.toBeNull();
@@ -81,9 +85,9 @@ describe("landing CTA-hierarchia", () => {
     expect(screen.getAllByRole("link", { name: /teszt/i }).every((link) =>
       link.getAttribute("href") === "/try"
     )).toBe(true);
-    expect(screen.getByRole("link", { name: "Együttműködés részletei" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Csapatoknak: így dolgozunk együtt" })).toHaveAttribute(
       "href",
-      "/how-we-work",
+      "/team-dynamics",
     );
   });
 });

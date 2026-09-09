@@ -7,6 +7,9 @@ import type { SiteMode } from "@/components/landing/types";
 export function HowItWorks({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const strokeColor = mode === "self" ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
+  // Kontraszt (a11y): a címsor-kiemelés szöveg, ezért a bronz középső fokát
+  // kapja (krémen 3,9:1); a dekoratív folt (15% opacity) marad az alap bronz.
+  const headlineAccentColor = mode === "self" ? "var(--color-accent-primary-mid)" : strokeColor;
 
   const steps = mode === "self"
     ? [
@@ -26,9 +29,9 @@ export function HowItWorks({ mode }: { mode: SiteMode }) {
         <div className="mb-10 text-center md:mb-14">
           <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
             {mode === "self" ? (
-              <>{t("landing.howSelfTitleBefore", locale)}<em className="italic" style={{ color: strokeColor }}>{t("landing.howSelfTitleEm", locale)}</em></>
+              <>{t("landing.howSelfTitleBefore", locale)}<em className="italic" style={{ color: headlineAccentColor }}>{t("landing.howSelfTitleEm", locale)}</em></>
             ) : (
-              <>{t("landing.howTeamTitleBefore", locale)}<em className="italic" style={{ color: strokeColor }}>{t("landing.howTeamTitleEm", locale)}</em></>
+              <>{t("landing.howTeamTitleBefore", locale)}<em className="italic" style={{ color: headlineAccentColor }}>{t("landing.howTeamTitleEm", locale)}</em></>
             )}
           </h2>
         </div>

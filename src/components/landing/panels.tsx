@@ -46,9 +46,13 @@ export function SelfPanel() {
   // Az elsődleges szerep zsálya, a másodlagos bronz: a két rang színben is
   // elválik (2026-09-03, landing-visszajelzés), és egyik sem a csapat-réteg
   // szilvája — az egyéni kártyán maradunk az egyéni palettán.
+  // A rang-CÍMKE (10 px, félkövér) külön színt kap: a sáv/korong színe
+  // halványítva (`opacity-60`) 1,9–3,6:1 volt. A zsálya teljes tónusban
+  // ≥ 5,6:1; a bronz teljes tónusban is csak 3,3:1 fehéren, ezért a
+  // mély fokát (accent-primary-strong, ≥ 5,7:1) használjuk.
   const roleRankVisuals = [
-    { rank: "primary", color: "var(--color-sage)", width: "92%" },
-    { rank: "secondary", color: "var(--color-bronze)", width: "79%" },
+    { rank: "primary", color: "var(--color-sage)", labelColor: "var(--color-sage)", width: "92%" },
+    { rank: "secondary", color: "var(--color-bronze)", labelColor: "var(--color-accent-primary-strong)", width: "79%" },
   ] as const;
 
   return (
@@ -162,8 +166,8 @@ export function SelfPanel() {
                       {TEAM_ROLES[role][locale]}
                     </p>
                     <span
-                      className="order-2 mt-0.5 block truncate text-micro font-semibold uppercase tracking-wide opacity-60"
-                      style={{ color: rankVisual.color }}
+                      className="order-2 mt-0.5 block truncate text-micro font-semibold uppercase tracking-wide"
+                      style={{ color: rankVisual.labelColor }}
                     >
                       {roleRanks[index]}
                     </span>
@@ -336,7 +340,10 @@ export function TeamPanel() {
             </p>
           </div>
           <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5">
-            <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-bronze-dark)]">
+            {/* Kontraszt (a11y): a bronze-dark a krém-300 kártyán 4,2:1 volt;
+                a mély fok (accent-primary-strong) 5,3:1 — a bal oldali
+                sage-dark párja. */}
+            <p className="flex items-center gap-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
               <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-bronze)]" />
               {t("landing.teamWatchLabel", locale)}
             </p>

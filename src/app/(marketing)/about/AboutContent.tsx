@@ -86,7 +86,7 @@ export function AboutContent() {
           <MarketingActions
             className="mt-7"
             primary={{ href: "/contact", label: t("about.ctaPrimary", locale) }}
-            secondary={{ href: "/how-we-work", label: t("about.ctaSecondary", locale) }}
+            secondary={{ href: "/team-dynamics", label: t("about.ctaSecondary", locale) }}
           />
         </div>
       </section>

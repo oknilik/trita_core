@@ -1,6 +1,6 @@
 /**
  * A pilotprogram kapacitás-számai — EGY helyen, mert több felületen
- * jelennek meg (/pilot ténysáv, hero-badge, űrlap-jegyzet, /how-we-work
+ * jelennek meg (/pilot ténysáv, hero-badge, űrlap-jegyzet, /team-dynamics
  * teaser). Ahogy telnek a helyek, CSAK a PILOT_SPOTS_LEFT értékét kell
  * csökkenteni; 0-nál a szabad helyek sora magától eltűnik.
  *

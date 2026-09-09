@@ -1,11 +1,13 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { calculateQuote } from "@/lib/quote/calculate";
-import { quoteInputSchema, rateCardSchema } from "@/lib/quote/rate-card";
+import { rateCardSchema, readQuoteInput } from "@/lib/quote/rate-card";
 import {
   COMMERCIAL_DOCUMENT_KINDS,
+  CURRENT_DOCUMENT_SCHEMA_VERSION,
   commercialDocumentFormSchema,
   commercialDocumentSnapshotSchema,
+  readCommercialDocumentSnapshot,
   type CommercialDocumentForm,
   type CommercialDocumentKind,
   type CommercialDocumentSnapshot,
@@ -53,8 +55,13 @@ export async function generateCommercialDocument(params: {
       throw new CrmServiceError("ORDER_FORM_REQUIRES_ACCEPTED_QUOTE");
     }
 
-    const input = quoteInputSchema.parse(quote.input);
-    const rateCard = rateCardSchema.parse(quote.rateCardSnapshot);
+    // Örökség-bemenet (programdíjas) + régi díjkártya-pillanatkép: az
+    // újraszámolás nem tudná visszaadni a mentett összeget, ezért az ilyen
+    // ajánlatból nem generálunk dokumentumot — másolat kell friss kártyával.
+    const input = readQuoteInput(quote.input);
+    const rateCardParsed = rateCardSchema.safeParse(quote.rateCardSnapshot);
+    if (!input || !rateCardParsed.success) throw new CrmServiceError("QUOTE_SNAPSHOT_MISMATCH");
+    const rateCard = rateCardParsed.data;
     const result = calculateQuote(input, rateCard);
     if (result.netTotal !== quote.netTotal) {
       throw new CrmServiceError("QUOTE_SNAPSHOT_MISMATCH");
@@ -76,7 +83,7 @@ export async function generateCommercialDocument(params: {
     const quoteLabel = formatQuoteNo(quote.quoteNo, quote.createdAt);
     const generatedAt = new Date();
     const snapshot: CommercialDocumentSnapshot = {
-      schemaVersion: 1,
+      schemaVersion: CURRENT_DOCUMENT_SCHEMA_VERSION,
       kind: kindResult,
       documentNumber: `${quoteLabel}-${kindSuffix(kindResult)}-v${version}`,
       version,
@@ -127,9 +134,11 @@ export async function getCommercialDocumentSnapshot(
     select: { snapshot: true },
   });
   if (!document) throw new CrmServiceError("DOCUMENT_NOT_FOUND");
-  const parsed = commercialDocumentSnapshotSchema.safeParse(document.snapshot);
-  if (!parsed.success) throw new CrmServiceError("VALIDATION_ERROR");
-  return parsed.data;
+  // Verziótól függetlenül olvasunk: egy régi (programdíjas) dokumentum
+  // PDF-je is letölthető marad, az eredeti tételekkel és összeggel.
+  const parsed = readCommercialDocumentSnapshot(document.snapshot);
+  if (!parsed) throw new CrmServiceError("VALIDATION_ERROR");
+  return parsed;
 }
 
 export async function markCommercialDocumentStatus(
@@ -156,11 +165,17 @@ export async function markCommercialDocumentStatus(
           ? { status: "SENT", sentAt: now }
           : { status: "SIGNED", signedAt: now },
     });
-    const parsed = commercialDocumentSnapshotSchema.parse(document.snapshot);
+    // A napló csak a dokumentum fajtáját és számát idézi: ha a régi
+    // pillanatkép nem olvasható, az állapotváltás attól még érvényes — a
+    // fajta ilyenkor a sor saját mezőjéből jön.
+    const parsed = readCommercialDocumentSnapshot(document.snapshot);
+    const kind =
+      parsed?.kind ?? COMMERCIAL_DOCUMENT_KINDS.find((option) => option === document.kind) ?? "PROPOSAL";
+    const number = parsed ? ` (${parsed.documentNumber})` : "";
     await createSystemActivity(
       tx,
       document.quote.dealId,
-      `${commercialDocumentKindLabel(parsed.kind)} ${target === "SENT" ? "kiküldve" : "aláírva"} (${parsed.documentNumber})`,
+      `${commercialDocumentKindLabel(kind)} ${target === "SENT" ? "kiküldve" : "aláírva"}${number}`,
     );
     return updated;
   });

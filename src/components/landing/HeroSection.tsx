@@ -27,7 +27,7 @@ const riseIn = "animate-rise-in";
  * korábbi „mindkét változat a DOM-ban, láthatatlanul" geometria-rögzítés is
  * feleslegessé vált — nincs mihez rögzíteni.
  */
-export function HeroSection({ mode }: { mode: SiteMode }) {
+export function HeroSection({ mode, priceChip }: { mode: SiteMode; priceChip?: string }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
   // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 – nagy szövegnek épp
@@ -55,7 +55,9 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
     : [
         { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
         { Icon: ClockIcon, text: t("landing.teamMetaTiming", locale) },
-        { Icon: GiftIcon, text: t("landing.teamMetaOffer", locale) },
+        // Az ár-horgony a díjkártyából (a /team-dynamics oldal adja át);
+        // nélküle a régi „csapatra szabott ajánlat" pirula marad.
+        { Icon: GiftIcon, text: priceChip ?? t("landing.teamMetaOffer", locale) },
       ];
 
   const primaryLabel = isSelf
@@ -98,7 +100,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               style={{ animationDelay: "0.1s" }}
             >
               <Link
-                href={isSelf ? "/try" : "/pilot"}
+                href={isSelf ? "/try" : "/contact"}
                 onClick={() =>
                   track("cta.click", { cta_id: "hero_primary", surface: "landing", mode })
                 }
@@ -120,7 +122,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               </Link>
               {!isSelf ? (
                 <Link
-                  href="/contact"
+                  href="/pricing"
                   onClick={() =>
                     track("cta.click", { cta_id: "hero_secondary", surface: "landing", mode: "team" })
                   }

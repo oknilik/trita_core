@@ -143,14 +143,18 @@ export const commonTranslations = {
   },
   nav: {
     home: { hu: "Főoldal", en: "Home" },
-    publicHome: { hu: "Főoldal", en: "Home" },
+    // A publikus fejlécben a főoldal az EGYÉNI belépő (2026-09-08): a
+    // „Egyéni · Csapatoknak" pár mondja meg, kinek melyik lap szól.
+    publicHome: { hu: "Egyéni", en: "Individuals" },
     dashboard: { hu: "Vezérlő", en: "Dashboard" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
     signOut: { hu: "Kijelentkezés", en: "Sign out" },
     menu: { hu: "Menü", en: "Menu" },
     blog: { hu: "Blog", en: "Blog" },
     publicTeams: { hu: "Csapatoknak", en: "For teams" },
-    pricing: { hu: "Együttműködés", en: "How we work" },
+    // „Árazás", nem „Árak": az oldal nem egy árlista, hanem a
+    // létszám-alapú árazási szerkezet (csomagok + kalkulátor).
+    pricing: { hu: "Árazás", en: "Pricing" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     profile: { hu: "Profilom", en: "My profile" },
     team: { hu: "Csapat", en: "Team" },
@@ -184,11 +188,11 @@ export const commonTranslations = {
     colAbout: { hu: "A tritáról", en: "About trita" },
     colAccount: { hu: "Fiók", en: "Account" },
     colLegal: { hu: "Jogi", en: "Legal" },
-    home: { hu: "Főoldal", en: "Home" },
+    home: { hu: "Egyéni", en: "Individuals" },
     teams: { hu: "Csapatoknak", en: "For teams" },
     blog: { hu: "Blog", en: "Blog" },
     about: { hu: "Rólunk", en: "About" },
-    pricing: { hu: "Együttműködés", en: "How we work" },
+    pricing: { hu: "Árazás", en: "Pricing" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     // A fogalmi/tartalmi lap eddig CSAK a sitemapben és belső
     // hivatkozásokban élt — a láblécből minden oldalról linkelve viszont

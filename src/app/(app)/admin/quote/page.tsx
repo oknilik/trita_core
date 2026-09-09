@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { loadRateCard } from "@/lib/quote/rate-card.server";
-import { quoteInputSchema } from "@/lib/quote/rate-card";
+import { readQuoteInput } from "@/lib/quote/rate-card";
 import type { QuoteInput } from "@/lib/quote/calculate";
 import { formatQuoteNo } from "@/lib/crm/guards";
 import { QuoteCalculator } from "@/components/admin/quote/QuoteCalculator";
@@ -10,10 +10,12 @@ import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHea
 
 // Ajánlat-kalkulátor — BELSŐ eszköz.
 //
-// A platform nem publikál listaárat („egyedi ajánlat az első beszélgetés
-// után"), ezért ez a felület admin-only, és a számai sehol máshol nem
-// jelennek meg. A célja nem az árazás automatizálása, hanem hogy az alku
-// előtt lássuk, mennyi marad a munkán.
+// Az ár a publikus árlétrából jön (Csapatkép / Csapatprogram, fejenként —
+// ugyanaz, amit a vevő az /pricing oldalon lát), a díjtételek itt
+// szerkeszthetők és mentésük a publikus oldalakat is frissíti. A felület
+// admin-only, mert a belső számok (óra-becslés, cél-óradíj, kedvezmény-
+// keret) is itt élnek: a célja nem az árazás automatizálása, hanem hogy az
+// alku előtt lássuk, mennyi marad a munkán.
 //
 // CRM-integráció: ?dealId= mellett a kalkulátor menteni tud (DRAFT quote a
 // dealhez), ?from= egy meglévő quote inputját tölti be (DRAFT: szerkesztés,
@@ -65,8 +67,8 @@ export default async function QuoteCalculatorPage({
       },
     });
     if (quote && (!dealId || quote.dealId === dealId)) {
-      const parsed = quoteInputSchema.safeParse(quote.input);
-      if (parsed.success) initialInput = parsed.data;
+      // Az örökség-forma (programdíjas bemenet) átfordítva töltődik be.
+      initialInput = readQuoteInput(quote.input) ?? undefined;
       sourceQuote = {
         id: quote.id,
         dealId: quote.dealId,
@@ -93,7 +95,7 @@ export default async function QuoteCalculatorPage({
         backLabel={deal ? `Vissza az ügyhöz: ${deal.title}` : "Vissza az adminhoz"}
         eyebrow="belső eszköz"
         title="Ajánlat-kalkulátor"
-        description="Programdíj + degresszív fejenkénti mérési díj + utánkövetés. A vevőnek szánt összefoglaló a jobb alsó dobozban áll össze – belső számok (óradíj, padló, kedvezmény-keret) nincsenek benne."
+        description="Szint × létszám a publikus árlétrából, plusz a szint tartalmán felüli tételek. A díjtételek mentése a publikus oldalak árait is frissíti. A vevőnek szánt összefoglaló a jobb alsó dobozban áll össze – belső számok (óradíj, padló, kedvezmény-keret) nincsenek benne."
       />
 
       <QuoteCalculator

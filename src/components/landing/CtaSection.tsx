@@ -17,10 +17,17 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("TRITAN")); }, []);
 
+  // A 12 px-es mikroszöveg korábban `text-ink-body/60` volt: krémen 2,9:1.
+  // Az opacity-halványítás helyett a teljes muted token (≥ 4,5:1 mindkét
+  // sémán, a meleg surface-muted felületen is).
+
   if (!isSelf) {
     return (
       <section className="px-7 py-16 md:py-24">
-        <div className="mx-auto flex max-w-[960px] flex-col gap-6 rounded-[28px] bg-[var(--color-surface-muted)] px-6 py-8 md:flex-row md:items-center md:justify-between md:px-9">
+        {/* A gomb-oszlop csak akkor kerül a szöveg MELLÉ, ha a leghosszabb
+            (magyar) gombfelirat elfér egy sorban — 960 px alatt a két elem
+            egymás alá kerül, különben a felirat kettétörik. */}
+        <div className="mx-auto flex max-w-[960px] flex-col gap-6 rounded-[28px] bg-[var(--color-surface-muted)] px-6 py-8 lg:flex-row lg:items-center lg:justify-between lg:px-9">
           <div className="max-w-[610px]">
             <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
               {t("landing.ctaTeamHeadlineBefore", locale)}
@@ -31,23 +38,33 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
             <p className="mt-3 text-base leading-relaxed text-ink-body">
               {t("landing.ctaTeamSub", locale)}
             </p>
-            <p className="mt-2 font-dm-sans text-xs text-ink-body/60">
+            <p className="mt-2 font-dm-sans text-xs text-[var(--color-text-muted)]">
               {t("landing.ctaTeamMicrocopy", locale)}
             </p>
           </div>
-          <Link
-            href="/pilot"
-            onClick={() =>
-              track("cta.click", {
-                cta_id: "closing",
-                surface: "landing",
-                mode: "team",
-              })
-            }
-            className={`inline-flex min-h-[52px] shrink-0 items-center justify-center rounded-xl bg-[var(--color-layer-team-hero-from)] px-7 text-base font-semibold text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[var(--ui-shadow-lg)] ${FOCUS_RING_CLASS}`}
-          >
-            {t("landing.ctaTeamCta", locale)}
-          </Link>
+          <div className="flex shrink-0 flex-col items-start gap-2 lg:items-end">
+            <Link
+              href="/contact"
+              onClick={() =>
+                track("cta.click", {
+                  cta_id: "closing",
+                  surface: "landing",
+                  mode: "team",
+                })
+              }
+              className={`inline-flex min-h-[52px] shrink-0 items-center justify-center whitespace-nowrap rounded-xl bg-[var(--color-layer-team-hero-from)] px-7 text-base font-semibold text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[var(--ui-shadow-lg)] ${FOCUS_RING_CLASS}`}
+            >
+              {t("landing.ctaTeamCta", locale)}
+            </Link>
+            <Link
+              href="/pilot"
+              onClick={() => track("cta.click", { cta_id: "cta_team_pilot", surface: "landing", mode: "team" })}
+              className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-lg px-2 text-sm font-semibold text-[var(--color-layer-team-accent)] transition-opacity hover:opacity-80 ${FOCUS_RING_CLASS}`}
+            >
+              {t("landing.ctaTeamPilot", locale)}
+              <ChevronRightIcon className="ml-1 h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
     );
@@ -62,7 +79,9 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-fluid-title font-medium tracking-tight text-ink">
           {t("landing.ctaSelfClosingBefore", locale)}
-          <em className="italic text-[var(--color-accent-primary)]">
+          {/* Kontraszt (a11y): az alap bronz krémen 3,0:1 alatt marad, nagy
+              szövegként is határeset — a hero-val azonos középső fok (3,9:1). */}
+          <em className="italic text-[var(--color-accent-primary-mid)]">
             {t("landing.ctaSelfClosingEm", locale)}
           </em>
         </h2>
@@ -88,14 +107,14 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
             {cta}
           </Link>
           <Link
-            href="/how-we-work"
+            href="/team-dynamics"
             className={`inline-flex min-h-11 items-center justify-center rounded-lg px-2 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
           >
             {t("landing.ctaSelfSecondary", locale)}
             <ChevronRightIcon className="ml-1 h-4 w-4" />
           </Link>
         </div>
-        <p className="mt-3.5 font-dm-sans text-xs text-ink-body/60">
+        <p className="mt-3.5 font-dm-sans text-xs text-[var(--color-text-muted)]">
           {t("landing.ctaSelfMicrocopy", locale)}
         </p>
       </div>

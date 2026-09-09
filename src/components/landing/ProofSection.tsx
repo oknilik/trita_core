@@ -16,6 +16,9 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
   const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
+  // Kontraszt (a11y): a címsor-kiemelés szöveg — bronz középső fok (krémen
+  // 3,9:1); az ikonok dekoratívak, maradnak az alap akcenten.
+  const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
 
   const cards = isSelf
     ? [
@@ -35,7 +38,7 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
         <div className="mb-10 text-center md:mb-14">
           <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
             {isSelf ? t("landing.proofTitleBefore", locale) : t("landing.proofTeamTitleBefore", locale)}
-            <em className="italic" style={{ color: accentColor }}>
+            <em className="italic" style={{ color: headlineAccentColor }}>
               {isSelf ? t("landing.proofTitleEm", locale) : t("landing.proofTeamTitleEm", locale)}
             </em>
           </h2>

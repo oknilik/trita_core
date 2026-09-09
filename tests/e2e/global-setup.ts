@@ -30,7 +30,8 @@ const WARMUP_PATHS = [
   "/try",
   "/sign-in",
   "/pilot",
-  "/how-we-work",
+  "/team-dynamics",
+  "/pricing",
   "/contact",
   // Tokenes belépők: érvénytelen tokennel is lefordítják az oldal-modult,
   // és a suite több tesztje indul innen.

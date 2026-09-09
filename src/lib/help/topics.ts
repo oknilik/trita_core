@@ -140,12 +140,12 @@ const TOPICS: HelpTopic[] = [
           en: "How much does it cost?",
         },
         answer: {
-          hu: "Az ár a csapat méretétől és a program terjedelmétől függ, ezért egyedi ajánlatot adunk. Az ajánlat kereteiről az árak oldalon olvashatsz, a pontos számokhoz írj nekünk.",
-          en: "Pricing depends on team size and program scope, so we prepare an individual quote. The pricing page outlines the framework; for exact numbers, contact us.",
+          hu: "Fejenkénti áron, két szinten: Csapatkép (mérés, riport, online közös értelmezés) és Csapatprogram (workshoppal és visszaméréssel). Minden mérés benne van, a létszám adja az összeget. Az árak oldalon kalkulátorral kiszámolhatod a ti csapatotokra.",
+          en: "Per person, on two levels: Team Picture (measurement, report, online joint debrief) and Team Program (with a workshop and remeasurement). Every measurement is included; headcount gives the total. The pricing page has a calculator for your team.",
         },
         link: {
-          href: "/how-we-work",
-          label: { hu: "Együttműködés és árazás", en: "How we work and pricing" },
+          href: "/pricing",
+          label: { hu: "Árak és kalkulátor", en: "Pricing and calculator" },
         },
         audiences: ["public"],
       },

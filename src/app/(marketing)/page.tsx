@@ -32,7 +32,8 @@ export const metadata: Metadata = buildPageMetadata({
 // handoffra. A landing nem használ useSearchParams-t, ezért nem kell
 // Suspense-határ: a teljes oldal — a hero H1-gyel, ami az LCP-elem —
 // bekerül a prerenderelt HTML-be. A korábbi /self-awareness tükör-oldal ide
-// irányít (next.config.ts): az egyéni ígéret egyetlen lapon él.
+// irányít (next.config.ts): az egyéni ígéret egyetlen lapon él. Ár nincs a
+// főoldalon (2026-09-08): a lap teljesen statikus, a díjkártya nem érinti.
 export default function Home() {
   // A gyökér-lapon él a márka- és site-entitás (`@id` horgonyokkal); az összes
   // többi lap ezekre HIVATKOZIK ahelyett, hogy újra kihirdetné őket.

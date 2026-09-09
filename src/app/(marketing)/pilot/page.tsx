@@ -4,6 +4,11 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
 import { buildWebPageJsonLd } from "@/lib/structured-data";
 import { PilotContent } from "./PilotContent";
+import { loadPublicLadder } from "@/lib/pricing/team-ladder.server";
+
+// A ténysáv partneri ára a díjkártyából jön (admin: /admin/quote): ISR
+// óránként, plusz azonnali revalidálás mentéskor (saveRateCard).
+export const revalidate = 3600;
 
 // Statikus metadata a DEFAULT_LOCALE-lal — a tartalom nyelvváltását a
 // kliens-oldali LocaleProvider kezeli (PilotContent), a fej-elemeket a
@@ -17,7 +22,8 @@ export const metadata: Metadata = buildPageMetadata({
     "90 napos, személyesen kísért csapatprogram az első partnercsapatoknak.",
 });
 
-export default function PilotPage() {
+export default async function PilotPage() {
+  const ladder = await loadPublicLadder();
   return (
     <>
       <JsonLd
@@ -33,7 +39,7 @@ export default function PilotPage() {
           ],
         })}
       />
-      <PilotContent />
+      <PilotContent ladder={ladder} />
     </>
   );
 }

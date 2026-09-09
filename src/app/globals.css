@@ -1266,6 +1266,71 @@ input[type="range"].pattern-range::-moz-range-track {
   border-radius: 9999px;
 }
 
+/* Publikus árblokk csúszkája (/pricing): a kitöltés a --pos arányból jön
+   (0–1, a komponens állítja), a thumb 26px, 44px érintőfelülettel. */
+input[type="range"].pricing-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 44px;
+}
+
+input[type="range"].pricing-slider::-webkit-slider-runnable-track {
+  /* A natív range a fogantyú KÖZÉPPONTJÁT a [félszélesség, szélesség −
+     félszélesség] sávban mozgatja, ezért a kitöltés vége is ezzel a
+     korrekcióval követi a fogantyút (--pos: 0–1 arány a komponensből). */
+  --fill: calc(13px + (100% - 26px) * var(--pos, 0));
+  height: 6px;
+  border-radius: 9999px;
+  background: linear-gradient(
+    to right,
+    var(--color-sage) 0 var(--fill),
+    var(--color-sand) var(--fill) 100%
+  );
+}
+
+input[type="range"].pricing-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 26px;
+  width: 26px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: var(--color-surface-card);
+  border: 3px solid var(--color-sage);
+  box-shadow: 0 4px 12px rgba(26, 26, 46, 0.18);
+}
+
+input[type="range"].pricing-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-sand);
+}
+
+input[type="range"].pricing-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--color-sage);
+}
+
+input[type="range"].pricing-slider::-moz-range-thumb {
+  /* Ugyanaz a méret, mint a webkit fogantyú: a skálafeliratok korrekciója
+     (26px) így mindkét motorban a fogantyú középpontjára esik. */
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  background: var(--color-surface-card);
+  border: 3px solid var(--color-sage);
+  box-shadow: 0 4px 12px rgba(26, 26, 46, 0.18);
+  cursor: pointer;
+}
+
+input[type="range"].pricing-slider:focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 4px;
+  border-radius: 9999px;
+}
+
 /* Iniciálé (drop cap) eltávolítva — magyarban az „A" névelő levált a
    mondatról, és csak az első szekció kapta (tipográfiai audit #16). */
 

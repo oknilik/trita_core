@@ -93,9 +93,9 @@ ${enPosts
 
 ${line("/", "Főoldal", "Ingyenes egyéni személyiségprofil: fő mintázatok, erősségek és természetes csapatszerepek hat személyiségdimenzió mentén; átvezetés a tanácsadóval kísért csapatprogramhoz.", baseUrl)}
 ${line("/try", "Ingyenes személyiségteszt", "60 kérdéses személyiségteszt regisztráció nélkül, kb. 10 perc, azonnali visszajelzés hat dimenzió mentén.", baseUrl)}
-${line("/team-dynamics", "Csapatdiagnosztika", "Csapatszerepek, bizalmi háló és pszichológiai biztonság tanácsadó által értelmezett csapatképben.", baseUrl)}
+${line("/team-dynamics", "Csapatoknak – csapatdiagnosztika és csapatfejlesztés", "Csapatszerepek, bizalmi háló és pszichológiai biztonság tanácsadó által értelmezett csapatképben; hogyan indul a közös munka három lépésben, mi ingyenes, gyakori kérdések.", baseUrl)}
 ${line("/about", "Rólunk", "A trita mögött tanácsadói műhely áll. A mérésből tanácsadó vezette közös értelmezés és visszamérhető változtatás lesz; embereket nem rangsorolunk.", baseUrl)}
-${line("/how-we-work", "Együttműködés és árazás", "Hogyan indul egy csapat- vagy szervezeti program, mi ingyenes, és mitől függ az ár. Gyakori kérdések.", baseUrl)}
+${line("/pricing", "Árak", "Fejenkénti ár két szinten (Csapatkép, Csapatprogram), minden méréssel; létszám-kalkulátor, mit tartalmaz az ár, pilot-partneri ár.", baseUrl)}
 ${line("/pilot", "Pilotprogram", "Az első partnercsapatoknak szóló bevezető program feltételei.", baseUrl)}
 ${optionalMainLines}
 ${line("/contact", "Kapcsolat", "Kapcsolatfelvétel; egy munkanapon belüli válasz.", baseUrl)}

@@ -36,6 +36,25 @@ function HomeIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
+/** Egy alak: az egyéni belépő (a főoldal) — párja a Csapatoknak két alakja. */
+function PersonIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg
+      data-nav-icon="person"
+      className={className}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="8" cy="5" r="2.75" />
+      <path d="M2.75 14.25a5.25 5.25 0 0 1 10.5 0" />
+    </svg>
+  );
+}
+
 function BlogIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
@@ -67,29 +86,35 @@ function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
-/** Két egyenrangú kör közös metszete: együttműködés mint közösen alakított tér. */
-function SharedSpaceIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+/**
+ * Árcédula: az „Árazás" belépő. Korábban két metsző kör állt itt, az
+ * „Együttműködés" menüpont örökségeként — az ár mellett az már nem
+ * mondott semmit.
+ */
+function PriceTagIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
     <svg
-      data-nav-icon="shared-space"
+      data-nav-icon="price-tag"
       className={className}
       viewBox="0 0 16 16"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.35"
+      strokeWidth="1.3"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      <circle cx="6" cy="8" r="3.75" />
-      <circle cx="10" cy="8" r="3.75" />
+      <path d="M2.25 3.25a1 1 0 0 1 1-1h4.1a1 1 0 0 1 .71.3l5.69 5.69a1 1 0 0 1 0 1.41l-4.1 4.1a1 1 0 0 1-1.41 0L2.55 8.06a1 1 0 0 1-.3-.71V3.25Z" />
+      <circle cx="5.4" cy="5.4" r="1" />
     </svg>
   );
 }
 
 const LINK_ICONS: Record<string, (p: { className?: string }) => React.ReactNode> = {
-  home: HomeIcon,
+  home: PersonIcon,
   dashboard: GridIcon,
   blog: BlogIcon,
   teamsFor: CollabIcon,
-  pricing: SharedSpaceIcon,
+  pricing: PriceTagIcon,
 };
 
 // ─── Nav link — az app-nav (NavHeaderUI) aktív/inaktív stílusával ────────────
@@ -197,6 +222,8 @@ export function NavBar({
   }
 
   const publicLinks = [
+    // A főoldal az egyéni belépő, a menü is ezt mondja („Egyéni"), egy
+    // alakkal — a „Csapatoknak" két alakjának párjaként. A logó viszi haza.
     { id: "home", href: "/", label: t("nav.publicHome", locale) },
     // A tartós csapatos ajánlat önálló főmenüpont. A Pilotprogram ennek
     // konkrét belépője, ezért a /team-dynamics oldalon marad CTA-ként.
@@ -204,7 +231,7 @@ export function NavBar({
     ...(isPortfolioSurfaceActive("blog")
       ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
       : []),
-    { id: "pricing", href: "/how-we-work", label: t("nav.pricing", locale) },
+    { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
 
   const authLinks = [
@@ -215,7 +242,7 @@ export function NavBar({
     ...(isPortfolioSurfaceActive("blog")
       ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
       : []),
-    { id: "pricing", href: "/how-we-work", label: t("nav.pricing", locale) },
+    { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
 
   const links = isSignedIn ? authLinks : publicLinks;

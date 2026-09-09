@@ -77,6 +77,21 @@ const publicEvents = {
     question: "P2",
   }),
 
+  "pricing.configure": spec({
+    schema: z
+      .object({
+        // Csapatkép / Csapatprogram — melyik szintet nézik
+        tier: z.enum(["kep", "prog"]),
+        // Létszám-SÁV, nem pontos szám: mintázat kell, nem ügyfél-azonosítás
+        heads_band: z.enum(["5-8", "9-12", "13-20", "21-40", "40+"]),
+      })
+      .strict(),
+    origin: "client",
+    description:
+      "Az /pricing árblokk első beállítása (szint + létszám-sáv) – milyen csapatméret és szint érdekli a látogatót.",
+    question: "P2",
+  }),
+
   "faq.open": spec({
     schema: z
       .object({
