@@ -375,7 +375,7 @@ export const landingTranslations = {
     // Egység pénznem nélkül — a pénznemet a lokál adja (fx.ts: „35 000 Ft" / „€88").
     perHeadUnit: { hu: "/ fő", en: "/ person" },
     baseTeamUnit: { hu: "/ fő", en: "/ person" },
-    referenceTeamNote: { hu: "Egy {band} fős csapatnál számolt átlagár.", en: "Average price for one team of {band}." },
+    referenceTeamNote: { hu: "Egy {band} fős csapat esetén számolt átlagár.", en: "Average price for one team of {band}." },
     // A nagy szám címkéje: a sáv felett a kiírt összeg ÁTLAGÁR, ezt nevén nevezzük.
     perHeadLabel: { hu: "Egy főre jutó ár", en: "Price per person" },
     perHeadAverageLabel: { hu: "Egy főre jutó átlagár", en: "Average price per person" },

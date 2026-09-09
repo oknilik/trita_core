@@ -48,7 +48,7 @@ function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLad
   return (
     <div
       data-pricing-tile={tier}
-      className={`flex flex-col gap-1 rounded-[20px] border p-5 ${
+      className={`@container flex flex-col gap-1 rounded-[20px] border p-5 ${
         highlight
           ? "border-transparent bg-gradient-to-br from-[var(--color-layer-team-hero-from)] to-[var(--color-layer-team-hero-to)] text-[var(--color-text-on-inverse)]"
           : "border-sand bg-surface-card text-ink"
@@ -56,17 +56,18 @@ function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLad
     >
       <p className="font-fraunces text-heading">{t(`pricing.tier_${tier}_name`, locale)}</p>
       <p
-        className={`mt-1 font-fraunces text-display leading-none tabular-nums ${
+        className={`mt-1 flex flex-nowrap items-baseline gap-x-1.5 whitespace-nowrap font-fraunces text-title leading-none tabular-nums @sm:text-display ${
           highlight ? "text-[var(--color-layer-team-badge)]" : "text-[var(--color-layer-team-accent)]"
         }`}
       >
         {money.big}
-        <span className={`ml-1.5 inline-block whitespace-nowrap font-sans text-caption ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
+        <span className={`shrink-0 whitespace-nowrap font-sans text-micro @sm:text-caption ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
           {money.small}
+          <sup>*</sup>
         </span>
       </p>
       <p className={`mt-2 text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
-        {tf("pricing.referenceTeamNote", locale, { band: ladder.firstBandHeads })}
+        * {tf("pricing.referenceTeamNote", locale, { band: ladder.firstBandHeads })}
       </p>
       <p className={`text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
         {t(`pricing.tier_${tier}_short`, locale)}
