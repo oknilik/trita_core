@@ -261,8 +261,12 @@ export const landingTranslations = {
     compareExcluded: { hu: "Nem tartalmazza", en: "Not included" },
     extraSelfValue: { hu: "Ingyenes · körülbelül 10 perc", en: "Free · about 10 minutes" },
     pilotStripEyebrow: { hu: "Pilotprogram · az első {total} csapatnak", en: "Pilot program · for the first {total} teams" },
-    pilotStripBody: { hu: "Csapatprogram, partneri áron, −{pct}%. {left} / {total} hely szabad. Cserébe visszajelzést kérünk a programról.", en: "Team Program at the partner price, −{pct}%. {left} / {total} spots open. In return we ask for feedback on the program." },
-    pilotStripCta: { hu: "Jelentkezem", en: "Apply" },
+    // A kedvezmény mértékét a jelvény, a szabad helyeket a helyek-jelző
+    // mondja — a bekezdés azt teszi hozzá, MIT tartalmaz ez az ár.
+    pilotStripBody: {
+      hu: "Az ár a Csapatprogram teljes tartalmára vonatkozik: minden mérés, félnapos személyes workshop, újramérés hat hónap múlva. Cserébe visszajelzést kérünk a programról.",
+      en: "The price covers the full Team Program: every measurement, a half-day in-person workshop, a remeasurement six months later. In return we ask for feedback on the program.",
+    },
     faqPriceEyebrow: { hu: "Az árról", en: "About the price" },
     faqTeamEyebrow: { hu: "Mielőtt belevágunk", en: "Before we begin" },
     endEyebrow: { hu: "Írásos ajánlat", en: "Written quote" },

@@ -6,12 +6,13 @@ import { FaqList } from "@/components/marketing/FaqList";
 import { LocalizedPageMeta } from "@/components/marketing/LocalizedPageMeta";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
+import { PilotSpotsIndicator } from "@/components/marketing/PilotSpotsIndicator";
 import { TeamPricingConfigurator } from "@/components/pricing/TeamPricingConfigurator";
 import { CheckIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
 import { t, tf, type Locale } from "@/lib/i18n/public";
-import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
+import { PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { formatFxDate, formatMoney, moneyDisplay } from "@/lib/pricing/fx";
 import {
   PUBLIC_HEADCOUNT_MAX,
@@ -195,8 +196,53 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
         </div>
       </section>
 
-      {/* ── Mit tartalmaz + kiegészítők ───────────────────────── */}
+      {/* ── Pilot-ár ──────────────────────────────────────────
+          Közvetlenül a kalkulátor után: a partneri ár ott a legerősebb,
+          ahol a látogató épp kiszámolta a sajátját. A szabad helyek
+          jelzője ugyanaz a kártya, mint a /pilot és a /team-dynamics
+          oldalon — egy forrásból. */}
       <section className="bg-cream">
+        <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
+          <div
+            data-pricing-pilot
+            className="grid gap-8 rounded-[24px] border border-[var(--color-layer-team-accent)]/15 bg-[var(--color-layer-team-soft)]/60 px-6 py-8 md:px-9 md:py-10 lg:grid-cols-[minmax(0,1fr)_minmax(320px,auto)] lg:items-center"
+          >
+            <div>
+              <SectionEyebrow tone="team">{tf("pricing.pilotStripEyebrow", locale, { total: PILOT_TOTAL_TEAMS })}</SectionEyebrow>
+              <h2 className="mt-3 max-w-[20ch] font-fraunces text-fluid-title tracking-tight text-ink">
+                {t("pricing.pilotSectionTitle", locale)}
+              </h2>
+              <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <s className="font-fraunces text-heading tabular-nums text-ink-body decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
+                  {formatMoney(ladder.tiers.prog.perHead, locale, ladder.fx)}
+                </s>
+                <span className="font-fraunces text-fluid-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
+                  {partnerMoney.big}
+                  <span className="ml-1.5 font-sans text-caption text-ink-body">{partnerMoney.small}</span>
+                </span>
+                {/* Körvonalas jelvény: kitöltve a sötét témában a világos
+                    akcentuson nem érné el a 4,5:1-et (axe). */}
+                <span className="inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)] px-2.5 py-0.5 text-caption font-semibold text-[var(--color-layer-team-accent)]">
+                  {tf("pilot.fact3Off", locale, { pct: ladder.pilotDiscountPct })}
+                </span>
+              </p>
+              <p className="mt-4 max-w-[60ch] text-base leading-relaxed text-ink-body">
+                {t("pricing.pilotStripBody", locale)}
+              </p>
+            </div>
+            <PilotSpotsIndicator
+              locale={locale}
+              href="/pilot"
+              ctaId="pricing_pilot"
+              surface="pricing"
+              className="lg:justify-self-end"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Mit tartalmaz + kiegészítők ───────────────────────── */}
+      <section className="bg-warm">
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <SectionEyebrow>{t("pricing.compareEyebrow", locale)}</SectionEyebrow>
           <h2 className="mt-4 max-w-[20ch] font-fraunces text-fluid-title tracking-tight text-ink">{t("pricing.compareTitle", locale)}</h2>
@@ -223,39 +269,6 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
                 {t("pricing.selfFreeCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Pilot-ár ──────────────────────────────────────────── */}
-      <section className="bg-warm">
-        <div className="mx-auto max-w-[1120px] px-7 py-10 md:py-14">
-          <div
-            data-pricing-pilot
-            className="flex flex-wrap items-center justify-between gap-5 rounded-[22px] border border-[var(--color-layer-team-accent)]/15 bg-[var(--color-layer-team-soft)]/60 px-6 py-6 md:px-8"
-          >
-            <div>
-              <SectionEyebrow tone="team">{tf("pricing.pilotStripEyebrow", locale, { total: PILOT_TOTAL_TEAMS })}</SectionEyebrow>
-              <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <s className="font-fraunces text-heading tabular-nums text-ink-body decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
-                  {formatMoney(ladder.tiers.prog.perHead, locale, ladder.fx)}
-                </s>
-                <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
-                  {partnerMoney.big}
-                  <span className="ml-1.5 font-sans text-caption text-ink-body">{partnerMoney.small}</span>
-                </span>
-              </p>
-              <p className="mt-2 max-w-[60ch] text-sm leading-relaxed text-ink-body">
-                {tf("pricing.pilotStripBody", locale, { pct: ladder.pilotDiscountPct, left: PILOT_SPOTS_LEFT, total: PILOT_TOTAL_TEAMS })}
-              </p>
-            </div>
-            <Link
-              href="/pilot"
-              onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })}
-              className={`inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--color-layer-team-hero-from)] px-6 text-caption font-semibold text-[var(--color-text-on-inverse)] transition hover:-translate-y-0.5 hover:brightness-110 ${FOCUS_RING_CLASS}`}
-            >
-              {t("pricing.pilotStripCta", locale)}
-            </Link>
           </div>
         </div>
       </section>

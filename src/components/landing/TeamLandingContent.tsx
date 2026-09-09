@@ -73,10 +73,9 @@ export function TeamLandingContent({ ladder }: { ladder: PublicLadder }) {
         </div>
       </section>
 
-      <ProofSection mode="team" />
-      <StatsBar mode="team" />
-
-      {/* Pilot-helyek: a program konkrét belépője — saját oldalán a részletek. */}
+      {/* Pilot-helyek: a program konkrét belépője, közvetlenül az ár után —
+          a „−50% az első csapatoknak" ott a legerősebb, ahol a listaár még
+          friss. A részletek a saját oldalán. */}
       <section className="bg-cream px-7 py-16 md:py-24">
         <div className="mx-auto max-w-[760px]">
           <div className="text-center">
@@ -86,6 +85,9 @@ export function TeamLandingContent({ ladder }: { ladder: PublicLadder }) {
           <PilotSpotsIndicator locale={locale} href="/pilot" ctaId="team_page_pilot" surface="team" className="mx-auto mt-8" />
         </div>
       </section>
+
+      <ProofSection mode="team" />
+      <StatsBar mode="team" />
 
       <section className="bg-cream">
         <div className="mx-auto max-w-[1120px] px-7 pb-16 md:pb-24">

@@ -60,7 +60,8 @@ describe("the separate contact and pricing art directions", () => {
     expect(screen.getByRole("table")).toBeInTheDocument();
     const pilot = container.querySelector("[data-pricing-pilot]") as HTMLElement;
     expect(within(pilot).getByText(plain(hufAmount(pilotPerHead(ladder, "prog"))))).toBeInTheDocument();
-    expect(within(pilot).getByRole("link", { name: t("pricing.pilotStripCta", "hu") })).toHaveAttribute("href", "/pilot");
+    // A pilot-sáv a szabad helyek jelzőjével visz a /pilot oldalra.
+    expect(pilot.querySelector("[data-pilot-spots]")).toHaveAttribute("href", "/pilot");
 
     // Csak az árról szóló GYIK; a program-GYIK a csapat-oldalon.
     expect(screen.getByText("Mennyibe kerül?")).toBeInTheDocument();

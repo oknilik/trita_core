@@ -140,3 +140,14 @@
   Az oldal nem árlista, hanem a létszám-alapú árazási szerkezet; az angol
   „Pricing" eleve ezt mondta. Az ikon a menüpont maradék „Együttműködés"-
   jelképéből (két metsző kör) árcédulára cserélve.
+- **A pilot feljebb és hangsúlyosabban.** `/team-dynamics`: a pilot-szekció a
+  bizonyíték-blokkok (Miért hiteles, statisztika) ELÉ, közvetlenül az
+  ár-horgony mögé került — a „−50% az első csapatoknak" ott a legerősebb,
+  ahol a listaár még friss (az oldal ~52%-ánál, két szekcióval feljebb).
+  `/pricing`: a pilot-sáv a kalkulátor után, közvetlenül az összehasonlító
+  tábla ELÉ került, és önálló szekcióvá nőtt: cím, áthúzott listaár + nagy
+  partneri ár + −50% jelvény, mellette a szabad helyek jelzője
+  (`PilotSpotsIndicator` — ugyanaz a kártya, mint a /pilot és a
+  /team-dynamics oldalon). A bekezdés már nem ismétli a kedvezményt és a
+  helyeket, hanem azt mondja, mit tartalmaz ez az ár. A „Mit tartalmaz"
+  szekció a váltakozás miatt meleg hátteret kapott.
