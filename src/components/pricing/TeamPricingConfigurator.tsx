@@ -6,7 +6,7 @@ import { CheckIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
 import { t, tf, type Locale } from "@/lib/i18n/public";
-import { PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
+import { PILOT_SPOTS_LEFT } from "@/lib/pilot-config";
 import { formatMoney, moneyDisplay } from "@/lib/pricing/fx";
 import {
   PUBLIC_HEADCOUNT_DEFAULT,
@@ -24,7 +24,8 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 /**
  * Publikus árblokk az /pricing oldal „Kalkulátor" szekciójában.
  *
- * Váltó a két szint (Csapatkép / Csapatprogram) közt, csúszka a létszámra,
+ * Váltó a két szint (Csapatkép / Csapatprogram) közt, létszám- és
+ * csapatszám-beállítás,
  * jobb oldalon a fejenkénti ár és a teljes létszámra jutó összeg. A számok a
  * díjkártyából jönnek (`ladder` prop, szerverről), a tartalom-lista az
  * i18n-kulcsokból — a két helyet együtt kell karbantartani
@@ -63,15 +64,19 @@ export function TeamPricingConfigurator({
 }) {
   const [tier, setTier] = useState<QuoteTier>("kep");
   const [headcount, setHeadcount] = useState(PUBLIC_HEADCOUNT_DEFAULT);
+  const [teamCount, setTeamCount] = useState(1);
   const sliderId = useId();
-  const noteId = useId();
+  const teamCountId = useId();
   const tracked = useRef(false);
+  const minimumTeams = Math.ceil(headcount / 10);
 
   const price = useMemo(
-    () => ladderPrice(ladder, tier, headcount),
-    [ladder, tier, headcount],
+    () => ladderPrice(ladder, tier, headcount, teamCount),
+    [ladder, tier, headcount, teamCount],
   );
   const tierRate = ladder.tiers[tier];
+  const pilotActive = PILOT_SPOTS_LEFT > 0 && ladder.pilotDiscountPct > 0;
+  const pilotAverage = Math.round(price.total * (100 - ladder.pilotDiscountPct) / 100 / headcount);
   const tierName = t(`pricing.tier_${tier}_name`, locale);
   // A csúszka utolsó foka („40+"): nincs szám, egyedi ajánlat.
   const over = isOverPublicMax(headcount);
@@ -85,9 +90,10 @@ export function TeamPricingConfigurator({
     ? tf("pricing.headcountOver", locale, { max: PUBLIC_HEADCOUNT_MAX })
     : String(headcount);
 
-  const configure = (nextTier: QuoteTier, nextHeads: number) => {
+  const configure = (nextTier: QuoteTier, nextHeads: number, nextTeams = nextHeads === headcount ? teamCount : Math.ceil(nextHeads / 10)) => {
     setTier(nextTier);
     setHeadcount(nextHeads);
+    setTeamCount(Math.max(Math.ceil(nextHeads / 10), nextTeams));
     if (tracked.current) return;
     tracked.current = true;
     track("pricing.configure", {
@@ -167,7 +173,6 @@ export function TeamPricingConfigurator({
             max={PUBLIC_HEADCOUNT_OVER}
             step={1}
             value={headcount}
-            aria-describedby={noteId}
             aria-valuetext={`${headcountLabel} ${t("pricing.headcountUnit", locale)}`}
             onChange={(event) => configure(tier, Number(event.target.value))}
             style={{ "--pos": sliderRatio(headcount) } as CSSProperties}
@@ -190,17 +195,26 @@ export function TeamPricingConfigurator({
               </span>
             ))}
           </div>
-          <p
-            id={noteId}
-            className="mt-2 text-caption leading-relaxed text-ink-body"
+        </div>
+
+        <div className="grid grid-cols-[minmax(0,1fr)_120px] items-center gap-4 rounded-2xl border border-sand bg-warm px-4 py-3">
+          <div>
+            <label htmlFor={teamCountId} className="text-sm font-semibold text-ink">
+              {t("pricing.teamCountLabel", locale)}
+            </label>
+          </div>
+          <select
+            id={teamCountId}
+            value={teamCount}
+            onChange={(event) => configure(tier, headcount, Number(event.target.value))}
+            className={`min-h-11 rounded-xl border border-sand bg-surface-card px-3 text-sm font-semibold text-ink ${FOCUS_RING_CLASS}`}
           >
-            {tf("pricing.headcountNote", locale, {
-              band: ladder.firstBandHeads,
-              next: ladder.firstBandHeads + 1,
-              first: formatMoney(tierRate.perHead, locale, ladder.fx),
-              over: formatMoney(tierRate.perHeadOver, locale, ladder.fx),
-            })}
-          </p>
+            {[1, 2, 3, 4, 5].map((count) => (
+              <option key={count} value={count} disabled={count < minimumTeams}>
+                {tf("pricing.teamCountOption", locale, { count })}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -220,7 +234,7 @@ export function TeamPricingConfigurator({
           className="absolute -bottom-20 -right-6 size-56 rounded-full border border-white/[0.07]"
         />
         <SectionEyebrow tone="onDark" className="relative">
-          {tierName} · {headcountLabel} {t("pricing.headcountUnit", locale)}
+          {tierName} · {headcountLabel} {t("pricing.headcountUnit", locale)} · {tf("pricing.teamCountOption", locale, { count: teamCount })}
         </SectionEyebrow>
         {over ? (
           <>
@@ -248,9 +262,8 @@ export function TeamPricingConfigurator({
           </>
         ) : (
           <>
-            {/* A sáv felett a kiírt szám átlagár — a címke ezt nevén nevezi. */}
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
-              {t(price.overHeads > 0 ? "pricing.perHeadAverageLabel" : "pricing.perHeadLabel", locale)}
+              {t("pricing.perHeadAverageLabel", locale)}
             </p>
             <p className="relative font-fraunces text-fluid-display leading-none tracking-tight tabular-nums">
               {perHeadMoney.big}
@@ -263,38 +276,21 @@ export function TeamPricingConfigurator({
                 total: formatMoney(price.total, locale, ladder.fx),
               })}
             </p>
-            <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
-              {t("pricing.teamsLine", locale)}
-            </p>
-            <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
-              {t("pricing.vatNote", locale)}
-            </p>
-            <dl className="relative grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 border-t border-white/15 pt-4 text-caption">
-              <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
-                {tf("pricing.breakdownFirst", locale, {
-                  band: ladder.firstBandHeads,
-                })}
-              </dt>
-              <dd className="m-0 text-right tabular-nums">
-                {price.firstHeads} × {formatMoney(tierRate.perHead, locale, ladder.fx)}
-              </dd>
-              {price.overHeads > 0 && (
-                <>
-                  <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
-                    {t("pricing.breakdownOver", locale)}
-                  </dt>
-                  <dd className="m-0 text-right tabular-nums">
-                    {price.overHeads} × {formatMoney(tierRate.perHeadOver, locale, ladder.fx)}
-                  </dd>
-                </>
+            <div className="relative flex flex-wrap gap-2">
+              <span className="inline-flex items-center rounded-full border border-white/25 px-3 py-1.5 text-caption text-[var(--color-text-on-inverse)]">
+                {t("pricing.installmentChip", locale)}
+              </span>
+              {pilotActive && (
+                <Link
+                  href="/pilot"
+                  className={`inline-flex items-center rounded-2xl bg-[var(--color-layer-team-badge)] px-3 py-1.5 text-caption font-semibold text-[var(--color-layer-team-hero-to)] ${FOCUS_RING_CLASS}`}
+                >
+                  {tf(tier === "prog" ? "pricing.pilotPriceChip" : "pricing.pilotOfferChip", locale, {
+                    pct: ladder.pilotDiscountPct,
+                    price: formatMoney(pilotAverage, locale, ladder.fx),
+                  })}
+                </Link>
               )}
-            </dl>
-            {/* Az időigény mondat hosszúságú (kérdőívek + csapatonkénti
-                alkalmak): saját, balra zárt soron olvasható, nem a
-                jobbra zárt szám-oszlopban. */}
-            <div className="relative text-caption">
-              <p className="text-[var(--color-text-on-inverse-muted)]">{t("pricing.timeLabel", locale)}</p>
-              <p className="mt-1 leading-relaxed">{t(`pricing.tier_${tier}_time`, locale)}</p>
             </div>
             <Link
               href="/contact"
@@ -310,14 +306,6 @@ export function TeamPricingConfigurator({
             </Link>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {t("pricing.ctaNote", locale)}
-            </p>
-            {/* A pilotkedvezmény a Csapatprogramra érvényes: a Csapatkép
-                mellett nem hivatkozhatunk a „fenti díjra". */}
-            <p className="relative rounded-xl bg-white/[0.07] px-3 py-2.5 text-caption text-[var(--color-text-on-inverse-muted)]">
-              {tf(tier === "prog" ? "pricing.pilotNote" : "pricing.pilotNoteOtherTier", locale, {
-                pct: ladder.pilotDiscountPct,
-                total: PILOT_TOTAL_TEAMS,
-              })}
             </p>
           </>
         )}

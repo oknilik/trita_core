@@ -39,7 +39,7 @@ export function TeamLandingContent({ ladder }: { ladder: PublicLadder }) {
     <>
       <HeroSection
         mode="team"
-        priceChip={tf("landing.teamMetaPrice", locale, { price: formatMoney(entry.perHead, locale, ladder.fx) })}
+        priceChip={tf("landing.teamMetaPrice", locale, { price: formatMoney(entry.perHead, locale, ladder.fx), band: ladder.firstBandHeads })}
       />
       <HowItWorks mode="team" />
       <SectionTransition artKey={artKeyFrom("landing", "how-features", "team")} />

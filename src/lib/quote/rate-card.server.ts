@@ -20,9 +20,16 @@ export async function loadRateCard(): Promise<{ rate: RateCard; stored: boolean 
   const row = await prisma.quoteRateCard.findUnique({ where: { key: RATE_CARD_KEY } });
   if (!row) return { rate: DEFAULT_RATE_CARD, stored: false };
 
-  const parsed = rateCardSchema.safeParse(row.data);
+  const data = typeof row.data === "object" && row.data !== null ? row.data : {};
+  const legacy = "version" in data && data.version === 2;
+  // A régi csomagdíjakat lecseréljük; az egyéb egyedi díjtételek és
+  // órabecslések megmaradnak. Az admin ellenőrzést és újramentést kér.
+  const candidate = legacy
+    ? { ...data, version: 3, tiers: DEFAULT_RATE_CARD.tiers, firstBandHeads: DEFAULT_RATE_CARD.firstBandHeads }
+    : data;
+  const parsed = rateCardSchema.safeParse(candidate);
   if (!parsed.success) return { rate: DEFAULT_RATE_CARD, stored: false };
-  return { rate: parsed.data, stored: true };
+  return { rate: parsed.data, stored: !legacy };
 }
 
 /** A publikus felületek, amelyek a díjkártyából mutatnak árat (ISR-rel). */

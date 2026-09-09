@@ -71,15 +71,12 @@ export const landingTranslations = {
     // Ár-horgony a csapat-blokkon (2026-09-07): a szám a díjkártyából jön.
     teamPriceLead: { hu: "Csapatprogramok", en: "Team programs" },
     // Egység PÉNZNEM NÉLKÜL: a pénznemet a lokál adja (hu: „Ft" utána, en: „€" elé; fx.ts).
-    teamPriceFrom: { hu: "/ fő-től + ÁFA", en: "/ person and up + VAT" },
-    teamPriceFootnote: {
-      hu: "Minden mérést tartalmaz, egy tipikus 5–{band} fős kkv-csapat számára.",
-      en: "Every measurement included, for a typical SME team of 5–{band}.",
-    },
+    teamPriceFrom: { hu: "/ fő + ÁFA", en: "/ person + VAT" },
+    teamPriceFootnote: { hu: "Egy főre jutó átlagár.\nEgy {band} fős csapatnál, minden méréssel.", en: "Average price per person.\nFor one team of {band}, with every measurement included." },
     teamPriceDetails: { hu: "Részletes árak", en: "Detailed pricing" },
     teamMetaOffer: { hu: "Csapatra szabott ajánlat", en: "Tailored team proposal" },
-    /** Hero-pirula az árral: „{price} Ft / fő-től". */
-    teamMetaPrice: { hu: "{price} / fő-től + ÁFA", en: "From {price} / person + VAT" },
+    /** Hero-pirula az egycsapatos minimum projektárral. */
+    teamMetaPrice: { hu: "{price} / fő + ÁFA · {band} fős csapatnál", en: "{price} / person + VAT · one team of {band}" },
     teamFadeCta: { hu: "Ízelítő a csapatképből", en: "A taste of your team picture" },
     // Team hero panel – a valódi publikált riport (TeamReportView) kicsinyített mása
     teamPanelEyebrow: { hu: "jóváhagyott csapatkép", en: "reviewed team picture" },
@@ -202,32 +199,32 @@ export const landingTranslations = {
     ctaTeamSub: { hu: "Egy rövid egyeztetésen tisztázzuk a célt és a keretet, aztán néhány napon belül elkészül az első csapatképetek, amelyet közösen értelmezünk. A pilotprogramban mindezt partneri áron, kiemelt figyelemmel.", en: "In a short conversation we clarify the goal and the scope, then your first team picture is ready within days and we interpret it together. In the pilot program all of this comes at the partner price, with extra attention." },
     ctaTeamCta: { hu: "Egyeztessünk a csapatotokról", en: "Talk to us about your team" },
     ctaTeamPilot: { hu: "Vagy nézd meg a pilotprogramot", en: "Or explore the pilot program" },
-    ctaTeamMicrocopy: { hu: "Egy munkanapon belül válaszolunk · írásos ajánlat a ti létszámotokra", en: "We reply within one business day · a written quote for your headcount" },
+    ctaTeamMicrocopy: { hu: "Egy munkanapon belül válaszolunk · írásos ajánlat a csapatotok kereteire", en: "We reply within one business day · a written quote for your team setup" },
   },
   pricing: {
     // SEO: a cím a keresett „csapatfejlesztés" szolgáltatás-megnevezéssel
     // kezdődik, majd a trita személyes, rugalmas működését ígéri. A description
     // kihasználja a snippet-hosszt (~155 kar.), és előre hozza a két
-    // döntési tényt: az egyéni rész ingyenes, a csapatprogram fejenkénti
-    // árú (a konkrét szám a díjkártyából jön, ezért itt nem szerepel).
+    // döntési tényt: az egyéni rész ingyenes, a csapatprogramnak publikus
+    // minimumára van (a konkrét szám a díjkártyából jön).
     metaTitle: {
-      hu: "Árak – csapatdiagnosztika és csapatprogram fejenkénti áron | trita",
-      en: "Pricing – team diagnostics and team program per person | trita",
+      hu: "Árak – csapatdiagnosztika és csapatprogram | trita",
+      en: "Pricing – team diagnostics and team program | trita",
     },
     metaDescription: {
-      hu: "Az egyéni személyiségfelmérés ingyenes; a csapatprogram fejenkénti áron, minden méréssel – két szint, a résztvevők létszámára számolva, egy vagy több csapatra.",
-      en: "The individual personality assessment is free; the team program is priced per person with every measurement included – two levels, priced on headcount, for one team or several.",
+      hu: "Az egyéni személyiségfelmérés ingyenes; a csapatprogram csapatalapdíjjal és résztvevőnkénti díjjal, minden méréssel – létszámra és csapatszámra kalkulálva.",
+      en: "The individual personality assessment is free; the team program has a base fee per team plus participant fees with every measurement included, calculated by headcount and team count.",
     },
     // /pricing (2026-09-08): önálló Árak oldal. A számok a díjkártyából
     // jönnek, a szövegek innen.
     pageEyebrow: { hu: "Árazás", en: "Pricing" },
     // Szalagcím (2026-09-08): a létszám-elv a címben; a bevezető az egyéni
     // (ingyenes) és a csapatszintű (létszámhoz igazodó) réteget állítja szembe.
-    pageTitle: { hu: "Létszám alapú, átlátható ", en: "Headcount-based, transparent " },
-    pageTitleEm: { hu: "árazási struktúra.", en: "pricing structure." },
+    pageTitle: { hu: "Átlátható, a csapatok méretéhez igazodó ", en: "Transparent pricing that fits your " },
+    pageTitleEm: { hu: "árazási struktúra.", en: "team size." },
     pageLead: {
-      hu: "Az egyéni szint teljesen ingyenes. A kibővített, csapatszintű mérési ciklusoknál a résztvevők létszáma adja az alapot – a csapatmérettel arányosan csökken az egy főre vetített ár is.",
-      en: "The individual level is completely free. For the extended, team-level measurement cycles the number of participants is the basis – and the price per person falls as the team grows.",
+      hu: "Az egyéni szint teljesen ingyenes. A csapatcsomagok ára csapatalapdíjból és résztvevőnkénti díjból áll. Az egy főre jutó átlagár a létszámhoz és a csapatok számához igazodik.",
+      en: "The individual level is completely free. Team pricing combines a base fee per team and participant fees. The average per person depends on headcount and team count.",
     },
     pageCalculatorLink: { hu: "Kalkulátor", en: "Calculator" },
     // MINDEN kirakott ár mellett „+ ÁFA" (2026-09-08), csillag és nettó-
@@ -274,10 +271,10 @@ export const landingTranslations = {
     // /team-dynamics ár-szekció: a horgony-kártya mellé
     anchorEyebrow: { hu: "Mennyibe kerül", en: "What it costs" },
     // Ugyanaz a cím és bevezető, mint az /pricing oldal fejlécében (2026-09-09).
-    anchorTitle: { hu: "Létszám alapú, átlátható árazási struktúra.", en: "Headcount-based, transparent pricing structure." },
+    anchorTitle: { hu: "Átlátható, a csapatok méretéhez igazodó árazási struktúra.", en: "Transparent pricing that fits your team size." },
     anchorBody: {
-      hu: "Az egyéni szint teljesen ingyenes. A kibővített, csapatszintű mérési ciklusoknál a résztvevők létszáma adja az alapot – a csapatmérettel arányosan csökken az egy főre vetített ár is.",
-      en: "The individual level is completely free. For the extended, team-level measurement cycles the number of participants is the basis – and the price per person falls as the team grows.",
+      hu: "Az egyéni szint teljesen ingyenes. A csapatcsomagok ára csapatalapdíjból és résztvevőnkénti díjból áll. Az egy főre jutó átlagár a létszámhoz és a csapatok számához igazodik.",
+      en: "The individual level is completely free. Team pricing combines a base fee per team and participant fees. The average per person depends on headcount and team count.",
     },
     anchorLink: { hu: "Árak és kalkulátor", en: "Pricing and calculator" },
     heroHeading: { hu: "Minden csapat más – ezért a közös munka is ", en: "Every team is different – so the way we work together " },
@@ -326,8 +323,8 @@ export const landingTranslations = {
     // Kalkulátor-szövegek (2026-09-09): közvetlen mondatok, konkrét ármagyarázat.
     configuratorTitle: { hu: "Mennyibe kerül a csapatotoknak?", en: "How much does it cost for your team?" },
     configuratorLead: {
-      hu: "Válassz csomagot, és add meg a résztvevők számát. A kalkulátor megmutatja a teljes díjat és az egy főre jutó árat. A díj a választott csomag minden felsorolt elemét tartalmazza. Több csapat esetén is az összes résztvevő létszáma alapján számolunk.",
-      en: "Choose a package and enter the number of participants. The calculator shows the total fee and the price per person. The fee includes every listed element of the chosen package. With several teams we still count all participants together.",
+      hu: "Válassz csomagot, majd add meg a résztvevők és a csapatok számát. A kalkulátor megmutatja a teljes díjat és az egy főre jutó átlagárat. Minden csapat saját elemzést, riportot és közös alkalmat kap.",
+      en: "Choose a package, then enter the number of participants and teams. The calculator shows the total fee and the average price per person. Every team gets its own analysis, report and joint session.",
     },
     tierGroupLabel: { hu: "A csomag", en: "Package" },
     tier_kep_name: { hu: "Csapatkép", en: "Team Picture" },
@@ -360,17 +357,12 @@ export const landingTranslations = {
       en: "Questionnaires: about 30 min / person. Per team: a 90-minute online discussion and a half-day in-person workshop. A remeasurement six months later.",
     },
     headcountLabel: { hu: "Hányan vesztek részt?", en: "How many of you take part?" },
-    // A csapatok száma nem befolyásolja az árat (2026-09-09): egy mondat,
-    // sáv és korlát nélkül.
-    teamsLine: {
-      hu: "A résztvevők több csapatból is érkezhetnek. Minden csapat külön csapatképet és saját közös eredménymegbeszélést kap.",
-      en: "Participants can come from several teams. Each team gets its own team picture and its own joint results discussion.",
-    },
+    teamCountLabel: { hu: "Hány külön csapat vesz részt?", en: "How many separate teams take part?" },
+    teamCountOption: { hu: "{count} csapat", en: "{count} team(s)" },
+    teamCountNote: { hu: "Minden csapat alapdíja {fee} + ÁFA. A résztvevők díját ezen felül számoljuk.", en: "Each team has a base fee of {fee} + VAT. Participant fees are added separately." },
+    teamsLine: { hu: "A fejenkénti átlagár a csapatalapdíjat és a résztvevők díját is tartalmazza.", en: "The average price includes both team base fees and participant fees." },
     headcountUnit: { hu: "fő", en: "people" },
-    headcountNote: {
-      hu: "Az első {band} résztvevő díja fejenként {first} + ÁFA. A {next}. résztvevőtől minden további fő díja {over} + ÁFA.",
-      en: "The first {band} participants cost {first} + VAT each. From participant {next} on, each additional person is {over} + VAT.",
-    },
+    headcountNote: { hu: "Az összlétszám első {band} résztvevőjének díja {base} / fő + ÁFA, a {next}. főtől {over} / fő + ÁFA. Ehhez csapatonként alapdíj társul.", en: "The first {band} participants across all teams cost {base} / person + VAT, then {over} / person + VAT from participant {next}. A base fee applies to each team." },
     headcountOver: { hu: "{max}+", en: "{max}+" },
     customTitle: { hu: "Egyedi ajánlat", en: "Custom quote" },
     customBody: {
@@ -382,15 +374,21 @@ export const landingTranslations = {
     includesTitle: { hu: "Mit tartalmaz a {tier}?", en: "What does {tier} include?" },
     // Egység pénznem nélkül — a pénznemet a lokál adja (fx.ts: „35 000 Ft" / „€88").
     perHeadUnit: { hu: "/ fő", en: "/ person" },
+    baseTeamUnit: { hu: "/ fő", en: "/ person" },
+    referenceTeamNote: { hu: "Egy {band} fős csapat esetén számolt átlagár.", en: "Average price for one team of {band}." },
     // A nagy szám címkéje: a sáv felett a kiírt összeg ÁTLAGÁR, ezt nevén nevezzük.
     perHeadLabel: { hu: "Egy főre jutó ár", en: "Price per person" },
     perHeadAverageLabel: { hu: "Egy főre jutó átlagár", en: "Average price per person" },
     totalForTeam: { hu: "Összesen {total} + ÁFA a teljes létszámra", en: "{total} + VAT in total for everyone taking part" },
     vatNote: { hu: "A program díja akár több részletben is fizethető.", en: "The program fee can be paid in several instalments." },
+    installmentChip: { hu: "Részletfizetés is választható", en: "Instalments available" },
+    pilotPriceChip: { hu: "Pilotár −{pct}%: {price} / fő + ÁFA", en: "Pilot price −{pct}%: {price} / person + VAT" },
+    pilotOfferChip: { hu: "Pilot: −{pct}% a Csapatprogramra", en: "Pilot: −{pct}% on Team Program" },
     // A magyar „fő" egyes számban marad („Első 10 fő"); a többes „fők" helyett
     // a második soron „résztvevők" áll — angolul mindkettő „participants".
-    breakdownFirst: { hu: "Első {band} fő", en: "First {band} participants" },
+    breakdownBase: { hu: "Csapatalapdíj · {band} csapat", en: "Team base fees · {band} team(s)" },
     breakdownOver: { hu: "További résztvevők", en: "Additional participants" },
+    breakdownParticipants: { hu: "Résztvevők díja · első sáv", en: "Participant fees · first band" },
     timeLabel: { hu: "Időigény a résztvevőktől", en: "Time needed from participants" },
     ctaNote: { hu: "Egy munkanapon belül válaszolunk. Az egyeztetés után írásos ajánlatot küldünk.", en: "We reply within one business day. After the conversation we send a written quote." },
     // A kedvezmény CSAK a Csapatprogramra érvényes: a Csapatkép mellett a
@@ -405,8 +403,8 @@ export const landingTranslations = {
     },
     belowMultiTeamTitle: { hu: "Több csapattal is részt vehettek", en: "Several teams can take part" },
     belowMultiTeamBody: {
-      hu: "A díjat az összes résztvevő száma alapján számoljuk. Minden csapat saját csapatképet és külön eredménymegbeszélést kap. {max} fő felett egyedi ajánlatot készítünk.",
-      en: "We calculate the fee from the total number of participants. Every team gets its own team picture and its own results discussion. Above {max} people we prepare a custom quote.",
+      hu: "Minden csapatra egyszer számolunk alapdíjat: saját elemzést, riportot és eredménymegbeszélést kap. {max} fő felett egyedi ajánlatot készítünk.",
+      en: "Each team is charged one base fee for its own analysis, report and results discussion. Above {max} people we prepare a custom quote.",
     },
     belowWorkshopTitle: { hu: "További személyes workshop", en: "An additional in-person workshop" },
     belowWorkshopUnit: { hu: "/ alkalom", en: "/ session" },
@@ -415,7 +413,7 @@ export const landingTranslations = {
       en: "If you need longer together, a full-day workshop can be booked. This is the full fee for a standalone session on top of the half-day workshop in the package, and several teams can take part in it. In the conversation we decide together which format fits you.",
     },
     belowDriversTitle: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
-    belowDriversBody: { hu: "Csak a létszámtól és a szinttől. A mérések száma nem növeli az árat.", en: "Only headcount and the level. The number of measurements does not raise the price." },
+    belowDriversBody: { hu: "A létszámtól, a csomagtól és a külön csapatok számától. A mérések száma nem növeli az árat.", en: "Headcount, package and the number of separate teams. The number of measurements does not raise the price." },
     selfFreeLine: { hu: "Próbáld ki az egyéni felmérést", en: "Try the individual assessment" },
     selfFreeBody: { hu: "Töltsd ki a felmérést, és ismerd meg a saját eredményeidet.", en: "Complete the assessment and get to know your own results." },
     selfFreeCta: { hu: "Kitöltöm a felmérést", en: "Take the assessment" },
@@ -433,10 +431,7 @@ export const landingTranslations = {
     pilotCta: { hu: "Részletek", en: "Details" },
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
     faqQ1: { hu: "Mennyibe kerül?", en: "How much does it cost?" },
-    faqA1: {
-      hu: "Az egyéni felmérés ingyenes. A csapatcsomagok fejenkénti áron mennek: a Csapatkép {kep} / fő, a Csapatprogram {prog} / fő + ÁFA, {band} fő felett minden további résztvevő olcsóbb. Minden mérés benne van – a fenti kalkulátor a ti létszámotokra mutatja az összeget.",
-      en: "The individual assessment is free. Team packages are priced per person: Team Picture is {kep} / person, Team Program {prog} / person + VAT, and every additional participant above {band} costs less. Every measurement is included – the calculator above shows the total for your headcount.",
-    },
+    faqA1: { hu: "Az egyéni felmérés ingyenes. Egy {band} fős csapatnál a Csapatkép átlagára {kepBase} / fő + ÁFA, a Csapatprogramé {progBase} / fő + ÁFA. Az ár csapatalapdíjból és résztvevőnkénti díjból áll. Kisebb csapatnál a teljes díj is alacsonyabb; a kalkulátor megmutatja a saját átlagáratokat.", en: "The individual assessment is free. For one team of {band}, Team Picture averages {kepBase} / person + VAT and Team Program {progBase} / person + VAT. Pricing combines a team base fee and participant fees. Smaller teams pay a lower total; the calculator shows your average." },
     faqQ2: { hu: "Mit tartalmaz az ár?", en: "What does the price include?" },
     faqA2: {
       hu: "Mindent, ami a csapatképhez kell: a felmérést, a csapatszerep-, bizalmi és pszichológiai biztonság méréseket, a tanácsadói validálást, a riportot és a közös értelmezést. A Csapatprogram ezen felül félnapos workshopot és visszamérést is tartalmaz. Külön tétel csak a további workshop-nap, a havi kísérés és a kiszállás.",
@@ -449,8 +444,8 @@ export const landingTranslations = {
     },
     faqQ4: { hu: "Mi ingyenes, és mi tartozik a programhoz?", en: "What's free and what's part of the program?" },
     faqA4: {
-      hu: "Minden egyéni funkció ingyenes: felmérés, riport, observer-visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói validálás és a közös értelmezés a fejenkénti árú csapatprogram részei.",
-      en: "All individual features are free: assessment, report, observer feedback. Team-level measurements – team picture, team role map, psychological safety –, consultant validation and the joint debrief are part of the per-person team program.",
+      hu: "Minden egyéni funkció ingyenes: felmérés, riport, observer-visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói validálás és a közös értelmezés a fizetős csapatcsomagok részei.",
+      en: "All individual features are free: assessment, report and observer feedback. Team-level measurements – team picture, team role map and psychological safety –, consultant validation and the joint debrief are part of the paid team packages.",
     },
     // P0-4: a bevezetés ezen a kérdésen áll vagy bukik — a pontos, védhető
     // megfogalmazás üzleti/jogi döntés, addig {{TODO}}.
@@ -486,24 +481,18 @@ export const landingTranslations = {
       en: "Participation is voluntary and there is no rigid threshold: the team picture builds on the responses we have, and the report labels every element as measured data, estimate, or not-enough-information. Peer role feedback only appears with at least three raters. During the response window we monitor participation and help if anyone gets stuck.",
     },
     faqQ9: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
-    faqA9: {
-      hu: "Csak a létszámtól és a választott csomagtól. A mérések száma nem növeli az árat; {band} fő felett minden további résztvevő {over} + ÁFA. Külön tétel a további helyszíni workshop-nap, a havi kísérés és a kiszállás.",
-      en: "Only headcount and the chosen package. The number of measurements does not raise the price; above {band} people each additional participant is {over} + VAT. Extra on-site workshop days, monthly support and travel are separate items.",
-    },
+    faqA9: { hu: "A létszámtól, a csomagtól és a csapatok számától. Minden csapat alapdíja Csapatképnél {kepTeam}, Csapatprogramnál {progTeam} + ÁFA. Ehhez résztvevőnkénti díj társul; az összlétszám {band}. fője felett {over} / fő + ÁFA. A kalkulátorban ezek együttes, fejenkénti átlagát látjátok.", en: "Headcount, package and team count determine the price. Each team's base fee is {kepTeam} for Team Picture or {progTeam} + VAT for Team Program. Participant fees are added, at {over} / person + VAT above {band} participants overall. The calculator shows the combined average per person." },
     faqQ10: { hu: "Hogyan és mikor fizetünk?", en: "How and when do we pay?" },
     faqA10: {
       hu: "Az elfogadott ajánlat alapján, átutalással; a program díja akár több részletben is fizethető. A díjak nettó összegek, ÁFA-val számlázzuk. Szerződést és megrendelőt írásban kaptok.",
       en: "Based on the accepted quote, by bank transfer; the program fee can be paid in several instalments. Prices are net and invoiced with VAT. You receive the contract and order form in writing.",
     },
     faqQ11: { hu: "Több csapatra hogyan számoltok?", en: "How do you price several teams?" },
-    faqA11: {
-      hu: "Ugyanúgy, mint egyre: a résztvevők létszáma adja az árat, nem a csapatok száma. 35 fő lehet egy egység vagy 5–8 kisebb csapat – mindegyik saját csapatképet, riportot és közös értelmezést kap, az ár nem változik. {max} fő fölé egyedi ajánlatot adunk: ilyenkor a szerkezet dönt, nem a fejenkénti sáv.",
-      en: "The same as for one: the number of participants sets the price, not the number of teams. 35 people can be one unit or 5–8 smaller teams – each gets its own team picture, report and joint debrief, and the price does not change. Above {max} people we prepare a custom quote: there the structure decides, not the per-person band.",
-    },
+    faqA11: { hu: "Minden csapatra egyszer számolunk alapdíjat, és minden résztvevőre egyszer létszámdíjat. A létszámsáv az összes résztvevőre együtt vonatkozik. Minden csapat saját riportot és eredménymegbeszélést kap, a Csapatprogramban workshopot is. {max} fő felett egyedi ajánlatot készítünk.", en: "Each team is charged one base fee and each participant is counted once. The headcount band applies across all teams combined. Each team gets its own report and debrief, plus a workshop in Team Program. Above {max} people we prepare a custom quote." },
     faqQ12: { hu: "Van kedvezmény?", en: "Is there a discount?" },
     faqA12: {
-      hu: "A pilotprogram első {total} csapata partneri áron, {pct}% kedvezménnyel kapja a Csapatprogramot, cserébe visszajelzést kérünk. Ezen felül a létszám maga a kedvezmény: {band} fő felett minden további résztvevő olcsóbb, akárhány csapatra osztjátok.",
-      en: "The first {total} teams of the pilot program get the Team Program at the partner price, {pct}% off, in return for feedback. Beyond that, headcount is the discount: above {band} people every additional participant costs less, however many teams you split them into.",
+      hu: "A pilotprogram első {total} csapata partneri áron, {pct}% kedvezménnyel kapja a Csapatprogramot, cserébe visszajelzést kérünk. Ezen felül {band} fő felett minden további résztvevő alacsonyabb fejenkénti díjjal kerül a programba.",
+      en: "The first {total} teams of the pilot program get the Team Program at the partner price, {pct}% off, in return for feedback. Beyond that, each participant above {band} joins at a lower per-person fee.",
     },
     faqQ8: {
       hu: "Milyen módszertanon alapul?",
@@ -760,10 +749,7 @@ export const landingTranslations = {
     },
     fact3Was: { hu: "{full}", en: "{full}" },
     fact3Off: { hu: "−{pct}%", en: "−{pct}%" },
-    fact3Foot: {
-      hu: "A Csapatprogram teljes tartalmával: minden mérés, félnapos workshop, visszamérés.",
-      en: "With the full Team Program: every measurement, a half-day workshop, remeasurement.",
-    },
+    fact3Foot: { hu: "Egy főre jutó átlagár.\nEgy {band} fős csapatnál.\nA saját létszámotokkal az árkalkulátorban számolhattok.", en: "Average price per person.\nFor one team of {band}.\nUse the pricing calculator for your team size." },
     fact4Value: { hu: "2+1", en: "2+1" },
     fact4Unit: { hu: "alkalom", en: "sessions" },
     fact4Label: {

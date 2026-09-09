@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { TeamLandingContent } from "@/components/landing/TeamLandingContent";
 import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
 import { formatMoneyParts } from "@/lib/pricing/fx";
-import { derivePublicLadder } from "@/lib/pricing/team-ladder";
+import { derivePublicLadder, referencePerHead } from "@/lib/pricing/team-ladder";
 
 vi.mock("@/components/LocaleProvider", () => ({
   useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
@@ -59,7 +59,7 @@ describe("csapat-oldal (egyesített)", () => {
 
     const anchor = container.querySelector("[data-team-price-anchor]") as HTMLElement;
     expect(anchor).not.toBeNull();
-    expect(within(anchor).getByText(plain(hufAmount(ladder.tiers.kep.perHead)))).toBeInTheDocument();
+    expect(within(anchor).getByText(plain(hufAmount(referencePerHead(ladder, "kep"))))).toBeInTheDocument();
     expect(within(anchor).getByRole("link", { name: /Részletes árak/ })).toHaveAttribute("href", "/pricing");
     expect(screen.queryByRole("slider")).not.toBeInTheDocument();
   });

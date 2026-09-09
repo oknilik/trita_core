@@ -1,6 +1,6 @@
 import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
 import { formatMoneyParts } from "@/lib/pricing/fx";
-import { derivePublicLadder, pilotPerHead } from "@/lib/pricing/team-ladder";
+import { derivePublicLadder, referencePerHead, pilotPerHead } from "@/lib/pricing/team-ladder";
 import { render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ContactContent } from "@/app/(marketing)/contact/ContactContent";
@@ -51,8 +51,8 @@ describe("the separate contact and pricing art directions", () => {
 
     // A két szint csempéje a díjkártya áraival.
     const tiles = container.querySelector("[data-pricing-tiles]") as HTMLElement;
-    expect(within(tiles).getByText(plain(hufAmount(ladder.tiers.kep.perHead)))).toBeInTheDocument();
-    expect(within(tiles).getByText(plain(hufAmount(ladder.tiers.prog.perHead)))).toBeInTheDocument();
+    expect(within(tiles).getByText(plain(hufAmount(referencePerHead(ladder, "kep"))))).toBeInTheDocument();
+    expect(within(tiles).getByText(plain(hufAmount(referencePerHead(ladder, "prog"))))).toBeInTheDocument();
 
     // Kalkulátor a horgonnyal, összehasonlító tábla, pilot-ár.
     expect(container.querySelector("#kalkulator")).not.toBeNull();

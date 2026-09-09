@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { DEFAULT_LOCALE, t, tf } from "@/lib/i18n";
 import { loadPublicLadder } from "@/lib/pricing/team-ladder.server";
+import { referencePerHead } from "@/lib/pricing/team-ladder";
 import { buildPageMetadata } from "@/lib/seo";
 import { SEO_INTENTS } from "@/lib/seo-intents";
 import {
@@ -54,7 +55,7 @@ export default async function PricingPage() {
           buildServiceJsonLd({
             name: "Csapatdiagnosztika és csapatfejlesztő program",
             description:
-              "Tanácsadó-vezérelt csapatprogram személyiség-alapú csapatképpel, mért csapatszerep-térképpel és pszichológiai biztonság pulzusméréssel – fejenkénti áron, minden méréssel.",
+              "Tanácsadó-vezérelt csapatprogram személyiség-alapú csapatképpel, mért csapatszerep-térképpel és pszichológiai biztonság pulzusméréssel – egy főre jutó átlagárral, minden méréssel.",
             serviceType: "Szervezetfejlesztés és csapatdiagnosztika",
             catalogName: "trita csapatprogramok",
             offerings: [
@@ -67,12 +68,14 @@ export default async function PricingPage() {
                 name: "Csapatkép",
                 description:
                   "Minden mérés (személyiség, csapatszerep, bizalmi kör, pszichológiai biztonság, observer), validált csapatriport, vezetői visszajelzés, 90 perces online közös értelmezés.",
-                price: ladder.tiers.kep.perHead,
+                price: referencePerHead(ladder, "kep"),
+                priceUnit: `fő, egy ${ladder.firstBandHeads} fős csapatnál számolt átlagár`,
               },
               {
                 name: "Csapatprogram",
                 description: "A Csapatkép félnapos értelmező workshoppal és utánkövető méréssel fél év múlva.",
-                price: ladder.tiers.prog.perHead,
+                price: referencePerHead(ladder, "prog"),
+                priceUnit: `fő, egy ${ladder.firstBandHeads} fős csapatnál számolt átlagár`,
               },
             ],
           }),
