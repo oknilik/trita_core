@@ -98,3 +98,9 @@
   csúszka eredménye görgetés nélkül látszódjon; korábban a hosszú
   tartalom-lista kitolta az árat a képernyőről. `md`-től a rácsban változatlan
   a kép: bal hasáb beállítás + tartalom, jobb hasáb az ár, két sort átfogva.
+- **Az összehasonlító táblából kikerült a két ár-sor**: az árat a fölötte
+  lévő kalkulátor és a hero-csempék mondják, a tábla a tartalomról szól.
+  A `comparePriceRow` / `comparePriceRowOver` kulcsok törölve.
+- **„További fők" → „További résztvevők"** a kalkulátor ár-bontásában; az
+  első sor marad „Első {band} fő" (egyes számban természetes), angolul
+  mindkettő „participants".

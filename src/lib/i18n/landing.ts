@@ -259,13 +259,6 @@ export const landingTranslations = {
     // Az összehasonlító tábla pipa/gondolatjel cellájának felolvasott jelentése.
     compareIncluded: { hu: "Tartalmazza", en: "Included" },
     compareExcluded: { hu: "Nem tartalmazza", en: "Not included" },
-    comparePriceRow: { hu: "Az első {band} résztvevő díja, fejenként", en: "Price for each of the first {band} participants" },
-    comparePriceRowOver: {
-      hu: "Minden további résztvevő díja a {next}. főtől",
-      // Angolul a sorszám ragozása nyelvenként csúszna („from person 11"),
-      // ezért a sávra hivatkozunk: „a first {band} után".
-      en: "Price for each additional participant after the first {band}",
-    },
     extraSelfValue: { hu: "Ingyenes · körülbelül 10 perc", en: "Free · about 10 minutes" },
     pilotStripEyebrow: { hu: "Pilotprogram · az első {total} csapatnak", en: "Pilot program · for the first {total} teams" },
     pilotStripBody: { hu: "Csapatprogram, partneri áron, −{pct}%. {left} / {total} hely szabad. Cserébe visszajelzést kérünk a programról.", en: "Team Program at the partner price, −{pct}%. {left} / {total} spots open. In return we ask for feedback on the program." },

@@ -70,7 +70,7 @@ function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLad
   );
 }
 
-function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Locale }) {
+function ComparisonTable({ locale }: { locale: Locale }) {
   const rows: Array<{ key: string; label: string; kep: boolean; prog: boolean }> = [
     ...KEP_ITEMS.map((i) => ({ key: `kep${i}`, label: t(`pricing.tier_kep_item${i}`, locale), kep: true, prog: true })),
     ...PROG_ITEMS.map((i) => ({ key: `prog${i}`, label: t(`pricing.tier_prog_item${i}`, locale), kep: false, prog: true })),
@@ -113,30 +113,6 @@ function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Loc
               <td className="px-4 py-3 text-center">{cell(row.prog)}</td>
             </tr>
           ))}
-          <tr className="border-t border-sand">
-            <td className="px-5 py-4 font-semibold text-ink">
-              {tf("pricing.comparePriceRow", locale, { band: ladder.firstBandHeads })}
-            </td>
-            {QUOTE_TIERS.map((tier) => (
-              <td key={tier} className="px-4 py-4 text-center font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">
-                {formatMoney(ladder.tiers[tier].perHead, locale, ladder.fx)}
-                <span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span>
-              </td>
-            ))}
-          </tr>
-          {/* Külön sor a sáv feletti díjnak: a „10 fő felett" jegyzet úgy is
-              olvasható volt, mintha onnantól MINDENKIRE ez az ár vonatkozna. */}
-          <tr className="border-t border-sand">
-            <td className="px-5 py-4 font-semibold text-ink">
-              {tf("pricing.comparePriceRowOver", locale, { band: ladder.firstBandHeads, next: ladder.firstBandHeads + 1 })}
-            </td>
-            {QUOTE_TIERS.map((tier) => (
-              <td key={tier} className="px-4 py-4 text-center font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">
-                {formatMoney(ladder.tiers[tier].perHeadOver, locale, ladder.fx)}
-                <span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span>
-              </td>
-            ))}
-          </tr>
         </tbody>
       </table>
     </div>
@@ -226,7 +202,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
           <h2 className="mt-4 max-w-[20ch] font-fraunces text-fluid-title tracking-tight text-ink">{t("pricing.compareTitle", locale)}</h2>
           <p className="mt-5 max-w-[64ch] text-base leading-relaxed text-ink-body">{t("pricing.compareLead", locale)}</p>
           <div className="mt-8">
-            <ComparisonTable ladder={ladder} locale={locale} />
+            <ComparisonTable locale={locale} />
           </div>
 
           <div className="mt-12 grid gap-4 md:grid-cols-3">
