@@ -1277,12 +1277,16 @@ input[type="range"].pricing-slider {
 }
 
 input[type="range"].pricing-slider::-webkit-slider-runnable-track {
+  /* A natív range a fogantyú KÖZÉPPONTJÁT a [félszélesség, szélesség −
+     félszélesség] sávban mozgatja, ezért a kitöltés vége is ezzel a
+     korrekcióval követi a fogantyút (--pos: 0–1 arány a komponensből). */
+  --fill: calc(13px + (100% - 26px) * var(--pos, 0));
   height: 6px;
   border-radius: 9999px;
   background: linear-gradient(
     to right,
-    var(--color-sage) 0 var(--pct, 15%),
-    var(--color-sand) var(--pct, 15%) 100%
+    var(--color-sage) 0 var(--fill),
+    var(--color-sand) var(--fill) 100%
   );
 }
 
@@ -1310,8 +1314,10 @@ input[type="range"].pricing-slider::-moz-range-progress {
 }
 
 input[type="range"].pricing-slider::-moz-range-thumb {
-  height: 20px;
-  width: 20px;
+  /* Ugyanaz a méret, mint a webkit fogantyú: a skálafeliratok korrekciója
+     (26px) így mindkét motorban a fogantyú középpontjára esik. */
+  height: 26px;
+  width: 26px;
   border-radius: 50%;
   background: var(--color-surface-card);
   border: 3px solid var(--color-sage);

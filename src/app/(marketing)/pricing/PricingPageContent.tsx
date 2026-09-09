@@ -215,7 +215,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
         </div>
       </section>
 
-      {/* ── Mit tartalmaz + ezen felül ───────────────────────── */}
+      {/* ── Mit tartalmaz + kiegészítők ───────────────────────── */}
       <section className="bg-cream">
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <SectionEyebrow>{t("pricing.compareEyebrow", locale)}</SectionEyebrow>
@@ -225,8 +225,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
             <ComparisonTable ladder={ladder} locale={locale} />
           </div>
 
-          <SectionEyebrow className="mt-12">{t("pricing.extrasEyebrow", locale)}</SectionEyebrow>
-          <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <div className="mt-12 grid gap-4 md:grid-cols-3">
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowWorkshopTitle", locale)}</p>
               <p className="mt-1 font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">{formatMoney(ladder.extraWorkshopDayFee, locale, ladder.fx)}<span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)} {t("pricing.belowWorkshopUnit", locale)}</span></p>

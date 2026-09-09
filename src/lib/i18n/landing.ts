@@ -258,7 +258,6 @@ export const landingTranslations = {
     },
     comparePriceRow: { hu: "Az első {band} résztvevő díja, fejenként", en: "Price for each of the first {band} participants" },
     comparePriceRowOver: { hu: "Minden további résztvevő díja a {next}. főtől", en: "Price for each additional participant from person {next}" },
-    extrasEyebrow: { hu: "Ezen felül", en: "On top of that" },
     extraSelfValue: { hu: "Ingyenes · körülbelül 10 perc", en: "Free · about 10 minutes" },
     pilotStripEyebrow: { hu: "Pilotprogram · az első {total} csapatnak", en: "Pilot program · for the first {total} teams" },
     pilotStripBody: { hu: "Csapatprogram, partneri áron, −{pct}%. {left} / {total} hely szabad. Cserébe visszajelzést kérünk a programról.", en: "Team Program at the partner price, −{pct}%. {left} / {total} spots open. In return we ask for feedback on the program." },
@@ -342,8 +341,11 @@ export const landingTranslations = {
       en: "A half-day in-person workshop for every team: we name the key strength and point of tension, and you agree on the first step",
     },
     tier_prog_item2: { hu: "Újramérés hat hónap múlva, az első felmérés eredményeivel összehasonlítva", en: "A remeasurement six months later, compared with the results of the first survey" },
-    tier_kep_time: { hu: "~10 perc / fő + 90 perc csapatonként", en: "~10 min / person + 90 min per team" },
-    tier_prog_time: { hu: "~10 perc / fő + fél nap csapatonként", en: "~10 min / person + half a day per team" },
+    // A csapatcsomagban a résztvevő nem csak a személyiségfelmérést tölti ki
+    // (az önmagában ~10 perc), hanem a csapatszerep-, bizalmi és pszichológiai
+    // biztonság kérdőívet is — együtt ~30 perc.
+    tier_kep_time: { hu: "~30 perc / fő + 90 perc csapatonként", en: "~30 min / person + 90 min per team" },
+    tier_prog_time: { hu: "~30 perc / fő + fél nap csapatonként", en: "~30 min / person + half a day per team" },
     headcountLabel: { hu: "Hányan vesztek részt?", en: "How many of you take part?" },
     // A csapatok száma nem befolyásolja az árat (2026-09-09): egy mondat,
     // sáv és korlát nélkül.
@@ -385,11 +387,11 @@ export const landingTranslations = {
       hu: "A díjat az összes résztvevő száma alapján számoljuk. Minden csapat saját csapatképet és külön eredménymegbeszélést kap. {max} fő felett egyedi ajánlatot készítünk.",
       en: "We calculate the fee from the total number of participants. Every team gets its own team picture and its own results discussion. Above {max} people we prepare a custom quote.",
     },
-    belowWorkshopTitle: { hu: "Egész napos személyes workshop", en: "A full-day in-person workshop" },
+    belowWorkshopTitle: { hu: "További személyes workshop alkalom", en: "An additional in-person workshop session" },
     belowWorkshopUnit: { hu: "/ alkalom", en: "/ session" },
     belowWorkshopBody: {
-      hu: "Ha hosszabb közös munkára van szükségetek, egész napos workshop is kérhető. Ez egy önálló alkalom teljes díja, csapatonként – a csomagban lévő félnapos workshopon felül. Az egyeztetésen közösen eldöntjük, melyik forma illik a csapatotokhoz.",
-      en: "If you need longer together, a full-day workshop can be booked. This is the full fee for a standalone session, per team, on top of the half-day workshop in the package. In the conversation we decide together which format fits your team.",
+      hu: "Ha hosszabb közös munkára van szükségetek, egész napos workshop is kérhető. Ez egy önálló alkalom teljes díja – a csomagban lévő félnapos workshopon felül –, és több csapat is részt vehet rajta. Az egyeztetésen közösen eldöntjük, melyik forma illik hozzátok.",
+      en: "If you need longer together, a full-day workshop can be booked. This is the full fee for a standalone session on top of the half-day workshop in the package, and several teams can take part in it. In the conversation we decide together which format fits you.",
     },
     belowDriversTitle: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
     belowDriversBody: { hu: "Csak a létszámtól és a szinttől. A mérések száma nem növeli az árat.", en: "Only headcount and the level. The number of measurements does not raise the price." },
@@ -451,8 +453,8 @@ export const landingTranslations = {
       en: "How much of the team's time does it take?",
     },
     faqA6: {
-      hu: "A felmérés kitöltése körülbelül 10 perc fejenként. Ehhez jön egy 60 perces közös értelmező workshop, a pilotban pedig két rövid, 20–30 perces visszajelző beszélgetés a vezetővel. A csapat napi munkáját ezen felül nem terheljük.",
-      en: "Completing the assessment takes about 10 minutes per person. Add a 60-minute joint interpretation workshop, and in the pilot two short 20–30-minute feedback conversations with the leader. Beyond that, we don't take time from the team's daily work.",
+      hu: "A kérdőívek kitöltése összesen körülbelül 30 perc fejenként. Ehhez jön a közös értelmező alkalom, a pilotban pedig két rövid, 20–30 perces visszajelző beszélgetés a vezetővel. A csapat napi munkáját ezen felül nem terheljük.",
+      en: "Completing the questionnaires takes about 30 minutes per person in total. Add the joint interpretation session, and in the pilot two short 20–30-minute feedback conversations with the leader. Beyond that, we don't take time from the team's daily work.",
     },
     faqQ7: {
       hu: "Mi van, ha valaki nem tölti ki?",

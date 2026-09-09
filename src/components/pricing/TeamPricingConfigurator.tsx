@@ -37,6 +37,23 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 const KEP_ITEMS = [1, 2, 3, 4, 5, 6, 7] as const;
 const PROG_ITEMS = [1, 2] as const;
 
+// A csúszka fogantyújának mérete (globals.css: .pricing-slider thumb) — a
+// natív range a fogantyú KÖZÉPPONTJÁT a [félszélesség, szélesség −
+// félszélesség] sávban mozgatja, ezért a skálafeliratok és a kitöltés is
+// ezzel a korrekcióval kerül a helyére.
+const SLIDER_THUMB_PX = 26;
+const SLIDER_TICKS = [PUBLIC_HEADCOUNT_MIN, 10, 20, 30, PUBLIC_HEADCOUNT_OVER] as const;
+
+/** A csúszka-érték helye a sávon, 0..1. */
+function sliderRatio(value: number): number {
+  return (value - PUBLIC_HEADCOUNT_MIN) / (PUBLIC_HEADCOUNT_OVER - PUBLIC_HEADCOUNT_MIN);
+}
+
+/** A fogantyú-középponthoz igazított bal pozíció (CSS calc). */
+function sliderLeft(value: number): string {
+  return `calc(${SLIDER_THUMB_PX / 2}px + (100% - ${SLIDER_THUMB_PX}px) * ${sliderRatio(value)})`;
+}
+
 export function TeamPricingConfigurator({
   ladder,
   locale,
@@ -79,10 +96,6 @@ export function TeamPricingConfigurator({
     });
   };
 
-  const sliderPct =
-    ((headcount - PUBLIC_HEADCOUNT_MIN) /
-      (PUBLIC_HEADCOUNT_OVER - PUBLIC_HEADCOUNT_MIN)) *
-    100;
 
   return (
     <div
@@ -155,22 +168,25 @@ export function TeamPricingConfigurator({
             aria-describedby={noteId}
             aria-valuetext={`${headcountLabel} ${t("pricing.headcountUnit", locale)}`}
             onChange={(event) => configure(tier, Number(event.target.value))}
-            style={{ "--pct": `${sliderPct}%` } as CSSProperties}
+            style={{ "--pos": sliderRatio(headcount) } as CSSProperties}
             className="pricing-slider mt-2 w-full"
           />
           <div
             aria-hidden
-            className="mt-1 flex justify-between text-micro tabular-nums text-ink-body"
+            data-pricing-slider-ticks
+            className="relative mt-1 h-4 text-micro tabular-nums text-ink-body"
           >
-            <span>{PUBLIC_HEADCOUNT_MIN}</span>
-            <span>10</span>
-            <span>20</span>
-            <span>30</span>
-            <span>
-              {tf("pricing.headcountOver", locale, {
-                max: PUBLIC_HEADCOUNT_MAX,
-              })}
-            </span>
+            {SLIDER_TICKS.map((tick) => (
+              <span
+                key={tick}
+                className="absolute -translate-x-1/2"
+                style={{ left: sliderLeft(tick) }}
+              >
+                {tick === PUBLIC_HEADCOUNT_OVER
+                  ? tf("pricing.headcountOver", locale, { max: PUBLIC_HEADCOUNT_MAX })
+                  : tick}
+              </span>
+            ))}
           </div>
           <p
             id={noteId}
