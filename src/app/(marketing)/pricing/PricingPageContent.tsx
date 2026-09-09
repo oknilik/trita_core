@@ -66,11 +66,11 @@ function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLad
           <sup>*</sup>
         </span>
       </p>
-      <p className={`mt-2 text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
-        * {tf("pricing.referenceTeamNote", locale, { band: ladder.firstBandHeads })}
-      </p>
       <p className={`text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
         {t(`pricing.tier_${tier}_short`, locale)}
+      </p>
+      <p className={`mt-auto pt-3 text-micro leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
+        * {tf("pricing.referenceTeamNote", locale, { band: ladder.firstBandHeads })}
       </p>
     </div>
   );

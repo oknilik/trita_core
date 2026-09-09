@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { TeamPricingConfigurator } from "@/components/pricing/TeamPricingConfigurator";
 import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
 import { formatMoney } from "@/lib/pricing/fx";
-import { derivePublicLadder, ladderPrice, referencePerHead } from "@/lib/pricing/team-ladder";
+import { derivePublicLadder, ladderPrice } from "@/lib/pricing/team-ladder";
 
 const track = vi.fn();
 vi.mock("@/lib/analytics/client", () => ({
@@ -53,38 +53,30 @@ describe("TeamPricingConfigurator", () => {
     ).toBeInTheDocument();
   });
 
-  it("a sávhatár felett a fejenkénti átlag csökken, és a bontás mutatja a további főket", () => {
+  it("a csúszka tíz főnként populálja a csapatszámot, lefelé is", () => {
     render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
-
-    fireEvent.change(screen.getByRole("slider"), { target: { value: "20" } });
-
-    const price = ladderPrice(ladder, "kep", 20);
-    expect(price.perHeadAverage).toBeLessThan(referencePerHead(ladder, "kep"));
-    expect(screen.getByText("További résztvevők")).toBeInTheDocument();
-    expect(
-      screen.getAllByText(plain(`${price.overHeads} × ${formatMoney(ladder.tiers.kep.perHeadOver, "hu", ladder.fx)}`)),
-    ).toHaveLength(2);
+    const picker = screen.getByRole("combobox");
+    for (const [heads, teams] of [[10, 1], [11, 2], [20, 2], [21, 3], [31, 4], [10, 1]]) {
+      fireEvent.change(screen.getByRole("slider"), { target: { value: String(heads) } });
+      expect(picker).toHaveValue(String(teams));
+      expect(screen.getByText(plain(`Összesen ${formatMoney(ladderPrice(ladder, "kep", heads, teams).total, "hu", ladder.fx)} + ÁFA a teljes létszámra`))).toBeInTheDocument();
+    }
+    expect(screen.queryByText(/Az összlétszám első/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Minden csapat alapdíja/)).not.toBeInTheDocument();
+    expect(screen.queryByText("További résztvevők")).not.toBeInTheDocument();
   });
 
-  it("a sáv felett átlagárat mutat, a további csapat pedig növeli a díjat", () => {
+  it("kézzel több csapat választható; csomagváltás megtartja, létszámváltás újraszámolja", () => {
     render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
-
-    expect(screen.getByText("Egy főre jutó átlagár")).toBeInTheDocument();
-    fireEvent.change(screen.getByRole("slider"), { target: { value: "35" } });
-    expect(screen.getByText(/A fejenkénti átlagár a csapatalapdíjat/)).toBeInTheDocument();
-    expect(screen.getByText(/a 11\. főtől/)).toBeInTheDocument();
-    expect(
-      screen.getByText(plain(`Összesen ${formatMoney(ladderPrice(ladder, "kep", 35).total, "hu", ladder.fx)} + ÁFA a teljes létszámra`)),
-    ).toBeInTheDocument();
-
-    fireEvent.change(screen.getByRole("combobox", { name: "Hány külön csapat vesz részt?" }), {
-      target: { value: "3" },
-    });
-    const multiTeam = ladderPrice(ladder, "kep", 35, 3);
-    expect(screen.getByText("Csapatalapdíj · 3 csapat")).toBeInTheDocument();
-    expect(
-      screen.getByText(plain(`Összesen ${formatMoney(multiTeam.total, "hu", ladder.fx)} + ÁFA a teljes létszámra`)),
-    ).toBeInTheDocument();
+    fireEvent.change(screen.getByRole("slider"), { target: { value: "20" } });
+    const picker = screen.getByRole("combobox");
+    expect(screen.getByRole("option", { name: "1 csapat" })).toBeDisabled();
+    fireEvent.change(picker, { target: { value: "3" } });
+    fireEvent.click(screen.getByRole("button", { name: /Csapatprogram/ }));
+    expect(picker).toHaveValue("3");
+    expect(screen.getByText(plain(`Összesen ${formatMoney(ladderPrice(ladder, "prog", 20, 3).total, "hu", ladder.fx)} + ÁFA a teljes létszámra`))).toBeInTheDocument();
+    fireEvent.change(screen.getByRole("slider"), { target: { value: "11" } });
+    expect(picker).toHaveValue("2");
   });
 
   it("a pilotkedvezmény csak a Csapatprogramnál hivatkozik a fenti díjra", () => {

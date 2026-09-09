@@ -220,8 +220,8 @@ export const landingTranslations = {
     pageEyebrow: { hu: "Árazás", en: "Pricing" },
     // Szalagcím (2026-09-08): a létszám-elv a címben; a bevezető az egyéni
     // (ingyenes) és a csapatszintű (létszámhoz igazodó) réteget állítja szembe.
-    pageTitle: { hu: "Átlátható, a munkához igazodó ", en: "Transparent pricing that fits the " },
-    pageTitleEm: { hu: "árazási struktúra.", en: "work involved." },
+    pageTitle: { hu: "Átlátható, a csapatok méretéhez igazodó ", en: "Transparent pricing that fits your " },
+    pageTitleEm: { hu: "árazási struktúra.", en: "team size." },
     pageLead: {
       hu: "Az egyéni szint teljesen ingyenes. A csapatcsomagok ára csapatalapdíjból és résztvevőnkénti díjból áll. Az egy főre jutó átlagár a létszámhoz és a csapatok számához igazodik.",
       en: "The individual level is completely free. Team pricing combines a base fee per team and participant fees. The average per person depends on headcount and team count.",
@@ -271,7 +271,7 @@ export const landingTranslations = {
     // /team-dynamics ár-szekció: a horgony-kártya mellé
     anchorEyebrow: { hu: "Mennyibe kerül", en: "What it costs" },
     // Ugyanaz a cím és bevezető, mint az /pricing oldal fejlécében (2026-09-09).
-    anchorTitle: { hu: "Átlátható, a munkához igazodó árazási struktúra.", en: "Transparent pricing that fits the work involved." },
+    anchorTitle: { hu: "Átlátható, a csapatok méretéhez igazodó árazási struktúra.", en: "Transparent pricing that fits your team size." },
     anchorBody: {
       hu: "Az egyéni szint teljesen ingyenes. A csapatcsomagok ára csapatalapdíjból és résztvevőnkénti díjból áll. Az egy főre jutó átlagár a létszámhoz és a csapatok számához igazodik.",
       en: "The individual level is completely free. Team pricing combines a base fee per team and participant fees. The average per person depends on headcount and team count.",

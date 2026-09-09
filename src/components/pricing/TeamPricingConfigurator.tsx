@@ -67,8 +67,8 @@ export function TeamPricingConfigurator({
   const [teamCount, setTeamCount] = useState(1);
   const sliderId = useId();
   const teamCountId = useId();
-  const noteId = useId();
   const tracked = useRef(false);
+  const minimumTeams = Math.ceil(headcount / 10);
 
   const price = useMemo(
     () => ladderPrice(ladder, tier, headcount, teamCount),
@@ -88,10 +88,10 @@ export function TeamPricingConfigurator({
     ? tf("pricing.headcountOver", locale, { max: PUBLIC_HEADCOUNT_MAX })
     : String(headcount);
 
-  const configure = (nextTier: QuoteTier, nextHeads: number, nextTeams = teamCount) => {
+  const configure = (nextTier: QuoteTier, nextHeads: number, nextTeams = nextHeads === headcount ? teamCount : Math.ceil(nextHeads / 10)) => {
     setTier(nextTier);
     setHeadcount(nextHeads);
-    setTeamCount(nextTeams);
+    setTeamCount(Math.max(Math.ceil(nextHeads / 10), nextTeams));
     if (tracked.current) return;
     tracked.current = true;
     track("pricing.configure", {
@@ -171,7 +171,6 @@ export function TeamPricingConfigurator({
             max={PUBLIC_HEADCOUNT_OVER}
             step={1}
             value={headcount}
-            aria-describedby={noteId}
             aria-valuetext={`${headcountLabel} ${t("pricing.headcountUnit", locale)}`}
             onChange={(event) => configure(tier, Number(event.target.value))}
             style={{ "--pos": sliderRatio(headcount) } as CSSProperties}
@@ -194,17 +193,6 @@ export function TeamPricingConfigurator({
               </span>
             ))}
           </div>
-          <p
-            id={noteId}
-            className="mt-2 text-caption leading-relaxed text-ink-body"
-          >
-            {tf("pricing.headcountNote", locale, {
-              band: ladder.firstBandHeads,
-              next: ladder.firstBandHeads + 1,
-              base: formatMoney(tierRate.perHead, locale, ladder.fx),
-              over: formatMoney(tierRate.perHeadOver, locale, ladder.fx),
-            })}
-          </p>
         </div>
 
         <div className="grid grid-cols-[minmax(0,1fr)_120px] items-center gap-4 rounded-2xl border border-sand bg-warm px-4 py-3">
@@ -212,11 +200,6 @@ export function TeamPricingConfigurator({
             <label htmlFor={teamCountId} className="text-sm font-semibold text-ink">
               {t("pricing.teamCountLabel", locale)}
             </label>
-            <p className="mt-0.5 text-caption leading-relaxed text-ink-body">
-              {tf("pricing.teamCountNote", locale, {
-                fee: formatMoney(tierRate.teamBaseFee, locale, ladder.fx),
-              })}
-            </p>
           </div>
           <select
             id={teamCountId}
@@ -225,7 +208,7 @@ export function TeamPricingConfigurator({
             className={`min-h-11 rounded-xl border border-sand bg-surface-card px-3 text-sm font-semibold text-ink ${FOCUS_RING_CLASS}`}
           >
             {[1, 2, 3, 4, 5].map((count) => (
-              <option key={count} value={count}>
+              <option key={count} value={count} disabled={count < minimumTeams}>
                 {tf("pricing.teamCountOption", locale, { count })}
               </option>
             ))}
@@ -292,43 +275,8 @@ export function TeamPricingConfigurator({
               })}
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
-              {tf("pricing.teamsLine", locale, {
-                fee: formatMoney(tierRate.teamBaseFee, locale, ladder.fx),
-              })}
-            </p>
-            <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {t("pricing.vatNote", locale)}
             </p>
-            <dl className="relative grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1.5 border-t border-white/15 pt-4 text-caption">
-              <dt className="text-[var(--color-text-on-inverse-muted)]">
-                {tf("pricing.breakdownBase", locale, {
-                  band: teamCount,
-                })}
-              </dt>
-              <dd className="m-0 text-right tabular-nums">
-                {formatMoney(price.baseFee, locale, ladder.fx)}
-              </dd>
-              {price.overHeads > 0 && (
-                <>
-                  <dt className="text-[var(--color-text-on-inverse-muted)]">
-                    {t("pricing.breakdownOver", locale)}
-                  </dt>
-                  <dd className="m-0 text-right tabular-nums">
-                    {price.overHeads} × {formatMoney(tierRate.perHeadOver, locale, ladder.fx)}
-                  </dd>
-                </>
-              )}
-              {price.firstHeads > 0 && (
-                <>
-                  <dt className="text-[var(--color-text-on-inverse-muted)]">
-                    {t("pricing.breakdownParticipants", locale)}
-                  </dt>
-                  <dd className="m-0 text-right tabular-nums">
-                    {price.firstHeads} × {formatMoney(tierRate.perHead, locale, ladder.fx)}
-                  </dd>
-                </>
-              )}
-            </dl>
             {/* Az időigény mondat hosszúságú (kérdőívek + csapatonkénti
                 alkalmak): saját, balra zárt soron olvasható, nem a
                 jobbra zárt szám-oszlopban. */}
