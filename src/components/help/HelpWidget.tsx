@@ -44,7 +44,7 @@ const CONTEXTUAL_ENTRY_IDS: Array<{ prefix: string; ids: string[] }> = [
   { prefix: "/dashboard", ids: ["track-progress", "when-team-results", "start-campaign"] },
   { prefix: "/privacy", ids: ["data-handling"] },
   { prefix: "/team-dynamics", ids: ["what-teams-get", "how-to-start", "pricing"] },
-  { prefix: "/pricing", ids: ["pricing", "how-to-start", "what-teams-get"] },
+  { prefix: "/pricing", ids: ["pricing", "payment", "what-teams-get"] },
 ];
 
 function normalized(value: string): string {
@@ -355,7 +355,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                     </div>
                   ) : (
                     <>
-                      <p className="mb-3 text-xs leading-relaxed text-muted">{isHu ? "Írd le, hol akadtál el. A kérdés a fiókodhoz kötve érkezik meg hozzánk; a szövegét nem használjuk termékanalitikához." : "Describe where you got stuck. The question arrives linked to your account; its text is not used for product analytics."}</p>
+                      <p className="mb-3 text-xs leading-relaxed text-muted">{isHu ? "Írd meg, miben kérsz segítséget, és emailben válaszolunk. Az üzenetet a fiókodhoz kapcsoljuk; a szövegét nem használjuk használati statisztikákhoz." : "Tell us what you need help with and we will reply by email. Your message is linked to your account; its text is not used for usage statistics."}</p>
                       <label htmlFor="help-question" className="mb-1.5 block text-xs font-medium text-ink">{isHu ? "Kérdésed" : "Your question"}</label>
                       <textarea id="help-question" value={askMessage} onChange={(event) => { setAskMessage(event.target.value); if (askState === "error") setAskState("idle"); }} rows={5} placeholder={isHu ? "Miben segíthetünk?" : "How can we help?"} className="w-full rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-3 py-2.5 text-base text-ink-body outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/15 md:text-sm" />
                       {askState === "error" && <p className="mt-2 text-xs text-state-error-fg" role="alert">{isHu ? "A küldés nem sikerült – próbáld újra." : "Sending failed – please try again."}</p>}

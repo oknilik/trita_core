@@ -1,3 +1,6 @@
+import { t } from "@/lib/i18n/public";
+import { PILOT_TOTAL_TEAMS, PILOT_SPOTS_LEFT } from "@/lib/pilot-config";
+
 // Vezetett segítő (HelpWidget) tudásbázisa — statikus, LLM nélkül.
 // A válaszok kézzel karbantartott tények; ha a termék változik, ezt is
 // frissíteni kell. Későbbi AI-asszisztens ugyanezt használhatja forrásként.
@@ -45,8 +48,8 @@ const TOPICS: HelpTopic[] = [
           en: "What exactly is trita, and who can it help?",
         },
         answer: {
-          hu: "A trita személyiség- és csapatintelligencia platform: önértékelés, külső visszajelzések és csapatszintű elemzések egy helyen. Egyéni szinten ingyenes önismereti eszköz, csapatoknak és cégeknek tanácsadói kísérettel zajló fejlesztési program alapja.",
-          en: "trita is a personality and team intelligence platform: self-assessment, external feedback, and team-level analyses in one place. For individuals, it is a free self-awareness tool; for teams and companies, it serves as the foundation of a consultant-guided development program.",
+          hu: "A trita segít jobban megérteni, hogyan működsz te, és hogyan működtök együtt egy csapatban. Egyénileg ingyenesen kitöltheted a személyiségfelmérést, és ismerősöktől is kérhetsz visszajelzést. Csapatként tanácsadóval beszélhetitek át az eredményeket és a következő lépéseket.",
+          en: "trita helps you understand yourself and how your team works together. As an individual, you can take the free personality assessment and ask people you know for feedback. As a team, you discuss the results and next steps with a consultant.",
         },
         audiences: ["public"],
       },
@@ -57,8 +60,8 @@ const TOPICS: HelpTopic[] = [
           en: "Can I try it for free?",
         },
         answer: {
-          hu: "Igen. Az egyéni felmérés ingyenesen kitölthető, ami körülbelül 8–10 percet vesz igénybe. A végén azonnal kapsz egy teljes személyiségképet.",
-          en: "Yes. The individual assessment is free to complete and takes approximately 8–10 minutes. At the end, you will immediately receive a complete personality profile.",
+          hu: "Igen, az egyéni személyiségfelmérés ingyenes, és körülbelül 8–10 perc alatt kitöltheted. A végén rögtön megnézheted az eredményeidet és a hozzájuk tartozó magyarázatokat.",
+          en: "Yes. The individual personality assessment is free and takes about 8–10 minutes. You can see your results and explanations as soon as you finish.",
         },
         link: {
           href: "/try",
@@ -73,8 +76,8 @@ const TOPICS: HelpTopic[] = [
           en: "How does the personality test work?",
         },
         answer: {
-          hu: "A felmérés hat személyiségdimenziót mér és körülbelül 8–10 perc alatt kitölthető. Az önértékelést opcionálisan külső visszajelzésekkel egészítheted ki, így az önképed és a külső kép összevethetővé válik.",
-          en: "The assessment measures six personality dimensions and takes approximately 8–10 minutes to complete. You can optionally supplement your self-assessment with external feedback, making it possible to compare your self-image with how others see you.",
+          hu: "A kérdésekre azt válaszold, ami általában jellemző rád. A felmérés hat személyiségdimenzió mentén mutatja meg az eredményeidet, érthető magyarázatokkal. Később ismerősöktől is kérhetsz visszajelzést, és összevetheted, hogyan látod magad, és ők hogyan látnak téged.",
+          en: "Answer based on what is usually true of you. The assessment shows your results across six personality dimensions, with explanations. Later, you can ask people you know for feedback and compare how you see yourself with how they see you.",
         },
         audiences: ["public"],
       },
@@ -90,10 +93,7 @@ const TOPICS: HelpTopic[] = [
           hu: "Mit kap egy csapat?",
           en: "What does a team get?",
         },
-        answer: {
-          hu: "A csapat tagjai végigmennek a trita folyamatán, majd közös csapatprofil készül. Többek között személyiségdimenziókat, csapatmintázatokat, csapatszerep-eloszlást és pszichológiai biztonságot vizsgálunk. Az eredményeket egy tanácsadó értékeli, rendszerezi és validálja, a személyes interjúk tanulságaival kiegészítve – egyéni eredmény soha nem kerül a csapatképbe. Az elkészült anyaggal dolgozunk tovább a workshopokon.",
-          en: "Team members go through the trita process, after which a shared team profile is created. Among other areas, we examine personality dimensions, team patterns, team role distribution, and psychological safety. A consultant evaluates, organizes, and validates the results, supplementing them with insights from personal interviews – individual results never appear in the team profile. We then use the completed material as the basis for the workshops.",
-        },
+        answer: { hu: t("pricing.faqA2", "hu"), en: t("pricing.faqA2", "en") },
         audiences: ["public"],
       },
       {
@@ -102,10 +102,7 @@ const TOPICS: HelpTopic[] = [
           hu: "Hogyan indulunk el csapattal?",
           en: "How do we get started with a team?",
         },
-        answer: {
-          hu: "Vedd fel velünk a kapcsolatot, és egyeztetünk egy rövid bevezető beszélgetést, kötelezettségek nélkül. A program mindig tanácsadói kísérettel zajlik, ezért az indulás első lépése egy személyes egyeztetés.",
-          en: "Get in touch and we will arrange a short introductory conversation, with no obligation. The program always runs with consultant guidance, so the first step is a personal consultation.",
-        },
+        answer: { hu: t("pricing.faqA3", "hu"), en: t("pricing.faqA3", "en") },
         link: {
           href: "/contact",
           label: { hu: "Kapcsolatfelvétel", en: "Contact us" },
@@ -119,8 +116,8 @@ const TOPICS: HelpTopic[] = [
           en: "What is the pilot program, and how can our team join?",
         },
         answer: {
-          hu: "A 90 napos pilotprogram cégeknek kínál kedvezményes lehetőséget és a szokásosnál szorosabb együttműködést a trita core csapatával. Közös, mérhető képet készítünk a csapat működéséről: megnézzük, mire lehet építeni, hol érdemes változtatni, majd kijelölünk és visszamérünk egy konkrét vezetői lépést. A teljes folyamat során személyesen dolgozunk veletek, az első beszélgetés pedig kötelezettségmentes.",
-          en: "The 90-day pilot program offers companies discounted terms and closer collaboration with trita's core team. Together, we build a shared, measurable picture of how your team works: we identify what you can build on, where change would help, then select and remeasure one concrete leadership action. We work with you personally throughout the process, and the initial conversation comes with no obligation.",
+          hu: `A pilotban az elsők között próbálhatjátok ki a Csapatprogramot, kedvezményes áron. Személyesen kísérünk benneteket, cserébe őszinte visszajelzést kérünk. Összesen ${PILOT_TOTAL_TEAMS} csapattal indulunk, ebből ${PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT} hely már foglalt. A részleteket és az aktuális partneri árat a pilotprogram oldalán találjátok.`,
+          en: `The pilot lets your team be among the first to try Team Program at a reduced price. We work closely with you and ask for honest feedback. There are ${PILOT_TOTAL_TEAMS} team places, with ${PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT} already taken. The pilot page has the details and current partner price.`,
         },
         link: {
           href: "/pilot",
@@ -134,15 +131,20 @@ const TOPICS: HelpTopic[] = [
         audiences: ["public"],
       },
       {
+        id: "payment",
+        question: { hu: t("pricing.faqQ10", "hu"), en: t("pricing.faqQ10", "en") },
+        answer: { hu: t("pricing.faqA10", "hu"), en: t("pricing.faqA10", "en") },
+        link: { href: "/pricing", label: { hu: "Árak és kalkulátor", en: "Pricing and calculator" } },
+        keywords: { hu: "részletfizetés részletek fizetés átutalás áfa", en: "instalments payment transfer VAT" },
+        audiences: ["public"],
+      },
+      {
         id: "pricing",
         question: {
           hu: "Mennyibe kerül?",
           en: "How much does it cost?",
         },
-        answer: {
-          hu: "Fejenkénti áron, két szinten: Csapatkép (mérés, riport, online közös értelmezés) és Csapatprogram (workshoppal és visszaméréssel). Minden mérés benne van, a létszám adja az összeget. Az árak oldalon kalkulátorral kiszámolhatod a ti csapatotokra.",
-          en: "Per person, on two levels: Team Picture (measurement, report, online joint debrief) and Team Program (with a workshop and remeasurement). Every measurement is included; headcount gives the total. The pricing page has a calculator for your team.",
-        },
+        answer: { hu: t("pricing.faqA1", "hu"), en: t("pricing.faqA1", "en") },
         link: {
           href: "/pricing",
           label: { hu: "Árak és kalkulátor", en: "Pricing and calculator" },
@@ -162,8 +164,8 @@ const TOPICS: HelpTopic[] = [
           en: "How long does it take? Can I pause?",
         },
         answer: {
-          hu: "A kitöltés kb. 8-10 perc. A válaszaid automatikusan mentődnek, így bármikor megszakíthatod és később ugyanonnan folytathatod.",
-          en: "It takes about 8-10 minutes. Your answers are saved automatically, so you can pause anytime and continue later from where you left off.",
+          hu: "Az egyéni személyiségfelmérés körülbelül 8–10 perc. A válaszaidat folyamatosan mentjük, így tarthatsz szünetet, és később ugyanonnan folytathatod. Ha csapatprogramban több kérdőívet töltesz ki, összesen körülbelül 30 perccel számolj.",
+          en: "The individual personality assessment takes about 8–10 minutes. We save your answers as you go, so you can take a break and pick up where you left off. If you are completing the questionnaires for a team program, allow about 30 minutes in total.",
         },
         link: {
           href: "/assessment",
@@ -219,8 +221,8 @@ const TOPICS: HelpTopic[] = [
           en: "Who can see my individual results?",
         },
         answer: {
-          hu: "Az egyéni eredményedet alapesetben csak te látod. Szervezeti programban a tanácsadó a munkája részeként hozzáfér, a vezetők és a csapattagok viszont csak aggregált, névtelenített csapatképet látnak – a te egyéni értékeid abban nem jelennek meg.",
-          en: "By default only you can see your individual results. In an organizational program the consultant has access as part of their work, but managers and teammates only see an aggregated, anonymized team picture – your individual values never appear in it.",
+          hu: "A saját eredményeidet te látod. Csapatprogramban a tanácsadó is hozzáfér, hogy ellenőrizze és értelmezze a csapat eredményeit. A vezető és a csapattársaid az összesített csapatriportot látják, az egyéni személyiségértékeidet nem.",
+          en: "You can see your own results. In a team program, the consultant also has access to review and interpret the team's results. Your manager and teammates see the combined team report, not your individual personality scores.",
         },
         keywords: { hu: "adatvédelem vezető tanácsadó láthatóság", en: "privacy manager consultant visibility" },
         related: ["data-handling", "when-team-results"],
@@ -298,8 +300,8 @@ const TOPICS: HelpTopic[] = [
           en: "When will I see my team's results?",
         },
         answer: {
-          hu: "A csapatkép akkor válik láthatóvá, amikor elegen kitöltötték a felmérést, és a tanácsadó értékelte és publikálta a riportot. Addig a csapatoldalon a kitöltés haladása látszik. A publikált kép aggregált: egyéni eredményeket nem tartalmaz.",
-          en: "The team picture becomes visible once enough members have completed the assessment and the consultant has reviewed and published the report. Until then, the team page shows completion progress. The published picture is aggregated: it contains no individual results.",
+          hu: "A csapat eredményeit akkor láthatod, amikor a tanácsadó átnézte és megosztotta a riportot. Addig a csapatoldalon követheted, hogyan halad a kitöltés. A riport a csapat egészéről szól, egyéni személyiségértékeket nem mutat.",
+          en: "You can see the team's results once the consultant has reviewed and shared the report. Until then, the team page shows how completion is progressing. The report describes the team as a whole, without individual personality scores.",
         },
         audiences: SIGNED_IN,
       },
@@ -328,12 +330,12 @@ const TOPICS: HelpTopic[] = [
           en: "How do I track completion progress?",
         },
         answer: {
-          hu: "A vezérlőn és a csapatoldalon látod, hányan töltötték ki a felmérést és kik vannak még hátra. A kitöltés alatt szándékosan csak a haladás látszik – a tartalmi eredmények a tanácsadói validálás után nyílnak meg.",
-          en: "The cockpit and the team page show how many members have completed the assessment and who is still pending. During collection only progress is shown by design – content results open up after consultant validation.",
+          hu: "A vezérlőn és a csapatoldalon megnézheted, ki töltötte már ki a felmérést, és kire vártok még. Az eredményeket akkor látjátok, amikor a tanácsadó átnézte és megosztotta a csapatriportot.",
+          en: "On the dashboard and team page, you can see who has completed the assessment and who is still to finish. Results become available once the consultant has reviewed and shared the team report.",
         },
         link: {
           href: "/dashboard",
-          label: { hu: "Vezérlő megnyitása", en: "Open cockpit" },
+          label: { hu: "Vezérlő megnyitása", en: "Open dashboard" },
         },
         audiences: MANAGING,
       },
@@ -344,8 +346,8 @@ const TOPICS: HelpTopic[] = [
           en: "Why can't I see team results immediately?",
         },
         answer: {
-          hu: "Két okból: a részleges adat félrevezető képet adna a csapatról, és a nyers számok tanácsadói értelmezés nélkül könnyen félreérthetők. Ezért a csapatképet a tanácsadó validálja és publikálja – aggregált formában, az interjúk tanulságaival együtt.",
-          en: "Two reasons: partial data would paint a misleading picture of the team, and raw numbers are easy to misread without consultant interpretation. That is why the team picture is validated and published by the consultant – in aggregate form, together with interview insights.",
+          hu: "Előbb megvárjuk a válaszokat, majd a tanácsadó átnézi, mit mutatnak együtt. Így az eredmények mellé magyarázatot is kaptok: mire támaszkodhattok, és hol érdemes óvatosabban következtetni. Ezután osztjuk meg veletek a csapatriportot.",
+          en: "We first collect the responses, then the consultant reviews what they show together. You receive explanations alongside the results: what you can rely on and where conclusions need more care. We then share the team report with you.",
         },
         audiences: MANAGING,
       },
@@ -396,7 +398,7 @@ const TOPICS: HelpTopic[] = [
         },
         link: {
           href: "/dashboard",
-          label: { hu: "Vezérlő megnyitása", en: "Open cockpit" },
+          label: { hu: "Vezérlő megnyitása", en: "Open dashboard" },
         },
         audiences: ["admin"],
       },
@@ -429,8 +431,8 @@ const TOPICS: HelpTopic[] = [
           en: "How is my data handled?",
         },
         answer: {
-          hu: "A válaszaidat és az eredményeidet bizalmasan kezeljük, harmadik félnek nem adjuk át. A részleteket az adatkezelési tájékoztatóban találod.",
-          en: "Your answers and results are treated confidentially and never shared with third parties. Full details are in our privacy policy.",
+          hu: "A válaszaidat és az eredményeidet bizalmasan kezeljük. Az adatkezelési tájékoztatóban elolvashatod, milyen adatokat tárolunk, kik férhetnek hozzájuk, és hogyan kérheted a törlésüket.",
+          en: "We treat your answers and results confidentially. Our privacy notice explains what we store, who can access it and how you can ask for it to be deleted.",
         },
         link: {
           href: "/privacy",
