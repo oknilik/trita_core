@@ -50,7 +50,7 @@ describe("TeamPricingConfigurator", () => {
 
     const price = ladderPrice(ladder, "kep", 20);
     expect(price.perHeadAverage).toBeLessThan(ladder.tiers.kep.perHead);
-    expect(screen.getByText("További fők")).toBeInTheDocument();
+    expect(screen.getByText("További résztvevők")).toBeInTheDocument();
     expect(
       screen.getByText(plain(`${price.overHeads} × ${formatMoney(ladder.tiers.kep.perHeadOver, "hu", ladder.fx)}`)),
     ).toBeInTheDocument();

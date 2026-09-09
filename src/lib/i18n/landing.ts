@@ -382,8 +382,10 @@ export const landingTranslations = {
     perHeadAverageLabel: { hu: "Egy főre jutó átlagár", en: "Average price per person" },
     totalForTeam: { hu: "Összesen {total} + ÁFA a teljes létszámra", en: "{total} + VAT in total for everyone taking part" },
     vatNote: { hu: "A program díja akár több részletben is fizethető.", en: "The program fee can be paid in several instalments." },
-    breakdownFirst: { hu: "Első {band} fő", en: "First {band} people" },
-    breakdownOver: { hu: "További fők", en: "Additional people" },
+    // A magyar „fő" egyes számban marad („Első 10 fő"); a többes „fők" helyett
+    // a második soron „résztvevők" áll — angolul mindkettő „participants".
+    breakdownFirst: { hu: "Első {band} fő", en: "First {band} participants" },
+    breakdownOver: { hu: "További résztvevők", en: "Additional participants" },
     timeLabel: { hu: "Időigény a résztvevőktől", en: "Time needed from participants" },
     ctaNote: { hu: "Egy munkanapon belül válaszolunk. Az egyeztetés után írásos ajánlatot küldünk.", en: "We reply within one business day. After the conversation we send a written quote." },
     pilotNote: {
