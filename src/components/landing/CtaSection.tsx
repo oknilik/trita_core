@@ -17,6 +17,10 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("TRITAN")); }, []);
 
+  // A 12 px-es mikroszöveg korábban `text-ink-body/60` volt: krémen 2,9:1.
+  // Az opacity-halványítás helyett a teljes muted token (≥ 4,5:1 mindkét
+  // sémán, a meleg surface-muted felületen is).
+
   if (!isSelf) {
     return (
       <section className="px-7 py-16 md:py-24">
@@ -31,7 +35,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
             <p className="mt-3 text-base leading-relaxed text-ink-body">
               {t("landing.ctaTeamSub", locale)}
             </p>
-            <p className="mt-2 font-dm-sans text-xs text-ink-body/60">
+            <p className="mt-2 font-dm-sans text-xs text-[var(--color-text-muted)]">
               {t("landing.ctaTeamMicrocopy", locale)}
             </p>
           </div>
@@ -72,7 +76,9 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-fluid-title font-medium tracking-tight text-ink">
           {t("landing.ctaSelfClosingBefore", locale)}
-          <em className="italic text-[var(--color-accent-primary)]">
+          {/* Kontraszt (a11y): az alap bronz krémen 3,0:1 alatt marad, nagy
+              szövegként is határeset — a hero-val azonos középső fok (3,9:1). */}
+          <em className="italic text-[var(--color-accent-primary-mid)]">
             {t("landing.ctaSelfClosingEm", locale)}
           </em>
         </h2>
@@ -105,7 +111,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
             <ChevronRightIcon className="ml-1 h-4 w-4" />
           </Link>
         </div>
-        <p className="mt-3.5 font-dm-sans text-xs text-ink-body/60">
+        <p className="mt-3.5 font-dm-sans text-xs text-[var(--color-text-muted)]">
           {t("landing.ctaSelfMicrocopy", locale)}
         </p>
       </div>

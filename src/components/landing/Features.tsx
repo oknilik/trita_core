@@ -6,7 +6,13 @@ import type { SiteMode } from "@/components/landing/types";
 
 export function Features({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
-  const accentColor = mode === "self" ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
+  // Kontraszt (a11y): az alap bronz krémen 3,0:1 alatt, fehér kártyán 3,3:1 —
+  // a címsor-kiemelés (nagy szöveg, 3:1 küszöb) a középső fokot kapja, a
+  // kis, félkövér badge-felirat (4,5:1 küszöb) a mély fokot. A zsálya
+  // (team mód) mindkét helyen ≥ 6:1, ott nem kell váltani.
+  const isSelf = mode === "self";
+  const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : "var(--color-action-primary-bg)";
+  const badgeColor = isSelf ? "var(--color-accent-primary-strong)" : "var(--color-action-primary-bg)";
 
   const features = mode === "self"
     ? [
@@ -26,7 +32,7 @@ export function Features({ mode }: { mode: SiteMode }) {
         <div className="mb-10 text-center md:mb-14">
           <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
             {t(mode === "self" ? "landing.featuresTitleBefore" : "landing.teamFeaturesTitleBefore", locale)}
-            <em className="italic" style={{ color: accentColor }}>{t("landing.featuresTitleEm", locale)}</em>
+            <em className="italic" style={{ color: headlineAccentColor }}>{t("landing.featuresTitleEm", locale)}</em>
           </h2>
         </div>
 
@@ -47,7 +53,12 @@ export function Features({ mode }: { mode: SiteMode }) {
             >
               <span
                 className="mb-4 self-start rounded px-2 py-0.5 text-micro font-semibold uppercase tracking-wide"
-                style={{ background: `${accentColor}15`, color: accentColor }}
+                // A korábbi `${var}15` hex-alfa var()-ral érvénytelen volt, a
+                // böngésző eldobta — a badge háttér nélkül állt.
+                style={{
+                  background: `color-mix(in srgb, ${badgeColor} 10%, transparent)`,
+                  color: badgeColor,
+                }}
               >
                 {f.badge}
               </span>

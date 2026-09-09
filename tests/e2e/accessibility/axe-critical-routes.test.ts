@@ -1,7 +1,11 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const routes = ["/sign-in", "/sign-up", "/try", "/blog", "/pilot"];
+// A két publikus belépő oldal (2026-09-09) is a listán: a landing régebbi
+// komponensei (CTA-mikroszöveg, hero-előnézet rangcímkéi, csapat-átvezető
+// gomb) kézi futtatásban „serious" kontraszt-hibákat adtak, amiket ez a
+// lista nem fedett.
+const routes = ["/", "/team-dynamics", "/sign-in", "/sign-up", "/try", "/blog", "/pilot"];
 const viewports = [
   { width: 360, height: 800, name: "mobile" },
   { width: 1440, height: 900, name: "desktop" },

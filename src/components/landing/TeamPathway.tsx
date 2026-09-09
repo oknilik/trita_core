@@ -72,11 +72,14 @@ export function TeamPathway() {
 
           <p className="mt-5 text-note text-white/60">{facts.join(" · ")}</p>
 
+          {/* Kontraszt (a11y): a 14 px-es félkövér felirat a világos bronz
+              gombon a hero-from szilvával 4,0:1 volt — a hero-to fokkal
+              7,5:1 (világos) / 6,6:1 (sötét), a szilva-tónus megmarad. */}
           <div className="mt-7">
             <Link
               href="/team-dynamics"
               onClick={() => track("cta.click", { cta_id: "team_pathway_details", surface: "landing", mode: "team" })}
-              className={`inline-flex min-h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[var(--color-accent-primary-soft)] px-6 text-sm font-semibold text-[var(--color-layer-team-hero-from)] shadow-md transition-all hover:-translate-y-px hover:brightness-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-layer-team-hero-from)]`}
+              className={`inline-flex min-h-[52px] items-center justify-center whitespace-nowrap rounded-xl bg-[var(--color-accent-primary-soft)] px-6 text-sm font-semibold text-[var(--color-layer-team-hero-to)] shadow-md transition-all hover:-translate-y-px hover:brightness-105 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-layer-team-hero-from)]`}
             >
               {t("landing.focusedTeamCta", locale)}
               <ChevronRightIcon className="ml-2 h-4 w-4" />
