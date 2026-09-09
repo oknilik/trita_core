@@ -72,7 +72,7 @@ export const landingTranslations = {
     teamPriceLead: { hu: "Csapatprogramok", en: "Team programs" },
     // Egység PÉNZNEM NÉLKÜL: a pénznemet a lokál adja (hu: „Ft" utána, en: „€" elé; fx.ts).
     teamPriceFrom: { hu: "/ fő + ÁFA", en: "/ person + VAT" },
-    teamPriceFootnote: { hu: "Egy főre jutó átlagár, egy {band} fős csapatnál. Minden mérés benne van.", en: "Average price per person for one team of {band}. Every measurement included." },
+    teamPriceFootnote: { hu: "Egy főre jutó átlagár.\nEgy {band} fős csapatnál, minden méréssel.", en: "Average price per person.\nFor one team of {band}, with every measurement included." },
     teamPriceDetails: { hu: "Részletes árak", en: "Detailed pricing" },
     teamMetaOffer: { hu: "Csapatra szabott ajánlat", en: "Tailored team proposal" },
     /** Hero-pirula az egycsapatos minimum projektárral. */
@@ -374,7 +374,8 @@ export const landingTranslations = {
     includesTitle: { hu: "Mit tartalmaz a {tier}?", en: "What does {tier} include?" },
     // Egység pénznem nélkül — a pénznemet a lokál adja (fx.ts: „35 000 Ft" / „€88").
     perHeadUnit: { hu: "/ fő", en: "/ person" },
-    baseTeamUnit: { hu: "/ fő átlagosan · {band} fős csapatnál", en: "/ person on average · one team of {band}" },
+    baseTeamUnit: { hu: "/ fő", en: "/ person" },
+    referenceTeamNote: { hu: "Egy {band} fős csapatnál számolt átlagár.", en: "Average price for one team of {band}." },
     // A nagy szám címkéje: a sáv felett a kiírt összeg ÁTLAGÁR, ezt nevén nevezzük.
     perHeadLabel: { hu: "Egy főre jutó ár", en: "Price per person" },
     perHeadAverageLabel: { hu: "Egy főre jutó átlagár", en: "Average price per person" },
@@ -745,7 +746,7 @@ export const landingTranslations = {
     },
     fact3Was: { hu: "{full}", en: "{full}" },
     fact3Off: { hu: "−{pct}%", en: "−{pct}%" },
-    fact3Foot: { hu: "Egy főre jutó átlagár, egy {band} fős csapatnál. A saját létszámotokkal az árkalkulátorban számolhattok.", en: "Average price per person for one team of {band}. Use the pricing calculator for your team size." },
+    fact3Foot: { hu: "Egy főre jutó átlagár.\nEgy {band} fős csapatnál.\nA saját létszámotokkal az árkalkulátorban számolhattok.", en: "Average price per person.\nFor one team of {band}.\nUse the pricing calculator for your team size." },
     fact4Value: { hu: "2+1", en: "2+1" },
     fact4Unit: { hu: "alkalom", en: "sessions" },
     fact4Label: {

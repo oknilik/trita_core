@@ -61,9 +61,12 @@ function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLad
         }`}
       >
         {money.big}
-        <span className={`ml-1.5 font-sans text-caption ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
+        <span className={`ml-1.5 inline-block whitespace-nowrap font-sans text-caption ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
           {money.small}
         </span>
+      </p>
+      <p className={`mt-2 text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
+        {tf("pricing.referenceTeamNote", locale, { band: ladder.firstBandHeads })}
       </p>
       <p className={`text-caption leading-relaxed ${highlight ? "text-[var(--color-text-on-inverse-muted)]" : "text-ink-body"}`}>
         {t(`pricing.tier_${tier}_short`, locale)}
@@ -226,6 +229,9 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
                 <span className="inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)] px-2.5 py-0.5 text-caption font-semibold text-[var(--color-layer-team-accent)]">
                   {tf("pilot.fact3Off", locale, { pct: ladder.pilotDiscountPct })}
                 </span>
+              </p>
+              <p className="mt-2 text-caption leading-relaxed text-ink-body">
+                {tf("pricing.referenceTeamNote", locale, { band: ladder.firstBandHeads })}
               </p>
               <p className="mt-4 max-w-[60ch] text-base leading-relaxed text-ink-body">
                 {t("pricing.pilotStripBody", locale)}

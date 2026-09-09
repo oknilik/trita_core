@@ -683,7 +683,7 @@ function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder
                   {tf(`pilot.fact${fact}Label`, locale, vars)}
                 </dt>
                 {fact === 3 && (
-                  <dd className="mt-2 text-note leading-relaxed text-ink-body">
+                  <dd className="mt-2 whitespace-pre-line text-note leading-relaxed text-ink-body">
                     {tf("pilot.fact3Foot", locale, { band: ladder.firstBandHeads })}
                     {/* Az angol felület euróban mutat: ugyanaz az egymondatos
                         árfolyam-jelzés, mint az ár-horgony kártyán. */}

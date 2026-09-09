@@ -40,14 +40,14 @@ export function PriceAnchorCard({
       <p className="text-micro font-semibold uppercase tracking-wide text-[var(--color-layer-team-accent)]">
         {t("landing.teamPriceLead", locale)}
       </p>
-      <p className="flex items-baseline gap-x-2">
+      <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-fraunces text-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
           {money.big}
         </span>
-        <span className="text-sm text-ink-body">{money.small}</span>
+        <span className="whitespace-nowrap text-sm text-ink-body">{money.small}</span>
       </p>
       {/* Nincs csillag és nettó-lábjegyzet (2026-09-08): az ÁFA az ár mellett áll. */}
-      <p className="max-w-[46ch] text-note leading-relaxed text-ink-body">
+      <p className="max-w-[46ch] whitespace-pre-line text-note leading-relaxed text-ink-body">
         {tf("landing.teamPriceFootnote", locale, { band: ladder.firstBandHeads })}
         {locale !== "hu" && <> {t("pricing.fxNoteShort", locale)}</>}
       </p>
