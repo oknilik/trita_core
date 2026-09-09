@@ -136,3 +136,7 @@
 - **Guardok**: a publikus és az admin/PDF tartalom-lista együtt mozgását
   teszt védi; a GYIK sáv feletti díja a két csomag közül a magasabbat mondja,
   ha valaha eltérnének.
+- **Menüpont: „Árak" → „Árazás"** (fejléc, lábléc, oldal-eyebrow, morzsa).
+  Az oldal nem árlista, hanem a létszám-alapú árazási szerkezet; az angol
+  „Pricing" eleve ezt mondta. Az ikon a menüpont maradék „Együttműködés"-
+  jelképéből (két metsző kör) árcédulára cserélve.

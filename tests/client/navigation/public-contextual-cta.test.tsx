@@ -75,13 +75,12 @@ describe("publikus fejléc – landing kontextusú CTA", () => {
     expect(screen.queryByRole("link", { name: "Főoldal" })).toBeNull();
   });
 
-  it("az Árak menüpont a két kör közös terét használja ikonként", () => {
+  it("az Árazás menüpont árcédula-ikont kap", () => {
     render(<NavBar />);
 
-    const collaborationLink = screen.getByRole("link", { name: "Árak" });
-    const icon = collaborationLink.querySelector('[data-nav-icon="shared-space"]');
-    expect(icon).not.toBeNull();
-    expect(icon?.querySelectorAll("circle")).toHaveLength(2);
+    const pricingLink = screen.getByRole("link", { name: "Árazás" });
+    expect(pricingLink).toHaveAttribute("href", "/pricing");
+    expect(pricingLink.querySelector('[data-nav-icon="price-tag"]')).not.toBeNull();
   });
 
   it("a blogot asztali és mobil navigációban is elérhetővé teszi", () => {
@@ -118,7 +117,7 @@ describe("publikus footer – menüstruktúra", () => {
       ["Egyéni", "/"],
       ["Csapatoknak", "/team-dynamics"],
       ["Blog", "/blog"],
-      ["Árak", "/pricing"],
+      ["Árazás", "/pricing"],
     ]);
   });
 

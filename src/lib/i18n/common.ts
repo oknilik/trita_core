@@ -152,7 +152,9 @@ export const commonTranslations = {
     menu: { hu: "Menü", en: "Menu" },
     blog: { hu: "Blog", en: "Blog" },
     publicTeams: { hu: "Csapatoknak", en: "For teams" },
-    pricing: { hu: "Árak", en: "Pricing" },
+    // „Árazás", nem „Árak": az oldal nem egy árlista, hanem a
+    // létszám-alapú árazási szerkezet (csomagok + kalkulátor).
+    pricing: { hu: "Árazás", en: "Pricing" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     profile: { hu: "Profilom", en: "My profile" },
     team: { hu: "Csapat", en: "Team" },
@@ -190,7 +192,7 @@ export const commonTranslations = {
     teams: { hu: "Csapatoknak", en: "For teams" },
     blog: { hu: "Blog", en: "Blog" },
     about: { hu: "Rólunk", en: "About" },
-    pricing: { hu: "Árak", en: "Pricing" },
+    pricing: { hu: "Árazás", en: "Pricing" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     // A fogalmi/tartalmi lap eddig CSAK a sitemapben és belső
     // hivatkozásokban élt — a láblécből minden oldalról linkelve viszont

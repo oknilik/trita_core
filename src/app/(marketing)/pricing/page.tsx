@@ -47,7 +47,7 @@ export default async function PricingPage() {
             about: seoIntent.topics,
             breadcrumb: [
               { name: "Főoldal", path: "/" },
-              { name: "Árak", path: CANONICAL_PATH },
+              { name: "Árazás", path: CANONICAL_PATH },
             ],
           }),
           buildFaqJsonLd(faqItems),

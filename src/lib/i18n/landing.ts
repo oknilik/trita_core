@@ -220,7 +220,7 @@ export const landingTranslations = {
     },
     // /pricing (2026-09-08): önálló Árak oldal. A számok a díjkártyából
     // jönnek, a szövegek innen.
-    pageEyebrow: { hu: "Árak", en: "Pricing" },
+    pageEyebrow: { hu: "Árazás", en: "Pricing" },
     // Szalagcím (2026-09-08): a létszám-elv a címben; a bevezető az egyéni
     // (ingyenes) és a csapatszintű (létszámhoz igazodó) réteget állítja szembe.
     pageTitle: { hu: "Létszám alapú, átlátható ", en: "Headcount-based, transparent " },

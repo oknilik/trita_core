@@ -137,7 +137,7 @@ PUBLIKUS:  / (landing: egyéni ígéret + csapatos átvezető; nincs self/team
             mód — a /self-awareness 308 → /) · /team-dynamics („Csapatoknak":
             az egyesített csapat-oldal — mit mérünk, három lépés, ár-horgony,
             miért hiteles, pilot-helyek, program-GYIK; a /how-we-work 308 →
-            ide, 2026-09-08) · /pricing („Árak": két szint, kalkulátor,
+            ide, 2026-09-08) · /pricing („Árazás": két csomag, kalkulátor,
             összehasonlító tábla, pilot-ár, ár-GYIK; korábban átirányítás
             volt) · /try (vendég teszt) · /about · /rolunk · /founding (307 →
             /pilot) · /pilot · /contact · /blog (parkolható)
