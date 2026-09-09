@@ -32,7 +32,7 @@ import { PRICING_PAGE_FAQ_INDEXES, pricingFaqVars } from "./faq";
  * szal együtt karbantartandó.
  */
 
-const KEP_ITEMS = [1, 2, 3, 4] as const;
+const KEP_ITEMS = [1, 2, 3, 4, 5, 6, 7] as const;
 const PROG_ITEMS = [1, 2] as const;
 
 function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLadder; locale: Locale }) {
@@ -110,15 +110,25 @@ function ComparisonTable({ ladder, locale }: { ladder: PublicLadder; locale: Loc
             </tr>
           ))}
           <tr className="border-t border-sand">
-            <td className="px-5 py-4">
-              <p className="font-semibold text-ink">{tf("pricing.comparePriceRow", locale, { band: ladder.firstBandHeads })}</p>
-              <p className="mt-0.5 text-caption text-ink-body">
-                {tf("pricing.comparePriceNote", locale, { band: ladder.firstBandHeads, over: formatMoney(ladder.tiers.kep.perHeadOver, locale, ladder.fx) })}
-              </p>
+            <td className="px-5 py-4 font-semibold text-ink">
+              {tf("pricing.comparePriceRow", locale, { band: ladder.firstBandHeads })}
             </td>
             {QUOTE_TIERS.map((tier) => (
               <td key={tier} className="px-4 py-4 text-center font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">
-                {formatMoney(ladder.tiers[tier].perHead, locale, ladder.fx)} {t("pricing.perHeadUnit", locale)}
+                {formatMoney(ladder.tiers[tier].perHead, locale, ladder.fx)}
+                <span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span>
+              </td>
+            ))}
+          </tr>
+          {/* Külön sor a sáv feletti díjnak: a „10 fő felett" jegyzet úgy is
+              olvasható volt, mintha onnantól MINDENKIRE ez az ár vonatkozna. */}
+          <tr className="border-t border-sand">
+            <td className="px-5 py-4 font-semibold text-ink">
+              {tf("pricing.comparePriceRowOver", locale, { next: ladder.firstBandHeads + 1 })}
+            </td>
+            {QUOTE_TIERS.map((tier) => (
+              <td key={tier} className="px-4 py-4 text-center font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">
+                {formatMoney(ladder.tiers[tier].perHeadOver, locale, ladder.fx)}
                 <span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span>
               </td>
             ))}
@@ -210,6 +220,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <SectionEyebrow>{t("pricing.compareEyebrow", locale)}</SectionEyebrow>
           <h2 className="mt-4 max-w-[20ch] font-fraunces text-fluid-title tracking-tight text-ink">{t("pricing.compareTitle", locale)}</h2>
+          <p className="mt-5 max-w-[64ch] text-base leading-relaxed text-ink-body">{t("pricing.compareLead", locale)}</p>
           <div className="mt-8">
             <ComparisonTable ladder={ladder} locale={locale} />
           </div>
@@ -218,12 +229,11 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowWorkshopTitle", locale)}</p>
-              <p className="mt-1 font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">{formatMoney(ladder.extraWorkshopDayFee, locale, ladder.fx)}<span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)}</span></p>
+              <p className="mt-1 font-fraunces text-heading tabular-nums text-[var(--color-layer-team-accent)]">{formatMoney(ladder.extraWorkshopDayFee, locale, ladder.fx)}<span className="ml-1 font-sans text-caption text-ink-body">{t("pricing.plusVat", locale)} {t("pricing.belowWorkshopUnit", locale)}</span></p>
               <p className="mt-2 text-caption leading-relaxed text-ink-body">{tf("pricing.belowWorkshopBody", locale, { fee: formatMoney(ladder.extraWorkshopDayFee, locale, ladder.fx) })}</p>
             </div>
             <div className="rounded-[18px] border border-sand bg-surface-card p-5">
               <p className="font-semibold text-ink">{t("pricing.belowMultiTeamTitle", locale)}</p>
-              <p className="mt-1 font-fraunces text-heading text-[var(--color-layer-team-accent)]">{t("pricing.extraMultiValue", locale)}</p>
               <p className="mt-2 text-caption leading-relaxed text-ink-body">{tf("pricing.belowMultiTeamBody", locale, { max: PUBLIC_HEADCOUNT_MAX })}</p>
             </div>
             <div className="rounded-[18px] border border-sage/15 bg-sage-soft p-5">

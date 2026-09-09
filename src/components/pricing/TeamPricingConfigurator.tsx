@@ -34,7 +34,7 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
  * szinttel és létszám-SÁVVAL (nem pontos számmal) — csak mintázatra.
  */
 
-const KEP_ITEMS = [1, 2, 3, 4] as const;
+const KEP_ITEMS = [1, 2, 3, 4, 5, 6, 7] as const;
 const PROG_ITEMS = [1, 2] as const;
 
 export function TeamPricingConfigurator({

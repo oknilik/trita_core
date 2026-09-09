@@ -33,3 +33,28 @@
 - **/team-dynamics ár-szekció**: a cím és a bevezető az /pricing fejlécével
   azonos („Létszám alapú, átlátható árazási struktúra." + az ingyenes egyéni
   szint és a létszám-alap).
+
+## Csomagtartalom és összehasonlító tábla (ugyanaznap)
+
+- **„szint" → „csomag"** az Árak oldalon végig (csomagválasztó címke, GYIK).
+- **A tábla címe és bevezetője**: „Mit tartalmaz a két csomag?" + egy mondat
+  a két csomag különbségéről (`compareLead`).
+- **A négy mérést összezsúfoló sor négy külön sorra bomlott**, mindegyik a
+  saját megnevezésével (`tier_kep_item2..5`); az „observer-visszajelzés"
+  helyett kimondjuk, KI ad visszajelzést és MIRŐL (a résztvevő kollégái és
+  ismerősei, ugyanarról a személyiségfelmérésről — az observer flow szerint),
+  a „bizalmi kör" helyett pedig azt, hogy ki kihez fordul és kivel lehet
+  nyíltan beszélni (a trust-kérdések szerint).
+- **A workshop-sor megmondja, mivel ad többet** a 90 perces megbeszélésnél:
+  megnevezzük a legfontosabb erősséget és feszültségpontot, és a csapat
+  megállapodik az első lépésben (a program leírásával egyezően).
+- **Az ár két külön sor lett**: „Az első {band} résztvevő díja, fejenként" és
+  „Minden további résztvevő díja a {band+1}. főtől" (`comparePriceRowOver`).
+  A korábbi „{band} fő felett …" jegyzet úgy is olvasható volt, mintha
+  onnantól mindenkire a kedvezményes díj vonatkozna.
+- **Alsó három kártya**: az egész napos workshop díja „/ alkalom" egységgel és
+  a tisztázással, hogy önálló alkalom teljes díja, csapatonként, a csomagban
+  lévő félnapos workshopon felül; a több csapat kártyáról lekerült a
+  „létszám szerint" kiemelés (a szöveg magában érthető) és az 5–8 csapatos
+  példa; az egyéni próba kártya azt ígéri, amit ad: saját eredmények.
+- Az admin/PDF `QUOTE_TIER_INCLUDES` a publikus listát tükrözi.

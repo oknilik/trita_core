@@ -44,15 +44,18 @@ export const QUOTE_TIER_LABELS: Record<QuoteTier, string> = {
  */
 export const QUOTE_TIER_INCLUDES: Record<QuoteTier, readonly string[]> = {
   kep: [
-    "Személyiségfelmérés hat dimenzió mentén, mindenkinek saját riporttal",
-    "Csapatszerep-kérdőív, bizalmi kör, pszichológiai biztonság, observer-visszajelzés",
-    "Tanácsadó által ellenőrzött csapatkép és vezetői visszajelző beszélgetés",
-    "90 perces online közös értelmezés, csapatonként",
+    "Személyiségfelmérés hat szempont alapján, minden résztvevőnek saját riporttal",
+    "A csapatban betöltött szerepek felmérése",
+    "A csapaton belüli bizalmi kapcsolatok feltérképezése: ki kihez fordul, kivel lehet nyíltan beszélni",
+    "Annak felmérése, mennyire biztonságos a csapatban kérdezni, hibát jelezni vagy más véleményt mondani",
+    "Névtelen visszajelzés a résztvevő kollégáitól és ismerőseitől ugyanarról a személyiségfelmérésről",
+    "Tanácsadó által ellenőrzött összefoglaló a csapat eredményeiről, külön megbeszéléssel a vezető számára",
+    "Az eredmények közös átbeszélése a csapattal: 90 perc, online",
   ],
   prog: [
     "Minden, ami a Csapatképben",
-    "Félnapos értelmező workshop csapatonként, személyesen",
-    "Utánkövető mérés fél év múlva: mi változott, mi nem",
+    "Félnapos személyes workshop minden csapatnak: megnevezzük a legfontosabb erősséget és feszültségpontot, és megállapodtok az első lépésben",
+    "Újramérés hat hónap múlva, az első felmérés eredményeivel összehasonlítva",
   ],
 };
 
