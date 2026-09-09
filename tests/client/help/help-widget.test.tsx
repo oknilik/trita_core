@@ -40,7 +40,7 @@ describe("HelpWidget", () => {
     fireEvent.click(screen.getByRole("button", { name: "Segítség megnyitása" }));
     fireEvent.click(screen.getByRole("button", { name: "Mi is az a trita és kinek tud segíteni?" }));
 
-    expect(screen.getByText(/Egyéni szinten ingyenes önismereti eszköz/)).toBeInTheDocument();
+    expect(screen.getByText(/Egyénileg ingyenesen kitöltheted/)).toBeInTheDocument();
   });
 
   it("az ingyenes egyéni felmérés aktuális ígéretét jeleníti meg", () => {
@@ -48,8 +48,8 @@ describe("HelpWidget", () => {
     fireEvent.click(screen.getByRole("button", { name: "Segítség megnyitása" }));
     fireEvent.click(screen.getByRole("button", { name: "Kipróbálhatom ingyen?" }));
 
-    expect(screen.getByText(/8–10 percet vesz igénybe/)).toBeInTheDocument();
-    expect(screen.getByText(/teljes személyiségképet/)).toBeInTheDocument();
+    expect(screen.getByText(/8–10 perc alatt/)).toBeInTheDocument();
+    expect(screen.getByText(/eredményeidet és a hozzájuk tartozó magyarázatokat/)).toBeInTheDocument();
   });
 
   it("a személyiségteszt működését az aktuális szöveggel magyarázza el", () => {
@@ -57,8 +57,8 @@ describe("HelpWidget", () => {
     fireEvent.click(screen.getByRole("button", { name: "Segítség megnyitása" }));
     fireEvent.click(screen.getByRole("button", { name: "Hogyan működik a személyiségteszt?" }));
 
-    expect(screen.getByText(/hat személyiségdimenziót mér/)).toBeInTheDocument();
-    expect(screen.getByText(/külső kép összevethetővé válik/)).toBeInTheDocument();
+    expect(screen.getByText(/hat személyiségdimenzió mentén/)).toBeInTheDocument();
+    expect(screen.getByText(/ők hogyan látnak téged/)).toBeInTheDocument();
   });
 
   it("a hosszú gyorsválasz-címeket a súgópanel kártyáján belül tartja", () => {
@@ -81,18 +81,18 @@ describe("HelpWidget", () => {
     fireEvent.click(screen.getByRole("button", { name: /Csapatoknak és cégeknek/ }));
     fireEvent.click(screen.getByRole("button", { name: "Mit kap egy csapat?" }));
 
-    expect(screen.getByText(/pszichológiai biztonságot vizsgálunk/)).toBeInTheDocument();
-    expect(screen.getByText(/dolgozunk tovább a workshopokon/)).toBeInTheDocument();
+    expect(screen.getByText(/pszichológiai biztonság felmérések/)).toBeInTheDocument();
+    expect(screen.getByText(/félnapos workshop/)).toBeInTheDocument();
   });
 
-  it("a pilotprogram kedvezményes, core csapattal közös lehetőségét bemutatja", () => {
+  it("a pilotprogram kedvezményes, személyesen kísért lehetőségét bemutatja", () => {
     render(<HelpWidget audience="public" />);
     fireEvent.click(screen.getByRole("button", { name: "Segítség megnyitása" }));
     fireEvent.click(screen.getByRole("button", { name: /Csapatoknak és cégeknek/ }));
     fireEvent.click(screen.getByRole("button", { name: "Mi a pilotprogram, és hogyan csatlakozhatunk?" }));
 
-    expect(screen.getByText(/cégeknek kínál kedvezményes lehetőséget/)).toBeInTheDocument();
-    expect(screen.getByText(/trita core csapatával/)).toBeInTheDocument();
+    expect(screen.getByText(/kedvezményes áron/)).toBeInTheDocument();
+    expect(screen.getByText(/Összesen 20 csapattal indulunk, ebből 3 hely már foglalt/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Megnézem a pilotprogramot" })).toHaveAttribute("href", "/pilot");
   });
 

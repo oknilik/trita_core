@@ -323,8 +323,8 @@ export const landingTranslations = {
     // Kalkulátor-szövegek (2026-09-09): közvetlen mondatok, konkrét ármagyarázat.
     configuratorTitle: { hu: "Mennyibe kerül a csapatotoknak?", en: "How much does it cost for your team?" },
     configuratorLead: {
-      hu: "Válassz csomagot, majd add meg a résztvevők és a csapatok számát. A kalkulátor megmutatja a teljes díjat és az egy főre jutó átlagárat. Minden csapat saját elemzést, riportot és közös alkalmat kap.",
-      en: "Choose a package, then enter the number of participants and teams. The calculator shows the total fee and the average price per person. Every team gets its own analysis, report and joint session.",
+      hu: "Válassz csomagot, majd add meg a résztvevők és a csapatok számát. A kalkulátor megmutatja a teljes díjat és az egy főre jutó átlagárat. Minden csapatról külön elemzés és riport készül, az eredményeket pedig csapatonként, egy közös értelmezési alkalmon beszéljük át.",
+      en: "Choose a package, then enter the number of participants and teams. The calculator shows the total fee and the average price per person. Each team gets its own analysis and report, followed by a separate session to discuss the results together.",
     },
     tierGroupLabel: { hu: "A csomag", en: "Package" },
     tier_kep_name: { hu: "Csapatkép", en: "Team Picture" },
@@ -431,17 +431,11 @@ export const landingTranslations = {
     pilotCta: { hu: "Részletek", en: "Details" },
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
     faqQ1: { hu: "Mennyibe kerül?", en: "How much does it cost?" },
-    faqA1: { hu: "Az egyéni felmérés ingyenes. Egy {band} fős csapatnál a Csapatkép átlagára {kepBase} / fő + ÁFA, a Csapatprogramé {progBase} / fő + ÁFA. Az ár csapatalapdíjból és résztvevőnkénti díjból áll. Kisebb csapatnál a teljes díj is alacsonyabb; a kalkulátor megmutatja a saját átlagáratokat.", en: "The individual assessment is free. For one team of {band}, Team Picture averages {kepBase} / person + VAT and Team Program {progBase} / person + VAT. Pricing combines a team base fee and participant fees. Smaller teams pay a lower total; the calculator shows your average." },
+    faqA1: { hu: "Az egyéni felmérés ingyenes. Csapatként két csomag közül választhattok: a Csapatképben együtt értelmezzük a felmérések eredményeit, a Csapatprogramhoz személyes workshop és hat hónappal későbbi újramérés is tartozik. A díj a résztvevők és a csapatok számától függ. Az Árak oldalon a saját létszámotokkal számolhattok: az egy főre jutó átlagárat és a teljes díjat is látjátok, + ÁFA jelöléssel.", en: "The individual assessment is free. Teams can choose between two packages: Team Picture includes a session to discuss the assessment results together; Team Program also includes an in-person workshop and remeasurement six months later. The fee depends on headcount and team count. Enter your numbers on the pricing page to see both the average per person and the total, marked + VAT." },
     faqQ2: { hu: "Mit tartalmaz az ár?", en: "What does the price include?" },
-    faqA2: {
-      hu: "Mindent, ami a csapatképhez kell: a felmérést, a csapatszerep-, bizalmi és pszichológiai biztonság méréseket, a tanácsadói validálást, a riportot és a közös értelmezést. A Csapatprogram ezen felül félnapos workshopot és visszamérést is tartalmaz. Külön tétel csak a további workshop-nap, a havi kísérés és a kiszállás.",
-      en: "Everything needed for the team picture: the assessment, the team role, trust and psychological safety measurements, consultant validation, the report and the joint debrief. Team Program adds a half-day workshop and a remeasurement. Only extra workshop days, monthly support and travel are separate items.",
-    },
+    faqA2: { hu: "A csomagban benne vannak a személyiség-, csapatszerep-, bizalmi és pszichológiai biztonság felmérések, az eredmények tanácsadói ellenőrzése, a riport és a közös értelmezés. A Csapatprogramhoz félnapos workshop és hat hónappal későbbi újramérés is tartozik. Ha további workshopot vagy folyamatos kísérést kértek, annak díját külön egyeztetjük; a kiszállás is külön tétel.", en: "The package includes personality, team role, trust and psychological safety assessments, a consultant's review, the report and a session to discuss the results together. Team Program also includes a half-day workshop and remeasurement six months later. Extra workshops and ongoing support are agreed separately; travel is also charged separately." },
     faqQ3: { hu: "Hogyan indul az együttműködés?", en: "How does the engagement start?" },
-    faqA3: {
-      hu: "Írsz nekünk a kapcsolat oldalon, átbeszéljük, mire van szükségetek, és ajánlatot kapsz. Elfogadás után mi aktiváljuk a szervezetet és kísérjük a bevezetést.",
-      en: "You write to us on the contact page, we discuss what you need, and you receive a quote. After acceptance we activate your organization and guide the rollout.",
-    },
+    faqA3: { hu: "Írjatok nekünk, és egy rövid beszélgetésen átbeszéljük, mire van szükségetek. Ezután írásos ajánlatot küldünk. Ha szeretnétek belevágni, közösen egyeztetjük az időpontokat, és segítünk a csapatnak elindulni.", en: "Get in touch and we will have a short conversation about what your team needs. We then send a written quote. If you decide to go ahead, we agree on dates together and help your team get started." },
     faqQ4: { hu: "Mi ingyenes, és mi tartozik a programhoz?", en: "What's free and what's part of the program?" },
     faqA4: {
       hu: "Minden egyéni funkció ingyenes: felmérés, riport, observer-visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói validálás és a közös értelmezés a fizetős csapatcsomagok részei.",
@@ -482,7 +476,7 @@ export const landingTranslations = {
     },
     faqQ9: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
     faqA9: { hu: "A létszámtól, a csomagtól és a csapatok számától. Minden csapat alapdíja Csapatképnél {kepTeam}, Csapatprogramnál {progTeam} + ÁFA. Ehhez résztvevőnkénti díj társul; az összlétszám {band}. fője felett {over} / fő + ÁFA. A kalkulátorban ezek együttes, fejenkénti átlagát látjátok.", en: "Headcount, package and team count determine the price. Each team's base fee is {kepTeam} for Team Picture or {progTeam} + VAT for Team Program. Participant fees are added, at {over} / person + VAT above {band} participants overall. The calculator shows the combined average per person." },
-    faqQ10: { hu: "Hogyan és mikor fizetünk?", en: "How and when do we pay?" },
+    faqQ10: { hu: "Van lehetőség több részletben fizetni?", en: "Can we pay in instalments?" },
     faqA10: {
       hu: "Az elfogadott ajánlat alapján, átutalással; a program díja akár több részletben is fizethető. A díjak nettó összegek, ÁFA-val számlázzuk. Szerződést és megrendelőt írásban kaptok.",
       en: "Based on the accepted quote, by bank transfer; the program fee can be paid in several instalments. Prices are net and invoiced with VAT. You receive the contract and order form in writing.",
@@ -723,7 +717,7 @@ export const landingTranslations = {
       hu: "{taken} hely már foglalt · a következő lehet a tiétek",
       en: "{taken} spots are taken · the next one could be yours",
     },
-    spotsPanelCta: { hu: "Jelentkezem", en: "Apply now" },
+    spotsPanelCta: { hu: "Részletek", en: "Details" },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
     metaChip1: { hu: "Közvetlen kapcsolat", en: "Direct contact" },
     metaChip2: { hu: "Egymásra figyelünk", en: "Open feedback" },

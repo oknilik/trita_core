@@ -7,5 +7,5 @@
  * Keretmentes modul (nincs "use client"): szerver- és kliens-komponens is
  * importálhatja.
  */
-export const PILOT_TOTAL_TEAMS = 10;
-export const PILOT_SPOTS_LEFT = 7;
+export const PILOT_TOTAL_TEAMS = 20;
+export const PILOT_SPOTS_LEFT = 17;
