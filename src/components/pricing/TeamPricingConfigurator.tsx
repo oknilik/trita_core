@@ -6,7 +6,7 @@ import { CheckIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
 import { t, tf, type Locale } from "@/lib/i18n/public";
-import { PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
+import { PILOT_SPOTS_LEFT } from "@/lib/pilot-config";
 import { formatMoney, moneyDisplay } from "@/lib/pricing/fx";
 import {
   PUBLIC_HEADCOUNT_DEFAULT,
@@ -75,6 +75,8 @@ export function TeamPricingConfigurator({
     [ladder, tier, headcount, teamCount],
   );
   const tierRate = ladder.tiers[tier];
+  const pilotActive = PILOT_SPOTS_LEFT > 0 && ladder.pilotDiscountPct > 0;
+  const pilotAverage = Math.round(price.total * (100 - ladder.pilotDiscountPct) / 100 / headcount);
   const tierName = t(`pricing.tier_${tier}_name`, locale);
   // A csúszka utolsó foka („40+"): nincs szám, egyedi ajánlat.
   const over = isOverPublicMax(headcount);
@@ -274,15 +276,21 @@ export function TeamPricingConfigurator({
                 total: formatMoney(price.total, locale, ladder.fx),
               })}
             </p>
-            <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
-              {t("pricing.vatNote", locale)}
-            </p>
-            {/* Az időigény mondat hosszúságú (kérdőívek + csapatonkénti
-                alkalmak): saját, balra zárt soron olvasható, nem a
-                jobbra zárt szám-oszlopban. */}
-            <div className="relative text-caption">
-              <p className="text-[var(--color-text-on-inverse-muted)]">{t("pricing.timeLabel", locale)}</p>
-              <p className="mt-1 leading-relaxed">{t(`pricing.tier_${tier}_time`, locale)}</p>
+            <div className="relative flex flex-wrap gap-2">
+              <span className="inline-flex items-center rounded-full border border-white/25 px-3 py-1.5 text-caption text-[var(--color-text-on-inverse)]">
+                {t("pricing.installmentChip", locale)}
+              </span>
+              {pilotActive && (
+                <Link
+                  href="/pilot"
+                  className={`inline-flex items-center rounded-2xl bg-[var(--color-layer-team-badge)] px-3 py-1.5 text-caption font-semibold text-[var(--color-layer-team-hero-to)] ${FOCUS_RING_CLASS}`}
+                >
+                  {tf(tier === "prog" ? "pricing.pilotPriceChip" : "pricing.pilotOfferChip", locale, {
+                    pct: ladder.pilotDiscountPct,
+                    price: formatMoney(pilotAverage, locale, ladder.fx),
+                  })}
+                </Link>
+              )}
             </div>
             <Link
               href="/contact"
@@ -298,14 +306,6 @@ export function TeamPricingConfigurator({
             </Link>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {t("pricing.ctaNote", locale)}
-            </p>
-            {/* A pilotkedvezmény a Csapatprogramra érvényes: a Csapatkép
-                mellett nem hivatkozhatunk a „fenti díjra". */}
-            <p className="relative rounded-xl bg-white/[0.07] px-3 py-2.5 text-caption text-[var(--color-text-on-inverse-muted)]">
-              {tf(tier === "prog" ? "pricing.pilotNote" : "pricing.pilotNoteOtherTier", locale, {
-                pct: ladder.pilotDiscountPct,
-                total: PILOT_TOTAL_TEAMS,
-              })}
             </p>
           </>
         )}

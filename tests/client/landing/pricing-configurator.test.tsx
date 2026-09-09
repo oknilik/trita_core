@@ -5,6 +5,8 @@ import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
 import { formatMoney } from "@/lib/pricing/fx";
 import { derivePublicLadder, ladderPrice } from "@/lib/pricing/team-ladder";
 
+const pilotConfig = vi.hoisted(() => ({ PILOT_SPOTS_LEFT: 7 }));
+vi.mock("@/lib/pilot-config", () => pilotConfig);
 const track = vi.fn();
 vi.mock("@/lib/analytics/client", () => ({
   track: (...args: unknown[]) => track(...args),
@@ -83,10 +85,22 @@ describe("TeamPricingConfigurator", () => {
     render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
 
     // Csapatkép a nyitóállapot: a „fenti díj" ilyenkor a Csapatkép ára.
-    expect(screen.getByText(/A pilotkedvezmény a Csapatprogramra érvényes/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Pilot: −50% a Csapatprogramra/ })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /Csapatprogram/ }));
-    expect(screen.getByText(/a Csapatprogram fenti díjából/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: (name) => plain(name) === "Pilotár −50%: 32 500 Ft / fő + ÁFA" })).toBeInTheDocument();
+  });
+
+  it("a részletfizetés chip marad, lezárt pilotnál a pilotajánlat eltűnik", () => {
+    pilotConfig.PILOT_SPOTS_LEFT = 0;
+    try {
+      render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
+      expect(screen.getByText("Részletfizetés is választható")).toBeInTheDocument();
+      expect(screen.queryByText("Időigény a résztvevőktől")).not.toBeInTheDocument();
+      expect(screen.queryByRole("link", { name: /Pilot/ })).not.toBeInTheDocument();
+    } finally {
+      pilotConfig.PILOT_SPOTS_LEFT = 7;
+    }
   });
 
   it("angolul euróban mutat, a létra árfolyamán váltva, plusz VAT-tal", () => {

@@ -381,6 +381,9 @@ export const landingTranslations = {
     perHeadAverageLabel: { hu: "Egy főre jutó átlagár", en: "Average price per person" },
     totalForTeam: { hu: "Összesen {total} + ÁFA a teljes létszámra", en: "{total} + VAT in total for everyone taking part" },
     vatNote: { hu: "A program díja akár több részletben is fizethető.", en: "The program fee can be paid in several instalments." },
+    installmentChip: { hu: "Részletfizetés is választható", en: "Instalments available" },
+    pilotPriceChip: { hu: "Pilotár −{pct}%: {price} / fő + ÁFA", en: "Pilot price −{pct}%: {price} / person + VAT" },
+    pilotOfferChip: { hu: "Pilot: −{pct}% a Csapatprogramra", en: "Pilot: −{pct}% on Team Program" },
     // A magyar „fő" egyes számban marad („Első 10 fő"); a többes „fők" helyett
     // a második soron „résztvevők" áll — angolul mindkettő „participants".
     breakdownBase: { hu: "Csapatalapdíj · {band} csapat", en: "Team base fees · {band} team(s)" },
