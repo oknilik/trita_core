@@ -6,13 +6,13 @@ import { CheckIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
 import { t, tf, type Locale } from "@/lib/i18n/public";
+import { PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { formatMoney, moneyDisplay } from "@/lib/pricing/fx";
 import {
   PUBLIC_HEADCOUNT_DEFAULT,
   PUBLIC_HEADCOUNT_MAX,
   PUBLIC_HEADCOUNT_MIN,
   PUBLIC_HEADCOUNT_OVER,
-  estimateTeamRange,
   headcountBand,
   isOverPublicMax,
   ladderPrice,
@@ -58,17 +58,12 @@ export function TeamPricingConfigurator({
   const tierName = t(`pricing.tier_${tier}_name`, locale);
   // A csúszka utolsó foka („40+"): nincs szám, egyedi ajánlat.
   const over = isOverPublicMax(headcount);
-  const teamRange = estimateTeamRange(headcount);
   const perHeadMoney = moneyDisplay(
     price.perHeadAverage ?? tierRate.perHead,
     locale,
     ladder.fx,
     `${t("pricing.perHeadUnit", locale)} ${t("pricing.plusVat", locale)}`,
   );
-  const teamsHint =
-    teamRange.max <= 1
-      ? t("pricing.teamsHintOne", locale)
-      : tf("pricing.teamsHintRange", locale, { min: teamRange.min, max: teamRange.max });
   const headcountLabel = over
     ? tf("pricing.headcountOver", locale, { max: PUBLIC_HEADCOUNT_MAX })
     : String(headcount);
@@ -148,16 +143,6 @@ export function TeamPricingConfigurator({
               <span className="ml-1 font-sans text-caption text-ink-body">
                 {t("pricing.headcountUnit", locale)}
               </span>
-              {/* A létszám nem csapatszám: ugyanennyi ember lehet egy
-                  csapat vagy több kisebb — az ár nem függ tőle. */}
-              {!over && (
-                <span
-                  data-pricing-teams-hint
-                  className="mt-1 block font-sans text-caption font-normal text-ink-body"
-                >
-                  {teamsHint}
-                </span>
-              )}
             </output>
           </div>
           <input
@@ -193,8 +178,9 @@ export function TeamPricingConfigurator({
           >
             {tf("pricing.headcountNote", locale, {
               band: ladder.firstBandHeads,
+              next: ladder.firstBandHeads + 1,
+              first: formatMoney(tierRate.perHead, locale, ladder.fx),
               over: formatMoney(tierRate.perHeadOver, locale, ladder.fx),
-              max: PUBLIC_HEADCOUNT_MAX,
             })}
           </p>
         </div>
@@ -282,6 +268,10 @@ export function TeamPricingConfigurator({
           </>
         ) : (
           <>
+            {/* A sáv felett a kiírt szám átlagár — a címke ezt nevén nevezi. */}
+            <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
+              {t(price.overHeads > 0 ? "pricing.perHeadAverageLabel" : "pricing.perHeadLabel", locale)}
+            </p>
             <p className="relative font-fraunces text-fluid-display leading-none tracking-tight tabular-nums">
               {perHeadMoney.big}
               <span className="ml-1.5 font-sans text-base text-[var(--color-text-on-inverse-muted)]">
@@ -294,9 +284,7 @@ export function TeamPricingConfigurator({
               })}
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
-              {teamRange.max <= 1
-                ? t("pricing.teamsLineOne", locale)
-                : tf("pricing.teamsLine", locale, { heads: headcount, min: teamRange.min, max: teamRange.max })}
+              {t("pricing.teamsLine", locale)}
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {t("pricing.vatNote", locale)}
@@ -345,6 +333,7 @@ export function TeamPricingConfigurator({
             <p className="relative rounded-xl bg-white/[0.07] px-3 py-2.5 text-caption text-[var(--color-text-on-inverse-muted)]">
               {tf("pricing.pilotNote", locale, {
                 pct: ladder.pilotDiscountPct,
+                total: PILOT_TOTAL_TEAMS,
               })}
             </p>
           </>

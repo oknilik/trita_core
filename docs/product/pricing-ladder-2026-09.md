@@ -28,9 +28,10 @@ havi kísérés (120 000 Ft/hó), kiszállás (60 000 Ft/nap, továbbhárítva),
 létszámára megy, nem a csapatok számára. 35 fő lehet egy egység, de
 jellemzően 5–8 kisebb csapat — mindegyik saját csapatképet, riportot és
 közös értelmezést (csapatonként 90 perc, a Csapatprogramban csapatonként
-félnapos workshop) kap, az ár nem változik. A kalkulátor a létszám mellett
-mutatja, hány csapat lehet belőle (`estimateTeamRange`, tipikus 4–8 fős
-csapatméretből; 12 főig egy csapat is hihető). A több csapatból adódó
+félnapos workshop) kap, az ár nem változik. A kalkulátor egy mondatban
+mondja ki, hogy a résztvevők több csapatból is érkezhetnek, és minden
+csapat saját csapatképet és eredménymegbeszélést kap (csapatszám-sáv
+nincs, mert korlátozónak hatott). A több csapatból adódó
 tanácsadói többletidőt a belső óra-modell `perTeam` tétele viszi, az admin
 kalkulátorban a csapatok száma külön mező — ez a publikus árat nem érinti.
 

@@ -36,7 +36,7 @@ describe("TeamPricingConfigurator", () => {
     fireEvent.click(screen.getByRole("button", { name: /Csapatprogram/ }));
 
     expect(screen.getByRole("button", { name: /Csapatprogram/ })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByRole("heading", { name: /A Csapatprogram szintben benne van/ })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Mit tartalmaz a Csapatprogram\?/ })).toBeInTheDocument();
     expect(
       screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "prog", 10).total)} Ft + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
@@ -55,20 +55,17 @@ describe("TeamPricingConfigurator", () => {
     ).toBeInTheDocument();
   });
 
-  it("a létszám mellett mutatja, hány csapat lehet belőle – 35 fő 5–8 csapat", () => {
-    const { container } = render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
-    const hint = () => container.querySelector("[data-pricing-teams-hint]")?.textContent;
+  it("a sáv felett a nagy szám átlagár, és a csapatok száma nem korlát", () => {
+    render(<TeamPricingConfigurator ladder={ladder} locale="hu" />);
 
-    expect(hint()).toBe("1–2 csapat");
+    expect(screen.getByText("Egy főre jutó ár")).toBeInTheDocument();
     fireEvent.change(screen.getByRole("slider"), { target: { value: "35" } });
-    expect(hint()).toBe("5–8 csapat");
-    expect(screen.getByText(/35 fő lehet egy csapat vagy 5–8 kisebb/)).toBeInTheDocument();
-    // Az ár nem függ a csapatok számától: ugyanaz a létszám-alapú összeg.
+    expect(screen.getByText("Egy főre jutó átlagár")).toBeInTheDocument();
+    expect(screen.getByText(/A résztvevők több csapatból is érkezhetnek/)).toBeInTheDocument();
+    expect(screen.getByText(/A 11\. résztvevőtől minden további fő díja/)).toBeInTheDocument();
     expect(
       screen.getByText(plain(`Összesen ${formatHuf(ladderPrice(ladder, "kep", 35).total)} Ft + ÁFA a teljes létszámra`)),
     ).toBeInTheDocument();
-    fireEvent.change(screen.getByRole("slider"), { target: { value: "5" } });
-    expect(hint()).toBe("egy csapat");
   });
 
   it("angolul euróban mutat, a létra árfolyamán váltva, plusz VAT-tal", () => {

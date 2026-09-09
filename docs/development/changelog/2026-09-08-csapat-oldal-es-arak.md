@@ -36,7 +36,7 @@
   („Csapatoknak: így dolgozunk együtt") átirányítva.
 - **Létszám, nem csapatszám:** a publikus ár a résztvevők létszámára megy,
   és ez több csapatot is jelenthet (35 fő ≈ 5–8 csapat). A kalkulátor a
-  létszám mellett mutatja a lehetséges csapatszámot (`estimateTeamRange`),
+  létszám mellett mutatta a lehetséges csapatszámot (2026-09-09-én kivezetve, ld. a következő napi bejegyzést),
   a jobb panel egy mondatban kimondja, hogy minden csapat saját
   csapatképet és értelmezést kap; a szint-tartalmak „a csapattal" helyett
   „csapatonként" mondják a közös értelmezést és a workshopot (admin/PDF
