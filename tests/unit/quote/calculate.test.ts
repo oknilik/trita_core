@@ -11,6 +11,7 @@ import {
   derivePublicLadder,
   ladderEntryPerHead,
   ladderBaseFee,
+  referencePerHead,
   ladderPrice,
   pilotBaseFee,
   pilotPerHead,
@@ -34,6 +35,7 @@ test("a díjtételek megfelelnek a saját sémájuknak", () => {
   // A felületről mentett kártya ugyanezen a sémán megy át — ha az
   // alapértelmezés eltérne tőle, a mentés némán elutasítaná.
   assert.doesNotThrow(() => rateCardSchema.parse(DEFAULT_RATE_CARD));
+  assert.equal(rateCardSchema.safeParse({ ...DEFAULT_RATE_CARD, version: 2 }).success, false);
 });
 
 test("az ajánlat fejenkénti része AZONOS a publikus árlétrával", () => {
@@ -43,7 +45,7 @@ test("az ajánlat fejenkénti része AZONOS a publikus árlétrával", () => {
     for (const heads of [5, 8, 10, 12, 25, 40]) {
       const result = calculateQuote(input({ tier, headcount: heads }), DEFAULT_RATE_CARD);
       const tierLines = result.lines
-        .filter((line) => line.key === "tier" || line.key === "tierOver")
+        .filter((line) => ["tier", "tierOver", "participants"].includes(line.key))
         .reduce((sum, line) => sum + line.amount, 0);
       assert.equal(tierLines, ladderPrice(ladder, tier, heads).total, `${tier} ${heads} fő`);
     }
@@ -60,31 +62,31 @@ test("a fejenkénti díj marginális: nincs szakadás a sávhatáron", () => {
   }
 });
 
-test("a sávhatár alatt is a minimum projektár érvényes", () => {
+test("a kisebb csapatok teljes díja alacsonyabb", () => {
   for (const tier of ["kep", "prog"] as const) {
     const five = ladderPrice(ladder, tier, 5);
     const ten = ladderPrice(ladder, tier, 10);
-    assert.equal(five.total, ladderBaseFee(ladder, tier));
-    assert.equal(five.total, ten.total);
+    assert.equal(five.total, tier === "kep" ? 250_000 : 500_000);
+    assert.equal(ten.total, tier === "kep" ? 350_000 : 650_000);
   }
 });
 
 test("a sávon belül a fejenkénti ár pontosan a hirdetett, felette csökken", () => {
   const band = ladder.firstBandHeads;
   const within = ladderPrice(ladder, "kep", band);
-  assert.equal(within.perHeadAverage, ladder.tiers.kep.perHead);
+  assert.equal(within.perHeadAverage, referencePerHead(ladder, "kep"));
   const above = ladderPrice(ladder, "kep", band * 2);
-  assert.ok((above.perHeadAverage as number) < ladder.tiers.kep.perHead);
+  assert.ok((above.perHeadAverage as number) < referencePerHead(ladder, "kep"));
   assert.equal(above.overHeads, band);
 });
 
 test("a belépő ár a szintek közül a legolcsóbb, a pilot-ár a kedvezménnyel számolt", () => {
   const entry = ladderEntryPerHead(ladder);
   assert.equal(entry.tier, "kep");
-  assert.equal(entry.perHead, DEFAULT_RATE_CARD.tiers.kep.perHead);
+  assert.equal(entry.perHead, referencePerHead(ladder, "kep"));
   assert.equal(
     pilotPerHead(ladder, "prog"),
-    Math.round((DEFAULT_RATE_CARD.tiers.prog.perHead * (100 - DEFAULT_RATE_CARD.pilotDiscountPct)) / 100),
+    Math.round((referencePerHead(ladder, "prog") * (100 - DEFAULT_RATE_CARD.pilotDiscountPct)) / 100),
   );
 });
 
@@ -116,7 +118,7 @@ test("a csapatonként ismétlődő alkalmak órái a csapatszámmal nőnek", () 
   const manyTeams = calculateQuote(input({ tier: "prog", headcount: 35, teams: 5 }), DEFAULT_RATE_CARD);
   assert.equal(
     manyTeams.netTotal - singleTeam.netTotal,
-    4 * DEFAULT_RATE_CARD.tiers.prog.additionalTeamFee,
+    4 * DEFAULT_RATE_CARD.tiers.prog.teamBaseFee,
   );
   assert.ok(manyTeams.effectiveHourlyRate! >= DEFAULT_RATE_CARD.targetHourlyRate);
   assert.ok(manyTeams.floorPrice > singleTeam.floorPrice);
@@ -260,4 +262,13 @@ test("az örökség-bemenet (programdíjas) átfordul a létrára", () => {
 
   assert.equal(readQuoteInput({ nonsense: true }), null);
   assert.equal(readQuoteInput(emptyQuoteInput())?.tier, "prog");
+});
+
+ test("két csapat alapdíja és az összes résztvevő egyszer kerül a díjba", () => {
+  assert.equal(ladderPrice(ladder, "kep", 10, 2).total, 500_000);
+  assert.equal(ladderPrice(ladder, "prog", 20, 2).total, 1_200_000);
+  assert.equal(ladderPrice(ladder, "prog", 3).total, 440_000);
+  assert.equal(ladderPrice(ladder, "kep", 3).total, 210_000);
+  assert.equal(ladderPrice(ladder, "prog", 8).total, 590_000);
+  assert.equal(ladderPrice(ladder, "prog", 15).total, 750_000);
 });

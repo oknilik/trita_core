@@ -129,7 +129,7 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
   const lines: QuoteLine[] = [
     {
       key: "tier",
-      label: `${tierLabel} alapdíj · 1 csapat, legfelj ${ladder.firstBandHeads} fő`,
+      label: `${tierLabel} csapatalapdíj · ${teams} csapat × ${tierRate.teamBaseFee.toLocaleString("hu-HU")} Ft`,
       amount: price.baseFee,
     },
     {
@@ -138,9 +138,9 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
       amount: price.overHeads * tierRate.perHeadOver,
     },
     {
-      key: "additionalTeams",
-      label: `További csapat (${price.additionalTeams}) · ${tierRate.additionalTeamFee.toLocaleString("hu-HU")} Ft / csapat`,
-      amount: price.additionalTeamsFee,
+      key: "participants",
+      label: `Résztvevők · ${price.firstHeads} fő × ${tierRate.perHead.toLocaleString("hu-HU")} Ft`,
+      amount: price.firstHeadsFee,
     },
     { key: "extraWorkshop", label: `További workshop-nap (${input.extraWorkshopDays})`, amount: extraWorkshop },
     { key: "extraWaves", label: `További mérési kör (${input.extraWaves})`, amount: extraWaves },

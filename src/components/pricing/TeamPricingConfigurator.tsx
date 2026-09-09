@@ -201,7 +201,7 @@ export function TeamPricingConfigurator({
             {tf("pricing.headcountNote", locale, {
               band: ladder.firstBandHeads,
               next: ladder.firstBandHeads + 1,
-              base: formatMoney(ladder.firstBandHeads * tierRate.perHead, locale, ladder.fx),
+              base: formatMoney(tierRate.perHead, locale, ladder.fx),
               over: formatMoney(tierRate.perHeadOver, locale, ladder.fx),
             })}
           </p>
@@ -214,7 +214,7 @@ export function TeamPricingConfigurator({
             </label>
             <p className="mt-0.5 text-caption leading-relaxed text-ink-body">
               {tf("pricing.teamCountNote", locale, {
-                fee: formatMoney(tierRate.additionalTeamFee, locale, ladder.fx),
+                fee: formatMoney(tierRate.teamBaseFee, locale, ladder.fx),
               })}
             </p>
           </div>
@@ -293,16 +293,16 @@ export function TeamPricingConfigurator({
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {tf("pricing.teamsLine", locale, {
-                fee: formatMoney(tierRate.additionalTeamFee, locale, ladder.fx),
+                fee: formatMoney(tierRate.teamBaseFee, locale, ladder.fx),
               })}
             </p>
             <p className="relative text-caption text-[var(--color-text-on-inverse-muted)]">
               {t("pricing.vatNote", locale)}
             </p>
-            <dl className="relative grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 border-t border-white/15 pt-4 text-caption">
-              <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
+            <dl className="relative grid grid-cols-[minmax(0,1fr)_auto] gap-x-4 gap-y-1.5 border-t border-white/15 pt-4 text-caption">
+              <dt className="text-[var(--color-text-on-inverse-muted)]">
                 {tf("pricing.breakdownBase", locale, {
-                  band: ladder.firstBandHeads,
+                  band: teamCount,
                 })}
               </dt>
               <dd className="m-0 text-right tabular-nums">
@@ -310,7 +310,7 @@ export function TeamPricingConfigurator({
               </dd>
               {price.overHeads > 0 && (
                 <>
-                  <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
+                  <dt className="text-[var(--color-text-on-inverse-muted)]">
                     {t("pricing.breakdownOver", locale)}
                   </dt>
                   <dd className="m-0 text-right tabular-nums">
@@ -318,13 +318,13 @@ export function TeamPricingConfigurator({
                   </dd>
                 </>
               )}
-              {price.additionalTeams > 0 && (
+              {price.firstHeads > 0 && (
                 <>
-                  <dt className="whitespace-nowrap text-[var(--color-text-on-inverse-muted)]">
-                    {t("pricing.breakdownAdditionalTeams", locale)}
+                  <dt className="text-[var(--color-text-on-inverse-muted)]">
+                    {t("pricing.breakdownParticipants", locale)}
                   </dt>
                   <dd className="m-0 text-right tabular-nums">
-                    {price.additionalTeams} × {formatMoney(tierRate.additionalTeamFee, locale, ladder.fx)}
+                    {price.firstHeads} × {formatMoney(tierRate.perHead, locale, ladder.fx)}
                   </dd>
                 </>
               )}

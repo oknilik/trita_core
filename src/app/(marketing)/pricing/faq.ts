@@ -17,6 +17,7 @@
  * oldalon élnek — egy kérdés csak egy helyen.
  */
 
+import { referencePerHead } from "@/lib/pricing/team-ladder";
 import type { Locale } from "@/lib/i18n/core";
 import { PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { formatMoney } from "@/lib/pricing/fx";
@@ -32,10 +33,10 @@ export function pricingFaqVars(ladder: PublicLadder, locale: Locale = "hu"): Rec
   return {
     // Pénznemmel együtt (hu: „35 000 Ft", en: „€88"): az angol felület
     // euróban, a napi középárfolyamon mutatja a forint-árat.
-    kepBase: formatMoney(ladder.firstBandHeads * ladder.tiers.kep.perHead, locale, ladder.fx),
-    progBase: formatMoney(ladder.firstBandHeads * ladder.tiers.prog.perHead, locale, ladder.fx),
-    kepTeam: formatMoney(ladder.tiers.kep.additionalTeamFee, locale, ladder.fx),
-    progTeam: formatMoney(ladder.tiers.prog.additionalTeamFee, locale, ladder.fx),
+    kepBase: formatMoney(referencePerHead(ladder, "kep"), locale, ladder.fx),
+    progBase: formatMoney(referencePerHead(ladder, "prog"), locale, ladder.fx),
+    kepTeam: formatMoney(ladder.tiers.kep.teamBaseFee, locale, ladder.fx),
+    progTeam: formatMoney(ladder.tiers.prog.teamBaseFee, locale, ladder.fx),
     band: ladder.firstBandHeads,
     // A sáv feletti díj ma mindkét csomagnál azonos; ha valaha eltérnek, a
     // GYIK a magasabbat mondja, hogy ne ígérjünk a valóságosnál olcsóbbat.

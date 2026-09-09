@@ -16,8 +16,8 @@ import { PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { formatFxDate, formatMoney, moneyDisplay } from "@/lib/pricing/fx";
 import {
   PUBLIC_HEADCOUNT_MAX,
-  ladderBaseFee,
-  pilotBaseFee,
+  referencePerHead,
+  pilotPerHead,
   type PublicLadder,
 } from "@/lib/pricing/team-ladder";
 import { QUOTE_TIERS, type QuoteTier } from "@/lib/quote/rate-card";
@@ -40,7 +40,7 @@ const PROG_ITEMS = [1, 2] as const;
 function TierTile({ tier, ladder, locale }: { tier: QuoteTier; ladder: PublicLadder; locale: Locale }) {
   const highlight = tier === "prog";
   const money = moneyDisplay(
-    ladderBaseFee(ladder, tier),
+    referencePerHead(ladder, tier),
     locale,
     ladder.fx,
     `${tf("pricing.baseTeamUnit", locale, { band: ladder.firstBandHeads })} ${t("pricing.plusVat", locale)}`,
@@ -124,7 +124,7 @@ function ComparisonTable({ locale }: { locale: Locale }) {
 export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
   const { locale } = useLocale();
   const vars = pricingFaqVars(ladder, locale);
-  const partnerFee = pilotBaseFee(ladder, "prog");
+  const partnerFee = pilotPerHead(ladder, "prog");
   const partnerMoney = moneyDisplay(
     partnerFee,
     locale,
@@ -215,7 +215,7 @@ export function PricingPageContent({ ladder }: { ladder: PublicLadder }) {
               </h2>
               <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <s className="font-fraunces text-heading tabular-nums text-ink-body decoration-[var(--color-layer-team-glow)] decoration-[1.5px]">
-                  {formatMoney(ladderBaseFee(ladder, "prog"), locale, ladder.fx)}
+                  {formatMoney(referencePerHead(ladder, "prog"), locale, ladder.fx)}
                 </s>
                 <span className="font-fraunces text-fluid-display leading-none tabular-nums text-[var(--color-layer-team-accent)]">
                   {partnerMoney.big}

@@ -72,17 +72,17 @@ export const DISCOUNT_LABELS: Record<DiscountKind, string> = {
 };
 
 const tierRateSchema = z.object({
-  /** A minimum projektár fejenkénti alapja az első `firstBandHeads` főre. */
+  /** Résztvevőnkénti díj az összlétszám első `firstBandHeads` főjére. */
   perHead: z.number().int().min(0),
   /** Fejenkénti ár a sáv feletti további főkre (Ft, nettó). */
   perHeadOver: z.number().int().min(0),
-  /** Minden további csapat díja az elsőn felül (Ft, nettó). */
-  additionalTeamFee: z.number().int().min(0).default(0),
+  /** Minden csapat alapdíja (Ft, nettó). */
+  teamBaseFee: z.number().int().min(0),
 });
 
 export const rateCardSchema = z.object({
   /** Séma-verzió: a DB-ben mentett régi (programdíjas) kártya ettől különül el. */
-  version: z.literal(2),
+  version: z.literal(3),
   tiers: z.object({ kep: tierRateSchema, prog: tierRateSchema }),
   /** Eddig a létszámig érvényes a teljes fejenkénti ár (fő). */
   firstBandHeads: z.number().int().min(1).max(200),
@@ -125,10 +125,10 @@ export type RateCard = z.infer<typeof rateCardSchema>;
  * mentett kártya hiányában (vagy sérült mentés esetén) ez él.
  */
 export const DEFAULT_RATE_CARD: RateCard = {
-  version: 2,
+  version: 3,
   tiers: {
-    kep: { perHead: 35_000, perHeadOver: 20_000, additionalTeamFee: 200_000 },
-    prog: { perHead: 65_000, perHeadOver: 20_000, additionalTeamFee: 350_000 },
+    kep: { perHead: 20_000, perHeadOver: 20_000, teamBaseFee: 150_000 },
+    prog: { perHead: 30_000, perHeadOver: 20_000, teamBaseFee: 350_000 },
   },
   firstBandHeads: 10,
   extraWorkshopDayFee: 260_000,

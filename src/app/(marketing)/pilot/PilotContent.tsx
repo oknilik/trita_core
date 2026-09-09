@@ -16,7 +16,7 @@ import { PilotSpotsIndicator } from "@/components/marketing/PilotSpotsIndicator"
 import { t, tf, type Locale } from "@/lib/i18n/public";
 import { PILOT_SPOTS_LEFT, PILOT_TOTAL_TEAMS } from "@/lib/pilot-config";
 import { formatMoney, moneyDisplay } from "@/lib/pricing/fx";
-import { ladderBaseFee, pilotBaseFee, type PublicLadder } from "@/lib/pricing/team-ladder";
+import { referencePerHead, pilotPerHead, type PublicLadder } from "@/lib/pricing/team-ladder";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { track } from "@/lib/analytics/client";
@@ -630,8 +630,8 @@ const PILOT_FACTS = [1, 2, 3, 4] as const;
 function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder }) {
   // A 3. tény: a Csapatprogram listaára áthúzva, mellette a partneri ár —
   // a pilot tartalma (workshop + visszamérés) a Csapatprogramé.
-  const fullPerHead = ladderBaseFee(ladder, "prog");
-  const partnerPerHead = pilotBaseFee(ladder, "prog");
+  const fullPerHead = referencePerHead(ladder, "prog");
+  const partnerPerHead = pilotPerHead(ladder, "prog");
   // A partneri ár nagy szám + kis egység (hu: „25 000" + „Ft / fő + ÁFA",
   // en: „€63" + „/ person + VAT"); az áthúzott listaár pénznemmel együtt.
   const partnerMoney = moneyDisplay(partnerPerHead, locale, ladder.fx, t("pilot.fact3Unit", locale));
@@ -646,6 +646,7 @@ function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder
               full: formatMoney(fullPerHead, locale, ladder.fx),
               pilot: partnerMoney.big,
               pct: ladder.pilotDiscountPct,
+              band: ladder.firstBandHeads,
             };
             const unit = fact === 3 ? partnerMoney.small : tf(`pilot.fact${fact}Unit`, locale, vars);
             return (
@@ -683,7 +684,7 @@ function PilotFactBar({ locale, ladder }: { locale: Locale; ladder: PublicLadder
                 </dt>
                 {fact === 3 && (
                   <dd className="mt-2 text-note leading-relaxed text-ink-body">
-                    {t("pilot.fact3Foot", locale)}
+                    {tf("pilot.fact3Foot", locale, { band: ladder.firstBandHeads })}
                     {/* Az angol felület euróban mutat: ugyanaz az egymondatos
                         árfolyam-jelzés, mint az ár-horgony kártyán. */}
                     {locale !== "hu" && <> {t("pricing.fxNoteShort", locale)}</>}

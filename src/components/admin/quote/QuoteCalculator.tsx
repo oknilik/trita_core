@@ -331,7 +331,7 @@ export function QuoteCalculator({
               >
                 <span className="block font-semibold">{QUOTE_TIER_LABELS[tier]}</span>
                 <span className="block text-xs text-muted">
-                  {huf(rate.tiers[tier].perHead * rate.firstBandHeads)} alapdíj · {rate.firstBandHeads} fő felett {huf(rate.tiers[tier].perHeadOver)} / fő · további csapat {huf(rate.tiers[tier].additionalTeamFee)}
+                  {huf(rate.tiers[tier].teamBaseFee)} / csapat + {huf(rate.tiers[tier].perHead)} / fő · {rate.firstBandHeads} fő felett {huf(rate.tiers[tier].perHeadOver)} / fő
                 </span>
               </button>
             ))}
@@ -478,7 +478,7 @@ export function QuoteCalculator({
             </button>
           </div>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
-            A minimumdíjak, a létszámsáv, a további csapat, a workshop-nap és a pilot-kedvezmény
+            A csapatalapdíjak, a létszámdíjak, a workshop-nap és a pilot-kedvezmény
             PUBLIKUSAK: az /pricing kalkulátor, a főoldal és a /team-dynamics ár-horgonya, a /pilot
             ténysáv ezekből mutat számot. Mentés után a publikus oldalak azonnal frissülnek.
             Az óra-becslés, a cél-óradíj és a kedvezmény-keret belső.
@@ -486,7 +486,7 @@ export function QuoteCalculator({
           {!saved && (
             <p className="mt-2 rounded-lg border border-bronze-edge bg-bronze-soft/40 p-3 text-xs leading-relaxed text-ink-body">
               Még a beépített alapértelmezett díjkártya él (nincs mentett, vagy a mentett
-              a régi, programdíjas formában van). Ellenőrizd, és mentsd el.
+              korábbi árazási modellhez tartozik). Ellenőrizd, és mentsd el.
             </p>
           )}
 
@@ -502,7 +502,7 @@ export function QuoteCalculator({
                       <p className="text-sm font-semibold text-ink">{QUOTE_TIER_LABELS[tier]}</p>
                       <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <NumberField
-                          label={`Alapdíj osztója · ${rate.firstBandHeads} fő`}
+                          label={`Résztvevőnként · első ${rate.firstBandHeads} fő`}
                           value={rate.tiers[tier].perHead}
                           step={1_000}
                           onChange={(perHead) => setTierRate(tier, { perHead })}
@@ -516,10 +516,10 @@ export function QuoteCalculator({
                           suffix="Ft/fő"
                         />
                         <NumberField
-                          label="További csapat"
-                          value={rate.tiers[tier].additionalTeamFee}
+                          label="Csapatalapdíj · minden csapat"
+                          value={rate.tiers[tier].teamBaseFee}
                           step={10_000}
-                          onChange={(additionalTeamFee) => setTierRate(tier, { additionalTeamFee })}
+                          onChange={(teamBaseFee) => setTierRate(tier, { teamBaseFee })}
                           suffix="Ft/csapat"
                         />
                       </div>
@@ -662,10 +662,11 @@ export function QuoteCalculator({
             </p>
           )}
 
-          <p className="mt-3 border-t border-sand pt-3 text-sm text-ink-body">Nettó programdíj</p>
+          <p className="mt-3 border-t border-sand pt-3 text-sm text-ink-body">Egy főre jutó átlagár · nettó</p>
           <p className="font-fraunces text-3xl tabular-nums text-ink">
-            {huf(result.netTotal)}
+            {input.headcount <= 0 ? "–" : `${huf(Math.round(result.netTotal / input.headcount))} / fő`}
           </p>
+          <p className="mt-1 text-sm text-ink-body">Teljes nettó díj: {huf(result.netTotal)}</p>
           <p className="mt-1 flex items-baseline justify-between gap-3 text-sm text-muted">
             <span>ÁFA ({input.vatRate}%)</span>
             <span className="tabular-nums">{huf(result.vatAmount)}</span>
@@ -677,11 +678,6 @@ export function QuoteCalculator({
           {result.retainerTotal > 0 && (
             <p className="mt-1 text-sm text-ink-body">
               + havi kísérés: {huf(result.retainerTotal)} ({input.retainerMonths} hó)
-            </p>
-          )}
-          {result.perHeadEffective != null && (
-            <p className="mt-1 text-xs text-muted">
-              Effektív fejenként: {huf(result.perHeadEffective)}
             </p>
           )}
         </section>

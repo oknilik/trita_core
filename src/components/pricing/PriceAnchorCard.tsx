@@ -9,12 +9,12 @@ import { ladderEntryPerHead, type PublicLadder } from "@/lib/pricing/team-ladder
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 /**
- * Ár-horgony: krém árkártya egyetlen belépő számmal („350 000 Ft / csapattól
+ * Ár-horgony: krém árkártya fejenkénti referencia-átlagárral („35 000 Ft / fő
  * + ÁFA"), rövid lábjegyzettel és „Részletes árak" linkkel az /pricing oldalra.
  *
  * A /team-dynamics ár-szekciójában él (a főoldal csapat-blokkjáról
  * 2026-09-08-án lekerült: ott nem kell ár). A szám a díjkártyából jön
- * (`ladder`), és az egycsapatos minimum projektárat mutatja.
+ * (`ladder`), és egy csapat referencia-létszámra számolt átlagárát mutatja.
  */
 export function PriceAnchorCard({
   ladder,
@@ -31,7 +31,7 @@ export function PriceAnchorCard({
   className?: string;
 }) {
   const entry = ladderEntryPerHead(ladder);
-  const money = moneyDisplay(entry.baseFee, locale, ladder.fx, t("landing.teamPriceFrom", locale));
+  const money = moneyDisplay(entry.perHead, locale, ladder.fx, t("landing.teamPriceFrom", locale));
   return (
     <div
       data-price-anchor
