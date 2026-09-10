@@ -8,6 +8,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
+import { getAccessibleTeamIds } from "@/lib/team-auth";
 import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
@@ -186,7 +187,7 @@ export default async function OrgDetailPage({
     );
   }
 
-  const [pageData, members, pendingInvites, teams] = await Promise.all([
+  const [pageData, members, pendingInvites, teams, accessibleTeamIds] = await Promise.all([
     getOrgPageData(orgId),
     prisma.organizationMember.findMany({
       where: { orgId, leftAt: null },
@@ -219,6 +220,7 @@ export default async function OrgDetailPage({
         },
       },
     }),
+    getAccessibleTeamIds(profileId, orgId, memberRole),
   ]);
 
   // ── Futó mérés-sorozat csempe (lépés-ütemezés) ────────────────────────────
@@ -344,12 +346,14 @@ export default async function OrgDetailPage({
     role: inv.role,
     createdAt: inv.createdAt.toISOString(),
   }));
+  const accessibleTeamSet = new Set(accessibleTeamIds);
   const serializedTeams = teams.map((tm) => ({
     id: tm.id,
     name: tm.name,
     createdAt: tm.createdAt.toISOString(),
     _count: { members: tm._count.members },
     hasPublishedReport: tm.reports.length > 0,
+    canAccess: accessibleTeamSet.has(tm.id),
   }));
 
   // Élő aggregátum (tritanAvg) csak tanácsadónak — mindenki más a

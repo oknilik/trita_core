@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
+import { isPolicyReadOnly, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import { getRequestLogger } from "@/lib/logger.server";
 import type {
@@ -49,6 +50,14 @@ export async function POST(
     isPlatformAdminEmail(profile.email);
   if (!isConsultant) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+
+  if (!membership || membership.leftAt) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  const snapshot = await resolveOrgPolicySnapshot({ orgId: team.orgId, orgRole: membership.role });
+  if (isPolicyReadOnly(snapshot.policy.policyState)) {
+    return NextResponse.json({ error: "CAPABILITY_DENIED" }, { status: 403 });
   }
 
   const body = schema.safeParse(await req.json().catch(() => null));

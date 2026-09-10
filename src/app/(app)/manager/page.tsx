@@ -145,7 +145,7 @@ export default async function ManagerCockpitPage() {
         : `${c.teamObserverDoneCount}/${c.teamParticipantCount} observer responses received in ${teamWithCampaign.teamName}.`,
       primary: {
         label: isHu ? "Kör megtekintése" : "View round",
-        href: `/org/${data.orgId}?tab=campaigns`,
+        href: `/team/${teamWithCampaign.teamId}`,
       },
     };
   } else {

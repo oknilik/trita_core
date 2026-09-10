@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SelectField } from "@/components/ui/primitives/SelectField";
 import { StatusChip, type StatusChipVariant } from "@/components/ui/primitives/StatusChip";
 
 const TEAM_ROLES = ["member", "manager"] as const;
@@ -83,18 +84,19 @@ export function TeamMemberRoleEditor({
 
   return (
     <div className="flex flex-col items-end gap-1">
-      <select
+      <SelectField
+        aria-label={t("org.forms.roleLabel", loc)}
         value={role}
         disabled={loading}
         onChange={(e) => handleChange(e.target.value as TeamRole)}
-        className="min-h-[36px] rounded-lg border border-sand bg-surface-card px-2 text-xs font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50"
+        selectClassName="text-xs font-semibold"
       >
         {TEAM_ROLES.map((r) => (
           <option key={r} value={r}>
             {roleLabel(r, loc)}
           </option>
         ))}
-      </select>
+      </SelectField>
       {error && <p className="text-xs text-state-error-fg">{error}</p>}
     </div>
   );

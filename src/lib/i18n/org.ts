@@ -44,6 +44,28 @@ export const orgTranslations = {
     completedDescription: { hu: "A kitöltöttség az adatgyűjtés állapotát mutatja. A csapat áttekintésében találod a tanácsadói értelmezés és a publikált riport állapotát.", en: "Completion reflects data collection. Open the team overview for the status of consultant interpretation and the published report." },
     limited: { hu: "Korlátozott hozzáférés", en: "Limited access" },
   },
+  teamCapabilities: {
+    readOnlyTitle: { hu: "A taglista jelenleg csak olvasható", en: "The member list is currently read-only" },
+    readOnlyDescription: { hu: "A szerepkörök és a függő meghívók megtekinthetők. Tagok hozzáadása, módosítása és eltávolítása a hozzáférés helyreállítása után érhető el.", en: "Roles and pending invitations remain visible. Adding, editing and removing members becomes available once access is restored." },
+    teamAccessRequired: { hu: "A részletes nézethez csapattagság szükséges", en: "Team membership is required to open details" },
+  },
+  teamHierarchy: {
+    priorities: { hu: "Mire figyeljünk most?", en: "What deserves attention now?" },
+    prioritiesIntro: { hu: "A legfontosabb felismerések és a következő lépések. Az állítások részletes adatalapját az alábbi fejezetekben találod.", en: "The key findings and next steps. The sections below contain the detailed evidence behind these claims." },
+    reportEssentials: { hu: "A csapatriport lényege", en: "The essentials of your team report" },
+    approvedInsights: { hu: "A jóváhagyott riportból", en: "From the approved report" },
+    readinessDetails: { hu: "Kitöltések és adatgyűjtés részletei", en: "Completion and data collection details" },
+    reportMetadata: { hu: "A riport adatalapja és lefedettsége", en: "Report data and coverage" },
+    evidenceChapters: { hu: "A felismerések adatalapja", en: "Evidence behind the findings" },
+    chapterProfile: { hu: "Csapatprofil", en: "Team profile" },
+    chapterRoles: { hu: "Szerepek", en: "Roles" },
+    chapterDynamics: { hu: "Kapcsolatok", en: "Relationships" },
+    chapterInterpretation: { hu: "Tanácsadói értelmezés", en: "Consultant interpretation" },
+    chapterActions: { hu: "Akcióterv", en: "Action plan" },
+    chapterPriorities: { hu: "Prioritások", en: "Priorities" },
+    chapterReadiness: { hu: "Adatgyűjtés", en: "Data collection" },
+    chapterResources: { hu: "Hozzájárulások és kapcsolatok", en: "Contributions and relationships" },
+  },
   advisory: {
     eyebrow: {
       hu: "tanácsadói konzultáció",

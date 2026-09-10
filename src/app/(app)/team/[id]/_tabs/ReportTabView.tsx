@@ -5,6 +5,7 @@ import { TeamReportView } from "@/components/team/TeamReportView";
 import { TeamReportMemberView } from "@/components/team/TeamReportMemberView";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
+import { t } from "@/lib/i18n";
 import { prisma } from "@/lib/prisma";
 
 export async function ReportTabView({
@@ -15,6 +16,7 @@ export async function ReportTabView({
   campaignId?: string;
 }) {
   const { teamId, teamData, isHu, canViewRaw, isOrgManager, publishedReport, profile } = ctx;
+  const canEditReport = canViewRaw && !ctx.isRestricted && !ctx.isNone;
   const [consultantReports, reportCampaign] = canViewRaw
     ? await Promise.all([
         listTeamReports(teamId),
@@ -39,7 +41,7 @@ export async function ReportTabView({
     >
       <TeamHeroBlock ctx={ctx} active="report" />
 
-      {canViewRaw ? (
+      {canEditReport ? (
         <TeamReportEditor
           teamId={teamId}
           orgId={teamData.orgId}
@@ -47,12 +49,17 @@ export async function ReportTabView({
           campaignId={reportCampaign?.id ?? null}
           isHu={isHu}
         />
+      ) : canViewRaw ? (
+        <>
+          <p className="text-caption text-ink-body">{t("managerAccess.restrictedDescription", ctx.locale)}</p>
+          {consultantReports[0] ? <TeamReportView report={consultantReports[0]} isHu={isHu} canManageActions={false} /> : null}
+        </>
       ) : publishedReport ? (
         // Szerep-metszet: menedzser/admin (teamManage) a teljes riportot
         // látja; a sima ORG_MEMBER a szűkebb, saját szemszögű tag-nézetet.
         // Terv: docs/product/feature-ideas.md #4.
         isOrgManager ? (
-          <TeamReportView report={publishedReport} isHu={isHu} canManageActions />
+          <TeamReportView report={publishedReport} isHu={isHu} canManageActions={ctx.canManageTeamActions} />
         ) : (
           <TeamReportMemberView
             report={publishedReport}

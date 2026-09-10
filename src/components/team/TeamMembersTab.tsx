@@ -14,6 +14,8 @@ import {
   type AddableOrgMember,
 } from "@/components/team/TeamMemberAddPicker";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
+import { Button } from "@/components/ui/primitives/Button";
+import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface SerializedMemberRow {
@@ -36,6 +38,8 @@ interface TeamMembersTabProps {
   profileId: string;
   /** Adminisztratív csapattag-kezelés: hozzáadás, szerepkör és törlés. */
   isOrgManager: boolean;
+  /** Resolved teamManage capability, including the subscription gate. */
+  canManageTeamActions: boolean;
   /** teamInviteEmail capability: e-mailes meghívó — csak admin-paritás. */
   canEmailInvite: boolean;
   /** A szervezet tagjai, akik még nincsenek a csapatban — a kezelői út. */
@@ -63,6 +67,7 @@ export function TeamMembersTab({
   teamId,
   profileId,
   isOrgManager,
+  canManageTeamActions,
   canEmailInvite,
   addableOrgMembers,
   dossierBaseHref = null,
@@ -91,21 +96,26 @@ export function TeamMembersTab({
             {members.length}{" "}
             {isHu ? "csapattárs" : members.length === 1 ? "teammate" : "teammates"}
           </span>
-          {isOrgManager ? (
-            <button
+          {canManageTeamActions ? (
+            <Button
               type="button"
               onClick={() => setAddOpen((open) => !open)}
               aria-expanded={addOpen}
-              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
             >
               <span aria-hidden>{addOpen ? "×" : "+"}</span>
               {t("teamComp.addMember", loc)}
-            </button>
+            </Button>
           ) : null}
         </div>
       </div>
 
-      {isOrgManager && addOpen ? (
+      {isOrgManager && !canManageTeamActions ? (
+        <InlineBanner variant="info" className="mb-5" title={t("teamCapabilities.readOnlyTitle", loc)}>
+          {t("teamCapabilities.readOnlyDescription", loc)}
+        </InlineBanner>
+      ) : null}
+
+      {canManageTeamActions && addOpen ? (
         <div className="mb-5 rounded-2xl border border-surface-team-border bg-surface-card p-5 shadow-[var(--ui-shadow-sm)]">
           <p className="mb-3 text-note text-ink-body">
             {isHu
@@ -165,18 +175,18 @@ export function TeamMembersTab({
                     userId={member.userId}
                     currentRole={member.role}
                     isSelf={member.userId === profileId}
-                    canEdit
+                    canEdit={canManageTeamActions}
                     locale={locale}
                   />
                   {dossierBaseHref ? (
                     <Link
                       href={`${dossierBaseHref}/${member.userId}`}
-                      className="inline-flex min-h-9 items-center rounded-lg border border-sand bg-surface-card px-3 text-note font-semibold text-ink-body transition hover:border-[var(--color-layer-team-accent)]/30 hover:text-ink"
+                      className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-3 text-note font-semibold text-ink-body transition hover:border-[var(--color-layer-team-accent)]/30 hover:text-ink"
                     >
                       {isHu ? "Dossié" : "Dossier"}
                     </Link>
                   ) : null}
-                  {member.userId !== profileId ? (
+                  {canManageTeamActions && member.userId !== profileId ? (
                     <TeamMemberRemoveButton
                       teamId={teamId}
                       userId={member.userId}
@@ -218,8 +228,8 @@ export function TeamMembersTab({
                   <StatusChip variant="warning">
                     {t("teamComp.pendingStatus", loc)}
                   </StatusChip>
-                  <PendingInviteResendButton inviteId={invite.id} isHu={isHu} />
-                  <PendingInviteCancelButton inviteId={invite.id} isHu={isHu} />
+                  {canEmailInvite && <PendingInviteResendButton inviteId={invite.id} isHu={isHu} />}
+                  {canManageTeamActions && <PendingInviteCancelButton inviteId={invite.id} isHu={isHu} />}
                 </div>
               </div>
             ))}

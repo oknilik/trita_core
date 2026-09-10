@@ -2,8 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { canViewRawTeamResults } from "@/lib/team-auth";
-import { hasOrgRole } from "@/lib/org-roles";
+import { resolveOrgCapabilityDecision, resolveTeamPolicySnapshot } from "@/lib/policy-service";
 import { serializeTeamReport } from "@/lib/team-report";
 import { teamActionTargetSchema } from "@/lib/team-action-target-schema";
 
@@ -49,13 +48,15 @@ export async function PATCH(
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
     select: { role: true, leftAt: true },
   });
-  if (
-    !membership ||
-    membership.leftAt ||
-    (!hasOrgRole(membership.role, "ORG_MANAGER") &&
-      !canViewRawTeamResults(membership.role))
-  ) {
+  if (!membership || membership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+  const snapshot = await resolveTeamPolicySnapshot({
+    orgId: team.orgId, orgRole: membership.role, teamId, profileId: profile.id,
+  });
+  const decision = resolveOrgCapabilityDecision(snapshot, "teamManage");
+  if (!decision.allowed) {
+    return NextResponse.json({ error: "CAPABILITY_DENIED", reason: decision.reason }, { status: 403 });
   }
 
   const latestPublished = await prisma.teamReport.findFirst({

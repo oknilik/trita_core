@@ -373,7 +373,7 @@ export default async function TeamDetailPage({
   // nem csapat-jog – szerep-alapú láthatóság, a szerver kapuzza a műveletet.
   const canReachOrgCampaigns = hasOrgRole(orgMemberRole, "ORG_MANAGER");
   // E-mailes csapat-meghívó: csak admin-paritás (racionalizálás, 2026-07-22).
-  const canEmailInvite = hasOrgRole(orgMemberRole, "ORG_ADMIN");
+  const canEmailInvite = policy.capabilities.has("teamInviteEmail");
   const manageGateCopy =
     isOrgManager && !canManageTeamActions
       ? getCapabilityGateCopy({
