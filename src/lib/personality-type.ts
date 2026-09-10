@@ -219,11 +219,17 @@ export function isTopPairUncertain(
 export function isSecondaryUncertain(
   dimensions: ReadonlyArray<{ code: string; score: number }>,
 ): boolean {
+  return resolveSecondaryUncertainty(dimensions) !== null;
+}
+
+/** Which score gap limits the glyph explanation; never describe a 2–3 tie as a 1–2 tie. */
+export function resolveSecondaryUncertainty(
+  dimensions: ReadonlyArray<{ code: string; score: number }>,
+): "top-pair" | "secondary-pair" | null {
   const known = dimensions.filter((d) => PERSONALITY_TYPE_PARTS[d.code]);
-  if (known.length < 2) return false;
-  const ranked = rankDimensionScores(known);
-  const [first, second, third] = ranked;
-  const topPairUncertain = first.score - second.score < DIFF_MIN_GAP;
-  const adjectiveUncertain = third ? second.score - third.score < DIFF_MIN_GAP : false;
-  return topPairUncertain || adjectiveUncertain;
+  if (known.length < 2) return null;
+  const [first, second, third] = rankDimensionScores(known);
+  if (first.score - second.score < DIFF_MIN_GAP) return "top-pair";
+  if (third && second.score - third.score < DIFF_MIN_GAP) return "secondary-pair";
+  return null;
 }

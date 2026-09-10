@@ -137,10 +137,10 @@ describe("TypeGlyphPlate", () => {
     expect(screen.queryByText(/a második legmagasabb/)).toBeNull();
     // …helyette a rendezetlen felsorolás és a hedge-elt nyelvtan.
     expect(
-      screen.getAllByText(/a két legmagasabb: Nyitottság · Lelkiismeretesség/).length,
+      screen.getAllByText(/az ábrán: Nyitottság · Lelkiismeretesség/).length,
     ).toBeGreaterThan(0);
     expect(
-      screen.getByText(/A két legmagasabb pontszámú dimenziód – a Nyitottság és a Lelkiismeretesség/),
+      screen.getByText(/A második és harmadik dimenzió pontszáma közeli/),
     ).toBeInTheDocument();
   });
 });

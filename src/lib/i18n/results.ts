@@ -505,6 +505,10 @@ export const resultsTranslations = {
       hu: "A két dimenziód közel azonos szintű. A nagy forma {form}, a benne futó vonal {motif}; a kitöltés a pontszámot követi.",
       en: "The two dimensions are at a similar level. The large shape is the {form}, the line inside the {motif}; the fill follows the score.",
     },
+    heroGlyphGrammarSecondaryUncertain: {
+      hu: "A második és harmadik dimenzió pontszáma közeli, ezért a kiegészítő motívum nem jelent biztos sorrendet. A nagy forma {form}, a benne futó vonal {motif}; a kitöltés a pontszámot követi.",
+      en: "Your second and third dimension scores are close, so the supporting motif does not imply a definite ranking. The large shape is the {form}, the line inside the {motif}; the fill follows the score.",
+    },
     heroGlyphOpen: { hu: "Karakterábra", en: "Character visual" },
     heroGlyphBack: { hu: "Profil", en: "Profile" },
     heroGlyphOpenA11y: { hu: "Karakterábra megjelenítése", en: "Show character visual" },
@@ -731,6 +735,14 @@ export const resultsTranslations = {
     glyphGrammarUncertain: {
       hu: "A két legmagasabb pontszámú dimenziód – {primary} és {secondary} – közel azonos szintű, sorrendjük nem egyértelmű. A nagy forma {form}, a benne futó vékony vonal {motif}; a forma kitöltése a pontszámot követi.",
       en: "Your top two dimensions – {primary} and {secondary} – are at a similar level, so their order isn't clear-cut. The large shape is the {form}, the thin line inside it the {motif}; the fill weight follows the score.",
+    },
+    glyphGrammarSecondaryUncertain: {
+      hu: "A második és harmadik dimenzió pontszáma közeli, ezért a kiegészítő motívum nem jelent biztos sorrendet. A nagy forma {primary}: {form}. A benne futó vonal {secondary}: {motif}; a kitöltés a pontszámot követi.",
+      en: "Your second and third dimension scores are close, so the supporting motif does not imply a definite ranking. The large shape represents {primary}: the {form}. The line inside represents {secondary}: the {motif}; the fill follows the score.",
+    },
+    glyphPairSecondaryUncertain: {
+      hu: "az ábrán: {a} · {b}",
+      en: "shown: {a} · {b}",
     },
     glyphPairUncertain: {
       hu: "a két legmagasabb: {a} · {b}",

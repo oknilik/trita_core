@@ -203,6 +203,24 @@ describe("ProfileHero – elsődleges CTA a sötét herón", () => {
     );
   });
 
+  it.each([
+    { scores: [82, 55, 54], explanation: /A második és harmadik dimenzió pontszáma közeli/, wrong: /A két dimenziód közel azonos/ },
+    { scores: [82, 80, 54], explanation: /A két dimenziód közel azonos/, wrong: /A második és harmadik dimenzió pontszáma közeli/ },
+  ])("a látható pontszámokhoz tartozó bizonytalanságot magyarázza: $scores", async ({ scores, explanation, wrong }) => {
+    render(
+      <ProfileHero
+        userName="Teszt Anna"
+        completedAt="2026. szeptember 10."
+        personalityType="Elvhű"
+        glyphDimensions={["H", "E", "X"].map((code, index) => ({ code, score: scores[index] }))}
+        insight="Egyéni összkép."
+      />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Karakterábra megjelenítése" }));
+    expect(screen.getByText(explanation)).toBeInTheDocument();
+    expect(screen.queryByText(wrong)).toBeNull();
+  });
+
   it("karakteradat nélkül nem mutat lapfület", () => {
     render(
       <ProfileHero

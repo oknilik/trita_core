@@ -9,7 +9,7 @@ import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/Surfac
 import { ShareIcon, DocumentIcon } from "@/components/ui/icons";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { DIMENSION_GLYPHS, resolveGlyphPair } from "@/lib/type-glyph";
-import { isSecondaryUncertain } from "@/lib/personality-type";
+import { resolveSecondaryUncertainty } from "@/lib/personality-type";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
 import { withHuArticle } from "@/lib/hu-grammar";
@@ -99,9 +99,10 @@ export function ProfileHero({
   // S3-hedge: az ábra aria-labelje ugyanazzal a kapuval degradál rendezetlen
   // párrá, mint a címke/tábla (isSecondaryUncertain) — a felolvasott szöveg
   // nem állíthat erősorrendet, amit a látható felület már nem állít.
-  const glyphUncertain = glyphDimensions
-    ? isSecondaryUncertain(glyphDimensions)
-    : false;
+  const glyphUncertainty = glyphDimensions
+    ? resolveSecondaryUncertainty(glyphDimensions)
+    : null;
+  const glyphUncertain = glyphUncertainty !== null;
   const dimensionName = (code: string) => {
     const dimension = HEXACO_DIMENSIONS[code as HexacoCode];
     if (!dimension) return code;
@@ -111,7 +112,7 @@ export function ProfileHero({
     ? glyphPair.primaryCode === glyphPair.secondaryCode
       ? dimensionName(glyphPair.primaryCode)
       : glyphUncertain
-        ? tf("results.glyphPairUncertain", locale, {
+        ? tf(glyphUncertainty === "secondary-pair" ? "results.glyphPairSecondaryUncertain" : "results.glyphPairUncertain", locale, {
             a: dimensionName(glyphPair.primaryCode),
             b: dimensionName(glyphPair.secondaryCode),
           })
@@ -119,7 +120,9 @@ export function ProfileHero({
     : "";
   const glyphGrammar = glyphPair
     ? tf(
-        glyphUncertain ? "results.heroGlyphGrammarUncertain" : "results.heroGlyphGrammar",
+        glyphUncertainty === "secondary-pair"
+          ? "results.heroGlyphGrammarSecondaryUncertain"
+          : glyphUncertain ? "results.heroGlyphGrammarUncertain" : "results.heroGlyphGrammar",
         locale,
         {
           form: locale === "hu"
