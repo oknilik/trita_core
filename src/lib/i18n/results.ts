@@ -395,7 +395,11 @@ export const resultsTranslations = {
     summaryNatural: { hu: "Ami természetesen megy", en: "What comes naturally" },
     summaryAttention: { hu: "Ami több figyelmet kérhet", en: "What may need more attention" },
     summaryWork: { hu: "Munkahelyen ez számít", en: "What matters at work" },
-    summaryGrowth: { hu: "Ahol a legtöbbet fejlődhetsz", en: "Where you can grow most" },
+    summaryGrowth: { hu: "Ezt próbáld ki", en: "Try this" },
+    summaryGrowthExperiment: {
+      hu: "Válassz egy visszatérő helyzetet a következő hétre. Próbálj ki benne egy másik reakciót, majd jegyezd fel: mi segített, és min változtatnál legközelebb?",
+      en: "Choose one recurring situation for the coming week. Try a different response, then note what helped and what you would change next time.",
+    },
     summaryBalancedAttention: {
       hu: "Nincs olyan fő dimenziód, amely önmagában erős figyelmeztető jel lenne. A helyzetek közötti egyensúly a fontosabb kérdés.",
       en: "None of your main dimensions is a strong warning sign on its own. The balance between situations matters more.",

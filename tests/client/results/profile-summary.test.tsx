@@ -22,7 +22,7 @@ describe("ProfileSummary", () => {
     expect(insights.map((item) => item.label)).toEqual([
       "Ami természetesen megy",
       "Ami több figyelmet kérhet",
-      "Ahol a legtöbbet fejlődhetsz",
+      "Ezt próbáld ki",
     ]);
     expect(insights[0].text).toBe("Erős értékrend.");
     expect(insights[1].text).toBe("Egyenes vitahelyzetek.");
