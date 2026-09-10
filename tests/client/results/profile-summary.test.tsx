@@ -28,6 +28,29 @@ describe("ProfileSummary", () => {
     expect(insights[1].text).toBe("Egyenes vitahelyzetek.");
   });
 
+  it("a részletes eredményt korán, a személyes következő lépést a páros ajánló előtt mutatja", async () => {
+    const onOpenDetails = vi.fn();
+    const onOpenComparison = vi.fn();
+    render(
+      <ProfileSummary dimensions={DIMENSIONS} sentInvitations={[]} observerCount={0} hasObserverData={false}
+        bridgeNextStep={{ stage: "TEAM_READY", explanation: "Olvasd át a csapatod publikált összegzését.", primary: { label: "Csapatom eredménye", href: "/team/example" } }}
+        interactionEntry={{ state: "new" }} personalityType="Újító" clarityFeedbackSubmitted
+        onOpenDetails={onOpenDetails} onOpenComparison={onOpenComparison} locale="hu" />,
+    );
+    const details = screen.getByRole("button", { name: "Részletes eredményem" });
+    const firstInsight = screen.getByRole("heading", { name: "Ami természetesen megy" });
+    const nextStep = screen.getByRole("link", { name: "Csapatom eredménye" });
+    const pair = screen.getByRole("heading", { name: "Mi történik, amikor két profil találkozik?" });
+    expect(details.compareDocumentPosition(firstInsight) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(firstInsight.compareDocumentPosition(nextStep) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(nextStep.compareDocumentPosition(pair) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getAllByRole("article")).toHaveLength(3);
+    await userEvent.click(details);
+    await userEvent.click(screen.getByRole("button", { name: "Külső nézőpont" }));
+    expect(onOpenDetails).toHaveBeenCalledOnce();
+    expect(onOpenComparison).toHaveBeenCalledOnce();
+  });
+
   it("a rövid nézetben csak az értelmezést és két egyértelmű továbblépést mutat", async () => {
     const onOpenDetails = vi.fn();
     render(
@@ -51,7 +74,7 @@ describe("ProfileSummary", () => {
     expect(document.body.textContent).not.toContain("82%");
     expect(screen.getByRole("button", { name: /Külső nézőpont/ })).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: /Minden részlet/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Részletes eredményem/ }));
     expect(onOpenDetails).toHaveBeenCalledOnce();
   });
 });

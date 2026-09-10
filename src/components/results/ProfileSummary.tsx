@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Button, getButtonClassName } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { Card } from "@/components/ui/primitives/Card";
 import { buildProfileSummaryInsights } from "@/lib/profile-report-view-model";
 import { t, type Locale } from "@/lib/i18n";
@@ -49,7 +50,6 @@ function NextStepSummary({
   sentInvitations,
   observerCount,
   hasObserverData,
-  onOpenComparison,
   locale,
 }: Pick<
   ProfileSummaryProps,
@@ -58,7 +58,6 @@ function NextStepSummary({
   | "sentInvitations"
   | "observerCount"
   | "hasObserverData"
-  | "onOpenComparison"
   | "locale"
 >) {
   if (!bridgeNextStep) return null;
@@ -78,9 +77,7 @@ function NextStepSummary({
     >
       <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
         <div>
-          <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-self-deep)]">
-            {t("results.summaryNextStep", locale)}
-          </p>
+          <SectionEyebrow tone="self">{t("results.summaryNextStep", locale)}</SectionEyebrow>
           <h2 className="mt-2 font-fraunces text-heading leading-tight text-ink">
             {bridgeNextStep.primary.label}
           </h2>
@@ -109,24 +106,7 @@ function NextStepSummary({
           >
             {bridgeNextStep.primary.label}
           </Link>
-          {isObserverStep ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={onOpenComparison}
-              className="justify-center rounded-xl"
-            >
-              {t("results.summaryOpenOutside", locale)}
-            </Button>
-          ) : bridgeNextStep.secondary ? (
-            <Link
-              href={bridgeNextStep.secondary.href}
-              className={getButtonClassName({ variant: "ghost", size: "sm", className: "justify-center rounded-xl" })}
-            >
-              {bridgeNextStep.secondary.label}
-            </Link>
-          ) : null}
+
         </div>
       </div>
     </Card>
@@ -153,11 +133,9 @@ export function ProfileSummary({
   const insights = buildProfileSummaryInsights(dimensions, plusContent, locale);
 
   return (
-    <div className="flex flex-col gap-8 md:gap-10">
+    <div className="flex min-w-0 flex-col gap-7 wrap-anywhere md:gap-9">
       <section aria-labelledby="summary-heading">
-        <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-          {t("results.summaryEyebrow", locale)}
-        </p>
+        <SectionEyebrow tone="self">{t("results.summaryEyebrow", locale)}</SectionEyebrow>
         <h2 id="summary-heading" className="mt-2 max-w-2xl font-fraunces text-title leading-tight text-ink md:text-title">
           {t("results.summaryTitle", locale)}
         </h2>
@@ -165,11 +143,20 @@ export function ProfileSummary({
           {t("results.summaryBody", locale)}
         </p>
 
-        <div className="mt-7 overflow-hidden rounded-[20px] border border-[var(--color-border-soft)] bg-surface-card px-5 md:px-7">
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Button type="button" onClick={onOpenDetails} iconRight={<ChevronRightIcon className="h-4 w-4 shrink-0" />}>
+            {t("results.summaryOpenDetails", locale)}
+          </Button>
+          <Button type="button" variant="secondary" onClick={onOpenComparison}>
+            {t("results.summaryComparisonTitle", locale)}
+          </Button>
+        </div>
+
+        <div className="mt-5 overflow-hidden rounded-[20px] border border-[var(--color-border-soft)] bg-surface-card px-5 md:px-7">
           {insights.map((insight, index) => (
             <article
               key={insight.tone}
-              className="grid grid-cols-[34px_minmax(0,1fr)] gap-3 border-t border-[var(--color-border-soft)] py-5 first:border-t-0 md:grid-cols-[42px_minmax(0,1fr)] md:py-6"
+              className="grid min-w-0 grid-cols-[24px_minmax(0,1fr)] gap-3 border-t border-[var(--color-border-soft)] py-4 first:border-t-0 md:grid-cols-[34px_minmax(0,1fr)] md:py-5"
             >
               <span className="pt-0.5 font-mono text-micro font-semibold tracking-widest text-[var(--color-accent-primary-strong)]">
                 0{index + 1}
@@ -185,65 +172,21 @@ export function ProfileSummary({
         </div>
       </section>
 
-      <InteractionEntryCard
-        dimensions={dimensions
-          .filter((dimension) => dimension.code !== "I")
-          .map((dimension) => ({ code: dimension.code, score: dimension.score }))}
-        personalityType={personalityType}
-        preview={interactionEntry}
-        locale={locale}
-      />
-
-      <section aria-labelledby="summary-explore-heading">
-        <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-          {t("results.summaryExploreEyebrow", locale)}
-        </p>
-        <h2 id="summary-explore-heading" className="mt-2 font-fraunces text-title leading-tight text-ink">
-          {t("results.summaryExploreTitle", locale)}
-        </h2>
-
-        <div className="mt-5 grid gap-3 md:grid-cols-[1.15fr_0.85fr]">
-          <button
-            type="button"
-            onClick={onOpenDetails}
-            className="group flex min-h-[116px] w-full items-center justify-between gap-5 rounded-[18px] bg-[var(--color-surface-self-strong)] px-5 py-5 text-left text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-sm)] transition hover:bg-[var(--color-surface-self-strong-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 md:px-6"
-          >
-            <span>
-              <strong className="block font-fraunces text-heading font-medium">
-                {t("results.summaryDetailsPrompt", locale)}
-              </strong>
-              <span className="mt-1.5 block max-w-sm text-xs leading-relaxed text-[var(--color-text-on-inverse)]">
-                {t("results.summaryDetailsMeta", locale)}
-              </span>
-            </span>
-            <ChevronRightIcon className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5" />
-          </button>
-
-          <button
-            type="button"
-            onClick={onOpenComparison}
-            className="group flex min-h-[116px] w-full items-center justify-between gap-5 rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card px-5 py-5 text-left shadow-[var(--ui-shadow-sm)] transition hover:border-[var(--color-state-hover-border)] hover:bg-[var(--color-state-hover-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 md:px-6"
-          >
-            <span>
-              <strong className="block font-fraunces text-heading font-medium text-ink">
-                {t("results.summaryComparisonTitle", locale)}
-              </strong>
-              <span className="mt-1.5 block text-xs leading-relaxed text-muted">
-                {t(hasObserverData ? "results.summaryComparisonReadyBody" : "results.summaryComparisonStartBody", locale)}
-              </span>
-            </span>
-            <ChevronRightIcon className="h-5 w-5 shrink-0 text-sage-dark transition-transform group-hover:translate-x-0.5" />
-          </button>
-        </div>
-      </section>
-
       <NextStepSummary
         bridgeNextStep={bridgeNextStep}
         observerFlow={observerFlow}
         sentInvitations={sentInvitations}
         observerCount={observerCount}
         hasObserverData={hasObserverData}
-        onOpenComparison={onOpenComparison}
+        locale={locale}
+      />
+
+      <InteractionEntryCard
+        dimensions={dimensions
+          .filter((dimension) => dimension.code !== "I")
+          .map((dimension) => ({ code: dimension.code, score: dimension.score }))}
+        personalityType={personalityType}
+        preview={interactionEntry}
         locale={locale}
       />
 

@@ -95,7 +95,7 @@ export function InteractionEntryCard({
   return (
     <section
       aria-labelledby="interaction-entry-heading"
-      className="relative overflow-hidden rounded-[20px] border border-[var(--color-accent-primary)]/35 bg-[var(--color-surface-inverse)] p-6 text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] md:p-7"
+      className="relative min-w-0 overflow-hidden wrap-anywhere rounded-[20px] border border-[var(--color-accent-primary)]/35 bg-[var(--color-surface-inverse)] p-6 text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] md:p-7"
     >
       <span
         aria-hidden="true"
@@ -106,8 +106,8 @@ export function InteractionEntryCard({
         className="absolute right-5 top-5 h-px w-14 bg-[var(--color-accent-primary)]/65"
       />
 
-      <div className="relative grid gap-7 md:grid-cols-[minmax(0,1.15fr)_minmax(220px,0.85fr)] md:items-center">
-        <div>
+      <div className="relative grid min-w-0 gap-5 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-center">
+        <div className="min-w-0">
           <p className="text-label uppercase text-[var(--color-accent-primary)]">
             {t("results.interactionEntryEyebrow", locale)}
           </p>

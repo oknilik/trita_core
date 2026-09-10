@@ -428,7 +428,7 @@ export const resultsTranslations = {
       hu: "A részletes riportban megkapod mind a hat dimenzió értelmezését, az alskálákat, a munkastílust és a fejlődési fókuszt.",
       en: "The detailed report includes all six interpretations, facets, work style and growth focus.",
     },
-    summaryOpenDetails: { hu: "Részletes riport megnyitása", en: "Open detailed report" },
+    summaryOpenDetails: { hu: "Részletes eredményem", en: "My detailed results" },
     summaryComparisonTitle: { hu: "Külső nézőpont", en: "Outside perspective" },
     summaryComparisonReadyBody: { hu: "Nézd meg, hogyan látnak mások, és hol tér el az önképed.", en: "See how others perceive you and where it differs from your self-view." },
     summaryComparisonStartBody: { hu: "Kérj visszajelzést, hogy később összevethesd az önképed mások nézőpontjával.", en: "Ask for feedback so you can compare your self-view with other perspectives later." },

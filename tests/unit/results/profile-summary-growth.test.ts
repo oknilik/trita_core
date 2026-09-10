@@ -19,7 +19,8 @@ for (const locale of ["hu", "en"] as const) {
   });
 
   test(`${locale}: balanced and only-low-E profiles get an experiment without a false deficit`, () => {
-    for (const scores of [{}, { E: 10 }, { H: 90, O: 90 }]) {
+    const cases: Record<string, number>[] = [{}, { E: 10 }, { H: 90, O: 90 }];
+    for (const scores of cases) {
       const growth = buildProfileSummaryInsights(dimensions(scores), undefined, locale)[2];
       assert.equal(growth.text, t("results.summaryGrowthExperiment", locale));
       assert.notEqual(growth.text, DIMENSION_GROWTH_TIPS.E[locale].behavior);
