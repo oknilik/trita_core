@@ -706,6 +706,9 @@ export function ObserverClient({
               <p className="mt-3 text-center text-note text-[var(--color-text-muted)]">
                 {tf("observer.introMeta", locale, { count: questions.length })}
               </p>
+              <p className="mt-2 text-center text-caption leading-relaxed text-[var(--color-text-secondary)]">
+                {t(lockedRelationship ? "observer.introResumeInternal" : "observer.introResumeExternal", locale)}
+              </p>
             </section>
           </div>
         </main>
