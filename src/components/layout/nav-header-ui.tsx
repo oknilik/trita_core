@@ -15,6 +15,7 @@ import {
   resolveWorkspaceNavRole,
   type WorkspaceNavItem,
 } from "@/lib/navigation/config";
+import { resolveActiveWorkspaceItem } from "@/lib/navigation/active-item";
 import { getUserMenuItemIds } from "@/lib/navigation/visibility";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { isConsultingLed } from "@/lib/operating-mode";
@@ -314,7 +315,6 @@ function NavHeaderContent({
     });
   }
 
-  const homePath = homeHref.split("?")[0] ?? homeHref;
   const activeTab = searchParams.get("tab");
 
   /**
@@ -338,10 +338,7 @@ function NavHeaderContent({
   const homeItem = navItems.find((item) => item.id === "home");
   const homeLabel = homeItem?.label ?? t("nav.home", locale);
   const homeDestination = homeItem?.primaryHref ?? homeHref;
-  const onHome =
-    homePath === "/dashboard"
-      ? pathname === "/dashboard"
-      : pathname.startsWith(homePath);
+  const activeItemId = resolveActiveWorkspaceItem(navItems, pathname, activeTab);
 
   const refreshIdentity = useCallback(async () => {
     setIdentityReady(false);
@@ -479,35 +476,6 @@ function NavHeaderContent({
     }
   }
 
-  function isNavItemActive(item: WorkspaceNavItem): boolean {
-    const currentPathWithQuery = activeTab ? `${pathname}?tab=${activeTab}` : pathname;
-    const matchesPrefix = (prefix: string) => {
-      if (prefix.includes("?")) {
-        if (currentPathWithQuery === prefix) return true;
-        // Org overview is the implicit default when no `tab` query is present.
-        if (prefix.endsWith("?tab=overview") && activeTab == null) {
-          return pathname === prefix.split("?")[0];
-        }
-        return false;
-      }
-      return pathname.startsWith(prefix);
-    };
-
-    switch (item.id) {
-      case "home":
-        return onHome;
-      case "teams":
-        return teams.some((team) => pathname.startsWith(`/team/${team.id}`)) && activeTab !== "profile";
-      case "analytics":
-        return item.matchPrefixes.some(matchesPrefix);
-      case "hiring":
-        return org ? pathname.startsWith(`/hiring/${org.id}`) : false;
-      case "org":
-        return item.matchPrefixes.some(matchesPrefix);
-      default:
-        return item.matchPrefixes.some(matchesPrefix);
-    }
-  }
 
   // FONTOS: ez NEM komponens, hanem JSX-változó.
   //
@@ -547,22 +515,7 @@ function NavHeaderContent({
                 <span>{t("nav.profileSettings", locale)}</span>
               </Link>
 
-              <Link
-                href="/profile/results"
-                onClick={closeAll}
-                data-testid="nav-user-menu-results"
-                className={`mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2 13.5h12" />
-                    <path d="M4 10V6.5" />
-                    <path d="M8 10V3.5" />
-                    <path d="M12 10V8" />
-                  </svg>
-                </span>
-                <span>{t("nav.results", locale)}</span>
-              </Link>
+
             </>
           ) : null}
 
@@ -706,7 +659,7 @@ function NavHeaderContent({
             className="pointer-events-auto hidden items-center gap-1 rounded-[15px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-1 shadow-[0_1px_2px_rgba(26,26,46,0.04)] lg:flex lg:justify-self-center"
           >
             {navItems.map((item, index) => {
-              const isActive = isNavItemActive(item);
+              const isActive = activeItemId === item.id;
               const isHighlighted = isActive || openDropdown === item.id;
               const itemClass = isHighlighted ? navItemActive : navItemInactive;
               const badgeClass = isHighlighted
@@ -953,6 +906,7 @@ function NavHeaderContent({
                           href={item.primaryHref}
                           icon={getItemIcon(item.id, "h-4 w-4")}
                           title={item.label}
+                          active={activeItemId === item.id}
                           desc=""
                           onClick={() => setMobileMenu("closed")}
                         />
@@ -1012,21 +966,7 @@ function NavHeaderContent({
                           <span>{t("nav.profileSettings", locale)}</span>
                         </Link>
 
-                        <Link
-                          href="/profile/results"
-                          onClick={() => setMobileMenu("closed")}
-                          className={`mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
-                        >
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M2 13.5h12" />
-                              <path d="M4 10V6.5" />
-                              <path d="M8 10V3.5" />
-                              <path d="M12 10V8" />
-                            </svg>
-                          </span>
-                          <span>{t("nav.results", locale)}</span>
-                        </Link>
+
                       </>
                     ) : null}
 

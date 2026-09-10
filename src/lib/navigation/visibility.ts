@@ -16,7 +16,7 @@ interface WorkspaceRoleVisibility {
 const ADMIN_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
-    results: false,
+    results: true,
     // Feladataim: a tanácsadó/admin is lehet csapattag — a menü csak akkor
     // jelenik meg, ha tényleg van rá kontextus (ld. buildTasksNav).
     tasks: true,
@@ -45,7 +45,7 @@ const ADMIN_VISIBILITY: WorkspaceRoleVisibility = {
 const MANAGER_VISIBILITY: WorkspaceRoleVisibility = {
   topLevel: {
     home: true,
-    results: false,
+    results: true,
     tasks: true,
     teams: true,
     hiring: true,
