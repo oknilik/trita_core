@@ -36,12 +36,12 @@ const GLYPH_TOKENS = {
   "--color-sage": "var(--color-sage-300)",
 } as CSSProperties;
 
-function PartnerPlaceholder() {
+function PartnerPlaceholder({ dimmed = false }: { dimmed?: boolean }) {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 120 100"
-      className="h-full w-full text-[var(--color-accent-primary)]"
+      className={`h-full w-full text-[var(--color-accent-primary)] ${dimmed ? "opacity-50" : ""}`}
       fill="none"
     >
       <circle cx="51" cy="46" r="23" fill="currentColor" fillOpacity="0.42" />
@@ -193,7 +193,7 @@ export function InteractionEntryCard({
 
           <span className="text-center font-fraunces text-heading text-[var(--color-accent-primary)]">×</span>
 
-          <div className={`min-w-0 text-center ${preview.state === "new" ? "opacity-50" : ""}`}>
+          <div className="min-w-0 text-center">
             <div className="mx-auto flex h-24 max-w-32 items-center justify-center" style={GLYPH_TOKENS}>
               {preview.state === "ready" && preview.otherGlyph ? (
                 <TypeGlyph
@@ -207,7 +207,7 @@ export function InteractionEntryCard({
                   className="h-full w-full"
                 />
               ) : (
-                <PartnerPlaceholder />
+                <PartnerPlaceholder dimmed={preview.state === "new"} />
               )}
             </div>
             <p className="mt-1 truncate text-micro font-semibold uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
