@@ -22,11 +22,26 @@ describe("TeamMemberSnapshot", () => {
   it("a riport előtt lezárt előnézetként mutatja a riportfüggő felismeréseket", () => {
     render(<TeamMemberSnapshot {...baseProps} report={null} />);
 
-    expect(screen.getByText("A csapat készen áll")).toBeInTheDocument();
+    expect(screen.getByText("Az önértékelések elkészültek")).toBeInTheDocument();
+    expect(screen.getByText("Visszajelzések gyűjtése")).toBeInTheDocument();
+    expect(screen.getByRole("list", { name: "A csapatriport lépései" })).toBeInTheDocument();
+    expect(screen.getByText("Adatgyűjtés").closest("li")).toHaveAttribute("aria-current", "step");
     expect(screen.getAllByText("A riporttal nyílik meg")).toHaveLength(2);
     expect(screen.getByText("Már 4 / 5 csapattárs kitöltötte a kapcsolati kört.")).toBeInTheDocument();
-    expect(screen.getByText("Minden saját feladatod kész – a riport publikálására vársz.")).toBeInTheDocument();
+    expect(screen.getByText("A személyiségprofilok elkészültek; a mérési körben még érkeznek válaszok. Ezután következik a tanácsadói értelmezés.")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Feladataim/ })).not.toBeInTheDocument();
+  });
+
+  it("a teljes adatgyűjtés után a tanácsadói értelmezést jelzi, publikálást nem állít", () => {
+    render(<TeamMemberSnapshot {...baseProps} stepProgress={[]} report={null} />);
+    expect(screen.getByText("Tanácsadói értelmezésre vár")).toBeInTheDocument();
+    expect(screen.queryByText("Publikált riport elérhető")).not.toBeInTheDocument();
+  });
+
+  it("a régi, vizuális aggregátum nélküli publikált riport is megnyitható", () => {
+    render(<TeamMemberSnapshot {...baseProps} report={{ aggregates: null, summary: "Korábbi riport" }} />);
+    expect(screen.getByText("Publikált riport elérhető")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Riport megnyitása/ })).toBeInTheDocument();
   });
 
   it("a publikált riport után valós szerepeket és mintázatot mutat", () => {

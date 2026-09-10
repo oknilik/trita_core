@@ -1,4 +1,24 @@
 export const orgTranslations = {
+  teamReadiness: {
+    profiles: { hu: "Személyiségprofilok készülnek", en: "Personal profiles in progress" },
+    collection: { hu: "Visszajelzések gyűjtése", en: "Feedback collection" },
+    interpretation: { hu: "Tanácsadói értelmezésre vár", en: "Awaiting consultant interpretation" },
+    published: { hu: "Publikált riport elérhető", en: "Published report available" },
+    profilesDescription: { hu: "A személyiségprofilok készülnek. A közös riport a tanácsadói értelmezés és jóváhagyás után válik elérhetővé.", en: "Personal profiles are in progress. The shared report becomes available after consultant interpretation and approval." },
+    collectionDescription: { hu: "A személyiségprofilok elkészültek; a mérési körben még érkeznek válaszok. Ezután következik a tanácsadói értelmezés.", en: "Personal profiles are complete; responses are still being collected in the assessment round. Consultant interpretation follows." },
+    interpretationDescription: { hu: "A jelenlegi adatgyűjtés elkészült. A csapatriportot a tanácsadó az értelmezés és jóváhagyás után publikálja.", en: "The current data collection is complete. Your consultant publishes the team report after interpretation and approval." },
+    publishedDescription: { hu: "A tanácsadó által jóváhagyott riport megnyitható. A riport a publikáláskor rögzített képet mutatja; az élő kitöltésszám ettől eltérhet.", en: "The consultant-approved report is available. It reflects the picture at publication; live completion counts may differ." },
+    stepProfiles: { hu: "Profilok", en: "Profiles" },
+    stepCollection: { hu: "Adatgyűjtés", en: "Data collection" },
+    stepInterpretation: { hu: "Értelmezés", en: "Interpretation" },
+    stepPublished: { hu: "Publikálás", en: "Publication" },
+    progressLabel: { hu: "A csapatriport lépései", en: "Team report stages" },
+    profilesComplete: { hu: "Az önértékelések elkészültek", en: "Self-assessments are complete" },
+    profilesInProgress: { hu: "Az önértékelések készülnek", en: "Self-assessments are in progress" },
+    profileCounts: { hu: "{done} kész · {inProgress} folyamatban · {waiting} még nem kezdte el", en: "{done} complete · {inProgress} in progress · {waiting} not started" },
+    analysisMinimum: { hu: "Az elemzés adatalapja", en: "Data for analysis" },
+    analysisAvailable: { hu: "Az elemzéshez elegendő profil elkészült", en: "Enough profiles are complete for analysis" },
+  },
   teamReportCompatibility: {
     missingComparison: {
       hu: "A saját eredményed megvan. Ehhez a korábbi riporthoz a csapattal való összevetés nem érhető el; a saját eredményedet és a jóváhagyott riport szövegét továbbra is megnyithatod.",

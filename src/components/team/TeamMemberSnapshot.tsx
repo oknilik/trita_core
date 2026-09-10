@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { t, tf } from "@/lib/i18n";
+import { resolveTeamReadiness, TEAM_READINESS_STAGES } from "@/lib/team-readiness";
 import { reportPatternLabel } from "@/lib/team-report-compatibility";
 import type { TeamReportAggregates } from "@/lib/team-report";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
@@ -97,7 +99,10 @@ export function TeamMemberSnapshot({
   const trustStep = stepProgress.find((step) => step.type === "TRUST_360");
   const aggregates = report?.aggregates ?? null;
   const roleDistribution = aggregates?.roleDistribution ?? null;
-  const reportReady = Boolean(report && aggregates);
+  const reportReady = Boolean(report);
+  const locale = isHu ? "hu" : "en";
+  const readiness = resolveTeamReadiness({ memberCount, completedCount, stepProgress, hasPublishedReport: reportReady });
+  const stageIndex = TEAM_READINESS_STAGES.indexOf(readiness.stage);
   const roleEntries = roleDistribution
     ? (Object.entries(roleDistribution.counts) as Array<[TeamRoleCode, number]>)
         .filter(([role, count]) => role in TEAM_ROLES && count > 0)
@@ -110,10 +115,8 @@ export function TeamMemberSnapshot({
 
   const copy = isHu
     ? {
-        title: completionPct === 100 ? "A csapat készen áll" : "A közös kép épül",
-        body: completionPct === 100
-          ? "Minden személyiségprofil elkészült. A riporttal megnyílnak a közös szerepek és működési minták."
-          : `${completedCount} csapattárs elkészült, ${inProgressCount} folyamatban van és ${waitingCount} még nem kezdte el.`,
+        title: t(readiness.profilesComplete ? "teamReadiness.profilesComplete" : "teamReadiness.profilesInProgress", locale),
+        body: tf("teamReadiness.profileCounts", locale, { done: completedCount, inProgress: inProgressCount, waiting: waitingCount }),
         profile: "Személyiségprofil",
         roles: "Csapatszerepek",
         trust: "Bizalmi háló",
@@ -135,18 +138,16 @@ export function TeamMemberSnapshot({
         nextTask: "Van nyitott teendőd – a részleteket a fenti teendőkártyán találod.",
         nextReady: reportReady
           ? "A csapatriport elkészült – nézd meg a közös felismeréseket."
-          : "Minden saját feladatod kész – a riport publikálására vársz.",
+          : t(`teamReadiness.${readiness.stage}Description`, locale),
         taskCta: "Feladataim",
         reportCta: "Riport megnyitása",
-        statusLabel: reportReady ? "Riport elérhető" : "Riport készül",
+        statusLabel: t(`teamReadiness.${readiness.stage}`, locale),
         roleFallback: "A szerepeloszlás a riportban jelenik meg.",
         patternFallback: "A jóváhagyott csapatmintázat",
       }
     : {
-        title: completionPct === 100 ? "The team is ready" : "The shared picture is taking shape",
-        body: completionPct === 100
-          ? "Every personality profile is complete. Shared roles and working patterns unlock with the report."
-          : `${completedCount} teammates are complete, ${inProgressCount} are in progress and ${waitingCount} have not started.`,
+        title: t(readiness.profilesComplete ? "teamReadiness.profilesComplete" : "teamReadiness.profilesInProgress", locale),
+        body: tf("teamReadiness.profileCounts", locale, { done: completedCount, inProgress: inProgressCount, waiting: waitingCount }),
         profile: "Personality profile",
         roles: "Team roles",
         trust: "Trust network",
@@ -168,24 +169,24 @@ export function TeamMemberSnapshot({
         nextTask: "You have an open task – find the details in the action card above.",
         nextReady: reportReady
           ? "The team report is ready – explore the shared insights."
-          : "Your tasks are complete – you are waiting for the report to be published.",
+          : t(`teamReadiness.${readiness.stage}Description`, locale),
         taskCta: "My tasks",
         reportCta: "Open report",
-        statusLabel: reportReady ? "Report available" : "Report in progress",
+        statusLabel: t(`teamReadiness.${readiness.stage}`, locale),
         roleFallback: "Role distribution appears in the report.",
         patternFallback: "The approved team pattern",
       };
 
   return (
     <section>
-      <div className="mb-4 flex items-end justify-between gap-4">
+      <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
             {isHu ? "állapotkép" : "snapshot"}
           </p>
           <h2 className="mt-1 font-fraunces text-3xl text-ink">{isHu ? "A közös kép állása" : "Your shared team picture"}</h2>
         </div>
-        <span className={`hidden rounded-full px-3 py-1.5 text-note font-semibold sm:inline-flex ${
+        <span className={`inline-flex rounded-full px-3 py-1.5 text-caption font-semibold ${
           reportReady
             ? "bg-state-success-bg text-state-success-fg"
             : "bg-[var(--color-layer-team-soft)] text-[var(--color-layer-team-accent)]"
@@ -193,6 +194,19 @@ export function TeamMemberSnapshot({
           {copy.statusLabel}
         </span>
       </div>
+
+      <ol aria-label={t("teamReadiness.progressLabel", locale)} className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {TEAM_READINESS_STAGES.map((stage, index) => (
+          <li
+            key={stage}
+            aria-current={stage === readiness.stage ? "step" : undefined}
+            className={`rounded-xl border px-3 py-2 text-caption ${index <= stageIndex ? "border-surface-team-border bg-surface-team-accent-soft text-ink" : "border-sand text-ink-body"}`}
+          >
+            <span className="mr-2 font-semibold" aria-hidden>{index < stageIndex ? "✓" : index + 1}</span>
+            {t(`teamReadiness.step${stage[0].toUpperCase()}${stage.slice(1)}`, locale)}
+          </li>
+        ))}
+      </ol>
 
       <Card
         as="div"
