@@ -14,6 +14,16 @@ export const orgTranslations = {
       en: "The complete visual summary of this earlier report is unavailable. You can open the approved written interpretation.",
     },
   },
+  managerAccess: {
+    restrictedTitle: { hu: "A csapatok jelenleg csak olvashatók", en: "Teams are currently read-only" },
+    restrictedDescription: { hu: "A meglévő állapotok és az elérhető riportok megtekinthetők. A módosításhoz a szervezeti hozzáférés rendezése szükséges.", en: "Existing progress and available reports remain visible. Organization access must be restored before making changes." },
+    frozenTitle: { hu: "A csapatok részletes nézete szünetel", en: "Detailed team access is paused" },
+    frozenDescription: { hu: "Jelenleg csak a csapatok alapadatai érhetők el. A részletes állapot és az eredmények a szervezeti hozzáférés helyreállítása után nyílnak meg.", en: "Only basic team information is currently available. Detailed progress and results return once organization access is restored." },
+    overview: { hu: "Csapat áttekintése", en: "View team overview" },
+    completedTitle: { hu: "Az önértékelések elkészültek", en: "Self-assessments are complete" },
+    completedDescription: { hu: "A kitöltöttség az adatgyűjtés állapotát mutatja. A csapat áttekintésében találod a tanácsadói értelmezés és a publikált riport állapotát.", en: "Completion reflects data collection. Open the team overview for the status of consultant interpretation and the published report." },
+    limited: { hu: "Korlátozott hozzáférés", en: "Limited access" },
+  },
   advisory: {
     eyebrow: {
       hu: "tanácsadói konzultáció",

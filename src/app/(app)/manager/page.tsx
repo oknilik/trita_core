@@ -24,6 +24,7 @@ import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { ChevronRightIcon } from "@/components/ui/icons";
 // A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
 // a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
+import { t } from "@/lib/i18n";
 import { hexLetter } from "@/lib/hexaco";
 
 function formatTimeAgo(date: Date, isHu: boolean): string {
@@ -103,7 +104,13 @@ export default async function ManagerCockpitPage() {
     secondary?: { label: string; href: string } | null;
   };
 
-  if (teamNeedingMembers) {
+  if (data.access.readOnly) {
+    nextStep = {
+      title: t(data.access.canViewProgress ? "managerAccess.restrictedTitle" : "managerAccess.frozenTitle", locale),
+      description: t(data.access.canViewProgress ? "managerAccess.restrictedDescription" : "managerAccess.frozenDescription", locale),
+      primary: { label: t("managerAccess.overview", locale), href: `/team/${data.teams[0].teamId}` },
+    };
+  } else if (teamNeedingMembers) {
     nextStep = {
       title: isHu ? "Csapat bővítése" : "Grow your team",
       description: isHu
@@ -126,7 +133,7 @@ export default async function ManagerCockpitPage() {
         href: `/team/${weakestTeam.teamId}?tab=members`,
       },
       secondary: weakestTeam.hasPattern
-        ? { label: isHu ? "Csapatkép" : "Team profile", href: `/team/${weakestTeam.teamId}?tab=intelligence#team-profile` }
+        ? { label: isHu ? "Csapatkép" : "Team profile", href: `/team/${weakestTeam.teamId}` }
         : null,
     };
   } else if (teamWithCampaign) {
@@ -143,13 +150,11 @@ export default async function ManagerCockpitPage() {
     };
   } else {
     nextStep = {
-      title: isHu ? "Minden rendben" : "All good",
-      description: isHu
-        ? "A csapataid jó állapotban vannak. Tekintsd át az eredményeket vagy indíts visszajelzési kört."
-        : "Your teams are in good shape. Review results or start a feedback round.",
+      title: t("managerAccess.completedTitle", locale),
+      description: t("managerAccess.completedDescription", locale),
       primary: {
         label: isHu ? "Csapatkép megtekintése" : "View team profile",
-        href: `/team/${data.teams[0].teamId}?tab=intelligence#team-profile`,
+        href: `/team/${data.teams[0].teamId}`,
       },
     };
   }
@@ -186,7 +191,7 @@ export default async function ManagerCockpitPage() {
           <span key="members" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
             {data.totalMembers} {isHu ? "tag" : "members"}
           </span>,
-          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
+          data.access.canViewProgress && <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
             {data.totalCompleted} {isHu ? "kitöltve" : "completed"}
           </span>,
           <span key="teams" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
@@ -204,7 +209,7 @@ export default async function ManagerCockpitPage() {
               : (isHu ? "Első csapat" : "Primary team")}
           </Link>
         }
-        aside={
+        aside={data.access.canViewProgress ? (
           <>
             <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
               {isHu ? "Összesítés" : "Summary"}
@@ -236,7 +241,7 @@ export default async function ManagerCockpitPage() {
               </div>
             </div>
           </>
-        }
+        ) : null}
       />
 
       <section>
@@ -263,16 +268,18 @@ export default async function ManagerCockpitPage() {
                 <div className="flex items-center justify-between gap-3">
                   <p className="font-fraunces text-base text-ink">{team.teamName}</p>
                   <DashboardStatusChip
-                    label={team.hasPattern ? (isHu ? "Csapatkép kész" : "Pattern ready") : `${team.completionPct}%`}
-                    tone={team.hasPattern ? "sage" : team.completionPct >= 50 ? "warm" : "bronze"}
+                    label={data.access.canViewProgress ? `${team.completionPct}%` : t("managerAccess.limited", locale)}
+                    tone={data.access.canViewProgress && team.completionPct === 100 ? "sage" : "warm"}
                   />
                 </div>
-                <div className="mt-3 flex gap-1.5">
+                {data.access.canViewProgress && <div className="mt-3 flex gap-1.5">
                   {team.completedCount > 0 && <div className="h-1.5 rounded-full bg-sage" style={{ flex: team.completedCount }} />}
                   {team.memberCount - team.completedCount > 0 && <div className="h-1.5 rounded-full bg-bronze/40" style={{ flex: team.memberCount - team.completedCount }} />}
-                </div>
+                </div>}
                 <p className="mt-2 text-note text-ink-body">
-                  {team.completedCount}/{team.memberCount} {isHu ? "tag kitöltötte" : "members completed"}
+                  {data.access.canViewProgress
+                    ? <>{team.completedCount}/{team.memberCount} {isHu ? "tag kitöltötte" : "members completed"}</>
+                    : <>{team.memberCount} {isHu ? "tag" : "members"}</>}
                   {team.pendingInviteCount > 0 && (
                     <> · {team.pendingInviteCount} {isHu ? "függő meghívó" : "pending invites"}</>
                   )}
@@ -284,22 +291,25 @@ export default async function ManagerCockpitPage() {
       </section>
 
       {/* ═══ TAGOK ÁLLAPOT ═══ */}
-      {data.primaryTeamData && (
+      {data.access.canViewProgress && data.primaryTeamProgress && (
         <section>
           <DashboardSectionHeader
             label={isSingleTeam
               ? (isHu ? "Csapattagok állapota" : "Team member status")
-              : (isHu ? `${data.primaryTeamData.teamName} – tagok` : `${data.primaryTeamData.teamName} – members`)}
+              : (isHu ? `${data.primaryTeamProgress.teamName} – tagok` : `${data.primaryTeamProgress.teamName} – members`)}
             className="mb-4"
           />
           <DashboardPanel className="divide-y divide-[var(--color-border-default)] p-0">
-            {data.primaryTeamData.members.map((member) => {
-              const isDone = member.scores !== null;
+            {data.primaryTeamProgress.members.map((member) => {
+              const isDone = member.hasSelfAssessment;
+              const rawMember = data.access.canViewRaw
+                ? data.primaryTeamData?.members.find((item) => item.userId === member.userId)
+                : null;
               const [from, to] = getAvatarGradient(member.displayName);
               const initial = getAvatarMonogram(member.displayName, { length: 1 });
 
               return (
-                <div key={member.id} className="flex items-center gap-3 px-5 py-3.5">
+                <div key={member.userId} className="flex items-center gap-3 px-5 py-3.5">
                   <div
                     className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-note font-semibold text-white"
                     style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
@@ -315,9 +325,9 @@ export default async function ManagerCockpitPage() {
                   ) : (
                     <DashboardStatusChip label={isHu ? "Folyamatban" : "In progress"} tone="warm" />
                   )}
-                  {isDone && member.top3Dims.length > 0 && (
+                  {rawMember && rawMember.top3Dims.length > 0 && (
                     <div className="hidden items-center gap-1 sm:flex">
-                      {member.top3Dims.map((d) => (
+                      {rawMember.top3Dims.map((d) => (
                         <span
                           key={d.code}
                           className="rounded-full px-1.5 py-0.5 text-micro font-semibold text-white"
@@ -336,7 +346,7 @@ export default async function ManagerCockpitPage() {
       )}
 
       {/* ═══ DYNAMICS ÖSSZEFOGLALÓ ═══ */}
-      {data.primaryTeamData && data.primaryTeamData.dynamicsEdges.length > 0 && (
+      {data.access.canViewRaw && data.primaryTeamData && data.primaryTeamData.dynamicsEdges.length > 0 && (
         <section>
           <DashboardSectionHeader label={isHu ? "Csapatdinamika" : "Team dynamics"} className="mb-4" />
           <div className="grid gap-3 sm:grid-cols-3">
