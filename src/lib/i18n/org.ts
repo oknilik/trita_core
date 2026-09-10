@@ -1,4 +1,12 @@
 export const orgTranslations = {
+  teamUi: {
+    completedProfiles: { hu: "Kitöltött önértékelések", en: "Completed self-assessments" },
+    profileReadiness: { hu: "Önértékelések készültsége", en: "Self-assessment completion" },
+    feedbackRound: { hu: "Visszajelzési kör", en: "Feedback round" },
+    startFeedbackRound: { hu: "Visszajelzési kör indítása", en: "Start feedback round" },
+    feedbackRoundStatus: { hu: "Visszajelzési kör állapota", en: "Feedback round status" },
+    membersMissingData: { hu: "{count} tagnál még hiányzik az értelmezéshez szükséges eredmény.", en: "{count} members do not yet have the results needed for interpretation." },
+  },
   teamEvidence: {
     measuredRelationships: { hu: "Minden megjelenített kapcsolat mért kapcsolati visszajelzésből származik ({measured}/{total}).", en: "Every displayed connection comes from measured relationship feedback ({measured}/{total})." },
     mixedRelationships: { hu: "{measured}/{total} kapcsolat mért visszajelzésből származik; a többi profilból becsült.", en: "{measured}/{total} connections come from measured feedback; the rest are profile-based estimates." },

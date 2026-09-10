@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useId } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { PrimaryTabs } from "./PrimaryTabs";
@@ -72,6 +72,7 @@ export function OrgPageShell({
   dossierBaseHref = null,
 }: OrgPageShellProps) {
   const searchParams = useSearchParams();
+  const tabsId = useId();
   // Egyszerű váz mindenkinek: Csapatok az alapfül; a Kampányok fül csak a
   // tanácsadói felületen létezik. (Az Áttekintés fül kivezetve — duplikált.)
   const defaultTab = "teams";
@@ -154,9 +155,9 @@ export function OrgPageShell({
       {/* A4: a szervezeti cockpit fül-használata — mit néznek valójában. */}
       <TabViewTracker surface="org" tab={activeTab} />
 
-      <PrimaryTabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
+      <PrimaryTabs idPrefix={tabsId} label={t("nav.org", loc)} tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
 
-      <div>
+      <div id={`${tabsId}-panel`} role="tabpanel" aria-labelledby={`${tabsId}-${activeTab}`} tabIndex={0}>
         {canManageMeasurements && activeTab === "campaigns" && (
           <OrgCampaignsTab
             orgId={orgId}

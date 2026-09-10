@@ -8,22 +8,39 @@ export interface TabDef {
 }
 
 interface PrimaryTabsProps {
+  idPrefix: string;
+  label: string;
   tabs: TabDef[];
   activeTab: string;
   onTabChange: (key: string) => void;
 }
 
-export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) {
+export function PrimaryTabs({ tabs, activeTab, onTabChange, idPrefix, label }: PrimaryTabsProps) {
   return (
     <div className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-      <div className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-surface-card p-1.5 shadow-[0_10px_28px_rgba(26,26,46,0.04)]">
+      <div role="tablist" aria-label={label} className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-surface-card p-1.5 shadow-[0_10px_28px_rgba(26,26,46,0.04)]">
       {tabs.map((tab) => {
         const isActive = tab.key === activeTab;
         return (
           <button
             key={tab.key}
+            id={`${idPrefix}-${tab.key}`}
+            role="tab"
+            aria-selected={isActive}
+            aria-controls={`${idPrefix}-panel`}
+            tabIndex={isActive ? 0 : -1}
             type="button"
             onClick={() => onTabChange(tab.key)}
+            onKeyDown={(event) => {
+              const index = tabs.findIndex((item) => item.key === tab.key);
+              const next = event.key === "ArrowRight" ? (index + 1) % tabs.length
+                : event.key === "ArrowLeft" ? (index - 1 + tabs.length) % tabs.length
+                  : event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : null;
+              if (next === null) return;
+              event.preventDefault();
+              onTabChange(tabs[next].key);
+              document.getElementById(`${idPrefix}-${tabs[next].key}`)?.focus();
+            }}
             className={[
               "inline-flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-caption whitespace-nowrap transition-all",
               isActive

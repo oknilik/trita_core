@@ -53,9 +53,9 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         <TeamHeroBlock ctx={ctx} active="intelligence" />
 
         <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,var(--color-surface-card)_0%,var(--color-surface-muted)_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
-          <p className="font-mono text-micro uppercase tracking-widest text-muted">
+          <SectionEyebrow>
             {t("teamComp.tabIntelligence", locale)}
-          </p>
+          </SectionEyebrow>
           <h1 className="mt-1 font-fraunces text-title leading-tight text-ink md:text-display">
             {isHu ? "Még nincs elég adat a csapatintelligenciához" : "Not enough data yet for team intelligence"}
           </h1>
@@ -66,7 +66,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-              {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
+              {t("teamUi.completedProfiles", locale)}:{" "}
               <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
             </span>
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
@@ -74,7 +74,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               <span className="font-semibold text-ink">{missingForStableIntelligence}</span>
             </span>
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-              {isHu ? "Observer kör" : "Observer round"}:{" "}
+              {t("teamUi.feedbackRound", locale)}:{" "}
               <span className="font-semibold text-ink">
                 {teamData.activeCampaign ? (isHu ? "aktív" : "active") : (isHu ? "nincs" : "none")}
               </span>
@@ -83,25 +83,25 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           <div className="mt-4 flex flex-wrap gap-2">
             <Link
               href={`/team/${teamId}?tab=members`}
-              className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
+              className={getButtonClassName({ variant: "secondary", size: "sm" })}
             >
               {isHu ? "Tagok és kitöltések kezelése" : "Manage members and completions"}
             </Link>
             {canReachOrgCampaigns && teamData.orgId ? (
               <Link
                 href={`/org/${teamData.orgId}?tab=campaigns`}
-                className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
+                className={getButtonClassName({ variant: "secondary", size: "sm" })}
               >
-                {isHu ? "Observer kör indítása" : "Start observer round"}
+                {t("teamUi.startFeedbackRound", locale)}
               </Link>
             ) : null}
           </div>
         </section>
 
         <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <p className="font-mono text-micro uppercase tracking-widest text-muted">
+          <SectionEyebrow>
             {isHu ? "Kiknél hiányzik még adat" : "Members still missing data"}
-          </p>
+          </SectionEyebrow>
           {membersWithoutAssessment.length > 0 ? (
             <div className="mt-3 flex flex-wrap gap-2">
               {membersWithoutAssessment.map((member) => (
@@ -232,7 +232,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         <summary className="min-h-11 cursor-pointer py-3 text-caption font-semibold text-ink">{t("teamHierarchy.readinessDetails", locale)}</summary>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
-            <p className="text-note text-ink-body">{isHu ? "Assessment készültség" : "Assessment readiness"}</p>
+            <p className="text-caption text-ink-body">{t("teamUi.profileReadiness", locale)}</p>
             <p className="mt-1 font-fraunces text-title text-ink">{Math.round((assessedCount / Math.max(totalCount, 1)) * 100)}%</p>
             <p className="text-note text-muted">{assessedCount}/{totalCount}</p>
           </div>
@@ -240,7 +240,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               (UX-audit #28): az „Aktív"/„Elérhető" állapot, nem mennyiség. */}
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-note text-ink-body">{isHu ? "Observer kör státusz" : "Observer round status"}</p>
+              <p className="text-caption text-ink-body">{t("teamUi.feedbackRoundStatus", locale)}</p>
               <span
                 className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
                   teamData.activeCampaign ? "bg-sage/15 text-sage-dark" : "bg-sand text-ink-body"

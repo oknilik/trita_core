@@ -306,10 +306,7 @@ export function TeamIntelligence({
               {isHu ? "Még hiányzó adatok" : "Missing data members"}
             </p>
             <p className="mt-1 text-caption text-ink-body">
-              {membersWithoutData.length}{" "}
-              {isHu
-                ? "tag még nem rendelkezik értelmezhető assessment adattal."
-                : "members still do not have usable assessment data."}
+              {tf("teamUi.membersMissingData", loc, { count: membersWithoutData.length })}
             </p>
             <div className="mt-2 flex flex-wrap gap-1.5">
               {membersWithoutData.slice(0, 8).map((member) => (
@@ -398,9 +395,6 @@ export function TeamIntelligence({
           <p className="font-dm-sans text-sm font-semibold text-ink">
             {isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
           </p>
-          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-caption font-medium text-ink-body">
-            {isHu ? "deep-dive tulajdonos" : "deep-dive owner"}
-          </span>
         </div>
         <p className="text-xs leading-relaxed text-ink-body">
           {isHu

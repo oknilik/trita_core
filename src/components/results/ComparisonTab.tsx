@@ -1,5 +1,7 @@
 "use client";
 
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+
 import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
@@ -628,9 +630,7 @@ export function ComparisonTab({
         className="rounded-2xl p-6 px-7"
         style={{ background: "linear-gradient(135deg, var(--color-surface-inverse), var(--color-surface-inverse-soft))" }}
       >
-        <p className="mb-2 text-micro uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
-          {t("comparison.summaryEyebrow", locale)}
-        </p>
+        <SectionEyebrow tone="onDark" className="mb-2">{t("comparison.summaryEyebrow", locale)}</SectionEyebrow>
         <p className="mb-3 font-fraunces text-lg text-white">
           {t("comparison.summaryTitle", locale)}
         </p>

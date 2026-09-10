@@ -259,8 +259,8 @@ const TOPICS: HelpTopic[] = [
           en: "How do I request feedback from someone?",
         },
         answer: {
-          hu: "Az Eredményeim oldal Külső kép fülén, a Meghívások résznél tudsz linket készíteni és elküldeni. Egyszerre legfeljebb 5 aktív meghívód lehet, és minden link 30 napig érvényes. A kitöltéshez az ismerősödnek nem kell regisztrálnia.",
-          en: "On the Outside view tab of My Results, use the Invitations section to create and send a link. You can have up to 5 active invites at a time, and each link is valid for 30 days. Your peer does not need to register to fill it out.",
+          hu: "Az Eredményeim oldal Külső kép fülén, a Meghívások résznél tudsz linket készíteni és elküldeni. Egyszerre legfeljebb 5 aktív meghívód lehet, és minden link 30 napig érvényes. Szervezeti mérésnél a tanácsadó indítása után te választod ki az értékelőidet. A név szerint felkért kolléga a saját fiókjával lép be; a külső ismerős a jóváhagyott linken belépés nélkül válaszol. Külső értékelőként a mentett kitöltés ugyanebben a böngészőben folytatható.",
+          en: "On the Outside view tab of My Results, use the Invitations section to create and send a link. You can have up to 5 active invites at a time, and each link is valid for 30 days. In an organization measurement, you choose raters after your consultant starts the round. A named colleague signs in with their own account; an external contact responds using the approved link without signing in. External raters resume saved answers in the same browser.",
         },
         link: {
           href: "/profile/results?tab=comparison#invitations",

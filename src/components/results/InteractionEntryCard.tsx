@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { CSSProperties } from "react";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
@@ -108,9 +109,7 @@ export function InteractionEntryCard({
 
       <div className="relative grid min-w-0 gap-5 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:items-center">
         <div className="min-w-0">
-          <p className="text-label uppercase text-[var(--color-accent-primary)]">
-            {t("results.interactionEntryEyebrow", locale)}
-          </p>
+          <SectionEyebrow tone="onDark">{t("results.interactionEntryEyebrow", locale)}</SectionEyebrow>
 
           {copy.status ? (
             <p className="mt-3 flex items-center gap-2 text-micro font-semibold text-[var(--color-text-on-inverse-muted)]">
