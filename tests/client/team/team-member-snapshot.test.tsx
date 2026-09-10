@@ -19,15 +19,15 @@ const baseProps = {
 };
 
 describe("TeamMemberSnapshot", () => {
-  it("a riport előtt lezárt előnézetként mutatja a riportfüggő felismeréseket", () => {
+  it("a riport előtt a következő lépést mutatja, félrevezető lezárt előnézet nélkül", () => {
     render(<TeamMemberSnapshot {...baseProps} report={null} />);
 
     expect(screen.getByText("Az önértékelések elkészültek")).toBeInTheDocument();
     expect(screen.getByText("Visszajelzések gyűjtése")).toBeInTheDocument();
     expect(screen.getByRole("list", { name: "A csapatriport lépései" })).toBeInTheDocument();
     expect(screen.getByText("Adatgyűjtés").closest("li")).toHaveAttribute("aria-current", "step");
-    expect(screen.getAllByText("A riporttal nyílik meg")).toHaveLength(2);
-    expect(screen.getByText("Már 4 / 5 csapattárs kitöltötte a kapcsolati kört.")).toBeInTheDocument();
+    expect(screen.queryByText("A riporttal nyílik meg")).not.toBeInTheDocument();
+    expect(screen.getByText("Kitöltések és adatgyűjtés részletei")).toBeInTheDocument();
     expect(screen.getByText("A személyiségprofilok elkészültek; a mérési körben még érkeznek válaszok. Ezután következik a tanácsadói értelmezés.")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Feladataim/ })).not.toBeInTheDocument();
   });
@@ -71,6 +71,11 @@ describe("TeamMemberSnapshot", () => {
       />,
     );
 
+    const reportLink = screen.getByRole("link", { name: /Riport megnyitása/ });
+    const readiness = screen.getByText("Kitöltések és adatgyűjtés részletei").closest("details");
+    expect(readiness).not.toHaveAttribute("open");
+    expect(reportLink.compareDocumentPosition(readiness!)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(screen.getByText("Összefoglaló")).toBeInTheDocument();
     expect(screen.queryByText("A riporttal nyílik meg")).not.toBeInTheDocument();
     expect(screen.getByText("Koordinátor · 2")).toBeInTheDocument();
     expect(screen.getByText("Megvalósító · 2")).toBeInTheDocument();

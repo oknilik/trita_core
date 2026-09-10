@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { t, tf } from "@/lib/i18n";
+import { extractNarrativeHighlights } from "@/lib/team-report-presentation";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { resolveTeamReadiness, TEAM_READINESS_STAGES } from "@/lib/team-readiness";
 import { reportPatternLabel } from "@/lib/team-report-compatibility";
 import type { TeamReportAggregates } from "@/lib/team-report";
@@ -7,7 +10,6 @@ import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { Card } from "@/components/ui/primitives/Card";
 import {
   ChevronRightIcon,
-  LockIcon,
   NetworkIcon,
   RoleClusterIcon,
   SparklesIcon,
@@ -71,18 +73,6 @@ function ProgressRow({
   );
 }
 
-function LockedPreview({ title, copy }: { title: string; copy: string }) {
-  return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-card/90 px-5 text-center backdrop-blur-[3px]">
-      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-layer-team-soft)] text-[var(--color-layer-team-accent)]">
-        <LockIcon />
-      </span>
-      <p className="mt-2.5 text-caption font-semibold text-ink">{title}</p>
-      <p className="mt-1 max-w-52 text-note leading-relaxed text-muted">{copy}</p>
-    </div>
-  );
-}
-
 export function TeamMemberSnapshot({
   teamId,
   isHu,
@@ -103,6 +93,7 @@ export function TeamMemberSnapshot({
   const locale = isHu ? "hu" : "en";
   const readiness = resolveTeamReadiness({ memberCount, completedCount, stepProgress, hasPublishedReport: reportReady });
   const stageIndex = TEAM_READINESS_STAGES.indexOf(readiness.stage);
+  const highlights = extractNarrativeHighlights(report?.summary, 3);
   const roleEntries = roleDistribution
     ? (Object.entries(roleDistribution.counts) as Array<[TeamRoleCode, number]>)
         .filter(([role, count]) => role in TEAM_ROLES && count > 0)
@@ -181,10 +172,8 @@ export function TeamMemberSnapshot({
     <section>
       <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
-            {isHu ? "állapotkép" : "snapshot"}
-          </p>
-          <h2 className="mt-1 font-fraunces text-3xl text-ink">{isHu ? "A közös kép állása" : "Your shared team picture"}</h2>
+          <SectionEyebrow>{isHu ? "állapotkép" : "snapshot"}</SectionEyebrow>
+          <h2 className="mt-1 font-fraunces text-3xl text-ink">{reportReady ? t("teamHierarchy.reportEssentials", locale) : isHu ? "A közös kép állása" : "Your shared team picture"}</h2>
         </div>
         <span className={`inline-flex rounded-full px-3 py-1.5 text-caption font-semibold ${
           reportReady
@@ -195,6 +184,38 @@ export function TeamMemberSnapshot({
         </span>
       </div>
 
+      {highlights.length > 0 && (
+        <Card as="div" spacing="md" className="mb-4">
+          <SectionEyebrow>{t("teamHierarchy.approvedInsights", locale)}</SectionEyebrow>
+          <ol className="mt-3 space-y-3">
+            {highlights.map((highlight, index) => (
+              <li key={index} className="flex gap-3 text-body text-ink-body">
+                <span className="font-semibold text-[var(--color-layer-team-accent)]" aria-hidden>{index + 1}.</span>
+                <span>{highlight}</span>
+              </li>
+            ))}
+          </ol>
+        </Card>
+      )}
+      <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-state-success-bg px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-micro font-semibold uppercase tracking-widest text-state-success-fg">{copy.nextLabel}</p>
+          <p className="mt-1 text-caption font-semibold text-ink">{hasPersonalTask ? copy.nextTask : copy.nextReady}</p>
+        </div>
+        {hasPersonalTask || reportReady ? (
+          <Link
+            href={hasPersonalTask ? "/tasks" : `/team/${teamId}?tab=report`}
+            className={getButtonClassName({ size: "sm", className: "gap-1 self-start sm:self-auto" })}
+          >
+            {hasPersonalTask ? copy.taskCta : copy.reportCta}
+            <ChevronRightIcon />
+          </Link>
+        ) : null}
+      </div>
+
+      <details open={!reportReady && !readiness.profilesComplete} className="mt-4 rounded-2xl border border-sand bg-surface-card p-4">
+        <summary className="min-h-11 cursor-pointer py-3 text-caption font-semibold text-ink">{t("teamHierarchy.readinessDetails", locale)}</summary>
+        <div className="pt-3">
       <ol aria-label={t("teamReadiness.progressLabel", locale)} className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {TEAM_READINESS_STAGES.map((stage, index) => (
           <li
@@ -248,7 +269,10 @@ export function TeamMemberSnapshot({
         </div>
       </Card>
 
-      <div className="mt-4 grid gap-4 md:grid-cols-3">
+        </div>
+      </details>
+
+      {reportReady && <div className="mt-4 grid gap-4 md:grid-cols-3">
         <Card as="article" spacing="md" className="relative min-h-48 overflow-hidden">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-layer-team-soft)] text-[var(--color-layer-team-accent)]"><RoleClusterIcon /></span>
           <h3 className="mt-4 font-fraunces text-xl text-ink">{copy.roleTitle}</h3>
@@ -262,7 +286,6 @@ export function TeamMemberSnapshot({
               ))}
             </div>
           ) : <p className="mt-3 text-note text-muted">{copy.roleFallback}</p>}
-          {!reportReady ? <LockedPreview title={copy.lockedTitle} copy={copy.lockedRoles} /> : null}
         </Card>
 
         <Card as="article" spacing="md" className="relative min-h-48 overflow-hidden">
@@ -272,7 +295,6 @@ export function TeamMemberSnapshot({
           <p className="mt-3 font-fraunces text-base text-[var(--color-layer-team-accent)]">
             {reportPatternLabel(aggregates?.pattern?.label) ?? copy.patternFallback}
           </p>
-          {!reportReady ? <LockedPreview title={copy.lockedTitle} copy={copy.lockedPattern} /> : null}
         </Card>
 
         <Card as="article" spacing="md" className="min-h-48">
@@ -285,23 +307,7 @@ export function TeamMemberSnapshot({
             </div>
           ) : null}
         </Card>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3 rounded-2xl bg-state-success-bg px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-micro font-semibold uppercase tracking-widest text-state-success-fg">{copy.nextLabel}</p>
-          <p className="mt-1 text-caption font-semibold text-ink">{hasPersonalTask ? copy.nextTask : copy.nextReady}</p>
-        </div>
-        {hasPersonalTask || reportReady ? (
-          <Link
-            href={hasPersonalTask ? "/tasks" : `/team/${teamId}?tab=report`}
-            className="inline-flex min-h-10 items-center gap-1 self-start rounded-lg px-2 text-caption font-semibold text-[var(--color-layer-team-accent)] transition hover:bg-surface-card/70 sm:self-auto"
-          >
-            {hasPersonalTask ? copy.taskCta : copy.reportCta}
-            <ChevronRightIcon />
-          </Link>
-        ) : null}
-      </div>
+      </div>}
     </section>
   );
 }

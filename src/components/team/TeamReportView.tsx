@@ -3,6 +3,7 @@ import { TEAM_ROLES } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { t, type Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import {
   PSYCH_SAFETY_ITEMS,
   PSYCH_SAFETY_ACTIONS,
@@ -424,42 +425,6 @@ export function TeamReportView({
           </div>
         </div>
 
-        {agg && (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-sand bg-[var(--color-surface-subtle)]/45 p-4 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:divide-sand md:p-5">
-            <KpiTile label={isHu ? "Tagok" : "Members"} value={String(agg.memberCount)} />
-            <KpiTile
-              label={isHu ? "Kitöltöttség" : "Completion"}
-              value={`${agg.completionPct}%`}
-              progressPct={agg.completionPct}
-            />
-            {agg.evidence && (
-              <KpiTile
-                label={isHu ? "Adatminőség" : "Data quality"}
-                value={
-                  QUALITY_LABELS[agg.evidence.quality]
-                    ? isHu
-                      ? QUALITY_LABELS[agg.evidence.quality].hu.split(" ")[0]
-                      : QUALITY_LABELS[agg.evidence.quality].en.split(" ")[0]
-                    : agg.evidence.quality
-                }
-                accent={
-                  agg.evidence.quality === "sufficient"
-                    ? "text-state-success-fg"
-                    : agg.evidence.quality === "partial"
-                      ? "text-state-warning-fg"
-                      : "text-state-error-fg"
-                }
-              />
-            )}
-            {frictionPct !== null && (
-              <KpiTile
-                label={isHu ? "Súrlódási arány" : "Friction ratio"}
-                value={`${frictionPct}%`}
-                accent={frictionPct >= 40 ? "text-state-warning-fg" : "text-ink"}
-              />
-            )}
-          </div>
-        )}
       </DashboardPanel>
 
       {(leadershipStrengths.length > 0 ||
@@ -528,6 +493,58 @@ export function TeamReportView({
         </section>
       )}
 
+      {agg && (
+        <details className="rounded-2xl border border-sand bg-surface-card p-4">
+          <summary className="min-h-11 cursor-pointer py-3 text-caption font-semibold text-ink">{t("teamHierarchy.reportMetadata", loc)}</summary>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-sand bg-[var(--color-surface-subtle)]/45 p-4 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:divide-sand md:p-5">
+            <KpiTile label={isHu ? "Tagok" : "Members"} value={String(agg.memberCount)} />
+            <KpiTile
+              label={isHu ? "Kitöltöttség" : "Completion"}
+              value={`${agg.completionPct}%`}
+              progressPct={agg.completionPct}
+            />
+            {agg.evidence && (
+              <KpiTile
+                label={isHu ? "Adatminőség" : "Data quality"}
+                value={
+                  QUALITY_LABELS[agg.evidence.quality]
+                    ? isHu
+                      ? QUALITY_LABELS[agg.evidence.quality].hu.split(" ")[0]
+                      : QUALITY_LABELS[agg.evidence.quality].en.split(" ")[0]
+                    : agg.evidence.quality
+                }
+                accent={
+                  agg.evidence.quality === "sufficient"
+                    ? "text-state-success-fg"
+                    : agg.evidence.quality === "partial"
+                      ? "text-state-warning-fg"
+                      : "text-state-error-fg"
+                }
+              />
+            )}
+            {frictionPct !== null && (
+              <KpiTile
+                label={isHu ? "Súrlódási arány" : "Friction ratio"}
+                value={`${frictionPct}%`}
+                accent={frictionPct >= 40 ? "text-state-warning-fg" : "text-ink"}
+              />
+            )}
+          </div>
+        </details>
+      )}
+
+      <nav aria-label={t("teamHierarchy.evidenceChapters", loc)} className="flex flex-wrap gap-2 rounded-2xl border border-sand bg-surface-card p-2">
+        {[
+          { id: "report-profile", label: "teamHierarchy.chapterProfile", visible: hasCompleteReportDimensions(agg?.dimensionAverages) },
+          { id: "report-roles", label: "teamHierarchy.chapterRoles", visible: Boolean(agg?.roleDistribution) },
+          { id: "report-dynamics", label: "teamHierarchy.chapterDynamics", visible: Boolean(agg?.dynamics) && dynamicsTotal > 0 },
+          { id: "report-interpretation", label: "teamHierarchy.chapterInterpretation", visible: true },
+          { id: "report-actions", label: "teamHierarchy.chapterActions", visible: Boolean(report.actionItems?.length) },
+        ].filter((chapter) => chapter.visible).map((chapter) => (
+          <a key={chapter.id} href={`#${chapter.id}`} className={getButtonClassName({ variant: "ghost", size: "sm" })}>{t(chapter.label, loc)}</a>
+        ))}
+      </nav>
+
       {report.actionItems && report.actionItems.length > 0 ? (
         <TeamActionTracker
           teamId={report.teamId}
@@ -546,7 +563,7 @@ export function TeamReportView({
 
       {/* Csapatprofil: radar + szórás-sávok */}
       {agg?.dimensionAverages && hasCompleteReportDimensions(agg.dimensionAverages) && (
-        <section>
+        <section id="report-profile" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
             label={isHu ? "Aggregált csapatprofil" : "Aggregate team profile"}
@@ -671,7 +688,7 @@ export function TeamReportView({
 
       {/* Szerep-lefedettség: 3×3 mátrix */}
       {agg?.roleDistribution && (
-        <section>
+        <section id="report-roles" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
             label={isHu ? "Szerep-lefedettség" : "Role coverage"}
@@ -836,7 +853,7 @@ export function TeamReportView({
 
       {/* Együttműködési dinamika: stacked bar */}
       {agg?.dynamics && dynamicsTotal > 0 && (
-        <section>
+        <section id="report-dynamics" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
             label={isHu ? "Együttműködési dinamika" : "Collaboration dynamics"}
@@ -1232,7 +1249,7 @@ export function TeamReportView({
                 {/* A ±szóródás-szám nem jelenik meg (2026-08-11 termékdöntés)
                     – az aggregátumban a spread tovább él, csak a kijelzés
                     szűnt meg. */}
-                <p className="mt-0.5 text-xs text-ink-body/60">
+                <p className="mt-0.5 text-xs text-ink-body">
                   {agg.psychSafety.count}{" "}
                   {isHu ? "névtelen válasz" : "anonymous responses"} ·{" "}
                   {new Date(agg.psychSafety.measuredAt).toLocaleDateString(
@@ -1368,7 +1385,7 @@ export function TeamReportView({
       )}
 
       {/* Tanácsadói narratíva */}
-      <section>
+      <section id="report-interpretation" className="scroll-mt-24">
         <SectionHead
           no={secNo()}
           label={isHu ? "Tanácsadói értékelés" : "Consultant assessment"}
@@ -1463,7 +1480,7 @@ export function TeamReportView({
 
       {/* Akcióterv: 30/60/90 napos idővonal – oszloponként saját akcentus */}
       {report.actionItems && report.actionItems.length > 0 && (
-        <section>
+        <section id="report-actions" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
             label={isHu ? "Akcióterv" : "Action plan"}

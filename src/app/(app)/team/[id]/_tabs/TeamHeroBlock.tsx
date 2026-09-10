@@ -203,7 +203,7 @@ export function TeamHeroBlock({
             </p>
           ) : undefined
         }
-        aside={(
+        aside={active === "overview" ? (
           <>
             <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
               {t("teamDetail.snapshotLabel", locale)}
@@ -246,7 +246,7 @@ export function TeamHeroBlock({
               </div>
             </div>
           </>
-        )}
+        ) : undefined}
       />
 
       <TeamTabBar ctx={ctx} active={active} />
