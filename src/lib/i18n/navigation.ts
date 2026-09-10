@@ -4,6 +4,7 @@
 // menüpontok kulcsosítottak.
 export const navigationTranslations = {
   nav: {
+    openHelp: { hu: "Segítség megnyitása", en: "Open help" },
     home: { hu: "Vezérlő", en: "Dashboard" },
     results: { hu: "Eredményeim", en: "My results" },
     interaction: { hu: "Összehasonlítás", en: "Comparison" },

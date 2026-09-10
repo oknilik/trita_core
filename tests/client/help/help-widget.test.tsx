@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { OPEN_HELP_EVENT } from "@/lib/help/events";
 import { HelpWidget } from "@/components/help/HelpWidget";
 
 const { track } = vi.hoisted(() => ({ track: vi.fn() }));
@@ -20,6 +21,17 @@ vi.mock("@/lib/analytics/client", () => ({ track }));
 
 describe("HelpWidget", () => {
   beforeEach(() => track.mockClear());
+
+  it("a fejlécből nyitott súgó bezáráskor ugyanoda adja vissza a fókuszt", async () => {
+    render(<><button onClick={() => window.dispatchEvent(new Event(OPEN_HELP_EVENT))}>Fejléc súgó</button><HelpWidget audience="member" mobileLauncher="header" /></>);
+    const trigger = screen.getByRole("button", { name: "Fejléc súgó" });
+    trigger.focus();
+    fireEvent.click(trigger);
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    fireEvent.keyDown(document, { key: "Escape" });
+    await waitFor(() => expect(trigger).toHaveFocus());
+  });
+
 
   it("az aktuális oldalhoz kapcsolódó gyors válaszokat mutat", () => {
     render(<HelpWidget audience="member" />);

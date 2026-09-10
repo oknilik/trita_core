@@ -25,6 +25,9 @@ import { NotificationPanel } from "./NotificationPanel";
 import { NotificationsProvider, useNotifications } from "./NotificationsProvider";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { BackControl } from "@/components/ui/primitives/BackControl";
+import { Button } from "@/components/ui/primitives/Button";
+import { HelpCircleIcon } from "@/components/ui/icons";
+import { OPEN_HELP_EVENT } from "@/lib/help/events";
 
 function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -778,7 +781,13 @@ function NavHeaderContent({
             </div>
           </div>
 
-          <div className="pointer-events-auto flex justify-self-end lg:hidden">
+          <div className="pointer-events-auto flex gap-1 justify-self-end lg:hidden">
+            <Button variant="ghost" aria-label={t("nav.openHelp", locale)} aria-haspopup="dialog" onClick={() => {
+              closeAll();
+              window.dispatchEvent(new Event(OPEN_HELP_EVENT));
+            }} className="min-w-11 px-2">
+              <HelpCircleIcon className="h-5 w-5" />
+            </Button>
             {openDropdown === "notifications" && (
               <NotificationPanel onClose={() => setOpenDropdown(null)} />
             )}

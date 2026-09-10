@@ -94,7 +94,7 @@ const VARIANT_ON_INVERSE_CLASSES: Record<ButtonVariant, string> = {
 };
 
 const SIZE_CLASSES: Record<ButtonSize, string> = {
-  sm: "min-h-[40px] px-[var(--ui-space-4)] text-sm",
+  sm: "min-h-[44px] md:min-h-[40px] px-[var(--ui-space-4)] text-sm",
   md: "min-h-[44px] px-[var(--ui-space-5)] text-sm",
   lg: "min-h-[48px] px-[var(--ui-space-6)] text-sm",
 };

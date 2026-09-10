@@ -86,7 +86,7 @@ export default async function AppLayout({
               </Suspense>
             )}
             <Suspense>
-              <HelpWidget audience={helpAudience} />
+              <HelpWidget audience={helpAudience} mobileLauncher={userId && navData ? "header" : "floating"} />
             </Suspense>
             <LegalAcceptanceGate pending={pendingLegalAcceptance} locale={locale} />
           </ServerAuthStateProvider>

@@ -33,6 +33,7 @@ import {
 } from "@/lib/help/topics";
 import { track } from "@/lib/analytics/client";
 import { isFocusRoute } from "@/lib/navigation/focus-routes";
+import { OPEN_HELP_EVENT } from "@/lib/help/events";
 
 const HIDDEN_NON_FOCUS_PREFIXES = ["/pilot"];
 
@@ -108,7 +109,7 @@ function analyticsSurface(pathname: string | null): string {
   return segment?.slice(0, 32) || "home";
 }
 
-export function HelpWidget({ audience }: { audience: HelpAudience }) {
+export function HelpWidget({ audience, mobileLauncher = "floating" }: { audience: HelpAudience; mobileLauncher?: "floating" | "header" }) {
   const pathname = usePathname();
   const { locale } = useLocale();
   const { isSignedIn } = useAuthState();
@@ -216,6 +217,15 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
       previousFocus?.focus();
     };
   }, [close, open]);
+
+  useEffect(() => {
+    const openFromHeader = () => {
+      setOpen(true);
+      track("help.open", { audience, surface });
+    };
+    window.addEventListener(OPEN_HELP_EVENT, openFromHeader);
+    return () => window.removeEventListener(OPEN_HELP_EVENT, openFromHeader);
+  }, [audience, surface]);
 
   if (
     isFocusRoute(pathname) ||
@@ -456,11 +466,11 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
               <footer className="flex min-h-14 items-center justify-between gap-3 border-t border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-4 py-2.5">
                 <p className="text-xs text-muted">{isHu ? "Nem találtad a választ?" : "Didn't find your answer?"}</p>
                 {isSignedIn ? (
-                  <button type="button" onClick={() => openQuestionForm("footer")} className="inline-flex min-h-10 shrink-0 items-center gap-1 text-xs font-semibold text-[var(--color-accent-primary-strong)] underline-offset-2 hover:underline">
+                  <button type="button" onClick={() => openQuestionForm("footer")} className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-semibold text-[var(--color-accent-primary-strong)] underline-offset-2 hover:underline">
                     {isHu ? "Kérdezz tőlünk" : "Ask us"}<ChevronRightIcon className="h-3.5 w-3.5" />
                   </button>
                 ) : (
-                  <Link href="/contact" onClick={() => { track("help.contact_start", { source: "footer", surface }); close(); }} className="inline-flex min-h-10 shrink-0 items-center gap-1 text-xs font-semibold text-[var(--color-accent-primary-strong)] underline-offset-2 hover:underline">
+                  <Link href="/contact" onClick={() => { track("help.contact_start", { source: "footer", surface }); close(); }} className="inline-flex min-h-11 shrink-0 items-center gap-1 text-xs font-semibold text-[var(--color-accent-primary-strong)] underline-offset-2 hover:underline">
                     {isHu ? "Írj nekünk" : "Contact us"}<ChevronRightIcon className="h-3.5 w-3.5" />
                   </Link>
                 )}
@@ -470,7 +480,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
         </>
       )}
 
-      <button ref={launcherRef} type="button" onClick={() => (open ? close() : openWidget())} aria-expanded={open} aria-haspopup="dialog" aria-label={isHu ? "Segítség megnyitása" : "Open help"} className={`fixed bottom-4 right-4 z-50 h-12 min-w-12 items-center justify-center gap-2 rounded-full bg-[var(--color-surface-inverse)] px-3.5 text-[var(--color-text-on-inverse)] shadow-lg ring-1 ring-[var(--color-surface-inverse)]/10 transition hover:-translate-y-0.5 hover:bg-[var(--color-surface-inverse-soft)] hover:shadow-xl md:px-4 ${open ? "hidden md:flex" : "flex"}`}>
+      <button ref={launcherRef} type="button" onClick={() => (open ? close() : openWidget())} aria-expanded={open} aria-haspopup="dialog" aria-label={isHu ? "Segítség megnyitása" : "Open help"} className={`fixed bottom-4 right-4 z-50 h-12 min-w-12 items-center justify-center gap-2 rounded-full bg-[var(--color-surface-inverse)] px-3.5 text-[var(--color-text-on-inverse)] shadow-lg ring-1 ring-[var(--color-surface-inverse)]/10 transition hover:-translate-y-0.5 hover:bg-[var(--color-surface-inverse-soft)] hover:shadow-xl md:px-4 ${mobileLauncher === "header" ? "hidden lg:flex" : open ? "hidden md:flex" : "flex"}`}>
         {open ? <CloseIcon className="h-4 w-4" /> : <SupportChatIcon className="h-5 w-5" />}<span className="hidden text-sm font-semibold md:inline">{isHu ? "Segítség" : "Help"}</span>
       </button>
     </>

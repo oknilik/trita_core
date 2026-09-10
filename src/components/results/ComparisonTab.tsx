@@ -369,7 +369,7 @@ export function ComparisonTab({
                 .getElementById("invitations")
                 ?.scrollIntoView({ behavior: "smooth", block: "start" })
             }
-            className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+            className="inline-flex min-h-[44px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             {locale === "hu" ? "Observer meghívása" : "Invite observers"}
           </button>
@@ -520,7 +520,7 @@ export function ComparisonTab({
                     <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                       <div className="h-full rounded-sm" style={{ width: `${dim.self}%`, backgroundColor: "var(--color-action-primary-bg)" }} />
                     </div>
-                    <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-action-primary-bg)" }}>{dim.self}</span>
+                    <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-accent-self-deep)" }}>{dim.self}</span>
                   </div>
                   <div className="flex items-center gap-2.5">
                     <span className="w-[50px] shrink-0 text-micro text-[var(--color-text-muted)]">{t("comparison.others", locale)}</span>
@@ -533,7 +533,7 @@ export function ComparisonTab({
                         <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                           <div className="h-full rounded-sm" style={{ width: `${dim.observer}%`, backgroundColor: "var(--color-accent-primary-soft)" }} />
                         </div>
-                        <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-accent-primary)" }}>{dim.observer}</span>
+                        <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-accent-primary-strong)" }}>{dim.observer}</span>
                       </>
                     )}
                   </div>
@@ -638,7 +638,7 @@ export function ComparisonTab({
           {summaryPoints.map((point, i) => (
             <div key={i} className="flex items-start gap-2.5">
               <div className="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-accent-self)" }} />
-              <p className="text-caption leading-[1.6] text-white/[0.55]">{point}</p>
+              <p className="text-caption leading-[1.6] text-[var(--color-text-on-inverse-muted)]">{point}</p>
             </div>
           ))}
         </div>
