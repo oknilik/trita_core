@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import type { Locale } from "@/lib/i18n";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
@@ -112,30 +114,31 @@ function mergeEvidence(
 interface EvidenceSummaryProps {
   evidence: TeamIntelligenceEvidence;
   loc: Locale;
+  sourceLabel?: string;
+  sourceNote?: string;
 }
 
-function EvidenceSummary({ evidence, loc }: EvidenceSummaryProps) {
+function EvidenceSummary({ evidence, loc, sourceLabel, sourceNote }: EvidenceSummaryProps) {
   return (
     <div className="rounded-xl border border-sand bg-cream/65 px-3 py-2.5">
-      <p className="font-mono text-micro uppercase tracking-widest text-muted">
-        {t("teamComp.evidenceEyebrow", loc)}
-      </p>
+      <SectionEyebrow>{t("teamComp.evidenceEyebrow", loc)}</SectionEyebrow>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
-        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-note text-ink-body">
+        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-caption text-ink-body">
           {t("teamComp.evidenceSource", loc)}:{" "}
-          <span className="font-semibold text-ink">{t(SOURCE_KEY[evidence.source], loc)}</span>
+          <span className="font-semibold text-ink">{sourceLabel ?? t(SOURCE_KEY[evidence.source], loc)}</span>
         </span>
-        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-note text-ink-body">
+        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-caption text-ink-body">
           {t("teamComp.evidenceQuality", loc)}:{" "}
           <span className="font-semibold text-ink">{t(QUALITY_KEY[evidence.quality], loc)}</span>
         </span>
-        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-note text-ink-body">
+        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-caption text-ink-body">
           {t("teamComp.evidenceConfidence", loc)}:{" "}
           <span className="font-semibold text-ink">{t(CONFIDENCE_KEY[evidence.confidence], loc)}</span>
         </span>
       </div>
-      {evidence.note ? (
-        <p className="mt-1.5 text-note leading-relaxed text-muted">{evidence.note}</p>
+      {sourceNote && <p className="mt-2 text-caption text-ink-body">{sourceNote}</p>}
+      {evidence.note && !sourceNote ? (
+        <p className="mt-1.5 text-caption leading-relaxed text-muted">{evidence.note}</p>
       ) : null}
     </div>
   );
@@ -160,6 +163,8 @@ export function TeamIntelligence({
     (member) =>
       resolveDisplayRoleScores(member.measuredRoleScores, member.tritan) !== null,
   );
+  const measuredRoleCount = membersWithData.filter((member) => resolveDisplayRoleScores(member.measuredRoleScores, member.tritan)?.source === "questionnaire").length;
+  const estimatedRoleCount = membersWithData.length - measuredRoleCount;
   const membersWithoutData = members.filter(
     (member) => !membersWithData.includes(member),
   );
@@ -195,12 +200,17 @@ export function TeamIntelligence({
           <p className="font-dm-sans text-sm font-semibold text-ink">
             {isHu ? "Ki mit hoz a csapatba" : "Who brings what to the team"}
           </p>
-          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
+          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-caption font-medium text-ink-body">
             {membersWithData.length}/{members.length}{" "}
             {isHu ? "tag értelmezhető adattal" : "members with usable data"}
           </span>
         </div>
-        <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
+        <EvidenceSummary
+          evidence={evidenceByTab.roles}
+          loc={loc}
+          sourceLabel={measuredRoleCount > 0 ? t(estimatedRoleCount > 0 ? "teamEvidence.rolesMixed" : "teamEvidence.rolesMeasured", loc) : undefined}
+          sourceNote={tf("teamEvidence.roleCounts", loc, { measured: measuredRoleCount, estimated: estimatedRoleCount })}
+        />
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
           {membersWithData.map((member) => {
             // Precedencia-szabály (mint a team-stats / team-report / TeamRoleSection
@@ -225,16 +235,16 @@ export function TeamIntelligence({
                 key={member.id}
                 className="rounded-xl border border-sand bg-cream/45 p-3"
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex flex-wrap items-center gap-2.5">
                   <div
-                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white text-note font-semibold"
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white text-caption font-semibold"
                     style={{ background: member.color, color: member.textColor }}
                   >
                     {member.initials}
                   </div>
                   <div>
                     <p className="text-caption font-semibold text-ink">{member.name}</p>
-                    <p className="text-note text-muted">
+                    <p className="text-caption text-muted">
                       {hasMeasuredRoles
                         ? isHu ? "Csapatszerep profil" : "Team-role profile"
                         : isHu ? "Becsült csapatszerep profil" : "Estimated team-role profile"}
@@ -242,7 +252,7 @@ export function TeamIntelligence({
                   </div>
                   {/* Forrás-jelölés a mért/becsült konvencióval (sage = mért, amber = becsült) */}
                   <span
-                    className={`ml-auto rounded-full px-2 py-0.5 text-micro font-semibold ${
+                    className={`ml-auto rounded-full px-2 py-0.5 text-caption font-semibold ${
                       hasMeasuredRoles
                         ? "bg-sage/15 text-sage-dark"
                         : "bg-state-warning-bg text-state-warning-fg"
@@ -258,7 +268,7 @@ export function TeamIntelligence({
                   {topRoles.map((role) => (
                     <span
                       key={`${member.id}-${role.role}`}
-                      className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-note text-ink-body"
+                      className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-caption text-ink-body"
                     >
                       {isHu ? TEAM_ROLES[role.role].hu : TEAM_ROLES[role.role].en}
                     </span>
@@ -271,7 +281,7 @@ export function TeamIntelligence({
                   {topDims.map(([dim, value]) => (
                     <span
                       key={`${member.id}-${dim}`}
-                      className="rounded-full bg-surface-card px-2 py-0.5 text-note text-ink-body"
+                      className="rounded-full bg-surface-card px-2 py-0.5 text-caption text-ink-body"
                     >
                       <span className="font-semibold text-ink">{hexLetter(dim)}</span> {Math.round(value)}%
                     </span>
@@ -295,7 +305,7 @@ export function TeamIntelligence({
             <p className="text-xs font-medium text-ink">
               {isHu ? "Még hiányzó adatok" : "Missing data members"}
             </p>
-            <p className="mt-1 text-note text-ink-body">
+            <p className="mt-1 text-caption text-ink-body">
               {membersWithoutData.length}{" "}
               {isHu
                 ? "tag még nem rendelkezik értelmezhető assessment adattal."
@@ -305,21 +315,21 @@ export function TeamIntelligence({
               {membersWithoutData.slice(0, 8).map((member) => (
                 <span
                   key={`${member.id}-missing`}
-                  className="rounded-full border border-sand bg-cream px-2 py-0.5 text-note text-ink-body"
+                  className="rounded-full border border-sand bg-cream px-2 py-0.5 text-caption text-ink-body"
                 >
                   {member.name}
                 </span>
               ))}
             </div>
             {membersWithoutData.length > 8 ? (
-              <p className="mt-1 text-note text-muted">
+              <p className="mt-1 text-caption text-muted">
                 +{membersWithoutData.length - 8} {isHu ? "fő" : "more"}
               </p>
             ) : null}
             {noDataCtaHref && noDataCtaLabel ? (
               <Link
                 href={noDataCtaHref}
-                className="mt-3 inline-flex min-h-[36px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
+                className={getButtonClassName({ variant: "secondary", size: "sm", className: "mt-3" })}
               >
                 {noDataCtaLabel}
               </Link>
@@ -332,7 +342,7 @@ export function TeamIntelligence({
             <p className="font-dm-sans text-caption font-semibold text-ink">
               {t("teamComp.subDynamics", loc)}
             </p>
-            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
+            <span className="rounded-full bg-warm-mid px-2 py-0.5 text-caption font-medium text-ink-body">
               {t(dynamicsSourceKey, loc)}
             </span>
           </div>
@@ -340,7 +350,7 @@ export function TeamIntelligence({
           {edges.length > 0 ? (
             <div className="mt-2">
               <div className="flex flex-wrap gap-2">
-                <span className="rounded-full border border-state-success-border bg-state-success-bg px-2 py-0.5 text-note text-sage">
+                <span className="rounded-full border border-state-success-border bg-state-success-bg px-2 py-0.5 text-caption text-sage">
                   {/* „Hasonló profil" CSAK tisztán profil-becslésnél igaz –
                       mért (trust) aligned él magas bizalmat jelent, nem
                       profil-hasonlóságot; vegyes/mért képnél semleges címke. */}
@@ -349,14 +359,14 @@ export function TeamIntelligence({
                     : isHu ? "Összehangolt" : "Aligned"}
                   : {dynamicsCounts.aligned}
                 </span>
-                <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-note text-ink-body">
+                <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-caption text-ink-body">
                   {isHu ? "Kiegészítő" : "Complementary"}: {dynamicsCounts.complementary}
                 </span>
-                <span className="rounded-full border border-state-warning-border bg-state-warning-bg px-2 py-0.5 text-note text-bronze-700">
+                <span className="rounded-full border border-state-warning-border bg-state-warning-bg px-2 py-0.5 text-caption text-bronze-700">
                   {isHu ? "Potenciális súrlódás" : "Potential friction"}: {dynamicsCounts.friction}
                 </span>
               </div>
-              <p className="mt-2 text-note text-ink-body/60">
+              <p className="mt-2 text-caption text-ink-body">
                 {/* Forrás-hű módszertan-sor: mért bizalmi kör mellett tilos
                     mindent profil-becslésnek nevezni. */}
                 {measuredEdgeCount === 0
@@ -388,7 +398,7 @@ export function TeamIntelligence({
           <p className="font-dm-sans text-sm font-semibold text-ink">
             {isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
           </p>
-          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
+          <span className="rounded-full bg-warm-mid px-2 py-0.5 text-caption font-medium text-ink-body">
             {isHu ? "deep-dive tulajdonos" : "deep-dive owner"}
           </span>
         </div>
@@ -401,7 +411,7 @@ export function TeamIntelligence({
           <div className="mt-3">
             <Link
               href={deepDiveHref}
-              className="inline-flex min-h-[36px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
+              className={getButtonClassName({ variant: "secondary", size: "sm" })}
             >
               {deepDiveLabel ?? (isHu ? "Részletes csapatszerep elemzés megnyitása" : "Open detailed team-role analysis")}
             </Link>

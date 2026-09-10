@@ -1,4 +1,19 @@
 export const orgTranslations = {
+  teamEvidence: {
+    measuredRelationships: { hu: "Minden megjelenített kapcsolat mért kapcsolati visszajelzésből származik ({measured}/{total}).", en: "Every displayed connection comes from measured relationship feedback ({measured}/{total})." },
+    mixedRelationships: { hu: "{measured}/{total} kapcsolat mért visszajelzésből származik; a többi profilból becsült.", en: "{measured}/{total} connections come from measured feedback; the rest are profile-based estimates." },
+    estimatedRelationships: { hu: "A kapcsolatok profilból becsültek; mért kapcsolati visszajelzés még nem érkezett.", en: "Connections are profile-based estimates; no measured relationship feedback is available yet." },
+    noRelationships: { hu: "Még nincs megjeleníthető kapcsolati adat.", en: "No relationship data is available to display yet." },
+    profileHypothesis: { hu: "Forrás: {done}/{total} önértékelés. Becsült értelmezés; beszélgetésben ellenőrizendő.", en: "Source: {done}/{total} self-assessments. Estimated interpretation; validate it in conversation." },
+    collectionState: { hu: "Forrás: a mérési kör és a kitöltések aktuális állapota.", en: "Source: the current assessment round and completion status." },
+    roleCounts: { hu: "Forrás: {measured} kitöltött szerepkérdőív · {estimated} profilból becsült szerep.", en: "Source: {measured} completed role questionnaires · {estimated} profile-based role estimates." },
+    roleInterpretation: { hu: "A szereplefedettség támpont a közös értelmezéshez.", en: "Role coverage is a starting point for shared interpretation." },
+    rolesMeasured: { hu: "Kitöltött csapatszerep-kérdőívek", en: "Completed team-role questionnaires" },
+    rolesMixed: { hu: "Szerepkérdőívek és profilbecslések", en: "Role questionnaires and profile estimates" },
+    profileDifference: { hu: "A lenti eltérések a személyiségprofilokból származnak; önmagukban nem magyarázzák a mért bizalmi kapcsolatot.", en: "The differences below come from personality profiles; by themselves they do not explain the measured trust relationship." },
+    trustMutual: { hu: "Kétirányú visszajelzés", en: "Feedback in both directions" },
+    trustUnknown: { hu: "A visszajelzés iránya nem ismert", en: "Feedback direction unavailable" },
+  },
   teamReadiness: {
     profiles: { hu: "Személyiségprofilok készülnek", en: "Personal profiles in progress" },
     collection: { hu: "Visszajelzések gyűjtése", en: "Feedback collection" },

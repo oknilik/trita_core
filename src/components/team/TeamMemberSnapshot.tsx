@@ -276,7 +276,8 @@ export function TeamMemberSnapshot({
         <Card as="article" spacing="md" className="relative min-h-48 overflow-hidden">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-layer-team-soft)] text-[var(--color-layer-team-accent)]"><RoleClusterIcon /></span>
           <h3 className="mt-4 font-fraunces text-xl text-ink">{copy.roleTitle}</h3>
-          <p className="mt-1.5 text-note leading-relaxed text-ink-body">{copy.roleCopy}</p>
+          <p className="mt-1.5 text-caption leading-relaxed text-ink-body">{copy.roleCopy}</p>
+          {roleDistribution && <p className="mt-2 text-caption text-ink-body">{tf("teamEvidence.roleCounts", locale, { measured: roleDistribution.questionnaireCount, estimated: roleDistribution.estimateCount })}</p>}
           {roleEntries.length > 0 ? (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {roleEntries.map(([role, count]) => (

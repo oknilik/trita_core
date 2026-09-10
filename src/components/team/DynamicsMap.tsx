@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/primitives/Button";
+import { buildTeamMemberLabels } from "@/lib/team-member-labels";
+import { relationshipEvidenceNote } from "@/lib/team-intelligence";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { FRICTION_WEIGHTS, computeAlignedHubIds, isMeasuredDynamicsSource } from "@/lib/friction-model";
-import { EDGE_CONFIDENCE_ONE_SIDED } from "@/lib/trust-network";
+import { EDGE_CONFIDENCE_MUTUAL, EDGE_CONFIDENCE_ONE_SIDED } from "@/lib/trust-network";
 import { DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
@@ -161,7 +164,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
 
       {myEdges.length > 0 && (
         <div>
-          <SectionEyebrow className="mb-1.5 text-micro">
+          <SectionEyebrow className="mb-1.5 text-caption">
             {t("teamComp.connectionsEyebrow", loc)}
           </SectionEyebrow>
           <div className="flex flex-col gap-0.5">
@@ -181,55 +184,56 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
 
               return (
                 <div key={i}>
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="sm"
+                    aria-expanded={isExpanded}
                     onClick={() => setExpandedEdge(isExpanded ? null : otherId)}
-                    className="flex w-full items-center gap-2 rounded-lg px-1.5 py-1.5 text-left transition-colors hover:bg-cream"
+                    className="w-full flex-wrap justify-start gap-2 text-left"
                   >
                     <div
                       className="h-2 w-2 flex-shrink-0 rounded-full"
                       style={{ background: EDGE_COLORS[e.type] }}
                     />
-                    <span className="text-note text-ink-body">{target.name}</span>
-                    <span className="ml-auto text-micro text-muted">
+                    <span className="text-caption text-ink-body">{target.name}</span>
+                    <span className="ml-auto text-caption text-muted">
                       {edgeLabel(e)}
                     </span>
-                    {isMeasuredDynamicsSource(e.source) ? (
-                      <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro uppercase tracking-wide text-sage-dark">
-                        {t("teamComp.dynamicsStateMeasured", loc)}
+                    <span className="rounded-full bg-sage/15 px-2 py-1 text-caption text-sage-dark">
+                      {t(isMeasuredDynamicsSource(e.source) ? "teamComp.dynamicsStateMeasured" : "teamComp.dynamicsStateEstimated", loc)}
+                    </span>
+                    {e.source === "trust_round" && (
+                      <span className="rounded-full border border-sand px-2 py-1 text-caption text-ink-body">
+                        {t(e.confidence === EDGE_CONFIDENCE_ONE_SIDED ? "teamComp.edgeOneSided" : e.confidence === EDGE_CONFIDENCE_MUTUAL ? "teamEvidence.trustMutual" : "teamEvidence.trustUnknown", loc)}
                       </span>
-                    ) : null}
-                    {/* egyoldalú confidence = csak az egyik irányból van mért válasz */}
-                    {e.source === "trust_round" && e.confidence === EDGE_CONFIDENCE_ONE_SIDED ? (
-                      <span className="rounded-full border border-sand px-1.5 py-0.5 text-micro text-muted">
-                        {t("teamComp.edgeOneSided", loc)}
-                      </span>
-                    ) : null}
+                    )}
                     <svg
                       className={`h-3 w-3 text-muted transition-transform ${isExpanded ? "rotate-180" : ""}`}
                       viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
                     >
                       <path d="M3 4.5L6 7.5L9 4.5" />
                     </svg>
-                  </button>
+                  </Button>
 
                   {/* Hiányzó profil-adatnál a bontás helyett jelöljük az okot
                       – nem számolunk gap-et kitalált 50-esek ellen. */}
                   {isExpanded && !hasPairProfiles && (
                     <div className="mb-2 ml-5 mt-1 rounded-lg border border-dashed border-sand bg-cream/60 p-3">
-                      <p className="text-micro leading-snug text-muted">
+                      <p className="text-caption leading-snug text-muted">
                         {t("teamComp.breakdownNoProfile", loc)}
                       </p>
                     </div>
                   )}
                   {isExpanded && breakdown && (
                     <div className="mb-2 ml-5 mt-1 rounded-lg border border-sand bg-cream/60 p-3">
+                      <p className="mb-3 text-caption text-ink-body">{t("teamEvidence.profileDifference", loc)}</p>
                       <div className="flex flex-col gap-2">
                         {breakdown.gaps.slice(0, 4).map((g) => (
                           <div key={g.code}>
                             <div className="flex items-center justify-between gap-2">
-                              <span className="text-micro font-semibold text-ink">{g.label}</span>
-                              <span className="text-micro text-muted">
+                              <span className="text-caption font-semibold text-ink">{g.label}</span>
+                              <span className="text-caption text-muted">
                                 {g.gap < 15
                                   ? (loc === "hu" ? "hasonló" : "similar")
                                   : g.gap < 30
@@ -249,7 +253,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                               </div>
                             </div>
                             {g.hint && (
-                              <p className="mt-0.5 text-micro leading-snug text-muted">{g.hint}</p>
+                              <p className="mt-0.5 text-caption leading-snug text-muted">{g.hint}</p>
                             )}
                           </div>
                         ))}
@@ -263,7 +267,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
         </div>
       )}
 
-      <div className="border-t border-sand pt-2 text-note text-ink-body">
+      <div className="border-t border-sand pt-2 text-caption text-ink-body">
         <span className="font-semibold text-ink">{myEdges.length}</span> {t("teamComp.incomingConnections", loc)}
       </div>
     </div>
@@ -294,6 +298,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   }
 
   const positions = getCircularPositions(members, 180, 180, 130);
+  const shortLabels = buildTeamMemberLabels(members);
   // Van-e mért (trust) él a térképen – a jelmagyarázat „hasonló profil"
   // címkéje csak tisztán profil-becslés képre igaz; mért él mellett az
   // aligned szín semleges címkét kap (a mért aligned = erős bizalom).
@@ -346,9 +351,20 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
             return (
               <g
                 key={m.id}
-                className="cursor-pointer"
+                className="group cursor-pointer focus-visible:outline-none"
+                role="button"
+                tabIndex={0}
+                aria-label={members.filter((other) => other.name === m.name).length > 1 ? shortLabels[m.id] : m.name}
+                aria-pressed={selected === m.id}
                 onClick={() => setSelected(selected === m.id ? null : m.id)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelected(selected === m.id ? null : m.id);
+                  }
+                }}
               >
+                <title>{m.name}</title>
                 {isHub && (
                   <circle
                     cx={pos.x}
@@ -361,6 +377,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                   />
                 )}
                 <circle
+                  className="group-focus-visible:stroke-ink group-focus-visible:stroke-[3px]"
                   cx={pos.x}
                   cy={pos.y}
                   r={r}
@@ -381,12 +398,12 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                 </text>
                 <text
                   x={pos.x}
-                  y={pos.y + r + 13}
-                  textAnchor="middle"
-                  fontSize={11}
+                  y={pos.y + r + 15}
+                  textAnchor={pos.x < 80 ? "start" : pos.x > 280 ? "end" : "middle"}
+                  fontSize={12}
                   fill="var(--color-text-secondary)"
                 >
-                  {m.name.split(" ")[0]}
+                  {shortLabels[m.id]}
                 </text>
                 {/* Láthatatlan, nagyobb érintési cél: a node az egyetlen
                     interakciós pont, a rajzolt sugár ujjhoz túl kicsi. */}
@@ -410,7 +427,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
             return (
               <div key={edgeType} className="flex items-center gap-2">
                 <div className="h-[3px] w-6 rounded" style={{ background: EDGE_COLORS[edgeType] }} />
-                <span className="text-note text-ink-body">
+                <span className="text-caption text-ink-body">
                   {t(legendKey, loc)}
                 </span>
               </div>
@@ -418,26 +435,16 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
           })}
           <div className="ml-auto flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-[var(--color-surface-warm-tint)] ring-1 ring-sage" />
-            <span className="text-note text-ink-body">{t("teamComp.hubPerson", loc)}</span>
+            <span className="text-caption text-ink-body">{t("teamComp.hubPerson", loc)}</span>
           </div>
         </div>
 
         {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés.
             A "mért" definíció közös (isMeasuredDynamicsSource): trust_round ∪
             observer – az intelligence-data/cockpit/riport számlálóival azonos. */}
-        {hasMeasuredEdges ? (
-          <p className="mt-2 text-micro leading-relaxed text-muted">
-            {loc === "hu"
-              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`
-              : `Some connections are MEASURED from a trust round (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} connections); the rest are profile-based estimates.`}
-          </p>
-        ) : (
-          <p className="mt-2 text-micro leading-relaxed text-muted">
-            {loc === "hu"
-              ? "A kapcsolat-jelzések profil-alapú becslések – bizalmi kör indításával mért adatra cserélhetők."
-              : "Connection markers are profile-based estimates – run a trust round to replace them with measured data."}
-          </p>
-        )}
+        <p className="mt-2 text-caption leading-relaxed text-ink-body">
+          {relationshipEvidenceNote(edges.filter((edge) => isMeasuredDynamicsSource(edge.source)).length, edges.length, loc)}
+        </p>
       </div>
 
       {/* Detail panel */}

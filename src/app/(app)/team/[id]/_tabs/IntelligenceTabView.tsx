@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
@@ -11,7 +11,7 @@ import { TeamRoleSection } from "@/components/team/TeamRoleSection";
 import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
 import { loadTeamFeedbackCulture } from "@/lib/team-observer.server";
 import { prisma } from "@/lib/prisma";
-import { hasCompleteTritanDims } from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores, hasCompleteTritanDims } from "@/lib/team-role-estimate";
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import { buildIntelligenceViewData } from "./intelligence-data";
@@ -148,6 +148,14 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
   const teamRoleEstimateCount = teamRoleMemberStatus.filter(
     (member) => member.hasEstimate,
   ).length;
+  const roleSources = teamData.members.map((member) => resolveDisplayRoleScores(
+    member.teamRoleSource === "questionnaire" ? member.teamRoleScores : null,
+    member.scores,
+  )?.source);
+  const priorityRoleCounts = {
+    measured: roleSources.filter((source) => source === "questionnaire").length,
+    estimated: roleSources.filter((source) => source === "estimate").length,
+  };
 
   return (
     <PlatformPageShell
@@ -163,7 +171,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           {intelligencePriorities.map((priority) => {
             const toneClass =
               priority.tone === "rose"
-                ? "border-state-error-border bg-state-error-bg"
+                ? "border-surface-team-border bg-surface-team-accent-soft"
                 : priority.tone === "amber"
                   ? "border-state-warning-border bg-state-warning-bg"
                   : priority.tone === "violet"
@@ -172,7 +180,14 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
             return (
               <div key={priority.id} className={`rounded-xl border p-3 ${toneClass}`}>
                 <p className="text-caption font-semibold text-ink">{priority.title}</p>
-                <p className="mt-1 text-xs leading-relaxed text-ink-body">{priority.reason}</p>
+                <p className="mt-1 text-caption leading-relaxed text-ink-body">{priority.reason}</p>
+                <p className="mt-3 border-t border-sand pt-3 text-caption text-ink-body">
+                  {priority.id === "role_coverage_gap"
+                    ? `${tf("teamEvidence.roleCounts", locale, priorityRoleCounts)} ${t("teamEvidence.roleInterpretation", locale)}`
+                    : priority.id === "missing_assessments" || priority.id === "missing_observer_round"
+                      ? t("teamEvidence.collectionState", locale)
+                      : tf("teamEvidence.profileHypothesis", locale, { done: assessedCount, total: totalCount })}
+                </p>
                 <Link
                   href={priority.ctaHref}
                   className={getButtonClassName({ variant: "secondary", size: "sm", className: "mt-3" })}

@@ -29,6 +29,13 @@ export interface TeamIntelligenceEvidence {
 
 export type TeamIntelligenceEvidenceBySub = Record<TeamIntelligenceSubTab, TeamIntelligenceEvidence>;
 
+export function relationshipEvidenceNote(measured: number, total: number, locale: "hu" | "en"): string {
+  const key = total === 0 ? "noRelationships"
+    : measured === 0 ? "estimatedRelationships"
+      : measured === total ? "measuredRelationships" : "mixedRelationships";
+  return tf(`teamEvidence.${key}`, locale, { measured, total });
+}
+
 export interface TeamIntelligencePriority {
   id:
     | "missing_assessments"
@@ -144,19 +151,7 @@ export function buildTeamIntelligenceEvidence({
       source: hasMeasuredDynamics ? "self_plus_trust" : "self",
       quality: hasDynamicsData ? "partial" : "none",
       confidence: hasMeasuredDynamics ? "medium" : "low",
-      note: tr(
-        locale,
-        hasMeasuredDynamics
-          ? "A kapcsolati minta részben a bizalmi körben gyűjtött adatokból épül."
-          : hasDynamicsData
-            ? "A kapcsolati minta a profilok alapján készült becslés – mért adatokhoz bizalmi körre van szükség."
-            : "A kapcsolati nézethez observer-visszajelzésekből vagy csapattársaktól származó kapcsolati adatokra van szükség.",
-        hasMeasuredDynamics
-          ? "The relationship map partly builds on measured trust-round data."
-          : hasDynamicsData
-            ? "The relationship map is a profile-based estimate – a trust round provides measured data."
-            : "Relationship view requires observer or peer-connection data.",
-      ),
+      note: relationshipEvidenceNote(measuredDynamicsEdgeCount, dynamicsEdgeCount, locale),
     },
     roles: {
       source: "inferred",
