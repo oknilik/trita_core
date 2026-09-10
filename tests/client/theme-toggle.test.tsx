@@ -70,6 +70,7 @@ describe("ThemeToggle", () => {
 
     expect(setPreference).toHaveBeenCalledWith("light");
     expect(screen.queryByRole("dialog", { name: "Megjelenés" })).not.toBeInTheDocument();
+    expect(trigger).toHaveFocus();
   });
 
   it("Escape-pel bezárható és visszaadja a fókuszt a nyitógombnak", async () => {

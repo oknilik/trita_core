@@ -9,6 +9,8 @@ import { percentileForScore } from "@/lib/norms";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { Button } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { UpgradeButton } from "@/components/profile/UpgradeButton";
 
 // A korábbi ±SEM-chip és mérési-hiba jegyzet 2026-08-11-én kivezetve
@@ -101,32 +103,33 @@ function AccordionItem({
   const percentile = percentileForScore(code, value);
 
   return (
-    <div className="mb-2.5 overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-soft)] shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
+    <div className="min-w-0 overflow-hidden border-b border-[var(--color-border-soft)] wrap-anywhere last:border-b-0">
       {/* HEADER */}
-      <button
+      <Button
         type="button"
+        variant="ghost"
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={`dimension-panel-${code}`}
-        className="flex w-full items-center gap-3 bg-surface-card px-[18px] py-3.5 text-left transition-colors hover:bg-[var(--color-surface-subtle)]"
+        className="w-full !justify-start !gap-3 !rounded-none !px-4 py-4 text-left"
       >
         <div
           className="h-2 w-2 shrink-0 rounded-full"
           style={{ backgroundColor: colors.base }}
         />
-        <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">
+        <span className="min-w-0 flex-1 text-sm font-medium text-[var(--color-text-primary)]">
           {name}
         </span>
         {/* A SÁV hordozza az értéket (a szín csak azonosít) – ezért kapott
             valamivel több súlyt, mint a korábbi 1px-es vonal. */}
-        <div className="h-1.5 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
+        <div className="hidden h-1.5 w-[120px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:block">
           <div
             className="h-full rounded-sm"
             style={{ width: `${value}%`, backgroundColor: colors.base }}
           />
         </div>
         <span
-          className="w-10 shrink-0 text-right font-fraunces text-base tabular-nums"
+          className="shrink-0 whitespace-nowrap text-right font-fraunces text-base tabular-nums"
           style={{ color: colors.strong }}
         >
           {tf("results.scoreOutOfHundred", locale, { value })}
@@ -136,7 +139,7 @@ function AccordionItem({
         >
           ▾
         </span>
-      </button>
+      </Button>
 
       {/* BODY */}
       <AnimatePresence initial={false}>
@@ -149,11 +152,9 @@ function AccordionItem({
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-[18px] pb-5">
+            <div className="min-w-0 px-4 pb-5">
               {/* 1. Mit jelent ez rólad? */}
-              <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
-                {t("content.accPersonal", locale)}
-              </p>
+              <SectionEyebrow tone="muted" dot={false} className="mb-2">{t("content.accPersonal", locale)}</SectionEyebrow>
               <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
                 {insight}
               </p>
@@ -162,9 +163,7 @@ function AccordionItem({
               {!showUpsell && description && (
                 <>
                   <div className="my-3 h-px bg-[var(--color-border-default)]" />
-                  <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
-                    {t("content.accWorkplace", locale)}
-                  </p>
+                  <SectionEyebrow tone="muted" dot={false} className="mb-2">{t("content.accWorkplace", locale)}</SectionEyebrow>
                   <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
                     {description}
                   </p>
@@ -175,19 +174,17 @@ function AccordionItem({
               {hasFacetData && (
                 <>
                   <div className="my-3 h-px bg-[var(--color-border-default)]" />
-                  <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
-                    {t("content.accFacetDetail", locale)}
-                  </p>
-                  <div className="rounded-lg bg-[var(--color-surface-card)]/60 p-3">
+                  <SectionEyebrow tone="muted" dot={false} className="mb-2">{t("content.accFacetDetail", locale)}</SectionEyebrow>
+                  <div className="min-w-0">
                     {/* Mobilon egy oszlop – két oszlopban a skála+szám összecsúszna */}
-                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <div className="grid min-w-0 grid-cols-1 gap-x-6 sm:grid-cols-2">
                       {/* A facet a SAJÁT dimenziójához tartozik – annak a
                           hue-ját viseli, nem külön értékelő színt. */}
                       {facets.map((f) => {
                         return (
                           <div
                             key={f.code}
-                            className="flex items-center gap-2.5 rounded-[10px] border border-[var(--color-border-soft)] bg-surface-card px-3.5 py-3"
+                            className="flex min-w-0 items-center gap-2.5 border-b border-[var(--color-border-soft)] py-3"
                           >
                             <span className="min-w-0 flex-1">
                               <span className="block text-xs font-medium text-[var(--color-text-primary)]">
@@ -206,7 +203,7 @@ function AccordionItem({
                                 </span>
                               )}
                             </span>
-                            <div className="h-1.5 w-[60px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
+                            <div className="hidden h-1.5 w-12 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] sm:block">
                               <div
                                 className="h-full rounded-sm"
                                 style={{ width: `${f.score}%`, backgroundColor: colors.base }}

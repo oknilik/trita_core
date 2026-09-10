@@ -11,7 +11,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 
-export function Footer() {
+export function Footer({ variant = "marketing" }: { variant?: "marketing" | "app" }) {
   const { locale } = useLocale();
   const currentPath = usePathname();
   const { isSignedIn } = useAuthState();
@@ -22,6 +22,28 @@ export function Footer() {
     currentPath.startsWith("/assessment") ||
     currentPath.startsWith("/observe")
   ) return null;
+
+  if (variant === "app") {
+    const links = [
+      { label: t("nav.profile", locale), href: "/profile/results" },
+      { label: t("profile.sectionAbout", locale), href: "/profile" },
+      { label: t("footer.contact", locale), href: "/contact" },
+      { label: t("footer.legalDocuments", locale), href: "/legal" },
+      { label: t("footer.privacy", locale), href: "/privacy" },
+    ];
+    return (
+      <footer data-app-footer className="mt-10 border-t border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-5 py-5 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3">
+          <Link href="/dashboard" aria-label="trita" className="inline-flex min-h-11 items-center text-ink"><TritaWordmark className="text-heading" /></Link>
+          <nav aria-label={t("footer.appNavigation", locale)} className="flex flex-wrap items-center gap-x-5 gap-y-1">
+            {links.map((link) => <Link key={link.href} href={link.href} className="inline-flex min-h-11 items-center text-caption text-[var(--color-text-secondary)] underline-offset-4 hover:underline">{link.label}</Link>)}
+          </nav>
+          <div className="flex w-full flex-wrap items-center justify-between gap-3 md:w-auto"><LanguageSwitcher variant="pills" /><ThemeToggle variant="compact" popoverSide="top" className="ml-auto" /></div>
+          <p className="w-full text-note text-[var(--color-text-muted)]">{t("footer.copyright", locale)}</p>
+        </div>
+      </footer>
+    );
+  }
 
   const accountLinks = isSignedIn
     ? [

@@ -48,14 +48,15 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
 
   if (variant === "pills") {
     return (
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
         {SUPPORTED_LOCALES.map((loc) => (
           <button
             key={loc}
             type="button"
+            aria-pressed={loc === locale}
             onClick={() => setLocale(loc as Locale)}
             className={[
-              "rounded-full px-4 py-1.5 text-xs font-medium transition-all",
+              "inline-flex min-h-11 items-center rounded-full px-4 py-1.5 text-xs font-medium transition-all",
               FOCUS_RING_CLASS,
               loc === locale
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"

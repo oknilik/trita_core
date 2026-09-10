@@ -67,8 +67,8 @@ describe("ProfileHero – elsődleges CTA a sötét herón", () => {
       "true",
     );
     const initialSwipeButton = screen.getByRole("button", { name: "Karakterábra megjelenítése" });
-    expect(initialSwipeButton).toHaveClass("h-12", "w-12", "rounded-full");
-    expect(screen.getByText("Karakterábra")).toHaveClass("hidden", "md:block");
+    expect(initialSwipeButton).toHaveClass("h-12", "!rounded-full", "md:!h-auto", "md:!py-4");
+    expect(screen.getByText("Karakterábra")).not.toHaveClass("hidden");
     expect(container.querySelector("[data-profile-swipe-frame]")).toHaveStyle({ height: "330px" });
     expect(container.querySelector("[data-profile-swipe-motion]")).not.toHaveClass("h-[330px]");
     expect(container.querySelector("[data-profile-glyph-slide]")).not.toHaveClass("h-[330px]");
@@ -88,7 +88,10 @@ describe("ProfileHero – elsődleges CTA a sötét herón", () => {
     expect(screen.queryByRole("heading", { name: "Teszt Anna" })).toBeNull();
     expect(screen.getByText("A te karakterábrád")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /absztrakt típus-ábra/ })).toBeInTheDocument();
-    expect(screen.getByText(/A nagy forma.*szem.*létrafokok/)).toBeInTheDocument();
+    const legend = screen.getByText(/A nagy forma.*szem.*létrafokok/);
+    expect(legend).not.toBeVisible();
+    await userEvent.click(screen.getByText("Az ábra jelmagyarázata"));
+    expect(legend).toBeVisible();
     expect(screen.getByRole("button", { name: "Profil megjelenítése" })).toHaveAttribute(
       "aria-pressed",
       "true",
@@ -220,11 +223,12 @@ describe("ProfileHero – elsődleges CTA a sötét herón", () => {
     });
     try {
       const { container, unmount } = render(
-        <ProfileHero userName="Hosszú személynév" completedAt="2026" personalityType="Újító"
+        <ProfileHero userName="Együttműködő hajtóerő" completedAt="2026" personalityType="Újító"
           glyphDimensions={GLYPH_DIMS} insight="Hosszabb értelmezés." onShare={vi.fn()} onDownloadPdf={vi.fn()} />,
       );
       const frame = container.querySelector("[data-profile-swipe-frame]");
       expect(frame).toHaveStyle({ height: "480px" });
+      expect(screen.getByRole("heading", { name: "Együttműködő hajtóerő" })).toHaveClass("wrap-anywhere");
       profileHeight = 980;
       onResize([], observer as unknown as ResizeObserver);
       expect(frame).toHaveStyle({ height: "980px" });
@@ -244,8 +248,8 @@ describe("ProfileHero – elsődleges CTA a sötét herón", () => {
   });
 
   it.each([
-    { scores: [82, 55, 54], explanation: /A második és harmadik dimenzió pontszáma közeli/, wrong: /A két dimenziód közel azonos/ },
-    { scores: [82, 80, 54], explanation: /A két dimenziód közel azonos/, wrong: /A második és harmadik dimenzió pontszáma közeli/ },
+    { scores: [82, 55, 54], explanation: /A második és harmadik dimenzió pontszáma közeli/, wrong: /A két legmagasabb pontszámod közeli/ },
+    { scores: [82, 80, 54], explanation: /A két legmagasabb pontszámod közeli/, wrong: /A második és harmadik dimenzió pontszáma közeli/ },
   ])("a látható pontszámokhoz tartozó bizonytalanságot magyarázza: $scores", async ({ scores, explanation, wrong }) => {
     render(
       <ProfileHero

@@ -73,7 +73,7 @@ export default async function AppLayout({
               <>
                 <NavHeaderUI {...navData} />
                 <div>{children}</div>
-                <Footer />
+                <Footer variant="app" />
               </>
             ) : (
               <Suspense>

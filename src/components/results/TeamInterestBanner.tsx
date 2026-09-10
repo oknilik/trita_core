@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
+import { Button } from "@/components/ui/primitives/Button";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Csapat-érdeklődés banner — az eredmény-oldal alján. Inline expand
@@ -43,7 +44,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
 
   if (alreadySent || phase === "success") {
     return (
-      <DashboardPanel className="p-5">
+      <DashboardPanel className="min-w-0 wrap-anywhere p-5">
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-success-bg text-state-success-fg">
             <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -61,7 +62,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
   }
 
   return (
-    <DashboardPanel className="p-6">
+    <DashboardPanel className="min-w-0 wrap-anywhere p-4 sm:p-6">
       <SectionEyebrow>
         {t("results.teamInterestEyebrow", locale)}
       </SectionEyebrow>
@@ -73,13 +74,13 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
       </p>
 
       {phase === "collapsed" ? (
-        <button
+        <Button
           type="button"
           onClick={() => setPhase("expanded")}
-          className="mt-4 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
+          className="mt-4 w-full min-w-0 max-w-full whitespace-normal py-2 sm:w-auto"
         >
           {t("results.teamInterestCta", locale)}
-        </button>
+        </Button>
       ) : (
         <div className="mt-4 flex flex-col gap-3">
           <label className="flex flex-col gap-1">
@@ -92,29 +93,30 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
               rows={3}
               maxLength={2000}
               placeholder={t("results.teamInterestMessagePlaceholder", locale)}
-              className="rounded-lg border border-sand bg-surface-card px-3 py-2 text-base text-ink md:text-sm"
+              className="w-full min-w-0 max-w-full rounded-lg border border-sand bg-surface-card px-3 py-2 text-base text-ink md:text-sm"
             />
           </label>
           {error && <p className="text-xs text-state-error-fg">{error}</p>}
           <div className="flex flex-wrap gap-2">
-            <button
+            <Button
               type="button"
               disabled={busy}
               onClick={submit}
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
+              className="w-full min-w-0 max-w-full whitespace-normal py-2 sm:w-auto"
             >
               {busy
                 ? t("results.teamInterestSending", locale)
                 : t("results.teamInterestSend", locale)}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               disabled={busy}
               onClick={() => setPhase("collapsed")}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+              variant="secondary"
+              className="w-full min-w-0 max-w-full whitespace-normal py-2 sm:w-auto"
             >
               {t("results.teamInterestCancel", locale)}
-            </button>
+            </Button>
           </div>
         </div>
       )}

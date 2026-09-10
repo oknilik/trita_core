@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { Button } from "@/components/ui/primitives/Button";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
@@ -118,28 +119,28 @@ export function ProfileHero({
           })
         : `${dimensionName(glyphPair.primaryCode)} × ${dimensionName(glyphPair.secondaryCode)}`
     : "";
-  const glyphGrammar = glyphPair
-    ? tf(
-        glyphUncertainty === "secondary-pair"
-          ? "results.heroGlyphGrammarSecondaryUncertain"
-          : glyphUncertain ? "results.heroGlyphGrammarUncertain" : "results.heroGlyphGrammar",
-        locale,
-        {
-          form: locale === "hu"
-            ? withHuArticle(DIMENSION_GLYPHS[glyphPair.primaryCode].formName.hu)
-            : DIMENSION_GLYPHS[glyphPair.primaryCode].formName.en,
-          primary: locale === "hu"
-            ? withHuArticle(dimensionName(glyphPair.primaryCode))
-            : dimensionName(glyphPair.primaryCode),
-          motif: locale === "hu"
-            ? withHuArticle(DIMENSION_GLYPHS[glyphPair.secondaryCode].motifName.hu)
-            : DIMENSION_GLYPHS[glyphPair.secondaryCode].motifName.en,
-          secondary: locale === "hu"
-            ? withHuArticle(dimensionName(glyphPair.secondaryCode))
-            : dimensionName(glyphPair.secondaryCode),
-        },
-      )
-    : "";
+  const glyphTerms = glyphPair ? {
+    form: locale === "hu"
+      ? withHuArticle(DIMENSION_GLYPHS[glyphPair.primaryCode].formName.hu)
+      : DIMENSION_GLYPHS[glyphPair.primaryCode].formName.en,
+    primary: locale === "hu"
+      ? withHuArticle(dimensionName(glyphPair.primaryCode))
+      : dimensionName(glyphPair.primaryCode),
+    motif: locale === "hu"
+      ? withHuArticle(DIMENSION_GLYPHS[glyphPair.secondaryCode].motifName.hu)
+      : DIMENSION_GLYPHS[glyphPair.secondaryCode].motifName.en,
+    secondary: locale === "hu"
+      ? withHuArticle(dimensionName(glyphPair.secondaryCode))
+      : dimensionName(glyphPair.secondaryCode),
+  } : null;
+  const glyphGrammar = glyphTerms ? tf(
+    glyphUncertainty === "secondary-pair"
+      ? "results.heroGlyphGrammarSecondaryUncertain"
+      : glyphUncertain ? "results.heroGlyphGrammarUncertain" : "results.heroGlyphGrammar",
+    locale,
+    glyphTerms,
+  ) : "";
+  const glyphLegend = glyphTerms ? tf("results.heroGlyphLegend", locale, glyphTerms) : "";
   const level = LEVEL_CONFIG[accessLevel];
   const selfTheme = SURFACE_HERO_THEME.self;
   const showingGlyph = Boolean(glyphPair) && heroSide === "glyph";
@@ -333,7 +334,7 @@ export function ProfileHero({
   const handleSwipeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
     if (isSwitchingRef.current || (event.pointerType === "mouse" && event.button !== 0)) return;
     const target = event.target as Element;
-    if (target.closest("button, a, input, select, textarea")) return;
+    if (target.closest("button, a, input, select, textarea, summary")) return;
     hintAnimationsRef.current.forEach((animation) => animation.cancel());
     hintAnimationsRef.current = [];
     swipeOffsetRef.current = 0;
@@ -407,22 +408,25 @@ export function ProfileHero({
   }, []);
 
   const swipeControl = glyphPair ? (
-    <button
+    <Button
       type="button"
+      variant="secondary"
+      onInverse
       aria-pressed={showingGlyph}
       aria-label={t(
         showingGlyph ? "results.heroGlyphBackA11y" : "results.heroGlyphOpenA11y",
         locale,
       )}
       onClick={() => handleSwipeSwitch()}
-      className="group absolute right-3 top-3 z-20 inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)] shadow-[var(--ui-shadow-lg)] transition hover:bg-[var(--color-surface-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-sage-dark md:right-0 md:top-1/2 md:min-h-[132px] md:w-11 md:-translate-y-1/2 md:flex-col md:gap-2 md:rounded-l-xl md:rounded-r-none md:border-r-0 md:px-2"
+      style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-accent-self-deep)" }}
+      className="group absolute right-3 top-3 z-20 inline-flex h-12 max-w-[calc(100%-1.5rem)] items-center justify-center gap-2 !rounded-full border border-white/25 bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)] shadow-[var(--ui-shadow-lg)] transition hover:bg-[var(--color-surface-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-sage-dark !px-3 md:right-0 md:top-1/2 md:!h-auto md:min-h-[132px] md:w-11 md:-translate-y-1/2 md:flex-col md:gap-2 md:!rounded-l-xl md:!rounded-r-none md:border-r-0 md:!px-2 md:!py-4"
     >
       <svg
         ref={swipeIconRef}
         aria-hidden="true"
         viewBox="0 0 24 24"
         fill="none"
-        className="h-5 w-5 transition-transform duration-[var(--motion-duration-base)] group-hover:scale-105 motion-reduce:transition-none"
+        className="h-5 w-5 shrink-0 transition-transform duration-[var(--motion-duration-base)] group-hover:scale-105 motion-reduce:transition-none"
       >
         <path
           d="M8.5 7.5 4 12l4.5 4.5M15.5 7.5 20 12l-4.5 4.5M5 12h14"
@@ -432,10 +436,10 @@ export function ProfileHero({
           strokeLinejoin="round"
         />
       </svg>
-      <span className="hidden text-xs font-semibold md:block md:[writing-mode:vertical-rl]">
+      <span className="min-w-0 wrap-anywhere text-xs font-semibold md:shrink-0 md:whitespace-nowrap md:[overflow-wrap:normal] md:[writing-mode:vertical-rl]">
         {t(showingGlyph ? "results.heroGlyphBack" : "results.heroGlyphOpen", locale)}
       </span>
-    </button>
+    </Button>
   ) : null;
 
   return (
@@ -479,15 +483,7 @@ export function ProfileHero({
             {level.label}
           </span>
         ) : (
-          <span
-            className="rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.08)",
-              color: "rgba(255,255,255,0.45)",
-            }}
-          >
-            {t("results.heroEyebrow", locale)}
-          </span>
+          <SectionEyebrow tone="onDark">{t("results.heroEyebrow", locale)}</SectionEyebrow>
         )
             }
             title={(
@@ -496,7 +492,7 @@ export function ProfileHero({
         // másik oldalán, önálló vizuális fókuszként jelenik meg.
         <div id="profile-hero-profile-side" className="mb-0.5">
           <div className="min-w-0">
-            <h1 className="break-words font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-display">
+            <h1 className="wrap-anywhere font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-display">
               {userName}
             </h1>
             <p className="mt-1 text-note text-[var(--color-text-on-inverse-muted)]">
@@ -607,7 +603,7 @@ export function ProfileHero({
           </Button>
           {pdfError ? (
             <span role="alert" className="self-center text-note text-white">
-              {locale === "hu" ? "A PDF nem készült el. Próbáld újra." : "PDF generation failed. Please try again."}
+              {t("results.heroPdfError", locale)}
             </span>
           ) : null}
         </div>
@@ -631,9 +627,12 @@ export function ProfileHero({
             title={(
               <div
                 id="profile-hero-glyph-side"
-                className="grid min-w-0 grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] items-center gap-3 md:min-h-[224px] md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-9"
+                className="grid min-w-0 grid-cols-1 items-center gap-4 md:min-h-[224px] md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-9"
               >
-                <div className="flex h-[188px] items-center justify-center overflow-hidden rounded-[18px] border border-white/15 bg-[var(--color-layer-self-soft)] p-1.5 md:h-auto md:min-h-[252px] md:rounded-[20px] md:p-3">
+                <div
+                  className="mx-auto flex h-[168px] w-[192px] max-w-full items-center justify-center md:h-[252px] md:w-full md:max-w-[260px]"
+                  style={{ "--color-ink": "var(--color-text-on-inverse)", "--color-sage": "var(--color-sage-300)" } as CSSProperties}
+                >
                   <TypeGlyph
                     primaryCode={glyphPair.primaryCode}
                     secondaryCode={glyphPair.secondaryCode}
@@ -641,24 +640,28 @@ export function ProfileHero({
                     locale={locale === "hu" ? "hu" : "en"}
                     intensity={glyphPair.intensity}
                     secondaryUncertain={glyphUncertain}
-                    variant="card"
+                    variant="badge"
                     canvas={false}
-                    className="max-h-[176px] w-full rounded-xl object-contain md:max-h-[252px]"
+                    className="h-full w-full object-contain"
                   />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
-                    {t("results.heroGlyphEyebrow", locale)}
-                  </p>
-                  <h1 className="mt-1.5 break-words font-fraunces text-title leading-none tracking-tight text-[var(--color-text-on-inverse)] md:mt-2 md:text-hero">
+                  <SectionEyebrow tone="onDark">{t("results.heroGlyphEyebrow", locale)}</SectionEyebrow>
+                  <h1 className="mt-1.5 wrap-anywhere font-fraunces text-title leading-none tracking-tight text-[var(--color-text-on-inverse)] md:mt-2 md:text-hero">
                     {personalityType}
                   </h1>
                   <p className="mt-2 font-fraunces text-sm leading-snug italic text-[var(--color-accent-primary-soft)] md:mt-4 md:text-heading">
                     {glyphPairLabel}
                   </p>
-                  <p className="mt-2 max-w-[420px] text-note leading-[1.45] text-[var(--color-text-on-inverse-muted)] md:mt-3 md:text-sm md:leading-relaxed">
+                  <p className="mt-2 max-w-[420px] text-caption leading-relaxed text-[var(--color-text-on-inverse-muted)] md:mt-3 md:text-sm">
                     {glyphGrammar}
                   </p>
+                  <details className="mt-2 text-caption text-[var(--color-text-on-inverse-muted)]">
+                    <summary className="flex min-h-[44px] cursor-pointer items-center gap-2 font-semibold underline decoration-current/50 underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2">
+                      {t("results.heroGlyphLegendToggle", locale)}
+                    </summary>
+                    <p className="pb-2 leading-relaxed">{glyphLegend}</p>
+                  </details>
                 </div>
               </div>
             )}

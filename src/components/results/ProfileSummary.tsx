@@ -77,7 +77,7 @@ function NextStepSummary({
     >
       <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
         <div>
-          <SectionEyebrow tone="self">{t("results.summaryNextStep", locale)}</SectionEyebrow>
+          <SectionEyebrow tone="selfDeep">{t("results.summaryNextStep", locale)}</SectionEyebrow>
           <h2 className="mt-2 font-fraunces text-heading leading-tight text-ink">
             {bridgeNextStep.primary.label}
           </h2>
@@ -135,7 +135,7 @@ export function ProfileSummary({
   return (
     <div className="flex min-w-0 flex-col gap-7 wrap-anywhere md:gap-9">
       <section aria-labelledby="summary-heading">
-        <SectionEyebrow tone="self">{t("results.summaryEyebrow", locale)}</SectionEyebrow>
+        <SectionEyebrow tone="selfDeep">{t("results.summaryEyebrow", locale)}</SectionEyebrow>
         <h2 id="summary-heading" className="mt-2 max-w-2xl font-fraunces text-title leading-tight text-ink md:text-title">
           {t("results.summaryTitle", locale)}
         </h2>
