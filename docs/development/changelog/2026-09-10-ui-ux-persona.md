@@ -11,4 +11,6 @@ A 15 auditfeladat egy közös, mainből indított ágon készült el, feladatonk
 
 Az ellenőrzések során egy már a main ágon elavult pilotkapacitás-teszt is előkerült: az állapotteszt rögzített tesztadatot kapott, így a nyilvános kapacitás módosítása többé nem töri el. A publikus termékbeállítás változatlan.
 
+A CI-ben reprodukált observer-időzítőszivárgás is javítva: a validációs kiemelések időzítői ismételt kérésnél és a komponens elhagyásakor törlődnek. Két új regressziós teszt ellenőrzi a kérdés- és bizonyosságkiemelés kilépését.
+
 Nincs adatbázis-migráció vagy éles adatírás. Az összesített ellenőrzési eredmény a fenti feladatösszesítőben és a PR-ban található.

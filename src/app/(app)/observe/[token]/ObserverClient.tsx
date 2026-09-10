@@ -143,6 +143,7 @@ export function ObserverClient({
   ));
   const initializedFocusPage = useRef<number | null>(null);
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const highlightResetTimers = useRef(new Map<"question" | "confidence", number>());
   const latestDraftRef = useRef({ phase, relationshipType, knownDuration, answers, currentPage });
   const currentPageRef = useRef(currentPage);
   const activeQuestionIndexRef = useRef(activeQuestionIndex);
@@ -159,6 +160,27 @@ export function ObserverClient({
   });
 
   const DRAFT_KEY = `trita_observer_draft_${token}`;
+
+  const scheduleHighlightReset = useCallback(
+    (target: "question" | "confidence", reset: () => void) => {
+      const timers = highlightResetTimers.current;
+      const previousTimer = timers.get(target);
+      if (previousTimer !== undefined) window.clearTimeout(previousTimer);
+      timers.set(target, window.setTimeout(() => {
+        timers.delete(target);
+        reset();
+      }, 1200));
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const timers = highlightResetTimers.current;
+    return () => {
+      for (const timer of timers.values()) window.clearTimeout(timer);
+      timers.clear();
+    };
+  }, []);
 
   useEffect(() => {
     latestDraftRef.current = { phase, relationshipType, knownDuration, answers, currentPage };
@@ -310,11 +332,11 @@ export function ObserverClient({
       const missingIdx = pageQuestions.findIndex((q) => q.id === missingId);
       if (missingIdx >= 0) setActiveQuestionIndex(missingIdx);
       setHighlightQuestionId(missingId);
-      window.setTimeout(() => {
+      scheduleHighlightReset("question", () => {
         setHighlightQuestionId((current) => (current === missingId ? null : current));
-      }, 1200);
+      });
     },
-    [pageQuestions],
+    [pageQuestions, scheduleHighlightReset],
   );
 
   const handleNextPage = useCallback(() => {
@@ -500,11 +522,11 @@ export function ObserverClient({
       initializedFocusPage.current = null;
       if (typeof missingQuestionId === "number") {
         setHighlightQuestionId(missingQuestionId);
-        window.setTimeout(() => {
+        scheduleHighlightReset("question", () => {
           setHighlightQuestionId((current) =>
             current === missingQuestionId ? null : current,
           );
-        }, 1200);
+        });
       }
       showToast(t("error.MISSING_ANSWER", locale), "error");
       return;
@@ -512,7 +534,7 @@ export function ObserverClient({
 
     if (confidence === null) {
       setHighlightConfidence(true);
-      window.setTimeout(() => setHighlightConfidence(false), 1200);
+      scheduleHighlightReset("confidence", () => setHighlightConfidence(false));
       return;
     }
     if (isSubmitting) return;

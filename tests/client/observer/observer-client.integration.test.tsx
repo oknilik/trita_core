@@ -758,6 +758,42 @@ describe("C5.5 ObserverClient integration", () => {
     });
   });
 
+  describe("validation timer cleanup", () => {
+    it.each(["question", "confidence"] as const)(
+      "cancels pending %s highlights when the observer leaves the page",
+      (target) => {
+        vi.useFakeTimers();
+        const { unmount } = renderObserver({
+          initialDraft: buildDraft({
+            phase: target === "confidence" ? "confidence" : "assessment",
+            answers: target === "confidence" ? allAnswers() : {},
+          }),
+        });
+        const initialTimerCount = vi.getTimerCount();
+        const triggerValidation = () => {
+          if (target === "confidence") {
+            fireEvent.click(screen.getByRole("button", { name: SUBMIT_CTA }));
+          } else {
+            fireEvent.keyDown(window, { key: "Enter" });
+          }
+        };
+
+        triggerValidation();
+        act(() => vi.advanceTimersByTime(600));
+        triggerValidation();
+        expect(vi.getTimerCount()).toBeGreaterThan(initialTimerCount);
+
+        unmount();
+
+        // A missing answer must not leave a delayed state update behind after
+        // navigation; the pending draft save must also be cancelled on exit.
+        expect(vi.getTimerCount()).toBe(0);
+        act(() => vi.advanceTimersByTime(2000));
+        expect(fetch).not.toHaveBeenCalled();
+      },
+    );
+  });
+
   // ── Error states ─────────────────────────────────────────────────────────
 
   describe("error states on submit", () => {

@@ -37,7 +37,7 @@ A böngészős ellenőrzés elkülönített helyi PostgreSQL-klónt és rövid �
 - `pnpm check`: típusellenőrzés, ESLint és szemantikus színellenőrzés sikeres.
 - `pnpm build`: sikeres production build és 114 előrenderelt oldal.
 - `pnpm test:unit`: **1318 / 1318** sikeres teszt.
-- `pnpm test:client`: **386 / 386** sikeres teszt, 77 tesztfájl.
+- `pnpm test:client`: **388 / 388** sikeres teszt, 77 tesztfájl.
 - Böngésző a production builden: **48 / 48 perszóna és 17 / 17 csapat/szerepkör/előfizetési eset sikeres**, a perszónák futása közben nincs kliensoldali kivétel. További ellenőrzés: 14 navigációs állapot, célzott HU/EN és 200%-os újratördelési esetek.
 - Az automatizált axe-vizsgálat az egyéni összkép, a dimenziófejezet és a tanácsadói csapatintelligencia világos nézetén, valamint az összkép és csapatintelligencia sötét nézetén **0 igazolt WCAG A/AA hibát** jelzett a javítás után. A szerepkártyák és hálózati monogramok minimum kontrasztja világos témában 5,53:1, sötét témában 5,29:1. Ez célzott gépi ellenőrzés, nem teljes akadálymentességi tanúsítás.
 
@@ -57,3 +57,5 @@ A böngészős ellenőrzés elkülönített helyi PostgreSQL-klónt és rövid �
 A 44 px-es közös gombok és a `min-h-11` célok nem mind szerepelnek az utolsó, szövegminta-alapú számlálóban. A branch nem állítja, hogy a teljes alkalmazás vizuális adósságát megszüntette.
 
 A Quality Gate és az UI Audit Guardrail helyben, a `main…HEAD` tartományon is sikeres. A vizsgálat nem helyettesít teljes képernyőolvasós vagy valódi eszközös elfogadási tesztet.
+
+A CI egy régebbi observer-időzítőszivárgást is felfedett: a kérdés- és bizonyosságkiemelések késleltetett állapotfrissítése kilépés után is lefuthatott. A komponens most törli a függő és lecserélt időzítőket; két új regressziós teszt igazolta a javítást.
