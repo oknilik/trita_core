@@ -58,6 +58,28 @@ const FULL_TRITAN = {
   H: 50, E: 50, X: 50, A: 50, C: 50, O: 50,
 };
 
+describe("historical member comparison", () => {
+  it("compares all six legacy report axes with a completed personal profile", () => {
+    const report = makeReport();
+    report.aggregates!.dimensionAverages = { INTE: 55, RESO: 50, TEMP: 52, ADAP: 48, THOR: 60, OPEN: 45 };
+    const vm = buildMemberReportViewModel(report, viewer(), "hu");
+    assert.equal(vm.hasSelfResult, true);
+    assert.equal(vm.hasSelfComparison, true);
+    assert.equal(vm.dims.length, 6);
+    assert.equal(vm.dims.find((dim) => dim.code === "C")?.teamAvg, 60);
+  });
+
+  it("separates an unavailable comparison from an absent personal result", () => {
+    const report = makeReport({ aggregates: null });
+    const completed = buildMemberReportViewModel(report, viewer(), "hu");
+    assert.equal(completed.hasSelfResult, true);
+    assert.equal(completed.hasSelfComparison, false);
+    const unassessed = buildMemberReportViewModel(report, viewer({ scores: null }), "hu");
+    assert.equal(unassessed.hasSelfResult, false);
+    assert.equal(unassessed.hasSelfComparison, false);
+  });
+});
+
 function viewer(overrides: Partial<MemberViewerInput> = {}): MemberViewerInput {
   return {
     displayName: "Teszt Tag",

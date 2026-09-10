@@ -1,3 +1,4 @@
+import { hasCompleteReportDimensions, reportPatternLabel } from "@/lib/team-report-compatibility";
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { t, type Locale } from "@/lib/i18n";
@@ -339,6 +340,7 @@ export function TeamReportView({
   // (mezőnkénti fallback az eredetire) – ld. lib/team-report-i18n.ts.
   const report = localizeTeamReport(reportInput, isHu);
   const agg = report.aggregates;
+  const patternLabel = reportPatternLabel(agg?.pattern?.label);
   const isDraft = report.status === "DRAFT";
   const publishedDate = report.publishedAt
     ? new Date(report.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB", {
@@ -536,8 +538,14 @@ export function TeamReportView({
         />
       ) : null}
 
+      {agg && !hasCompleteReportDimensions(agg.dimensionAverages) && (
+        <DashboardPanel className="p-6">
+          <p className="text-caption text-ink-body">{t("teamReportCompatibility.missingVisual", isHu ? "hu" : "en")}</p>
+        </DashboardPanel>
+      )}
+
       {/* Csapatprofil: radar + szórás-sávok */}
-      {agg?.dimensionAverages && (
+      {agg?.dimensionAverages && hasCompleteReportDimensions(agg.dimensionAverages) && (
         <section>
           <SectionHead
             no={secNo()}
@@ -547,7 +555,8 @@ export function TeamReportView({
               : "The team's collective character – averages and internal diversity."}
           />
           <DashboardPanel className="p-6">
-            {agg.pattern && (
+            {agg.pattern && !patternLabel && <p className="mb-5 text-caption text-ink-body">{t("teamReportCompatibility.missingPattern", isHu ? "hu" : "en")}</p>}
+            {agg.pattern && patternLabel && (
               <div className="mb-5 rounded-[14px] border border-sand bg-cream/60 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
@@ -555,7 +564,7 @@ export function TeamReportView({
                       {isHu ? "Csapatmintázat" : "Team pattern"}
                     </p>
                     <p className="mt-1 font-fraunces text-lg leading-tight text-ink">
-                      {agg.pattern.label}
+                      {patternLabel}
                     </p>
                   </div>
                   {agg.pattern.confidence ? (

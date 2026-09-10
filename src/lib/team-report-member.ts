@@ -18,6 +18,7 @@ import {
   type TeamRoleScores,
 } from "@/lib/team-role-scoring";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
+import { normalizeReportDimensions, reportPatternLabel } from "@/lib/team-report-compatibility";
 
 const DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 type Loc = "hu" | "en";
@@ -76,6 +77,8 @@ export interface MemberReportViewModel {
   memberName: string;
   /** Van-e saját + csapatátlag összevetés (mindkettő megvan). */
   hasSelfComparison: boolean;
+  /** A missing team snapshot must never send a completed viewer back to the assessment. */
+  hasSelfResult: boolean;
   dims: MemberDim[];
   /** A dimenziók, ahol a leginkább kiegészíti a csapatot (max 2, felirat). */
   complementLabels: string[];
@@ -110,9 +113,9 @@ export function buildMemberReportViewModel(
   loc: Loc,
 ): MemberReportViewModel {
   const agg = report.aggregates;
-  const averages = agg?.dimensionAverages ?? null;
-  const spread = agg?.dimensionSpread ?? null;
-  const selfScores = viewer?.scores ?? null;
+  const averages = normalizeReportDimensions(agg?.dimensionAverages);
+  const spread = normalizeReportDimensions(agg?.dimensionSpread);
+  const selfScores = normalizeReportDimensions(viewer?.scores);
 
   const dims: MemberDim[] = [];
   if (averages && selfScores) {
@@ -195,13 +198,14 @@ export function buildMemberReportViewModel(
   return {
     memberName: viewer?.displayName ?? "",
     hasSelfComparison: dims.length > 0,
+    hasSelfResult: selfScores !== null,
     dims,
     complementLabels,
     primaryRole,
     secondaryRole,
     roleSource: resolvedRoles?.source ?? null,
     roleFit,
-    patternLabel: agg?.pattern?.label ?? null,
+    patternLabel: reportPatternLabel(agg?.pattern?.label),
     strengths: report.strengths,
     tips: tips.slice(0, 3),
   };

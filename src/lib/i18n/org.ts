@@ -1,4 +1,19 @@
 export const orgTranslations = {
+  teamReportCompatibility: {
+    missingComparison: {
+      hu: "A saját eredményed megvan. Ehhez a korábbi riporthoz a csapattal való összevetés nem érhető el; a saját eredményedet és a jóváhagyott riport szövegét továbbra is megnyithatod.",
+      en: "Your personal result is available. Comparison with this earlier team report is unavailable; you can still open your own result and the approved report text.",
+    },
+    ownResult: { hu: "Saját eredményem", en: "My result" },
+    missingPattern: {
+      hu: "A korábbi riport mintázatcímkéje nem érhető el. Az eredeti tanácsadói értelmezést a riport tartalmazza.",
+      en: "The pattern label for this earlier report is unavailable. The report contains the original consultant interpretation.",
+    },
+    missingVisual: {
+      hu: "A korábbi riport teljes vizuális összegzése nem érhető el. A jóváhagyott szöveges értelmezés megnyitható.",
+      en: "The complete visual summary of this earlier report is unavailable. You can open the approved written interpretation.",
+    },
+  },
   advisory: {
     eyebrow: {
       hu: "tanácsadói konzultáció",

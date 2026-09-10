@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { reportPatternLabel } from "@/lib/team-report-compatibility";
 import type { TeamReportAggregates } from "@/lib/team-report";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { Card } from "@/components/ui/primitives/Card";
@@ -255,7 +256,7 @@ export function TeamMemberSnapshot({
           <h3 className="mt-4 font-fraunces text-xl text-ink">{copy.patternTitle}</h3>
           <p className="mt-1.5 text-note leading-relaxed text-ink-body">{copy.patternCopy}</p>
           <p className="mt-3 font-fraunces text-base text-[var(--color-layer-team-accent)]">
-            {aggregates?.pattern?.label ?? copy.patternFallback}
+            {reportPatternLabel(aggregates?.pattern?.label) ?? copy.patternFallback}
           </p>
           {!reportReady ? <LockedPreview title={copy.lockedTitle} copy={copy.lockedPattern} /> : null}
         </Card>
