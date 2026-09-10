@@ -1,6 +1,10 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useProfileNavigation } from "@/components/profile/useProfileNavigation";
+
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(window.location.search),
+}));
 
 beforeEach(() => window.history.replaceState(null, "", "/profile/results"));
 
@@ -18,6 +22,21 @@ describe("personal report navigation", () => {
     act(() => window.history.forward());
     await waitFor(() => expect(result.current.activeTab).toBe("details"));
   });
+  it("follows a same-page Next Link query change without popstate or changed initial props", () => {
+    const { result, rerender } = renderHook(() => useProfileNavigation("summary", "overview"));
+    act(() => result.current.navigate("details", "dimensions"));
+    expect(result.current.activeTab).toBe("details");
+    expect(result.current.activeChapter).toBe("dimensions");
+    // App Router changes its search-param context; native pushState emits no popstate.
+    act(() => window.history.pushState(null, "", "/profile/results"));
+    rerender();
+    expect(result.current.activeTab).toBe("summary");
+    expect(result.current.activeChapter).toBe("overview");
+    act(() => window.history.pushState(null, "", "/profile/results?tab=comparison"));
+    rerender();
+    expect(result.current.activeTab).toBe("comparison");
+  });
+
   it("does not create duplicate entries and preserves unrelated query parameters", () => {
     window.history.replaceState(null, "", "/profile/results?retake=true#observer-flow");
     const { result } = renderHook(() => useProfileNavigation("summary", "overview"));
