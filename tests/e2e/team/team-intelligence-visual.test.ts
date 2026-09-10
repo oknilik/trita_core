@@ -298,7 +298,7 @@ test.describe("Team intelligence structural snapshots", () => {
     await expect(lowDataSection).toBeVisible({ timeout: 15_000 });
 
     // Kitöltöttség-chip: 5 tagból 2-nek van önértékelése (admin + Low One).
-    await expect(lowDataSection.getByText(/Kitöltött assessmentek/)).toBeVisible();
+    await expect(lowDataSection.getByText(/Kitöltött önértékelések/)).toBeVisible();
     await expect(lowDataSection.getByText("2/5")).toBeVisible();
     await expect(
       lowDataSection.getByRole("link", { name: "Tagok és kitöltések kezelése" }),
@@ -317,12 +317,25 @@ test.describe("Team intelligence structural snapshots", () => {
     await expectPathname(page, `/team/${FIXTURE.sufficientTeamId}`);
 
     // Erőforrás-térkép: tagkártyák a kitöltött (4/4) tagokkal.
-    const resourceSection = page.locator("section").filter({
-      has: page.locator("p").filter({ hasText: /^Ki mit hoz a csapatba$/ }),
+    // A fejezet önálló navigációs cél; azon BELÜL keressük a tagkártyák
+    // szekcióját. Globális section-filter a fejezetet és a belső panelt
+    // egyszerre találta meg a prioritásokat előre hozó elrendezés után.
+    const resourceChapter = page.locator("#team-resources");
+    await expect(resourceChapter).toBeVisible({ timeout: 15_000 });
+    const resourceSection = resourceChapter.locator("section").filter({
+      has: page.getByText("Ki mit hoz a csapatba", { exact: true }),
     });
-    await expect(resourceSection).toBeVisible({ timeout: 15_000 });
-    await expect(resourceSection.getByText("4/4")).toBeVisible();
-    await expect(resourceSection.getByText("Sufficient One")).toBeVisible();
+    await expect(resourceSection).toHaveCount(1);
+    await expect(resourceSection).toBeVisible();
+    await expect(resourceSection.getByText(/^4\/4\s+tag értelmezhető adattal$/)).toBeVisible();
+    // A teljes név a háló akadálymentes címkéjében is szerepel. Itt a
+    // személy kártyáját ellenőrizzük, nem az SVG title elemét.
+    const memberCard = resourceSection.getByRole("article").filter({
+      has: page.getByText("Sufficient One", { exact: true }),
+    });
+    await expect(memberCard).toHaveCount(1);
+    await expect(memberCard.getByText("Sufficient One", { exact: true })).toBeVisible();
+    await expect(resourceSection.getByRole("button", { name: "Sufficient One", exact: true })).toBeVisible();
 
     // Motor-audit v7 (user-kérés): a felületen NINCS ±N mérési-hiba jelölés, és a
     // resource-map dimenzió-chip HEXACO-betűt mutat, nem kivezetett belső kódot.
@@ -334,12 +347,16 @@ test.describe("Team intelligence structural snapshots", () => {
     await expect(resourceSection).not.toContainText(/\b(INTE|RESO|TEMP|THOR|ADAP)\b/);
 
     // Deep-dive CTA szekció – a részletes elemzés a Csapatszerepek fülön él.
-    const deepDiveSection = page.locator("section").filter({
-      has: page.locator("p").filter({ hasText: /^Részletes csapatszerep elemzés$/ }),
+    const deepDiveSection = resourceChapter.locator("section").filter({
+      has: page.getByText("Részletes csapatszerep elemzés", { exact: true }).and(page.locator("p")),
     });
+    await expect(deepDiveSection).toHaveCount(1);
     await expect(deepDiveSection).toBeVisible();
-    await expect(
-      deepDiveSection.getByRole("link", { name: "Részletes csapatszerep elemzés" }),
-    ).toBeVisible();
+    const deepDiveLink = deepDiveSection.getByRole("link", { name: "Részletes csapatszerep elemzés", exact: true });
+    await expect(deepDiveLink).toBeVisible();
+    await expect(deepDiveLink).toHaveAttribute("href", "#team-roles");
+    await deepDiveLink.click();
+    await expect(page).toHaveURL(new RegExp(`/team/${FIXTURE.sufficientTeamId}\\?tab=intelligence#team-roles$`));
+    await expect(page.locator("#team-roles")).toBeInViewport();
   });
 });
