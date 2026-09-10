@@ -8,6 +8,7 @@ import { presentUserError } from "@/lib/user-errors";
 import type { SerializedTeamReport, TeamReportActionItem } from "@/lib/team-report";
 import type { ReportTranslationEn } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
+import { Button, getButtonClassName } from "@/components/ui/primitives/Button";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TeamReportView } from "@/components/team/TeamReportView";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
@@ -173,6 +174,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
     .filter((r) => r.status === "PUBLISHED")
     .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
   const latestPublished = publishedReports[0] ?? null;
+  const [viewMode, setViewMode] = useState<"published" | "edit">(() => latestPublished ? "published" : "edit");
+  const showPublished = viewMode === "published" && latestPublished !== null;
   const olderPublished = publishedReports.slice(1);
   const actionTargetOptions = teamActionTargetOptions(isHu ? "hu" : "en");
   const [values, setValues] = useState<Record<NarrativeKey, string>>({
@@ -296,6 +299,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
       if (!res.ok) throw new Error((await res.json()).error ?? "Hiba");
       const { report } = (await res.json()) as { report: SerializedTeamReport };
       seedFromReport(report);
+      setViewMode("edit");
       router.refresh();
     } catch (err) {
       setError(reportErrorMessage(err));
@@ -341,6 +345,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
         });
         setActionItems([]);
         setPreview(null);
+        setViewMode(latestPublished ? "published" : "edit");
       }
       router.refresh();
     } catch (err) {
@@ -372,6 +377,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
       const { report } = (await res.json()) as { report: SerializedTeamReport };
       seedFromReport(report);
       setPreview(null);
+      setViewMode("edit");
       router.refresh();
     } catch (err) {
       setError(reportErrorMessage(err));
@@ -423,6 +429,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
       if (action === "publish") {
         setPreview(null);
         setCelebrating(true);
+        setViewMode("published");
         router.refresh();
       }
     } catch (err) {
@@ -435,6 +442,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
   if (preview) {
     return (
       <div className="flex flex-col gap-4">
+        {error && <p role="alert" className="text-caption text-state-error-fg">{error}</p>}
         <DashboardPanel className="flex flex-wrap items-center justify-between gap-3 p-4">
           <p className="text-sm text-ink-body">
             {isHu
@@ -468,7 +476,19 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
   return (
     <div className="flex flex-col gap-6">
     {celebrating && <CelebrationBurst onDone={() => setCelebrating(false)} />}
-    <DashboardPanel className="p-6">
+    {latestPublished && (
+      <div role="group" aria-label={t("teamReportReading.modes", locale)} className="flex flex-wrap gap-2">
+        <Button variant={showPublished ? "primary" : "secondary"} size="sm" disabled={busy} aria-pressed={showPublished} onClick={() => setViewMode("published")}>
+          {t("teamReportReading.published", locale)}
+        </Button>
+        <Button variant={showPublished ? "secondary" : "primary"} size="sm" disabled={busy} aria-pressed={!showPublished} onClick={() => setViewMode("edit")}>
+          {t(draft ? "teamReportReading.editDraft" : "teamReportReading.newReport", locale)}
+        </Button>
+        {showPublished && <a href="#report-workshop-tools" className={getButtonClassName({ variant: "ghost", size: "sm" })}>{t("teamReportReading.workshopTools", locale)}</a>}
+      </div>
+    )}
+    {error && <p role="alert" className="text-caption text-state-error-fg">{error}</p>}
+    {!showPublished && <DashboardPanel className="p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <SectionEyebrow>
@@ -885,7 +905,6 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
             ) : null}
           </div>
 
-          {error && <p className="text-xs text-state-error-fg">{error}</p>}
 
           <div className="flex flex-wrap gap-2 border-t border-sand pt-4">
             <button
@@ -923,14 +942,10 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
           </div>
         </div>
       )}
-    </DashboardPanel>
+    </DashboardPanel>}
 
-    {latestPublished && (
+    {showPublished && latestPublished && (
       <section className="flex flex-col gap-4">
-        <TeamWorkshopFacilitatorView report={latestPublished} isHu={isHu} />
-        {olderPublished[0] ? (
-          <TeamReportComparison current={latestPublished} previous={olderPublished[0]} isHu={isHu} />
-        ) : null}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <SectionEyebrow tone="muted">
             {isHu
@@ -954,10 +969,16 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
           </button>
         </div>
         <TeamReportView report={latestPublished} isHu={isHu} canManageActions />
+        <div id="report-workshop-tools" className="scroll-mt-24 space-y-4">
+        <TeamWorkshopFacilitatorView report={latestPublished} isHu={isHu} />
+        {olderPublished[0] ? (
+          <TeamReportComparison current={latestPublished} previous={olderPublished[0]} isHu={isHu} />
+        ) : null}
+        </div>
       </section>
     )}
 
-    {olderPublished.length > 0 && (
+    {showPublished && olderPublished.length > 0 && (
       <section className="flex flex-col gap-2">
         <SectionEyebrow tone="muted">
           {isHu

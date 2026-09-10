@@ -1,4 +1,11 @@
 export const orgTranslations = {
+  teamReportReading: {
+    modes: { hu: "Riport nézetének kiválasztása", en: "Choose report view" },
+    published: { hu: "Publikált riport", en: "Published report" },
+    editDraft: { hu: "Vázlat szerkesztése", en: "Edit draft" },
+    newReport: { hu: "Új riport készítése", en: "Create a new report" },
+    workshopTools: { hu: "Workshop és összehasonlítás", en: "Workshop and comparison" },
+  },
   teamUi: {
     completedProfiles: { hu: "Kitöltött önértékelések", en: "Completed self-assessments" },
     profileReadiness: { hu: "Önértékelések készültsége", en: "Self-assessment completion" },
