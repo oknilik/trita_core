@@ -24,7 +24,7 @@ const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: stri
 const SELF_TOP_DIM_BG = "rgba(61,107,94,0.3)";
 const SELF_TOP_DIM_TEXT = "var(--color-surface-self-accent-soft)";
 const SWIPE_CARD_GAP = 12;
-const HERO_CARD_HEIGHT = 330;
+const HERO_CARD_MIN_HEIGHT = 330;
 
 interface ProfileHeroProps {
   userName: string;
@@ -171,8 +171,8 @@ export function ProfileHero({
     const measure = () => {
       slideWidthRef.current = frame.getBoundingClientRect().width || frame.clientWidth || 1;
       slideHeightsRef.current = {
-        profile: profileSlide.getBoundingClientRect().height || HERO_CARD_HEIGHT,
-        glyph: glyphSlide?.getBoundingClientRect().height || HERO_CARD_HEIGHT,
+        profile: profileSlide.getBoundingClientRect().height || HERO_CARD_MIN_HEIGHT,
+        glyph: glyphSlide?.getBoundingClientRect().height || HERO_CARD_MIN_HEIGHT,
       };
       setSlidePositions(heroSide);
       setFrameHeight(slideHeightsRef.current[heroSide]);
@@ -448,19 +448,19 @@ export function ProfileHero({
         onPointerMove={handleSwipeMove}
         onPointerUp={handleSwipeEnd}
         onPointerCancel={handleSwipeCancel}
-        style={{ height: `${HERO_CARD_HEIGHT}px`, touchAction: "pan-y" }}
+        style={{ minHeight: `${HERO_CARD_MIN_HEIGHT}px`, touchAction: "pan-y" }}
       >
         <div
           ref={profileSlideRef}
           data-profile-swipe-motion
           aria-hidden={showingGlyph}
-          className="absolute inset-x-0 top-0 z-0 h-[330px] will-change-transform"
+          className="relative z-0 min-h-[330px] w-full min-w-0 wrap-anywhere will-change-transform"
           style={{ transform: showingGlyph ? "translate3d(calc(-100% - 12px), 0, 0)" : "translate3d(0, 0, 0)" }}
         >
           <SurfaceHero
             variant="self"
-            className={glyphPair ? "h-[330px]" : undefined}
-            contentClassName="mx-auto max-w-4xl px-5 pb-[25px] pt-[27px] md:flex md:h-full md:flex-col md:justify-center md:!py-0 md:!px-9"
+            className="min-h-[330px]"
+            contentClassName="mx-auto min-h-[330px] min-w-0 max-w-4xl !px-5 !pb-7 !pt-20 md:flex md:flex-col md:justify-center md:!py-7 md:!pl-9 md:!pr-16"
             eyebrow={
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
@@ -557,7 +557,7 @@ export function ProfileHero({
         </>
             )}
             actions={(
-        <div className="flex flex-wrap gap-2">
+        <div className="flex min-w-0 flex-wrap gap-2">
           {onShare ? (
             <Button
               type="button"
@@ -567,7 +567,7 @@ export function ProfileHero({
               onInverse
               className="rounded-[9px] px-[18px] text-note font-medium"
             >
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex min-w-0 items-center gap-2">
                 <ShareIcon />
                 {shareLoading ? "..." : t("results.heroShare", locale)}
               </span>
@@ -586,7 +586,7 @@ export function ProfileHero({
             }}
           >
             {pdfLoading ? (
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex min-w-0 items-center gap-2">
                 <span
                   aria-hidden
                   className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"
@@ -594,12 +594,12 @@ export function ProfileHero({
                 {t("results.heroPdf", locale)}
               </span>
             ) : pdfDone ? (
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex min-w-0 items-center gap-2">
                 <SuccessCheck />
                 {t("results.heroPdf", locale)}
               </span>
             ) : (
-              <span className="inline-flex items-center gap-2">
+              <span className="inline-flex min-w-0 items-center gap-2">
                 <DocumentIcon />
                 {t("results.heroPdf", locale)}
               </span>
@@ -620,18 +620,18 @@ export function ProfileHero({
             ref={glyphSlideRef}
             data-profile-glyph-slide
             aria-hidden={!showingGlyph}
-            className="absolute inset-x-0 top-0 z-0 h-[330px] will-change-transform"
+            className="absolute inset-x-0 top-0 z-0 min-h-[330px] w-full min-w-0 wrap-anywhere will-change-transform"
             style={{ transform: showingGlyph ? "translate3d(0, 0, 0)" : "translate3d(calc(100% + 12px), 0, 0)" }}
           >
           <SurfaceHero
             variant="self"
-            className="h-[330px]"
-            contentClassName="mx-auto max-w-4xl !px-4 !pb-7 !pt-7 md:flex md:h-full md:flex-col md:justify-center md:!px-9 md:!py-0"
+            className="min-h-[330px]"
+            contentClassName="mx-auto min-h-[330px] min-w-0 max-w-4xl !px-4 !pb-7 !pt-20 md:flex md:flex-col md:justify-center md:!py-7 md:!pl-9 md:!pr-16"
             titleClassName="md:!mt-0"
             title={(
               <div
                 id="profile-hero-glyph-side"
-                className="grid h-[244px] translate-y-[7px] grid-cols-[112px_minmax(0,1fr)] items-center gap-3 md:h-auto md:min-h-[224px] md:translate-y-0 md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
+                className="grid min-w-0 grid-cols-[minmax(0,0.7fr)_minmax(0,1.3fr)] items-center gap-3 md:min-h-[224px] md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-9"
               >
                 <div className="flex h-[188px] items-center justify-center overflow-hidden rounded-[18px] border border-white/15 bg-[var(--color-layer-self-soft)] p-1.5 md:h-auto md:min-h-[252px] md:rounded-[20px] md:p-3">
                   <TypeGlyph
