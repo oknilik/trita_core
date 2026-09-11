@@ -158,10 +158,60 @@ test("commitments preserve team scope, report snapshots and concurrent updates i
     });
 
     await t.test("concurrent creation of the shared plan has one winner", async () => {
-      const results = await Promise.all(["Clearer decisions", "Better meetings"].map((focus) => mutateTeamCommitments(team.id, manager.id, { action: "plan", expectedVersion: 0, focus, nextCheckInDate: "2026-10-05" })));
+      const candidates = [
+        { actor: manager.id, focus: "Clearer decisions" },
+        { actor: consultant.id, focus: "Better meetings" },
+      ];
+      const results = await Promise.all(candidates.map(({ actor, focus }) => mutateTeamCommitments(team.id, actor, { action: "plan", expectedVersion: 0, focus, nextCheckInDate: "2026-10-05" })));
       assert.equal(results.filter((result) => "workspace" in result).length, 1);
       assert.equal(results.filter((result) => "error" in result && result.error === "VERSION_CONFLICT").length, 1);
-      assert.equal(workspace(await getTeamCommitmentsWorkspace(team.id, member.id)).plan.version, 1);
+      const saved = workspace(await getTeamCommitmentsWorkspace(team.id, member.id)).plan;
+      assert.equal(saved.version, 1);
+      const events = await prisma.teamCommitmentPlanEvent.findMany({ where: { teamId: team.id } });
+      assert.equal(events.length, 1, "the losing initial write must not append an event");
+      assert.equal(events[0].actorUserId, candidates.find((candidate) => candidate.focus === saved.focus)!.actor);
+      assert.equal(events[0].focus, saved.focus);
+      assert.equal(events[0].nextCheckInDate, saved.nextCheckInDate);
+      assert.equal(events[0].version, 1);
+      assert.ok(events[0].createdAt instanceof Date);
+    });
+
+    await t.test("plan history preserves both actors and the previous focus and check-in date", async () => {
+      const first = await prisma.teamCommitmentPlanEvent.findFirstOrThrow({ where: { teamId: team.id, version: 1 } });
+      const nextActor = first.actorUserId === manager.id ? consultant.id : manager.id;
+      const saved = workspace(await mutateTeamCommitments(team.id, nextActor, {
+        action: "plan", expectedVersion: 1, focus: "A different shared focus", nextCheckInDate: "2026-10-12",
+      })).plan;
+      const history = await prisma.teamCommitmentPlanEvent.findMany({ where: { teamId: team.id }, orderBy: { version: "asc" } });
+      assert.equal(history.length, 2);
+      assert.deepEqual(history[0], first, "later edits never overwrite the previous snapshot");
+      assert.deepEqual(history.map((event) => event.actorUserId), [first.actorUserId, nextActor]);
+      assert.deepEqual(history.map((event) => event.version), [1, 2]);
+      assert.equal(history[1].focus, "A different shared focus");
+      assert.equal(history[1].nextCheckInDate, "2026-10-12");
+      assert.equal(saved.version, 2);
+      assert.equal((await prisma.teamCommitmentPlan.findUniqueOrThrow({ where: { teamId: team.id } })).updatedById, nextActor);
+    });
+
+    await t.test("a losing concurrent plan edit cannot append an event or change earlier history", async () => {
+      const before = await prisma.teamCommitmentPlanEvent.findMany({ where: { teamId: team.id }, orderBy: { version: "asc" } });
+      const candidates = [
+        { actor: manager.id, focus: "Manager's revised focus", nextCheckInDate: null },
+        { actor: consultant.id, focus: "Consultant's revised focus", nextCheckInDate: "2026-10-19" },
+      ];
+      const results = await Promise.all(candidates.map(({ actor, focus, nextCheckInDate }) => mutateTeamCommitments(team.id, actor, {
+        action: "plan", expectedVersion: 2, focus, nextCheckInDate,
+      })));
+      assert.equal(results.filter((result) => "workspace" in result).length, 1);
+      assert.equal(results.filter((result) => "error" in result && result.error === "VERSION_CONFLICT").length, 1);
+      const saved = workspace(await getTeamCommitmentsWorkspace(team.id, member.id)).plan;
+      const history = await prisma.teamCommitmentPlanEvent.findMany({ where: { teamId: team.id }, orderBy: { version: "asc" } });
+      assert.equal(history.length, before.length + 1);
+      assert.deepEqual(history.slice(0, before.length), before);
+      assert.equal(history[2].version, saved.version);
+      assert.equal(history[2].actorUserId, candidates.find((candidate) => candidate.focus === saved.focus)!.actor);
+      assert.equal(history[2].focus, saved.focus);
+      assert.equal(history[2].nextCheckInDate, saved.nextCheckInDate);
     });
 
     await t.test("departed assignees and read-only subscriptions cannot mutate", async () => {

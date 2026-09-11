@@ -6,6 +6,7 @@ import type { CommitmentFields } from "@/lib/team-commitments";
 vi.mock("server-only", () => ({}));
 const f = vi.hoisted(() => ({
   authId: "clerk-viewer" as string | null,
+  viewerId: "viewer",
   orgRole: "ORG_MEMBER", teamRole: "manager" as string | null,
   policyState: "active" as SubscriptionCapabilityPolicyState,
   leftAt: null as Date | null, deleted: false, ownerValid: true,
@@ -14,13 +15,13 @@ const f = vi.hoisted(() => ({
   itemTeamId: "team", itemVersion: 2,
   readItems: vi.fn(), readPlan: vi.fn(), readReports: vi.fn(),
   create: vi.fn(), createMany: vi.fn(), update: vi.fn(), event: vi.fn(),
-  planCreate: vi.fn(), planUpdate: vi.fn(), tx: vi.fn(), validateOwner: vi.fn(),
+  planCreate: vi.fn(), planUpdate: vi.fn(), planEvent: vi.fn(), tx: vi.fn(), validateOwner: vi.fn(),
 }));
 vi.mock("@/lib/auth-server", () => ({ getServerAuth: async () => ({ userId: f.authId }) }));
 vi.mock("@/lib/prisma", () => {
   const db = {
     userProfile: {
-      findUnique: vi.fn(async () => ({ id: "viewer", deleted: f.deleted })),
+      findUnique: vi.fn(async () => ({ id: f.viewerId, deleted: f.deleted })),
       findMany: vi.fn(async () => [
         { id: "viewer", username: "Alex", deleted: false },
         { id: "email-user", username: "private@example.test", deleted: false },
@@ -45,6 +46,7 @@ vi.mock("@/lib/prisma", () => {
     },
     teamCommitmentEvent: { create: f.event },
     teamCommitmentPlan: { findUnique: f.readPlan, create: f.planCreate, updateMany: f.planUpdate },
+    teamCommitmentPlanEvent: { create: f.planEvent },
     teamReport: { findMany: f.readReports },
     $transaction: f.tx,
     $queryRaw: vi.fn(async () => [{ id: "report" }]),
@@ -95,7 +97,7 @@ const params = () => ({ params: Promise.resolve({ id: "team" }) });
 const updateBody = () => ({ action: "update", id: "item", expectedVersion: 2, status: "done", note: "Tried successfully twice." });
 
 beforeEach(() => {
-  f.authId = "clerk-viewer"; f.orgRole = "ORG_MEMBER"; f.teamRole = "manager";
+  f.authId = "clerk-viewer"; f.viewerId = "viewer"; f.orgRole = "ORG_MEMBER"; f.teamRole = "manager";
   f.policyState = "active"; f.leftAt = null; f.deleted = false; f.ownerValid = true;
   f.updateCount = 1; f.importCount = 1; f.planConflict = false;
   f.itemOwnerId = "viewer"; f.itemTeamId = "team"; f.itemVersion = 2;
@@ -115,6 +117,7 @@ beforeEach(() => {
     return { teamId: "team", version: 1 };
   });
   f.planUpdate.mockImplementation(async () => ({ count: f.updateCount }));
+  f.planEvent.mockResolvedValue({ id: "plan-event" });
 });
 
 describe("commitments API authorization", () => {
@@ -306,11 +309,30 @@ describe("commitments integrity and serialization", () => {
     f.planConflict = true;
     const response = await PATCH(request("PATCH", { action: "plan", expectedVersion: 0, focus: "Focus", nextCheckInDate: null }), params());
     expect(response.status).toBe(409); expect(await response.json()).toEqual({ error: "VERSION_CONFLICT" });
+    expect(f.planEvent).not.toHaveBeenCalled();
   });
   it("existing plan edits compare versions and record the actual updater", async () => {
     f.updateCount = 0;
     expect((await PATCH(request("PATCH", { action: "plan", expectedVersion: 3, focus: "Focus", nextCheckInDate: "2026-10-01" }), params())).status).toBe(409);
     expect(f.planUpdate).toHaveBeenCalledWith({ where: { teamId: "team", version: 3 }, data: { focus: "Focus", nextCheckInDate: "2026-10-01", updatedById: "viewer", version: { increment: 1 } } });
+    expect(f.planEvent).not.toHaveBeenCalled();
+  });
+  it("two successful plan saves append separate snapshots with their actual actors", async () => {
+    expect((await PATCH(request("PATCH", { action: "plan", expectedVersion: 0, focus: "First focus", nextCheckInDate: "2026-10-01" }), params())).status).toBe(200);
+    f.viewerId = "consultant"; f.orgRole = "ORG_CONSULTANT"; f.teamRole = null;
+    expect((await PATCH(request("PATCH", { action: "plan", expectedVersion: 1, focus: "Second focus", nextCheckInDate: null }), params())).status).toBe(200);
+
+    expect(f.planEvent.mock.calls).toEqual([
+      [{ data: { teamId: "team", actorUserId: "viewer", focus: "First focus", nextCheckInDate: "2026-10-01", version: 1 } }],
+      [{ data: { teamId: "team", actorUserId: "consultant", focus: "Second focus", nextCheckInDate: null, version: 2 } }],
+    ]);
+    expect(f.tx).toHaveBeenCalledTimes(2);
+  });
+  it("a failed plan event rejects the same transaction instead of reporting an unaudited save", async () => {
+    f.planEvent.mockRejectedValue(new Error("PLAN_EVENT_WRITE_FAILED"));
+    await expect(PATCH(request("PATCH", { action: "plan", expectedVersion: 3, focus: "Focus", nextCheckInDate: null }), params())).rejects.toThrow("PLAN_EVENT_WRITE_FAILED");
+    expect(f.planUpdate).toHaveBeenCalledOnce();
+    expect(f.tx).toHaveBeenCalledOnce();
   });
 });
 

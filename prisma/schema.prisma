@@ -458,7 +458,24 @@ model TeamCommitmentPlan {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team   Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  events TeamCommitmentPlanEvent[]
+}
+
+// A közös terv minden sikeres verziója a tényleges módosítóval megmarad.
+model TeamCommitmentPlanEvent {
+  id              String   @id @default(cuid())
+  teamId          String
+  actorUserId     String
+  focus           String
+  nextCheckInDate String?  @db.VarChar(10)
+  version         Int
+  createdAt       DateTime @default(now())
+
+  plan TeamCommitmentPlan @relation(fields: [teamId], references: [teamId], onDelete: Cascade)
+
+  @@unique([teamId, version])
+  @@index([actorUserId, createdAt])
 }
 
 model TeamMember {

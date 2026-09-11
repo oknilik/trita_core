@@ -263,6 +263,14 @@ export async function mutateTeamCommitments(
           });
           if (updated.count !== 1) throw new CommitmentError("VERSION_CONFLICT", 409);
         }
+        // The CAS and its actual-actor snapshot either both commit or both roll
+        // back. The losing writer never reaches this append-only insertion.
+        await tx.teamCommitmentPlanEvent.create({
+          data: {
+            teamId, actorUserId: profileId, focus: mutation.focus,
+            nextCheckInDate: mutation.nextCheckInDate, version: mutation.expectedVersion + 1,
+          },
+        });
         return;
       }
       const current = await tx.teamCommitment.findFirst({ where: { id: mutation.id, teamId } });
