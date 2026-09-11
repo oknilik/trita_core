@@ -8,7 +8,7 @@ import type { TeamTabContext } from "./types";
 
 // ── Members tab: member list + invites + invite form ────────────────────
 export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
-  const { teamId, orgId, teamData, locale, isHu, profile, orgMemberRole, isOrgManager, canViewRaw, canEmailInvite } = ctx;
+  const { teamId, orgId, teamData, locale, isHu, profile, orgMemberRole, isOrgManager, canManageTeamActions, canEmailInvite } = ctx;
 
   const membersForTab = teamData.members.map((m) => ({
     id: m.id,
@@ -29,7 +29,7 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
   // A manager-út adatalapja: a szervezet aktív tagjai, akik még nincsenek
   // a csapatban (tanácsadó nélkül) — a taglistából-hozzáadás választója.
   const teamUserIds = new Set(teamData.members.map((m) => m.userId));
-  const addableOrgMembers = isOrgManager
+  const addableOrgMembers = canManageTeamActions
     ? (
         await prisma.organizationMember.findMany({
           where: {
@@ -54,7 +54,7 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
   // Jóváhagyásra váró külső observer-meghívók (a csapat kampányaiban) —
   // csak a jóváhagyó kör látja (menedzser / org admin / tanácsadó).
   const pendingApprovals =
-    isOrgManager || canViewRaw
+    canManageTeamActions
       ? (
           await prisma.observerInvitation.findMany({
             where: {
@@ -95,6 +95,7 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
         teamId={teamId}
         profileId={profile.id}
         isOrgManager={isOrgManager}
+        canManageTeamActions={canManageTeamActions}
         canEmailInvite={canEmailInvite}
         addableOrgMembers={addableOrgMembers}
         dossierBaseHref={

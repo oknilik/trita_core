@@ -272,7 +272,7 @@ export function buildWorkspaceNavigation(
   if (canViewNavSection(role, "results")) items.push(buildResultsItem(locale));
   // Az összehasonlítás a személyes réteg része – ugyanaz a kapu, mint az
   // Eredményeim.
-  if (canViewNavSection(role, "results")) items.push(buildInteractionItem(locale));
+  if (role === "self") items.push(buildInteractionItem(locale));
   // A karrier a személyes réteg része – ugyanaz a jogosultsági kapu, mint az
   // Eredményeim, plusz az org-szintű kikapcsolhatóság.
   if (canViewNavSection(role, "results")) items.push(buildCareerItem(ctx, locale));

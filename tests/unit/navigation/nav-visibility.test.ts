@@ -40,7 +40,7 @@ test("admin topnav is the simplified IA menu (no analytics)", () => {
 
   // A „Feladataim" org-tagságnál mindenkinek megjelenik (2026-07-29):
   // a tanácsadó/admin is lehet csapattag, neki is lehet kitöltendő köre.
-  assert.deepEqual(ids, ["home", "tasks", "teams", "org"]);
+  assert.deepEqual(ids, ["home", "results", "tasks", "teams", "org"]);
 });
 
 test("admin org entry is a plain link into the simple org page", () => {
@@ -91,7 +91,7 @@ test("manager topnav omits admin-only organization menu", () => {
   const navItems = buildWorkspaceNavigation("org_manager", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "tasks", "teams"]);
+  assert.deepEqual(ids, ["home", "results", "tasks", "teams"]);
   assert.equal(ids.includes("org"), false);
 });
 

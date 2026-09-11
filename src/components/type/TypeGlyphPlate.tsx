@@ -8,7 +8,7 @@ import {
   resolveGlyphPair,
 } from "@/lib/type-glyph";
 import {
-  isSecondaryUncertain,
+  resolveSecondaryUncertainty,
   resolvePersonalityTypeFromScores,
 } from "@/lib/personality-type";
 import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
@@ -109,13 +109,14 @@ export function TypeGlyphPlate({
   // („X × Y") és a nyelvtan („a második legerősebb …") megnevezte a
   // másodikat. Bizonytalan másodlagosnál a két dimenzió rendezetlen párként
   // jelenik meg, erősorrend-állítás nélkül.
-  const secondaryUncertain = isSecondaryUncertain(dimensions);
+  const uncertainty = resolveSecondaryUncertainty(dimensions);
+  const secondaryUncertain = uncertainty !== null;
 
   const pairLabel =
     primaryCode === secondaryCode
       ? dimensionName(primaryCode, locale)
       : secondaryUncertain
-        ? tf("results.glyphPairUncertain", locale, {
+        ? tf(uncertainty === "secondary-pair" ? "results.glyphPairSecondaryUncertain" : "results.glyphPairUncertain", locale, {
             a: dimensionName(primaryCode, locale),
             b: dimensionName(secondaryCode, locale),
           })
@@ -127,7 +128,9 @@ export function TypeGlyphPlate({
   const isHu = locale === "hu";
   const article = (phrase: string) => (isHu ? withHuArticle(phrase) : phrase);
   const grammar = tf(
-    secondaryUncertain ? "results.glyphGrammarUncertain" : "results.glyphGrammar",
+    uncertainty === "secondary-pair"
+      ? "results.glyphGrammarSecondaryUncertain"
+      : secondaryUncertain ? "results.glyphGrammarUncertain" : "results.glyphGrammar",
     locale,
     {
       form: article(isHu ? primaryGlyph.formName.hu : primaryGlyph.formName.en),

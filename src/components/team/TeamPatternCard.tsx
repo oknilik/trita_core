@@ -231,9 +231,9 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
                     className="absolute left-0 right-0 top-0 h-[3px]"
                     style={{ backgroundColor: accent }}
                   />
-                  <p className="mb-1 font-mono text-micro uppercase tracking-widest" style={{ color: accent }}>
+                  <SectionEyebrow tone="bronze" dot={false} className="mb-1">
                     {timing}
-                  </p>
+                  </SectionEyebrow>
                   <p className="text-xs leading-relaxed text-ink-body">{action}</p>
                 </div>
               ))}

@@ -20,10 +20,14 @@ import {
   pickPrimaryTeam,
   sortTeamsByCompletion,
   splitDynamicsEdges,
+  resolveManagerCockpitAccess,
+  type ManagerCockpitAccess,
 } from "@/lib/manager-cockpit-core";
 import { getCampaignTeamIds } from "@/lib/campaign-steps-core";
 import { getManageableTeamIds } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
+import { isConsultantSurface } from "@/lib/measurement-auth";
+import { resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 
 export type TeamEventKind = "assessment_completed" | "observer_received" | "member_joined";
@@ -58,6 +62,8 @@ export interface ManagerCockpitData {
   orgId: string;
   orgName: string;
   profileId: string;
+  access: ManagerCockpitAccess;
+  primaryTeamProgress: ManagerCockpitTeamStats | null;
   teams: ManagerTeamSummary[];
   /** Full data for the primary team — the SORTED list's first element */
   primaryTeamData: TeamPageData | null;
@@ -71,9 +77,12 @@ export interface ManagerCockpitData {
 export interface ManagerCockpitTeamStats {
   teamId: string;
   teamName: string;
+  memberCount: number;
   members: Array<{
     userId: string;
     displayName: string;
+    role: string;
+    hasSelfAssessment: boolean;
     scores: Record<string, number> | null;
   }>;
   completedCount: number;
@@ -94,21 +103,41 @@ export interface ManagerCockpitTeamStats {
  * kampányok · (6) kampány-résztvevők COMPLETED observer-meghívói (feltételes).
  * Az élek in-memory épülnek a meglévő lib-függvényekkel.
  */
+export type ManagerCockpitDatabase = Pick<typeof prisma,
+  "team" | "assessmentResult" | "trustObservation" | "teamPendingInvite" | "campaign" | "observerInvitation"
+>;
+
 export async function getManagerCockpitTeamStats(
   teamIds: string[],
   orgId: string,
+  access: Pick<ManagerCockpitAccess, "canViewProgress" | "canViewRaw">,
+  database: ManagerCockpitDatabase = prisma,
 ): Promise<ManagerCockpitTeamStats[]> {
   if (teamIds.length === 0) return [];
 
+  // Frozen/no-access surfaces never query members, assessments or observations.
+  if (!access.canViewProgress) {
+    const teams = await database.team.findMany({
+      where: { id: { in: teamIds }, orgId },
+      select: { id: true, name: true, _count: { select: { members: true, pendingInvites: true } } },
+    });
+    return teams.map((team) => ({
+      teamId: team.id, teamName: team.name, memberCount: team._count.members,
+      members: [], completedCount: 0, pendingInviteCount: team._count.pendingInvites,
+      dynamicsEdges: [], activeCampaign: null,
+    }));
+  }
+
   // (1) Csapatok + tagok — EGY findMany az összes csapatra.
-  const teamsRaw = await prisma.team.findMany({
-    where: { id: { in: teamIds } },
+  const teamsRaw = await database.team.findMany({
+    where: { id: { in: teamIds }, orgId },
     select: {
       id: true,
       name: true,
       members: {
         orderBy: { joinedAt: "asc" },
         select: {
+          role: true,
           user: { select: { id: true, email: true, username: true } },
         },
       },
@@ -130,19 +159,19 @@ export async function getManagerCockpitTeamStats(
   const [latestSelfResults, trustObservationsRaw, pendingInviteGroups, campaignsRaw] =
     await Promise.all([
       allUserIds.length > 0
-        ? prisma.assessmentResult.findMany({
+        ? database.assessmentResult.findMany({
             where: { userProfileId: { in: allUserIds }, isSelfAssessment: true },
             orderBy: { createdAt: "desc" },
-            select: { userProfileId: true, scores: true },
+            select: { userProfileId: true, ...(access.canViewRaw ? { scores: true } : {}) },
             distinct: ["userProfileId"],
           })
         : Promise.resolve([]),
-      prisma.trustObservation.findMany({
+      access.canViewRaw ? database.trustObservation.findMany({
         where: { teamId: { in: teamIds } },
         orderBy: { updatedAt: "asc" },
         select: { teamId: true, aboutUserId: true, raterUserId: true, answers: true },
-      }),
-      prisma.teamPendingInvite.groupBy({
+      }) : Promise.resolve([]),
+      database.teamPendingInvite.groupBy({
         by: ["teamId"],
         where: { teamId: { in: teamIds } },
         _count: { _all: true },
@@ -150,7 +179,7 @@ export async function getManagerCockpitTeamStats(
       // A kezelt csapatok VALAMELYIKÉT célzó aktív kampányok. A csapat→kampány
       // párosítást lentebb a getCampaignTeamIds dönti el csapatonként — így egy
       // B csapatnak indított kampány nem jelenik meg A "aktív kampányaként".
-      prisma.campaign.findMany({
+      database.campaign.findMany({
         where: {
           orgId,
           status: "ACTIVE",
@@ -184,7 +213,7 @@ export async function getManagerCockpitTeamStats(
     );
     const relevantIds = allUserIds.filter((id) => participantIds.has(id));
     if (relevantIds.length > 0) {
-      const completed = await prisma.observerInvitation.findMany({
+      const completed = await database.observerInvitation.findMany({
         where: { inviterId: { in: relevantIds }, status: "COMPLETED" },
         select: { inviterId: true },
         distinct: ["inviterId"],
@@ -194,9 +223,10 @@ export async function getManagerCockpitTeamStats(
   }
 
   // In-memory csoportosítás és csapatonkénti összeállítás.
+  const completedUserIds = new Set(latestSelfResults.map((result) => result.userProfileId));
   const scoresByUserId = new Map<string, Record<string, number> | null>();
   for (const r of latestSelfResults) {
-    if (!r.userProfileId) continue;
+    if (!r.userProfileId || !access.canViewRaw) continue;
     // extractDimensionScores: a beágyazott ({dimensions:{…}}) ÉS az örökség
     // lapos ({X:62,…}) score-JSON-t is kezeli — a hiring-felülettel azonos
     // olvasat (korábban a lapos formátumú tag „kitöltetlennek" látszott itt).
@@ -218,9 +248,11 @@ export async function getManagerCockpitTeamStats(
     const members = team.members.map((m) => ({
       userId: m.user.id,
       displayName: m.user.username ?? m.user.email ?? m.user.id,
+      role: m.role,
+      hasSelfAssessment: completedUserIds.has(m.user.id),
       scores: scoresByUserId.get(m.user.id) ?? null,
     }));
-    const completedCount = members.filter((m) => m.scores !== null).length;
+    const completedCount = members.filter((m) => m.hasSelfAssessment).length;
 
     // Bizalmi háló a csapat megfigyeléseiből — a buildTeamTrustNetwork
     // szemantikájával (páronként a legutolsó kör nyer), de külön DB-kör nélkül.
@@ -237,7 +269,9 @@ export async function getManagerCockpitTeamStats(
           )
         : null;
 
-    const dynamicsEdges = mergeTrustEdges(buildProfileBasedEdges(members), trust);
+    const dynamicsEdges = access.canViewRaw
+      ? mergeTrustEdges(buildProfileBasedEdges(members), trust)
+      : [];
 
     // Az EZT a csapatot célzó, legfrissebb aktív kampány (a lista createdAt
     // szerint csökkenő, a getCampaignTeamIds a pontos szabály). Csapat-célzású
@@ -246,12 +280,18 @@ export async function getManagerCockpitTeamStats(
       getCampaignTeamIds(c).includes(team.id),
     );
     const activeCampaign = campaignRaw
-      ? computeTeamActiveCampaign(campaignRaw, members, completedObserverInviterIds)
+      ? computeTeamActiveCampaign(
+          campaignRaw,
+          // Campaign progress needs only completion presence, never raw values.
+          members.map((member) => ({ userId: member.userId, scores: member.hasSelfAssessment ? {} : null })),
+          completedObserverInviterIds,
+        )
       : null;
 
     return {
       teamId: team.id,
       teamName: team.name,
+      memberCount: members.length,
       members,
       completedCount,
       pendingInviteCount: pendingCountByTeamId.get(team.id) ?? 0,
@@ -268,11 +308,16 @@ export async function getManagerCockpitData(
   const membership = await getActiveOrgMembership(profileId);
   if (!membership) return null;
 
-  const org = await prisma.organization.findUnique({
-    where: { id: membership.orgId },
-    select: { id: true, name: true },
-  });
-  if (!org) return null;
+  const [org, profile, policySnapshot] = await Promise.all([
+    prisma.organization.findUnique({ where: { id: membership.orgId }, select: { id: true, name: true } }),
+    prisma.userProfile.findUnique({ where: { id: profileId }, select: { email: true, isConsultant: true } }),
+    resolveOrgPolicySnapshot({ orgId: membership.orgId, orgRole: membership.role }),
+  ]);
+  if (!org || !profile) return null;
+  const access = resolveManagerCockpitAccess(
+    policySnapshot.policy,
+    isConsultantSurface(membership.role, profile.email, profile.isConsultant),
+  );
 
   const managedTeamIds = await getManageableTeamIds(
     profileId,
@@ -283,11 +328,11 @@ export async function getManagerCockpitData(
   if (managedTeamIds.length === 0) return null;
 
   // Kötegelt betöltés az összes kezelt csapatra (konstans lekérdezés-szám).
-  const teamStats = await getManagerCockpitTeamStats(managedTeamIds, membership.orgId);
+  const teamStats = await getManagerCockpitTeamStats(managedTeamIds, membership.orgId, access);
   if (teamStats.length === 0) return null;
 
   const teams: ManagerTeamSummary[] = teamStats.map((ts) => {
-    const memberCount = ts.members.length;
+    const memberCount = ts.memberCount;
     return {
       teamId: ts.teamId,
       teamName: ts.teamName,
@@ -310,7 +355,8 @@ export async function getManagerCockpitData(
   // eltérhetett a kártyalista elejétől. Teljes oldal-adat CSAK erre az egy
   // csapatra töltődik; a többinél elég a fenti összegzés.
   const primaryTeam = pickPrimaryTeam(teams);
-  const primaryTeamData = primaryTeam
+  const primaryTeamProgress = teamStats.find((team) => team.teamId === primaryTeam?.teamId) ?? null;
+  const primaryTeamData = primaryTeam && access.canViewRaw
     ? await getTeamPageData(primaryTeam.teamId, locale)
     : null;
 
@@ -334,16 +380,16 @@ export async function getManagerCockpitData(
 
   const EVENT_LIMIT = 15;
   const [recentAssessments, recentObservers, recentJoins] = await Promise.all([
-    prisma.assessmentResult.findMany({
+    access.canViewProgress ? prisma.assessmentResult.findMany({
       where: { userProfileId: { in: uniqueUserIds }, isSelfAssessment: true },
       select: { userProfileId: true, createdAt: true },
       orderBy: { createdAt: "desc" },
       take: EVENT_LIMIT,
-    }),
+    }) : Promise.resolve([]),
     // CSAK az org-vezérelt (ebben a szervezetben indított kampányhoz kötött)
     // observer-visszajelzések — a tag PRIVÁT (kampányon kívüli, személyes
     // meghívós) visszajelzése nem a menedzser-feed dolga (motor-audit).
-    prisma.observerAssessment.findMany({
+    access.canViewProgress ? prisma.observerAssessment.findMany({
       where: {
         invitation: {
           inviterId: { in: uniqueUserIds },
@@ -353,13 +399,13 @@ export async function getManagerCockpitData(
       select: { createdAt: true, invitation: { select: { inviterId: true } } },
       orderBy: { createdAt: "desc" },
       take: EVENT_LIMIT,
-    }),
-    prisma.teamMember.findMany({
+    }) : Promise.resolve([]),
+    access.canViewProgress ? prisma.teamMember.findMany({
       where: { teamId: { in: managedTeamIds } },
       select: { userId: true, joinedAt: true, team: { select: { id: true, name: true } } },
       orderBy: { joinedAt: "desc" },
       take: EVENT_LIMIT,
-    }),
+    }) : Promise.resolve([]),
   ]);
 
   const events: TeamEvent[] = [];
@@ -414,17 +460,23 @@ export async function getManagerCockpitData(
   // csapat-szintűek — csak a totál megy a uniqueUserIds halmazon.
   const completedUserIds = new Set(
     teamStats.flatMap((ts) =>
-      ts.members.filter((m) => m.scores !== null).map((m) => m.userId),
+      ts.members.filter((m) => m.hasSelfAssessment).map((m) => m.userId),
     ),
   );
+
+  const totalMembers = access.canViewProgress
+    ? uniqueUserIds.length
+    : await prisma.userProfile.count({ where: { teamMemberships: { some: { teamId: { in: managedTeamIds } } } } });
 
   return {
     orgId: org.id,
     orgName: org.name,
     profileId,
+    access,
+    primaryTeamProgress,
     teams: sortedTeams,
     primaryTeamData,
-    totalMembers: uniqueUserIds.length,
+    totalMembers,
     totalCompleted: completedUserIds.size,
     totalPendingInvites: sortedTeams.reduce((s, t) => s + t.pendingInviteCount, 0),
     recentEvents,

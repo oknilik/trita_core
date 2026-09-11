@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/i18n";
 import type { SerializedTeam } from "@/lib/org-stats";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { Button } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
 import { ChevronRightIcon, RoleClusterIcon } from "@/components/ui/icons";
 
@@ -51,15 +52,14 @@ export function OrgTeamsTab({
           </h2>
         </div>
         {isManager && canCreateTeam ? (
-          <button
+          <Button
             type="button"
             onClick={() => setCreateOpen((v) => !v)}
             aria-expanded={createOpen}
-            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             <span aria-hidden>{createOpen ? "×" : "+"}</span>
             {t("org.teams.newTitle", loc)}
-          </button>
+          </Button>
         ) : null}
       </div>
 
@@ -81,20 +81,16 @@ export function OrgTeamsTab({
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {teams.map((team) => (
-            <Link
-              key={team.id}
-              href={`/team/${team.id}`}
-              className="group flex min-h-44 flex-col justify-between gap-5 rounded-2xl border border-surface-org-border bg-surface-card p-5 shadow-[var(--ui-shadow-sm)] transition hover:border-[var(--color-layer-org-bright)]/40 hover:shadow-[var(--ui-shadow-md)]"
-            >
+          {teams.map((team) => {
+            const content = <>
               <div>
                 <div className="flex items-start justify-between gap-3">
                   <span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--color-layer-org-soft)] text-[var(--color-layer-org-bright)]">
                     <RoleClusterIcon />
                   </span>
-                  <span className="grid h-8 w-8 place-items-center rounded-lg text-muted transition group-hover:bg-[var(--color-layer-org-soft)] group-hover:text-[var(--color-layer-org-bright)]">
+                  {team.canAccess ? <span className="grid h-8 w-8 place-items-center rounded-lg text-muted transition group-hover:bg-[var(--color-layer-org-soft)] group-hover:text-[var(--color-layer-org-bright)]">
                     <ChevronRightIcon className="h-4 w-4" />
-                  </span>
+                  </span> : null}
                 </div>
                 <h3 className="mt-4 truncate text-caption font-semibold text-ink transition-colors group-hover:text-[var(--color-layer-org-bright)]">
                   {team.name}
@@ -120,8 +116,17 @@ export function OrgTeamsTab({
                     ? "Még nincs publikált riport"
                     : "No published report yet"}
               </span>
-            </Link>
-          ))}
+              {!team.canAccess && <p className="text-caption text-ink-body">{t("teamCapabilities.teamAccessRequired", loc)}</p>}
+            </>;
+            const cardClassName = "group flex min-h-44 flex-col justify-between gap-5 rounded-2xl border border-surface-org-border bg-surface-card p-5 shadow-[var(--ui-shadow-sm)]";
+            return team.canAccess ? (
+              <Link key={team.id} href={`/team/${team.id}`} className={`${cardClassName} transition hover:border-[var(--color-layer-org-bright)]/40 hover:shadow-[var(--ui-shadow-md)]`}>
+                {content}
+              </Link>
+            ) : (
+              <article key={team.id} className={cardClassName}>{content}</article>
+            );
+          })}
         </div>
       )}
 

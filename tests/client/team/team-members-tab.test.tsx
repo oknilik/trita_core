@@ -40,6 +40,7 @@ describe("TeamMembersTab member directory", () => {
         teamId="team-1"
         profileId="kata"
         isOrgManager={false}
+        canManageTeamActions={false}
         canEmailInvite={false}
         addableOrgMembers={[]}
         isHu
@@ -67,6 +68,7 @@ describe("TeamMembersTab member directory", () => {
         teamId="team-1"
         profileId="kata"
         isOrgManager
+        canManageTeamActions
         canEmailInvite
         addableOrgMembers={[]}
         dossierBaseHref={null}
@@ -92,6 +94,7 @@ describe("TeamMembersTab member directory", () => {
         teamId="team-1"
         profileId="consultant"
         isOrgManager
+        canManageTeamActions
         canEmailInvite={false}
         addableOrgMembers={[]}
         dossierBaseHref="/org/org-1/members"
@@ -107,4 +110,15 @@ describe("TeamMembersTab member directory", () => {
       "/org/org-1/members/kata",
     );
   });
+});
+
+it("restricted managers see statuses and pending invites without mutation controls", () => {
+  render(<TeamMembersTab members={members} pendingInvites={[{ id: "invite", email: "pending@example.test" }]}
+    teamId="team-1" profileId="kata" isOrgManager canManageTeamActions={false}
+    canEmailInvite={false} addableOrgMembers={[]} dossierBaseHref="/org/org-1/members" isHu locale="hu" />);
+  expect(screen.getByText("A taglista jelenleg csak olvasható")).toBeInTheDocument();
+  expect(screen.getByText("pending@example.test")).toBeInTheDocument();
+  expect(screen.getAllByRole("link", { name: "Dossié" })).toHaveLength(2);
+  expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+  expect(screen.queryByRole("button")).not.toBeInTheDocument();
 });

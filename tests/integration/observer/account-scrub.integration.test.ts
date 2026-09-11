@@ -15,6 +15,7 @@ import { randomUUID } from "node:crypto";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { scrubProfileData } from "@/lib/account-scrub";
+import { getTeamCommitmentsWorkspace, mutateTeamCommitments } from "@/lib/team-commitments.server";
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
 const FUTURE = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
@@ -428,5 +429,114 @@ test("account-scrub – GDPR fiók-törlés (scrubProfileData)", async (t) => {
 
     const n3 = await prisma.notification.findUnique({ where: { id: untouched.id } });
     assert.deepEqual(n3?.vars, { inviterName: "Élő Kolléga" });
+  });
+
+  await t.test("vállalások: a jelenlegi és történeti profilhivatkozások eltűnnek, a csapat munkája megmarad", async () => {
+    const target = await createProfile();
+    const keeper = await createProfile();
+    const org = await prisma.organization.create({ data: { name: makeId("scrub_org"), ownerId: keeper.id } });
+    const team = await prisma.team.create({ data: { name: "Scrub commitments", ownerId: keeper.id, orgId: org.id } });
+    const otherTeam = await prisma.team.create({ data: { name: "Unchanged plan", ownerId: keeper.id, orgId: org.id } });
+    try {
+      await prisma.organizationMember.createMany({ data: [keeper, target].map((person) => ({ orgId: org.id, userId: person.id, role: "ORG_MEMBER" })) });
+      await prisma.teamMember.createMany({ data: [keeper, target].map((person) => ({ teamId: team.id, userId: person.id, role: person.id === keeper.id ? "manager" : "member" })) });
+      await prisma.subscription.create({ data: { orgId: org.id, status: "active", planType: "team" } });
+      const sourceSnapshot = { reportId: "historical-report", action: { title: "Original proposal", owner: target.username, note: "Shared source note" } };
+      const owned = await prisma.teamCommitment.create({ data: {
+        teamId: team.id, title: "Keep the delivered work", ownerUserId: target.id, ownerLabel: target.username,
+        createdById: target.id, version: 3, status: "done", dueDate: "2026-10-01",
+        latestNote: "The team agreed this is complete.", sourceSnapshot,
+      } });
+      const reassigned = await prisma.teamCommitment.create({ data: {
+        teamId: team.id, title: "Now owned by someone else", ownerUserId: keeper.id, ownerLabel: keeper.username,
+        createdById: keeper.id, version: 2, status: "in_progress",
+      } });
+      const legacy = await prisma.teamCommitment.create({ data: {
+        teamId: team.id, title: "Legacy text is not a profile link", ownerLabel: target.username,
+        createdById: keeper.id, sourceSnapshot,
+      } });
+      const payload = (value: unknown) => JSON.parse(JSON.stringify(value)) as Prisma.InputJsonValue;
+      await prisma.teamCommitmentEvent.createMany({ data: [
+        { commitmentId: owned.id, actorUserId: target.id, version: 3, eventType: "UPDATED", note: owned.latestNote, payload: payload(owned), createdAt: NOW },
+        // A different actor's old snapshot still contains the deleted owner and creator.
+        { commitmentId: reassigned.id, actorUserId: keeper.id, version: 1, eventType: "CREATED", note: "Earlier team note", payload: payload({ ...reassigned, version: 1, ownerUserId: target.id, ownerLabel: target.username, createdById: target.id, status: "not_started" }), createdAt: NOW },
+        // Removing this actor must not remove somebody else's owner/creator references.
+        { commitmentId: reassigned.id, actorUserId: target.id, version: 2, eventType: "EDITED", payload: payload(reassigned), createdAt: NOW },
+        { commitmentId: legacy.id, actorUserId: keeper.id, version: 1, eventType: "IMPORTED", payload: payload(legacy), createdAt: NOW },
+      ] });
+      await prisma.teamCommitmentPlan.create({ data: {
+        teamId: team.id, focus: "Keep the shared team focus", nextCheckInDate: "2026-10-15", version: 2, updatedById: target.id,
+        events: { create: [
+          { actorUserId: keeper.id, focus: "Initial team focus", nextCheckInDate: null, version: 1, createdAt: NOW },
+          { actorUserId: target.id, focus: "Keep the shared team focus", nextCheckInDate: "2026-10-15", version: 2, createdAt: NOW },
+        ] },
+      } });
+      const untouchedPlan = await prisma.teamCommitmentPlan.create({ data: {
+        teamId: otherTeam.id, focus: "Unchanged", updatedById: keeper.id,
+        events: { create: { actorUserId: keeper.id, focus: "Unchanged", version: 1, createdAt: NOW } },
+      }, include: { events: true } });
+      const historyBefore = await prisma.teamCommitmentEvent.findMany({ where: { commitment: { teamId: team.id } }, orderBy: { id: "asc" } });
+      const planBefore = await prisma.teamCommitmentPlan.findUniqueOrThrow({ where: { teamId: team.id }, include: { events: { orderBy: { version: "asc" } } } });
+
+      await scrubProfileData(target.id, target.email);
+
+      const ownedAfter = await prisma.teamCommitment.findUniqueOrThrow({ where: { id: owned.id } });
+      assert.equal(ownedAfter.ownerUserId, null);
+      assert.equal(ownedAfter.ownerLabel, null);
+      assert.equal(ownedAfter.createdById, null);
+      assert.equal(ownedAfter.version, owned.version + 1, "privacy unassignment invalidates a previously opened editor");
+      assert.equal(ownedAfter.status, owned.status);
+      assert.equal(ownedAfter.latestNote, owned.latestNote);
+      assert.equal(ownedAfter.dueDate, owned.dueDate);
+      assert.deepEqual(ownedAfter.sourceSnapshot, sourceSnapshot, "free text is not redacted by a guessed name match");
+      assert.deepEqual(await prisma.teamCommitment.findUniqueOrThrow({ where: { id: reassigned.id } }), reassigned);
+      assert.deepEqual(await prisma.teamCommitment.findUniqueOrThrow({ where: { id: legacy.id } }), legacy);
+      assert.deepEqual(await prisma.userProfile.findUniqueOrThrow({ where: { id: keeper.id } }), keeper);
+
+      const historyAfter = await prisma.teamCommitmentEvent.findMany({ where: { commitment: { teamId: team.id } }, orderBy: { id: "asc" } });
+      assert.equal(historyAfter.length, historyBefore.length, "redaction neither deletes history nor invents a user event");
+      for (let i = 0; i < historyBefore.length; i++) {
+        const before = historyBefore[i];
+        const nextPayload = { ...(before.payload as Record<string, Prisma.JsonValue>) };
+        if (nextPayload.ownerUserId === target.id) { nextPayload.ownerUserId = null; nextPayload.ownerLabel = null; }
+        if (nextPayload.createdById === target.id) nextPayload.createdById = null;
+        assert.deepEqual(historyAfter[i], {
+          ...before, actorUserId: before.actorUserId === target.id ? null : before.actorUserId, payload: nextPayload,
+        }, "only known identity fields change; status, version, note, timestamp and source stay intact");
+      }
+      const planAfter = await prisma.teamCommitmentPlan.findUniqueOrThrow({ where: { teamId: team.id }, include: { events: { orderBy: { version: "asc" } } } });
+      assert.equal(planAfter.updatedById, null);
+      assert.equal(planAfter.focus, planBefore.focus);
+      assert.equal(planAfter.nextCheckInDate, planBefore.nextCheckInDate);
+      assert.equal(planAfter.version, planBefore.version);
+      assert.deepEqual(planAfter.events, planBefore.events.map((event) => ({ ...event, actorUserId: event.actorUserId === target.id ? null : event.actorUserId })));
+      assert.deepEqual(await prisma.teamCommitmentPlan.findUniqueOrThrow({ where: { teamId: otherTeam.id }, include: { events: true } }), untouchedPlan);
+
+      const result = await getTeamCommitmentsWorkspace(team.id, keeper.id);
+      assert.ok("workspace" in result);
+      const publicItem = result.workspace.items.find((item) => item.id === owned.id)!;
+      assert.equal(publicItem.ownerUserId, null);
+      assert.equal(publicItem.ownerName, null);
+      assert.equal(publicItem.events[0].actorName, "–", "nullable actors are safe to serialize without querying a null profile ID");
+      assert.deepEqual(await mutateTeamCommitments(team.id, keeper.id, {
+        action: "edit", id: owned.id, expectedVersion: owned.version,
+        fields: { title: "Stale edit", description: "", nextStep: "", successCriteria: "", ownerUserId: null, dueDate: null },
+      }), { error: "VERSION_CONFLICT", status: 409 });
+      assert.deepEqual(await mutateTeamCommitments(team.id, keeper.id, {
+        action: "edit", id: owned.id, expectedVersion: owned.version,
+        fields: { title: "Stale assignment", description: "", nextStep: "", successCriteria: "", ownerUserId: target.id, dueDate: null },
+      }), { error: "OWNER_NOT_TEAM_MEMBER", status: 400 });
+
+      // Both deletion paths share this helper; a repeated call with the now-null
+      // email must not increment versions or alter already scrubbed history.
+      await scrubProfileData(target.id, null);
+      assert.deepEqual(await prisma.teamCommitment.findUniqueOrThrow({ where: { id: owned.id } }), ownedAfter);
+      assert.deepEqual(await prisma.teamCommitmentEvent.findMany({ where: { commitment: { teamId: team.id } }, orderBy: { id: "asc" } }), historyAfter);
+      assert.deepEqual(await prisma.teamCommitmentPlan.findUniqueOrThrow({ where: { teamId: team.id }, include: { events: { orderBy: { version: "asc" } } } }), planAfter);
+    } finally {
+      await prisma.team.deleteMany({ where: { id: { in: [team.id, otherTeam.id] } } });
+      await prisma.organization.delete({ where: { id: org.id } });
+      await prisma.userProfile.deleteMany({ where: { id: { in: [target.id, keeper.id] } } });
+    }
   });
 });

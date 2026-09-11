@@ -21,6 +21,7 @@ export function TeamTabBar({
 
   const tabs: { key: string; label: string; shortLabel?: string; badge?: number }[] = [
     { key: "overview", label: isHu ? "Áttekintés" : "Overview" },
+    { key: "commitments", label: t("teamCommitmentsEntry.tab", locale) },
     {
       key: "members",
       label: t("teamComp.tabMembers", locale),
@@ -43,7 +44,7 @@ export function TeamTabBar({
   ];
 
   return (
-    <div className="relative">
+    <nav aria-label={t("teamCommitmentsEntry.navigation", locale)} className="relative">
       <div className="overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <div className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-surface-card p-1.5 pr-8 shadow-[0_10px_28px_rgba(26,26,46,0.04)] md:pr-1.5">
         {tabs.map((tab) => {
@@ -93,6 +94,6 @@ export function TeamTabBar({
         className="pointer-events-none absolute inset-y-0 right-0 w-10 rounded-r-2xl bg-gradient-to-l from-surface-card via-surface-card/85 to-transparent md:hidden"
       />
       <span className="sr-only">{isHu ? "A fülek oldalra görgethetők." : "Tabs can be scrolled horizontally."}</span>
-    </div>
+    </nav>
   );
 }

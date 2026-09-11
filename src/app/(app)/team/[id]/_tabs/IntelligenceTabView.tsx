@@ -1,5 +1,7 @@
 import Link from "next/link";
-import { t } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
+import { t, tf } from "@/lib/i18n";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
@@ -9,7 +11,7 @@ import { TeamRoleSection } from "@/components/team/TeamRoleSection";
 import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
 import { loadTeamFeedbackCulture } from "@/lib/team-observer.server";
 import { prisma } from "@/lib/prisma";
-import { hasCompleteTritanDims } from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores, hasCompleteTritanDims } from "@/lib/team-role-estimate";
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import { buildIntelligenceViewData } from "./intelligence-data";
@@ -51,9 +53,9 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         <TeamHeroBlock ctx={ctx} active="intelligence" />
 
         <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,var(--color-surface-card)_0%,var(--color-surface-muted)_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
-          <p className="font-mono text-micro uppercase tracking-widest text-muted">
+          <SectionEyebrow>
             {t("teamComp.tabIntelligence", locale)}
-          </p>
+          </SectionEyebrow>
           <h1 className="mt-1 font-fraunces text-title leading-tight text-ink md:text-display">
             {isHu ? "Még nincs elég adat a csapatintelligenciához" : "Not enough data yet for team intelligence"}
           </h1>
@@ -64,7 +66,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-              {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
+              {t("teamUi.completedProfiles", locale)}:{" "}
               <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
             </span>
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
@@ -72,7 +74,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               <span className="font-semibold text-ink">{missingForStableIntelligence}</span>
             </span>
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-              {isHu ? "Observer kör" : "Observer round"}:{" "}
+              {t("teamUi.feedbackRound", locale)}:{" "}
               <span className="font-semibold text-ink">
                 {teamData.activeCampaign ? (isHu ? "aktív" : "active") : (isHu ? "nincs" : "none")}
               </span>
@@ -81,25 +83,25 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           <div className="mt-4 flex flex-wrap gap-2">
             <Link
               href={`/team/${teamId}?tab=members`}
-              className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
+              className={getButtonClassName({ variant: "secondary", size: "sm" })}
             >
               {isHu ? "Tagok és kitöltések kezelése" : "Manage members and completions"}
             </Link>
             {canReachOrgCampaigns && teamData.orgId ? (
               <Link
                 href={`/org/${teamData.orgId}?tab=campaigns`}
-                className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
+                className={getButtonClassName({ variant: "secondary", size: "sm" })}
               >
-                {isHu ? "Observer kör indítása" : "Start observer round"}
+                {t("teamUi.startFeedbackRound", locale)}
               </Link>
             ) : null}
           </div>
         </section>
 
         <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-          <p className="font-mono text-micro uppercase tracking-widest text-muted">
+          <SectionEyebrow>
             {isHu ? "Kiknél hiányzik még adat" : "Members still missing data"}
-          </p>
+          </SectionEyebrow>
           {membersWithoutAssessment.length > 0 ? (
             <div className="mt-3 flex flex-wrap gap-2">
               {membersWithoutAssessment.map((member) => (
@@ -146,6 +148,14 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
   const teamRoleEstimateCount = teamRoleMemberStatus.filter(
     (member) => member.hasEstimate,
   ).length;
+  const roleSources = teamData.members.map((member) => resolveDisplayRoleScores(
+    member.teamRoleSource === "questionnaire" ? member.teamRoleScores : null,
+    member.scores,
+  )?.source);
+  const priorityRoleCounts = {
+    measured: roleSources.filter((source) => source === "questionnaire").length,
+    estimated: roleSources.filter((source) => source === "estimate").length,
+  };
 
   return (
     <PlatformPageShell
@@ -153,50 +163,63 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
       <TeamHeroBlock ctx={ctx} active="intelligence" />
-      <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,var(--color-surface-card)_0%,var(--color-surface-muted)_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
-        <p className="font-mono text-micro uppercase tracking-widest text-muted">
-          {t("teamComp.tabIntelligence", locale)}
-        </p>
-        <h1 className="mt-1 font-fraunces text-title leading-tight text-ink md:text-display">
-          {isHu ? "Csapatintelligencia nézet" : "Team intelligence view"}
-        </h1>
-        <p className="mt-2 max-w-3xl text-caption leading-relaxed text-ink-body">
-          {isHu
-            ? "Összefoglaló nézet arról, ki mit hoz a csapatba, hol vannak hiányok, és mi a következő legjobb lépés."
-            : "Executive summary of who brings what to the team, where the gaps are, and what the next best action is."}
-        </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-            {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
-            <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
-          </span>
-          <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-            {isHu ? "Adatállapot" : "Data status"}:{" "}
-            <span className="font-semibold text-ink">{intelligenceQualityLabel}</span>
-          </span>
-          <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-            {isHu ? "Dinamika nézet" : "Dynamics view"}:{" "}
-            <span className="font-semibold text-ink">{dynamicsStateLabel}</span>
-          </span>
+      <section id="development-priorities" className="scroll-mt-24 rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+        <SectionEyebrow>{t("teamHierarchy.chapterPriorities", locale)}</SectionEyebrow>
+        <h2 className="mt-2 font-fraunces text-title text-ink">{t("teamHierarchy.priorities", locale)}</h2>
+        <p className="mt-2 text-caption text-ink-body">{t("teamHierarchy.prioritiesIntro", locale)}</p>
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
+          {intelligencePriorities.map((priority) => {
+            const toneClass =
+              priority.tone === "rose"
+                ? "border-surface-team-border bg-surface-team-accent-soft"
+                : priority.tone === "amber"
+                  ? "border-state-warning-border bg-state-warning-bg"
+                  : priority.tone === "violet"
+                    ? "border-sage-soft bg-sage-ghost"
+                    : "border-state-success-border bg-state-success-bg";
+            return (
+              <div key={priority.id} className={`rounded-xl border p-3 ${toneClass}`}>
+                <p className="text-caption font-semibold text-ink">{priority.title}</p>
+                <p className="mt-1 text-caption leading-relaxed text-ink-body">{priority.reason}</p>
+                <p className="mt-3 border-t border-sand pt-3 text-caption text-ink-body">
+                  {priority.id === "role_coverage_gap"
+                    ? `${tf("teamEvidence.roleCounts", locale, priorityRoleCounts)} ${t("teamEvidence.roleInterpretation", locale)}`
+                    : priority.id === "missing_assessments" || priority.id === "missing_observer_round"
+                      ? t("teamEvidence.collectionState", locale)
+                      : tf("teamEvidence.profileHypothesis", locale, { done: assessedCount, total: totalCount })}
+                </p>
+                <Link
+                  href={priority.ctaHref}
+                  className={getButtonClassName({ variant: "secondary", size: "sm", className: "mt-3" })}
+                >
+                  {priority.ctaLabel}
+                </Link>
+              </div>
+            );
+          })}
         </div>
       </section>
+      <p className="text-caption text-ink-body">
+        {t("teamHierarchy.reportMetadata", locale)} · {assessedCount}/{totalCount} · {intelligenceQualityLabel} · {dynamicsStateLabel}
+      </p>
 
       <nav
         aria-label={isHu ? "Elemzési fejezetek" : "Analysis sections"}
         className="flex flex-wrap gap-2 rounded-2xl border border-sand bg-surface-card p-2 shadow-[0_8px_22px_rgba(26,26,46,0.04)]"
       >
         {[
-          { href: "#team-summary", hu: "Összkép", en: "Overview" },
-          { href: "#team-profile", hu: "Csapatprofil", en: "Team profile" },
-          { href: "#team-roles", hu: "Csapatszerepek", en: "Team roles" },
-          { href: "#development-priorities", hu: "Prioritások", en: "Priorities" },
+          { href: "#development-priorities", label: t("teamHierarchy.chapterPriorities", locale) },
+          { href: "#team-profile", label: t("teamHierarchy.chapterProfile", locale) },
+          { href: "#team-resources", label: t("teamHierarchy.chapterResources", locale) },
+          { href: "#team-roles", label: t("teamHierarchy.chapterRoles", locale) },
+          { href: "#team-summary", label: t("teamHierarchy.chapterReadiness", locale) },
         ].map((item) => (
           <a
             key={item.href}
             href={item.href}
-            className="inline-flex min-h-[38px] items-center rounded-xl px-3 text-xs font-semibold text-ink-body transition-colors hover:bg-cream hover:text-ink"
+            className={getButtonClassName({ variant: "ghost", size: "sm" })}
           >
-            {isHu ? item.hu : item.en}
+            {item.label}
           </a>
         ))}
       </nav>
@@ -205,13 +228,11 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         <TeamFeedbackCultureCard culture={feedbackCulture} locale={locale} />
       ) : null}
 
-      <section id="team-summary" className="scroll-mt-6 rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-        <p className="font-mono text-micro uppercase tracking-widest text-muted">
-          {isHu ? "Csapat-összefoglaló" : "Team summary"}
-        </p>
+      <details id="team-summary" className="scroll-mt-24 rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+        <summary className="min-h-11 cursor-pointer py-3 text-caption font-semibold text-ink">{t("teamHierarchy.readinessDetails", locale)}</summary>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
-            <p className="text-note text-ink-body">{isHu ? "Assessment készültség" : "Assessment readiness"}</p>
+            <p className="text-caption text-ink-body">{t("teamUi.profileReadiness", locale)}</p>
             <p className="mt-1 font-fraunces text-title text-ink">{Math.round((assessedCount / Math.max(totalCount, 1)) * 100)}%</p>
             <p className="text-note text-muted">{assessedCount}/{totalCount}</p>
           </div>
@@ -219,7 +240,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               (UX-audit #28): az „Aktív"/„Elérhető" állapot, nem mennyiség. */}
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-note text-ink-body">{isHu ? "Observer kör státusz" : "Observer round status"}</p>
+              <p className="text-caption text-ink-body">{t("teamUi.feedbackRoundStatus", locale)}</p>
               <span
                 className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
                   teamData.activeCampaign ? "bg-sage/15 text-sage-dark" : "bg-sand text-ink-body"
@@ -254,7 +275,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
             </p>
           </div>
         </div>
-      </section>
+      </details>
 
       {/* A számított 16-os csapatminta teljes nézete: tengelysávok, stabilitás-
           jegyzet, confidence-badge. A fenti státusz-csempe csak a címkét adja –
@@ -265,7 +286,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         isHu={isHu}
       />
 
-      <section id="team-profile" className="scroll-mt-6">
+      <section id="team-profile" className="scroll-mt-24">
         <TeamProfileTab
           heatmapRows={teamData.heatmapRows}
           dimConfigs={teamData.dimConfigs}
@@ -273,6 +294,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         />
       </section>
 
+      <section id="team-resources" className="scroll-mt-24">
       <TeamIntelligence
         members={intelligenceMembers}
         edges={teamDynamicsEdges}
@@ -285,7 +307,9 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         deepDiveLabel={isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
       />
 
-      <section id="team-roles" className="scroll-mt-6 space-y-8">
+      </section>
+
+      <section id="team-roles" className="scroll-mt-24 space-y-8">
         <TeamRoleRoundCard
           teamId={teamId}
           isRoundActive={teamRoleTeam?.teamRoleRoundActive ?? false}
@@ -303,35 +327,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         />
       </section>
 
-      <section id="development-priorities" className="scroll-mt-6 rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-        <p className="font-mono text-micro uppercase tracking-widest text-muted">
-          {isHu ? "Fejlesztési prioritások" : "Development priorities"}
-        </p>
-        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
-          {intelligencePriorities.map((priority) => {
-            const toneClass =
-              priority.tone === "rose"
-                ? "border-state-error-border bg-state-error-bg"
-                : priority.tone === "amber"
-                  ? "border-state-warning-border bg-state-warning-bg"
-                  : priority.tone === "violet"
-                    ? "border-sage-soft bg-sage-ghost"
-                    : "border-state-success-border bg-state-success-bg";
-            return (
-              <div key={priority.id} className={`rounded-xl border p-3 ${toneClass}`}>
-                <p className="text-caption font-semibold text-ink">{priority.title}</p>
-                <p className="mt-1 text-xs leading-relaxed text-ink-body">{priority.reason}</p>
-                <Link
-                  href={priority.ctaHref}
-                  className="mt-3 inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
-                >
-                  {priority.ctaLabel}
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+
     </PlatformPageShell>
   );
 }

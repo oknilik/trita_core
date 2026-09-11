@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { t } from "@/lib/i18n";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -10,6 +11,7 @@ import {
   localizeTeamReport,
 } from "@/lib/team-report-i18n";
 import { NarrativeRich } from "@/components/team/TeamReportView";
+import { TeamCommitmentsEntry } from "@/components/team/TeamCommitmentsEntry";
 import {
   buildMemberReportViewModel,
   type MemberViewerInput,
@@ -106,6 +108,8 @@ export function TeamReportMemberView({
           </div>
         </div>
       </DashboardPanel>
+
+      <TeamCommitmentsEntry teamId={report.teamId} isHu={isHu} />
 
       {/* 1. Te a csapatban – radar-összevetés + színes sávok */}
       {vm.hasSelfComparison ? (
@@ -222,15 +226,19 @@ export function TeamReportMemberView({
           />
           <DashboardPanel tone="cream" className="p-6">
             <p className="text-sm text-ink-body">
-              {isHu
-                ? "Ahhoz, hogy magadat is lásd a csapat tükrében, töltsd ki a saját felmérésedet."
-                : "To see yourself in the team's mirror too, complete your own assessment."}
+              {vm.hasSelfResult
+                ? t("teamReportCompatibility.missingComparison", loc)
+                : isHu
+                  ? "Ahhoz, hogy magadat is lásd a csapat tükrében, töltsd ki a saját felmérésedet."
+                  : "To see yourself in the team's mirror too, complete your own assessment."}
             </p>
             <Link
-              href="/assessment"
-              className="mt-3 inline-flex min-h-[38px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
+              href={vm.hasSelfResult ? "/profile/results" : "/assessment"}
+              className={getButtonClassName({ className: "mt-3" })}
             >
-              {isHu ? "A felmérésem kitöltése" : "Complete my assessment"}
+              {vm.hasSelfResult
+                ? t("teamReportCompatibility.ownResult", loc)
+                : isHu ? "A felmérésem kitöltése" : "Complete my assessment"}
             </Link>
           </DashboardPanel>
         </section>

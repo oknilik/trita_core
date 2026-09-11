@@ -22,6 +22,9 @@ vi.mock("@/components/LocaleProvider", () => ({
 
 vi.mock("@/lib/analytics/client", () => ({ track: vi.fn() }));
 
+// Keep the state-contract fixture stable when the public pilot capacity changes.
+vi.mock("@/lib/pilot-config", () => ({ PILOT_TOTAL_TEAMS: 10, PILOT_SPOTS_LEFT: 7 }));
+
 function pendingResponse() {
   let resolve!: (response: { ok: boolean; status: number }) => void;
   const promise = new Promise<{ ok: boolean; status: number }>((resolvePromise) => {

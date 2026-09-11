@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { normalizeTeamReportAggregates } from "@/lib/team-report-compatibility";
 import { getTeamPageData, FRICTION_WEIGHTS } from "@/lib/team-stats";
 import { computeAlignedHubIds, isMeasuredDynamicsSource } from "@/lib/friction-model";
 import { mean, sampleStdDev } from "@/lib/stats/dimension-stats";
@@ -987,7 +988,7 @@ export function serializeTeamReport(
   report: TeamReportRecord,
   options: { includeInternalNotes: boolean },
 ): SerializedTeamReport {
-  const rawAggregates = (report.aggregates as TeamReportAggregates | null) ?? null;
+  const rawAggregates = normalizeTeamReportAggregates(report.aggregates);
   // A stabil-mag alap per-tag, bár pszeudonimizált score-okat tartalmaz.
   // Szervezeti vezető/tag számára nincs rá szükség, ezért ugyanazon a
   // tanácsadói kapun redaktáljuk, mint az internalNotes mezőt.

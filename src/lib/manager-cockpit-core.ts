@@ -4,6 +4,7 @@
 // és a csapat-rendezés / primary-választás szabálya lakik.
 // ─────────────────────────────────────────────────────────────────────
 
+import type { AccessPolicy } from "./policy-engine";
 import { isMeasuredDynamicsSource, type DynamicsEdgeType } from "./friction-model";
 
 export interface DynamicsEdgeSplit {
@@ -67,3 +68,18 @@ export function pickPrimaryTeam<T extends { completionPct: number }>(
 ): T | null {
   return sortTeamsByCompletion(teams)[0] ?? null;
 }
+
+/** The cockpit follows the team surface: read-only progress is available in
+ * restricted access, while frozen access exposes only basic team counts. */
+export function resolveManagerCockpitAccess(policy: AccessPolicy, isConsultant: boolean) {
+  // Generic authenticated "list" is not the subscription detail gate.
+  const canViewProgress = policy.policyState !== "frozen" && policy.policyState !== "none" && policy.capabilities.has("list");
+  return {
+    policyState: policy.policyState,
+    canViewProgress,
+    canViewRaw: canViewProgress && isConsultant,
+    readOnly: policy.policyState !== "active" && policy.policyState !== "trialing",
+  };
+}
+
+export type ManagerCockpitAccess = ReturnType<typeof resolveManagerCockpitAccess>;

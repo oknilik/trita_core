@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { hasCompleteReportDimensions, reportPatternLabel } from "@/lib/team-report-compatibility";
 import { prisma } from "@/lib/prisma";
+import { getTeamCommitmentsWorkspace } from "@/lib/team-commitments.server";
 import { t, tf } from "@/lib/i18n";
 import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 import { computeTeamCompletionBuckets } from "@/lib/team-stats";
@@ -14,12 +16,15 @@ import {
 } from "@/components/dashboard/DashboardPrimitives";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { TeamOverviewNextAction } from "@/components/team/TeamOverviewNextAction";
 import { TeamMemberSnapshot } from "@/components/team/TeamMemberSnapshot";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { TeamHeroBlock } from "./TeamHeroBlock";
+import { TeamCommitmentsOverview } from "./TeamCommitmentsOverview";
 import type { TeamTabContext } from "./types";
 import { ChevronRightIcon } from "@/components/ui/icons";
 
@@ -33,7 +38,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
     receivedFeedbackRequests,
   } = ctx;
 
-  const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
+  const publishedPattern = reportPatternLabel(publishedReport?.aggregates?.pattern?.label);
 
   // Közös vödör-számítás (team-stats) — a TeamHeroBlock-kal azonos definíció:
   // folyamatban = van vázlat, de nincs eredmény; vár = el sem kezdte.
@@ -41,6 +46,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
     computeTeamCompletionBuckets(teamData.members);
   const completionPct = teamData.memberCount > 0 ? Math.round((completedCount / teamData.memberCount) * 100) : 0;
   const hasPattern = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
+  const commitments = await getTeamCommitmentsWorkspace(teamId, ctx.profile.id);
 
   return (
     <PlatformPageShell
@@ -66,6 +72,16 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
           observerGathering={observerGathering}
           receivedFeedbackRequests={receivedFeedbackRequests}
         />
+
+        {"workspace" in commitments ? (
+          <TeamCommitmentsOverview workspace={commitments.workspace} isHu={isHu} />
+        ) : (
+          <InlineBanner variant="info" title={t("teamCommitmentsEntry.unavailableTitle", locale)}>
+            <Link className={getButtonClassName({ variant: "secondary", className: "mt-2" })} href={`/team/${teamId}?tab=commitments`}>
+              {t("teamCommitmentsEntry.open", locale)}
+            </Link>
+          </InlineBanner>
+        )}
 
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         {!canViewRaw ? (
@@ -202,7 +218,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 // aggregátumból: mini radar + mintázat + kulcs-chipek. Ez az
                 // EGYETLEN mintázat-CTA a nem-tanácsadói overview-n (a fenti
                 // metric-csempe linkje ezért került ki – redundáns volt).
-                publishedReport.aggregates?.dimensionAverages ? (
+                hasCompleteReportDimensions(publishedReport.aggregates?.dimensionAverages) ? (
                   <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-[220px_1fr]">
                     <div className="mx-auto w-full max-w-[220px]">
                       <RadarChart
@@ -222,15 +238,16 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       <SectionEyebrow>
                         {isHu ? "tanácsadó által jóváhagyott csapatkép" : "consultant-approved team picture"}
                       </SectionEyebrow>
-                      {publishedPattern?.label ? (
+                      {publishedPattern ? (
                         <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
-                          {publishedPattern.label}
+                          {publishedPattern}
                         </p>
                       ) : (
                         <p className="mt-1 font-fraunces text-xl leading-tight text-ink">
                           {isHu ? "A csapat jóváhagyott profilja" : "The team's approved profile"}
                         </p>
                       )}
+                      {!publishedPattern && <p className="mt-2 text-caption text-ink-body">{t("teamReportCompatibility.missingPattern", locale)}</p>}
                       {/* Szám-definíció (UX-audit #8): a chipek a PUBLIKÁLÁSKOR
                           befagyasztott aggregátumot mutatják – az élő taglétszám
                           (hero) ettől eltérhet, a címke ezt kimondja. */}
@@ -277,9 +294,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                         {isHu ? "A jóváhagyott csapatkép elérhető" : "The approved team picture is available"}
                       </p>
                       <p className="mt-1 text-xs leading-relaxed text-ink-body">
-                        {isHu
-                          ? "A tanácsadó véglegesítette a csapatképet – aggregált eredmények és értékelés."
-                          : "Your consultant has finalized the team picture – aggregate results and assessment."}
+                        {t("teamReportCompatibility.missingVisual", locale)}
                       </p>
                       <Link
                         href={`/team/${teamId}?tab=report`}

@@ -1,7 +1,10 @@
+import Link from "next/link";
+import { hasCompleteReportDimensions, reportPatternLabel } from "@/lib/team-report-compatibility";
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { t, type Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import {
   PSYCH_SAFETY_ITEMS,
   PSYCH_SAFETY_ACTIONS,
@@ -20,7 +23,7 @@ import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
 import type { HexacoCode } from "@/lib/hexaco";
 import { extractNarrativeHighlights } from "@/lib/team-report-presentation";
-import { TeamActionTracker } from "@/components/team/TeamActionTracker";
+import { TeamCommitmentsEntry } from "@/components/team/TeamCommitmentsEntry";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
   H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
@@ -328,17 +331,16 @@ const TIMEFRAME_TONES: Record<
 export function TeamReportView({
   report: reportInput,
   isHu,
-  canManageActions = false,
 }: {
   report: SerializedTeamReport;
   isHu: boolean;
-  canManageActions?: boolean;
 }) {
   const loc: Locale = isHu ? "hu" : "en";
   // Angol lekérésnél a JÓVÁHAGYOTT tanácsadói fordítás mezői lépnek életbe
   // (mezőnkénti fallback az eredetire) – ld. lib/team-report-i18n.ts.
   const report = localizeTeamReport(reportInput, isHu);
   const agg = report.aggregates;
+  const patternLabel = reportPatternLabel(agg?.pattern?.label);
   const isDraft = report.status === "DRAFT";
   const publishedDate = report.publishedAt
     ? new Date(report.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB", {
@@ -422,42 +424,6 @@ export function TeamReportView({
           </div>
         </div>
 
-        {agg && (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-sand bg-[var(--color-surface-subtle)]/45 p-4 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:divide-sand md:p-5">
-            <KpiTile label={isHu ? "Tagok" : "Members"} value={String(agg.memberCount)} />
-            <KpiTile
-              label={isHu ? "Kitöltöttség" : "Completion"}
-              value={`${agg.completionPct}%`}
-              progressPct={agg.completionPct}
-            />
-            {agg.evidence && (
-              <KpiTile
-                label={isHu ? "Adatminőség" : "Data quality"}
-                value={
-                  QUALITY_LABELS[agg.evidence.quality]
-                    ? isHu
-                      ? QUALITY_LABELS[agg.evidence.quality].hu.split(" ")[0]
-                      : QUALITY_LABELS[agg.evidence.quality].en.split(" ")[0]
-                    : agg.evidence.quality
-                }
-                accent={
-                  agg.evidence.quality === "sufficient"
-                    ? "text-state-success-fg"
-                    : agg.evidence.quality === "partial"
-                      ? "text-state-warning-fg"
-                      : "text-state-error-fg"
-                }
-              />
-            )}
-            {frictionPct !== null && (
-              <KpiTile
-                label={isHu ? "Súrlódási arány" : "Friction ratio"}
-                value={`${frictionPct}%`}
-                accent={frictionPct >= 40 ? "text-state-warning-fg" : "text-ink"}
-              />
-            )}
-          </div>
-        )}
       </DashboardPanel>
 
       {(leadershipStrengths.length > 0 ||
@@ -497,7 +463,7 @@ export function TeamReportView({
                     <ol className="mt-3 flex flex-col gap-2.5">
                       {column.items.map((item, index) => (
                         <li key={`${column.key}-${index}`} className="flex items-start gap-2.5 text-sm leading-relaxed text-ink-body">
-                          <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-micro font-semibold ${column.marker}`}>{index + 1}</span>
+                          <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-caption font-semibold ${column.marker}`}>{index + 1}</span>
                           <span>{item}</span>
                         </li>
                       ))}
@@ -506,15 +472,15 @@ export function TeamReportView({
                 </div>
               ))}
               <div className="border-l-4 border-l-sage-soft p-5">
-                <p className="text-caption font-semibold text-ink">{isHu ? "Akciók" : "Actions"}</p>
+                <p className="text-caption font-semibold text-ink">{t("teamCommitmentsEntry.reportSuggestions", loc)}</p>
                 {leadershipActions.length > 0 ? (
                   <ol className="mt-3 flex flex-col gap-2.5">
                     {leadershipActions.map((item, index) => (
                       <li key={`${item.timeframe}-${index}`} className="flex items-start gap-2.5">
-                        <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-sage-soft px-1 text-micro font-semibold text-sage-dark">{item.timeframe}</span>
+                        <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-sage-soft px-1 text-caption font-semibold text-sage-dark">{item.timeframe}</span>
                         <div>
                           <p className="text-sm font-semibold leading-snug text-ink">{item.title}</p>
-                          <p className="mt-0.5 text-micro text-muted">{isHu ? "napos fókusz" : "day focus"}</p>
+                          <p className="mt-0.5 text-caption text-muted">{isHu ? "napos fókusz" : "day focus"}</p>
                         </div>
                       </li>
                     ))}
@@ -526,19 +492,69 @@ export function TeamReportView({
         </section>
       )}
 
-      {report.actionItems && report.actionItems.length > 0 ? (
-        <TeamActionTracker
-          teamId={report.teamId}
-          reportId={report.id}
-          initialItems={report.actionItems}
-          isHu={isHu}
-          canManage={canManageActions && report.status === "PUBLISHED"}
-        />
-      ) : null}
+      {!isDraft ? <TeamCommitmentsEntry teamId={report.teamId} isHu={isHu} /> : null}
+
+      {agg && (
+        <details className="rounded-2xl border border-sand bg-surface-card p-4">
+          <summary className="min-h-11 cursor-pointer py-3 text-caption font-semibold text-ink">{t("teamHierarchy.reportMetadata", loc)}</summary>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-sand bg-[var(--color-surface-subtle)]/45 p-4 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:divide-sand md:p-5">
+            <KpiTile label={isHu ? "Tagok" : "Members"} value={String(agg.memberCount)} />
+            <KpiTile
+              label={isHu ? "Kitöltöttség" : "Completion"}
+              value={`${agg.completionPct}%`}
+              progressPct={agg.completionPct}
+            />
+            {agg.evidence && (
+              <KpiTile
+                label={isHu ? "Adatminőség" : "Data quality"}
+                value={
+                  QUALITY_LABELS[agg.evidence.quality]
+                    ? isHu
+                      ? QUALITY_LABELS[agg.evidence.quality].hu.split(" ")[0]
+                      : QUALITY_LABELS[agg.evidence.quality].en.split(" ")[0]
+                    : agg.evidence.quality
+                }
+                accent={
+                  agg.evidence.quality === "sufficient"
+                    ? "text-state-success-fg"
+                    : agg.evidence.quality === "partial"
+                      ? "text-state-warning-fg"
+                      : "text-state-error-fg"
+                }
+              />
+            )}
+            {frictionPct !== null && (
+              <KpiTile
+                label={isHu ? "Súrlódási arány" : "Friction ratio"}
+                value={`${frictionPct}%`}
+                accent={frictionPct >= 40 ? "text-state-warning-fg" : "text-ink"}
+              />
+            )}
+          </div>
+        </details>
+      )}
+
+      <nav aria-label={t("teamHierarchy.evidenceChapters", loc)} className="flex flex-wrap gap-2 rounded-2xl border border-sand bg-surface-card p-2">
+        {[
+          { id: "report-profile", label: "teamHierarchy.chapterProfile", visible: hasCompleteReportDimensions(agg?.dimensionAverages) },
+          { id: "report-roles", label: "teamHierarchy.chapterRoles", visible: Boolean(agg?.roleDistribution) },
+          { id: "report-dynamics", label: "teamHierarchy.chapterDynamics", visible: Boolean(agg?.dynamics) && dynamicsTotal > 0 },
+          { id: "report-interpretation", label: "teamHierarchy.chapterInterpretation", visible: true },
+          { id: "report-actions", label: "teamCommitmentsEntry.snapshotTitle", visible: Boolean(report.actionItems?.length) },
+        ].filter((chapter) => chapter.visible).map((chapter) => (
+          <a key={chapter.id} href={`#${chapter.id}`} className={getButtonClassName({ variant: "ghost", size: "sm" })}>{t(chapter.label, loc)}</a>
+        ))}
+      </nav>
+
+      {agg && !hasCompleteReportDimensions(agg.dimensionAverages) && (
+        <DashboardPanel className="p-6">
+          <p className="text-caption text-ink-body">{t("teamReportCompatibility.missingVisual", isHu ? "hu" : "en")}</p>
+        </DashboardPanel>
+      )}
 
       {/* Csapatprofil: radar + szórás-sávok */}
-      {agg?.dimensionAverages && (
-        <section>
+      {agg?.dimensionAverages && hasCompleteReportDimensions(agg.dimensionAverages) && (
+        <section id="report-profile" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
             label={isHu ? "Aggregált csapatprofil" : "Aggregate team profile"}
@@ -547,7 +563,8 @@ export function TeamReportView({
               : "The team's collective character – averages and internal diversity."}
           />
           <DashboardPanel className="p-6">
-            {agg.pattern && (
+            {agg.pattern && !patternLabel && <p className="mb-5 text-caption text-ink-body">{t("teamReportCompatibility.missingPattern", isHu ? "hu" : "en")}</p>}
+            {agg.pattern && patternLabel && (
               <div className="mb-5 rounded-[14px] border border-sand bg-cream/60 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
@@ -555,11 +572,11 @@ export function TeamReportView({
                       {isHu ? "Csapatmintázat" : "Team pattern"}
                     </p>
                     <p className="mt-1 font-fraunces text-lg leading-tight text-ink">
-                      {agg.pattern.label}
+                      {patternLabel}
                     </p>
                   </div>
                   {agg.pattern.confidence ? (
-                    <span className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-micro font-semibold text-ink-body">
+                    <span className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-caption font-semibold text-ink-body">
                       {agg.pattern.confidence}{" "}
                       {isHu ? "konfidencia" : "confidence"}
                     </span>
@@ -589,13 +606,13 @@ export function TeamReportView({
                 ) : null}
                 {typeof agg.pattern.tensionMemberCount === "number" &&
                 agg.pattern.tensionMemberCount > 0 ? (
-                  <p className="mt-2 text-micro text-muted">
+                  <p className="mt-2 text-caption text-muted">
                     {isHu
                       ? `${agg.pattern.tensionMemberCount} tagnál 20+ pontos egyéni eltérés van a csapatmintától – a minta rájuk kevésbé illik (név nélkül, az egyéni riport tárgya).`
                       : `${agg.pattern.tensionMemberCount} member(s) deviate 20+ points from the team pattern – the label fits them less (no names; that belongs to individual reports).`}
                   </p>
                 ) : null}
-                <p className="mt-3 border-t border-sand pt-3 text-micro leading-relaxed text-muted">
+                <p className="mt-3 border-t border-sand pt-3 text-caption leading-relaxed text-muted">
                   {t("teamComp.framingNote", loc)}
                 </p>
               </div>
@@ -649,7 +666,7 @@ export function TeamReportView({
                     </div>
                   );
                 })}
-                <p className="mt-1 text-micro text-muted">
+                <p className="mt-1 text-caption text-muted">
                   {isHu
                     ? "Pont = csapatátlag, sáv = szórás (a csapaton belüli eltérés). Egyéni értékek nem jelennek meg."
                     : "Dot = team average, band = spread (in-team variation). Individual values are not shown."}
@@ -662,7 +679,7 @@ export function TeamReportView({
 
       {/* Szerep-lefedettség: 3×3 mátrix */}
       {agg?.roleDistribution && (
-        <section>
+        <section id="report-roles" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
             label={isHu ? "Szerep-lefedettség" : "Role coverage"}
@@ -721,7 +738,7 @@ export function TeamReportView({
                             +{secondaryCount}
                           </span>
                         ) : (
-                          <span className="text-micro uppercase tracking-wide text-muted">
+                          <span className="text-caption uppercase tracking-wide text-muted">
                             {isHu ? "hiányzik" : "missing"}
                           </span>
                         )}
@@ -774,7 +791,7 @@ export function TeamReportView({
               </div>
             )}
 
-            <p className="mt-3 text-micro text-muted">
+            <p className="mt-3 text-caption text-muted">
               {isHu
                 ? `Tagonként a 3 legerősebb szerepet számoljuk: az 1. elsődlegesként, a 2-3. tartalékként. ${agg.roleDistribution.questionnaireCount} valódi kitöltés · ${agg.roleDistribution.estimateCount} becslés.`
                 : `We count each member's 3 strongest roles: the 1st as primary, the 2nd–3rd as backup. ${agg.roleDistribution.questionnaireCount} real fill-out · ${agg.roleDistribution.estimateCount} estimated.`}
@@ -827,7 +844,7 @@ export function TeamReportView({
 
       {/* Együttműködési dinamika: stacked bar */}
       {agg?.dynamics && dynamicsTotal > 0 && (
-        <section>
+        <section id="report-dynamics" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
             label={isHu ? "Együttműködési dinamika" : "Collaboration dynamics"}
@@ -997,7 +1014,7 @@ export function TeamReportView({
               )}
             </div>
 
-            <p className="mt-2 text-micro text-muted">
+            <p className="mt-2 text-caption text-muted">
               {agg.dynamics.source === "trust_round"
                 ? isHu ? "Mért bizalmi körön (360°) alapul." : "Based on a measured trust round (360°)."
                 : agg.dynamics.source === "mixed"
@@ -1103,7 +1120,7 @@ export function TeamReportView({
                 )}
               </div>
 
-              <p className="mt-4 text-micro text-muted">
+              <p className="mt-4 text-caption text-muted">
                 {agg.trustHighlights.source === "trust_round"
                   ? isHu
                     ? `Mért bizalmi körből${
@@ -1176,7 +1193,7 @@ export function TeamReportView({
                             ? t("teamComp.poleHigh", loc)
                             : t("teamComp.poleLow", loc)}
                       </p>
-                      <span className="ml-auto rounded-full border border-state-warning-border bg-surface-card px-2 py-0.5 text-micro font-medium text-bronze-700">
+                      <span className="ml-auto rounded-full border border-state-warning-border bg-surface-card px-2 py-0.5 text-caption font-medium text-bronze-700">
                         {c.count}/{c.assessedCount} {isHu ? "tag" : "members"}
                       </span>
                     </div>
@@ -1187,7 +1204,7 @@ export function TeamReportView({
                 );
               })}
             </div>
-            <p className="mt-4 text-micro text-muted">
+            <p className="mt-4 text-caption text-muted">
               {isHu
                 ? "Önértékelésekből becsült kollektív minta – hipotézis, nem diagnózis. Kérdezd meg a vezetőt: ráismer-e; ha nem, az is adat. Egyéni értékek nem jelennek meg."
                 : "A collective pattern estimated from self-assessments – a hypothesis, not a diagnosis. Ask the leader whether they recognize it; if not, that is data too. Individual values are not shown."}
@@ -1223,7 +1240,7 @@ export function TeamReportView({
                 {/* A ±szóródás-szám nem jelenik meg (2026-08-11 termékdöntés)
                     – az aggregátumban a spread tovább él, csak a kijelzés
                     szűnt meg. */}
-                <p className="mt-0.5 text-xs text-ink-body/60">
+                <p className="mt-0.5 text-xs text-ink-body">
                   {agg.psychSafety.count}{" "}
                   {isHu ? "névtelen válasz" : "anonymous responses"} ·{" "}
                   {new Date(agg.psychSafety.measuredAt).toLocaleDateString(
@@ -1331,7 +1348,7 @@ export function TeamReportView({
                             </p>
                           </div>
                         ))}
-                        <p className="text-micro text-muted">
+                        <p className="text-caption text-muted">
                           {isHu
                             ? "Keret: Harvard Business Review (2026/07), a trita saját adaptációjában."
                             : "Framework: Harvard Business Review (2026/07), in trita's own adaptation."}
@@ -1349,7 +1366,7 @@ export function TeamReportView({
               </p>
             )}
 
-            <p className="mt-4 text-micro text-muted">
+            <p className="mt-4 text-caption text-muted">
               {isHu
                 ? "Névtelen mérés: csak csapatszintű összesítés, egyéni válasz nem visszakereshető (min. 3 kitöltés)."
                 : "Anonymous measurement: team-level aggregate only, individual answers cannot be traced back (min. 3 responses)."}
@@ -1359,7 +1376,7 @@ export function TeamReportView({
       )}
 
       {/* Tanácsadói narratíva */}
-      <section>
+      <section id="report-interpretation" className="scroll-mt-24">
         <SectionHead
           no={secNo()}
           label={isHu ? "Tanácsadói értékelés" : "Consultant assessment"}
@@ -1454,14 +1471,17 @@ export function TeamReportView({
 
       {/* Akcióterv: 30/60/90 napos idővonal – oszloponként saját akcentus */}
       {report.actionItems && report.actionItems.length > 0 && (
-        <section>
+        <section id="report-actions" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
-            label={isHu ? "Akcióterv" : "Action plan"}
-            subtitle={isHu
-              ? "Konkrét lépések 30 / 60 / 90 napos bontásban."
-              : "Concrete steps across 30 / 60 / 90 days."}
+            label={t("teamCommitmentsEntry.snapshotTitle", loc)}
+            subtitle={t(isDraft ? "teamCommitmentsEntry.draftDescription" : "teamCommitmentsEntry.snapshotDescription", loc)}
           />
+          {!isDraft ? (
+            <Link className={getButtonClassName({ variant: "secondary", className: "mb-4" })} href={`/team/${report.teamId}?tab=commitments`}>
+              {t("teamCommitmentsEntry.open", loc)}
+            </Link>
+          ) : null}
           <DashboardPanel className="overflow-hidden p-0">
             <div className="grid grid-cols-1 divide-y divide-sand md:grid-cols-3 md:divide-x md:divide-y-0">
               {(["30", "60", "90"] as const).map((timeframe) => {
@@ -1486,7 +1506,7 @@ export function TeamReportView({
                               </p>
                             )}
                             {(item.owner || item.dueDate || item.status) ? (
-                              <p className="mt-2 text-micro text-muted">
+                              <p className="mt-2 text-caption text-muted">
                                 {item.owner ? `${isHu ? "Felelős" : "Owner"}: ${item.owner}` : ""}
                                 {item.owner && item.dueDate ? " · " : ""}
                                 {item.dueDate ? `${isHu ? "Határidő" : "Due"}: ${item.dueDate}` : ""}
@@ -1529,7 +1549,7 @@ export function TeamReportView({
                 : `${agg.completedCount}/${agg.memberCount} completed assessments · ${agg.evidence.measuredEdgeCount ?? 0} measured and ${agg.evidence.estimatedEdgeCount} estimated relationship data points`}
             </span>
           </div>
-          <p className="mt-2 text-micro text-muted">
+          <p className="mt-2 text-caption text-muted">
             {isHu
               ? "A riport a publikáláskor rögzített aggregált adatokon alapul; egyéni eredmények nem jelennek meg. A becsült elemek profil-alapú modellből származnak."
               : "This report is based on aggregate data frozen at publication; individual results are not shown. Estimated elements come from a profile-based model."}

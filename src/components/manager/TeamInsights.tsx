@@ -226,43 +226,29 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
           {dims.map((dim) => {
             const avg = teamAvg[dim.code];
             return (
-              <div key={dim.code} className="flex items-center gap-3">
+              <div key={dim.code} className="flex items-start gap-3">
                 <span
                   aria-hidden="true"
-                  className="inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
+                  className="mt-1.5 inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: dim.color }}
                 />
-                <div className="flex-1">
-                  <div className="relative h-7 overflow-hidden rounded-lg bg-sand/50">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <span className="text-xs font-semibold text-ink-body">{dim.label}</span>
+                    <span className="shrink-0 text-sm font-bold tabular-nums text-ink">
+                      {avg !== null ? <>{avg}<span className="text-xs font-semibold text-muted">%</span></> : "–"}
+                    </span>
+                  </div>
+                  {/* Labels stay on the neutral card; the color band carries
+                      only magnitude, so no trait hue becomes a text background. */}
+                  <div aria-hidden="true" className="relative mt-1.5 h-2 overflow-hidden rounded-full bg-sand/50">
                     {avg !== null && (
                       <div
-                        className="absolute inset-y-0 left-0 rounded-lg transition-all"
-                        style={{
-                          width: `${avg}%`,
-                          backgroundColor: dim.color,
-                          opacity: 0.75,
-                        }}
+                        className="absolute inset-y-0 left-0 rounded-full transition-all"
+                        style={{ width: `${avg}%`, backgroundColor: dim.color }}
                       />
                     )}
-                    <div className="absolute inset-0 flex items-center px-2.5">
-                      <span className="text-xs font-semibold text-ink-body">
-                        {dim.label}
-                      </span>
-                    </div>
                   </div>
-                </div>
-                {/* Csak az átlag jelenik meg – a ±szórás-szám 2026-08-11-i
-                    termékdöntéssel lekerült a felületről (a szórás-számítás
-                    belül él tovább: a sokszínűség-kártyát hajtja). */}
-                <div className="w-16 shrink-0 text-right">
-                  {avg !== null ? (
-                    <span className="text-sm font-bold tabular-nums text-ink">
-                      {avg}
-                      <span className="text-xs font-semibold text-muted">%</span>
-                    </span>
-                  ) : (
-                    <span className="text-xs text-muted/60">–</span>
-                  )}
                 </div>
               </div>
             );

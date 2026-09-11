@@ -182,6 +182,7 @@ export const commonTranslations = {
     reference: { hu: "Hivatkozási azonosító", en: "Reference ID" },
   },
   footer: {
+    appNavigation: { hu: "Munkatér hivatkozásai", en: "Workspace links" },
     tagline: { hu: "Személyiség és csapatintelligencia platform.", en: "Personality and team intelligence platform." },
     colProduct: { hu: "Termék", en: "Product" },
     colExplore: { hu: "Felfedezés", en: "Explore" },

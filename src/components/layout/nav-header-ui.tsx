@@ -6,7 +6,7 @@ import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { useAuthState } from "@/components/auth/auth-state";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
@@ -15,6 +15,7 @@ import {
   resolveWorkspaceNavRole,
   type WorkspaceNavItem,
 } from "@/lib/navigation/config";
+import { resolveActiveWorkspaceItem } from "@/lib/navigation/active-item";
 import { getUserMenuItemIds } from "@/lib/navigation/visibility";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { isConsultingLed } from "@/lib/operating-mode";
@@ -24,6 +25,9 @@ import { NotificationPanel } from "./NotificationPanel";
 import { NotificationsProvider, useNotifications } from "./NotificationsProvider";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { BackControl } from "@/components/ui/primitives/BackControl";
+import { Button } from "@/components/ui/primitives/Button";
+import { HelpCircleIcon } from "@/components/ui/icons";
+import { OPEN_HELP_EVENT } from "@/lib/help/events";
 
 function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -314,7 +318,6 @@ function NavHeaderContent({
     });
   }
 
-  const homePath = homeHref.split("?")[0] ?? homeHref;
   const activeTab = searchParams.get("tab");
 
   /**
@@ -338,10 +341,7 @@ function NavHeaderContent({
   const homeItem = navItems.find((item) => item.id === "home");
   const homeLabel = homeItem?.label ?? t("nav.home", locale);
   const homeDestination = homeItem?.primaryHref ?? homeHref;
-  const onHome =
-    homePath === "/dashboard"
-      ? pathname === "/dashboard"
-      : pathname.startsWith(homePath);
+  const activeItemId = resolveActiveWorkspaceItem(navItems, pathname, activeTab);
 
   const refreshIdentity = useCallback(async () => {
     setIdentityReady(false);
@@ -362,14 +362,12 @@ function NavHeaderContent({
   const showIdentityLoader = !identityReady;
   const initial = getAvatarMonogram(displayName, { length: 1, fallback: "P" });
   const [avatarFrom, avatarTo] = getAvatarGradient(displayName ?? "trita");
-  const baseRoleLabel =
-    role === "ORG_ADMIN"
-      ? "Admin"
-      : role === "ORG_CONSULTANT"
-        ? "Tanácsadó"
-        : role === "ORG_MANAGER"
-          ? "Manager"
-          : "Felhasználó";
+  const workspaceRoleLabel = (workspaceRole: string | null | undefined) => t(
+    workspaceRole === "ORG_ADMIN" ? "nav.roleAdmin"
+      : workspaceRole === "ORG_CONSULTANT" ? "nav.roleConsultant"
+        : workspaceRole === "ORG_MANAGER" ? "nav.roleManager" : "nav.roleMember", locale,
+  );
+  const baseRoleLabel = org ? workspaceRoleLabel(role) : t("nav.roleIndividual", locale);
   const roleLabel = org ? `${baseRoleLabel} · ${org.name}` : baseRoleLabel;
   const userMenuItems = new Set(getUserMenuItemIds());
   const showProfileMenuItem = userMenuItems.has("profile");
@@ -479,35 +477,6 @@ function NavHeaderContent({
     }
   }
 
-  function isNavItemActive(item: WorkspaceNavItem): boolean {
-    const currentPathWithQuery = activeTab ? `${pathname}?tab=${activeTab}` : pathname;
-    const matchesPrefix = (prefix: string) => {
-      if (prefix.includes("?")) {
-        if (currentPathWithQuery === prefix) return true;
-        // Org overview is the implicit default when no `tab` query is present.
-        if (prefix.endsWith("?tab=overview") && activeTab == null) {
-          return pathname === prefix.split("?")[0];
-        }
-        return false;
-      }
-      return pathname.startsWith(prefix);
-    };
-
-    switch (item.id) {
-      case "home":
-        return onHome;
-      case "teams":
-        return teams.some((team) => pathname.startsWith(`/team/${team.id}`)) && activeTab !== "profile";
-      case "analytics":
-        return item.matchPrefixes.some(matchesPrefix);
-      case "hiring":
-        return org ? pathname.startsWith(`/hiring/${org.id}`) : false;
-      case "org":
-        return item.matchPrefixes.some(matchesPrefix);
-      default:
-        return item.matchPrefixes.some(matchesPrefix);
-    }
-  }
 
   // FONTOS: ez NEM komponens, hanem JSX-változó.
   //
@@ -524,7 +493,7 @@ function NavHeaderContent({
       >
         <div className="rounded-xl bg-[var(--color-surface-card)]/80 px-3.5 py-3">
           <p className="truncate text-caption font-semibold text-[var(--color-text-primary)]">
-            {displayName ?? "Saját profil"}
+            {displayName ?? t("nav.profileFallback", locale)}
           </p>
           <p className="mt-0.5 text-note text-[var(--color-text-muted)]">{roleLabel}</p>
         </div>
@@ -547,29 +516,14 @@ function NavHeaderContent({
                 <span>{t("nav.profileSettings", locale)}</span>
               </Link>
 
-              <Link
-                href="/profile/results"
-                onClick={closeAll}
-                data-testid="nav-user-menu-results"
-                className={`mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                  <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M2 13.5h12" />
-                    <path d="M4 10V6.5" />
-                    <path d="M8 10V3.5" />
-                    <path d="M12 10V8" />
-                  </svg>
-                </span>
-                <span>{t("nav.results", locale)}</span>
-              </Link>
+
             </>
           ) : null}
 
           {orgMemberships && orgMemberships.length > 1 ? (
             <div className="mt-1 rounded-lg px-2.5 py-2.5">
               <p className="pb-2 text-label uppercase text-[var(--color-text-muted)]">
-                Szervezeteim ({orgMemberships.length})
+                {tf("nav.myOrganizations", locale, { count: orgMemberships.length })}
               </p>
               <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto pr-1" data-testid="nav-org-switcher">
                 {orgMemberships.map((m) => {
@@ -589,13 +543,7 @@ function NavHeaderContent({
                       <span className="truncate">{m.orgName ?? m.orgId}</span>
                       <span className="flex shrink-0 items-center gap-1.5">
                         <span className="rounded-full bg-[var(--color-surface-canvas)] px-1.5 py-0.5 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-                          {m.role === "ORG_ADMIN"
-                            ? "Admin"
-                            : m.role === "ORG_CONSULTANT"
-                              ? "Tanácsadó"
-                              : m.role === "ORG_MANAGER"
-                                ? "Manager"
-                                : "Tag"}
+                          {workspaceRoleLabel(m.role)}
                         </span>
                         {isActive && (
                           <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-action-primary-bg)]" />
@@ -706,7 +654,7 @@ function NavHeaderContent({
             className="pointer-events-auto hidden items-center gap-1 rounded-[15px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-1 shadow-[0_1px_2px_rgba(26,26,46,0.04)] lg:flex lg:justify-self-center"
           >
             {navItems.map((item, index) => {
-              const isActive = isNavItemActive(item);
+              const isActive = activeItemId === item.id;
               const isHighlighted = isActive || openDropdown === item.id;
               const itemClass = isHighlighted ? navItemActive : navItemInactive;
               const badgeClass = isHighlighted
@@ -816,7 +764,7 @@ function NavHeaderContent({
                   <span className="h-2.5 w-20 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
                 ) : (
                   <span className="max-w-[90px] truncate text-xs font-medium text-[var(--color-text-secondary)]">
-                    {displayName ?? "Profil"}
+                    {displayName ?? t("nav.profileFallback", locale)}
                   </span>
                 )}
                 <ChevronDown />
@@ -825,7 +773,13 @@ function NavHeaderContent({
             </div>
           </div>
 
-          <div className="pointer-events-auto flex justify-self-end lg:hidden">
+          <div className="pointer-events-auto flex gap-1 justify-self-end lg:hidden">
+            <Button variant="ghost" aria-label={t("nav.openHelp", locale)} aria-haspopup="dialog" onClick={() => {
+              closeAll();
+              window.dispatchEvent(new Event(OPEN_HELP_EVENT));
+            }} className="min-w-11 px-2">
+              <HelpCircleIcon className="h-5 w-5" />
+            </Button>
             {openDropdown === "notifications" && (
               <NotificationPanel onClose={() => setOpenDropdown(null)} />
             )}
@@ -902,7 +856,7 @@ function NavHeaderContent({
                     </div>
                   ) : (
                     <div>
-                      <p className="text-sm font-medium text-[var(--color-text-primary)]">{displayName ?? "Profil"}</p>
+                      <p className="text-sm font-medium text-[var(--color-text-primary)]">{displayName ?? t("nav.profileFallback", locale)}</p>
                       <p className="text-xs text-[var(--color-text-muted)]">{roleLabel}</p>
                     </div>
                   )}
@@ -953,6 +907,7 @@ function NavHeaderContent({
                           href={item.primaryHref}
                           icon={getItemIcon(item.id, "h-4 w-4")}
                           title={item.label}
+                          active={activeItemId === item.id}
                           desc=""
                           onClick={() => setMobileMenu("closed")}
                         />
@@ -1012,21 +967,7 @@ function NavHeaderContent({
                           <span>{t("nav.profileSettings", locale)}</span>
                         </Link>
 
-                        <Link
-                          href="/profile/results"
-                          onClick={() => setMobileMenu("closed")}
-                          className={`mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
-                        >
-                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
-                            <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M2 13.5h12" />
-                              <path d="M4 10V6.5" />
-                              <path d="M8 10V3.5" />
-                              <path d="M12 10V8" />
-                            </svg>
-                          </span>
-                          <span>{t("nav.results", locale)}</span>
-                        </Link>
+
                       </>
                     ) : null}
 
@@ -1036,7 +977,7 @@ function NavHeaderContent({
                     {orgMemberships && orgMemberships.length > 1 ? (
                       <div className="mt-1 rounded-lg px-3 py-3">
                         <p className="pb-1.5 font-fraunces text-base text-[var(--color-text-primary)]">
-                          Szervezeteim ({orgMemberships.length})
+                          {tf("nav.myOrganizations", locale, { count: orgMemberships.length })}
                         </p>
                         <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto pr-1">
                           {orgMemberships.map((m) => {
@@ -1059,13 +1000,7 @@ function NavHeaderContent({
                                 <span className="truncate">{m.orgName ?? m.orgId}</span>
                                 <span className="flex shrink-0 items-center gap-1.5">
                                   <span className="rounded-full bg-[var(--color-surface-canvas)] px-1.5 py-0.5 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-                                    {m.role === "ORG_ADMIN"
-                                      ? "Admin"
-                                      : m.role === "ORG_CONSULTANT"
-                                        ? "Tanácsadó"
-                                        : m.role === "ORG_MANAGER"
-                                          ? "Manager"
-                                          : "Tag"}
+                                    {workspaceRoleLabel(m.role)}
                                   </span>
                                   {isActive && (
                                     <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-action-primary-bg)]" />

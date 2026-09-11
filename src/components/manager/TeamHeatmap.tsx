@@ -32,11 +32,11 @@ function scoreToAlpha(score: number | null): number {
 import { t, type Locale } from "@/lib/i18n";
 import { dimColors } from "@/lib/color-system";
 
-function scoreZone(score: number | null, locale: Locale): { label: string; textClass: string } {
-  if (score == null) return { label: "–", textClass: "text-muted" };
-  if (score >= 70) return { label: t("manager.teamHeatmap.scoreHigh", locale), textClass: "text-ink" };
-  if (score >= 40) return { label: t("manager.teamHeatmap.scoreMid", locale), textClass: "text-ink-body" };
-  return { label: t("manager.teamHeatmap.scoreLow", locale), textClass: "text-ink-body" };
+function scoreZone(score: number | null, locale: Locale): string {
+  if (score == null) return "–";
+  if (score >= 70) return t("manager.teamHeatmap.scoreHigh", locale);
+  if (score >= 40) return t("manager.teamHeatmap.scoreMid", locale);
+  return t("manager.teamHeatmap.scoreLow", locale);
 }
 
 const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
@@ -122,7 +122,6 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                 {dims.map((dim) => {
                   const score = row.scores[dim.code];
                   const alpha = scoreToAlpha(score);
-                  const { textClass } = scoreZone(score, locale);
 
                   return (
                     <td key={dim.code} className="px-2 py-2">
@@ -146,17 +145,19 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                         }
                       >
                         {score != null ? (
-                          <>
-                            <span className={`text-sm font-bold tabular-nums ${textClass}`}>
-                              {score}
-                              <span className="text-micro font-semibold opacity-70">%</span>
+                          // A neutral inset keeps labels readable across every
+                          // trait hue and both themes; the surrounding cell still
+                          // carries the score's color intensity.
+                          <div className="flex flex-col items-center rounded-md bg-surface-card px-1.5 py-0.5 text-ink">
+                            <span className="text-sm font-bold tabular-nums">
+                              {score}<span className="text-micro font-semibold">%</span>
                             </span>
-                            <span className={`text-micro font-semibold uppercase tracking-wide ${textClass} opacity-70`}>
-                              {scoreZone(score, locale).label}
+                            <span className="text-micro font-semibold uppercase tracking-wide">
+                              {scoreZone(score, locale)}
                             </span>
-                          </>
+                          </div>
                         ) : (
-                          <span className="text-xs text-muted/60">–</span>
+                          <span className="text-xs text-muted">–</span>
                         )}
                       </div>
                     </td>

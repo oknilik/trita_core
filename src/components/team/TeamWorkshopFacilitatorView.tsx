@@ -3,6 +3,7 @@ import { localizeTeamReport } from "@/lib/team-report-i18n";
 import { extractNarrativeHighlights } from "@/lib/team-report-presentation";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { TeamCommitmentsEntry } from "@/components/team/TeamCommitmentsEntry";
 
 export function TeamWorkshopFacilitatorView({ report, isHu }: { report: SerializedTeamReport; isHu: boolean }) {
   const localized = localizeTeamReport(report, isHu);
@@ -19,6 +20,9 @@ export function TeamWorkshopFacilitatorView({ report, isHu }: { report: Serializ
         </div>
       </summary>
       <div className="border-t border-sand p-5">
+        <div className="mb-5">
+          <TeamCommitmentsEntry teamId={report.teamId} isHu={isHu} variant="workshop" />
+        </div>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-5">
           {[
             ["00–10", isHu ? "Keret és biztonság" : "Frame and safety"],

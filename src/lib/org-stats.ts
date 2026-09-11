@@ -62,6 +62,8 @@ export interface SerializedTeam {
   createdAt: string;
   _count: { members: number };
   hasPublishedReport?: boolean;
+  /** Server-resolved team membership/admin access; unknown is not a link. */
+  canAccess?: boolean;
 }
 
 export interface OrgPageData {

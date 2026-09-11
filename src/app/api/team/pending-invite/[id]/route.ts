@@ -1,10 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hasOrgRole } from "@/lib/auth";
+import { resolveOrgCapabilityDecision, resolveTeamPolicySnapshot } from "@/lib/policy-service";
 
 // DELETE /api/team/pending-invite/[id] — cancel a pending team invite
-// Requires ORG_MANAGER+ in the team's org
+// Requires the resolved teamManage capability in this team.
 export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -34,8 +34,19 @@ export async function DELETE(
     where: { orgId_userId: { orgId: invite.team.orgId, userId: profile.id } },
     select: { role: true, leftAt: true },
   });
-  if (!membership || membership.leftAt || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+  if (!membership || membership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+
+  const snapshot = await resolveTeamPolicySnapshot({
+    orgId: invite.team.orgId,
+    orgRole: membership.role,
+    teamId: invite.teamId,
+    profileId: profile.id,
+  });
+  const decision = resolveOrgCapabilityDecision(snapshot, "teamManage");
+  if (!decision.allowed) {
+    return NextResponse.json({ error: "CAPABILITY_DENIED", reason: decision.reason }, { status: 403 });
   }
 
   await prisma.teamPendingInvite.delete({ where: { id } });

@@ -1,38 +1,17 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { canViewRawTeamResults } from "@/lib/team-auth";
-import { hasOrgRole } from "@/lib/org-roles";
-import { serializeTeamReport } from "@/lib/team-report";
-import { teamActionTargetSchema } from "@/lib/team-action-target-schema";
-
-const actionItemSchema = z.object({
-  title: z.string().min(1).max(200),
-  description: z.string().max(2000),
-  timeframe: z.enum(["30", "60", "90"]),
-  owner: z.string().max(120).optional(),
-  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u).optional(),
-  status: z.enum(["not_started", "in_progress", "blocked", "done"]),
-  targetMetric: teamActionTargetSchema.optional(),
-});
-
-const requestSchema = z.object({
-  reportId: z.string().min(1),
-  actionItems: z.array(actionItemSchema).max(20),
-});
+import { resolveTeamPolicySnapshot } from "@/lib/policy-service";
 
 export async function PATCH(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  const [{ userId }, { id: teamId }, parsed] = await Promise.all([
+  const [{ userId }, { id: teamId }] = await Promise.all([
     auth(),
     params,
-    request.json().then((body) => requestSchema.safeParse(body)).catch(() => null),
   ]);
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
-  if (!parsed?.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
@@ -49,30 +28,20 @@ export async function PATCH(
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
     select: { role: true, leftAt: true },
   });
-  if (
-    !membership ||
-    membership.leftAt ||
-    (!hasOrgRole(membership.role, "ORG_MANAGER") &&
-      !canViewRawTeamResults(membership.role))
-  ) {
+  if (!membership || membership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
-
-  const latestPublished = await prisma.teamReport.findFirst({
-    where: { teamId, status: "PUBLISHED" },
-    orderBy: { publishedAt: "desc" },
-    select: { id: true },
+  const snapshot = await resolveTeamPolicySnapshot({
+    orgId: team.orgId, orgRole: membership.role, teamId, profileId: profile.id,
   });
-  if (latestPublished?.id !== parsed.data.reportId) {
-    return NextResponse.json({ error: "NOT_LATEST" }, { status: 409 });
+  if (!snapshot.policy.capabilities.has("teamManage")) {
+    return NextResponse.json({ error: "CAPABILITY_DENIED" }, { status: 403 });
   }
 
-  const report = await prisma.teamReport.update({
-    where: { id: parsed.data.reportId },
-    data: { actionItems: parsed.data.actionItems as unknown as object[] },
-  });
+  // Old clients send an unversioned full array, which cannot be safely merged.
+  // Published report snapshots and their legacy event history stay untouched.
   return NextResponse.json({
-    ok: true,
-    report: serializeTeamReport(report, { includeInternalNotes: false }),
-  });
+    error: "ACTION_TRACKING_MOVED",
+    destination: `/team/${teamId}?tab=commitments`,
+  }, { status: 410 });
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { t, tf } from "@/lib/i18n";
-import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
+import { resolveTeamReadiness } from "@/lib/team-readiness";
 import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { TeamSwitcher } from "@/components/team/TeamSwitcher";
@@ -52,7 +52,7 @@ export function TeamHeroBlock({
       : 0;
   const secondaryLabel = hasObserver
     ? t("teamDetail.secondaryFeedbackRound", locale)
-    : t("teamDetail.secondaryPatternReadiness", locale);
+    : t("teamReadiness.analysisMinimum", locale);
   const secondaryPct = hasObserver ? observerCoveragePct : patternProgressPct;
   const secondaryText = hasObserver
     ? tf("teamDetail.secondaryObserverProgress", locale, {
@@ -60,65 +60,18 @@ export function TeamHeroBlock({
         remaining: Math.max(teamData.activeCampaign!.teamParticipantCount - teamData.activeCampaign!.teamObserverDoneCount, 0),
       })
     : hasPattern
-      ? t("teamDetail.secondaryPatternAvailable", locale)
+      ? t("teamReadiness.analysisAvailable", locale)
       : tf("teamDetail.secondaryPatternProgress", locale, {
           done: Math.min(completedCount, patternTarget),
           target: patternTarget,
         });
-  const recommendedAction = (() => {
-    if (canViewRaw && canManageTeamActions && teamData.orgId) {
-      return {
-        title: t("teamDetail.nextStep", locale),
-        description: hasObserver
-          ? t("teamDetail.actionObserverActive", locale)
-          : hasPattern
-            ? t("teamDetail.actionPatternReady", locale)
-            : t("teamDetail.actionCloseMissing", locale),
-        primary: {
-          label: hasObserver
-            ? t("teamDetail.actionManageRound", locale)
-            : t("teamDetail.actionStartRound", locale),
-          href: `/org/${teamData.orgId}?tab=campaigns`,
-        },
-        secondary: hasPattern
-          ? {
-              label: t("teamDetail.actionViewPattern", locale),
-              href: `/team/${teamId}?tab=intelligence#team-profile`,
-            }
-          : null,
-      };
-    }
-
-    return {
-      title: t("teamDetail.nextStep", locale),
-      description: hasPattern
-        ? t("teamDetail.actionPatternAvailable", locale)
-        : t("teamDetail.actionNeedMore", locale),
-      primary: {
-        label: hasPattern
-          ? t("teamDetail.actionViewPatternAlt", locale)
-          : t("teamDetail.actionOpenMembers", locale),
-        href: hasPattern ? `/team/${teamId}?tab=intelligence#team-profile` : `/team/${teamId}?tab=members`,
-      },
-      secondary: null,
-    };
-  })();
-  const teamDashboardVm = createTeamDashboardIA({
-    locale: isHu ? "hu" : "en",
-    teamName: teamData.teamName,
-    memberCount: teamData.memberCount,
+  const readiness = resolveTeamReadiness({
     completedCount,
-    inProgressCount,
-    waitingCount,
-    hasPattern,
-    hasActiveObserverRound: hasObserver,
-    observerDoneCount: teamData.activeCampaign?.teamObserverDoneCount,
-    observerParticipantCount: teamData.activeCampaign?.teamParticipantCount,
-    pendingInviteCount: teamData.pendingInvites.length,
-    recommendedAction,
+    memberCount: teamData.memberCount,
+    stepProgress: teamData.activeCampaign?.stepProgress ?? [],
+    hasPublishedReport: ctx.hasPublishedReport,
   });
-  const statusLine = teamDashboardVm.heroSummary.summary;
-  const heroChips = teamDashboardVm.heroSummary.chips;
+  const statusLine = t(`teamReadiness.${readiness.stage}Description`, locale);
   const teamHeroTheme = SURFACE_HERO_THEME.team;
 
   // ── Hero CTA-kezelések ─────────────────────────────────────────────
@@ -152,27 +105,19 @@ export function TeamHeroBlock({
           </div>
         )}
         badge={
-          hasPattern ? (
+          (
             <span
               className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
               style={{ backgroundColor: teamHeroTheme.badgeBg, color: teamHeroTheme.badgeText }}
             >
               {/* Állapot-pötty: vizuálisan elválik a mellette álló eyebrow-tól (audit #13) */}
               <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
-              {t("teamDetail.heroPatternReady", locale)}
+              {t(`teamReadiness.${readiness.stage}`, locale)}
             </span>
-          ) : undefined
+          )
         }
         title={<h1 className="font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-hero">{teamData.teamName}</h1>}
         summary={statusLine}
-        chips={heroChips.map((chip) => (
-          <span
-            key={chip}
-            className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]"
-          >
-            {chip}
-          </span>
-        ))}
         actions={(
           <>
             {/* Visszajelzés – kitüntetett belépő, csak csapattagnak */}
@@ -258,7 +203,7 @@ export function TeamHeroBlock({
             </p>
           ) : undefined
         }
-        aside={(
+        aside={active === "overview" ? (
           <>
             <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
               {t("teamDetail.snapshotLabel", locale)}
@@ -301,7 +246,7 @@ export function TeamHeroBlock({
               </div>
             </div>
           </>
-        )}
+        ) : undefined}
       />
 
       <TeamTabBar ctx={ctx} active={active} />

@@ -54,6 +54,7 @@ describe("organization overview redesign", () => {
             createdAt: "2026-08-20T10:00:00.000Z",
             _count: { members: 5 },
             hasPublishedReport: true,
+            canAccess: true,
           },
           {
             id: "team-2",
@@ -61,6 +62,7 @@ describe("organization overview redesign", () => {
             createdAt: "2026-08-21T10:00:00.000Z",
             _count: { members: 5 },
             hasPublishedReport: false,
+            canAccess: false,
           },
         ]}
         orgId="org-1"
@@ -74,5 +76,8 @@ describe("organization overview redesign", () => {
     expect(screen.getByRole("heading", { name: /Csapatok/ })).toBeInTheDocument();
     expect(screen.getByText("Riport elérhető")).toBeInTheDocument();
     expect(screen.getByText("Még nincs publikált riport")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Ügyfélszolgálat/ })).toHaveAttribute("href", "/team/team-1");
+    expect(screen.queryByRole("link", { name: /Termékfejlesztés/ })).not.toBeInTheDocument();
+    expect(screen.getByText("A részletes nézethez csapattagság szükséges")).toBeInTheDocument();
   });
 });

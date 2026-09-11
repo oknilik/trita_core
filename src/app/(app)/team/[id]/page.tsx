@@ -50,6 +50,7 @@ import { IntelligenceTabView } from "./_tabs/IntelligenceTabView";
 import { MembersTabView } from "./_tabs/MembersTabView";
 import { FeedbackTabView } from "./_tabs/FeedbackTabView";
 import { ReportTabView } from "./_tabs/ReportTabView";
+import { CommitmentsTabView } from "./_tabs/CommitmentsTabView";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 
 export const dynamic = "force-dynamic";
@@ -63,6 +64,7 @@ export const dynamic = "force-dynamic";
 
 const TEAM_TAB_KEYS = [
   "overview",
+  "commitments",
   "intelligence",
   "members",
   "feedback",
@@ -373,7 +375,7 @@ export default async function TeamDetailPage({
   // nem csapat-jog – szerep-alapú láthatóság, a szerver kapuzza a műveletet.
   const canReachOrgCampaigns = hasOrgRole(orgMemberRole, "ORG_MANAGER");
   // E-mailes csapat-meghívó: csak admin-paritás (racionalizálás, 2026-07-22).
-  const canEmailInvite = hasOrgRole(orgMemberRole, "ORG_ADMIN");
+  const canEmailInvite = policy.capabilities.has("teamInviteEmail");
   const manageGateCopy =
     isOrgManager && !canManageTeamActions
       ? getCapabilityGateCopy({
@@ -458,6 +460,13 @@ export default async function TeamDetailPage({
   const tabTracker = <TabViewTracker surface="team" tab={activeTab} />;
 
   switch (activeTab) {
+    case "commitments":
+      return (
+        <>
+          {tabTracker}
+          <CommitmentsTabView ctx={ctx} />
+        </>
+      );
     case "feedback":
       return (
         <>

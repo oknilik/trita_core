@@ -11,6 +11,7 @@ type ThemeToggleVariant = "menu" | "compact" | "footer";
 
 interface ThemeToggleProps {
   className?: string;
+  popoverSide?: "top" | "bottom";
   /**
    * compact: egyetlen, aktuális sémát mutató ikon + popover a fejlécben.
    * menu: a három választás teljes szélességű listája menükben/drawerekben.
@@ -46,7 +47,7 @@ function MoonIcon({ className = "h-5 w-5" }: { className?: string }) {
 
 function CheckIcon() {
   return (
-    <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+    <svg aria-hidden="true" className="h-[16px] w-[16px]" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
       <path d="m3 8.25 3.1 3.1L13 4.75" />
     </svg>
   );
@@ -86,18 +87,18 @@ function ThemeOptions({
             role="radio"
             aria-checked={active}
             onClick={() => onSelect(option)}
-            className={`group flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 text-left text-caption transition-colors ${FOCUS_RING_CLASS} ${active
+            className={`group flex min-h-[44px] w-full items-center gap-[8px] rounded-lg px-[12px] text-left text-caption transition-colors ${FOCUS_RING_CLASS} ${active
               ? "bg-[var(--color-surface-self-accent-soft)] font-semibold text-[var(--color-text-primary)]"
               : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
             }`}
           >
-            <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-md ${active
+            <span className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-md ${active
               ? "text-[var(--color-accent-self-deep)]"
               : "text-[var(--color-text-muted)] group-hover:text-[var(--color-text-secondary)]"
             }`}>
               <OptionIcon className="h-[18px] w-[18px]" />
             </span>
-            <span className="flex-1">{t(`theme.${option}`, locale)}</span>
+            <span className="min-w-0 flex-1 wrap-anywhere">{t(`theme.${option}`, locale)}</span>
             {active ? (
               <span className="text-[var(--color-accent-primary-strong)]">
                 <CheckIcon />
@@ -120,6 +121,7 @@ function ThemeOptions({
 export function ThemeToggle({
   className = "",
   variant = "menu",
+  popoverSide = "bottom",
 }: ThemeToggleProps) {
   const { locale } = useLocale();
   const { preference, resolved, setPreference } = useTheme();
@@ -221,7 +223,7 @@ export function ThemeToggle({
           id={popoverId}
           role="dialog"
           aria-label={t("theme.label", locale)}
-          className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)] p-1.5 shadow-[var(--ui-shadow-lg)]"
+          className={`absolute right-0 z-50 w-64 max-w-[calc(100vw-2.5rem)] overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)] p-1.5 shadow-[var(--ui-shadow-lg)] ${popoverSide === "top" ? "bottom-full mb-2" : "top-full mt-2"}`}
         >
           <p className="px-3 pb-2 pt-2 font-fraunces text-base text-[var(--color-text-primary)]">
             {t("theme.label", locale)}
@@ -231,6 +233,7 @@ export function ThemeToggle({
             onSelect={(next) => {
               setPreference(next);
               setOpen(false);
+              triggerRef.current?.focus();
             }}
           />
         </div>

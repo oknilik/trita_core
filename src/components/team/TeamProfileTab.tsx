@@ -56,7 +56,7 @@ export function TeamProfileTab({
         <h2 className="font-fraunces text-xl text-ink mb-1">
           {t("teamComp.teamHeatmapTitle", loc)}
         </h2>
-        <p className="mb-6 text-sm text-ink-body/70">
+        <p className="mb-6 text-sm text-ink-body">
           {t("teamComp.heatmapDesc", loc)}
         </p>
         <TeamHeatmap rows={heatmapRows} dims={dims} isHu={isHu} />

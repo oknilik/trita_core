@@ -395,7 +395,11 @@ export const resultsTranslations = {
     summaryNatural: { hu: "Ami természetesen megy", en: "What comes naturally" },
     summaryAttention: { hu: "Ami több figyelmet kérhet", en: "What may need more attention" },
     summaryWork: { hu: "Munkahelyen ez számít", en: "What matters at work" },
-    summaryGrowth: { hu: "Ahol a legtöbbet fejlődhetsz", en: "Where you can grow most" },
+    summaryGrowth: { hu: "Ezt próbáld ki", en: "Try this" },
+    summaryGrowthExperiment: {
+      hu: "Válassz egy visszatérő helyzetet a következő hétre. Próbálj ki benne egy másik reakciót, majd jegyezd fel: mi segített, és min változtatnál legközelebb?",
+      en: "Choose one recurring situation for the coming week. Try a different response, then note what helped and what you would change next time.",
+    },
     summaryBalancedAttention: {
       hu: "Nincs olyan fő dimenziód, amely önmagában erős figyelmeztető jel lenne. A helyzetek közötti egyensúly a fontosabb kérdés.",
       en: "None of your main dimensions is a strong warning sign on its own. The balance between situations matters more.",
@@ -408,23 +412,17 @@ export const resultsTranslations = {
     },
     summaryNextStep: { hu: "A következő lépésed", en: "Your next step" },
     summaryOutsideFeedback: { hu: "Külső visszajelzések", en: "Outside feedback" },
-    summaryOpenOutside: { hu: "Külső kép megnyitása", en: "Open outside view" },
     summaryPendingOrg: { hu: "Van egy függő szervezeti meghívásod.", en: "You have a pending organization invitation." },
     summaryOpenInvitation: { hu: "Meghívás megnyitása", en: "Open invitation" },
     summaryAssessmentInProgress: { hu: "Van egy folyamatban lévő új kitöltésed.", en: "You have a new assessment in progress." },
     summaryContinue: { hu: "Folytatás", en: "Continue" },
     summaryExploreEyebrow: { hu: "Felfedezés", en: "Explore" },
-    summaryExploreTitle: { hu: "Akkor mélyedj el a részletekben, amikor szeretnél.", en: "Go deeper only when you want to." },
     summaryDetailsPrompt: { hu: "Minden részlet", en: "All details" },
-    summaryDetailsMeta: {
-      hu: "A teljes riport három tiszta fejezetben: radar, 6 dimenzió, alskálák, munkastílus és fejlődés.",
-      en: "The complete report in three clear chapters: radar, 6 dimensions, facets, work style and growth.",
-    },
     summaryDetailsBody: {
       hu: "A részletes riportban megkapod mind a hat dimenzió értelmezését, az alskálákat, a munkastílust és a fejlődési fókuszt.",
       en: "The detailed report includes all six interpretations, facets, work style and growth focus.",
     },
-    summaryOpenDetails: { hu: "Részletes riport megnyitása", en: "Open detailed report" },
+    summaryOpenDetails: { hu: "Részletes eredményem", en: "My detailed results" },
     summaryComparisonTitle: { hu: "Külső nézőpont", en: "Outside perspective" },
     summaryComparisonReadyBody: { hu: "Nézd meg, hogyan látnak mások, és hol tér el az önképed.", en: "See how others perceive you and where it differs from your self-view." },
     summaryComparisonStartBody: { hu: "Kérj visszajelzést, hogy később összevethesd az önképed mások nézőpontjával.", en: "Ask for feedback so you can compare your self-view with other perspectives later." },
@@ -496,14 +494,24 @@ export const resultsTranslations = {
     heroEyebrow: { hu: "A te profilod", en: "Your profile" },
     heroShare: { hu: "Megosztás", en: "Share" },
     heroPdf: { hu: "PDF letöltés", en: "Download PDF" },
+    heroPdfError: { hu: "A PDF nem készült el. Próbáld újra.", en: "PDF generation failed. Please try again." },
     heroGlyphEyebrow: { hu: "A te karakterábrád", en: "Your character visual" },
     heroGlyphGrammar: {
-      hu: "A nagy forma {primary}: {form}. A benne futó vonal {secondary}: {motif}. A kitöltés a pontszámot követi.",
-      en: "The large shape represents {primary}: the {form}. The line inside represents {secondary}: the {motif}. The fill follows the score.",
+      hu: "A forma {primary}, a belső vonal {secondary} dimenzióját mutatja.",
+      en: "The shape represents {primary}; the inner line represents {secondary}.",
     },
     heroGlyphGrammarUncertain: {
-      hu: "A két dimenziód közel azonos szintű. A nagy forma {form}, a benne futó vonal {motif}; a kitöltés a pontszámot követi.",
-      en: "The two dimensions are at a similar level. The large shape is the {form}, the line inside the {motif}; the fill follows the score.",
+      hu: "A két legmagasabb pontszámod közeli; a sorrendjük nem egyértelmű.",
+      en: "Your two highest scores are close; their order is not clear-cut.",
+    },
+    heroGlyphGrammarSecondaryUncertain: {
+      hu: "A második és harmadik dimenzió pontszáma közeli; a motívum nem jelent biztos sorrendet.",
+      en: "Your second and third dimension scores are close; the motif does not imply a definite ranking.",
+    },
+    heroGlyphLegendToggle: { hu: "Az ábra jelmagyarázata", en: "How to read the visual" },
+    heroGlyphLegend: {
+      hu: "A nagy forma {form}, a belső vonal {motif}. A kitöltés a pontszámot követi.",
+      en: "The large shape is the {form}, the inner line the {motif}. The fill follows the score.",
     },
     heroGlyphOpen: { hu: "Karakterábra", en: "Character visual" },
     heroGlyphBack: { hu: "Profil", en: "Profile" },
@@ -731,6 +739,14 @@ export const resultsTranslations = {
     glyphGrammarUncertain: {
       hu: "A két legmagasabb pontszámú dimenziód – {primary} és {secondary} – közel azonos szintű, sorrendjük nem egyértelmű. A nagy forma {form}, a benne futó vékony vonal {motif}; a forma kitöltése a pontszámot követi.",
       en: "Your top two dimensions – {primary} and {secondary} – are at a similar level, so their order isn't clear-cut. The large shape is the {form}, the thin line inside it the {motif}; the fill weight follows the score.",
+    },
+    glyphGrammarSecondaryUncertain: {
+      hu: "A második és harmadik dimenzió pontszáma közeli, ezért a kiegészítő motívum nem jelent biztos sorrendet. A nagy forma {primary}: {form}. A benne futó vonal {secondary}: {motif}; a kitöltés a pontszámot követi.",
+      en: "Your second and third dimension scores are close, so the supporting motif does not imply a definite ranking. The large shape represents {primary}: the {form}. The line inside represents {secondary}: the {motif}; the fill follows the score.",
+    },
+    glyphPairSecondaryUncertain: {
+      hu: "az ábrán: {a} · {b}",
+      en: "shown: {a} · {b}",
     },
     glyphPairUncertain: {
       hu: "a két legmagasabb: {a} · {b}",

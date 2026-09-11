@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
+import { isPolicyReadOnly, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { getRequestLogger } from "@/lib/logger.server";
 import {
@@ -171,7 +172,7 @@ async function validateReportCampaign(teamId: string, orgId: string, campaignId:
   return null;
 }
 
-async function requireConsultant(teamId: string) {
+async function requireConsultant(teamId: string, write = false) {
   const { userId } = await auth();
   if (!userId) return { error: "UNAUTHORIZED" as const, status: 401 };
 
@@ -203,6 +204,13 @@ async function requireConsultant(teamId: string) {
     return { error: "FORBIDDEN" as const, status: 403 };
   }
 
+  const snapshot = await resolveOrgPolicySnapshot({ orgId: team.orgId, orgRole: membership.role });
+  if (
+    snapshot.policy.policyState === "frozen" || snapshot.policy.policyState === "none" ||
+    (write && isPolicyReadOnly(snapshot.policy.policyState))
+  ) {
+    return { error: "CAPABILITY_DENIED" as const, status: 403 };
+  }
   return { profileId: profile.id, orgId: team.orgId };
 }
 
@@ -236,7 +244,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: teamId } = await params;
-  const ctx = await requireConsultant(teamId);
+  const ctx = await requireConsultant(teamId, true);
   if ("error" in ctx) {
     return NextResponse.json({ error: ctx.error }, { status: ctx.status });
   }
@@ -329,7 +337,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: teamId } = await params;
-  const ctx = await requireConsultant(teamId);
+  const ctx = await requireConsultant(teamId, true);
   if ("error" in ctx) {
     return NextResponse.json({ error: ctx.error }, { status: ctx.status });
   }
@@ -372,7 +380,7 @@ export async function PATCH(
 ) {
   const log = await getRequestLogger("team-report");
   const { id: teamId } = await params;
-  const ctx = await requireConsultant(teamId);
+  const ctx = await requireConsultant(teamId, true);
   if ("error" in ctx) {
     return NextResponse.json({ error: ctx.error }, { status: ctx.status });
   }

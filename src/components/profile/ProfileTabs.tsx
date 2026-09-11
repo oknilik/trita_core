@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useProfileNavigation } from "./useProfileNavigation";
 import { t, tf } from "@/lib/i18n";
 import { dimColorsCss } from "@/lib/color-system";
 import type { Locale } from "@/lib/i18n";
@@ -107,10 +108,6 @@ export interface BridgeNextStep {
     label: string;
     href: string;
   };
-  secondary?: {
-    label: string;
-    href: string;
-  } | null;
 }
 
 export interface ProfileTabsProps {
@@ -583,7 +580,7 @@ export function ProfileTabs({
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
 
-  const [activeTab, setActiveTab] = useState<ProfileViewId>(initialTab);
+  const { activeTab, activeChapter, navigate } = useProfileNavigation(initialTab, initialDetailChapter);
   // Hash-horgonyok (#observer-flow stb.): az App Router streaming miatt nem
   // görget hash-re magától, ezért mount után ismételt ráigazítással visszük
   // a cél-elemhez (a második kör a hydration utáni layout-shiftet követi le).
@@ -618,17 +615,7 @@ export function ProfileTabs({
   const [pdfError, setPdfError] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
-  const handleTabChange = useCallback(
-    (tab: ProfileViewId) => {
-      setActiveTab(tab);
-      const url = new URL(window.location.href);
-      if (tab === "summary") url.searchParams.delete("tab");
-      else url.searchParams.set("tab", tab);
-      if (tab !== "details") url.searchParams.delete("chapter");
-      window.history.replaceState({}, "", url.pathname + url.search + url.hash);
-    },
-    [],
-  );
+  const handleTabChange = (tab: ProfileViewId) => navigate(tab);
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
@@ -848,14 +835,12 @@ export function ProfileTabs({
         {activeTab === "details" && (
           <>
             <LinearReport
-              initialSection={initialDetailChapter}
+              key={activeChapter}
+              initialSection={activeChapter}
               locale={locale}
               onBack={() => handleTabChange("summary")}
               onSectionOpen={(section) => {
-                const url = new URL(window.location.href);
-                url.searchParams.set("tab", "details");
-                url.searchParams.set("chapter", section);
-                window.history.replaceState({}, "", url.pathname + url.search + url.hash);
+                navigate("details", section);
                 track("results.section_open", {
                   section: section === "dimensions" ? "dimensions" : section,
                 });

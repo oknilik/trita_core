@@ -58,7 +58,8 @@ export function buildIntelligenceViewData(params: {
       hasAssessmentData: hasCompleteTritanDims(m.scores),
       isTrustHub: teamData.trustHubUserIds.includes(m.userId),
       color: getAvatarGradient(m.displayName)[0],
-      textColor: "var(--color-neutral-white)",
+      // Az avatar sötét márkapalettája nem fordul a színsémával.
+      textColor: "var(--color-text-on-inverse)",
     };
   });
 

@@ -4,6 +4,14 @@
 // menüpontok kulcsosítottak.
 export const navigationTranslations = {
   nav: {
+    roleIndividual: { hu: "Egyéni profil", en: "Personal profile" },
+    roleAdmin: { hu: "Adminisztrátor", en: "Administrator" },
+    roleConsultant: { hu: "Tanácsadó", en: "Consultant" },
+    roleManager: { hu: "Vezető", en: "Manager" },
+    roleMember: { hu: "Tag", en: "Member" },
+    profileFallback: { hu: "Saját profil", en: "My profile" },
+    myOrganizations: { hu: "Szervezeteim ({count})", en: "My organizations ({count})" },
+    openHelp: { hu: "Segítség megnyitása", en: "Open help" },
     home: { hu: "Vezérlő", en: "Dashboard" },
     results: { hu: "Eredményeim", en: "My results" },
     interaction: { hu: "Összehasonlítás", en: "Comparison" },

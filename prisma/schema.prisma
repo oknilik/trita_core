@@ -127,6 +127,7 @@ model UserProfile {
   // Organization layer (KKV)
   ownedOrgs      Organization[]       @relation("OrgOwner")
   orgMemberships OrganizationMember[]
+  ownedTeamCommitments TeamCommitment[] @relation("CommitmentOwner")
   activeOrg      Organization?        @relation("ActiveOrgContext", fields: [activeOrgId], references: [id], onDelete: SetNull)
   activeTeam     Team?                @relation("ActiveTeamContext", fields: [activeTeamId], references: [id], onDelete: SetNull)
 
@@ -324,6 +325,8 @@ model Team {
   activeForUsers       UserProfile[]         @relation("ActiveTeamContext")
   pendingInvites       TeamPendingInvite[]
   reports              TeamReport[]
+  commitments          TeamCommitment[]
+  commitmentPlan       TeamCommitmentPlan?
   candidateInvites     CandidateInvite[]
   teamRoleObservations TeamRoleObservation[]
   peerFeedbackItems    PeerFeedbackItem[]
@@ -393,6 +396,86 @@ model TeamActionEvent {
   report TeamReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   @@index([reportId, actionKey, createdAt])
+  @@index([actorUserId, createdAt])
+}
+
+// Élő, csapathoz kötött vállalások: egy új riport nem cseréli le őket.
+// A forrás riport azonosítója történeti referencia, nem törlést gátló FK.
+model TeamCommitment {
+  id                String   @id @default(cuid())
+  teamId            String
+  title             String
+  description       String   @default("")
+  nextStep          String   @default("")
+  successCriteria   String   @default("")
+  ownerUserId       String?
+  // Régi szabad szöveges felelős: megjeleníthető, jogosultságot nem ad.
+  ownerLabel        String?
+  dueDate           String?  @db.VarChar(10)
+  status            String   @default("not_started")
+  latestNote        String?
+  targetMetric      Json?
+  sourceReportId    String?
+  sourceActionKey   String?
+  sourceSnapshot    Json?
+  version           Int      @default(1)
+  // Törölt fiók személyes hivatkozása nullázható; a csapat munkája megmarad.
+  createdById       String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  team   Team                  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  owner  UserProfile?          @relation("CommitmentOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  events TeamCommitmentEvent[]
+
+  @@unique([teamId, sourceReportId, sourceActionKey])
+  @@index([teamId, status])
+  @@index([ownerUserId])
+}
+
+// Egy felhasználói módosításhoz egy append-only, a mutációval együtt írt esemény.
+model TeamCommitmentEvent {
+  id           String   @id @default(cuid())
+  commitmentId String
+  eventType    String
+  actorUserId  String?
+  version      Int
+  payload      Json
+  note         String?
+  createdAt    DateTime @default(now())
+
+  commitment TeamCommitment @relation(fields: [commitmentId], references: [id], onDelete: Cascade)
+
+  @@unique([commitmentId, version])
+  @@index([actorUserId, createdAt])
+}
+
+model TeamCommitmentPlan {
+  teamId          String   @id
+  focus           String   @default("")
+  nextCheckInDate String?  @db.VarChar(10)
+  version         Int      @default(1)
+  updatedById     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  team   Team                      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  events TeamCommitmentPlanEvent[]
+}
+
+// A közös terv minden sikeres verziója a tényleges módosítóval megmarad.
+model TeamCommitmentPlanEvent {
+  id              String   @id @default(cuid())
+  teamId          String
+  actorUserId     String?
+  focus           String
+  nextCheckInDate String?  @db.VarChar(10)
+  version         Int
+  createdAt       DateTime @default(now())
+
+  plan TeamCommitmentPlan @relation(fields: [teamId], references: [teamId], onDelete: Cascade)
+
+  @@unique([teamId, version])
   @@index([actorUserId, createdAt])
 }
 

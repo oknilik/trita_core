@@ -98,6 +98,19 @@ function reflectionNotificationsFor(userId: string) {
 }
 
 test("D1 Reflection sweep", async (t) => {
+  // The locale test initializes a cached Resend client with a dummy key.
+  // Restoring the empty env key afterwards does not clear that client, so keep
+  // every subtest behind a failing transport instead of allowing real fetches.
+  const originalTransport = globalThis.fetch;
+  globalThis.fetch = (async () => new Response(JSON.stringify({
+    name: "integration_transport",
+    message: "Email transport is disabled in the reflection integration suite.",
+  }), {
+    status: 503,
+    headers: { "content-type": "application/json" },
+  })) as typeof globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalTransport; });
+
   await t.test("pure kiválasztó: ablak-szélek, hiányos inputok, holtverseny", () => {
     const now = new Date("2026-08-04T12:00:00.000Z");
     const at = (msBack: number) => new Date(now.getTime() - msBack);
@@ -262,9 +275,9 @@ test("D1 Reflection sweep", async (t) => {
         locale: null,
       });
 
-      // A kimenő levelet a Resend fetch-hívásának elkapásával olvassuk –
-      // hálózat és kulcs nélkül. A modul-szintű üres kulcsot csak erre az
-      // esetre írjuk felül, és utána visszaállítjuk.
+      // A suite hálózatmentes transzportját erre az esetre sikeres,
+      // levéltartalmat rögzítő mockra cseréljük, majd visszaállítjuk.
+      // A modul-szintű üres kulcsot is csak erre az esetre írjuk felül.
       const originalKey = process.env.RESEND_API_KEY;
       const originalFetch = globalThis.fetch;
       const sent: Array<{ to: string; subject: string }> = [];

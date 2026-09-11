@@ -10,6 +10,26 @@
 
 ## Rétegenként: mit fed ma a háló
 
+### Vállalások — kiegészítés, 2026-09-11
+
+A közös `/team/[id]?tab=commitments` felület új védelme. A lenti régi
+területtérkép korábbi állapotot rögzít; ez a blokk csak a Vállalások
+bővítésének aktuális tesztfelelősségeit sorolja fel.
+
+| Réteg | Fájlok és védelem |
+|---|---|
+| Unit | `tests/unit/team-commitments-view.test.ts`: naptári határidők, elakadási jelzések, közös prioritássorrend, lezárt tételek kezelése. |
+| Client / API | `tests/client/team/team-commitments-api.test.ts`: szerep- és hozzáférési kapuk, saját hozzárendelés, szigorú bemenet, verzióütközés, publikált források és legacy azonosság; `team-commitments.test.tsx`: tételenkénti mentés, piszkozatmegőrzés, konfliktuskezelés, a jelzés tényleges szerzője. |
+| Client / belépők | `tests/client/team/team-commitments-entry.test.tsx`: három szerep közös navigációja, saját és csapatszintű prioritás, csak olvasható vezetői perspektíva, riportpillanatkép és workshop átvezetése. |
+| Integration | `tests/integration/team/team-commitments.integration.test.ts`: PostgreSQL jogosultságok és perzisztencia, tranzakciós verzióvédelem, párhuzamos import, eredeti riport és élő előrehaladás megőrzése újrapublikáláskor. |
+| E2E | `tests/e2e/team/team-commitments.test.ts`: mobil csapattag segítségkérése és tanácsadói visszaolvasása, másik tag vállalásának csak olvasható megjelenítése. |
+
+Az általános tesztrunner automatikusan megtalálja ezeket a fájlokat. A
+Vállalások E2E külön `team-commitments` ellenőrzés a UI smoke-csomagban,
+és a DB- valamint E2E-védelem a pilot kiadási kapuba is bekerült. A
+tesztfájl megléte önmagában nem igazol sikeres futást; az adott kiadás
+eredményét a CI artifactok és a PR ellenőrzési összefoglalója rögzítik.
+
 ### Unit (node:test + tsx — `pnpm test:unit`)
 
 | Terület | Mit fed |

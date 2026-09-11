@@ -182,6 +182,45 @@ export async function scrubProfileData(
       where: { userProfileId: profileId },
       data: { userProfileId: null, isAuthed: false },
     }),
+    // A profil tombstone marad, ezért az owner FK onDelete: SetNull nem fut le.
+    // A verzióváltás a korábban megnyitott szerkesztőből történő visszaírást is
+    // megakadályozza. Az ismételt scrub már nem talál hozzárendelt sort.
+    prisma.teamCommitment.updateMany({
+      where: { ownerUserId: profileId },
+      data: { ownerUserId: null, ownerLabel: null, version: { increment: 1 } },
+    }),
+    prisma.teamCommitment.updateMany({
+      where: { createdById: profileId },
+      data: { createdById: null },
+    }),
+    prisma.teamCommitmentEvent.updateMany({
+      where: { actorUserId: profileId },
+      data: { actorUserId: null },
+    }),
+    // Egy másik szereplő eseményének pillanatképe is hordozhatja a törölt
+    // felelőst/létrehozót. Csak az ismert, felső szintű identity mezőket
+    // nullázzuk; az állapot, a történeti verzió és a csapat szabad szövege
+    // (ideértve a legacy sourceSnapshot.action.owner értéket) változatlan.
+    // Ez adatvédelmi redakció, nem új felhasználói esemény.
+    prisma.$executeRaw`
+      UPDATE "TeamCommitmentEvent"
+      SET "payload" =
+        (CASE WHEN "payload"->>'ownerUserId' = ${profileId}
+          THEN "payload" || '{"ownerUserId":null,"ownerLabel":null}'::jsonb
+          ELSE "payload" END)
+        || (CASE WHEN "payload"->>'createdById' = ${profileId}
+          THEN '{"createdById":null}'::jsonb ELSE '{}'::jsonb END)
+      WHERE "payload"->>'ownerUserId' = ${profileId}
+         OR "payload"->>'createdById' = ${profileId}
+    `,
+    prisma.teamCommitmentPlan.updateMany({
+      where: { updatedById: profileId },
+      data: { updatedById: null },
+    }),
+    prisma.teamCommitmentPlanEvent.updateMany({
+      where: { actorUserId: profileId },
+      data: { actorUserId: null },
+    }),
     // Profil-tombstone: a személyhez köthető MINDEN mező elvágva. A korábbi
     // scrub csak a clerkId/email-t nullázta (motor-audit A2) — a username (név)
     // és a demográfiai/karrier-háttéradat (birthYear/gender/country/

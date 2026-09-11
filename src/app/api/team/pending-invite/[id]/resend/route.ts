@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hasOrgRole } from "@/lib/auth";
+import { resolveOrgCapabilityDecision, resolveTeamPolicySnapshot } from "@/lib/policy-service";
 import { sendTeamInviteEmail } from "@/lib/emails";
 import { getServerLocale } from "@/lib/i18n-server";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -41,8 +41,19 @@ export async function POST(
     where: { orgId_userId: { orgId: invite.team.orgId, userId: profile.id } },
     select: { role: true, leftAt: true },
   });
-  if (!membership || membership.leftAt || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+  if (!membership || membership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
+
+  const snapshot = await resolveTeamPolicySnapshot({
+    orgId: invite.team.orgId,
+    orgRole: membership.role,
+    teamId: invite.team.id,
+    profileId: profile.id,
+  });
+  const decision = resolveOrgCapabilityDecision(snapshot, "teamInviteEmail");
+  if (!decision.allowed) {
+    return NextResponse.json({ error: "CAPABILITY_DENIED", reason: decision.reason }, { status: 403 });
   }
 
   const rateLimited = await checkRateLimit("contact", `team-resend:${profile.id}`);
