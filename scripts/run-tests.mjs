@@ -93,6 +93,10 @@ async function runNodeTsxTests(files, layerName, extraEnv = {}) {
   }
 
   const args = ["tsx", "--test"];
+  // Integration files share one database. Global sweeps can otherwise consume
+  // another file's fixtures before its process-local transport mock observes
+  // them. Explicit Promise.all race tests inside each file remain concurrent.
+  if (layerName === "integration") args.push("--test-concurrency=1");
   if (isWatch) {
     args.push("--watch");
   }
