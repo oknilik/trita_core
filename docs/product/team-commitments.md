@@ -7,7 +7,7 @@ A csapat fejlesztési vállalásainak kanonikus helye: `/team/[id]?tab=commitmen
 - A tanácsadó vagy a csapatvezető új vállalást hozhat létre, vagy kiválaszthat javaslatokat a publikált riportokból. Az 1–3 vállalás fókuszálást segítő ajánlás.
 - Egy vállalásnak címe, következő lépése, felelőse, vállalt időpontja, háttérmagyarázata és teljesítési feltétele lehet. A felelős a jelenlegi csapattagok közül választható.
 - A csapattag saját aktív vállalásai jelennek meg először. A vezető és a tanácsadó csapatszintű listát lát, az elakadásokat, elmulasztott időpontokat és hiányzó hozzárendelést előresorolva. Az olvasási perspektíva korlátozott hozzáférésnél is megmarad, szerkesztési jog nélkül.
-- Gyors frissítés: Haladunk / Segítség kell / Elkészült. Segítségkéréshez és lezáráshoz rövid szöveges jelzés szükséges. A jelzés a csapat és a tanácsadó számára látható; nem belső tanácsadói jegyzet.
+- Gyors frissítés: Haladunk / Segítség kell / Elkészült. Segítségkéréshez és lezáráshoz rövid szöveges jelzés szükséges. A jelzés a csapat és a tanácsadó számára látható; nem belső tanácsadói jegyzet. Az üres Haladunk jelzés kiüríti az aktuális megjegyzést; a korábbi jelzés az előzményekben megmarad.
 - A csapat fókusza és a következő közös egyeztetés külön szerkeszthető. Az egyeztetés időpontja különbözik egy vállalás határidejétől.
 - A részletek között elérhetők a jelzések, a módosító neve, az időpont és az eredeti riport címe. A lezárt vállalások megmaradnak.
 
@@ -21,6 +21,8 @@ A szerver minden olvasás és írás előtt ellenőrzi az élő szervezeti és c
 
 Minden tételes módosítás verzióellenőrzéssel és ugyanabban a tranzakcióban írt eseménnyel történik. Ütközéskor a szerver 409-et ad. A felület megőrzi a piszkozatot, és az aktuális állapot áttekintését kéri az újabb mentés előtt. A megnyitott űrlapok piszkozata az adott böngészőlap session tárában, felhasználó/csapat/tétel szerint elkülönítve marad meg; sikeres mentés vagy elvetés törli.
 
+Fióktörléskor a közös törlési folyamat eltávolítja a vállalások strukturált felhasználói hivatkozásait: megszünteti a felelőshöz rendelést, és nullázza a létrehozó, a módosító és a történeti pillanatképek ismert profilazonosítóit. A megszüntetett hozzárendelés növeli a vállalás verzióját, hogy egy korábban megnyitott szerkesztő ne állíthassa vissza; ez adatvédelmi redakció, külön felhasználói esemény nélkül. Az események száma, történeti verziója, állapota és időpontja megmarad. Ez a strukturált hivatkozások eltávolítása, nem teljes szabad szöveges redakció: a csapat által írt megjegyzések, fókusz és a régi riportból átvett szöveges felelős nem törlődik puszta névegyezés alapján.
+
 A korábbi `/api/team/[id]/report/actions` tömböt felülíró PATCH jogosult kérésre 410 `ACTION_TRACKING_MOVED` választ és az új belépőt adja. Többé nem módosít publikált riportot. A régi riportok és `TeamActionEvent` előzményeik megmaradnak.
 
 ## Értelmezés
@@ -31,4 +33,4 @@ Ez az első megvalósítás a közös felületet, a személyes frissítést és 
 
 ## Kiadás
 
-A kódot megelőzően alkalmazandó additív migrációk: `20260911080000_add_team_commitments` és `20260911120000_add_commitment_plan_events`. Új táblákat és kapcsolatokat hoznak létre; meglévő riportadatokat nem alakítanak át és nem importálnak automatikusan. A második migráció az esetleg már meglévő terv ismert aktuális állapotát baseline eseményként rögzíti. Visszaállításkor a régi alkalmazás figyelmen kívül hagyhatja ezeket a táblákat; az új adatok törlése nem szükséges.
+A kódot megelőzően alkalmazandó additív migrációk: `20260911080000_add_team_commitments`, `20260911120000_add_commitment_plan_events` és `20260911160000_nullable_commitment_identity`. Az első kettő új táblákat és kapcsolatokat hoz létre; meglévő riportadatokat nem alakítanak át és nem importálnak automatikusan. A második migráció az esetleg már meglévő terv ismert aktuális állapotát baseline eseményként rögzíti. A harmadik lehetővé teszi a személyes audit-hivatkozások nullázását a közös fióktörlési folyamatban. Visszaállításkor a régi alkalmazás figyelmen kívül hagyhatja ezeket a táblákat; az új adatok törlése nem szükséges.

@@ -90,7 +90,8 @@ async function readWorkspace(teamId: string, profileId: string, access: Access):
     }) : Promise.resolve([]),
   ]);
   const userIds = [...new Set(items.flatMap((item) => [
-    ...(item.ownerUserId ? [item.ownerUserId] : []), ...item.events.map((event) => event.actorUserId),
+    ...(item.ownerUserId ? [item.ownerUserId] : []),
+    ...item.events.flatMap((event) => event.actorUserId ? [event.actorUserId] : []),
   ]))];
   const profiles = userIds.length ? await prisma.userProfile.findMany({
     where: { id: { in: userIds } }, select: { id: true, username: true, deleted: true },
@@ -114,7 +115,7 @@ async function readWorkspace(teamId: string, profileId: string, access: Access):
       createdAt: item.createdAt.toISOString(), updatedAt: item.updatedAt.toISOString(), version: item.version,
       events: item.events.map((event) => ({
         id: event.id, eventType: event.eventType,
-        actorName: names.get(event.actorUserId) ?? "–",
+        actorName: event.actorUserId ? names.get(event.actorUserId) ?? "–" : "–",
         createdAt: event.createdAt.toISOString(), note: event.note,
         status: status(event.payload && typeof event.payload === "object" && !Array.isArray(event.payload)
           ? event.payload.status : undefined),

@@ -419,7 +419,8 @@ model TeamCommitment {
   sourceActionKey   String?
   sourceSnapshot    Json?
   version           Int      @default(1)
-  createdById       String
+  // Törölt fiók személyes hivatkozása nullázható; a csapat munkája megmarad.
+  createdById       String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -432,12 +433,12 @@ model TeamCommitment {
   @@index([ownerUserId])
 }
 
-// Egy verzióhoz pontosan egy append-only, a mutációval együtt írt esemény.
+// Egy felhasználói módosításhoz egy append-only, a mutációval együtt írt esemény.
 model TeamCommitmentEvent {
   id           String   @id @default(cuid())
   commitmentId String
   eventType    String
-  actorUserId  String
+  actorUserId  String?
   version      Int
   payload      Json
   note         String?
@@ -454,7 +455,7 @@ model TeamCommitmentPlan {
   focus           String   @default("")
   nextCheckInDate String?  @db.VarChar(10)
   version         Int      @default(1)
-  updatedById     String
+  updatedById     String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -466,7 +467,7 @@ model TeamCommitmentPlan {
 model TeamCommitmentPlanEvent {
   id              String   @id @default(cuid())
   teamId          String
-  actorUserId     String
+  actorUserId     String?
   focus           String
   nextCheckInDate String?  @db.VarChar(10)
   version         Int
