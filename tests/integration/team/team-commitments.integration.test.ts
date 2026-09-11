@@ -119,6 +119,44 @@ test("commitments preserve team scope, report snapshots and concurrent updates i
       assert.ok("error" in rejected && rejected.status >= 400);
     });
 
+    await t.test("legacy publication identity survives added ids, reordering and concurrent reimport", async () => {
+      const legacyAction = { title: "Legacy next step", description: "The agreed original proposal.", timeframe: "30", owner: member.username };
+      const legacyReport = await prisma.teamReport.create({ data: {
+        teamId: team.id, orgId: org.id, createdById: consultant.id,
+        status: "PUBLISHED", publishedAt: new Date(), title: "Legacy publication", actionItems: [legacyAction],
+      } });
+      const proposal = workspace(await getTeamCommitmentsWorkspace(team.id, manager.id)).suggestions.find((entry) => entry.reportId === legacyReport.id)!;
+      const first = workspace(await mutateTeamCommitments(team.id, manager.id, { action: "import", items: [{ reportId: legacyReport.id, sourceActionKey: proposal.sourceActionKey }] }));
+      const imported = first.items.find((entry) => entry.sourceReportId === legacyReport.id)!;
+      workspace(await mutateTeamCommitments(team.id, manager.id, { action: "update", id: imported.id, expectedVersion: imported.version, status: "in_progress", note: "Already progressing since the first publication." }));
+      const before = await prisma.teamCommitment.findUniqueOrThrow({ where: { id: imported.id }, include: { events: true } });
+
+      // Mirrors the existing report API's normal save: missing ids and the
+      // default status are assigned; another proposal may precede this one.
+      await prisma.teamReport.update({ where: { id: legacyReport.id }, data: { status: "DRAFT", publishedAt: null } });
+      await prisma.teamReport.update({ where: { id: legacyReport.id }, data: {
+        status: "PUBLISHED", publishedAt: new Date(), actionItems: [
+          { ...legacyAction, id: "new-before", title: "A separate proposal" },
+          { ...legacyAction, id: "assigned-on-save", status: "not_started" },
+          { ...legacyAction, id: "intentional-duplicate", status: "not_started" },
+        ],
+      } });
+      const suggestions = workspace(await getTeamCommitmentsWorkspace(team.id, consultant.id)).suggestions.filter((entry) => entry.reportId === legacyReport.id);
+      assert.deepEqual(suggestions.map((entry) => entry.sourceActionKey), ["id:new-before", "id:intentional-duplicate"]);
+      const reimport = { action: "import" as const, items: [{ reportId: legacyReport.id, sourceActionKey: "id:assigned-on-save" }] };
+      for (const result of await Promise.all([mutateTeamCommitments(team.id, manager.id, reimport), mutateTeamCommitments(team.id, consultant.id, reimport)])) workspace(result);
+      assert.equal(await prisma.teamCommitment.count({ where: { teamId: team.id, sourceReportId: legacyReport.id } }), 1);
+      assert.deepEqual(await prisma.teamCommitment.findUniqueOrThrow({ where: { id: imported.id }, include: { events: true } }), before);
+
+      // A separate real id with identical content is still a deliberate second
+      // commitment. Competing imports create exactly one copy of that proposal.
+      const separate = { action: "import" as const, items: [{ reportId: legacyReport.id, sourceActionKey: "id:intentional-duplicate" }] };
+      for (const result of await Promise.all([mutateTeamCommitments(team.id, manager.id, separate), mutateTeamCommitments(team.id, consultant.id, separate)])) workspace(result);
+      assert.equal(await prisma.teamCommitment.count({ where: { teamId: team.id, sourceReportId: legacyReport.id } }), 2);
+      assert.equal(workspace(await getTeamCommitmentsWorkspace(team.id, manager.id)).suggestions.filter((entry) => entry.reportId === legacyReport.id).length, 1);
+      assert.deepEqual(await prisma.teamCommitment.findUniqueOrThrow({ where: { id: imported.id }, include: { events: true } }), before);
+    });
+
     await t.test("concurrent creation of the shared plan has one winner", async () => {
       const results = await Promise.all(["Clearer decisions", "Better meetings"].map((focus) => mutateTeamCommitments(team.id, manager.id, { action: "plan", expectedVersion: 0, focus, nextCheckInDate: "2026-10-05" })));
       assert.equal(results.filter((result) => "workspace" in result).length, 1);

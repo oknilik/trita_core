@@ -47,6 +47,7 @@ vi.mock("@/lib/prisma", () => {
     teamCommitmentPlan: { findUnique: f.readPlan, create: f.planCreate, updateMany: f.planUpdate },
     teamReport: { findMany: f.readReports },
     $transaction: f.tx,
+    $queryRaw: vi.fn(async () => [{ id: "report" }]),
   };
   f.tx.mockImplementation(async (operation: (tx: typeof db) => Promise<unknown>) => operation(db));
   return { prisma: db };
@@ -67,7 +68,7 @@ vi.mock("@/lib/policy-service", async () => {
 });
 
 import { GET, POST, PATCH } from "@/app/api/team/[id]/commitments/route";
-import { commitmentSourceActions } from "@/lib/team-commitments-source";
+import { commitmentSourceActions, importedCommitmentSourceKeys } from "@/lib/team-commitments-source";
 
 const fields: CommitmentFields = {
   title: "Clearer decisions", description: "Record the decision.", nextStep: "Try Friday.",
@@ -279,6 +280,22 @@ describe("commitments integrity and serialization", () => {
     expect((await POST(request("POST", { action: "import", items: [{ reportId: "report", sourceActionKey: "id:action" }] }), params())).status).toBe(200);
     expect(f.event).not.toHaveBeenCalled(); expect(f.update).not.toHaveBeenCalled();
   });
+  it("GET and POST preserve an imported legacy proposal after a normal save adds its id", async () => {
+    const legacy = { title: "Unchanged proposal", description: "Still the same.", timeframe: "30", owner: "Alex" };
+    const legacyKey = commitmentSourceActions({ ...report, actionItems: [legacy] })[0].sourceActionKey;
+    f.readItems.mockResolvedValue([{
+      ...record(), sourceReportId: "report", sourceActionKey: legacyKey,
+      sourceSnapshot: { reportId: "report", reportTitle: "Original publication", action: legacy }, events: [],
+    }]);
+    f.readReports.mockResolvedValue([{ ...report, actionItems: [{ ...legacy, id: "assigned-on-save", status: "not_started" }] }]);
+    const body = await (await GET(request("GET"), params())).json();
+    expect(body.suggestions).toEqual([]);
+    const result = await POST(request("POST", { action: "import", items: [{ reportId: "report", sourceActionKey: "id:assigned-on-save" }] }), params());
+    expect(result.status).toBe(200);
+    expect(f.createMany).not.toHaveBeenCalled();
+    expect(f.event).not.toHaveBeenCalled();
+    expect(f.update).not.toHaveBeenCalled();
+  });
   it("rejects unpublished/other-team reports and nonexistent proposal keys", async () => {
     f.readReports.mockResolvedValueOnce([]);
     expect((await POST(request("POST", { action: "import", items: [{ reportId: "other-report", sourceActionKey: "id:action" }] }), params())).status).toBe(409);
@@ -307,5 +324,36 @@ describe("legacy proposal identity", () => {
     expect(commitmentSourceActions(input)).toEqual(first);
     const changed = commitmentSourceActions({ ...input, actionItems: [null, action, { ...action, id: undefined, title: "Changed proposal" }] });
     expect(changed[1].sourceActionKey).not.toBe(first[1].sourceActionKey);
+  });
+  const legacy = { title: "Same proposal", description: "Published description", timeframe: "30", owner: "Alex", note: "Original note", evidenceUrl: "https://example.test/evidence" };
+  const source = (action: typeof legacy & { id?: string }) => {
+    const first = commitmentSourceActions({ ...report, actionItems: [action] })[0];
+    return { sourceActionKey: first.sourceActionKey, sourceSnapshot: { action: first.item } };
+  };
+  it("bridges added ids and changed array positions without comparing only titles", () => {
+    const imported = source(legacy);
+    const current = commitmentSourceActions({ ...report, actionItems: [
+      { ...legacy, title: "New preceding proposal" },
+      { ...legacy, id: "new-id", status: "not_started" },
+    ] });
+    expect([...importedCommitmentSourceKeys(current, [imported])]).toEqual(["id:new-id"]);
+    const moved = commitmentSourceActions({ ...report, actionItems: [null, legacy] });
+    expect([...importedCommitmentSourceKeys(moved, [imported])]).toEqual([moved[0].sourceActionKey]);
+    for (const changed of [{ description: "Changed" }, { owner: "Someone else" }, { note: "Changed" }, { evidenceUrl: "https://example.test/other" }]) {
+      const actions = commitmentSourceActions({ ...report, actionItems: [{ ...legacy, ...changed, id: "new-id" }] });
+      expect(importedCommitmentSourceKeys(actions, [imported]).size).toBe(0);
+    }
+  });
+  it("matches identical legacy duplicates one-to-one, preserving the unimported copy", () => {
+    const current = commitmentSourceActions({ ...report, actionItems: [{ ...legacy, id: "first" }, { ...legacy, id: "second" }] });
+    expect([...importedCommitmentSourceKeys(current, [source(legacy)])]).toEqual(["id:first"]);
+    const old = commitmentSourceActions({ ...report, actionItems: [legacy, legacy] });
+    const imported = old.map((action) => ({ sourceActionKey: action.sourceActionKey, sourceSnapshot: { action: action.item } }));
+    expect(importedCommitmentSourceKeys(current, imported).size).toBe(2);
+  });
+  it("never merges two distinct real ids and reserves exact matches before legacy aliases", () => {
+    const current = commitmentSourceActions({ ...report, actionItems: [{ ...legacy, id: "second" }, { ...legacy, id: "first" }] });
+    expect([...importedCommitmentSourceKeys(current, [source({ ...legacy, id: "first" })])]).toEqual(["id:first"]);
+    expect(importedCommitmentSourceKeys(current, [source(legacy), source({ ...legacy, id: "first" })]).size).toBe(2);
   });
 });

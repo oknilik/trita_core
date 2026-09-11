@@ -7,7 +7,7 @@ import { canAccessTeam, canManageTeam } from "@/lib/team-auth";
 import { isPolicyReadOnly, resolveTeamPolicySnapshot } from "@/lib/policy-service";
 import { parseTeamActionTarget } from "@/lib/team-action-target";
 import { commitmentMutationSchema, commitmentPatchSchema, commitmentStatusSchema } from "@/lib/team-commitment-schema";
-import { commitmentSourceActions } from "@/lib/team-commitments-source";
+import { commitmentSourceActions, importedCommitmentSourceKeys } from "@/lib/team-commitments-source";
 import type {
   CommitmentMutation,
   CommitmentPatch,
@@ -96,8 +96,6 @@ async function readWorkspace(teamId: string, profileId: string, access: Access):
     where: { id: { in: userIds } }, select: { id: true, username: true, deleted: true },
   }) : [];
   const names = new Map(profiles.map((profile) => [profile.id, publicName(profile)]));
-  const imported = new Set(items.filter((item) => item.sourceReportId && item.sourceActionKey)
-    .map((item) => JSON.stringify([item.sourceReportId, item.sourceActionKey])));
   return {
     teamId,
     viewerId: profileId,
@@ -123,13 +121,15 @@ async function readWorkspace(teamId: string, profileId: string, access: Access):
       })),
     })),
     assignees: assignees.map((member) => ({ userId: member.userId, name: publicName(member.user) ?? "–" })),
-    suggestions: reports.flatMap((report) => commitmentSourceActions(report)
-      .filter(({ sourceActionKey }) => !imported.has(JSON.stringify([report.id, sourceActionKey])))
-      .map(({ sourceActionKey, item }) => ({
+    suggestions: reports.flatMap((report) => {
+      const actions = commitmentSourceActions(report);
+      const imported = importedCommitmentSourceKeys(actions, items.filter((item) => item.sourceReportId === report.id));
+      return actions.filter(({ sourceActionKey }) => !imported.has(sourceActionKey)).map(({ sourceActionKey, item }) => ({
         reportId: report.id, reportTitle: report.title ?? "–", sourceActionKey,
         title: item.title, description: item.description,
         ownerName: item.owner ?? null, dueDate: item.dueDate ?? null, status: status(item.status),
-      }))),
+      }));
+    }),
   };
 }
 
@@ -194,9 +194,22 @@ export async function mutateTeamCommitments(
         return;
       }
       if (mutation.action === "import") {
+        const reportIds = [...new Set(mutation.items.map((item) => item.reportId))].sort();
+        // Different keys can identify one legacy proposal after republication.
+        // Serialize imports with report edits and with each other, then read
+        // both the current publication and its already imported source records.
+        await tx.$queryRaw(Prisma.sql`
+          SELECT "id" FROM "TeamReport"
+          WHERE "teamId" = ${teamId} AND "id" IN (${Prisma.join(reportIds)})
+          ORDER BY "id" FOR UPDATE
+        `);
         const reports = await tx.teamReport.findMany({
-          where: { teamId, id: { in: mutation.items.map((item) => item.reportId) }, status: "PUBLISHED" },
+          where: { teamId, id: { in: reportIds }, status: "PUBLISHED" },
           select: sourceReportSelect,
+        });
+        const importedSources = await tx.teamCommitment.findMany({
+          where: { teamId, sourceReportId: { in: reportIds } },
+          select: { sourceReportId: true, sourceActionKey: true, sourceSnapshot: true },
         });
         // Stable lock order also covers overlapping imports submitted in
         // different UI orders, avoiding duplicate work and lock-order inversions.
@@ -206,10 +219,17 @@ export async function mutateTeamCommitments(
         for (const selected of selections) {
           const report = reports.find((candidate) => candidate.id === selected.reportId);
           if (!report) throw new CommitmentError("SOURCE_NOT_PUBLISHED", 409);
-          const source = commitmentSourceActions(report).find((candidate) => candidate.sourceActionKey === selected.sourceActionKey);
+          const actions = commitmentSourceActions(report);
+          const source = actions.find((candidate) => candidate.sourceActionKey === selected.sourceActionKey);
           if (!source) throw new CommitmentError("NOT_FOUND", 404);
+          const matched = importedCommitmentSourceKeys(actions, importedSources.filter((item) => item.sourceReportId === report.id));
+          if (matched.has(source.sourceActionKey)) continue;
           const item = source.item;
           const id = randomUUID();
+          const sourceSnapshot = JSON.parse(JSON.stringify({
+            reportId: report.id, reportTitle: report.title, publishedAt: report.publishedAt?.toISOString() ?? null,
+            action: item,
+          })) as Prisma.InputJsonValue;
           // ON CONFLICT DO NOTHING is idempotent even for simultaneous imports.
           // A losing importer never updates the already edited commitment.
           const created = await tx.teamCommitment.createMany({
@@ -219,10 +239,7 @@ export async function mutateTeamCommitments(
               status: item.status ?? "not_started", latestNote: item.note ?? null,
               ...(item.targetMetric ? { targetMetric: item.targetMetric as unknown as Prisma.InputJsonValue } : {}),
               sourceReportId: report.id, sourceActionKey: source.sourceActionKey,
-              sourceSnapshot: JSON.parse(JSON.stringify({
-                reportId: report.id, reportTitle: report.title, publishedAt: report.publishedAt?.toISOString() ?? null,
-                action: item,
-              })) as Prisma.InputJsonValue,
+              sourceSnapshot,
               createdById: profileId,
             }],
             skipDuplicates: true,
@@ -230,6 +247,7 @@ export async function mutateTeamCommitments(
           if (created.count === 1) {
             const imported = await tx.teamCommitment.findUniqueOrThrow({ where: { id } });
             await appendEvent(tx, imported, profileId, "IMPORTED", item.note ?? null);
+            importedSources.push({ sourceReportId: report.id, sourceActionKey: source.sourceActionKey, sourceSnapshot: sourceSnapshot as Prisma.JsonValue });
           }
         }
         return;
