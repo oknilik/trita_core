@@ -328,8 +328,11 @@ describe("AssessmentClient integration behavior", () => {
       () => user.click(screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") })),
       1,
     );
-    const selected = screen.getByRole("radio", { name: /^4 - / });
-    expect(selected).toHaveClass("bg-[var(--color-action-primary-bg)]");
+    // The progress indicator changes before AnimatePresence finishes swapping
+    // the question. Assert the restored selection after that visible transition.
+    await waitFor(() => {
+      expect(screen.getByRole("radio", { name: /^4 - / })).toHaveAttribute("aria-checked", "true");
+    });
   });
 
   it("restores an existing local draft and resumes from the first unanswered question", async () => {
