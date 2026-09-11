@@ -257,22 +257,32 @@ describe("AssessmentClient integration behavior", () => {
     const nextButton = screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") });
     const prevButton = screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") });
 
-    for (let i = 0; i < 5; i += 1) {
-      fireEvent.click(nextButton);
-    }
-    await expectCurrentQuestionNumber(2);
-    fireEvent.keyDown(window, { key: "4" });
+    // Hold the clock during each burst. On a busy runner, a real 120 ms
+    // unlock could elapse between the awaited forward step and the back
+    // burst, making a legitimate back step look like a navigation defect.
+    vi.useFakeTimers();
+    try {
+      for (let i = 0; i < 5; i += 1) fireEvent.click(nextButton);
+      expect(getCurrentQuestionNumber()).toBe(2);
+      fireEvent.keyDown(window, { key: "4" });
 
-    await stepUntilQuestion(() => fireEvent.click(nextButton), 3);
+      await act(async () => { await vi.advanceTimersByTimeAsync(120); });
+      for (let i = 0; i < 5; i += 1) fireEvent.click(nextButton);
+      expect(getCurrentQuestionNumber()).toBe(3);
+      for (let i = 0; i < 5; i += 1) fireEvent.click(prevButton);
+      expect(getCurrentQuestionNumber()).toBe(3);
 
-    for (let i = 0; i < 5; i += 1) {
+      await act(async () => { await vi.advanceTimersByTimeAsync(120); });
+      for (let i = 0; i < 5; i += 1) fireEvent.click(prevButton);
+      expect(getCurrentQuestionNumber()).toBe(2);
+
+      await act(async () => { await vi.advanceTimersByTimeAsync(120); });
       fireEvent.click(prevButton);
+      expect(getCurrentQuestionNumber()).toBe(1);
+    } finally {
+      await act(async () => { await vi.runOnlyPendingTimersAsync(); });
+      vi.useRealTimers();
     }
-    await expectCurrentQuestionNumber(3);
-
-    await stepUntilQuestion(() => fireEvent.click(prevButton), 2);
-
-    await stepUntilQuestion(() => fireEvent.click(prevButton), 1);
   });
 
   it("updates progress bar on forward/back navigation and keeps width clamped", async () => {
