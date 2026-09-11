@@ -412,18 +412,12 @@ export const resultsTranslations = {
     },
     summaryNextStep: { hu: "A következő lépésed", en: "Your next step" },
     summaryOutsideFeedback: { hu: "Külső visszajelzések", en: "Outside feedback" },
-    summaryOpenOutside: { hu: "Külső kép megnyitása", en: "Open outside view" },
     summaryPendingOrg: { hu: "Van egy függő szervezeti meghívásod.", en: "You have a pending organization invitation." },
     summaryOpenInvitation: { hu: "Meghívás megnyitása", en: "Open invitation" },
     summaryAssessmentInProgress: { hu: "Van egy folyamatban lévő új kitöltésed.", en: "You have a new assessment in progress." },
     summaryContinue: { hu: "Folytatás", en: "Continue" },
     summaryExploreEyebrow: { hu: "Felfedezés", en: "Explore" },
-    summaryExploreTitle: { hu: "Akkor mélyedj el a részletekben, amikor szeretnél.", en: "Go deeper only when you want to." },
     summaryDetailsPrompt: { hu: "Minden részlet", en: "All details" },
-    summaryDetailsMeta: {
-      hu: "A teljes riport három tiszta fejezetben: radar, 6 dimenzió, alskálák, munkastílus és fejlődés.",
-      en: "The complete report in three clear chapters: radar, 6 dimensions, facets, work style and growth.",
-    },
     summaryDetailsBody: {
       hu: "A részletes riportban megkapod mind a hat dimenzió értelmezését, az alskálákat, a munkastílust és a fejlődési fókuszt.",
       en: "The detailed report includes all six interpretations, facets, work style and growth focus.",

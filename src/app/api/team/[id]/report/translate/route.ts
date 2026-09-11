@@ -44,17 +44,17 @@ export async function POST(
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
     select: { role: true, leftAt: true },
   });
+  if (!membership || membership.leftAt) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
   const isConsultant =
-    (membership && !membership.leftAt && canViewRawTeamResults(membership.role)) ||
+    canViewRawTeamResults(membership.role) ||
     profile.isConsultant ||
     isPlatformAdminEmail(profile.email);
   if (!isConsultant) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 
-  if (!membership || membership.leftAt) {
-    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  }
   const snapshot = await resolveOrgPolicySnapshot({ orgId: team.orgId, orgRole: membership.role });
   if (isPolicyReadOnly(snapshot.policy.policyState)) {
     return NextResponse.json({ error: "CAPABILITY_DENIED" }, { status: 403 });

@@ -767,12 +767,6 @@ export default async function ProfileResultsPage({
                     label: selfDashboardVm.recommendedAction.primary.label,
                     href: selfDashboardVm.recommendedAction.primary.href,
                   },
-                  secondary: selfDashboardVm.recommendedAction.secondary
-                    ? {
-                        label: selfDashboardVm.recommendedAction.secondary.label,
-                        href: selfDashboardVm.recommendedAction.secondary.href,
-                      }
-                    : null,
                 }
           }
           teamRoleMeasuredScores={teamRoleMeasuredScores}

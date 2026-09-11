@@ -5,13 +5,14 @@ import type { AccessPolicyContext, AccessPolicyUser } from "@/lib/policy-engine"
 const fixture = vi.hoisted(() => ({
   orgRole: "ORG_CONSULTANT", teamRole: "manager" as string | null,
   policyState: "active" as SubscriptionCapabilityPolicyState, isConsultant: false,
+  membershipExists: true, leftAt: null as Date | null,
   readReport: vi.fn(async () => null),
 }));
 vi.mock("@clerk/nextjs/server", () => ({ auth: async () => ({ userId: "clerk-viewer" }) }));
 vi.mock("@/lib/prisma", () => ({ prisma: {
   userProfile: { findUnique: async () => ({ id: "viewer", email: null, isConsultant: fixture.isConsultant }) },
   team: { findUnique: async () => ({ id: "team", orgId: "org" }) },
-  organizationMember: { findUnique: async () => ({ role: fixture.orgRole, leftAt: null }) },
+  organizationMember: { findUnique: async () => fixture.membershipExists ? ({ role: fixture.orgRole, leftAt: fixture.leftAt }) : null },
   teamReport: { findFirst: fixture.readReport },
 } }));
 vi.mock("@/lib/team-report", () => ({ serializeTeamReport: vi.fn() }));
@@ -40,9 +41,18 @@ const params = () => ({ params: Promise.resolve({ id: "team" }) });
 beforeEach(() => {
   fixture.orgRole = "ORG_CONSULTANT"; fixture.teamRole = "manager";
   fixture.policyState = "active"; fixture.isConsultant = false; fixture.readReport.mockClear();
+  fixture.membershipExists = true; fixture.leftAt = null;
 });
 
 describe("report capability boundaries", () => {
+  it.each(["missing", "departed"])("translation requires live org membership even for a platform consultant (%s)", async (membership) => {
+    fixture.isConsultant = true;
+    fixture.orgRole = "ORG_MEMBER";
+    if (membership === "missing") fixture.membershipExists = false;
+    else fixture.leftAt = new Date("2026-09-01");
+    expect((await translate(request(), params())).status).toBe(403);
+    expect(fixture.readReport).not.toHaveBeenCalled();
+  });
   for (const state of ["restricted", "frozen", "none"] as const) {
     it(`${state}: blocks every report mutation and translation before loading a report`, async () => {
       fixture.policyState = state;

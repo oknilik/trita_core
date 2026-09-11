@@ -108,10 +108,6 @@ export interface BridgeNextStep {
     label: string;
     href: string;
   };
-  secondary?: {
-    label: string;
-    href: string;
-  } | null;
 }
 
 export interface ProfileTabsProps {
