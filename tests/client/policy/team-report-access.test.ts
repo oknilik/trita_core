@@ -71,9 +71,11 @@ describe("report capability boundaries", () => {
     expect((await updateActions(request(), params())).status).toBe(403);
     expect(fixture.readReport).not.toHaveBeenCalled();
   });
-  it("active team manager can reach published action validation", async () => {
+  it("active team manager receives the live commitments destination without loading a report", async () => {
     fixture.orgRole = "ORG_MEMBER";
-    expect((await updateActions(request(), params())).status).toBe(409); // no latest report, authorization passed
-    expect(fixture.readReport).toHaveBeenCalledOnce();
+    const response = await updateActions(request(), params());
+    expect(response.status).toBe(410);
+    expect(await response.json()).toEqual({ error: "ACTION_TRACKING_MOVED", destination: "/team/team?tab=commitments" });
+    expect(fixture.readReport).not.toHaveBeenCalled();
   });
 });

@@ -52,6 +52,8 @@ export interface CommitmentSuggestion {
 export interface TeamCommitmentsWorkspace {
   teamId: string;
   viewerId: string;
+  /** Reading order follows the team role even when the subscription is read-only. */
+  perspective: "team" | "personal";
   canManage: boolean;
   canUpdateOwn: boolean;
   plan: CommitmentPlan;
