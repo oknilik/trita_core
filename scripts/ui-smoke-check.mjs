@@ -11,6 +11,7 @@ const REQUIRED_ENTRYPOINTS = [
   "profile/results",
   "org dashboard",
   "team dashboard",
+  "team commitments",
 ];
 
 const CHECKS = [
@@ -45,6 +46,14 @@ const CHECKS = [
     command: "npx",
     args: ["playwright", "test", "tests/e2e/observer/observer-flow.test.ts"],
     covers: ["observe"],
+  },
+  {
+    id: "team-commitments",
+    title: "E2E shared commitments and personal update permissions",
+    kind: "command",
+    command: "npx",
+    args: ["playwright", "test", "tests/e2e/team/team-commitments.test.ts"],
+    covers: ["team dashboard", "team commitments"],
   },
   {
     id: "join-apply-integration",
@@ -206,4 +215,3 @@ main().catch((error) => {
   console.error(error instanceof Error ? error.stack ?? error.message : String(error));
   process.exit(1);
 });
-

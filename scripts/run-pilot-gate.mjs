@@ -20,6 +20,7 @@ import { resolveIntegrationTestDbEnv } from "./test-db-env.mjs";
 const PILOT_INTEGRATION_TESTS = [
   "tests/integration/team/scan-v1-lane.integration.test.ts",
   "tests/integration/campaigns/step-release.integration.test.ts",
+  "tests/integration/team/team-commitments.integration.test.ts",
 ];
 
 /** Böngésző-szintű kritikus utak (Playwright). */
@@ -31,6 +32,7 @@ const PILOT_E2E_TESTS = [
   "tests/e2e/accessibility/axe-critical-routes.test.ts",
   "tests/e2e/policy/capability-gate.test.ts",
   "tests/e2e/team/team-intelligence-visual.test.ts",
+  "tests/e2e/team/team-commitments.test.ts",
 ];
 
 function run(command, args, env) {
