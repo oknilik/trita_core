@@ -7,7 +7,7 @@
 ### PR delta
 
 - New hardcoded hex (added lines): `0`
-- Arbitrary Tailwind net increase: `-44`
+- Arbitrary Tailwind net increase: `-45`
 
 ### Current totals
 

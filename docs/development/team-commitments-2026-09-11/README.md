@@ -25,7 +25,7 @@ A saját vállalás kerül előre. A segítségkéréshez rövid jelzés szüks�
 ## Ellenőrzés
 
 - `pnpm check`, `pnpm build`: sikeres.
-- Teljes unit: **1322/1322**; kliens: **454/454**, 80 fájl; PostgreSQL integráció: **225/225**.
+- Teljes unit: **1322/1322**; kliens: **459/459**, 80 fájl; PostgreSQL integráció: **227/227** (review utáni futás).
 - Új valós böngészős regresszió: **2/2**. Mobilos csapattagi mentés, tanácsadói visszaolvasás, újratöltés, másik tag tiltott módosítása és angol navigáció.
 - Kilenc képernyőállapot: üres nézet, létrehozás, tanácsadói lista, csapattagi frissítés és előzmények, 320 px/200% szöveg, angol sötét téma, üres mobilnézet és csak olvasható vezetői hozzáférés. A vizsgált állapotokban nincs oldalszintű vízszintes túlcsordulás vagy kliensoldali kivétel.
 - Célzott axe WCAG A/AA vizsgálat: **0 automatikusan igazolt hiba** az új munkafelületen. A `color-contrast` egyes összetett szövegeknél kézi ellenőrzést kér; ez nem teljes akadálymentességi tanúsítás.
@@ -35,6 +35,8 @@ A képek a működő fejlesztői alkalmazásból készültek, mesterséges nevek
 
 ## Kiadási feltétel
 
-A kód kiadása előtt alkalmazandó a `20260911080000_add_team_commitments` és `20260911120000_add_commitment_plan_events` additív migráció. Éles adatbázison ez nem történt meg. Nincs automatikus riportimport vagy emlékeztető-küldés. A fókusz és egyeztetés verziói adatbázisban naplózottak; a felületen a vállalások előzményei láthatók.
+A kód kiadása előtt alkalmazandó a `20260911080000_add_team_commitments`, `20260911120000_add_commitment_plan_events` és a review után hozzáadott `20260911160000_nullable_commitment_identity` additív migráció. Éles adatbázison ez nem történt meg. Nincs automatikus riportimport vagy emlékeztető-küldés. A fókusz és egyeztetés verziói adatbázisban naplózottak; a felületen a vállalások előzményei láthatók.
+
+A későbbi review a kilépett felelős melletti szerkesztést, az aktuális megjegyzés ürítését és a fióktörlés strukturált hivatkozásait is javítja. [Review utáni változások és tudatos termékdöntések](../changelog/2026-09-11-commitments-review.md).
 
 [Használat és adatmodell](../../product/team-commitments.md) · [Változásnapló](../changelog/2026-09-11-team-commitments.md)
