@@ -14,7 +14,7 @@ export async function CommitmentsTabView({ ctx }: { ctx: TeamTabContext }) {
     <PlatformPageShell surface="team" contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6">
       <TeamHeroBlock ctx={ctx} active="commitments" />
       {"workspace" in result ? (
-        <TeamCommitments initialWorkspace={result.workspace} isHu={ctx.isHu} />
+        <TeamCommitments key={`${ctx.teamId}:${ctx.profile.id}`} initialWorkspace={result.workspace} isHu={ctx.isHu} />
       ) : (
         <InlineBanner variant="info" title={t("teamCommitmentsEntry.unavailableTitle", ctx.locale)}>
           <p>{t(result.status === 403 ? "teamCommitmentsEntry.accessDescription" : "teamCommitmentsEntry.unavailableDescription", ctx.locale)}</p>

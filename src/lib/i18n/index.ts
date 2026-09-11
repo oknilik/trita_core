@@ -28,6 +28,7 @@ import { fakeDoorTranslations } from "./fakedoor";
 import { navigationTranslations } from "./navigation";
 import { sharedLabelTranslations } from "./shared-labels";
 import { legalTranslations } from "./legal";
+import { commitmentTranslations } from "./commitments";
 
 // ── Merged dictionary ───────────────────────────────────────────────────────
 const translations = mergeDomains([
@@ -43,6 +44,7 @@ const translations = mergeDomains([
   navigationTranslations,
   sharedLabelTranslations,
   legalTranslations,
+  commitmentTranslations,
 ]);
 
 // ── Public API ──────────────────────────────────────────────────────────────
