@@ -50,6 +50,7 @@ import { IntelligenceTabView } from "./_tabs/IntelligenceTabView";
 import { MembersTabView } from "./_tabs/MembersTabView";
 import { FeedbackTabView } from "./_tabs/FeedbackTabView";
 import { ReportTabView } from "./_tabs/ReportTabView";
+import { CommitmentsTabView } from "./_tabs/CommitmentsTabView";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 
 export const dynamic = "force-dynamic";
@@ -63,6 +64,7 @@ export const dynamic = "force-dynamic";
 
 const TEAM_TAB_KEYS = [
   "overview",
+  "commitments",
   "intelligence",
   "members",
   "feedback",
@@ -458,6 +460,13 @@ export default async function TeamDetailPage({
   const tabTracker = <TabViewTracker surface="team" tab={activeTab} />;
 
   switch (activeTab) {
+    case "commitments":
+      return (
+        <>
+          {tabTracker}
+          <CommitmentsTabView ctx={ctx} />
+        </>
+      );
     case "feedback":
       return (
         <>

@@ -590,7 +590,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
           <div className="flex flex-col gap-2 border-t border-sand pt-4">
             <div className="flex items-center justify-between">
               <span className="text-note font-medium text-ink-body">
-                {isHu ? "Akcióterv (30/60/90 nap)" : "Action plan (30/60/90 days)"}
+                {t("teamCommitmentsEntry.reportSuggestions", isHu ? "hu" : "en")}
               </span>
               <button
                 type="button"
@@ -605,6 +605,9 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
                 {isHu ? "+ Új lépés" : "+ Add step"}
               </button>
             </div>
+            <p className="text-caption text-ink-body">
+              {t("teamCommitmentsEntry.draftDescription", isHu ? "hu" : "en")}
+            </p>
             {actionItems.length === 0 && (
               <p className="text-xs text-muted">
                 {isHu
@@ -968,7 +971,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
             {isHu ? "Visszavonás szerkesztésre" : "Unpublish for editing"}
           </button>
         </div>
-        <TeamReportView report={latestPublished} isHu={isHu} canManageActions />
+        <TeamReportView report={latestPublished} isHu={isHu} />
         <div id="report-workshop-tools" className="scroll-mt-24 space-y-4">
         <TeamWorkshopFacilitatorView report={latestPublished} isHu={isHu} />
         {olderPublished[0] ? (

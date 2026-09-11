@@ -52,14 +52,14 @@ export async function ReportTabView({
       ) : canViewRaw ? (
         <>
           <p className="text-caption text-ink-body">{t("managerAccess.restrictedDescription", ctx.locale)}</p>
-          {consultantReports[0] ? <TeamReportView report={consultantReports[0]} isHu={isHu} canManageActions={false} /> : null}
+          {consultantReports[0] ? <TeamReportView report={consultantReports[0]} isHu={isHu} /> : null}
         </>
       ) : publishedReport ? (
         // Szerep-metszet: menedzser/admin (teamManage) a teljes riportot
         // látja; a sima ORG_MEMBER a szűkebb, saját szemszögű tag-nézetet.
         // Terv: docs/product/feature-ideas.md #4.
         isOrgManager ? (
-          <TeamReportView report={publishedReport} isHu={isHu} canManageActions={ctx.canManageTeamActions} />
+          <TeamReportView report={publishedReport} isHu={isHu} />
         ) : (
           <TeamReportMemberView
             report={publishedReport}

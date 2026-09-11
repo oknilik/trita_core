@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { hasCompleteReportDimensions, reportPatternLabel } from "@/lib/team-report-compatibility";
 import { prisma } from "@/lib/prisma";
+import { getTeamCommitmentsWorkspace } from "@/lib/team-commitments.server";
 import { t, tf } from "@/lib/i18n";
 import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 import { computeTeamCompletionBuckets } from "@/lib/team-stats";
@@ -15,12 +16,15 @@ import {
 } from "@/components/dashboard/DashboardPrimitives";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { TeamOverviewNextAction } from "@/components/team/TeamOverviewNextAction";
 import { TeamMemberSnapshot } from "@/components/team/TeamMemberSnapshot";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { TeamHeroBlock } from "./TeamHeroBlock";
+import { TeamCommitmentsOverview } from "./TeamCommitmentsOverview";
 import type { TeamTabContext } from "./types";
 import { ChevronRightIcon } from "@/components/ui/icons";
 
@@ -42,6 +46,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
     computeTeamCompletionBuckets(teamData.members);
   const completionPct = teamData.memberCount > 0 ? Math.round((completedCount / teamData.memberCount) * 100) : 0;
   const hasPattern = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
+  const commitments = await getTeamCommitmentsWorkspace(teamId, ctx.profile.id);
 
   return (
     <PlatformPageShell
@@ -67,6 +72,16 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
           observerGathering={observerGathering}
           receivedFeedbackRequests={receivedFeedbackRequests}
         />
+
+        {"workspace" in commitments ? (
+          <TeamCommitmentsOverview workspace={commitments.workspace} isHu={isHu} />
+        ) : (
+          <InlineBanner variant="info" title={t("teamCommitmentsEntry.unavailableTitle", locale)}>
+            <Link className={getButtonClassName({ variant: "secondary", className: "mt-2" })} href={`/team/${teamId}?tab=commitments`}>
+              {t("teamCommitmentsEntry.open", locale)}
+            </Link>
+          </InlineBanner>
+        )}
 
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         {!canViewRaw ? (

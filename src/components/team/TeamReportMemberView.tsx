@@ -11,6 +11,7 @@ import {
   localizeTeamReport,
 } from "@/lib/team-report-i18n";
 import { NarrativeRich } from "@/components/team/TeamReportView";
+import { TeamCommitmentsEntry } from "@/components/team/TeamCommitmentsEntry";
 import {
   buildMemberReportViewModel,
   type MemberViewerInput,
@@ -107,6 +108,8 @@ export function TeamReportMemberView({
           </div>
         </div>
       </DashboardPanel>
+
+      <TeamCommitmentsEntry teamId={report.teamId} isHu={isHu} />
 
       {/* 1. Te a csapatban – radar-összevetés + színes sávok */}
       {vm.hasSelfComparison ? (

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { hasCompleteReportDimensions, reportPatternLabel } from "@/lib/team-report-compatibility";
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
@@ -22,7 +23,7 @@ import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
 import type { HexacoCode } from "@/lib/hexaco";
 import { extractNarrativeHighlights } from "@/lib/team-report-presentation";
-import { TeamActionTracker } from "@/components/team/TeamActionTracker";
+import { TeamCommitmentsEntry } from "@/components/team/TeamCommitmentsEntry";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
   H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
@@ -330,11 +331,9 @@ const TIMEFRAME_TONES: Record<
 export function TeamReportView({
   report: reportInput,
   isHu,
-  canManageActions = false,
 }: {
   report: SerializedTeamReport;
   isHu: boolean;
-  canManageActions?: boolean;
 }) {
   const loc: Locale = isHu ? "hu" : "en";
   // Angol lekérésnél a JÓVÁHAGYOTT tanácsadói fordítás mezői lépnek életbe
@@ -473,7 +472,7 @@ export function TeamReportView({
                 </div>
               ))}
               <div className="border-l-4 border-l-sage-soft p-5">
-                <p className="text-caption font-semibold text-ink">{isHu ? "Akciók" : "Actions"}</p>
+                <p className="text-caption font-semibold text-ink">{t("teamCommitmentsEntry.reportSuggestions", loc)}</p>
                 {leadershipActions.length > 0 ? (
                   <ol className="mt-3 flex flex-col gap-2.5">
                     {leadershipActions.map((item, index) => (
@@ -492,6 +491,8 @@ export function TeamReportView({
           </DashboardPanel>
         </section>
       )}
+
+      {!isDraft ? <TeamCommitmentsEntry teamId={report.teamId} isHu={isHu} /> : null}
 
       {agg && (
         <details className="rounded-2xl border border-sand bg-surface-card p-4">
@@ -539,21 +540,11 @@ export function TeamReportView({
           { id: "report-roles", label: "teamHierarchy.chapterRoles", visible: Boolean(agg?.roleDistribution) },
           { id: "report-dynamics", label: "teamHierarchy.chapterDynamics", visible: Boolean(agg?.dynamics) && dynamicsTotal > 0 },
           { id: "report-interpretation", label: "teamHierarchy.chapterInterpretation", visible: true },
-          { id: "report-actions", label: "teamHierarchy.chapterActions", visible: Boolean(report.actionItems?.length) },
+          { id: "report-actions", label: "teamCommitmentsEntry.snapshotTitle", visible: Boolean(report.actionItems?.length) },
         ].filter((chapter) => chapter.visible).map((chapter) => (
           <a key={chapter.id} href={`#${chapter.id}`} className={getButtonClassName({ variant: "ghost", size: "sm" })}>{t(chapter.label, loc)}</a>
         ))}
       </nav>
-
-      {report.actionItems && report.actionItems.length > 0 ? (
-        <TeamActionTracker
-          teamId={report.teamId}
-          reportId={report.id}
-          initialItems={report.actionItems}
-          isHu={isHu}
-          canManage={canManageActions && report.status === "PUBLISHED"}
-        />
-      ) : null}
 
       {agg && !hasCompleteReportDimensions(agg.dimensionAverages) && (
         <DashboardPanel className="p-6">
@@ -1483,11 +1474,14 @@ export function TeamReportView({
         <section id="report-actions" className="scroll-mt-24">
           <SectionHead
             no={secNo()}
-            label={isHu ? "Akcióterv" : "Action plan"}
-            subtitle={isHu
-              ? "Konkrét lépések 30 / 60 / 90 napos bontásban."
-              : "Concrete steps across 30 / 60 / 90 days."}
+            label={t("teamCommitmentsEntry.snapshotTitle", loc)}
+            subtitle={t(isDraft ? "teamCommitmentsEntry.draftDescription" : "teamCommitmentsEntry.snapshotDescription", loc)}
           />
+          {!isDraft ? (
+            <Link className={getButtonClassName({ variant: "secondary", className: "mb-4" })} href={`/team/${report.teamId}?tab=commitments`}>
+              {t("teamCommitmentsEntry.open", loc)}
+            </Link>
+          ) : null}
           <DashboardPanel className="overflow-hidden p-0">
             <div className="grid grid-cols-1 divide-y divide-sand md:grid-cols-3 md:divide-x md:divide-y-0">
               {(["30", "60", "90"] as const).map((timeframe) => {
