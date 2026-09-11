@@ -104,6 +104,17 @@ test("commitments preserve team scope, report snapshots and concurrent updates i
       assert.equal(unchanged.version, item.version);
     });
 
+    await t.test("returning to progress clears the current help note but retains its history", async () => {
+      let item = workspace(await getTeamCommitmentsWorkspace(team.id, member.id)).items.find((entry) => entry.id === itemId)!;
+      item = workspace(await mutateTeamCommitments(team.id, member.id, { action: "update", id: itemId, expectedVersion: item.version, status: "blocked", note: "Please help with the next meeting." })).items.find((entry) => entry.id === itemId)!;
+      const saved = workspace(await mutateTeamCommitments(team.id, member.id, { action: "update", id: itemId, expectedVersion: item.version, status: "in_progress", note: "" })).items.find((entry) => entry.id === itemId)!;
+      assert.equal(saved.status, "in_progress");
+      assert.equal(saved.latestNote, null);
+      assert.equal(saved.events.length, item.events.length + 1);
+      assert.equal(saved.events[0].note, null);
+      assert.ok(saved.events.some((event) => event.note === "Please help with the next meeting."));
+    });
+
     await t.test("new reports and repeated imports never reset live commitments", async () => {
       const before = workspace(await getTeamCommitmentsWorkspace(team.id, member.id)).items.find((entry) => entry.id === itemId)!;
       await prisma.teamReport.create({ data: { teamId: team.id, orgId: org.id, createdById: consultant.id, status: "PUBLISHED", publishedAt: new Date(), title: "Next measurement", actionItems: [{ ...originalActions[0], title: "A later proposal" }] } });
@@ -219,6 +230,15 @@ test("commitments preserve team scope, report snapshots and concurrent updates i
       await prisma.teamMember.delete({ where: { teamId_userId: { teamId: team.id, userId: member.id } } });
       const departed = await mutateTeamCommitments(team.id, member.id, { action: "update", id: itemId, expectedVersion: item.version, status: "in_progress", note: "Left the team." });
       assert.ok("error" in departed && departed.status === 403);
+      const corrected = workspace(await mutateTeamCommitments(team.id, manager.id, {
+        action: "edit", id: itemId, expectedVersion: item.version,
+        fields: { ...fields, title: "Corrected after departure" },
+      })).items.find((entry) => entry.id === itemId)!;
+      assert.equal(corrected.title, "Corrected after departure");
+      assert.equal(corrected.ownerUserId, member.id);
+      assert.equal(corrected.version, item.version + 1);
+      const stillDenied = await mutateTeamCommitments(team.id, member.id, { action: "update", id: itemId, expectedVersion: corrected.version, status: "in_progress", note: "Still departed." });
+      assert.ok("error" in stillDenied && stillDenied.status === 403);
       await prisma.subscription.update({ where: { orgId: org.id }, data: { status: "past_due" } });
       const readonly = workspace(await getTeamCommitmentsWorkspace(team.id, manager.id));
       assert.equal(readonly.canManage, false);

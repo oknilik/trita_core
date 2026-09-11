@@ -13,6 +13,7 @@ const f = vi.hoisted(() => ({
   updateCount: 1, importCount: 1, planConflict: false,
   itemOwnerId: "viewer" as string | null,
   itemTeamId: "team", itemVersion: 2,
+  itemNote: null as string | null,
   readItems: vi.fn(), readPlan: vi.fn(), readReports: vi.fn(),
   create: vi.fn(), createMany: vi.fn(), update: vi.fn(), event: vi.fn(),
   planCreate: vi.fn(), planUpdate: vi.fn(), planEvent: vi.fn(), tx: vi.fn(), validateOwner: vi.fn(),
@@ -83,7 +84,7 @@ const report = {
 function record() {
   return {
     id: "item", teamId: f.itemTeamId, ...fields, ownerUserId: f.itemOwnerId,
-    ownerLabel: "Alex", status: "in_progress", latestNote: null, targetMetric: null,
+    ownerLabel: "Alex", status: "in_progress", latestNote: f.itemNote, targetMetric: null,
     sourceReportId: null, sourceActionKey: null, sourceSnapshot: null, version: f.itemVersion,
     createdById: "viewer", createdAt: new Date("2026-09-01"), updatedAt: new Date("2026-09-02"),
   };
@@ -101,6 +102,7 @@ beforeEach(() => {
   f.policyState = "active"; f.leftAt = null; f.deleted = false; f.ownerValid = true;
   f.updateCount = 1; f.importCount = 1; f.planConflict = false;
   f.itemOwnerId = "viewer"; f.itemTeamId = "team"; f.itemVersion = 2;
+  f.itemNote = null;
   f.readItems.mockImplementation(async () => [{ ...record(), events: [] }]);
   f.readPlan.mockResolvedValue(null);
   f.readReports.mockResolvedValue([report]);
@@ -182,6 +184,28 @@ describe("commitments API authorization", () => {
       where: { id: "item", teamId: "team", version: 2, ownerUserId: "viewer" },
       data: { status: "done", latestNote: "Tried successfully twice.", version: { increment: 1 } },
     });
+  });
+  it("lets a manager correct fields while retaining a departed assignee", async () => {
+    f.itemOwnerId = "former-member"; f.ownerValid = false;
+    const response = await PATCH(request("PATCH", { action: "edit", id: "item", expectedVersion: 2, fields: { ...fields, title: "Corrected title", ownerUserId: "former-member" } }), params());
+    expect(response.status).toBe(200);
+    expect(f.validateOwner).not.toHaveBeenCalled();
+    expect(f.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ title: "Corrected title", ownerUserId: "former-member" }) }));
+    expect(f.event).toHaveBeenCalledOnce();
+  });
+  it("still rejects switching to an inactive assignee", async () => {
+    f.ownerValid = false;
+    const response = await PATCH(request("PATCH", { action: "edit", id: "item", expectedVersion: 2, fields: { ...fields, ownerUserId: "former-member" } }), params());
+    expect(response.status).toBe(400);
+    expect(await response.json()).toEqual({ error: "OWNER_NOT_TEAM_MEMBER" });
+    expect(f.update).not.toHaveBeenCalled();
+  });
+  it("an empty progress update clears the current note instead of carrying it forward", async () => {
+    f.itemNote = "Help is still needed.";
+    const response = await PATCH(request("PATCH", { action: "update", id: "item", expectedVersion: 2, status: "in_progress", note: "" }), params());
+    expect(response.status).toBe(200);
+    expect(f.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ latestNote: null }) }));
+    expect(f.event).toHaveBeenCalledWith({ data: expect.objectContaining({ note: null }) });
   });
   it.each([null, "peer"])("legacy owner text or another assignee never grants personal access (%s)", async (ownerId) => {
     f.teamRole = "member"; f.itemOwnerId = ownerId;

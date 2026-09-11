@@ -276,10 +276,15 @@ export async function mutateTeamCommitments(
       const current = await tx.teamCommitment.findFirst({ where: { id: mutation.id, teamId } });
       if (!current) throw new CommitmentError("NOT_FOUND", 404);
       if (!access.canManage && current.ownerUserId !== profileId) throw new CommitmentError("FORBIDDEN", 403);
-      if (mutation.action === "edit") await validateOwner(tx, teamId, access.orgId, mutation.fields.ownerUserId);
+      // Retaining a former assignee must not block unrelated corrections.
+      // New assignments still require current team and organization membership.
+      if (mutation.action === "edit" && mutation.fields.ownerUserId !== current.ownerUserId) {
+        await validateOwner(tx, teamId, access.orgId, mutation.fields.ownerUserId);
+      }
       const data: Prisma.TeamCommitmentUpdateManyMutationInput = mutation.action === "edit"
         ? { ...mutation.fields, ownerLabel: !current.ownerUserId && !mutation.fields.ownerUserId ? current.ownerLabel : null, version: { increment: 1 } }
-        : { status: mutation.status, latestNote: mutation.note || current.latestNote, version: { increment: 1 } };
+        // The current note describes this update. Older notes remain in events.
+        : { status: mutation.status, latestNote: mutation.note || null, version: { increment: 1 } };
       const updated = await tx.teamCommitment.updateMany({
         where: {
           id: current.id, teamId, version: mutation.expectedVersion,
