@@ -703,18 +703,22 @@ export const landingTranslations = {
       en: "As a pilot partner, you receive the full Team Program, with a half-day in-person workshop and remeasurement six months later. You share your experience, and we use it to develop trita further.",
     },
     heroCta: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
-    // Kapacitás-jelző a hero CTA alatt: 10 pötty + ez a felirat.
+    // Közös kapacitáskártya: a sáv a csatlakozott csapatok arányát mutatja.
     spotsA11y: {
       hu: "A {total} partnercsapat-helyből {left} szabad",
       en: "{left} of {total} partner team spots are open",
     },
-    // Kapacitás-kártya a hero CTA alatt (2026-09-03): a pöttysor helyett a
-    // szabad helyek száma a döntési tény — nagy szám, sáv, és maga a kártya
-    // a jelentkezésre visz.
-    spotsPanelTitle: { hu: "szabad partnercsapat-hely", en: "partner team spots open" },
-    spotsPanelUrgency: {
-      hu: "{taken} hely már foglalt · a következő lehet a tiétek",
-      en: "{taken} spots are taken · the next one could be yours",
+    spotsPanelTitle: { hu: "hely a pilotprogramban", en: "spots in the pilot program" },
+    spotsPanelInvitation: {
+      hu: "Csatlakozzatok az első partnercsapatokhoz.",
+      en: "Join our first partner teams.",
+    },
+    spotsPanelTaken: { hu: "{taken} csapat már csatlakozott", en: "Teams already joined: {taken}" },
+    spotsPanelTotal: { hu: "{total} hely összesen", en: "{total} spots in total" },
+    spotsProgressLabel: { hu: "Csatlakozott csapatok", en: "Teams joined" },
+    spotsProgressValue: {
+      hu: "{taken} csapat csatlakozott a {total} helyből",
+      en: "{taken} of {total} team spots taken",
     },
     spotsPanelCta: { hu: "Részletek", en: "Details" },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
