@@ -116,16 +116,16 @@ const TOPICS: HelpTopic[] = [
           en: "What is the pilot program, and how can our team join?",
         },
         answer: {
-          hu: `A pilotban az elsők között próbálhatjátok ki a Csapatprogramot, kedvezményes áron. Személyesen kísérünk benneteket, cserébe őszinte visszajelzést kérünk. Összesen ${PILOT_TOTAL_TEAMS} csapattal indulunk, ebből ${PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT} hely már foglalt. A részleteket és az aktuális partneri árat a pilotprogram oldalán találjátok.`,
-          en: `The pilot lets your team be among the first to try Team Program at a reduced price. We work closely with you and ask for honest feedback. There are ${PILOT_TOTAL_TEAMS} team places, with ${PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT} already taken. The pilot page has the details and current partner price.`,
+          hu: `A pilotban az elsők között kapjátok meg a teljes Csapatprogramot, kedvezményes áron: félnapos személyes workshoppal és hat hónappal későbbi újraméréssel. Személyesen kísérünk benneteket, cserébe a program alkalmain felül két rövid partneri visszajelző beszélgetést kérünk. Összesen ${PILOT_TOTAL_TEAMS} csapattal indulunk, ebből ${PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT} hely már foglalt. A részleteket és az aktuális partneri árat a pilotprogram oldalán találjátok.`,
+          en: `The pilot lets your team be among the first to receive the full Team Program at a reduced price, with a half-day in-person workshop and remeasurement six months later. We work closely with you and ask for two short partner feedback conversations in addition to the program sessions. There are ${PILOT_TOTAL_TEAMS} team places, with ${PILOT_TOTAL_TEAMS - PILOT_SPOTS_LEFT} already taken. The pilot page has the details and current partner price.`,
         },
         link: {
           href: "/pilot",
           label: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
         },
         keywords: {
-          hu: "pilot program kedvezmény cégek core csapat 90 nap jelentkezés",
-          en: "pilot program discount companies core team 90 days apply",
+          hu: "pilot program kedvezmény cégek csapat workshop hat hónap újramérés jelentkezés",
+          en: "pilot program discount companies team workshop six months remeasurement apply",
         },
         related: ["what-teams-get", "how-to-start"],
         audiences: ["public"],

@@ -425,8 +425,8 @@ export const landingTranslations = {
     },
     pilotTitle: { hu: "Pilotprogram – az első partnercsapatainknak", en: "Pilot program – for our first partner teams" },
     pilotBody: {
-      hu: "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem – cserébe őszinte visszajelzést kérünk. Mindegy, mióta dolgoztok együtt: az számít, hogy elsőként formálnátok velünk a terméket. Az első {total} partnercsapattal indulunk, és még {left} hely szabad.",
-      en: "90 days of full access, personal onboarding and close attention – in return we ask for honest feedback. It doesn't matter how long you've worked together – what matters is shaping the product with us first. We start with the first {total} partner teams, and {left} spots are still open.",
+      hu: "A pilotban a teljes Csapatprogramot kapjátok, félnapos személyes workshoppal és hat hónappal későbbi újraméréssel. Cserébe két rövid partneri visszajelző beszélgetést kérünk a program alkalmain felül. Az első {total} partnercsapattal indulunk, és még {left} hely szabad.",
+      en: "The pilot includes the full Team Program, with a half-day in-person workshop and remeasurement six months later. In return, we ask for two short partner feedback conversations in addition to the program sessions. We start with the first {total} partner teams, and {left} spots are still open.",
     },
     pilotCta: { hu: "Részletek", en: "Details" },
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
@@ -455,16 +455,15 @@ export const landingTranslations = {
       hu: "Mindenki a saját eredményét látja, teljes részletességgel. A vezető és a céges adminisztrátor nem fér hozzá a tagok egyéni, dimenziónkénti eredményeihez – ők azt látják, ki töltötte ki a felmérést, valamint az összesített, csapatszintű riportot. Név szerinti egyéni profilokkal kizárólag a tanácsadó dolgozik a csapatkép ellenőrzésekor. A bizalmi és pszichológiai biztonság kérdésekre adott válaszok anonimok, és csak legalább három fő válaszából, összesítve jelennek meg.",
       en: "Everyone sees their own results in full detail. The leader and the company administrator cannot access members' individual, per-dimension results – they see who has completed the assessment and the aggregated, team-level report. Only the consultant works with named individual profiles when reviewing the team picture. Answers to the trust and psychological safety questions are anonymous and only appear aggregated from at least three people's responses.",
     },
-    // P2-1: a számok a program meglévő, máshol is kommunikált elemei
-    // (~10 perces kitöltés, 60 perces workshop, két 20–30 perces
-    // beszélgetés a pilotban).
+    // Az időráfordítás az árazás Csapatprogram-csomagját követi;
+    // a pilot partneri visszajelzései a program alkalmain felül értendők.
     faqQ6: {
       hu: "Mennyi időt vesz el a csapattól?",
       en: "How much of the team's time does it take?",
     },
     faqA6: {
-      hu: "A kérdőívek kitöltése összesen körülbelül 30 perc fejenként. Ehhez jön a közös értelmező alkalom, a pilotban pedig két rövid, 20–30 perces visszajelző beszélgetés a vezetővel. A csapat napi munkáját ezen felül nem terheljük.",
-      en: "Completing the questionnaires takes about 30 minutes per person in total. Add the joint interpretation session, and in the pilot two short 20–30-minute feedback conversations with the leader. Beyond that, we don't take time from the team's daily work.",
+      hu: "A kérdőívek kitöltése összesen körülbelül 30 perc fejenként, az eredmények közös online átbeszélése csapatonként 90 perc. A Csapatprogramhoz – a pilotban is – félnapos személyes workshop és hat hónappal későbbi újramérés tartozik. Pilotpartnerként ezeken felül két rövid, 20–30 perces visszajelző beszélgetést kérünk a vezetőtől.",
+      en: "The questionnaires take about 30 minutes per person in total, followed by a 90-minute online discussion of the results per team. Team Program, including the pilot, adds a half-day in-person workshop and remeasurement six months later. For pilot partners, we also ask the leader for two short, 20–30 minute feedback conversations in addition to these sessions.",
     },
     faqQ7: {
       hu: "Mi van, ha valaki nem tölti ki?",
@@ -688,8 +687,8 @@ export const landingTranslations = {
       en: "Pilot program – for our first partner teams | trita",
     },
     metaDescription: {
-      hu: "90 napos, személyesen kísért csapatprogram: közös mérés, értelmező workshop, konkrét vezetői lépés és visszamérés.",
-      en: "A 90-day, personally guided team program: shared measurement, an interpretation workshop, one concrete leadership action, and a follow-up measurement.",
+      hu: "A teljes Csapatprogram pilotáron: közös mérés, félnapos személyes workshop és hat hónappal későbbi újramérés.",
+      en: "The full Team Program at the pilot price: shared assessment, a half-day in-person workshop, and remeasurement six months later.",
     },
     // Hero – partneri meghívás
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
@@ -700,22 +699,26 @@ export const landingTranslations = {
     heroTitle: { hu: "A kivételes dolgok akkor születnek, ", en: "Don’t just try it. " },
     heroTitleEm: { hu: "amikor igazán figyelünk egymásra.", en: "Shape it with us." },
     heroBody: {
-      hu: "Pilotpartnerként szorosabban dolgozunk együtt. Ti megosztjátok velünk a tapasztalataitokat, mi pedig ezekre építve fejlesztjük tovább a tritát.",
-      en: "In the pilot, we work more closely together. You use trita in real team situations; we listen, ask questions, and develop it further based on what you learn.",
+      hu: "Pilotpartnerként a teljes Csapatprogramot kapjátok, félnapos személyes workshoppal és hat hónappal későbbi újraméréssel. Ti megosztjátok velünk a tapasztalataitokat, mi pedig ezekre építve fejlesztjük tovább a tritát.",
+      en: "As a pilot partner, you receive the full Team Program, with a half-day in-person workshop and remeasurement six months later. You share your experience, and we use it to develop trita further.",
     },
     heroCta: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
-    // Kapacitás-jelző a hero CTA alatt: 10 pötty + ez a felirat.
+    // Közös kapacitáskártya: a sáv a csatlakozott csapatok arányát mutatja.
     spotsA11y: {
       hu: "A {total} partnercsapat-helyből {left} szabad",
       en: "{left} of {total} partner team spots are open",
     },
-    // Kapacitás-kártya a hero CTA alatt (2026-09-03): a pöttysor helyett a
-    // szabad helyek száma a döntési tény — nagy szám, sáv, és maga a kártya
-    // a jelentkezésre visz.
-    spotsPanelTitle: { hu: "szabad partnercsapat-hely", en: "partner team spots open" },
-    spotsPanelUrgency: {
-      hu: "{taken} hely már foglalt · a következő lehet a tiétek",
-      en: "{taken} spots are taken · the next one could be yours",
+    spotsPanelTitle: { hu: "hely a pilotprogramban", en: "spots in the pilot program" },
+    spotsPanelInvitation: {
+      hu: "Csatlakozzatok az első partnercsapatokhoz.",
+      en: "Join our first partner teams.",
+    },
+    spotsPanelTaken: { hu: "{taken} csapat már csatlakozott", en: "Teams already joined: {taken}" },
+    spotsPanelTotal: { hu: "{total} hely összesen", en: "{total} spots in total" },
+    spotsProgressLabel: { hu: "Csatlakozott csapatok", en: "Teams joined" },
+    spotsProgressValue: {
+      hu: "{taken} csapat csatlakozott a {total} helyből",
+      en: "{taken} of {total} team spots taken",
     },
     spotsPanelCta: { hu: "Részletek", en: "Details" },
     heroCtaSecondary: { hu: "Mit jelent partnernek lenni?", en: "What does partnership mean?" },
@@ -724,12 +727,20 @@ export const landingTranslations = {
     metaChip3: { hu: "Közös fejlesztés", en: "Shared development" },
 
     // Ténysáv a hero alatt — a /team-dynamics pilot-teaser konkrét ígéreteinek
-    // (90 nap, korlátozott létszám) itt kell fedezetet kapniuk. A {{TODO}}
-    // értékeket üzleti döntés tölti ki (ld. brief 0. táblázat).
+    // (teljes Csapatprogram, korlátozott létszám) itt is megjelennek.
     factsA11y: { hu: "A pilot legfontosabb adatai", en: "Key facts about the pilot" },
-    fact1Value: { hu: "90", en: "90" },
-    fact1Unit: { hu: "nap", en: "days" },
-    fact1Label: { hu: "teljes hozzáférés", en: "full access" },
+    fact1Value: {
+      hu: "6",
+      en: "6",
+    },
+    fact1Unit: {
+      hu: "hónap",
+      en: "months",
+    },
+    fact1Label: {
+      hu: "elteltével újramérés",
+      en: "until remeasurement",
+    },
     // A nagy szám a SZABAD helyek száma (C-változat): ez a döntési tény.
     fact2Value: { hu: "{left}", en: "{left}" },
     fact2Unit: { hu: "/ {total}", en: "/ {total}" },
@@ -744,11 +755,17 @@ export const landingTranslations = {
     fact3Was: { hu: "{full}", en: "{full}" },
     fact3Off: { hu: "−{pct}%", en: "−{pct}%" },
     fact3Foot: { hu: "Egy főre jutó átlagár.\nEgy {band} fős csapatnál.\nA saját létszámotokkal az árkalkulátorban számolhattok.", en: "Average price per person.\nFor one team of {band}.\nUse the pricing calculator for your team size." },
-    fact4Value: { hu: "2+1", en: "2+1" },
-    fact4Unit: { hu: "alkalom", en: "sessions" },
+    fact4Value: {
+      hu: "½",
+      en: "½",
+    },
+    fact4Unit: {
+      hu: "nap",
+      en: "day",
+    },
     fact4Label: {
-      hu: "két beszélgetés és egy záró visszamérés",
-      en: "two conversations and a closing remeasurement",
+      hu: "személyes workshop",
+      en: "in-person workshop",
     },
 
     // Partneri hero-vizuál
@@ -783,18 +800,33 @@ export const landingTranslations = {
     },
 
     // Signals
-    signal1Value: { hu: "90", en: "90" },
-    signal1Label: { hu: "nap közös munka", en: "days of collaboration" },
-    signal2Value: { hu: "60′", en: "60′" },
-    signal2Label: { hu: "közös értelmező workshop", en: "joint interpretation workshop" },
+    signal1Value: {
+      hu: "6",
+      en: "6",
+    },
+    signal1Label: {
+      hu: "hónappal később újramérés",
+      en: "months until remeasurement",
+    },
+    signal2Value: {
+      hu: "½",
+      en: "½",
+    },
+    signal2Label: {
+      hu: "napos személyes workshop",
+      en: "day in-person workshop",
+    },
     signal3Value: { hu: "1", en: "1" },
     signal3Label: { hu: "munkanap válaszidő", en: "business day to reply" },
 
-    // Aside – "Mire jó ez a 90 nap"
-    aside90Eyebrow: { hu: "Mire jó ez a 90 nap", en: "What the 90 days are for" },
+    // Aside – a teljes Csapatprogram tartalma
+    aside90Eyebrow: {
+      hu: "Mit ad a teljes Csapatprogram",
+      en: "What the full Team Program provides",
+    },
     aside90Body: {
-      hu: "Feltérképezzük a csapat kapcsolatait és azt, mennyire biztonságos kérdezni, hibázni vagy ellentmondani. Ezután választunk egy vezetői lépést, amelynek hatását a program végén újra megmérjük.",
-      en: "We map the team's relationships and how safe it feels to ask, make mistakes, or disagree. We then choose one leadership action and measure its effect again at the end of the program.",
+      hu: "Feltérképezzük a csapat kapcsolatait és azt, mennyire biztonságos kérdezni, hibázni vagy ellentmondani. A félnapos személyes workshopon kiválasztott vezetői lépés hatását hat hónappal később újra megmérjük.",
+      en: "We map the team’s relationships and how safe it feels to ask, make mistakes, or disagree. Six months later, we remeasure the effect of the leadership action chosen in the half-day in-person workshop.",
     },
 
     // Kölcsönös vállalás
@@ -805,20 +837,20 @@ export const landingTranslations = {
     },
     exchangeGiveLabel: { hu: "Amit mi adunk", en: "What we provide" },
     exchangeGiveTitle: {
-      hu: "Végig mellettetek vagyunk",
-      en: "The full program, with direct attention",
+      hu: "A teljes Csapatprogram, személyes figyelemmel",
+      en: "The full Team Program, with direct attention",
     },
     exchangeGive1: {
       hu: "Elkészítjük és szakmailag ellenőrizzük a csapatképet",
       en: "A reviewed team picture built from measurement",
     },
     exchangeGive2: {
-      hu: "Együtt értelmezzük, és kiválasztunk egy megvalósítható következő lépést",
-      en: "Joint interpretation and a concrete next step",
+      hu: "Félnapos személyes workshopon értelmezzük a csapatképet, és kiválasztunk egy megvalósítható következő lépést",
+      en: "We interpret the team picture in a half-day in-person workshop and choose a practical next step",
     },
     exchangeGive3: {
-      hu: "A program során elérhetők maradunk, a végén pedig megnézzük, mi változott",
-      en: "Follow-up measurement and direct contact throughout",
+      hu: "A program során elérhetők maradunk, és hat hónappal később újraméréssel nézzük meg, mi változott",
+      en: "We stay in contact throughout the program and remeasure six months later to see what has changed",
     },
     exchangeAskLabel: { hu: "Amit ti hoztok", en: "What we ask from you" },
     exchangeAskTitle: {
@@ -830,8 +862,8 @@ export const landingTranslations = {
       en: "The team completes the assessments",
     },
     exchangeAsk2: {
-      hu: "Két rövid beszélgetésen elmondjátok, mit tapasztaltatok",
-      en: "You share your experience in two short conversations",
+      hu: "A program alkalmain felül két rövid partneri visszajelző beszélgetésen megosztjátok a tapasztalataitokat",
+      en: "You share your experience in two short partner feedback conversations in addition to the program sessions",
     },
     exchangeAsk3: {
       hu: "A közösen kiválasztott lépést kipróbáljátok a mindennapi munkában",
@@ -846,15 +878,18 @@ export const landingTranslations = {
       hu: "Minden csapat ugyanazzal a három alapréteggel indul: önértékeléssel, mért bizalmi hálóval és névtelen pszichológiai biztonság-felméréssel. Az observer-, peer- és csapatszerep-kör külön kiegészítő.",
       en: "Every team starts with the same three core layers: self-assessment, a measured trust network, and an anonymous psychological safety survey. Observer, peer, and team-role rounds are separate add-ons.",
     },
-    benefit2Title: { hu: "Közös értelmező workshop", en: "Joint interpretation workshop" },
+    benefit2Title: {
+      hu: "Félnapos személyes workshop",
+      en: "Half-day in-person workshop",
+    },
     benefit2Desc: {
-      hu: "Egy 60 perces alkalmon együtt olvassuk a csapatképet. Megnevezzük a legfontosabb erősséget és feszültségpontot, majd kiválasztjuk, min érdemes először változtatni.",
-      en: "In a 60-minute session, we read the team picture together. We identify the most important strength and point of tension, then choose what to change first.",
+      hu: "A félnapos személyes workshopon együtt olvassuk a csapatképet. Megnevezzük a legfontosabb erősséget és feszültségpontot, majd kiválasztjuk, min érdemes először változtatni.",
+      en: "In a half-day in-person workshop, we read the team picture together. We identify the most important strength and point of tension, then choose what to change first.",
     },
     benefit5Title: { hu: "Visszamérési kör", en: "Follow-up measurement round" },
     benefit5Desc: {
-      hu: "A vállalt akció után újra megmérjük a változtatható mutatókat. Csak olyan elmozdulást nevezünk fejlődésnek, amelyet az adatok valóban alátámasztanak.",
-      en: "After the agreed action, we measure the changeable outcomes again. We only call it progress when the data genuinely supports that conclusion.",
+      hu: "Hat hónappal később újra megmérjük a változtatható mutatókat. Csak olyan elmozdulást nevezünk fejlődésnek, amelyet az adatok valóban alátámasztanak.",
+      en: "Six months later, we measure the changeable outcomes again. We only call it progress when the data supports that conclusion.",
     },
     benefit6Title: { hu: "Korai partner státusz", en: "Early partner status" },
     benefit6Desc: {
@@ -864,7 +899,10 @@ export const landingTranslations = {
 
     // Steps section
     stepsEyebrow: { hu: "Hogyan működik", en: "How it works" },
-    stepsTitle: { hu: "Három jól követhető szakasz 90 nap alatt.", en: "Three clear stages over 90 days." },
+    stepsTitle: {
+      hu: "A teljes Csapatprogram három szakasza.",
+      en: "Three stages of the full Team Program.",
+    },
     step1Title: { hu: "Felmérés", en: "Assessment" },
     step1Desc: {
       hu: "A csapattagok kitöltik az önértékelést és a rövid, névtelen csapatfelméréseket. Mi közben figyeljük a részvételt, és segítünk, ha valaki elakad.",
@@ -872,13 +910,13 @@ export const landingTranslations = {
     },
     step2Title: { hu: "Közös kép", en: "Shared picture" },
     step2Desc: {
-      hu: "Elkészítjük és közösen értelmezzük a csapatképet. A riport egyértelműen jelzi, mi mért adat, mi becslés, és hol nincs még elég információ.",
-      en: "We prepare and interpret the team picture together. The report clearly distinguishes measured data, estimates, and areas where there is not yet enough information.",
+      hu: "Elkészítjük a csapatképet, és félnapos személyes workshopon közösen értelmezzük. A riport egyértelműen jelzi, mi mért adat, mi becslés, és hol nincs még elég információ.",
+      en: "We prepare the team picture and interpret it together in a half-day in-person workshop. The report clearly distinguishes measured data, estimates, and areas where there is not yet enough information.",
     },
     step3Title: { hu: "Akció és visszamérés", en: "Action and follow-up" },
     step3Desc: {
-      hu: "Kiválasztunk egy konkrét vezetői lépést, amelyet a mindennapi munkában is ki lehet próbálni. A program végén megnézzük, hozott-e mérhető változást.",
-      en: "We choose one concrete leadership action that can be tried in day-to-day work. At the end of the program, we check whether it produced measurable change.",
+      hu: "Kiválasztunk egy konkrét vezetői lépést, amelyet a mindennapi munkában is ki lehet próbálni. Hat hónappal később újraméréssel nézzük meg, hozott-e mérhető változást.",
+      en: "We choose one concrete leadership action to try in day-to-day work. Six months later, we remeasure to check whether it produced measurable change.",
     },
 
     // Commitments section
@@ -892,8 +930,8 @@ export const landingTranslations = {
     },
     commitment2Title: { hu: "Két visszajelző beszélgetés", en: "Two feedback conversations" },
     commitment2Desc: {
-      hu: "A 30. és 60. nap környékén 20–30 percben átbeszéljük, mi működik, hol akadtatok el, és min érdemes változtatnunk.",
-      en: "Around days 30 and 60, we spend 20–30 minutes discussing what works, where you got stuck, and what we should change.",
+      hu: "A program alkalmain felül, a 30. és 60. nap környékén két 20–30 perces partneri visszajelző beszélgetésen átbeszéljük, mi működik, hol akadtatok el, és min érdemes változtatnunk.",
+      en: "In addition to the program sessions, we hold two 20–30 minute partner feedback conversations around days 30 and 60 to discuss what works, where you got stuck, and what we should change.",
     },
     commitment3Title: { hu: "Tapasztalatmegosztás", en: "Sharing your experience" },
     commitment3Desc: {

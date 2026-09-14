@@ -19,7 +19,7 @@ export const metadata: Metadata = buildPageMetadata({
   description: t("pilot.metaDescription", DEFAULT_LOCALE),
   ogTitle: "Pilotprogram – az első partnercsapatainknak",
   ogDescription:
-    "90 napos, személyesen kísért csapatprogram az első partnercsapatoknak.",
+    t("pilot.metaDescription", DEFAULT_LOCALE),
 });
 
 export default async function PilotPage() {
@@ -31,7 +31,7 @@ export default async function PilotPage() {
           path: "/pilot",
           title: "Pilotprogram – az első partnercsapatainknak",
           description:
-            "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem az első partnercsapatoknak, egyedi feltételekkel.",
+            t("pilot.metaDescription", DEFAULT_LOCALE),
           about: ["Csapatdiagnosztika", "Pilotprogram"],
           breadcrumb: [
             { name: "Főoldal", path: "/" },
