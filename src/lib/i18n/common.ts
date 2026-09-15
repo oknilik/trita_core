@@ -182,7 +182,7 @@ export const commonTranslations = {
     reference: { hu: "Hivatkozási azonosító", en: "Reference ID" },
   },
   footer: {
-    tagline: { hu: "Személyiség és csapatintelligencia platform.", en: "Personality and team intelligence platform." },
+    tagline: { hu: "Személyiségteszt és csapatdiagnosztika.", en: "Personality test and team diagnostics." },
     colProduct: { hu: "Termék", en: "Product" },
     colExplore: { hu: "Felfedezés", en: "Explore" },
     colAbout: { hu: "A tritáról", en: "About trita" },

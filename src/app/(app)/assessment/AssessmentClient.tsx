@@ -626,7 +626,7 @@ export function AssessmentClient({
 
   // Still resolving localStorage — UX-A17: brand-spinner az üres képernyő
   // helyett (lassú eszközön / tiltott storage-nál törött oldalnak tűnt).
-  if (showIntro === null) {
+  if (showIntro === null && !guestMode) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-[var(--color-surface-canvas)]">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-accent-primary)] border-t-transparent" />
@@ -634,7 +634,8 @@ export function AssessmentClient({
     );
   }
 
-  if (showIntro) {
+  // Public guest intro is server-rendered; hydration still resumes a saved draft.
+  if (showIntro || (guestMode && showIntro === null)) {
     const steps = [
       { num: 1, style: "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]", title: t("assessment.introStep1", locale), sub: tf("assessment.introStep1Sub", locale, { count: totalQuestions }) },
       { num: 2, style: "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]", title: t("assessment.introStep2", locale), sub: t("assessment.introStep2Sub", locale) },
@@ -658,11 +659,11 @@ export function AssessmentClient({
                 {t("assessment.introEyebrow", locale)}
               </SectionEyebrow>
               <h1 className="mb-4 max-w-[620px] font-fraunces text-title leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-display 2xl:text-hero">
-                {tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
+                {guestMode ? t("assessment.guestIntroHeadline", locale) : tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
                 <em className="not-italic text-[var(--color-accent-primary-strong)]">{t("assessment.introHeadlineEm", locale)}</em>
               </h1>
               <p className="mb-6 max-w-[480px] text-sm leading-relaxed text-[var(--color-text-muted)] lg:text-base">
-                {t("assessment.introSub", locale)}
+                {guestMode ? tf("assessment.guestIntroSub", locale, { count: totalQuestions, minutes: estimateAssessmentMinutes(totalQuestions) }) : t("assessment.introSub", locale)}
               </p>
               <div className="mb-6 max-w-[520px] rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-4 py-3.5 lg:px-5 lg:py-4">
                 <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)] lg:text-sm">
@@ -674,6 +675,7 @@ export function AssessmentClient({
               <button
                 type="button"
                 onClick={() => setShowIntro(false)}
+                disabled={showIntro === null}
                 className={`w-full rounded-[12px] bg-[var(--color-action-primary-bg)] px-9 py-4 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto lg:text-base ${FOCUS_RING_CLASS}`}
               >
                 {t("assessment.introStart", locale)}

@@ -16,7 +16,7 @@ export const revalidate = 3600;
 
 const seoIntent = SEO_INTENTS.teamDynamics;
 const path = seoIntent.path;
-const title = "Csapatdiagnosztika és csapatfejlesztés – értsétek meg, hogyan működtök együtt | trita";
+const title = "Csapatdiagnosztika és csapatfejlesztés | trita";
 const description =
   "Csapatszerepek, bizalmi háló és pszichológiai biztonság egy tanácsadó által értelmezett csapatképben. Három lépés a közös munkáig, fejenkénti ár, gyakori kérdések.";
 

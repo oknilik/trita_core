@@ -11,6 +11,8 @@ export const assessmentTranslations = {
       hu: "A mentés most nem jut el a szerverre – a haladásod ezen az eszközön biztonságban van, a következő válasznál automatikusan újrapróbáljuk.",
       en: "Your progress isn't reaching the server right now – it's safe on this device, and we'll retry automatically with your next answer.",
     },
+    guestIntroHeadline: { hu: "Ingyenes személyiségteszt – értsd meg, ", en: "Free personality test – understand " },
+    guestIntroSub: { hu: "{count} kérdés, körülbelül {minutes} perc, azonnali visszajelzés hat személyiségdimenzió mentén. Regisztráció nélkül elindíthatod. Nincsenek jó vagy rossz válaszok: hagyatkozz az első benyomásodra.", en: "{count} questions, about {minutes} minutes, and instant feedback across six personality dimensions. Start without registering. There are no right or wrong answers: go with your first instinct." },
     introHeadline1: { hu: "~{minutes} perc, és jobban érted, ", en: "In ~{minutes} minutes, understand " },
     introHeadlineEm: { hu: "hogyan működsz – egyedül és csapatban.", en: "how you work – on your own and in a team." },
     introSub: { hu: "Minden kérdésnél az első benyomásodra hagyatkozz – ne gondolkozz sokat. Nincsenek jó vagy rossz válaszok.", en: "Go with your first instinct on each question – don't overthink it. There are no right or wrong answers." },

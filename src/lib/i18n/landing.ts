@@ -1,8 +1,8 @@
 export const landingTranslations = {
   landing: {
     heroTitle: {
-      hu: "trita – személyiség- és csapatintelligencia platform",
-      en: "trita – personality and team intelligence platform",
+      hu: "trita – személyiségteszt és csapatdiagnosztika",
+      en: "trita – personality test and team diagnostics",
     },
 
     // ─── New landing page (self/team) ────────────────────────────────
@@ -57,7 +57,7 @@ export const landingTranslations = {
     // 2026-08-28: „CSAPATINTELLIGENCIA PLATFORM" helyett — a gépies
     // kategória-címke a „nem csak platform" üzenet ellen dolgozott.
     teamEyebrow: { hu: "Közös kép a csapatotokról", en: "A shared picture of your team" },
-    teamHeadlineBefore: { hu: "Értsétek meg jobban a ", en: "Better understand your " },
+    teamHeadlineBefore: { hu: "Csapatdiagnosztika – értsétek meg a ", en: "Team diagnostics – understand your " },
     teamHeadlineEm: { hu: "csapatotok működését.", en: "team's dynamics." },
     teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt – a csapatotok valódi dinamikáját. Így még azelőtt felismerhetitek a feszültségeket, hogy konfliktussá válnának, és azt is, mire építhettek együtt.", en: "trita reveals what was previously invisible – your team's true dynamics. This helps you recognize tensions before they turn into conflict, while also showing what you can build on together." },
     // 2026-09-08: a /team-dynamics az egyesített csapat-oldal — az
@@ -185,8 +185,8 @@ export const landingTranslations = {
     // validált csapattípus" – a stat a Scan v1 tényleges rétegeit mondja.
     statTeamLayersLabel: { hu: "mérési réteg", en: "measurement layers" },
     // A főoldal hero H1-e (2026-09-03 óta): a leggyorsabban érthető ígéret.
-    ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban megérted, ", en: "In ~10 minutes, better understand " },
-    ctaSelfHeadlineEm: { hu: "hogyan működsz.", en: "how you operate." },
+    ctaSelfHeadlineBefore: { hu: "Személyiségteszt magyarul – ", en: "Personality test – " },
+    ctaSelfHeadlineEm: { hu: "értsd meg, hogyan működsz.", en: "understand how you work." },
     // CtaSection — a záró blokk nem ismétli a hero címét.
     ctaSelfClosingBefore: { hu: "Egy kérdőív, és tisztábban látod, ", en: "One questionnaire, and you see more clearly " },
     ctaSelfClosingEm: { hu: "mire építhetsz.", en: "what you can build on." },

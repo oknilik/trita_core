@@ -11,7 +11,7 @@ import {
 
 // A `<title>` KULCSSZÓ-ELSŐ, márka-utolsó sorrendben: a magyar keresésekben a
 // a „személyiségteszt magyarul" a főoldal keresési szándéka, a „trita" nem —
-// márkanévre amúgy is első találat vagyunk. A csapatdiagnosztikának külön,
+// a márkát következetes névvel és leírással erősítjük. A csapatdiagnosztikának külön,
 // mélyebb céloldala van, így a két lap nem ugyanarra az elsődleges kifejezésre
 // versenyez.
 const seoIntent = SEO_INTENTS.home;
@@ -23,7 +23,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/",
   title,
   description,
-  ogTitle: "trita – személyiség- és csapatintelligencia",
+  ogTitle: "trita – személyiségteszt és csapatdiagnosztika",
   ogDescription:
     "Mérhető személyiség- és csapatdinamika az együttműködéshez, fejlesztéshez és döntéstámogatáshoz.",
 });

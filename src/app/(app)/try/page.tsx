@@ -7,6 +7,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { AssessmentClient } from "@/app/(app)/assessment/AssessmentClient";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { buildPageMetadata } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
 import {
   buildAssessmentAppJsonLd,
@@ -19,27 +20,19 @@ import {
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: t("meta.tryTitle", locale),
-    description: t("meta.tryDescription", locale),
-    alternates: { canonical: "/try" },
+    ...buildPageMetadata({
+      path: "/try",
+      title: t("meta.tryTitle", locale),
+      description: t("meta.tryDescription", locale),
+      locale,
+    }),
     // EXPLICIT index: az (app) layout alapból `noindex`-et ad az egész
     // bejelentkezés mögötti zónának — a /try az EGYETLEN publikus, indexelendő
     // lap ebben a fában (lead magnet, a sitemapben 0.9 prioritással). A
     // metadata-mezők szegmensenként felülíródnak, így ez pontosan a layout
     // robots-értékét váltja ki.
     robots: { index: true, follow: true },
-    openGraph: {
-      title: t("meta.tryTitle", locale),
-      description: t("meta.tryDescription", locale),
-      url: "/try",
-      type: "website",
-      siteName: "trita",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: t("meta.tryTitle", locale),
-      description: t("meta.tryDescription", locale),
-    },
+
   };
 }
 

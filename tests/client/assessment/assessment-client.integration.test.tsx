@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import { renderToString } from "react-dom/server";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -235,6 +236,27 @@ afterEach(() => {
 });
 
 describe("AssessmentClient integration behavior", () => {
+  it("renders the public guest intro before effects or browser storage resolve", () => {
+    const html = renderToString(
+      <ThemeProvider>
+        <AssessmentClient
+          testType={TEST_TYPE}
+          testName="TRITAN"
+          totalQuestions={TOTAL_QUESTIONS}
+          questions={QUESTIONS}
+          guestMode
+        />
+      </ThemeProvider>,
+    );
+    const document = new DOMParser().parseFromString(html, "text/html");
+    expect(document.querySelector("h1")?.textContent).toContain("Free personality test");
+    expect(document.querySelector("main")?.textContent).toContain("Start without registering");
+    const start = Array.from(document.querySelectorAll("button"))
+      .find((button) => button.textContent === INTRO_START_CTA);
+    expect(start).toBeDefined();
+    expect(start?.hasAttribute("disabled")).toBe(true);
+  });
+
   it("uses the shared dot eyebrow and editorial art without a fake result preview", async () => {
     const { container } = renderAssessmentClient();
 
