@@ -22,3 +22,9 @@
 - Közös web/tag/PDF riportprezentáció; mind a 16×16 mintapár összevetése, személyiségfüggő értelmezési kérdésekkel.
 - Két additív Prisma-modell és migráció; nem alkalmazva éles környezetben.
 - Ellenőrzési eredmények és elérési út: `docs/product/team-operating-style-integration.md`.
+
+## Véglegesítés: hiányzó válaszok jelzése
+
+- A hiányos kérdőív véglegesítése többé nem néma, letiltott gomb: az első hiányzó válaszhoz helyezi a fókuszt, jelzi a hiányzó sorszámokat és alul is mutatja a kitöltöttséget. Hiányos adatok nem kerülnek beküldésre.
+- HU/EN szövegek; a piszkozat mentése változatlan.
+- Kliensregresszió: hiányos beadás nem hív API-t, fókusz a hiányzó válaszon; üres kérdőívből 24 válasz (N/A is) után sikeres beadás.

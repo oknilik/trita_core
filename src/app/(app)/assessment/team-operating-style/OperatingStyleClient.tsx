@@ -18,8 +18,16 @@ export function OperatingStyleClient({ locale, campaignId, campaignName, teamNam
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
   const [done, setDone] = useState(false);
-  const completed = ITEMS.filter((q) => Object.hasOwn(answers, q.id)).length;
+  const missing = ordered.filter((q) => !Object.hasOwn(answers, q.id));
+  const completed = ITEMS.length - missing.length;
+  const [showMissing, setShowMissing] = useState(false);
   async function save(intent: "draft" | "submit") {
+    if (busy) return;
+    if (intent === "submit" && missing.length) {
+      setShowMissing(true);
+      document.getElementById(`answer-${missing[0].id}`)?.focus();
+      return;
+    }
     setBusy(true); setMessage(""); setError(false);
     try {
       const response = await fetch("/api/team-operating-style", { method: "POST", headers: { "Content-Type": "application/json" },
@@ -49,20 +57,26 @@ export function OperatingStyleClient({ locale, campaignId, campaignName, teamNam
       <p className="text-sm text-muted">{t("tos.answered", locale)}: {completed}/{ITEMS.length}</p>
       {ordered.map((q, index) => <fieldset key={q.id} disabled={busy} className="rounded-2xl border border-sand p-4 sm:p-5">
         <legend className="px-2 text-body font-medium text-ink">{index + 1}. {t(`tos.items.${q.id}`, locale)}</legend>
+        {showMissing && !Object.hasOwn(answers, q.id) && <p id={`missing-${q.id}`} className="mb-3 text-sm text-ink">{t("tos.missingAnswer", locale)}</p>}
         <div className="grid gap-2 sm:grid-cols-2">
           {["1", "2", "3", "4", "5", "na"].map((key) => {
             const value = key === "na" ? null : Number(key);
             return <label key={key} className="flex min-h-[44px] cursor-pointer items-center gap-3 rounded-xl border border-sand p-3 text-sm hover:bg-sand/30">
-              <input type="radio" name={q.id} value={key} checked={Object.hasOwn(answers, q.id) && answers[q.id] === value}
+              <input id={key === "1" ? `answer-${q.id}` : undefined} type="radio" name={q.id}
+                aria-describedby={showMissing && !Object.hasOwn(answers, q.id) ? `missing-${q.id}` : undefined} value={key} checked={Object.hasOwn(answers, q.id) && answers[q.id] === value}
                 onChange={() => setAnswers((a) => ({ ...a, [q.id]: value }))} />
               {t(`tos.answers.${key}`, locale)}
             </label>;
           })}
         </div>
       </fieldset>)}
+      <p aria-live="polite" className="text-sm text-muted">{t("tos.answered", locale)}: {completed}/{ITEMS.length}</p>
+      {missing.length > 0 && <p role={showMissing ? "alert" : undefined} className="text-sm text-ink">
+        {t("tos.missingNumbers", locale)}: {missing.map((q) => ordered.indexOf(q) + 1).join(", ")}. {t("tos.missingAnswer", locale)}
+      </p>}
       <div className="flex flex-wrap gap-3">
         <Button type="button" variant="secondary" disabled={busy} onClick={() => void save("draft")}>{t("tos.save", locale)}</Button>
-        <Button type="submit" disabled={busy || completed !== ITEMS.length} loading={busy}>{t("tos.submit", locale)}</Button>
+        <Button type="submit" disabled={busy} loading={busy}>{t("tos.submit", locale)}</Button>
       </div>
     </form>}
     <Link className="inline-flex min-h-[44px] items-center text-bronze underline" href="/dashboard">{t("tos.back", locale)}</Link>

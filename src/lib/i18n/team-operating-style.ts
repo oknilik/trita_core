@@ -14,6 +14,8 @@ export const operatingStyleTranslations = {
     saved: { hu: "A válaszaidat elmentettük.", en: "Your answers have been saved." },
     submit: { hu: "Válaszok véglegesítése", en: "Submit answers" },
     completed: { hu: "Köszönjük, a csapatműködés kérdőíve elkészült.", en: "Thank you. Your team operating style questionnaire is complete." },
+    missingNumbers: { hu: "Még megválaszolatlan állítások", en: "Statements still to answer" },
+    missingAnswer: { hu: "Válassz egy választ, vagy jelöld, hogy nem megítélhető.", en: "Choose an answer or select Unable to judge." },
     answered: { hu: "Megválaszolt állítások", en: "Answered statements" },
     back: { hu: "Vissza a feladataimhoz", en: "Back to my tasks" },
     none: { hu: "Jelenleg nincs kitölthető csapatműködés-kérdőíved.", en: "You have no team operating style questionnaire available right now." },

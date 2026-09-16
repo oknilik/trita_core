@@ -12,11 +12,14 @@ const props = { locale: "hu" as const, campaignId: "campaign", campaignName: "Ő
   initialAnswers: {}, referenceStart: "2026-08-19", referenceEnd: "2026-09-16" };
 
 describe("Operating Style participant flow", () => {
-  it("renders 24 accessible statements, permits drafts, and keeps incomplete submit disabled", async () => {
+  it("renders 24 accessible statements, permits drafts, and guides incomplete submission to the first missing answer", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) }));
     render(<OperatingStyleClient {...props} />);
     expect(screen.getAllByRole("group")).toHaveLength(24);
-    expect(screen.getByRole("button", { name: "Válaszok véglegesítése" })).toBeDisabled();
+    await userEvent.click(screen.getByRole("button", { name: "Válaszok véglegesítése" }));
+    expect(fetch).not.toHaveBeenCalled();
+    expect(screen.getAllByRole("radio")[0]).toHaveFocus();
+    expect(screen.getByRole("alert")).toHaveTextContent("Még megválaszolatlan állítások");
     await userEvent.click(screen.getAllByRole("radio", { name: "Nem megítélhető" })[0]);
     await userEvent.click(screen.getByRole("button", { name: "Mentés és folytatás később" }));
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elmentettük"));
@@ -39,6 +42,17 @@ describe("Operating Style participant flow", () => {
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elkészült"));
     expect(JSON.parse(fetchMock.mock.calls[1][1].body).answers).toEqual(answers);
     expect(refresh).toHaveBeenCalledTimes(1);
+  });
+  it("submits after answering every statement from an empty form, including N/A", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) }));
+    render(<OperatingStyleClient {...props} />);
+    for (const radio of screen.getAllByRole("radio", { name: "Nem megítélhető" })) await userEvent.click(radio);
+    expect(screen.queryByText(/Még megválaszolatlan állítások/)).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Válaszok véglegesítése" }));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elkészült"));
+    const body = JSON.parse(vi.mocked(fetch).mock.calls[0][1]!.body as string);
+    expect(Object.keys(body.answers)).toHaveLength(24);
+    expect(body.intent).toBe("submit");
   });
   it("renders the three report layers in order for a legacy snapshot", () => {
     render(<TeamOperatingStyleReport locale="en" legacyPattern="Legacy composition" />);
