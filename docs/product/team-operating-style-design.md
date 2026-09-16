@@ -1,6 +1,6 @@
 # Team Operating Style — design note és implementációs specifikáció
 
-Dátum: 2026-09-16. Státusz: **kísérleti mérési terv + futtatható domain-prototípus**.
+Dátum: 2026-09-16. Az eredeti tervezési állapot dokumentuma. **A felületi és riportbekötés elkészült; aktuális megvalósítás és elérés: [integrációs jegyzet](team-operating-style-integration.md).** Az alábbi kezdeti terv eltéréseit az integrációs jegyzet rögzíti.
 Kiinduló main: `fbf6af94095fde2f3989684da21aeef3ef24134c`.
 Ág: `feat/team-operating-style-design`. Automatikus merge nincs.
 

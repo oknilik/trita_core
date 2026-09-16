@@ -42,6 +42,8 @@ function measurementDescription(stepType: CampaignStepType, locale: Locale): str
   const hu = locale === "hu";
 
   switch (stepType) {
+    case "TEAM_OPERATING_STYLE":
+      return hu ? "24 állítás a közös munkátokról; körülbelül 5 perc." : "24 statements about your shared work; about 5 minutes.";
     case "PSYCH_SAFETY":
       return hu
         ? "8 rövid, névtelen állítás; körülbelül 2 perc."

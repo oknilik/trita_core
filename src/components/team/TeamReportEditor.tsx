@@ -88,6 +88,7 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     hu: "A fordítás most nem érhető el. Próbáld újra később.",
     en: "Translation isn't available right now. Please try again later.",
   },
+  REPORT_OPERATING_DATA_INSUFFICIENT: { hu: "A csapatműködés-riporthoz tengelyenként legalább három válasz és 60% lefedettség szükséges.", en: "Operating style requires at least three responses and 60% coverage per axis." },
   REPORT_CAMPAIGN_REQUIRED: {
     hu: "A riport csak egy lezárt Team Scan mérési körből hozható létre.",
     en: "A report can only be created from a closed Team Scan cycle.",
@@ -101,8 +102,8 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     en: "The selected measurement cycle was not found or belongs to another organization.",
   },
   REPORT_CAMPAIGN_NOT_SCAN_V1: {
-    hu: "Pilot-riport csak Team Scan v1 mérési körből készíthető.",
-    en: "Pilot reports can only be created from a Team Scan v1 cycle.",
+    hu: "Riport Team Scan v1 vagy Csapatkép és működés körből készíthető.",
+    en: "Reports require a Team Scan v1 or Team profile and operating style cycle.",
   },
   REPORT_CAMPAIGN_TEAM_MISMATCH: {
     hu: "A kiválasztott mérési kör nem ehhez a csapathoz tartozik.",

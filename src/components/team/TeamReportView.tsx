@@ -1,4 +1,5 @@
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
+import { TeamOperatingStyleReport } from "./TeamOperatingStyleReport";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { t, type Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -460,6 +461,8 @@ export function TeamReportView({
         )}
       </DashboardPanel>
 
+      <TeamOperatingStyleReport snapshot={agg?.teamStyle} legacyPattern={agg?.pattern?.label} locale={isHu ? "hu" : "en"} />
+
       {(leadershipStrengths.length > 0 ||
         leadershipRisks.length > 0 ||
         leadershipActions.length > 0) && (
@@ -547,7 +550,7 @@ export function TeamReportView({
               : "The team's collective character – averages and internal diversity."}
           />
           <DashboardPanel className="p-6">
-            {agg.pattern && (
+            {agg.pattern && !agg.teamStyle?.composition && (
               <div className="mb-5 rounded-[14px] border border-sand bg-cream/60 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>

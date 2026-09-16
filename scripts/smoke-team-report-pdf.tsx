@@ -1,3 +1,7 @@
+import { calculateOperatingStyle } from "../src/lib/team-operating-style/scoring";
+import { ITEMS, OPERATING_STYLE_VERSION } from "../src/lib/team-operating-style/questions";
+import { snapshotComposition, compareTeamPatterns } from "../src/lib/team-operating-style/comparison";
+import { calculateTeamPattern } from "../src/lib/team-pattern";
 // Füstteszt: a TeamReportDocument node-oldali renderelése mock-adatokkal.
 // NEM része a CI-nek — kézi ellenőrzés: `npx tsx scripts/smoke-team-report-pdf.tsx`.
 // A font-átregisztráció a generate-persona-reports.tsx mintája.
@@ -35,12 +39,21 @@ Font.register({
 
 async function main() {
   const { TeamReportDocument } = await import("../src/components/pdf/TeamReportPdf");
+  const operating = { ...calculateOperatingStyle({ teamId: "team_smoke", roundId: "round_smoke", instrumentVersion: OPERATING_STYLE_VERSION,
+    eligibleRespondentIds: ["a", "b", "c"], responses: ["a", "b", "c"].map((respondentId) => ({ respondentId,
+      answers: Object.fromEntries(ITEMS.map((q) => [q.id, q.pole === "left" ? 5 : 1])),
+    })),
+  }), referenceStart: "2026-08-19", referenceEnd: "2026-09-16" };
+  const composition = snapshotComposition(calculateTeamPattern(["a", "b", "c"].map((userId) => ({ userId,
+    scores: { H: 80, A: 80, X: 80, C: 80, O: 80, E: 50 },
+  }))));
   const report = {
     id: "rep_smoke",
     teamId: "team_smoke",
     status: "PUBLISHED" as const,
     title: "Termékfejlesztés — őszi kör",
     aggregates: {
+      teamStyle: { version: 1, operating, composition, sameRespondents: true, comparison: compareTeamPatterns(operating, composition) },
       generatedAt: "2026-08-15T10:00:00.000Z",
       memberCount: 9,
       completedCount: 8,

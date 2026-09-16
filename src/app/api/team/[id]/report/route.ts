@@ -160,11 +160,12 @@ async function updateReportWithHistory(input: {
 async function validateReportCampaign(teamId: string, orgId: string, campaignId: string) {
   const campaign = await prisma.campaign.findFirst({
     where: { id: campaignId, orgId },
-    select: { id: true, status: true, presetId: true, teamId: true, teamIds: true },
+    select: { id: true, status: true, presetId: true, teamId: true, teamIds: true, operatingRound: { select: { id: true } } },
   });
   if (!campaign) return "REPORT_CAMPAIGN_NOT_FOUND" as const;
   if (campaign.status !== "CLOSED") return "REPORT_CAMPAIGN_NOT_CLOSED" as const;
-  if (campaign.presetId !== "SCAN_V1") return "REPORT_CAMPAIGN_NOT_SCAN_V1" as const;
+  if (!["SCAN_V1", "SCAN_STYLE_V1"].includes(campaign.presetId ?? "")) return "REPORT_CAMPAIGN_NOT_SCAN_V1" as const;
+  if (campaign.presetId === "SCAN_STYLE_V1" && !campaign.operatingRound) return "REPORT_OPERATING_DATA_INSUFFICIENT" as const;
   if (campaign.teamId !== teamId && !campaign.teamIds.includes(teamId)) {
     return "REPORT_CAMPAIGN_TEAM_MISMATCH" as const;
   }

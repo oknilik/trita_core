@@ -1,3 +1,5 @@
+import { presentTeamStyle } from "@/lib/team-operating-style/presentation";
+import { t } from "@/lib/i18n";
 import { Document, Page, View, Text, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import { s, colors, type } from "./styles";
@@ -338,6 +340,24 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
     >
       <TeamReportCoverPage title={title} publishedDate={publishedDate} isHu={isHu} />
 
+      {agg?.teamStyle?.operating && presentTeamStyle(agg.teamStyle, isHu ? "hu" : "en", agg?.pattern?.label).map((section) => (
+        <TeamChapterPage key={section.title} title={title} publishedDate={publishedDate} isHu={isHu} bookmark={section.title}>
+          <Text style={{ fontSize: type.chapter, marginBottom: 12 }}>{section.title}</Text>
+          {section.heading && <Text style={{ fontSize: type.section, marginBottom: 10 }}>{section.heading}</Text>}
+          {section.notes.map((note) => <Text key={note} style={{ fontSize: type.body, lineHeight: type.lineHeight.body, marginBottom: 6 }}>{note}</Text>)}
+          {section.rows.map((row) => <View key={row.label} wrap={false} style={{ marginTop: 12 }}>
+            <Text style={{ fontSize: type.subhead }}>{row.label}</Text>
+            <Text style={{ fontSize: type.body, lineHeight: type.lineHeight.body, marginTop: 4 }}>{row.detail}</Text>
+          </View>)}
+          {section.prompts.map((prompt) => <View key={prompt.title} wrap={false} style={{ marginTop: 14 }}>
+            <Text style={{ fontSize: type.subhead }}>{prompt.title}</Text>
+            <Text style={{ fontSize: type.body, marginTop: 4 }}>{prompt.context}</Text>
+            <Text style={{ fontSize: type.body, lineHeight: type.lineHeight.body, marginTop: 6 }}>{t("tos.report.support", isHu ? "hu" : "en")}: {prompt.support}</Text>
+            <Text style={{ fontSize: type.body, lineHeight: type.lineHeight.body, marginTop: 6 }}>{t("tos.report.tension", isHu ? "hu" : "en")}: {prompt.tension}</Text>
+          </View>)}
+        </TeamChapterPage>
+      ))}
+
       {/* ── 01: gyors összkép ─────────────────────────────────────────────── */}
       <Page size="A4" style={s.page} bookmark={isHu ? "Áttekintés" : "Overview"}>
         <TeamPageHeader title={title} publishedDate={publishedDate} isHu={isHu} />
@@ -374,7 +394,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
                   {agg.pattern ? (
                     <KpiCell
                       value={agg.pattern.label}
-                      label={isHu ? "működési mintázat" : "operating pattern"}
+                      label={isHu ? "személyiség-összetételi mintázat" : "personality composition pattern"}
                       sub={
                         agg.pattern.stability
                           ? isHu

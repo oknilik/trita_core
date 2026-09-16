@@ -37,7 +37,7 @@ const patchSchema = z.union([
   }),
 ]);
 
-const TEAM_LOCKED_STEPS = new Set(["TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]);
+const TEAM_LOCKED_STEPS = new Set(["TEAM_OPERATING_STYLE", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]);
 
 const addParticipantsSchema = z.object({
   userIds: z.array(z.string().min(1)).min(1).max(50),
@@ -235,6 +235,9 @@ export async function PATCH(
         { error: "PSYCH_SAFETY_SINGLE_TEAM_REQUIRED" },
         { status: 409 },
       );
+    }
+    if (steps.includes("TEAM_OPERATING_STYLE") && nextTeamIds.length !== 1) {
+      return NextResponse.json({ error: "OPERATING_STYLE_SINGLE_TEAM_REQUIRED" }, { status: 409 });
     }
     const newIds = nextTeamIds.filter((id) => !currentTeamIds.includes(id));
     if (newIds.length > 0) {
@@ -580,6 +583,9 @@ export async function POST(
       return { ok: false as const, error: "CAMPAIGN_CLOSED" as const };
     }
 
+    if (await tx.teamOperatingRound.count({ where: { campaignId } })) {
+      return { ok: false as const, error: "OPERATING_ROSTER_FROZEN" as const };
+    }
     const currentMemberships = await tx.organizationMember.findMany({
       where: { orgId, userId: { in: body.data.userIds }, leftAt: null },
       select: { userId: true },

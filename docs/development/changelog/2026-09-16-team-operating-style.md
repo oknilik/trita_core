@@ -14,3 +14,11 @@
 - `tests/unit/team/*.test.ts`: 228/228 sikeres; ebből 19 új Operating Style teszt.
 - A helyi tsx CLI IPC socketet nem tudott nyitni, ezért ugyanazok a node:test tesztek a tsx Node loaderével futottak (`node --import <tsx-loader> --conditions=react-server --test tests/unit/team/*.test.ts`).
 - UI/client/e2e és adatbázis-integrációs teszt nem futott: az ág nem köt be felületet, API-t vagy perzisztenciát.
+
+## Folytatás — felületi és riportbekötés
+
+- Új Csapatkép és működés csomag; aktiváláskor rögzített csapat/névsor/időablak.
+- Privát szerverpiszkozat, végleges beadás, tranzakciós léptetés és idempotens retry.
+- Közös web/tag/PDF riportprezentáció; mind a 16×16 mintapár összevetése, személyiségfüggő értelmezési kérdésekkel.
+- Két additív Prisma-modell és migráció; nem alkalmazva éles környezetben.
+- Ellenőrzési eredmények és elérési út: `docs/product/team-operating-style-integration.md`.

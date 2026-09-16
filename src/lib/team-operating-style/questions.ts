@@ -10,8 +10,8 @@ export const AXIS_LABELS: Record<OperatingAxis, { name: Localized; left: Localiz
   execution: { name: { hu: "Végrehajtás", en: "Execution" }, left: { hu: "Tervvezérelt", en: "Plan-driven" }, right: { hu: "Adaptív", en: "Adaptive" } },
 };
 export const INSTRUCTIONS: Localized = {
-  hu: "Az elmúlt négy hét közös munkájára gondolj ebben a csapatban. Azokban a helyzetekben, amikor az állítás értelmezhető volt, milyen gyakran történt így? A tényleges gyakorlatot jelöld. Ha nem volt ilyen helyzet, vagy nem láttál rá, válaszd a Nem megítélhető lehetőséget.",
-  en: "Think about this team's work over the past four weeks. When the situation applied, how often did this happen? Describe actual practice. If the situation did not occur or you could not observe it, choose Unable to judge.",
+  hu: "A megjelölt négyhetes időszak közös munkájára gondolj ebben a csapatban. Azokban a helyzetekben, amikor az állítás értelmezhető volt, milyen gyakran történt így? A tényleges gyakorlatot jelöld. Ha nem volt ilyen helyzet, vagy nem láttál rá, válaszd a Nem megítélhető lehetőséget.",
+  en: "Think about this team's work during the specified four-week period. When the situation applied, how often did this happen? Describe actual practice. If the situation did not occur or you could not observe it, choose Unable to judge.",
 };
 export const RESPONSE_LABELS: Record<string, Localized> = {
   1: { hu: "Szinte soha", en: "Almost never" },

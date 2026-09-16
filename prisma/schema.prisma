@@ -120,6 +120,8 @@ model UserProfile {
   approvedObserverInvites ObserverInvitation[] @relation("ObserverInviteApprover")
   feedbacks               Feedback[]
 
+  operatingResponses TeamOperatingResponse[]
+
   // Team layer (KKV)
   ownedTeams      Team[]       @relation("TeamOwner")
   teamMemberships TeamMember[]
@@ -323,6 +325,7 @@ model Team {
   members              TeamMember[]
   activeForUsers       UserProfile[]         @relation("ActiveTeamContext")
   pendingInvites       TeamPendingInvite[]
+  operatingRounds      TeamOperatingRound[]
   reports              TeamReport[]
   candidateInvites     CandidateInvite[]
   teamRoleObservations TeamRoleObservation[]
@@ -626,6 +629,7 @@ model Campaign {
   org                  Organization          @relation(fields: [orgId], references: [id], onDelete: Cascade)
   creator              UserProfile           @relation("CampaignCreator", fields: [createdBy], references: [id])
   participants         CampaignParticipant[]
+  operatingRound       TeamOperatingRound?
   psychSafetyResponses PsychSafetyResponse[]
   teamRoleObservations TeamRoleObservation[]
   peerFeedbackItems    PeerFeedbackItem[]
@@ -1412,4 +1416,33 @@ model NewsletterIssue {
   updatedAt DateTime @updatedAt
 
   @@index([status, createdAt])
+}
+
+// Team behavior survey: separate from personality assessment. Frozen roster/window.
+model TeamOperatingRound {
+  id                String   @id @default(cuid())
+  campaignId        String   @unique
+  teamId            String
+  instrumentVersion String
+  eligibleUserIds   String[]
+  referenceStart    DateTime
+  referenceEnd      DateTime
+  createdAt         DateTime @default(now())
+  campaign          Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  team              Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  responses         TeamOperatingResponse[]
+  @@index([teamId])
+}
+
+// A null submittedAt denotes a private draft; finalized answers are immutable.
+model TeamOperatingResponse {
+  id          String   @id @default(cuid())
+  roundId     String
+  userId      String
+  answers     Json
+  submittedAt DateTime?
+  updatedAt   DateTime @updatedAt
+  round       TeamOperatingRound @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  user        UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([roundId, userId])
 }

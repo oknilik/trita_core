@@ -23,7 +23,7 @@ export async function ReportTabView({
             ...(requestedCampaignId ? { id: requestedCampaignId } : {}),
             orgId: teamData.orgId ?? undefined,
             status: "CLOSED",
-            presetId: "SCAN_V1",
+            presetId: { in: ["SCAN_V1", "SCAN_STYLE_V1"] },
             OR: [{ teamId }, { teamIds: { has: teamId } }],
           },
           orderBy: { closedAt: "desc" },

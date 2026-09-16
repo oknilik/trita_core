@@ -1,4 +1,5 @@
 export const CAMPAIGN_ACTIVATION_PRECONDITION_CODES = [
+  "OPERATING_STYLE_SINGLE_TEAM_REQUIRED",
   "PSYCH_SAFETY_SINGLE_TEAM_REQUIRED",
   "CAMPAIGN_PARTICIPANTS_REQUIRED",
   "CAMPAIGN_MINIMUM_PARTICIPANTS_NOT_MET",
@@ -24,6 +25,7 @@ export function getCampaignActivationPreconditionFailure(input: {
   participantUserIds: readonly string[];
   targetMemberUserIds: readonly string[];
 }): CampaignActivationPreconditionCode | null {
+  if (input.steps.includes("TEAM_OPERATING_STYLE") && input.teamIds.length !== 1) return "OPERATING_STYLE_SINGLE_TEAM_REQUIRED";
   if (
     input.presetId === "SCAN_V1" &&
     input.steps.includes("PSYCH_SAFETY") &&

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TeamOperatingStyleReport } from "./TeamOperatingStyleReport";
 import { t } from "@/lib/i18n";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -106,6 +107,8 @@ export function TeamReportMemberView({
           </div>
         </div>
       </DashboardPanel>
+
+      <TeamOperatingStyleReport snapshot={report.aggregates?.teamStyle} legacyPattern={report.aggregates?.pattern?.label} locale={isHu ? "hu" : "en"} />
 
       {/* 1. Te a csapatban – radar-összevetés + színes sávok */}
       {vm.hasSelfComparison ? (
@@ -325,7 +328,7 @@ export function TeamReportMemberView({
             className="mb-4"
           />
           <DashboardPanel className="p-6">
-            {vm.patternLabel && (
+            {vm.patternLabel && !report.aggregates?.teamStyle?.composition && (
               <div className="mb-5 rounded-[14px] bg-gradient-to-br from-cream to-sage/10 p-4 ring-1 ring-sand">
                 <p className="font-mono text-micro uppercase tracking-widest text-muted">
                   {isHu ? "Csapatmintázat" : "Team pattern"}

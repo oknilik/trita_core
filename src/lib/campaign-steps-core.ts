@@ -9,6 +9,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 export const CAMPAIGN_STEP_ORDER = [
+  "TEAM_OPERATING_STYLE",
   "SELF_ASSESSMENT",
   "OBSERVER_360",
   "TEAM_ROLE",
@@ -20,7 +21,7 @@ export const CAMPAIGN_STEP_ORDER = [
 
 export type CampaignStepType = (typeof CAMPAIGN_STEP_ORDER)[number];
 
-export const CAMPAIGN_PRESET_IDS = ["SCAN_V1"] as const;
+export const CAMPAIGN_PRESET_IDS = ["SCAN_V1", "SCAN_STYLE_V1"] as const;
 export type CampaignPresetId = (typeof CAMPAIGN_PRESET_IDS)[number];
 
 /**
@@ -41,6 +42,12 @@ export const CAMPAIGN_PRESETS: Record<
     requireFreshResults: boolean;
   }
 > = {
+  SCAN_STYLE_V1: {
+    label: { hu: "Csapatkép és működés", en: "Team profile and operating style" },
+    description: { hu: "Csapatműködés, friss személyiségkép, bizalmi háló és pszichológiai biztonság – két mintázat egy riportban.", en: "Operating style, fresh personality profiles, trust and psychological safety – two patterns in one report." },
+    steps: ["TEAM_OPERATING_STYLE", "SELF_ASSESSMENT", "TRUST_360", "PSYCH_SAFETY"],
+    requireFreshResults: true,
+  },
   SCAN_V1: {
     label: { hu: "trita Team Scan v1", en: "trita Team Scan v1" },
     description: {
@@ -82,6 +89,7 @@ export function isSelfAssessmentCampaignStep(
 // köszönet + javaslat) — a két lépés neve korábban majdnem azonos volt
 // („kollégai visszajelzés…"), ami összetéveszthetővé tette őket.
 export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: string }> = {
+  TEAM_OPERATING_STYLE: { hu: "Csapatműködés", en: "Team operating style" },
   SELF_ASSESSMENT: { hu: "Önértékelés", en: "Self-assessment" },
   OBSERVER_360: { hu: "Önértékelés + külső visszajelzés", en: "Self-assessment + external feedback" },
   TEAM_ROLE: { hu: "Csapatszerep-kérdőív", en: "Team role questionnaire" },
@@ -93,6 +101,7 @@ export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: st
 
 /** Az adott lépés kitöltő-felülete (értesítés-link és banner-CTA). */
 export const CAMPAIGN_STEP_LINKS: Record<CampaignStepType, string> = {
+  TEAM_OPERATING_STYLE: "/assessment/team-operating-style",
   SELF_ASSESSMENT: "/assessment",
   OBSERVER_360: "/assessment",
   TEAM_ROLE: "/assessment/team-roles",

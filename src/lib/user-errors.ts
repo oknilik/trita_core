@@ -8,6 +8,8 @@
  */
 
 const GENERIC_ERROR_KEYS: Record<string, string> = {
+  OPERATING_STYLE_SINGLE_TEAM_REQUIRED: "tos.singleTeam",
+  OPERATING_ROSTER_FROZEN: "tos.rosterFrozen",
   UNAUTHORIZED: "userErrors.sessionExpired",
   AUTH_REQUIRED: "userErrors.sessionExpired",
   FORBIDDEN: "userErrors.forbidden",
