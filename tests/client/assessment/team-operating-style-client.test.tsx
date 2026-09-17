@@ -3,8 +3,9 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { OperatingStyleClient } from "@/app/(app)/assessment/team-operating-style/OperatingStyleClient";
 import { TeamOperatingStyleReport } from "@/components/team/TeamOperatingStyleReport";
-import { ITEMS } from "@/lib/team-operating-style/questions";
+import { ITEMS, OPERATING_STYLE_VERSION } from "@/lib/team-operating-style/questions";
 
+import { calculateOperatingStyle } from "@/lib/team-operating-style/scoring";
 const refresh = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); refresh.mockClear(); });
@@ -59,6 +60,26 @@ describe("Operating Style participant flow", () => {
     const headings = screen.getAllByRole("heading", { level: 2 }).map((e) => e.textContent);
     expect(headings).toEqual(["1. How do you work together?", "2. What is your personality composition?", "3. The two patterns together"]);
     expect(screen.getByText("Legacy composition")).toBeInTheDocument();
-    expect(screen.getByText(/no operating style measurement/)).toBeInTheDocument();
+    expect(screen.getAllByText(/no operating style measurement/)).toHaveLength(2);
   });
+});
+
+
+it("shows measured axes and coverage while keeping exact values in native disclosures", async () => {
+  const operating = calculateOperatingStyle({ teamId: "team", roundId: "round", instrumentVersion: OPERATING_STYLE_VERSION,
+    eligibleRespondentIds: ["a", "b", "c"], responses: ["a", "b", "c"].map((respondentId) => ({ respondentId,
+      answers: Object.fromEntries(ITEMS.map((q) => [q.id, 5])),
+    })) });
+  render(<TeamOperatingStyleReport locale="hu" snapshot={{ version: 1, operating: { ...operating,
+    referenceStart: "2026-08-19", referenceEnd: "2026-09-16" }, composition: null, sameRespondents: null, comparison: null }} />);
+  expect(screen.getAllByRole("img")).toHaveLength(4);
+  expect(screen.getAllByText("Értékelhető válasz: 3/3")).toHaveLength(4);
+  expect(screen.getByText("Nincs erős eltolódás egyik pólus felé sem.")).toBeVisible();
+  const summary = screen.getAllByText("Pontos értékek és a mérés háttere")[0];
+  const disclosure = summary.closest("details")!;
+  expect(disclosure.open).toBe(false);
+  await userEvent.click(summary);
+  expect(disclosure.open).toBe(true);
+  expect(disclosure).toHaveTextContent("Szórás");
+  expect(disclosure).toHaveTextContent("Lefedettség");
 });

@@ -31,6 +31,13 @@ export const operatingStyleTranslations = {
     answers: RESPONSE_LABELS,
     axes: AXIS_LABELS,
     report: {
+      nearMiddleSummary: { hu: "Nincs erős eltolódás egyik pólus felé sem.", en: "Neither pole strongly dominates." },
+      nearMiddleHelp: { hu: "Mind a négy területen közel vannak egymáshoz a kétféle működés gyakoriságai.", en: "Across all four areas, the two ways of working occur at similar frequencies." },
+      validAnswers: { hu: "Értékelhető válasz", en: "Usable responses" },
+      centerLegend: { hu: "A pont az átlagot jelöli; a középvonal 50/100. A középérték önmagában nem jelent rugalmasságot.", en: "The dot shows the mean; the center line is 50/100. A midpoint alone does not imply flexibility." },
+      cohesionCaveat: { hu: "A kohézió itt személyiségből becsült együttműködési hajlam, nem közvetlenül mért összetartás.", en: "Cohesion here is a personality-based cooperation proxy, not a direct measure of team cohesion." },
+      measurementDetails: { hu: "Pontos értékek és a mérés háttere", en: "Exact values and measurement background" },
+      interpretationDetails: { hu: "Hogyan értelmezzétek az összevetést?", en: "How to interpret this comparison" },
       source: { hu: "Csapatműködés-mérés forrása", en: "Operating style measurement source" },
       sameSource: { hu: "A riport eredeti mérési köre", en: "The report’s original measurement round" },
       sourceHelp: { hu: "Ha a csapatműködést külön körben mértétek, válaszd ki azt, majd nyisd meg az előnézetet. A személyiség-összetétel forrása megmarad.", en: "If operating style was measured in a separate round, select it and open the preview. The personality composition source is preserved." },
