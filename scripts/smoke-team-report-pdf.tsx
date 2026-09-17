@@ -5,37 +5,12 @@ import { calculateTeamPattern } from "../src/lib/team-pattern";
 // Füstteszt: a TeamReportDocument node-oldali renderelése mock-adatokkal.
 // NEM része a CI-nek — kézi ellenőrzés: `npx tsx scripts/smoke-team-report-pdf.tsx`.
 // A font-átregisztráció a generate-persona-reports.tsx mintája.
-import { join } from "node:path";
-import { Font, renderToBuffer } from "@react-pdf/renderer";
+import { renderToBuffer } from "@react-pdf/renderer";
 import React from "react";
+import { registerPdfFonts } from "./pdf-report-render";
+import { makeReaderReport } from "./fixtures/team-report-reader";
 
-const FONT_DIR = join(process.cwd(), "public", "fonts");
-Font.clear();
-Font.register({
-  family: "Fraunces",
-  fonts: [
-    { src: join(FONT_DIR, "Fraunces-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "Fraunces-Regular.ttf"), fontWeight: 600 },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontStyle: "italic" },
-  ],
-});
-Font.register({
-  family: "DM Sans",
-  fonts: [
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 500 },
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 600 },
-  ],
-});
-Font.register({
-  family: "Helvetica",
-  fonts: [
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 700 },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontWeight: 400, fontStyle: "italic" },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontWeight: 700, fontStyle: "italic" },
-  ],
-});
+registerPdfFonts();
 
 async function main() {
   const { TeamReportDocument } = await import("../src/components/pdf/TeamReportPdf");
@@ -156,6 +131,11 @@ async function main() {
   );
   writeFileSync("/tmp/team-report-smoke.pdf", full);
   console.log("written /tmp/team-report-smoke.pdf");
+  for (const isHu of [true, false]) {
+    const sample = await renderToBuffer(React.createElement(TeamReportDocument, { report: makeReaderReport(true), isHu }) as never);
+    writeFileSync(`/tmp/team-report-reader-${isHu ? "hu" : "en"}.pdf`, sample);
+    console.log(`reader cohort sample (isHu=${isHu}): ${sample.length} bytes`);
+  }
 }
 
 main().catch((err) => {

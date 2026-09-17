@@ -74,20 +74,9 @@ export function TeamActionTracker({
         </h2>
       </div>
       <DashboardPanel className="p-5">
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-          {[
-            [isHu ? "Kész" : "Done", summary.done],
-            [isHu ? "Folyamatban" : "In progress", summary.inProgress],
-            [isHu ? "Elakadt" : "Blocked", summary.blocked],
-            [isHu ? "Lejárt" : "Overdue", summary.overdue],
-            [isHu ? "7 napon belül" : "Due in 7 days", summary.dueSoon],
-          ].map(([label, value]) => (
-            <div key={String(label)} className="rounded-xl border border-sand bg-cream/50 p-3">
-              <p className="font-fraunces text-2xl text-ink">{value}</p>
-              <p className="text-micro text-muted">{label}</p>
-            </div>
-          ))}
-        </div>
+        <p className="text-sm text-muted">
+          {isHu ? `${summary.done}/${items.length} lépés kész · ${summary.inProgress} folyamatban` : `${summary.done}/${items.length} steps done · ${summary.inProgress} in progress`}
+        </p>
 
         {(summary.blocked > 0 || summary.overdue > 0) && (
           <p className="mt-3 rounded-xl border border-state-warning-border bg-state-warning-bg px-3 py-2 text-xs font-medium text-state-warning-fg">
@@ -103,7 +92,7 @@ export function TeamActionTracker({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold text-ink">{item.title}</p>
-                  <p className="mt-0.5 text-micro text-muted">{item.timeframe} {isHu ? "napos fókusz" : "day focus"}</p>
+                  <p className="mt-0.5 text-xs text-muted">{item.timeframe} {isHu ? "napos fókusz" : "day focus"}</p>
                   {item.targetMetric ? (
                     <p className="mt-1 text-micro text-[var(--color-accent-primary-strong)]">
                       {isHu ? "Célmutató" : "Target"}: {teamActionTargetLabel(
@@ -119,11 +108,14 @@ export function TeamActionTracker({
                   </span>
                 ) : null}
               </div>
+              {item.description && <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-ink-body">{item.description}</p>}
+              {item.note && <p className="mt-2 whitespace-pre-wrap text-sm text-muted">{item.note}</p>}
               {canManage ? (
                 <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
                   <input
                     value={item.owner ?? ""}
                     placeholder={isHu ? "Felelős" : "Owner"}
+                    aria-label={isHu ? "Felelős" : "Owner"}
                     onChange={(event) => setItems((current) => current.map((entry, i) => i === index ? { ...entry, owner: event.target.value } : entry))}
                     className="min-h-[42px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
                   />

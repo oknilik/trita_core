@@ -1,95 +1,98 @@
-import { presentTeamStyle } from "@/lib/team-operating-style/presentation";
-import { t } from "@/lib/i18n";
 import { Document, Page, View, Text, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
+import type { ReactNode } from "react";
 import { s, colors, type } from "./styles";
-import { PdfCard, PdfMiniHeader } from "./components/PdfCard";
+import { PdfMiniHeader } from "./components/PdfCard";
 import { PdfFooter } from "./components/PdfFooter";
-import { PdfChapterHeader } from "./components/PdfChapterHeader";
-import { TeamReportCoverPage } from "./pages/TeamReportCoverPage";
+import { presentTeamStyle, type StyleSection } from "@/lib/team-operating-style/presentation";
+import { AXES } from "@/lib/team-operating-style/questions";
+import { COMPOSITION_AXES } from "@/lib/team-operating-style/comparison";
+import { reportAttentionSignals, reportNextStep } from "@/lib/team-report-reader";
 import { HEXACO_ORDER, HEXACO_DIMENSIONS, isHexacoCode } from "@/lib/hexaco";
 import { DIMENSION_BASE } from "@/lib/color-system";
+import { TEAM_ROLES } from "@/lib/team-role-scoring";
+import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
+import { getPsychSafetyItem } from "@/lib/psych-safety";
 import { teamActionTargetLabel } from "@/lib/team-action-target";
-import type {
-  SerializedTeamReport,
-  TeamReportActionItem,
-} from "@/lib/team-report";
-import type { ReactNode } from "react";
+import { t } from "@/lib/i18n";
+import type { SerializedTeamReport, TeamReportActionItem } from "@/lib/team-report";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Csapatriport-PDF (P1.1) — a PUBLIKÁLT TeamReportView nyomtatható párja.
-//
-// Elvek:
-//  - KIZÁRÓLAG a befagyasztott `aggregates` snapshotból és a tanácsadói
-//    narratívából dolgozik — élő számítás nincs, a PDF ugyanazt mondja, amit
-//    a publikált nézet.
-//  - Az anonimitási és evidencia-szabályok a nézettel azonosak: egyéni adat
-//    soha; forrás-jelölés (mért vs. becsült) kötelező; a psych-safety
-//    szóródás SZÁMKÉNT nem jelenik meg (2026-08-11 termékdöntés).
-//  - A trust hub/beágyazatlan NEVEK szándékosan NEM kerülnek a PDF-be, csak
-//    a darabszámok: a nyomtatott artefakt tovább terjed, mint a képernyő.
-//  - Szövegek: a TeamReportView helyi konvencióját követő inline isHu
-//    ternary-k (a narratíva maga tanácsadói szabad szöveg, nem szótári).
-//  - A modult KIZÁRÓLAG dinamikus importtal töltsd (bundle-védelem) — minta:
-//    TeamReportPdfButton.
-// ─────────────────────────────────────────────────────────────────────────────
+export interface TeamReportPdfData { report: SerializedTeamReport; isHu: boolean }
 
-export interface TeamReportPdfData {
-  report: SerializedTeamReport;
-  isHu: boolean;
+const body = { fontSize: type.body, color: colors.ink500, lineHeight: type.lineHeight.body };
+const caption = { fontSize: type.caption, color: colors.ink300, lineHeight: type.lineHeight.caption };
+const heading = { fontFamily: "Fraunces", fontSize: type.section, color: colors.ink };
+const num = (value: number | null, isHu: boolean) => value === null ? "-" : value.toLocaleString(isHu ? "hu-HU" : "en-GB", { maximumFractionDigits: 1 });
+const date = (value: string | null | undefined, isHu: boolean) => value ? new Date(value).toLocaleDateString(isHu ? "hu-HU" : "en-GB", { timeZone: "UTC" }) : "";
+
+function Chapter({ title, children, keepTogether = false }: { title: string; children: ReactNode; keepTogether?: boolean }) {
+  return <View wrap={!keepTogether} style={{ gap: 8 }}>
+    <Text minPresenceAhead={50} style={{ ...heading, borderBottom: `0.5 solid ${colors.sand}`, paddingBottom: 9 }}>{title}</Text>
+    {children}
+  </View>;
 }
 
-const QUALITY_LABELS: Record<string, { hu: string; en: string }> = {
-  none: { hu: "Nincs elegendő adat", en: "Insufficient data" },
-  partial: { hu: "Részleges adatalap", en: "Partial data basis" },
-  sufficient: { hu: "Megbízható adatalap", en: "Reliable data basis" },
-};
-
-const ACTION_STATUS_LABELS: Record<string, { hu: string; en: string }> = {
-  not_started: { hu: "nem kezdődött el", en: "not started" },
-  in_progress: { hu: "folyamatban", en: "in progress" },
-  blocked: { hu: "elakadt", en: "blocked" },
-  done: { hu: "kész", en: "done" },
-};
-
-/** Tanácsadói narratíva („• " bullet-konvenció) → sorok. */
-function splitNarrative(text: string | null): string[] {
-  if (!text) return [];
-  return text
-    .split("\n")
-    .map((line) => line.replace(/^[•\-–]\s*/, "").trim())
-    .filter((line) => line.length > 0);
+function Notes({ notes }: { notes: string[] }) {
+  return <View style={{ gap: 4 }}>{notes.map((note) => <Text key={note} style={caption}>{note}</Text>)}</View>;
 }
 
-function formatDate(iso: string | null | undefined, isHu: boolean): string | null {
-  if (!iso) return null;
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toLocaleDateString(isHu ? "hu-HU" : "en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+function Narrative({ title, text }: { title: string; text: string | null }) {
+  if (!text?.trim()) return null;
+  // Long consultant text must flow across pages, without truncation or giant unbreakable cards.
+  return <View style={{ gap: 6 }}>
+    <Text minPresenceAhead={35} style={{ ...heading, fontSize: type.subhead }}>{title}</Text>
+    {text.split(/\r?\n/).filter((line) => line.trim()).map((line, index) => <Text key={index} orphans={2} widows={2} style={body}>{line}</Text>)}
+  </View>;
 }
 
-function KpiCell({ value, label, sub }: { value: string; label: string; sub?: string }) {
-  return (
-    <View style={{ flex: 1, alignItems: "center", padding: "10 6" }}>
-      <Text style={{ fontFamily: "Fraunces", fontSize: type.section, color: colors.ink, marginBottom: 3 }}>
-        {value}
-      </Text>
-      <Text style={{ fontSize: type.caption, color: colors.ink300, textAlign: "center" }}>{label}</Text>
-      {sub ? (
-        <Text style={{ fontSize: type.caption, color: colors.ink300, marginTop: 2, textAlign: "center" }}>
-          {sub}
-        </Text>
-      ) : null}
+function ReportPage({ report, isHu, bookmark, children, compact = false }: TeamReportPdfData & { bookmark: string; children: ReactNode; compact?: boolean }) {
+  return <Page size="A4" style={s.page} bookmark={bookmark}>
+    <PdfMiniHeader userName={report.title || (isHu ? "Csapatkép" : "Team picture")} reportLabel={isHu ? "Csapatriport" : "Team report"} planLabel="" date={date(report.publishedAt, isHu)} locale={isHu ? "hu" : "en"} />
+    <View style={{ padding: "14 32 0", gap: compact ? 12 : 20 }}>{children}</View>
+    <PdfFooter locale={isHu ? "hu" : "en"} coverPages={0} />
+  </Page>;
+}
+
+function Action({ item, isHu }: { item: TeamReportActionItem; isHu: boolean }) {
+  const statuses = { not_started: isHu ? "Még nem indult" : "Not started", in_progress: isHu ? "Folyamatban" : "In progress", blocked: isHu ? "Elakadt" : "Blocked", done: isHu ? "Kész" : "Done" };
+  return <View style={{ gap: 5, paddingTop: 10, borderTop: `0.5 solid ${colors.sand}` }}>
+    <Text minPresenceAhead={40} style={{ ...body, fontWeight: 600, color: colors.ink }}>{item.title}</Text>
+    {item.description && <Text style={body}>{item.description}</Text>}
+    <Text style={caption}>{[
+      item.owner ? `${isHu ? "Felelős" : "Owner"}: ${item.owner}` : isHu ? "Felelős: még nincs kijelölve" : "Owner: not assigned",
+      item.dueDate ? `${isHu ? "Határidő" : "Due"}: ${item.dueDate}` : `${item.timeframe} ${isHu ? "napos fókusz" : "day focus"}`,
+      statuses[item.status ?? "not_started"],
+    ].join(" · ")}</Text>
+    {item.targetMetric && <Text style={caption}>{isHu ? "Célmutató" : "Target"}: {teamActionTargetLabel(item.targetMetric, isHu ? "hu" : "en")}</Text>}
+    {item.note && <Text style={body}>{item.note}</Text>}
+  </View>;
+}
+
+function Prompt({ prompt, isHu }: { prompt: StyleSection["prompts"][number]; isHu: boolean }) {
+  return <View wrap={false} style={{ gap: 7, paddingTop: 10, borderTop: `0.5 solid ${colors.sand}` }}>
+    <Text style={{ ...body, fontWeight: 600, color: colors.ink }}>{prompt.title}</Text>
+    <View style={{ flexDirection: "row", gap: 18 }}>
+      <View style={{ flex: 1, gap: 4, borderLeft: `2 solid ${colors.sage}`, paddingLeft: 10 }}>
+        <Text style={{ ...caption, color: colors.sageDark }}>{isHu ? "Lehetséges támasz" : "Possible support"}</Text><Text style={body}>{prompt.support}</Text>
+      </View>
+      <View style={{ flex: 1, gap: 4, borderLeft: `2 solid ${colors.bronze}`, paddingLeft: 10 }}>
+        <Text style={{ ...caption, color: colors.bronzeDark }}>{isHu ? "Tisztázandó kérdés" : "Question to explore"}</Text><Text style={body}>{prompt.tension}</Text>
+      </View>
     </View>
-  );
+    <Text style={caption}>{prompt.context}</Text>
+  </View>;
 }
 
-// Dimenzió-sor: címke + sáv (átlag-jelölő + heterogenitás-sáv) + átlagérték.
-// A szórás SZÁMKÉNT nem jelenik meg — sávként igen (a nézet mintája).
+function StatsTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
+  return <View>
+    <View wrap={false} style={{ flexDirection: "row", borderBottom: `1 solid ${colors.sand}`, paddingVertical: 8 }}>
+      {headers.map((label, i) => <Text key={i} style={{ ...caption, flex: i === 0 ? 2 : 1, fontWeight: 600 }}>{label}</Text>)}
+    </View>
+    {rows.map((row, index) => <View key={index} wrap={false} style={{ flexDirection: "row", paddingVertical: 9, borderBottom: `0.5 solid ${colors.sand}` }}>
+      {row.map((cell, i) => <Text key={i} style={{ ...body, flex: i === 0 ? 2 : 1, paddingRight: 5 }}>{cell}</Text>)}
+    </View>)}
+  </View>;
+}
 function DimRow({
   code,
   avg,
@@ -156,442 +159,172 @@ function DimRow({
   );
 }
 
-function NarrativeCard({ eyebrow, text }: { eyebrow: string; text: string | null }) {
-  const lines = splitNarrative(text);
-  if (lines.length === 0) return null;
-  return (
-    <PdfCard eyebrow={eyebrow}>
-      {lines.map((line, i) => (
-        <View key={i} style={{ flexDirection: "row", marginBottom: 5 }} wrap={false}>
-          <Text style={{ fontSize: type.body, color: colors.bronze, marginRight: 6 }}>•</Text>
-          <Text style={{ fontSize: type.body, color: colors.ink500, flex: 1, lineHeight: type.lineHeight.body }}>{line}</Text>
-        </View>
-      ))}
-    </PdfCard>
-  );
-}
 
-function ActionRow({ item, isHu }: { item: TeamReportActionItem; isHu: boolean }) {
-  const statusLabel = item.status ? ACTION_STATUS_LABELS[item.status] : null;
-  const metaParts = [
-    `${item.timeframe} ${isHu ? "nap" : "days"}`,
-    item.owner ? `${isHu ? "felelős" : "owner"}: ${item.owner}` : null,
-    statusLabel ? (isHu ? statusLabel.hu : statusLabel.en) : null,
-    item.targetMetric
-      ? `${isHu ? "célmutató" : "target"}: ${teamActionTargetLabel(item.targetMetric, isHu ? "hu" : "en")}`
-      : null,
-  ].filter(Boolean);
-  return (
-    <View style={{ marginBottom: 8, paddingBottom: 8, borderBottom: `0.5 solid ${colors.cream500}` }} wrap={false}>
-      <Text style={{ fontSize: type.cardTitle, fontWeight: 600, color: colors.ink, marginBottom: 3 }}>
-        {item.title}
-      </Text>
-      {item.description ? (
-        <Text style={{ fontSize: type.body, color: colors.ink500, lineHeight: type.lineHeight.body, marginBottom: 3 }}>
-          {item.description}
-        </Text>
-      ) : null}
-      <Text style={{ fontSize: type.caption, color: colors.ink300 }}>{metaParts.join(" · ")}</Text>
-    </View>
-  );
-}
-
-function TeamPageHeader({
-  title,
-  publishedDate,
-  isHu,
-}: {
-  title: string;
-  publishedDate: string | null;
-  isHu: boolean;
-}) {
-  return (
-    <PdfMiniHeader
-      userName={title}
-      reportLabel={isHu ? "Szervezeti riport" : "Organization report"}
-      planLabel=""
-      date={publishedDate ?? ""}
-      locale={isHu ? "hu" : "en"}
-    />
-  );
-}
-
-function TeamChapterPage({
-  title,
-  publishedDate,
-  isHu,
-  bookmark,
-  children,
-}: {
-  title: string;
-  publishedDate: string | null;
-  isHu: boolean;
-  bookmark: string;
-  children: ReactNode;
-}) {
-  return (
-    <Page size="A4" style={s.page} bookmark={bookmark}>
-      <TeamPageHeader title={title} publishedDate={publishedDate} isHu={isHu} />
-      <View style={s.body}>{children}</View>
-      <PdfFooter locale={isHu ? "hu" : "en"} />
-    </Page>
-  );
-}
-
-function MethodologyCard({
-  agg,
-  generatedDate,
-  isHu,
-}: {
-  agg: NonNullable<SerializedTeamReport["aggregates"]>;
-  generatedDate: string | null;
-  isHu: boolean;
-}) {
-  const evidence = agg.evidence;
-  if (!evidence) return null;
-  return (
-    <PdfCard eyebrow={isHu ? "Adatalap és módszertan" : "Data basis & methodology"} tone="muted">
-      <Text style={{ fontSize: type.body, color: colors.ink, lineHeight: type.lineHeight.body, marginBottom: 4 }}>
-        {(QUALITY_LABELS[evidence.quality]
-          ? isHu
-            ? QUALITY_LABELS[evidence.quality].hu
-            : QUALITY_LABELS[evidence.quality].en
-          : evidence.quality) +
-          " · " +
-          (isHu
-            ? `${agg.completedCount}/${agg.memberCount} kitöltött felmérés · ${evidence.measuredEdgeCount ?? 0} mért és ${evidence.estimatedEdgeCount} becsült kapcsolati adat`
-            : `${agg.completedCount}/${agg.memberCount} completed assessments · ${evidence.measuredEdgeCount ?? 0} measured and ${evidence.estimatedEdgeCount} estimated relationship data points`)}
-      </Text>
-      <Text style={s.caption}>
-        {isHu
-          ? "A riport a publikáláskor rögzített aggregált adatokon alapul; egyéni eredmények nem jelennek meg. A becsült elemek profil-alapú modellből származnak."
-          : "This report is based on aggregate data frozen at publication; individual results are not shown. Estimated elements come from a profile-based model."}
-        {generatedDate
-          ? isHu
-            ? ` Aggregátum rögzítve: ${generatedDate}`
-            : ` Aggregates frozen: ${generatedDate}.`
-          : ""}
-      </Text>
-    </PdfCard>
-  );
-}
-
+/** Frozen report only. Operating behavior and personality composition stay separate. */
 export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
   const agg = report.aggregates;
-  const title = report.title ?? (isHu ? "Csapatkép" : "Team picture");
-  const publishedDate = formatDate(report.publishedAt, isHu);
-  const generatedDate = formatDate(agg?.generatedAt, isHu);
-
-  // EN lekérés jóváhagyott fordítás nélkül: a hívó (gomb) már a
-  // localizeTeamReport-on átfuttatott riportot adja; ha nincs jóváhagyott EN,
-  // a narratíva HU marad – ezt jelezni kell (a nézet mintája).
-  const showUnapprovedNote =
-    !isHu && report.translationsEn?.en?.status !== "approved";
-
-  const dims = agg?.dimensionAverages
-    ? HEXACO_ORDER.filter((d) => typeof agg.dimensionAverages?.[d] === "number")
-    : [];
-
-  const psych = agg?.psychSafety ?? null;
-  const trust = agg?.trustHighlights ?? null;
-  const dynamics = agg?.dynamics ?? null;
-  const dynamicsTotal = dynamics
-    ? dynamics.alignedCount + dynamics.complementaryCount + dynamics.frictionCount
-    : 0;
-
-  const bandLabel = psych
-    ? psych.band === "high"
-      ? isHu ? "Erős biztonság-élmény" : "Strong sense of safety"
-      : psych.band === "mid"
-        ? isHu ? "Közepes biztonság-élmény" : "Moderate sense of safety"
-        : isHu ? "Törékeny biztonság-élmény" : "Fragile sense of safety"
-    : null;
-
-  const sourceLabel = (source: string) =>
-    source === "trust_round"
-      ? isHu ? "mért bizalmi kör" : "measured trust round"
-      : source === "mixed"
-        ? isHu ? "vegyes (mért + becsült)" : "mixed (measured + estimated)"
-        : isHu ? "profil-alapú becslés" : "profile-based estimate";
-
-  const hasRelationalChapter = Boolean(
-    (dynamics && dynamicsTotal > 0) || trust || psych,
-  );
-  const hasNarrative = [
-    report.summary,
-    report.strengths,
-    report.risks,
-    report.recommendations,
-    report.leadershipGuide,
-  ].some((value) => splitNarrative(value).length > 0);
-  const hasActions = Boolean(report.actionItems?.length);
-  const hasConsultantChapter = hasNarrative || hasActions;
-  const consultantChapterNumber = hasRelationalChapter ? "03" : "02";
-  const actionChunks: TeamReportActionItem[][] = [];
-  for (let i = 0; i < (report.actionItems?.length ?? 0); i += 4) {
-    actionChunks.push(report.actionItems!.slice(i, i + 4));
-  }
-
-  return (
-    <Document
-      title={`${title} - ${isHu ? "Csapatriport" : "Team report"}`}
-      author="trita"
-      language={isHu ? "hu" : "en"}
-    >
-      <TeamReportCoverPage title={title} publishedDate={publishedDate} isHu={isHu} />
-
-      {agg?.teamStyle?.operating && presentTeamStyle(agg.teamStyle, isHu ? "hu" : "en", agg?.pattern?.label).map((section) => (
-        <TeamChapterPage key={section.title} title={title} publishedDate={publishedDate} isHu={isHu} bookmark={section.title}>
-          <Text style={{ fontSize: type.chapter, marginBottom: 12 }}>{section.title}</Text>
-          {section.heading && <Text style={{ fontSize: type.section, marginBottom: 10 }}>{section.heading}</Text>}
-          {section.notes.map((note) => <Text key={note} style={{ fontSize: type.body, lineHeight: type.lineHeight.body, marginBottom: 6 }}>{note}</Text>)}
-          {section.rows.map((row) => <View key={row.label} wrap={false} style={{ marginTop: 12 }}>
-            <Text style={{ fontSize: type.subhead }}>{row.label}</Text>
-            <Text style={{ fontSize: type.body, lineHeight: type.lineHeight.body, marginTop: 4 }}>{row.detail}</Text>
-          </View>)}
-          {section.prompts.map((prompt) => <View key={prompt.title} wrap={false} style={{ marginTop: 14 }}>
-            <Text style={{ fontSize: type.subhead }}>{prompt.title}</Text>
-            <Text style={{ fontSize: type.body, marginTop: 4 }}>{prompt.context}</Text>
-            <Text style={{ fontSize: type.body, lineHeight: type.lineHeight.body, marginTop: 6 }}>{t("tos.report.support", isHu ? "hu" : "en")}: {prompt.support}</Text>
-            <Text style={{ fontSize: type.body, lineHeight: type.lineHeight.body, marginTop: 6 }}>{t("tos.report.tension", isHu ? "hu" : "en")}: {prompt.tension}</Text>
-          </View>)}
-        </TeamChapterPage>
-      ))}
-
-      {/* ── 01: gyors összkép ─────────────────────────────────────────────── */}
-      <Page size="A4" style={s.page} bookmark={isHu ? "Áttekintés" : "Overview"}>
-        <TeamPageHeader title={title} publishedDate={publishedDate} isHu={isHu} />
-        <View style={s.body}>
-          <PdfChapterHeader
-            number="01"
-            question={isHu ? "Mi rajzolódik ki elsőre?" : "What stands out first?"}
-            title={isHu ? "Gyors összkép" : "Quick overview"}
-            description={
-              isHu
-                ? "A csapat közös profilja, lefedettsége és működési mintázata egy oldalon."
-                : "The team's shared profile, coverage, and operating pattern on one page."
-            }
-          />
-
-          {showUnapprovedNote ? (
-            <PdfCard tone="bronze">
-              <Text style={{ ...s.caption, color: colors.bronzeDark }}>
-                {"The narrative sections are shown in their original Hungarian because an approved English translation is not available yet."}
-              </Text>
-            </PdfCard>
-          ) : null}
-
-          {agg ? (
-            <>
-              {/* KPI-sor */}
-              <PdfCard>
-                <View style={{ flexDirection: "row" }}>
-                  <KpiCell
-                    value={`${agg.completedCount}/${agg.memberCount}`}
-                    label={isHu ? "kitöltött felmérés" : "completed assessments"}
-                    sub={`${agg.completionPct}%`}
-                  />
-                  {agg.pattern ? (
-                    <KpiCell
-                      value={agg.pattern.label}
-                      label={isHu ? "személyiség-összetételi mintázat" : "personality composition pattern"}
-                      sub={
-                        agg.pattern.stability
-                          ? isHu
-                            ? `stabilitás: ${agg.pattern.stability}`
-                            : `stability: ${agg.pattern.stability}`
-                          : undefined
-                      }
-                    />
-                  ) : null}
-                  {psych ? (
-                    <KpiCell
-                      value={`${psych.index}`}
-                      label={isHu ? "pszichológiai biztonság (0-100)" : "psychological safety (0-100)"}
-                      sub={bandLabel ?? undefined}
-                    />
-                  ) : null}
+  const locale = isHu ? "hu" : "en";
+  const tr = (key: string) => t(`tos.report.${key}`, locale);
+  const [operating, composition, comparison] = presentTeamStyle(agg?.teamStyle, locale, agg?.pattern?.label);
+  const op = agg?.teamStyle?.operating;
+  const comp = agg?.teamStyle?.composition;
+  const next = reportNextStep(report, isHu);
+  const signals = reportAttentionSignals(agg, isHu);
+  const nearMiddle = op && AXES.every((axis) => op.axes[axis].status === "available" && op.axes[axis].flags.includes("near_midpoint"));
+  const narratives = [
+    [isHu ? "Összegzés" : "Summary", report.summary],
+    [isHu ? "Amire építhettek" : "What you can build on", report.strengths],
+    [isHu ? "Amit érdemes tisztázni" : "What needs attention", report.risks],
+    [isHu ? "Ajánlások" : "Recommendations", report.recommendations],
+    [isHu ? "Interjúk tanulságai" : "Interview insights", report.interviewFindings],
+    [isHu ? "Vezetői iránytű" : "Leadership guide", report.leadershipGuide],
+  ].filter((entry) => entry[1]?.trim());
+  const dims = agg?.dimensionAverages ? HEXACO_ORDER.filter((d) => typeof agg.dimensionAverages?.[d] === "number") : [];
+  const psych = agg?.psychSafety;
+  const trust = agg?.trustHighlights;
+  const dynamics = agg?.dynamics;
+  const hasDetails = !!(dims.length || psych || trust || dynamics || agg?.roleDistribution || agg?.peerRoles || agg?.feedbackCulture || agg?.pressure?.concentrations.length || agg?.evidence);
+  const hasInterpretation = Boolean(op || comp || comparison.prompts.length || signals.length || narratives.length || report.actionItems?.length);
+  const sourceLabel = (source?: string) => source === "trust_round" ? (isHu ? "Mért bizalmi kör" : "Measured trust round") : source === "mixed" ? (isHu ? "Vegyes: mért és becsült" : "Mixed: measured and estimated") : (isHu ? "Személyiségprofilból becsült" : "Personality-based estimate");
+  return <Document title={`${report.title || "trita"} - ${isHu ? "Csapatriport" : "Team report"}`} author="trita" language={locale}>
+    <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Csapatkép" : "Team picture"}>
+      <View wrap={false} style={{ gap: 5 }}>
+        <Text style={{ ...caption, color: colors.bronze }}>{isHu ? "CSAPATKÉP" : "TEAM PICTURE"}</Text>
+        <Text style={{ ...heading, fontSize: type.chapter }}>{report.title || (isHu ? "Értsétek meg. Alakítsátok együtt." : "Understand it. Shape it together.")}</Text>
+        <Text style={caption}>{agg ? (isHu ? `${agg.memberCount} fős csapat` : `${agg.memberCount} team members`) : ""}{report.status === "DRAFT" ? (isHu ? " · Vázlat-előnézet" : " · Draft preview") : ""}</Text>
+      </View>
+      <Chapter title={operating.title}>
+        {operating.heading && <Text style={{ ...body, color: colors.ink, fontWeight: 600 }}>{nearMiddle ? tr("nearMiddleSummary") : operating.heading}</Text>}
+        {nearMiddle && <Text style={body}>{tr("nearMiddleHelp")}</Text>}
+        <Notes notes={operating.notes} />
+        {op && <View style={{ gap: 14 }}>
+          {AXES.map((axis) => {
+            const a = op.axes[axis];
+            return <View key={axis} wrap={false} style={{ gap: 5 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+                <Text style={{ ...body, width: 80, fontWeight: 600, color: colors.ink }}>{t(`tos.axes.${axis}.name`, locale)}</Text>
+                <View style={{ flex: 1, gap: 7 }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={caption}>{t(`tos.axes.${axis}.left`, locale)}</Text><Text style={caption}>{t(`tos.axes.${axis}.right`, locale)}</Text></View>
+                  {a.mean !== null ? <View style={{ height: 4, backgroundColor: colors.sand, borderRadius: 2, marginHorizontal: 4 }}>
+                    <View style={{ position: "absolute", left: "50%", top: -3, height: 10, width: 1, backgroundColor: colors.ink300 }} />
+                    <View style={{ position: "absolute", left: `${a.mean}%`, marginLeft: -4, top: -2, height: 8, width: 8, borderRadius: 4, backgroundColor: colors.sage }} />
+                  </View> : <Text style={caption}>{tr("insufficient")}</Text>}
                 </View>
-              </PdfCard>
+                <Text style={{ ...caption, width: 30, textAlign: "right" }}>{a.n}/{op.eligibleCount}</Text>
+              </View>
+              {a.flags.filter((flag) => flag !== "near_midpoint").length > 0 && <Text style={{ ...caption, paddingLeft: 94 }}>{a.flags.filter((flag) => flag !== "near_midpoint").map((flag) => tr(`flags.${flag}`)).join(" · ")}</Text>}
+            </View>;
+          })}
+          <Text style={caption}>{tr("centerLegend")} {isHu ? "Jobb oldalon: értékelhető válaszok." : "Right: usable responses."}</Text>
+        </View>}
+      </Chapter>
+      <Chapter title={composition.title}>
+        {composition.heading && <Text style={heading}>{composition.heading}</Text>}
+        <Notes notes={composition.notes} />
+        {comp && <View style={{ gap: 9 }}>
+          {COMPOSITION_AXES.map((axis) => <View key={axis} wrap={false} style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
+            <Text style={{ ...body, width: 110 }}>{tr(axis)}</Text>
+            <View style={{ flex: 1, height: 4, borderRadius: 2, backgroundColor: colors.sand }}><View style={{ width: `${comp.axes[axis].mean}%`, height: 4, borderRadius: 2, backgroundColor: colors.sage }} /></View>
+            <Text style={{ ...body, width: 52, textAlign: "right" }}>{num(comp.axes[axis].mean, isHu)} /100</Text>
+          </View>)}
+        </View>}
+      </Chapter>
+      {!hasInterpretation && <Chapter title={comparison.title}><Notes notes={comparison.notes} /></Chapter>}
+    </ReportPage>
 
-              {/* Dimenzió-átlagok */}
-              {dims.length > 0 ? (
-                <PdfCard eyebrow={isHu ? "A csapat személyiség-profilja" : "Team personality profile"}>
-                  {dims.map((code) => (
-                    <DimRow
-                      key={code}
-                      code={code}
-                      avg={agg.dimensionAverages![code]}
-                      spread={agg.dimensionSpread?.[code] ?? null}
-                      isHu={isHu}
-                    />
-                  ))}
-                  <Text style={{ ...s.caption, marginTop: 5 }}>
-                    {isHu
-                      ? "0-100 skála · a halvány sáv a csapaton belüli szóródást (heterogenitást) jelzi, nem hibahatárt. Egyéni eredmény nem jelenik meg."
-                      : "0-100 scale · the light band shows within-team spread (heterogeneity), not an error margin. Individual results are not shown."}
-                  </Text>
-                </PdfCard>
-              ) : null}
+    {hasInterpretation && <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Értelmezés" : "Interpretation"}>
+      <Chapter title={comparison.title}>
+        {comparison.heading && <Text style={{ ...body, fontWeight: 600, color: colors.ink }}>{comparison.heading}</Text>}
+        <Notes notes={comparison.notes} />
+        {comparison.prompts.map((prompt) => <Prompt key={prompt.title} prompt={prompt} isHu={isHu} />)}
+      </Chapter>
+      {signals.length > 0 && <Chapter title={isHu ? "Ami most külön figyelmet kér" : "What needs attention now"}>{signals.map((signal) => <Text key={signal} style={{ ...body, backgroundColor: colors.bronze100, padding: 12 }}>{signal}</Text>)}</Chapter>}
+      {next.kind !== "recorded" && <View wrap={false} style={{ padding: 16, backgroundColor: colors.sage100, borderRadius: 12, gap: 7 }}>
+        <Text style={{ ...caption, color: colors.sageDark }}>{next.kind === "review" ? (isHu ? "JAVASOLT VISSZATEKINTÉS" : "SUGGESTED REVIEW") : (isHu ? "JAVASOLT MŰHELYLÉPÉS · MÉG NEM KÖZÖS VÁLLALÁS" : "SUGGESTED WORKSHOP STEP · NOT YET A COMMITMENT")}</Text>
+        <Text style={heading}>{next.title}</Text>
+        <Text style={body}>{next.description}</Text>
+        <Text style={caption}>{next.owner} · {next.when}</Text>
+      </View>}
+      {comparison.prompts.length === 0 && !report.actionItems?.length && <Chapter title={isHu ? "A megbeszélés jegyzetei" : "Debrief notes"}>
+        <Text style={caption}>{isHu ? "A beszélgetés után töltsétek ki. A megállapodás a tanácsadóval rögzíthető az akciótervben." : "Complete after your discussion. Record the agreement in the action plan with your consultant."}</Text>
+        {[isHu ? "Milyen konkrét helyzetből indultunk ki?" : "Which concrete situation did we discuss?", isHu ? "Milyen közös szabályt próbálunk ki?" : "Which shared rule will we try?", isHu ? "Ki fogja össze, és mikor nézünk rá újra?" : "Who will coordinate it, and when will we review it?", isHu ? "Miből fogjuk látni, hogy segített?" : "How will we know it helped?"].map((label) => <View key={label} wrap={false} style={{ gap: 12, paddingTop: 10 }}>
+          <Text style={body}>{label}</Text><View style={{ height: 24, borderBottom: `0.5 solid ${colors.sand}` }} />
+        </View>)}
+      </Chapter>}
+    </ReportPage>}
 
-              {/* Mintázat-jegyzet */}
-              {agg.pattern?.stabilityNote ? (
-                <PdfCard eyebrow={isHu ? "Mintázat-stabilitás" : "Pattern stability"}>
-                  <Text style={s.bodyText}>
-                    {agg.pattern.stabilityNote}
-                  </Text>
-                </PdfCard>
-              ) : null}
-            </>
-          ) : (
-            <PdfCard>
-              <Text style={s.bodyText}>
-                {isHu
-                  ? "Ehhez a riporthoz nincs rögzített aggregátum."
-                  : "No frozen aggregates are attached to this report."}
-              </Text>
-            </PdfCard>
-          )}
+    {(narratives.length > 0 || !!report.actionItems?.length) && <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Fókuszok és utánkövetés" : "Focus and follow-up"}>
+      {narratives.length > 0 && <Chapter title={isHu ? "Mit érdemes ebből továbbvinni?" : "What should you take forward?"}>
+        {!isHu && report.translationsEn?.en?.status !== "approved" && <Text style={{ ...caption, color: colors.bronzeDark }}>The consultant&apos;s text is shown in the Hungarian original. English translation is awaiting approval.</Text>}
+        {narratives.map(([title, text]) => <Narrative key={title} title={title!} text={text} />)}
+      </Chapter>}
+      {!!report.actionItems?.length && <Chapter title={isHu ? "Utánkövetés" : "Follow-up"}>
+        {report.actionItems.map((item, index) => <Action key={index} item={item} isHu={isHu} />)}
+        <Text style={caption}>{isHu ? "Az akciók a letöltött riport állapotát mutatják. A platformon követhetitek a további változásokat." : "Actions reflect the downloaded report's state. Track subsequent changes on the platform."}</Text>
+        <Text style={body}>{isHu ? "Visszatekintés: Mi történt a gyakorlatban? Mi segített? Mit tartunk meg, módosítunk vagy engedünk el?" : "Review: What happened in practice? What helped? What will we keep, change or stop?"}</Text>
+      </Chapter>}
+    </ReportPage>}
 
-          {agg?.evidence ? (
-            <MethodologyCard agg={agg} generatedDate={generatedDate} isHu={isHu} />
-          ) : null}
-        </View>
-        <PdfFooter locale={isHu ? "hu" : "en"} />
-      </Page>
+    {(op || comp) && <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Mérési háttér" : "Measurement background"}>
+      <Text style={{ ...heading, fontSize: type.chapter }}>{isHu ? "A számok és a forrásuk." : "The data and its sources."}</Text>
+      {op && <Chapter title={isHu ? "Csapatműködés" : "Operating style"}>
+        <Notes notes={operating.notes} />
+        <StatsTable headers={[isHu ? "Terület" : "Dimension", `${tr("mean")} /100`, tr("sd"), tr("coverage")]} rows={AXES.map((axis) => { const a = op.axes[axis]; return [t(`tos.axes.${axis}.name`, locale), num(a.mean, isHu), num(a.sd, isHu), `${a.n}/${op.eligibleCount} (${num(a.coverage * 100, isHu)}%)`]; })} />
+        <Text style={{ ...body, fontWeight: 600 }}>{tr("frequencies")}</Text>
+        {AXES.map((axis) => <Text key={axis} style={caption}>{t(`tos.axes.${axis}.name`, locale)}: {num(op.axes[axis].leftFrequency, isHu)} / {num(op.axes[axis].rightFrequency, isHu)} · {t(`tos.axes.${axis}.left`, locale)} / {t(`tos.axes.${axis}.right`, locale)}{op.axes[axis].flags.length ? ` · ${op.axes[axis].flags.map((flag) => tr(`flags.${flag}`)).join(", ")}` : ""}</Text>)}
+      </Chapter>}
+      {comp && <Chapter title={isHu ? "Személyiség-összetétel" : "Personality composition"}>
+        <Notes notes={composition.notes} />
+        <StatsTable headers={[isHu ? "Terület" : "Dimension", `${tr("mean")} /100`, tr("sd"), "n"]} rows={COMPOSITION_AXES.map((axis) => [tr(axis), num(comp.axes[axis].mean, isHu), num(comp.axes[axis].sd, isHu), String(comp.memberCount)])} />
+      </Chapter>}
+      <Text style={caption}>{isHu ? "Az átlag a közös irányt, a mintaszórás a tagok közötti eltérést jelzi. A működésmérés kísérleti, nem validált tipológia. A két réteg eltérő konstrukciókat mér; nem képezünk közös illeszkedési százalékot." : "The mean shows the shared direction; sample SD describes differences between members. Operating style is experimental, not a validated typology. The layers measure different constructs and do not form a compatibility percentage."}</Text>
+    </ReportPage>}
 
-      {hasRelationalChapter ? (
-        <TeamChapterPage
-          title={title}
-          publishedDate={publishedDate}
-          isHu={isHu}
-          bookmark={isHu ? "Kapcsolati kép" : "Relational picture"}
-        >
-          <PdfChapterHeader
-              number="02"
-              question={isHu ? "Hogyan kapcsolódik a csapat?" : "How does the team connect?"}
-              title={isHu ? "Kapcsolati kép" : "Relational picture"}
-              description={
-                isHu
-                  ? "Aggregált dinamika, bizalmi lefedettség és pszichológiai biztonság - egyéni válaszok nélkül."
-                  : "Aggregate dynamics, trust coverage, and psychological safety - without individual responses."
-              }
-          />
-
-          {dynamics && dynamicsTotal > 0 ? (
-              <PdfCard eyebrow={isHu ? "Kapcsolati dinamika" : "Team dynamics"}>
-                <View style={{ flexDirection: "row", marginBottom: 8 }}>
-                  <KpiCell value={`${dynamics.alignedCount}`} label={isHu ? "hasonló pár" : "aligned pairs"} />
-                  <KpiCell value={`${dynamics.complementaryCount}`} label={isHu ? "kiegészítő pár" : "complementary pairs"} />
-                  <KpiCell value={`${dynamics.frictionCount}`} label={isHu ? "súrlódás-kockázat" : "friction risk"} />
-                </View>
-                <Text style={s.caption}>
-                  {isHu ? "Adatforrás: " : "Data source: "}
-                  {sourceLabel(dynamics.source)}
-                  {" · "}
-                  {isHu
-                    ? "kizárólag aggregált kép - egyéni párok nem jelennek meg."
-                    : "aggregate view only - individual pairs are not shown."}
-                </Text>
-              </PdfCard>
-          ) : null}
-
-          {trust ? (
-              <PdfCard eyebrow={isHu ? "Bizalmi háló lefedettség" : "Trust network coverage"}>
-                <Text style={{ ...s.bodyText, marginBottom: 5 }}>
-                  {trust.coveragePct !== null
-                    ? isHu
-                      ? `A lehetséges kapcsolati párok ${trust.coveragePct}%-a mért (${trust.measuredPairCount}${trust.possiblePairCount ? `/${trust.possiblePairCount}` : ""} pár).`
-                      : `${trust.coveragePct}% of possible pairs measured (${trust.measuredPairCount}${trust.possiblePairCount ? `/${trust.possiblePairCount}` : ""} pairs).`
-                    : isHu
-                      ? "A kiemelések profil-alapú becslésből származnak - mért bizalmi kör még nincs."
-                      : "Highlights come from a profile-based estimate - no measured trust round yet."}
-                </Text>
-                <Text style={s.caption}>
-                  {isHu
-                    ? `Összekötő (hub): ${trust.hubs.length} fő · beágyazatlan tag: ${trust.isolated.length} fő. A nyomtatott riport szándékosan nem tartalmaz neveket.`
-                    : `Hubs: ${trust.hubs.length} · not yet embedded: ${trust.isolated.length}. The printed report deliberately omits names.`}
-                </Text>
-              </PdfCard>
-          ) : null}
-
-          {psych ? (
-              <PdfCard eyebrow={isHu ? "Pszichológiai biztonság (pulse)" : "Psychological safety (pulse)"} tone="sage">
-                <Text style={{ fontFamily: "Fraunces", fontSize: type.section, color: colors.sageDark, marginBottom: 5 }}>
-                  {psych.index}
-                  <Text style={{ fontFamily: "DM Sans", fontSize: type.caption, color: colors.ink300 }}>
-                    {` / 100 · ${bandLabel}`}
-                  </Text>
-                </Text>
-                <Text style={{ ...s.bodyText, marginBottom: 4 }}>
-                  {psych.count} {isHu ? "névtelen válasz" : "anonymous responses"}
-                  {psych.weakItemIds.length > 0
-                    ? isHu
-                      ? ` · ${psych.weakItemIds.length} küszöb alatti terület`
-                      : ` · ${psych.weakItemIds.length} below-threshold area(s)`
-                    : ""}
-                </Text>
-                <Text style={s.caption}>
-                  {isHu
-                    ? "Névtelen mérés: csak csapatszintű összesítés, egyéni válasz nem visszakereshető (min. 3 kitöltés)."
-                    : "Anonymous measurement: team-level aggregate only; individual answers cannot be traced back (min. 3 responses)."}
-                </Text>
-              </PdfCard>
-          ) : null}
-        </TeamChapterPage>
-      ) : null}
-
-      {hasConsultantChapter ? (
-        <TeamChapterPage
-          title={title}
-          publishedDate={publishedDate}
-          isHu={isHu}
-          bookmark={isHu ? "Tanácsadói értékelés" : "Consultant assessment"}
-        >
-          <PdfChapterHeader
-              number={consultantChapterNumber}
-              question={isHu ? "Mi következik ebből?" : "What follows from this?"}
-              title={isHu ? "Tanácsadói értékelés" : "Consultant assessment"}
-              description={
-                isHu
-                  ? "A közös kép értelmezése és a következő 30/60/90 nap fókuszai."
-                  : "Interpretation of the shared picture and priorities for the next 30/60/90 days."
-              }
-          />
-          <NarrativeCard eyebrow={isHu ? "Összegzés" : "Summary"} text={report.summary} />
-          <NarrativeCard eyebrow={isHu ? "Erősségek" : "Strengths"} text={report.strengths} />
-          <NarrativeCard eyebrow={isHu ? "Kockázatok" : "Risks"} text={report.risks} />
-          <NarrativeCard eyebrow={isHu ? "Javaslatok" : "Recommendations"} text={report.recommendations} />
-          <NarrativeCard eyebrow={isHu ? "Vezetői iránytű" : "Leadership guide"} text={report.leadershipGuide} />
-
-          {actionChunks.map((items, chunkIndex) => (
-              <PdfCard
-                key={chunkIndex}
-                eyebrow={
-                  chunkIndex === 0
-                    ? isHu ? "Akcióterv (30/60/90 nap)" : "Action plan (30/60/90 days)"
-                    : isHu ? "Akcióterv - folytatás" : "Action plan - continued"
-                }
-              >
-                {items.map((item, i) => (
-                  <ActionRow key={i} item={item} isHu={isHu} />
-                ))}
-                {chunkIndex === actionChunks.length - 1 ? (
-                  <Text style={s.caption}>
-                    {isHu
-                      ? "Az akciók élő státusza a platformon követhető - ez a riport a publikáláskori állapotot rögzíti."
-                      : "Live action status is tracked on the platform - this report captures the state at publication."}
-                  </Text>
-                ) : null}
-              </PdfCard>
-          ))}
-        </TeamChapterPage>
-      ) : null}
-    </Document>
-  );
+    {hasDetails && agg && <ReportPage compact report={report} isHu={isHu} bookmark={isHu ? "További mérési eredmények" : "Additional measurement results"}>
+      <Text style={heading}>{isHu ? "További mérési eredmények" : "Additional measurement results"}</Text>
+      {agg.feedbackCulture && <Chapter keepTogether title={isHu ? "Önkép és külső kép" : "Self and observer views"}>
+        <Text style={caption}>{isHu ? "Mért csapattársi visszajelzések összesítése" : "Aggregate of measured observer feedback"}</Text>
+        <Text style={body}>{isHu ? "Lefedettség" : "Coverage"}: {agg.feedbackCulture.coveredCount}/{agg.feedbackCulture.memberCount} · {isHu ? "Összhang" : "Aligned"}: {agg.feedbackCulture.alignedCount} · {isHu ? "Érdemi eltérés" : "Meaningful difference"}: {agg.feedbackCulture.gapCount}</Text>
+      </Chapter>}
+      {dims.length > 0 && <Chapter keepTogether title={isHu ? "Aggregált személyiségprofil" : "Aggregate personality profile"}>
+        <View>{dims.map((code) => <DimRow key={code} code={code} avg={agg.dimensionAverages![code]} spread={agg.dimensionSpread?.[code] ?? null} isHu={isHu} />)}</View>
+        <Text style={caption}>{isHu ? "A halvány sáv a csapaton belüli szóródást jelöli, nem hibahatárt. Egyéni eredmény nem jelenik meg." : "The light band shows within-team spread, not an error margin. Individual results are not shown."}</Text>
+        {agg.pattern?.stabilityNote && <Text style={caption}>{agg.pattern.stabilityNote}</Text>}
+      </Chapter>}
+      {(psych || trust) && <View wrap={false} style={{ flexDirection: "row", gap: 20 }}>
+        {psych && <View style={{ flex: 1 }}><Chapter keepTogether title={isHu ? "Pszichológiai biztonság" : "Psychological safety"}>
+        <Text style={body}>{psych.index}/100 · {psych.count} {isHu ? "névtelen válasz" : "anonymous responses"} · {psych.campaignName}</Text>
+        <Text style={caption}>{isHu ? "Mért, anonim csapatszintű eredmény; a magasabb érték nagyobb biztonságot jelez" : "Measured, anonymous team-level result; higher values indicate greater safety"} · {date(psych.measuredAt, isHu)}</Text>
+        {Object.entries(psych.itemMeans).map(([id, mean]) => <Text key={id} style={body}>{getPsychSafetyItem(id)?.area[locale] || id}: {num(mean, isHu)}/5</Text>)}
+      </Chapter></View>}
+        {trust && <View style={{ flex: 1 }}><Chapter keepTogether title={isHu ? "Bizalmi háló" : "Trust network"}>
+        <Text style={caption}>{sourceLabel(trust.source)}</Text>
+        <Text style={body}>{isHu ? `Összekötők: ${trust.hubs.length} fő · Beágyazatlan tagok: ${trust.isolated.length} fő` : `Hubs: ${trust.hubs.length} · Not yet embedded: ${trust.isolated.length}`}</Text>
+        {trust.coveragePct !== null && <Text style={caption}>{isHu ? "Mért párok lefedettsége" : "Measured pair coverage"}: {trust.coveragePct}% ({trust.measuredPairCount}/{trust.possiblePairCount ?? "-"})</Text>}
+      </Chapter></View>}
+      </View>}
+      {dynamics && <Chapter keepTogether title={isHu ? "Kapcsolati dinamika" : "Relationship dynamics"}>
+        <Text style={caption}>{sourceLabel(dynamics.source)}</Text>
+        <Text style={body}>{isHu ? `Összehangolt: ${dynamics.alignedCount} · Kiegészítő: ${dynamics.complementaryCount} · Súrlódási potenciál: ${dynamics.frictionCount}` : `Aligned: ${dynamics.alignedCount} · Complementary: ${dynamics.complementaryCount} · Friction potential: ${dynamics.frictionCount}`}</Text>
+        <Text style={caption}>{dynamics.source === "trust_round" ? (isHu ? "A kategóriák a mért bizalom erősségét jelzik; nem személyiség-hasonlóságot vagy tényleges konfliktust." : "Categories reflect measured trust, not personality similarity or established conflict.") : (isHu ? "A becsült kapcsolatok munkastílus-különbségeket jeleznek; a vegyes forrás mért bizalmat is tartalmaz. Nem konfliktusdiagnózis." : "Estimated relationships reflect working-style differences; mixed sources also include measured trust. This is not a conflict diagnosis.")}</Text>
+      </Chapter>}
+      {agg.roleDistribution && <Chapter keepTogether title={isHu ? "Szerep-lefedettség" : "Role coverage"}>
+        <Text style={caption}>{agg.roleDistribution.questionnaireCount} {isHu ? "kérdőívből mért" : "measured by questionnaire"} · {agg.roleDistribution.estimateCount} {isHu ? "személyiségből becsült" : "estimated from personality"}</Text>
+        {Object.entries(agg.roleDistribution.counts).map(([code, count]) => <Text key={code} style={body}>{TEAM_ROLES[code as keyof typeof TEAM_ROLES]?.[locale] || code}: {count}</Text>)}
+        {!!agg.roleGaps?.length && <Text style={caption}>{isHu ? "Elsődleges szerepként nem lefedett" : "Not covered as a primary role"}: {agg.roleGaps.map((code) => TEAM_ROLES[code as keyof typeof TEAM_ROLES]?.[locale] || code).join(", ")}</Text>}
+      </Chapter>}
+      {agg.peerRoles && <Chapter keepTogether title={isHu ? "Csapattársi szerep-visszajelzés" : "Peer role feedback"}>
+        <Text style={body}>{isHu ? "Értékelhető csapattársi visszajelzés" : "Usable peer feedback"}: {agg.peerRoles.ratedCount}/{agg.peerRoles.memberCount} · {isHu ? "Eltérő önkép és csapatkép" : "Different self and peer views"}: {agg.peerRoles.mismatchCount}/{agg.peerRoles.comparedCount}</Text>
+      </Chapter>}
+      {!!agg.pressure?.concentrations.length && <Chapter keepTogether title={isHu ? "Csapat nyomás alatt" : "Team under pressure"}>
+        <Text style={caption}>{isHu ? "Személyiségből becsült, közös értelmezésre szánt hipotézisek." : "Personality-based hypotheses for discussion."}</Text>
+        {agg.pressure.concentrations.map((c) => { const content = c.pole === "polarized" ? TEAM_PRESSURE_POLARIZED_TEXT : isHexacoCode(c.dim) ? TEAM_PRESSURE_CONTENT[c.dim]?.[c.pole] : null; return content ? <Text key={`${c.dim}-${c.pole}`} style={body}>{isHexacoCode(c.dim) ? HEXACO_DIMENSIONS[c.dim][locale] : c.dim}: {content[locale]} ({c.count}/{c.assessedCount})</Text> : null; })}
+      </Chapter>}
+      <Text style={caption}>{isHu ? `Rögzített aggregátum: ${date(agg.generatedAt, isHu)} · ${agg.completedCount}/${agg.memberCount} személyiségfelmérés. Egyéni válaszokat nem tartalmaz.` : `Frozen aggregates: ${date(agg.generatedAt, isHu)} · ${agg.completedCount}/${agg.memberCount} personality assessments. No individual responses included.`}</Text>
+      {agg.evidence && <Text style={caption}>{isHu ? "Kapcsolati adatalap" : "Relationship data basis"}: {agg.evidence.measuredEdgeCount ?? 0} {isHu ? "mért" : "measured"} · {agg.evidence.estimatedEdgeCount} {isHu ? "becsült" : "estimated"}</Text>}
+    </ReportPage>}
+  </Document>;
 }
-
-/** Fájlnév-barát szelet a riport-címből (ékezet- és szóköz-mentes). */
 function slugify(text: string): string {
   return (
     text
