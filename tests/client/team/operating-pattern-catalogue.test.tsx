@@ -26,7 +26,7 @@ describe("operating catalogue and layered report", () => {
     const agg = makeReaderReport().aggregates!;
     agg.teamStyle!.operating!.pattern!.name = { hu: "Irányítótorony", en: "Control Tower" };
     render(<TeamOperatingStyleReport snapshot={agg.teamStyle} locale="hu" averages={{ H: 68, E: 51, X: 64, A: 72, C: 76, O: 70 }} spread={{ H: 12, A: 11 }} personalityCount={5} />);
-    expect(screen.getByRole("heading", { name: "Kijelölt pálya" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Tervezők" })).toBeVisible();
     expect(screen.getByRole("link", { name: "A minta megismerése" })).toHaveAttribute("href", "/operating-patterns?pattern=SECP&lang=hu");
     expect(document.querySelectorAll('[data-highlighted="true"]')).toHaveLength(2);
     await userEvent.click(screen.getByRole("button", { name: /^Fegyelem/ }));
@@ -55,7 +55,7 @@ describe("operating catalogue and layered report", () => {
     snapshot.operating!.axes.execution.flags = ["near_midpoint"];
     render(<TeamOperatingStyleReport snapshot={snapshot} locale="hu" mode="overview" />);
     expect(screen.getByText(/Tájékozódó besorolás:/)).toBeVisible();
-    expect(screen.getByText(/Lehetséges alternatívák: Rugalmas pálya/)).toBeVisible();
+    expect(screen.getByText(/Lehetséges alternatívák: Navigátorok/)).toBeVisible();
     expect(screen.getByText(/nincs egyértelmű pólus ezen a tengelyen/)).toBeVisible();
     expect(screen.queryByText(OPERATING_CATALOGUE["0000"].description.hu)).not.toBeInTheDocument();
     expect(within(screen.getByTestId("team-style-report")).getAllByRole("img")).toHaveLength(4);
