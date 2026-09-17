@@ -28,8 +28,8 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
   const date = report.publishedAt ? new Date(report.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB", { timeZone: "UTC" }) : null;
 
   return <div className="mx-auto w-full max-w-5xl space-y-6">
-    <header className="flex flex-wrap items-start justify-between gap-5 py-2 sm:py-4">
-      <div className="min-w-0 flex-1">
+    <header className="flex flex-col items-start justify-between gap-5 py-2 sm:flex-row sm:py-4">
+      <div className="w-full min-w-0 flex-1 sm:w-auto">
         <p className="text-xs font-semibold uppercase tracking-widest text-bronze">{isHu ? "Csapatkép" : "Team picture"}</p>
         <h2 className="mt-2 break-words font-fraunces text-3xl leading-tight text-ink sm:text-4xl">{report.title || (isHu ? "Értsétek meg. Alakítsátok együtt." : "Understand it. Shape it together.")}</h2>
         <p className="mt-3 text-sm leading-relaxed text-muted">
@@ -43,7 +43,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
     <TeamReportTabs isHu={isHu}
       overview={<>
         <div className="overflow-hidden rounded-2xl border border-sand bg-surface-card px-5 sm:px-8">
-          <TeamOperatingStyleReport snapshot={agg?.teamStyle} legacyPattern={agg?.pattern?.label} locale={locale} mode="overview" />
+          <TeamOperatingStyleReport snapshot={agg?.teamStyle} legacyPattern={agg?.pattern?.label} locale={locale} mode="overview" averages={agg?.dimensionAverages} spread={agg?.dimensionSpread} personalityCount={agg?.completedCount} />
           {signals.length > 0 && <section className="border-t border-sand py-6">
             <h2 className="font-fraunces text-xl text-ink">{isHu ? "Ami most külön figyelmet kér" : "What needs attention now"}</h2>
             <ul className="mt-4 space-y-3">{signals.map((signal) => <li key={signal} className="rounded-xl border border-state-warning-border bg-state-warning-bg px-4 py-3 text-sm leading-relaxed text-state-warning-fg">{signal}</li>)}</ul>

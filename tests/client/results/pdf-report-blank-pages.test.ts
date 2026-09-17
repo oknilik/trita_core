@@ -140,9 +140,9 @@ describe("szervezeti riport-PDF tördelés", () => {
   it("a teljes riportban nincs üres, lebegő lap", async () => {
     const buffer = await renderTeamReport(TEAM_REPORT_FIXTURE);
     expect(findBlankPages(buffer)).toEqual([]);
-    // Csapatkép + értelmezés + fókusz/utánkövetés + mérési melléklet.
+    // Mért csapatkép + személyiség-réteg + értelmezés + utánkövetés + melléklet.
     // Rövid akció vagy forrásjegyzet nem hozhat létre külön, üres lapot.
-    expect(pageTextOperatorCounts(buffer)).toHaveLength(4);
+    expect(pageTextOperatorCounts(buffer)).toHaveLength(5);
   }, 60_000);
 
   it("üres örökség-riportnál nem készít külön, tartalom nélküli értékelés-oldalt", async () => {
@@ -169,7 +169,7 @@ describe("csapatriport olvasói nézet", () => {
     registerPdfFonts();
     const buffer = await renderToBuffer(React.createElement(TeamReportDocument, { report: makeReaderReport(true), isHu }) as never);
     expect(findBlankPages(buffer)).toEqual([]);
-    expect(pageTextOperatorCounts(buffer)).toHaveLength(3);
+    expect(pageTextOperatorCounts(buffer)).toHaveLength(4);
   }, 60_000);
 
   it("hosszú tanácsadói szöveget és akciót is végig tördel, tartalom nélküli folytatólap nélkül", async () => {

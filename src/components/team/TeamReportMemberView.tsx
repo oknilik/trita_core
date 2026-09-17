@@ -108,7 +108,7 @@ export function TeamReportMemberView({
         </div>
       </DashboardPanel>
 
-      <TeamOperatingStyleReport snapshot={report.aggregates?.teamStyle} legacyPattern={report.aggregates?.pattern?.label} locale={isHu ? "hu" : "en"} />
+      <TeamOperatingStyleReport snapshot={report.aggregates?.teamStyle} legacyPattern={report.aggregates?.pattern?.label} averages={report.aggregates?.dimensionAverages} spread={report.aggregates?.dimensionSpread} personalityCount={report.aggregates?.completedCount} locale={isHu ? "hu" : "en"} />
 
       {/* 1. Te a csapatban – radar-összevetés + színes sávok */}
       {vm.hasSelfComparison ? (

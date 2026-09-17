@@ -13,10 +13,10 @@ describe("client report reading flow", () => {
   it("keeps the measured layers in order and moves exact SD to the measurement tab", async () => {
     render(<TeamReportView report={makeReaderReport(true)} isHu />);
     const main = screen.getByRole("tabpanel");
-    expect(within(main).getAllByRole("heading", { level: 2 }).slice(0, 3).map((el) => el.textContent)).toEqual([
-      "1. Hogyan működtök együtt?", "2. Milyen a személyiség-összetételetek?", "3. A két mintázat együtt",
+    expect(within(main).getAllByRole("heading", { level: 2 }).slice(0, 4).map((el) => el.textContent)).toEqual([
+      "Nincs erős eltolódás egyik pólus felé sem.", "Miből épül fel a csapat?", "Milyen hajlamokból építkezhettek?", "04 / A két réteg együtt",
     ]);
-    expect(within(main).getAllByRole("img")).toHaveLength(8);
+    expect(within(main).getAllByRole("img")).toHaveLength(4);
     expect(within(main).getByText("4/5", { exact: false })).toBeVisible();
     expect(within(main).getAllByText(/eltérő válaszolói körből/)).toHaveLength(2);
     expect(within(main).queryByText("Információ × Fegyelem")).not.toBeInTheDocument();

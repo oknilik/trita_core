@@ -1,75 +1,56 @@
+import Link from "next/link";
 import { t, type Locale } from "@/lib/i18n";
 import { presentTeamStyle } from "@/lib/team-operating-style/presentation";
+import { cataloguePattern } from "@/lib/team-operating-style/catalogue";
 import { AXES } from "@/lib/team-operating-style/questions";
 import { COMPOSITION_AXES, type TeamStyleSnapshot } from "@/lib/team-operating-style/comparison";
+import { OperatingPatternMark } from "./OperatingPatternMark";
+import { TeamPersonalityLayers } from "./TeamPersonalityLayers";
 
 type Props = { snapshot?: TeamStyleSnapshot | null; locale: Locale; legacyPattern?: string | null };
 const number = (value: number | null, locale: Locale) => value === null ? "–" : value.toLocaleString(locale === "hu" ? "hu-HU" : "en-GB", { maximumFractionDigits: 1 });
 
-export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode = "standalone" }: Props & { mode?: "standalone" | "overview" }) {
-  const sections = presentTeamStyle(snapshot, locale, legacyPattern);
+export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode = "standalone", averages, spread, personalityCount }: Props & {
+  mode?: "standalone" | "overview"; averages?: Record<string, number> | null; spread?: Record<string, number> | null; personalityCount?: number;
+}) {
+  const [operating, , comparison] = presentTeamStyle(snapshot, locale, legacyPattern);
   const op = snapshot?.operating;
-  const comp = snapshot?.composition;
+  const hu = locale === "hu";
   const tr = (key: string) => t(`tos.report.${key}`, locale);
   const nearMiddle = op && AXES.every((axis) => op.axes[axis].status === "available" && op.axes[axis].flags.includes("near_midpoint"));
+  const pattern = !nearMiddle && op?.pattern ? cataloguePattern(op.pattern.code) : null;
+  const heading = nearMiddle ? tr("nearMiddleSummary") : operating.heading ?? tr("mixed");
   return <div className={mode === "overview" ? "divide-y divide-sand" : "divide-y divide-sand rounded-2xl border border-sand bg-surface-card px-5 sm:px-8"} data-testid="team-style-report">
-    {sections.map((section, index) => {
-      const [methodology, ...notices] = section.notes;
-      const heading = index === 0 && nearMiddle ? tr("nearMiddleSummary") : section.heading;
-      return <section key={section.title} className="py-6 sm:py-7">
-        <h2 className="font-fraunces text-xl leading-snug text-ink sm:text-2xl">{section.title}</h2>
-        <div className={index === 1 && comp ? "mt-5 grid gap-6 md:grid-cols-2 md:gap-10" : "mt-4"}>
-          <div>
-            {heading && <p className={`${index === 1 ? "font-fraunces text-2xl text-[var(--color-layer-team-accent)] sm:text-3xl" : "text-base font-semibold text-ink"} max-w-3xl leading-snug`}>{heading}</p>}
-            {index === 0 && nearMiddle && <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-body">{tr("nearMiddleHelp")}</p>}
-            <p className="mt-3 text-xs leading-relaxed text-muted">{index === 0 ? (locale === "hu" ? "Viselkedési beszámolók · Kísérleti mérés" : "Behavioral reports · Experimental measure") : index === 1 ? (comp ? (locale === "hu" ? `${comp.memberCount} egyéni profil összesítése` : `${comp.memberCount} individual profiles aggregated`) : tr("compositionSource")) : tr("comparisonNote")}</p>
-            {notices.length > 0 && <div className="mt-3 space-y-2">{notices.map((note) => <p key={note} className="max-w-3xl text-sm leading-relaxed text-muted">{note}</p>)}</div>}
-          </div>
-          {index === 1 && comp && <div className="space-y-4">
-            {COMPOSITION_AXES.map((axis) => <div key={axis}>
-              <div className="flex items-baseline justify-between gap-3"><h3 className="text-sm font-medium text-ink">{tr(axis)}</h3><span className="text-sm tabular-nums text-ink">{number(comp.axes[axis].mean, locale)}<span className="text-muted"> /100</span></span></div>
-              <div role="img" aria-label={`${tr(axis)}: ${number(comp.axes[axis].mean, locale)}/100`} className="mt-2 h-1.5 overflow-hidden rounded-full bg-sand"><div className="h-full rounded-full bg-sage" style={{ width: `${comp.axes[axis].mean}%` }} /></div>
-            </div>)}
-          </div>}
+    <section className="pb-7 pt-5 sm:pt-7">
+      <div className="grid items-center gap-6 rounded-2xl bg-[var(--color-layer-self-hero-mid)] p-6 text-[var(--color-text-on-inverse)] sm:p-8 md:grid-cols-[1fr_auto]">
+        <div><p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{hu ? "01 / Mért működés" : "01 / Measured operating style"}</p><h2 className="mt-3 font-fraunces text-3xl leading-tight sm:text-4xl">{heading}</h2>
+          {pattern && op?.pattern?.status === "descriptive" && <p className="mt-4 max-w-2xl text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">{pattern.description[locale]}</p>}
+          {pattern && op?.pattern?.status === "tentative" && <p className="mt-4 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">{hu ? "Tájékozódó besorolás: a tengelyek között középhez közeli vagy eltérően megélt működés is van. A pontos képet az alábbi eredmények és alternatívák adják." : "Tentative classification: some axes are near the midpoint or reflect different experiences. Read the axis results and alternatives below for the full picture."}</p>}
+          {nearMiddle && <p className="mt-4 text-sm text-[var(--color-text-on-inverse-muted)]">{tr("nearMiddleHelp")}</p>}
+          {!op && <p className="mt-4 text-sm text-[var(--color-text-on-inverse-muted)]">{tr("noOperating")}</p>}
+          <p className="mt-4 text-xs text-[var(--color-text-on-inverse-muted)]">{hu ? "Viselkedési beszámolók · Kísérleti mérés" : "Behavioral reports · Experimental measure"}</p>
         </div>
-        {index === 0 && op && <div className="mt-4">
-          {AXES.map((axis) => {
-            const value = op.axes[axis];
-            const label = t(`tos.axes.${axis}.name`, locale);
-            return <div key={axis} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 py-3 sm:grid-cols-[7rem_minmax(0,1fr)_auto] sm:gap-x-6">
-              <h3 className="col-span-2 text-sm font-semibold text-ink sm:col-span-1">{label}</h3>
-              <div>
-                <div className="flex justify-between gap-3 text-xs text-muted"><span>{t(`tos.axes.${axis}.left`, locale)}</span><span className="text-right">{t(`tos.axes.${axis}.right`, locale)}</span></div>
-                {value.mean === null ? <p className="mt-2 text-sm text-muted">{tr("insufficient")}</p> :
-                  <div role="img" aria-label={`${label}: ${tr("mean")}: ${number(value.mean, locale)}/100. ${tr("centerLegend")}`} className="relative mx-1.5 mb-1 mt-3 h-1.5 rounded-full bg-sand">
-                    <span aria-hidden="true" className="absolute left-1/2 top-1/2 h-3.5 w-px -translate-y-1/2 bg-ink/30" />
-                    <span aria-hidden="true" className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sage" style={{ left: `${value.mean}%` }} />
-                  </div>}
-              </div>
-              <span className="text-xs tabular-nums text-muted"><span className="sr-only">{tr("validAnswers")}: </span>{value.n}/{op.eligibleCount}</span>
-              {value.flags.filter((flag) => flag !== "near_midpoint").map((flag) => <p key={flag} className="col-span-2 text-xs text-muted sm:col-start-2">{tr(`flags.${flag}`)}</p>)}
-            </div>;
-          })}
-          <p className="mt-3 text-xs leading-relaxed text-muted">{tr("centerLegend")} {locale === "hu" ? "Jobb oldalon: értékelhető válaszok." : "Right: usable responses."}</p>
-        </div>}
-        {index === 1 && comp && <p className="mt-5 text-xs leading-relaxed text-muted">{tr("cohesionCaveat")}</p>}
-        {section.prompts.length > 0 && <div className="mt-4 divide-y divide-sand">
-          {section.prompts.map((prompt, promptIndex) => <details key={prompt.title} open={promptIndex === 0} className="group py-1">
-            <summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold text-ink">{prompt.title}</summary>
-            <div className="grid gap-5 pb-4 sm:grid-cols-2">
-              <div className="border-l-2 border-sage/40 pl-4"><h3 className="text-xs font-semibold text-sage-dark">{tr("support")}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{prompt.support}</p></div>
-              <div className="border-l-2 border-bronze/40 pl-4"><h3 className="text-xs font-semibold text-bronze">{tr("tension")}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{prompt.tension}</p></div>
-              <p className="text-xs text-muted sm:col-span-2">{prompt.context}</p>
-            </div>
-          </details>)}
-        </div>}
-        {mode === "standalone" && <details className="mt-4 border-t border-sand pt-2">
-          <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium text-sage-dark">{tr(index === 2 ? "interpretationDetails" : "measurementDetails")}</summary>
-          <p className="mt-2 text-sm leading-relaxed text-muted">{methodology}</p>
-          {section.rows.length > 0 && <dl className="mt-4 space-y-4">{section.rows.map((row) => <div key={row.label}><dt className="text-sm font-semibold text-ink">{row.label}</dt><dd className="mt-1 text-sm leading-relaxed text-ink-body">{row.detail}</dd></div>)}</dl>}
-        </details>}
-      </section>;
-    })}
+        {pattern && <div className="flex items-center gap-4 md:block md:text-center"><OperatingPatternMark code={pattern.code} className="w-20 md:mx-auto md:w-24" /><div><p className="mt-2 font-fraunces text-3xl">{pattern.code}</p><Link href={`/operating-patterns?pattern=${pattern.code}&lang=${locale}`} className="mt-2 inline-flex min-h-11 items-center text-xs underline underline-offset-4">{hu ? "A minta megismerése" : "Explore this pattern"}</Link></div></div>}
+      </div>
+      <div className="mt-5 space-y-2">{operating.notes.slice(1).filter((note) => op || note !== tr("noOperating")).map((note) => <p key={note} className="text-xs leading-relaxed text-muted">{note}</p>)}</div>
+      {op && <div className="mt-5"><h3 className="font-fraunces text-xl text-ink">{hu ? "Így rajzolódik ki a működésetek" : "How your operating pattern takes shape"}</h3>
+        {AXES.map((axis) => {
+          const a = op.axes[axis]; const label = t(`tos.axes.${axis}.name`, locale);
+          return <div key={axis} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-5 gap-y-2 py-3 sm:grid-cols-[7rem_minmax(0,1fr)_auto]">
+            <h4 className="col-span-2 text-sm font-medium text-ink sm:col-span-1">{label}</h4><div><div className="flex justify-between gap-3 text-xs text-muted"><span className={a.pole === "left" ? "font-semibold text-ink" : ""}>{t(`tos.axes.${axis}.left`, locale)}</span><span className={`text-right ${a.pole === "right" ? "font-semibold text-ink" : ""}`}>{t(`tos.axes.${axis}.right`, locale)}</span></div>
+              {a.mean === null ? <p className="mt-2 text-sm text-muted">{tr("insufficient")}</p> : <div role="img" aria-label={`${label}: ${tr("mean")}: ${number(a.mean, locale)}/100. ${tr("centerLegend")}`} className="relative mx-1.5 mb-1 mt-3 h-1.5 rounded-full bg-sand"><span aria-hidden="true" className="absolute left-1/2 top-1/2 h-3.5 w-px -translate-y-1/2 bg-ink/30" /><span aria-hidden="true" className={`absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full ${a.flags.length ? "bg-bronze" : "bg-sage"}`} style={{ left: `${a.mean}%` }} /></div>}
+            </div><div className="text-right text-xs tabular-nums"><span className="block text-ink">{number(a.mean, locale)} /100</span><span className="text-muted"><span className="sr-only">{tr("validAnswers")}: </span>{a.n}/{op.eligibleCount}</span></div>
+            {a.flags.map((flag) => <p key={flag} className="col-span-2 border-l-2 border-bronze pl-3 text-xs text-ink-body sm:col-start-2">{tr(`flags.${flag}`)}{flag === "near_midpoint" && (hu ? " — nincs egyértelmű pólus ezen a tengelyen." : " — neither pole clearly dominates on this axis.")}</p>)}
+          </div>;
+        })}<p className="mt-3 text-xs leading-relaxed text-muted">{tr("centerLegend")} {hu ? "A magasabb érték nem jobb eredmény. Jobb oldalon az átlag és az értékelhető válaszok száma látható." : "Higher is not better. The right column shows the mean and usable response count."}</p></div>}
+      <p className="mt-4 text-xs leading-relaxed text-muted">{tr("experimental")}</p>
+    </section>
+    <TeamPersonalityLayers composition={snapshot?.composition} averages={averages} spread={spread} count={personalityCount} locale={locale} legacyPattern={legacyPattern} />
+    <section className="py-7"><h2 className="font-fraunces text-2xl text-ink">{hu ? "04 / A két réteg együtt" : "04 / The two layers together"}</h2>
+      <div className="mt-4 rounded-xl bg-sage-soft p-5"><p className="text-sm leading-relaxed text-ink-body">{tr("comparisonNote")}</p>{comparison.notes.slice(1).map((note) => <p key={note} className="mt-3 text-sm text-ink-body">{note}</p>)}</div>
+      {comparison.prompts.length > 0 && <div className="mt-4 divide-y divide-sand">{comparison.prompts.map((prompt, index) => <details key={prompt.title} open={index === 0} className="py-1"><summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold text-ink">{prompt.title}</summary><div className="grid gap-5 pb-4 sm:grid-cols-2"><div className="border-l-2 border-sage/40 pl-4"><h3 className="text-xs font-semibold text-sage-dark">{tr("support")}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{prompt.support}</p></div><div className="border-l-2 border-bronze/40 pl-4"><h3 className="text-xs font-semibold text-bronze-dark">{tr("tension")}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{prompt.tension}</p></div><p className="text-xs text-muted sm:col-span-2">{prompt.context}</p></div></details>)}</div>}
+    </section>
+    {mode === "standalone" && <details className="py-5"><summary className="min-h-11 cursor-pointer py-3 text-sm font-medium text-sage-dark">{tr("measurementDetails")}</summary><TeamStyleMeasurements snapshot={snapshot} locale={locale} legacyPattern={legacyPattern} /></details>}
   </div>;
 }
 

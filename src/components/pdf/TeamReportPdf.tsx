@@ -5,6 +5,7 @@ import { s, colors, type } from "./styles";
 import { PdfMiniHeader } from "./components/PdfCard";
 import { PdfFooter } from "./components/PdfFooter";
 import { presentTeamStyle, type StyleSection } from "@/lib/team-operating-style/presentation";
+import { cataloguePattern } from "@/lib/team-operating-style/catalogue";
 import { AXES } from "@/lib/team-operating-style/questions";
 import { COMPOSITION_AXES } from "@/lib/team-operating-style/comparison";
 import { reportAttentionSignals, reportNextStep } from "@/lib/team-report-reader";
@@ -168,6 +169,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
   const [operating, composition, comparison] = presentTeamStyle(agg?.teamStyle, locale, agg?.pattern?.label);
   const op = agg?.teamStyle?.operating;
   const comp = agg?.teamStyle?.composition;
+  const operatingPattern = op?.pattern ? cataloguePattern(op.pattern.code) : null;
   const next = reportNextStep(report, isHu);
   const signals = reportAttentionSignals(agg, isHu);
   const nearMiddle = op && AXES.every((axis) => op.axes[axis].status === "available" && op.axes[axis].flags.includes("near_midpoint"));
@@ -183,7 +185,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
   const psych = agg?.psychSafety;
   const trust = agg?.trustHighlights;
   const dynamics = agg?.dynamics;
-  const hasDetails = !!(dims.length || psych || trust || dynamics || agg?.roleDistribution || agg?.peerRoles || agg?.feedbackCulture || agg?.pressure?.concentrations.length || agg?.evidence);
+  const hasDetails = !!(psych || trust || dynamics || agg?.roleDistribution || agg?.peerRoles || agg?.feedbackCulture || agg?.pressure?.concentrations.length || agg?.evidence);
   const hasInterpretation = Boolean(op || comp || comparison.prompts.length || signals.length || narratives.length || report.actionItems?.length);
   const sourceLabel = (source?: string) => source === "trust_round" ? (isHu ? "Mért bizalmi kör" : "Measured trust round") : source === "mixed" ? (isHu ? "Vegyes: mért és becsült" : "Mixed: measured and estimated") : (isHu ? "Személyiségprofilból becsült" : "Personality-based estimate");
   return <Document title={`${report.title || "trita"} - ${isHu ? "Csapatriport" : "Team report"}`} author="trita" language={locale}>
@@ -194,7 +196,11 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
         <Text style={caption}>{agg ? (isHu ? `${agg.memberCount} fős csapat` : `${agg.memberCount} team members`) : ""}{report.status === "DRAFT" ? (isHu ? " · Vázlat-előnézet" : " · Draft preview") : ""}</Text>
       </View>
       <Chapter title={operating.title}>
-        {operating.heading && <Text style={{ ...body, color: colors.ink, fontWeight: 600 }}>{nearMiddle ? tr("nearMiddleSummary") : operating.heading}</Text>}
+        <View wrap={false} style={{ padding: 18, backgroundColor: colors.sageDark, borderRadius: 12, gap: 9 }}>
+          {operatingPattern && !nearMiddle && <Text style={{ ...caption, color: colors.white }}>{operatingPattern.code} · {op?.pattern?.status === "tentative" ? tr("tentative") : (isHu ? "Mért működési minta" : "Measured operating pattern")}</Text>}
+          {operating.heading && <Text style={{ ...heading, color: colors.white }}>{nearMiddle ? tr("nearMiddleSummary") : operating.heading}</Text>}
+          {operatingPattern && !nearMiddle && op?.pattern?.status === "descriptive" && <Text style={{ ...body, color: colors.white }}>{operatingPattern.description[locale]}</Text>}
+        </View>
         {nearMiddle && <Text style={body}>{tr("nearMiddleHelp")}</Text>}
         <Notes notes={operating.notes} />
         {op && <View style={{ gap: 14 }}>
@@ -210,17 +216,26 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
                     <View style={{ position: "absolute", left: `${a.mean}%`, marginLeft: -4, top: -2, height: 8, width: 8, borderRadius: 4, backgroundColor: colors.sage }} />
                   </View> : <Text style={caption}>{tr("insufficient")}</Text>}
                 </View>
-                <Text style={{ ...caption, width: 30, textAlign: "right" }}>{a.n}/{op.eligibleCount}</Text>
+                <Text style={{ ...caption, width: 58, textAlign: "right" }}>{num(a.mean, isHu)}/100 · {a.n}/{op.eligibleCount}</Text>
               </View>
-              {a.flags.filter((flag) => flag !== "near_midpoint").length > 0 && <Text style={{ ...caption, paddingLeft: 94 }}>{a.flags.filter((flag) => flag !== "near_midpoint").map((flag) => tr(`flags.${flag}`)).join(" · ")}</Text>}
+              {a.flags.length > 0 && <Text style={{ ...caption, paddingLeft: 94 }}>{a.flags.map((flag) => tr(`flags.${flag}`)).join(" · ")}</Text>}
             </View>;
           })}
-          <Text style={caption}>{tr("centerLegend")} {isHu ? "Jobb oldalon: értékelhető válaszok." : "Right: usable responses."}</Text>
+          <Text style={caption}>{tr("centerLegend")} {isHu ? "Jobb oldalon: átlag és értékelhető válaszok." : "Right: mean and usable responses."}</Text>
         </View>}
       </Chapter>
-      <Chapter title={composition.title}>
+      {!hasInterpretation && <Chapter title={isHu ? "4. A két réteg együtt" : "4. The two layers together"}><Notes notes={comparison.notes} /></Chapter>}
+    </ReportPage>
+    {(dims.length > 0 || comp || composition.heading) && <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Személyiség-összetétel" : "Personality composition"}>
+      {dims.length > 0 && agg && <Chapter title={isHu ? "2. Miből épül fel a csapat?" : "2. What is the team made of?"}>
+        <Text style={caption}>{agg.completedCount} {isHu ? "egyéni HEXACO-profil összesítése" : "aggregated individual HEXACO profiles"}</Text>
+        <View>{dims.map((code) => <DimRow key={code} code={code} avg={agg.dimensionAverages![code]} spread={agg.dimensionSpread?.[code] ?? null} isHu={isHu} />)}</View>
+        <Text style={caption}>{isHu ? "A halvány sáv az átlag körüli egy mintaszórást jelöli, nem konfidenciaintervallumot. Egyéni eredmény nem jelenik meg." : "The faint band shows one sample SD around the mean, not a confidence interval. No individual results are shown."}</Text>
+      </Chapter>}
+      <Chapter title={isHu ? "3. A személyiségprofilból képzett négy tengely" : "3. Four axes derived from personality"}>
         {composition.heading && <Text style={heading}>{composition.heading}</Text>}
         <Notes notes={composition.notes} />
+        <Text style={caption}>{isHu ? "Hajtóerő: X · Kohéziós proxy: tagonként (H + A) / 2, majd csapatátlag · Fegyelem: C · Nyitottság: O. Az Emocionalitás nem vesz részt a négytengelyes képzésben." : "Drive: X · Cohesion proxy: (H + A) / 2 per member, then team mean · Discipline: C · Openness: O. Emotionality is not part of this four-axis derivation."}</Text>
         {comp && <View style={{ gap: 9 }}>
           {COMPOSITION_AXES.map((axis) => <View key={axis} wrap={false} style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
             <Text style={{ ...body, width: 110 }}>{tr(axis)}</Text>
@@ -229,11 +244,10 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
           </View>)}
         </View>}
       </Chapter>
-      {!hasInterpretation && <Chapter title={comparison.title}><Notes notes={comparison.notes} /></Chapter>}
-    </ReportPage>
+    </ReportPage>}
 
     {hasInterpretation && <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Értelmezés" : "Interpretation"}>
-      <Chapter title={comparison.title}>
+      <Chapter title={isHu ? "4. A két réteg együtt" : "4. The two layers together"}>
         {comparison.heading && <Text style={{ ...body, fontWeight: 600, color: colors.ink }}>{comparison.heading}</Text>}
         <Notes notes={comparison.notes} />
         {comparison.prompts.map((prompt) => <Prompt key={prompt.title} prompt={prompt} isHu={isHu} />)}
@@ -286,11 +300,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
         <Text style={caption}>{isHu ? "Mért csapattársi visszajelzések összesítése" : "Aggregate of measured observer feedback"}</Text>
         <Text style={body}>{isHu ? "Lefedettség" : "Coverage"}: {agg.feedbackCulture.coveredCount}/{agg.feedbackCulture.memberCount} · {isHu ? "Összhang" : "Aligned"}: {agg.feedbackCulture.alignedCount} · {isHu ? "Érdemi eltérés" : "Meaningful difference"}: {agg.feedbackCulture.gapCount}</Text>
       </Chapter>}
-      {dims.length > 0 && <Chapter keepTogether title={isHu ? "Aggregált személyiségprofil" : "Aggregate personality profile"}>
-        <View>{dims.map((code) => <DimRow key={code} code={code} avg={agg.dimensionAverages![code]} spread={agg.dimensionSpread?.[code] ?? null} isHu={isHu} />)}</View>
-        <Text style={caption}>{isHu ? "A halvány sáv a csapaton belüli szóródást jelöli, nem hibahatárt. Egyéni eredmény nem jelenik meg." : "The light band shows within-team spread, not an error margin. Individual results are not shown."}</Text>
-        {agg.pattern?.stabilityNote && <Text style={caption}>{agg.pattern.stabilityNote}</Text>}
-      </Chapter>}
+
       {(psych || trust) && <View wrap={false} style={{ flexDirection: "row", gap: 20 }}>
         {psych && <View style={{ flex: 1 }}><Chapter keepTogether title={isHu ? "Pszichológiai biztonság" : "Psychological safety"}>
         <Text style={body}>{psych.index}/100 · {psych.count} {isHu ? "névtelen válasz" : "anonymous responses"} · {psych.campaignName}</Text>

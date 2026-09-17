@@ -56,3 +56,15 @@ A branch Vercel előnézetében, bejelentkezés után: **Csapat → Riport → p
 Automatikus ellenőrzés: RTL nézetváltás/mentés/jogosultság/adatkorlát, tényleges HU/EN PDF-render és hosszú szöveg tördelése, releváns személyiség-összetétel és összevetés regressziók, TypeScript és ESLint. Vizuális ellenőrzés: renderelt PDF-oldalak. Bejelentkezett böngészős E2E nem futott: a helyi Chromium letöltése hálózati időtúllépéssel meghiúsult.
 
 Új migráció nem szükséges ehhez a megjelenítési változáshoz. A teljes korábbi Operating Style-integráció migrációigénye változatlan. Main merge nincs; a munka a draft PR része.
+
+## Működési térkép és rétegzett riport — 2026-09-17
+
+- Új publikus `/operating-patterns` aloldal: négy család, 16 kiválasztható minta, saját név/kód, leírás és pólusok. A családok az információ + koordináció tengelyeiből képződnek. Az aloldalon nincs workshopkérdés. `?pattern=IEDA&lang=hu` mélylink támogatott; a nyelv egyébként a közös LocaleProviderből jön.
+- Közös HU/EN katalógus: `src/lib/team-operating-style/catalogue.ts`. A belső bináris kulcsok, kérdések, küszöbök és a fagyasztott mérések változatlanok; a már tárolt mintakódokhoz is a katalógus aktuális megnevezése jelenik meg.
+- Riport belépő: mért működési minta, geometrikus jel, négybetűs kód és aloldali mélylink. Ideiglenes besorolásnál nem jelenik meg a kategorikus katalógusleírás. Minden tengely megőrzi az átlagot, az értékelhető létszámot és az összes bizonytalansági jelzést. Teljesen középközeli vagy nem besorolható eredményhez nincs kiemelt típuskód.
+- Sorrend: működés → aggregált HEXACO (csapatátlag és ahol elérhető, mintaszórás) → a személyiségből képzett négy tengely → meglévő, adatokhoz igazodó 16×16 összevetés. A hatdimenziós adat és a négytengelyes snapshot hiánya külön kezelt; hiányzó értékből nincs nullapont vagy visszabecsült profil.
+- A származtatott tengelyek választása kiemeli a HEXACO-forrásokat: Hajtóerő=X, Kohéziós proxy=tagonként (H+A)/2 majd csapatátlag, Fegyelem=C, Nyitottság=O. Az E nem része ennek a képzésnek. Nem illeszkedési pontszám és nem közvetlen kohéziómérés.
+- A Csapatkép / Mérési háttér / Utánkövetés fülek, a tanácsadói szövegek, figyelmeztetések és menthető akciók megmaradnak. A tagi nézet ugyanezt az aggregált blokkot kapja, egyéni adatok nélkül.
+- A PDF azonos katalógusneveket/kódokat és rétegsorrendet használ. Az aggregált és származtatott személyiség külön oldalon együtt marad, a pontos statisztikák mellékletben elérhetők.
+
+Ellenőrzés: 37 kliens/PDF-teszt, 30 kapcsolódó unit teszt; TypeScript és ESLint. Tényleges Next.js oldalak és riportkomponensek HU/EN böngészős próbája, 1280/390/320 px; minta- és riportfülváltás, személyiségforrás-kiemelés. Szintetikus helyi riportelőnézet, nem bejelentkezett adatbázisos E2E. HU/EN PDF-render, üresoldal-tesztek és oldalképek ellenőrzése. Nincs új migráció.

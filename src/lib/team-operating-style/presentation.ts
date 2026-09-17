@@ -1,5 +1,6 @@
 import { t, type Locale } from "@/lib/i18n";
 import { AXES } from "./questions";
+import { cataloguePattern } from "./catalogue";
 import { OPERATING_PATTERNS } from "./patterns";
 import { compareTeamPatterns, COMPOSITION_AXES, type TeamStyleSnapshot } from "./comparison";
 
@@ -19,7 +20,7 @@ export function presentTeamStyle(snapshot: TeamStyleSnapshot | null | undefined,
   if (!op) operating.notes.push(tr("noOperating"));
   else {
     const allMixed = AXES.every((axis) => op.axes[axis].pole === "mixed");
-    operating.heading = allMixed ? tr("mixed") : op.pattern ? op.pattern.name[locale] : tr("mixed");
+    operating.heading = allMixed ? tr("mixed") : op.pattern ? (cataloguePattern(op.pattern.code)?.name[locale] ?? op.pattern.name[locale]) : tr("mixed");
     const date = (v: string) => new Date(v).toLocaleDateString(locale === "hu" ? "hu-HU" : "en-GB", { timeZone: "UTC" });
     operating.notes.push(`${t("tos.window", locale)}: ${date(op.referenceStart)} – ${date(op.referenceEnd)}`);
     if (op.pattern?.status === "tentative") operating.notes.push(tr("tentative"));

@@ -70,6 +70,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }, null) ?? reviewedAt;
 
   return [
+    { url: `${baseUrl}/operating-patterns`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/`, lastModified: reviewedAt, changeFrequency: "weekly", priority: 1 },
     { url: `${baseUrl}/team-dynamics`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/pricing`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
