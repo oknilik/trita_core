@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { useSearchParams } from "next/navigation";
 import { OPERATING_CATALOGUE, OPERATING_FAMILIES } from "@/lib/team-operating-style/catalogue";
@@ -13,6 +13,7 @@ export function OperatingPatternExplorer() {
   const { locale: preferredLocale } = useLocale();
   const locale = params.get("lang") === "en" ? "en" : params.get("lang") === "hu" ? "hu" : preferredLocale;
   const hu = locale === "hu";
+  const detailRef = useRef<HTMLElement>(null);
   const [chosen, setChosen] = useState<string | null>(null);
   const selected = patterns.find(([, p]) => p.code === (chosen ?? params.get("pattern"))) ?? patterns.find(([, p]) => p.code === "IEDA")!;
   const [key, pattern] = selected;
@@ -22,6 +23,13 @@ export function OperatingPatternExplorer() {
     const url = new URL(window.location.href);
     url.searchParams.set("pattern", code);
     window.history.replaceState(null, "", url);
+    // Wait for the selected description to render, then reveal it below the sticky header.
+    window.requestAnimationFrame(() => {
+      detailRef.current?.scrollIntoView?.({
+        behavior: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+        block: "start",
+      });
+    });
   }
   return <main className="bg-cream px-4 pb-16 pt-10 text-ink sm:px-6 sm:pt-16">
     <div className="mx-auto max-w-5xl">
@@ -38,7 +46,7 @@ export function OperatingPatternExplorer() {
           <div className="grid gap-2">{patterns.filter(([, p]) => p.code.startsWith(f.code)).map(([, p]) => <button key={p.code} type="button" onClick={() => choose(p.code)} aria-pressed={pattern.code === p.code} aria-controls="operating-pattern-detail" className={`min-h-24 rounded-xl border-2 bg-surface-card p-3 text-left text-ink transition-colors hover:border-sage ${pattern.code === p.code ? "border-sage" : "border-transparent"}`}><span className="flex justify-between gap-1 text-sm font-semibold tracking-wide">{p.code}{pattern.code === p.code && <span aria-hidden="true" className="text-sage">✓</span>}</span><span className="mt-2 block text-xs leading-relaxed">{p.name[locale]}</span></button>)}</div>
         </section>)}
       </div>
-      <section id="operating-pattern-detail" aria-live="polite" aria-atomic="true" className="mt-6 rounded-2xl border border-sand bg-surface-card p-5 sm:p-8">
+      <section ref={detailRef} id="operating-pattern-detail" aria-live="polite" aria-atomic="true" className="mt-6 scroll-mt-28 rounded-2xl border border-sand bg-surface-card p-5 sm:p-8">
         <div className="grid gap-7 md:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-widest text-sage">{pattern.code} · {family.name[locale]}</p><h2 className="mt-3 font-fraunces text-3xl">{pattern.name[locale]}</h2><p className="mt-4 text-sm leading-relaxed text-ink-body">{pattern.description[locale]}</p></div><dl className="divide-y divide-sand">{AXES.map((axis, i) => <div key={axis} className="py-3 first:pt-0"><dt className="flex flex-wrap justify-between gap-2 text-sm"><span>{AXIS_LABELS[axis].name[locale]}</span><strong className="font-semibold">{pattern.code[i]} · {AXIS_LABELS[axis][key[i] === "0" ? "left" : "right"][locale]}</strong></dt></div>)}</dl></div>
         {hu && <p className="mt-6 border-t border-sand pt-4 text-xs leading-relaxed text-muted"><strong>Előfordulhat például: </strong>{pattern.examples.join(" · ")}. A közeg önmagában nem határozza meg a mintát.</p>}
       </section>
