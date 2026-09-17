@@ -64,6 +64,7 @@ export const operatingStyleTranslations = {
       support: { hu: "Lehetséges támasz – beszéljétek át", en: "Possible support – discuss together" },
       tension: { hu: "Lehetséges súrlódás – ellenőrizzétek példával", en: "Possible friction – check against an example" },
       cohort: { hu: "A két réteg válaszadói köre eltér. Ez az eltérések egyik oka is lehet.", en: "The two layers use different respondent groups. This may itself explain differences." },
+      dimensionComparison: { hu: "A működésadatok értékelhetők, de nem rajzolnak ki egyetlen működési mintázatot. Az összevetés ezért a négy mért dimenzióra épül.", en: "The operating data can be interpreted but do not identify a single operating pattern. This comparison therefore uses the four measured dimensions." },
       noComparison: { hu: "A két réteg összevetéséhez mindkét mérésből elegendő adat szükséges.", en: "Comparing the layers requires sufficient data from both measurements." },
       reasons: {
         insufficient_data: { hu: "Kevés értékelhető válasz miatt nincs mintázatnév.", en: "Too few usable responses for a pattern label." },

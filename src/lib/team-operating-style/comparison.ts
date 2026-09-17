@@ -1,6 +1,6 @@
 import type { TeamPatternResult, AxisGrade } from "@/lib/team-pattern";
 import { AXES, AXIS_LABELS, type Localized, type OperatingAxis } from "./questions";
-import type { OperatingResult } from "./scoring";
+import { POLICY, type OperatingResult } from "./scoring";
 
 export const COMPOSITION_AXES = ["drive", "cohesion", "discipline", "openness"] as const;
 export type CompositionAxis = typeof COMPOSITION_AXES[number];
@@ -18,7 +18,7 @@ export interface TeamStyleSnapshot {
   operating: (OperatingResult & { referenceStart: string; referenceEnd: string }) | null;
   composition: CompositionSnapshot | null;
   sameRespondents: boolean | null;
-  comparison: { operatingCode: string; compositionCode: string; prompts: ComparisonPrompt[] } | null;
+  comparison: { operatingCode: string | null; compositionCode: string; prompts: ComparisonPrompt[] } | null;
 }
 
 /** Whitelist of aggregates: no names, IDs, item answers or styleDistances. */
@@ -124,9 +124,10 @@ const PROFILE_SUPPORT: Record<OperatingAxis, Record<"left" | "right", Record<"hi
 };
 
 export function compareTeamPatterns(operating: OperatingResult | null, composition: CompositionSnapshot | null): TeamStyleSnapshot["comparison"] {
-  if (!operating?.pattern || !composition) return null;
+  if (!operating || !composition || operating.patternUnavailableReason === "different_cohorts" ||
+    AXES.some((axis) => operating.axes[axis].status !== "available" || operating.axes[axis].coverage < POLICY.minCoverage)) return null;
   return {
-    operatingCode: operating.pattern.code, compositionCode: composition.code,
+    operatingCode: operating.pattern?.code ?? null, compositionCode: composition.code,
     prompts: AXES.map((axis) => {
       const pole = operating.axes[axis].pole;
       const prompt = pole === "mixed" ? {

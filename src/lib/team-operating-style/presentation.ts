@@ -1,7 +1,7 @@
 import { t, type Locale } from "@/lib/i18n";
 import { AXES } from "./questions";
 import { OPERATING_PATTERNS } from "./patterns";
-import { COMPOSITION_AXES, type TeamStyleSnapshot } from "./comparison";
+import { compareTeamPatterns, COMPOSITION_AXES, type TeamStyleSnapshot } from "./comparison";
 
 export interface StyleSection {
   title: string; heading?: string; notes: string[];
@@ -45,13 +45,20 @@ export function presentTeamStyle(snapshot: TeamStyleSnapshot | null | undefined,
   }
   const comparison: StyleSection = { title: tr("comparison"), notes: [tr("comparisonNote")], rows: [], prompts: [] };
   if (snapshot?.sameRespondents === false) comparison.notes.push(tr("cohort"));
-  if (snapshot?.comparison && op?.pattern && comp) {
+  // Rebuild display prompts from frozen aggregates, also for older snapshots whose
+  // comparison was null solely because no single operating type could be assigned.
+  const prompts = compareTeamPatterns(op ?? null, comp ?? null);
+  if (prompts && op && comp) {
+    if (!op.pattern) comparison.notes.push(tr("dimensionComparison"));
     comparison.heading = `${operating.heading} × ${comp.name}`;
-    comparison.prompts = snapshot.comparison.prompts.map((p) => ({
+    comparison.prompts = prompts.prompts.map((p) => ({
       title: `${t(`tos.axes.${p.operatingAxis}.name`, locale)} × ${tr(p.compositionAxis)}`,
       context: `${tr("mean")}: ${num(op.axes[p.operatingAxis].mean!)}/100 · ${tr(p.compositionAxis)}: ${num(comp.axes[p.compositionAxis].mean)}/100. ${t(`tos.report.grades.${comp.axes[p.compositionAxis].grade}`, locale)}`,
       support: p.support[locale], tension: p.tension[locale],
     }));
-  } else comparison.notes.push(tr("noComparison"));
+  } else {
+    comparison.notes.push(!op ? tr("noOperating") : !comp ? tr("noComposition") :
+      op.patternUnavailableReason ? tr(`reasons.${op.patternUnavailableReason}`) : tr("noComparison"));
+  }
   return [operating, composition, comparison];
 }

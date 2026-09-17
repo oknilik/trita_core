@@ -25,7 +25,7 @@ A 16×16 kombináció mindegyike feloldható. A kérdések az operating pólus �
 
 Az automatikus szöveg kérdésként jelenik meg. A tanácsadó a meglévő narratív/interjús mezőkben rögzítheti a konkrét példával megerősített megállapításokat. Az eredeti `report.ts` review-zott hipotézisszerződése nem kerül jogosultságot megkerülő kliensbemenetként az új API-ba.
 
-Eltérő válaszolói kör esetén az összevetés ezt jelzi. Hiányzó mérésből nem gyártunk típust. Küszöbközeli vagy nagy szórású adatoknál az ideiglenes jelzés és az alternatívák megmaradnak. Nem besorolható operating mintázatnál a részletes tengelyek látszanak, a típusok összevetése üres állapotot kap.
+Eltérő válaszolói kör esetén az összevetés ezt jelzi. Hiányzó mérésből nem gyártunk típust. Küszöbközeli vagy nagy szórású adatoknál az ideiglenes jelzés és az alternatívák megmaradnak. Nem besorolható operating mintázatnál a részletes tengelyek látszanak. Ha mind a négy tengely értékelhető, megfelelő lefedettségű és nem eltérő tengelyenkénti válaszadói körökből származik, dimenzióalapú összevetés jelenik meg egy kitalált típusnév helyett.
 
 ## Adatmodell és tranzakció
 
