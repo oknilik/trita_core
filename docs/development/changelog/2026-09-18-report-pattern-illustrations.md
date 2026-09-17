@@ -1,6 +1,6 @@
 # Pattern artwork in web reports and PDF
 
-Shortened the catalogue heading to “A közös munkánknak mintázatai” (English: “Patterns of our shared work”).
+Shortened the catalogue heading to “A közös munkánk mintázatai” (English: “Patterns of our shared work”).
 
 The shared team report block now shows the selected descriptive operating pattern's eyeless illustration, covering both leader and member reports. Existing current catalogue names, measured axes, personality layers and uncertainty messages remain in place. Tentative classifications retain their neutral geometric mark; mixed or unavailable results do not receive a definitive character.
 
