@@ -31,6 +31,10 @@ export const operatingStyleTranslations = {
     answers: RESPONSE_LABELS,
     axes: AXIS_LABELS,
     report: {
+      source: { hu: "Csapatműködés-mérés forrása", en: "Operating style measurement source" },
+      sameSource: { hu: "A riport eredeti mérési köre", en: "The report’s original measurement round" },
+      sourceHelp: { hu: "Ha a csapatműködést külön körben mértétek, válaszd ki azt, majd nyisd meg az előnézetet. A személyiség-összetétel forrása megmarad.", en: "If operating style was measured in a separate round, select it and open the preview. The personality composition source is preserved." },
+      invalidSource: { hu: "A kiválasztott csapatműködés-kör nem elérhető, nem lezárt vagy másik csapathoz tartozik.", en: "The selected operating round is unavailable, not closed, or belongs to another team." },
       grades: {
         strong_high: { hu: "Az összetételi tengely erősen a magas pólus felé hajlik.", en: "The composition axis leans strongly toward its high pole." },
         slight_high: { hu: "Az összetételi tengely enyhén a magas pólus felé hajlik.", en: "The composition axis leans slightly toward its high pole." },

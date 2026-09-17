@@ -32,6 +32,11 @@ export async function ReportTabView({
       ])
     : [[], null];
 
+  const operatingRounds = canViewRaw ? await prisma.teamOperatingRound.findMany({
+    where: { teamId, campaign: { orgId: teamData.orgId ?? undefined, status: "CLOSED" } },
+    select: { campaignId: true, campaign: { select: { name: true } }, referenceEnd: true },
+    orderBy: { referenceEnd: "desc" },
+  }) : [];
   return (
     <PlatformPageShell
       surface="team"
@@ -44,6 +49,7 @@ export async function ReportTabView({
           teamId={teamId}
           orgId={teamData.orgId}
           reports={consultantReports}
+          operatingRounds={operatingRounds.map((round) => ({ id: round.campaignId, name: round.campaign.name, referenceEnd: round.referenceEnd.toISOString() }))}
           campaignId={reportCampaign?.id ?? null}
           isHu={isHu}
         />

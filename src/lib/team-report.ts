@@ -54,6 +54,7 @@ import {
 export interface TeamReportAggregates {
   /** Separate, frozen behavior and personality layers; absent in legacy reports. */
   teamStyle?: TeamStyleSnapshot;
+  operatingCampaignId?: string;
   generatedAt: string;
   /** A self-eredmények forrásköre; hiányában tagonként a legfrissebb eredmény. */
   assessmentCampaignId?: string;
@@ -333,7 +334,7 @@ export function computeTopFrictionDims(
 
 export async function buildTeamReportAggregates(
   teamId: string,
-  options?: { assessmentCampaignId?: string },
+  options?: { assessmentCampaignId?: string; operatingCampaignId?: string },
 ): Promise<TeamReportAggregates | null> {
   // Alapértelmezésben megmarad a tagonkénti legfrissebb self-eredmény.
   // Kör-riportnál az explicit campaignId minden kampány-kötött réteget
@@ -354,7 +355,7 @@ export async function buildTeamReportAggregates(
   const completedCount = assessed.length;
   const memberCount = teamData.members.length;
   const hasMinimum = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
-  const teamStyle = await loadTeamStyleSnapshot(teamId, options?.assessmentCampaignId, hasMinimum ? teamData.patternResult ?? null : null, assessed.map((m) => m.userId));
+  const teamStyle = await loadTeamStyleSnapshot(teamId, options?.operatingCampaignId ?? options?.assessmentCampaignId, hasMinimum ? teamData.patternResult ?? null : null, assessed.map((m) => m.userId));
 
   let dimensionAverages: Record<string, number> | null = null;
   let dimensionSpread: Record<string, number> | null = null;
@@ -653,6 +654,7 @@ export async function buildTeamReportAggregates(
 
   return {
     teamStyle,
+    ...(options?.operatingCampaignId ? { operatingCampaignId: options.operatingCampaignId } : {}),
     generatedAt: new Date().toISOString(),
     ...(options?.assessmentCampaignId
       ? { assessmentCampaignId: options.assessmentCampaignId }

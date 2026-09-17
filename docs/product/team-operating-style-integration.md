@@ -11,7 +11,7 @@
 5. A csomag a működésmérés után friss önértékelést, bizalmi kört és pszichológiai biztonság pulse-t tartalmaz. Az előző Scan v1 összetétele változatlan.
 6. A kör lezárása után: **Csapat → Riport → Új vázlat**, a konkrét körből. Előnézet, tanácsadói narratíva és publikálás a meglévő folyamat szerint.
 
-Az új mérés az egyedi méréskatalógusban is kiválasztható, de a teljes új riporthoz a **Csapatkép és működés** csomagot használd. Az egyedi, önálló működéskör nem válik automatikusan a másik körből származó személyiségriport forrásává.
+Az új mérés az egyedi méréskatalógusban is kiválasztható, de a teljes új riporthoz a **Csapatkép és működés** csomagot használd. Az egyedi, önálló működéskör a riportvázlat „Csapatműködés-mérés forrása” választójával kapcsolható a meglévő személyiségriporthoz. Előnézet vagy mentés rögzíti a forrásazonosítót az aggregátumban; újrapublikálás ezt megőrzi. Csak ugyanazon csapat és szervezet lezárt működéskörei választhatók. Az alapértelmezés továbbra is a riport eredeti köre, nincs automatikus legutóbbi-kör választás.
 
 ## Riport: a két 16-mintázatos réteg
 
