@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { t, type Locale } from "@/lib/i18n";
 import { presentTeamStyle } from "@/lib/team-operating-style/presentation";
 import { cataloguePattern } from "@/lib/team-operating-style/catalogue";
@@ -30,7 +31,7 @@ export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode
           {!op && <p className="mt-4 text-sm text-[var(--color-text-on-inverse-muted)]">{tr("noOperating")}</p>}
           <p className="mt-4 text-xs text-[var(--color-text-on-inverse-muted)]">{hu ? "Viselkedési beszámolók · Kísérleti mérés" : "Behavioral reports · Experimental measure"}</p>
         </div>
-        {pattern && <div className="flex items-center gap-4 md:block md:text-center"><OperatingPatternMark code={pattern.code} className="w-20 md:mx-auto md:w-24" /><div><p className="mt-2 font-fraunces text-3xl">{pattern.code}</p><Link href={`/operating-patterns?pattern=${pattern.code}&lang=${locale}`} className="mt-2 inline-flex min-h-11 items-center text-xs underline underline-offset-4">{hu ? "A minta megismerése" : "Explore this pattern"}</Link></div></div>}
+        {pattern && <div className="flex min-w-0 flex-col items-center gap-3 text-center md:w-64 lg:w-72">{op?.pattern?.status === "descriptive" ? <div className="w-full max-w-xs rounded-xl bg-[var(--color-text-on-inverse)] p-3"><Image src={`/illustrations/operating-patterns/${pattern.code}.svg`} alt={hu ? `${pattern.name.hu} – együttműködő csapat absztrakt figurákkal` : `${pattern.name.en} – abstract figures working together`} width={400} height={224} className="h-auto w-full" /></div> : <OperatingPatternMark code={pattern.code} className="w-20 md:mx-auto md:w-24" />}<div><p className="mt-2 font-fraunces text-3xl">{pattern.code}</p><Link href={`/operating-patterns?pattern=${pattern.code}&lang=${locale}`} className="mt-2 inline-flex min-h-11 items-center text-xs underline underline-offset-4">{hu ? "A minta megismerése" : "Explore this pattern"}</Link></div></div>}
       </div>
       <div className="mt-5 space-y-2">{operating.notes.slice(1).filter((note) => op || note !== tr("noOperating")).map((note) => <p key={note} className="text-xs leading-relaxed text-muted">{note}</p>)}</div>
       {op && <div className="mt-5"><h3 className="font-fraunces text-xl text-ink">{hu ? "Így rajzolódik ki a működésetek" : "How your operating pattern takes shape"}</h3>

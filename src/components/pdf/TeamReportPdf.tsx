@@ -3,6 +3,7 @@ import { saveAs } from "file-saver";
 import type { ReactNode } from "react";
 import { s, colors, type } from "./styles";
 import { PdfMiniHeader } from "./components/PdfCard";
+import { PdfOperatingPatternIllustration } from "./components/PdfOperatingPatternIllustration";
 import { PdfFooter } from "./components/PdfFooter";
 import { presentTeamStyle, type StyleSection } from "@/lib/team-operating-style/presentation";
 import { cataloguePattern } from "@/lib/team-operating-style/catalogue";
@@ -200,6 +201,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
           {operatingPattern && !nearMiddle && <Text style={{ ...caption, color: colors.white }}>{operatingPattern.code} · {op?.pattern?.status === "tentative" ? tr("tentative") : (isHu ? "Mért működési minta" : "Measured operating pattern")}</Text>}
           {operating.heading && <Text style={{ ...heading, color: colors.white }}>{nearMiddle ? tr("nearMiddleSummary") : operating.heading}</Text>}
           {operatingPattern && !nearMiddle && op?.pattern?.status === "descriptive" && <Text style={{ ...body, color: colors.white }}>{operatingPattern.description[locale]}</Text>}
+          {operatingPattern && !nearMiddle && op?.pattern?.status === "descriptive" && <View style={{ alignSelf: "center", padding: 6, backgroundColor: colors.white, borderRadius: 8 }}><PdfOperatingPatternIllustration code={operatingPattern.code} /></View>}
         </View>
         {nearMiddle && <Text style={body}>{tr("nearMiddleHelp")}</Text>}
         <Notes notes={operating.notes} />

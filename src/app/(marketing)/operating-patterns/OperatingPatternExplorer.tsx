@@ -36,7 +36,7 @@ export function OperatingPatternExplorer() {
     <div className="mx-auto max-w-5xl">
       <div className="mb-10 grid items-center gap-8 md:grid-cols-[1fr_160px]">
         <div><p className="text-xs font-semibold uppercase tracking-widest text-sage">{hu ? "Csapatmintázatok" : "Team patterns"}</p>
-          <h1 className="mt-4 font-fraunces text-4xl leading-tight tracking-tight sm:text-5xl">{hu ? "A közös munkánknak mintázatai vannak, amelyeket együtt alakítunk." : "Our shared work has patterns that we shape together."}</h1>
+          <h1 className="mt-4 font-fraunces text-4xl leading-tight tracking-tight sm:text-5xl">{hu ? "A közös munkánknak mintázatai" : "Patterns of our shared work"}</h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-ink-body">{hu ? "A trita tizenhat működési kategóriát mér – fedezzétek fel, hogyan áramlik a csapatotokban az információ, hogyan hangoljátok össze a közös munkát, hol és hogyan születnek meg a döntéseitek, és hogyan valósítjátok meg a kitűzött célokat." : "trita measures sixteen operating categories – discover how information flows within your team, how you coordinate your shared work, where and how you make decisions, and how you achieve your goals."}</p>
         </div><OperatingPatternMark code="SODA" className="hidden w-36 text-ink md:grid" />
       </div>

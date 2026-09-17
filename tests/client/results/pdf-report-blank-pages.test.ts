@@ -182,3 +182,14 @@ describe("csapatriport olvasói nézet", () => {
     expect(pageTextOperatorCounts(buffer).length).toBeGreaterThan(5);
   }, 60_000);
 });
+
+
+describe("team pattern illustration in PDF", () => {
+  it("renders the descriptive pattern with native artwork and no empty continuation page", async () => {
+    const { makeReaderReport } = await import("../../../scripts/fixtures/team-report-reader");
+    registerPdfFonts();
+    const buffer = await renderToBuffer(React.createElement(TeamReportDocument, { report: makeReaderReport(), isHu: true }) as never);
+    expect(findBlankPages(buffer)).toEqual([]);
+    expect(pageTextOperatorCounts(buffer)).toHaveLength(4);
+  }, 60_000);
+});

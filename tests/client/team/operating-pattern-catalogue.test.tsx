@@ -28,6 +28,7 @@ describe("operating catalogue and layered report", () => {
     agg.teamStyle!.operating!.pattern!.name = { hu: "Irányítótorony", en: "Control Tower" };
     render(<TeamOperatingStyleReport snapshot={agg.teamStyle} locale="hu" averages={{ H: 68, E: 51, X: 64, A: 72, C: 76, O: 70 }} spread={{ H: 12, A: 11 }} personalityCount={5} />);
     expect(screen.getByRole("heading", { name: "Tervezők" })).toBeVisible();
+    expect(screen.getByRole("img", { name: "Tervezők – együttműködő csapat absztrakt figurákkal" })).toHaveAttribute("src", "/illustrations/operating-patterns/SECP.svg");
     expect(screen.getByRole("link", { name: "A minta megismerése" })).toHaveAttribute("href", "/operating-patterns?pattern=SECP&lang=hu");
     expect(document.querySelectorAll('[data-highlighted="true"]')).toHaveLength(2);
     await userEvent.click(screen.getByRole("button", { name: /^Fegyelem/ }));
