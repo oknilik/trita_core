@@ -208,7 +208,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
             const a = op.axes[axis];
             return <View key={axis} wrap={false} style={{ gap: 5 }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
-                <Text style={{ ...body, width: 80, fontWeight: 600, color: colors.ink }}>{t(`tos.axes.${axis}.name`, locale)}</Text>
+                <Text style={{ ...body, width: 100, fontWeight: 600, color: colors.ink }}>{t(`tos.axes.${axis}.name`, locale)}</Text>
                 <View style={{ flex: 1, gap: 7 }}>
                   <View style={{ flexDirection: "row", justifyContent: "space-between" }}><Text style={caption}>{t(`tos.axes.${axis}.left`, locale)}</Text><Text style={caption}>{t(`tos.axes.${axis}.right`, locale)}</Text></View>
                   {a.mean !== null ? <View style={{ height: 4, backgroundColor: colors.sand, borderRadius: 2, marginHorizontal: 4 }}>
@@ -218,7 +218,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
                 </View>
                 <Text style={{ ...caption, width: 58, textAlign: "right" }}>{num(a.mean, isHu)}/100 · {a.n}/{op.eligibleCount}</Text>
               </View>
-              {a.flags.length > 0 && <Text style={{ ...caption, paddingLeft: 94 }}>{a.flags.map((flag) => tr(`flags.${flag}`)).join(" · ")}</Text>}
+              {a.flags.length > 0 && <Text style={{ ...caption, paddingLeft: 114 }}>{a.flags.map((flag) => tr(`flags.${flag}`)).join(" · ")}</Text>}
             </View>;
           })}
           <Text style={caption}>{tr("centerLegend")} {isHu ? "Jobb oldalon: átlag és értékelhető válaszok." : "Right: mean and usable responses."}</Text>

@@ -4,10 +4,10 @@ export const AXES = ["information", "coordination", "decision", "execution"] as 
 export type OperatingAxis = (typeof AXES)[number];
 export type Localized = { hu: string; en: string };
 export const AXIS_LABELS: Record<OperatingAxis, { name: Localized; left: Localized; right: Localized }> = {
-  information: { name: { hu: "Információ", en: "Information" }, left: { hu: "Strukturált", en: "Structured" }, right: { hu: "Informális", en: "Informal" } },
+  information: { name: { hu: "Információáramlás", en: "Information flow" }, left: { hu: "Strukturált", en: "Structured" }, right: { hu: "Informális", en: "Informal" } },
   coordination: { name: { hu: "Koordináció", en: "Coordination" }, left: { hu: "Explicit", en: "Explicit" }, right: { hu: "Organikus", en: "Organic" } },
-  decision: { name: { hu: "Döntés", en: "Decision" }, left: { hu: "Centralizált", en: "Centralized" }, right: { hu: "Elosztott", en: "Distributed" } },
-  execution: { name: { hu: "Végrehajtás", en: "Execution" }, left: { hu: "Tervvezérelt", en: "Plan-driven" }, right: { hu: "Adaptív", en: "Adaptive" } },
+  decision: { name: { hu: "Döntéshozatal", en: "Decision-making" }, left: { hu: "Centralizált", en: "Centralized" }, right: { hu: "Elosztott", en: "Distributed" } },
+  execution: { name: { hu: "Megvalósítás", en: "Implementation" }, left: { hu: "Tervvezérelt", en: "Plan-driven" }, right: { hu: "Adaptív", en: "Adaptive" } },
 };
 export const INSTRUCTIONS: Localized = {
   hu: "A megjelölt négyhetes időszak közös munkájára gondolj ebben a csapatban. Azokban a helyzetekben, amikor az állítás értelmezhető volt, milyen gyakran történt így? A tényleges gyakorlatot jelöld. Ha nem volt ilyen helyzet, vagy nem láttál rá, válaszd a Nem megítélhető lehetőséget.",

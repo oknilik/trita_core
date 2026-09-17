@@ -19,14 +19,14 @@ describe("client report reading flow", () => {
     expect(within(main).getAllByRole("img")).toHaveLength(4);
     expect(within(main).getByText("4/5", { exact: false })).toBeVisible();
     expect(within(main).getAllByText(/eltérő válaszolói körből/)).toHaveLength(2);
-    expect(within(main).queryByText("Információ × Fegyelem")).not.toBeInTheDocument();
+    expect(within(main).queryByText("Információáramlás × Fegyelem")).not.toBeInTheDocument();
     expect(within(main).queryByText("Szórás")).not.toBeInTheDocument();
     expect(within(main).getByText(/Javasolt műhelylépés/)).toBeVisible();
     expect(document.body.textContent).not.toContain("Private consultant note");
     await userEvent.click(screen.getByRole("tab", { name: "Mérési háttér" }));
     const data = screen.getByRole("tabpanel");
     expect(within(data).getAllByRole("table")).toHaveLength(2);
-    expect(within(data).getByRole("row", { name: /Végrehajtás 52,1 16,1 4\/5/ })).toBeVisible();
+    expect(within(data).getByRole("row", { name: /Megvalósítás 52,1 16,1 4\/5/ })).toBeVisible();
     expect(within(data).getByText(/nem validált csapattípus/)).toBeVisible();
   });
 
