@@ -17,6 +17,7 @@ describe("operating catalogue and layered report", () => {
     for (const pattern of Object.values(OPERATING_CATALOGUE)) {
       await userEvent.click(screen.getByRole("button", { name: new RegExp(pattern.code) }));
       expect(screen.getByRole("heading", { level: 2, name: pattern.name.hu })).toBeVisible();
+      expect(screen.getByRole("img", { name: `${pattern.name.hu} – együttműködő csapat absztrakt figurákkal` })).toHaveAttribute("src", `/illustrations/operating-patterns/${pattern.code}.svg`);
     }
     expect(screen.queryByText(/Beszélgetésindító|Workshopkérdés/)).not.toBeInTheDocument();
     expect(new Set(Object.values(OPERATING_CATALOGUE).map((p) => p.code)).size).toBe(16);
