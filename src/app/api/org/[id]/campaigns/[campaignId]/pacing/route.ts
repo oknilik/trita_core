@@ -44,9 +44,11 @@ export async function POST(
 
   const campaign = await prisma.campaign.findFirst({
     where: { id: campaignId, orgId },
-    select: { id: true, status: true },
+    select: { id: true, status: true, programKey: true },
   });
   if (!campaign) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+  if (campaign.programKey) return NextResponse.json({ error: "PROGRAM_CONFIGURATION_FIXED" }, { status: 409 });
 
   const body = bodySchema.safeParse(await req.json().catch(() => null));
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });

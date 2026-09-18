@@ -1,3 +1,4 @@
+import { programComparisonLines } from "@/lib/programs/report";
 import type { SerializedTeamReport } from "@/lib/team-report";
 import { hasApprovedEnTranslation, localizeTeamReport } from "@/lib/team-report-i18n";
 import { reportAttentionSignals, reportNextStep } from "@/lib/team-report-reader";
@@ -40,6 +41,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
       {report.status === "PUBLISHED" ? <TeamReportPdfButton report={report} isHu={isHu} /> :
         <span className="rounded-full bg-state-warning-bg px-3 py-1.5 text-xs font-medium text-state-warning-fg">{isHu ? "Vázlat-előnézet" : "Draft preview"}</span>}
     </header>
+    {agg?.program?.baseline && <section className="rounded-xl border border-sand p-5"><h3 className="font-fraunces text-xl">{isHu ? "Változás a kiinduló méréshez képest" : "Change from baseline"}</h3>{programComparisonLines(agg.program, isHu).map((line, i) => <p key={i} className="mt-2 text-caption">{line}</p>)}</section>}
     <TeamReportTabs isHu={isHu}
       overview={<>
         <div className="overflow-hidden rounded-2xl border border-sand bg-surface-card px-5 sm:px-8">

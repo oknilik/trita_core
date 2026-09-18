@@ -1,3 +1,4 @@
+import { parseProgram, activityStates, programActivityLink } from "@/lib/programs/core";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -60,15 +61,14 @@ export default async function MyMeasurementsPage() {
     orderBy: { campaign: { createdAt: "desc" } },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
-      stepCompletions: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
         select: {
           id: true,
           name: true,
           description: true,
           type: true,
-          steps: true,
+          steps: true, programSnapshot: true,
           teamId: true,
           teamIds: true,
           requireFreshResults: true,
@@ -126,7 +126,7 @@ export default async function MyMeasurementsPage() {
             // team/[id] oldallal közös szabály (invite-policy).
             ...sentObserverInviteWhere(),
           },
-          select: { status: true, createdAt: true, completedAt: true },
+          select: { campaignId: true, status: true, createdAt: true, completedAt: true },
         })
       : [];
 
@@ -152,12 +152,15 @@ export default async function MyMeasurementsPage() {
       const selfDone = selfResults.some((result) =>
         isSelfResultForCampaign(result, p.campaign),
       );
-      const doneFlags = steps.map((_, idx) =>
+      const program = parseProgram(p.campaign.programSnapshot);
+      const scopedInvites = myInvitations.filter(i => i.campaignId === p.campaign.id);
+      const activities = program ? activityStates(program, p.stepCompletions, { observerSent: scopedInvites.length, observerResponses: scopedInvites.filter(i => i.status === "COMPLETED").length }) : null;
+      const doneFlags = activities ? activities.map(a => a.state === "COMPLETED") : steps.map((_, idx) =>
         isCampaignStepDone(steps, idx, p, selfDone),
       );
       const doneCount = doneFlags.filter(Boolean).length;
       const currentIdx = doneFlags.findIndex((f) => !f);
-      const gateOpen = isStepGateOpen(p);
+      const gateOpen = program ? true : isStepGateOpen(p);
 
       // Rész-haladás a nyitott lépésen (értékelős lépések) + „megkezdte-e"
       // (OBSERVER_360-nál a szerver-oldali felmérés-piszkozat is számít).
@@ -176,11 +179,12 @@ export default async function MyMeasurementsPage() {
       const observer = steps.includes("OBSERVER_360")
         ? (() => {
             const relevant = myInvitations.filter(
-              (inv) => freshFrom === null || inv.createdAt.getTime() >= freshFrom,
+              (inv) => program ? inv.campaignId === p.campaign.id : freshFrom === null || inv.createdAt.getTime() >= freshFrom,
             );
             const received = myInvitations.filter(
               (inv) =>
                 inv.status === "COMPLETED" &&
+                (!program || inv.campaignId === p.campaign.id) &&
                 (freshFrom === null ||
                   (inv.completedAt && inv.completedAt.getTime() >= freshFrom)),
             ).length;
@@ -189,6 +193,7 @@ export default async function MyMeasurementsPage() {
         : null;
 
       return {
+        program: Boolean(program), activities,
         id: p.campaign.id,
         name: p.campaign.name,
         description: p.campaign.description,
@@ -197,7 +202,7 @@ export default async function MyMeasurementsPage() {
         doneCount,
         currentIdx,
         gateOpen,
-        nextStepOpensAt: p.nextStepOpensAt,
+        nextStepOpensAt: program ? null : p.nextStepOpensAt,
         partial,
         started,
         observer,
@@ -324,11 +329,11 @@ export default async function MyMeasurementsPage() {
                   <div className="mt-4 flex flex-col gap-2">
                     {card.steps.map((stepType, idx) => {
                       const label = isCampaignStepType(stepType)
-                        ? CAMPAIGN_STEP_LABELS[stepType][loc === "en" ? "en" : "hu"]
+                        ? stepType === "OBSERVER_360" && card.program ? (loc === "hu" ? "Külső visszajelzés" : "Observer feedback") : CAMPAIGN_STEP_LABELS[stepType][loc === "en" ? "en" : "hu"]
                         : stepType;
                       const isDone = card.doneFlags[idx];
-                      const isCurrent = idx === card.currentIdx;
-                      const link = isCampaignStepType(stepType)
+                      const isCurrent = card.activities ? ["AVAILABLE", "IN_PROGRESS", "WAITING"].includes(card.activities[idx].state) : idx === card.currentIdx;
+                      const link = card.program ? programActivityLink(stepType, card.id) : isCampaignStepType(stepType)
                         ? getCampaignStepLink(stepType, card.id)
                         : "/dashboard";
                       const started = isCurrent && card.started;

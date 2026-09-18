@@ -43,9 +43,9 @@ export default async function TrustPeersPage() {
     orderBy: { addedAt: "asc" },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
-        select: { id: true, name: true, type: true, steps: true, teamId: true, teamIds: true },
+        select: { id: true, name: true, type: true, steps: true, programSnapshot: true, teamId: true, teamIds: true },
       },
     },
   });

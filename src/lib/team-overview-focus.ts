@@ -10,6 +10,7 @@ export interface TeamOverviewMeasurementTask {
   stepType: CampaignStepType;
   opensAt: Date | null;
   started: boolean;
+  href?: string;
 }
 
 export interface TeamOverviewObserverTask {
@@ -127,7 +128,7 @@ export function resolveTeamOverviewFocus(input: {
             : hu
               ? "Kitöltöm most"
               : "Start now",
-        href: getCampaignStepLink(
+        href: pendingMeasurement.href ?? getCampaignStepLink(
           pendingMeasurement.stepType,
           pendingMeasurement.campaignId,
         ),

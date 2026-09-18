@@ -15,6 +15,7 @@ import { ClockIcon, LockIcon, MailIcon, ShareIcon } from "@/components/ui/icons"
 import { StatePanel } from "@/components/ui/primitives/StatePanel";
 
 interface InvitationsTabProps {
+  campaignId?: string;
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   isPlus: boolean;
@@ -80,6 +81,7 @@ function LockedInvitations() {
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export function InvitationsTab({
+  campaignId,
   sentInvitations,
   receivedInvitations,
   isPlus,
@@ -111,7 +113,7 @@ export function InvitationsTab({
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/observer/colleagues")
+    fetch(`/api/observer/colleagues${campaignId ? `?campaignId=${encodeURIComponent(campaignId)}` : ""}`)
       .then((res) => (res.ok ? res.json() : { colleagues: [] }))
       .then((data) => {
         if (!cancelled) setColleagues(data.colleagues ?? []);
@@ -123,7 +125,7 @@ export function InvitationsTab({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [campaignId]);
 
   useEffect(() => {
     const active = invitations.filter((i) => i.status !== "CANCELED");
@@ -144,7 +146,7 @@ export function InvitationsTab({
       const res = await fetch("/api/observer/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: hasEmail ? JSON.stringify({ email: email.trim() }) : JSON.stringify({}),
+        body: hasEmail ? JSON.stringify({ email: email.trim(), campaignId }) : JSON.stringify({ campaignId }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -180,7 +182,7 @@ export function InvitationsTab({
       const res = await fetch("/api/observer/invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ colleagueUserId }),
+        body: JSON.stringify({ colleagueUserId, campaignId }),
       });
       const data = await res.json();
       if (!res.ok) {

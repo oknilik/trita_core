@@ -1,3 +1,4 @@
+import { parseProgram, activityStates } from "@/lib/programs/core";
 import "server-only";
 
 import type { NavHeaderUI } from "@/components/layout/nav-header-ui";
@@ -89,8 +90,8 @@ export async function resolveWorkspaceNavContext(
               where: { userId: profile.id, campaign: { status: "ACTIVE" } },
               select: {
                 currentStep: true,
-                nextStepOpensAt: true,
-                campaign: { select: { type: true, steps: true } },
+                nextStepOpensAt: true, stepCompletions: true,
+                campaign: { select: { type: true, steps: true, programSnapshot: true } },
               },
             }),
             // …plusz a rám váró (belsős/külsős) visszajelzés-kérések.
@@ -118,7 +119,7 @@ export async function resolveWorkspaceNavContext(
           ]);
         const openStepCount = taskParticipations.filter(
           (p) =>
-            p.currentStep < getCampaignSteps(p.campaign).length && isStepGateOpen(p),
+            p.campaign.programSnapshot ? activityStates(parseProgram(p.campaign.programSnapshot)!, p.stepCompletions).some(a => a.state === "AVAILABLE") : p.currentStep < getCampaignSteps(p.campaign).length && isStepGateOpen(p),
         ).length;
         const openTaskCount = openStepCount + feedbackRequestCount;
         signedInHomeHref = journey.destination;

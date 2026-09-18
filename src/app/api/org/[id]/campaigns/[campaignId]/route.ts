@@ -1,3 +1,5 @@
+import { buildTeamReportAggregates } from "@/lib/team-report";
+import { programDataError } from "@/lib/programs/report";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -61,11 +63,11 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
         id: true,
         orgId: true,
         status: true,
-        presetId: true,
+        presetId: true, programKey: true,
         type: true,
         teamId: true,
         teamIds: true,
-        steps: true,
+        steps: true, programSnapshot: true,
         activatedAt: true,
       },
     }),
@@ -131,7 +133,7 @@ export async function GET(
       id: true,
       name: true,
       description: true,
-      presetId: true,
+      presetId: true, programKey: true,
       status: true,
       createdAt: true,
       closedAt: true,
@@ -191,6 +193,7 @@ export async function PATCH(
 
     // A nevesített preset mérési készlete szerződés, nem kiinduló sablon.
     // Célzás és pacing tovább szerkeszthető, a steps csak CUSTOM körnél.
+    if (ctx.campaign.programKey && (edit.types !== undefined || edit.teamIds !== undefined || edit.teamId !== undefined || edit.stepIntervalHours !== undefined)) return NextResponse.json({ error: "PROGRAM_CONFIGURATION_FIXED" }, { status: 409 });
     if (ctx.campaign.presetId && edit.types !== undefined) {
       return NextResponse.json(
         { error: "PRESET_STEPS_IMMUTABLE" },
@@ -373,7 +376,15 @@ export async function PATCH(
       );
     }
   } else {
-    transition = await prisma.$transaction(async (tx) => {
+    const closed = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${campaignId} FOR UPDATE`;
+      const current = await tx.campaign.findUniqueOrThrow({ where: { id: campaignId } });
+      if (current.programKey) {
+        if (current.status !== "ACTIVE") return { error: "INVALID_CAMPAIGN_TRANSITION" } as const;
+        const aggregates = current.teamId ? await buildTeamReportAggregates(current.teamId, { assessmentCampaignId: campaignId }) : null;
+        const error = aggregates ? programDataError(aggregates) : "REPORT_AGGREGATES_REQUIRED";
+        if (error) return { error } as const;
+      }
       const campaign = await tx.campaign.update({
         where: { id: campaignId },
         data: { status: "CLOSED", closedAt: new Date() },
@@ -392,7 +403,9 @@ export async function PATCH(
         });
       }
       return { outcome: "closed" as const, campaign, openings: [] as const };
-    });
+    }, { timeout: 20000 });
+    if ("error" in closed) return NextResponse.json({ error: closed.error }, { status: 409 });
+    transition = { ...closed, openings: [] };
   }
 
   const { campaign, openings } = transition;

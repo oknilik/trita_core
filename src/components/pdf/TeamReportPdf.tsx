@@ -1,3 +1,4 @@
+import { programComparisonLines } from "@/lib/programs/report";
 import { Document, Page, View, Text, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import type { ReactNode } from "react";
@@ -190,6 +191,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
   const hasInterpretation = Boolean(op || comp || comparison.prompts.length || signals.length || narratives.length || report.actionItems?.length);
   const sourceLabel = (source?: string) => source === "trust_round" ? (isHu ? "Mért bizalmi kör" : "Measured trust round") : source === "mixed" ? (isHu ? "Vegyes: mért és becsült" : "Mixed: measured and estimated") : (isHu ? "Személyiségprofilból becsült" : "Personality-based estimate");
   return <Document title={`${report.title || "trita"} - ${isHu ? "Csapatriport" : "Team report"}`} author="trita" language={locale}>
+    {agg?.program?.baseline && <Page size="A4" style={s.page}><Text>{isHu ? "Változás a kiinduló méréshez képest" : "Change from baseline"}</Text>{programComparisonLines(agg.program, isHu).map((line, i) => <Text key={i} style={{ marginTop: 12, fontSize: 11 }}>{line}</Text>)}</Page>}
     <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Csapatkép" : "Team picture"}>
       <View wrap={false} style={{ gap: 5 }}>
         <Text style={{ ...caption, color: colors.bronze }}>{isHu ? "CSAPATKÉP" : "TEAM PICTURE"}</Text>

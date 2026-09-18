@@ -231,7 +231,7 @@ export default async function OrgDetailPage({
       id: true,
       name: true,
       type: true,
-      steps: true,
+      steps: true, programSnapshot: true,
       stepIntervalHours: true,
       teamId: true,
       participants: {

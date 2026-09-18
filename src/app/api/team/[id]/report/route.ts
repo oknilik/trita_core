@@ -1,3 +1,5 @@
+import { mutateProgramReport, ProgramReportError } from "@/lib/programs/report-lifecycle.server";
+import { programDataError } from "@/lib/programs/report";
 import { resolveOperatingReportSource } from "@/lib/team-operating-style/report-source.server";
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
@@ -82,7 +84,8 @@ const translationsEnSchema = z
 
 const patchSchema = z.object({
   reportId: z.string().min(1),
-  action: z.enum(["save", "preview", "publish", "unpublish"]).default("save"),
+  expectedRevision: z.number().int().positive().optional(),
+  action: z.enum(["save", "preview", "review", "publish", "unpublish"]).default("save"),
   translationsEn: translationsEnSchema,
   operatingCampaignId: z.string().min(1).nullable().optional(),
   ...narrativeFields,
@@ -162,12 +165,12 @@ async function updateReportWithHistory(input: {
 async function validateReportCampaign(teamId: string, orgId: string, campaignId: string) {
   const campaign = await prisma.campaign.findFirst({
     where: { id: campaignId, orgId },
-    select: { id: true, status: true, presetId: true, teamId: true, teamIds: true, operatingRound: { select: { id: true } } },
+    select: { id: true, status: true, presetId: true, programKey: true, teamId: true, teamIds: true, operatingRound: { select: { id: true } } },
   });
   if (!campaign) return "REPORT_CAMPAIGN_NOT_FOUND" as const;
   if (campaign.status !== "CLOSED") return "REPORT_CAMPAIGN_NOT_CLOSED" as const;
-  if (!["SCAN_V1", "SCAN_STYLE_V1"].includes(campaign.presetId ?? "")) return "REPORT_CAMPAIGN_NOT_SCAN_V1" as const;
-  if (campaign.presetId === "SCAN_STYLE_V1" && !campaign.operatingRound) return "REPORT_OPERATING_DATA_INSUFFICIENT" as const;
+  if (!campaign.programKey && !["SCAN_V1", "SCAN_STYLE_V1"].includes(campaign.presetId ?? "")) return "REPORT_CAMPAIGN_NOT_SCAN_V1" as const;
+  if ((campaign.programKey || campaign.presetId === "SCAN_STYLE_V1") && !campaign.operatingRound) return "REPORT_OPERATING_DATA_INSUFFICIENT" as const;
   if (campaign.teamId !== teamId && !campaign.teamIds.includes(teamId)) {
     return "REPORT_CAMPAIGN_TEAM_MISMATCH" as const;
   }
@@ -281,6 +284,9 @@ export async function POST(
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
 
+  const readinessError = programDataError(aggregates);
+  if (readinessError) return NextResponse.json({ error: readinessError }, { status: 409 });
+
   // A narratív mezőket generált javaslattal töltjük elő – a tanácsadó
   // szerkeszthető kiindulópontot kap, nem üres űrlapot.
   const prefill = buildDraftNarrativePrefill(aggregates);
@@ -384,7 +390,7 @@ export async function PATCH(
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { reportId, action, translationsEn, operatingCampaignId: requestedOperatingCampaignId, ...fields } = parsed.data;
+  const { reportId, action, expectedRevision, translationsEn, operatingCampaignId: requestedOperatingCampaignId, ...fields } = parsed.data;
 
   const existing = await prisma.teamReport.findFirst({
     where: { id: reportId, teamId },
@@ -402,6 +408,23 @@ export async function PATCH(
   if (!existing) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
+  const sourceCampaign = existing.campaignId ? await prisma.campaign.findUnique({ where: { id: existing.campaignId }, select: { programKey: true } }) : null;
+  if (sourceCampaign?.programKey) {
+    try {
+      const programFields = { ...fields, ...(translationsEn !== undefined ? { translationsEn } : {}), ...(requestedOperatingCampaignId !== undefined ? { operatingCampaignId: requestedOperatingCampaignId } : {}) };
+      const report = await mutateProgramReport({ reportId, teamId, actorId: ctx.profileId, action, expectedRevision, fields: programFields });
+      if (action === "publish") {
+        const team = await prisma.team.findUnique({ where: { id: teamId }, select: { name: true } });
+        const { handleTeamReportPublished } = await import("@/lib/notifications");
+        await handleTeamReportPublished({ teamId, teamName: team?.name ?? "–", reportId, orgId: ctx.orgId }).catch((err: unknown) => log.error({ err }, "Program report notification failed"));
+      }
+      return NextResponse.json({ ok: true, report });
+    } catch (e) {
+      if (e instanceof ProgramReportError) return NextResponse.json({ error: e.code }, { status: 409 });
+      throw e;
+    }
+  }
+  if (action === "review") return NextResponse.json({ error: "PROGRAM_REQUIRED" }, { status: 409 });
   const previousActions = parseActionItems(existing.actionItems) ?? [];
   const nextActions = fields.actionItems
     ? normalizeActionIds(fields.actionItems, previousActions)

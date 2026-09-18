@@ -90,7 +90,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       description: true,
       status: true,
       type: true,
-      steps: true,
+      steps: true, programSnapshot: true,
       requireFreshResults: true,
       activatedAt: true,
       createdAt: true,

@@ -93,12 +93,12 @@ export async function lockAndValidatePeerSubmission(
     where: { campaignId_userId: { campaignId, userId: raterUserId } },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
         select: {
           status: true,
           type: true,
-          steps: true,
+          steps: true, programSnapshot: true,
           teamId: true,
           teamIds: true,
         },

@@ -50,6 +50,7 @@ function buildActionMap(context: JourneyContextSnapshot): Record<JourneyActionId
   const orgCampaignHref = context.orgId ? `/org/${context.orgId}/campaigns/new` : "/org";
 
   return {
+    COMPLETE_PROGRAM_ACTIVITY: { id: "COMPLETE_PROGRAM_ACTIVITY", href: "/tasks", scope: "team" },
     START_SELF_ASSESSMENT: { id: "START_SELF_ASSESSMENT", href: "/assessment", scope: "self" },
     CONTINUE_SELF_ASSESSMENT: { id: "CONTINUE_SELF_ASSESSMENT", href: "/assessment", scope: "self" },
     REVIEW_SELF_RESULTS: { id: "REVIEW_SELF_RESULTS", href: "/profile/results", scope: "self" },
@@ -266,6 +267,12 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
 }
 
 export function computeJourneyState(context: JourneyContextSnapshot): JourneyState {
+  if (context.programs?.length) {
+    const actions: JourneyAction[] = context.programs.flatMap(p => p.activities.filter(a => ["AVAILABLE", "IN_PROGRESS"].includes(a.state)).map(a => ({ id: "COMPLETE_PROGRAM_ACTIVITY" as const, href: a.href, scope: "team" as const, label: a.label })));
+    // Waiting is never ranked above a task the participant can complete now.
+    if (!actions.length) actions.push({ id: "COMPLETE_PROGRAM_ACTIVITY", href: "/tasks", scope: "team", label: { hu: "Mérési feladataim és állapotuk", en: "My measurements and progress" } });
+    return { currentStage: "TEAM_PARTIAL", recommendedNextAction: actions[0], availableNextActions: actions, blockingReasons: [], completionSummary: context.completionSummary };
+  }
   const currentStage = computeStage(context);
   const availableNextActions = computeActions(currentStage, context);
 

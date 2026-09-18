@@ -1,3 +1,4 @@
+import { programComparisonLines } from "@/lib/programs/report";
 import Link from "next/link";
 import { TeamOperatingStyleReport } from "./TeamOperatingStyleReport";
 import { t } from "@/lib/i18n";
@@ -108,6 +109,7 @@ export function TeamReportMemberView({
         </div>
       </DashboardPanel>
 
+      {report.aggregates?.program?.baseline && <section className="rounded-xl border border-sand p-5">{programComparisonLines(report.aggregates.program, isHu).map((line, i) => <p key={i} className="mt-2 text-caption">{line}</p>)}</section>}
       <TeamOperatingStyleReport snapshot={report.aggregates?.teamStyle} averages={report.aggregates?.dimensionAverages} spread={report.aggregates?.dimensionSpread} personalityCount={report.aggregates?.completedCount} locale={isHu ? "hu" : "en"} />
 
       {/* 1. Te a csapatban – radar-összevetés + színes sávok */}

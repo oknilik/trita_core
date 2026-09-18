@@ -164,8 +164,8 @@ export async function buildMemberDossier(
     prisma.campaignParticipant.findMany({
       where: { userId: targetUserId, campaign: { orgId, status: "ACTIVE" } },
       select: {
-        currentStep: true,
-        campaign: { select: { id: true, name: true, type: true, steps: true } },
+        currentStep: true, stepCompletions: true,
+        campaign: { select: { id: true, name: true, type: true, steps: true, programSnapshot: true } },
       },
     }),
   ]);
@@ -365,7 +365,7 @@ export async function buildMemberDossier(
     return {
       campaignId: p.campaign.id,
       name: p.campaign.name,
-      currentStepType: getCurrentStepType(p.campaign, { currentStep: p.currentStep }),
+      currentStepType: getCurrentStepType(p.campaign, { currentStep: p.currentStep, stepCompletions: p.stepCompletions }),
       stepIndex: p.currentStep,
       stepCount: steps.length,
     };

@@ -1,3 +1,5 @@
+import { attachProgramEvidence } from "@/lib/programs/report.server";
+import { programDataError, type ProgramReportEvidence } from "@/lib/programs/report";
 import { loadTeamStyleSnapshot } from "@/lib/team-operating-style/snapshot.server";
 import { AXES as OPERATING_AXES } from "@/lib/team-operating-style/questions";
 import { POLICY as OPERATING_POLICY } from "@/lib/team-operating-style/scoring";
@@ -52,6 +54,7 @@ import {
 // Terv: docs/product/team-report-gating-plan.md
 
 export interface TeamReportAggregates {
+  program?: ProgramReportEvidence;
   /** Separate, frozen behavior and personality layers; absent in legacy reports. */
   teamStyle?: TeamStyleSnapshot;
   operatingCampaignId?: string;
@@ -226,6 +229,8 @@ export interface TeamReportActionItem {
 }
 
 export interface SerializedTeamReport {
+  revision?: number;
+  reviewedRevision?: number | null;
   id: string;
   teamId: string;
   campaignId?: string | null;
@@ -252,6 +257,8 @@ export interface SerializedTeamReport {
 }
 
 export type TeamReportPublishBlockReason =
+  | "REPORT_OBSERVER_DATA_INSUFFICIENT"
+  | "BASELINE_INVALID"
   | "REPORT_CAMPAIGN_REQUIRED"
   | "REPORT_CAMPAIGN_MISMATCH"
   | "REPORT_AGGREGATES_REQUIRED"
@@ -287,7 +294,9 @@ export function validateTeamReportForPublish(input: {
   ) {
     return "REPORT_SELF_DATA_INSUFFICIENT";
   }
-  if (!input.aggregates.evidence || input.aggregates.evidence.measuredEdgeCount < 1) {
+  const programError = programDataError(input.aggregates);
+  if (programError) return programError as TeamReportPublishBlockReason;
+  if (!input.aggregates.program && (!input.aggregates.evidence || input.aggregates.evidence.measuredEdgeCount < 1)) {
     return "REPORT_TRUST_DATA_INSUFFICIENT";
   }
   if (input.aggregates.psychSafetyMultiTeam) return "REPORT_PULSE_MULTI_TEAM_UNSCOPED";
@@ -652,7 +661,7 @@ export async function buildTeamReportAggregates(
   }
   const feedbackCulture = await feedbackCulturePromise;
 
-  return {
+  return attachProgramEvidence(teamId, options?.assessmentCampaignId, {
     teamStyle,
     ...(options?.operatingCampaignId ? { operatingCampaignId: options.operatingCampaignId } : {}),
     generatedAt: new Date().toISOString(),
@@ -689,7 +698,7 @@ export async function buildTeamReportAggregates(
     pressure,
     peerRoles,
     feedbackCulture,
-  };
+  });
 }
 
 // ── Vázlat-előtöltés ─────────────────────────────────────────────────────────
@@ -978,6 +987,8 @@ export function parseActionItems(value: unknown): TeamReportActionItem[] | null 
 }
 
 type TeamReportRecord = {
+  revision?: number;
+  reviewedRevision?: number | null;
   id: string;
   teamId: string;
   campaignId?: string | null;
@@ -1015,6 +1026,7 @@ export function serializeTeamReport(
 
   return {
     id: report.id,
+    revision: report.revision, reviewedRevision: report.reviewedRevision,
     teamId: report.teamId,
     campaignId: report.campaignId ?? null,
     status: report.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT",

@@ -1,3 +1,5 @@
+import type { ActivityState, ProgramKey } from "@/lib/programs/core";
+export interface ProgramJourney { campaignId: string; name: string; programKey: ProgramKey; activities: { key: string; state: ActivityState; href: string; label: { hu: string; en: string } }[] }
 export const JOURNEY_STAGES = [
   "SELF_NOT_STARTED",
   "SELF_IN_PROGRESS",
@@ -14,6 +16,7 @@ export const JOURNEY_STAGES = [
 export type JourneyStage = (typeof JOURNEY_STAGES)[number];
 
 export type JourneyActionId =
+  | "COMPLETE_PROGRAM_ACTIVITY"
   | "START_SELF_ASSESSMENT"
   | "CONTINUE_SELF_ASSESSMENT"
   | "REVIEW_SELF_RESULTS"
@@ -42,6 +45,7 @@ export type JourneyBlockingReasonCode =
   | "ORG_CAMPAIGN_MISSING";
 
 export interface JourneyAction {
+  label?: { hu: string; en: string };
   id: JourneyActionId;
   href: string;
   scope: "self" | "team" | "org";
@@ -240,6 +244,7 @@ export interface JourneySubscriptionSnapshot {
 }
 
 export interface JourneyContextSnapshot {
+  programs?: ProgramJourney[];
   profileId: string;
   /** Kizárólag tanácsadói mérés-kezelési jogosultság. Az org-admin szerep
    * önmagában nem adhat kampányindítási CTA-t. */

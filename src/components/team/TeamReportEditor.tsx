@@ -102,6 +102,9 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     hu: "A kiválasztott mérési kör nem található vagy nem ehhez a szervezethez tartozik.",
     en: "The selected measurement cycle was not found or belongs to another organization.",
   },
+  REPORT_REVIEW_REQUIRED: { hu: "A riportot előbb tanácsadóként jóvá kell hagynod.", en: "Approve the consultant review before publishing." },
+  REPORT_REVISION_CONFLICT: { hu: "A riport közben megváltozott. Frissítsd az oldalt és ellenőrizd az új változatot.", en: "The report changed. Reload and review the new revision." },
+  REPORT_OBSERVER_DATA_INSUFFICIENT: { hu: "Még nincs minden résztvevőnél három observer válasz.", en: "Three observer responses per participant are still required." },
   REPORT_CAMPAIGN_NOT_SCAN_V1: {
     hu: "Riport Team Scan v1 vagy Csapatkép és működés körből készíthető.",
     en: "Reports require a Team Scan v1 or Team profile and operating style cycle.",
@@ -170,7 +173,9 @@ const TRANSLATION_FIELDS: Array<{
 export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, operatingRounds = [], isHu }: Props) {
   const router = useRouter();
   const locale: Locale = isHu ? "hu" : "en";
-  const draft = reports.find((r) => r.status === "DRAFT") ?? null;
+  const [savedDraft, setSavedDraft] = useState<SerializedTeamReport | null>(null);
+  const sourceDraft = reports.find((r) => r.status === "DRAFT") ?? null;
+  const draft = savedDraft?.id === sourceDraft?.id && (savedDraft?.revision ?? 0) >= (sourceDraft?.revision ?? 0) ? savedDraft : sourceDraft;
   const publishedReports = [...reports]
     .filter((r) => r.status === "PUBLISHED")
     .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
@@ -187,10 +192,12 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
     leadershipGuide: draft?.leadershipGuide ?? "",
     internalNotes: draft?.internalNotes ?? "",
   });
-  const [actionItems, setActionItems] = useState<TeamReportActionItem[]>(
+  const [actionItems, setActionItemsRaw] = useState<TeamReportActionItem[]>(
     draft?.actionItems ?? [],
   );
   const [operatingCampaignId, setOperatingCampaignId] = useState(draft?.aggregates?.operatingCampaignId ?? "");
+  const [programDirty, setProgramDirty] = useState(false);
+  function setActionItems(value: React.SetStateAction<TeamReportActionItem[]>) { setProgramDirty(true); setActionItemsRaw(value); }
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
@@ -219,6 +226,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
   // router.refresh() a már mountolt komponens useState-jét nem inicializálja
   // újra (üresen maradnának a mezők, mentéskor felülírva a tartalmat).
   function seedFromReport(report: SerializedTeamReport) {
+    setSavedDraft(report); setProgramDirty(false);
     setOperatingCampaignId(report.aggregates?.operatingCampaignId ?? "");
     setValues({
       title: report.title ?? "",
@@ -230,7 +238,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
       leadershipGuide: report.leadershipGuide ?? "",
       internalNotes: report.internalNotes ?? "",
     });
-    setActionItems(report.actionItems ?? []);
+    setActionItemsRaw(report.actionItems ?? []);
     setTranslation(report.translationsEn?.en ?? null);
   }
 
@@ -274,12 +282,14 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           reportId: draft.id,
-          action: "save",
+          action: "save", expectedRevision: draft.revision,
           translationsEn: { en: payload },
         }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Hiba");
       setTranslation(payload);
+      const savedResponse = await res.json() as { report: SerializedTeamReport };
+      if (savedResponse.report) seedFromReport(savedResponse.report);
       setSavedAt(new Date().toLocaleTimeString(isHu ? "hu-HU" : "en-GB"));
     } catch (err) {
       setError(reportErrorMessage(err));
@@ -371,7 +381,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
       const res = await fetch(`/api/team/${teamId}/report`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reportId, action: "unpublish" }),
+        body: JSON.stringify({ reportId, action: "unpublish", expectedRevision: reports.find(r => r.id === reportId)?.revision }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Hiba");
       const { report } = (await res.json()) as { report: SerializedTeamReport };
@@ -385,7 +395,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
     }
   }
 
-  async function saveOrPublish(action: "save" | "preview" | "publish") {
+  async function saveOrPublish(action: "save" | "preview" | "review" | "publish") {
     if (!draft) return;
     if (
       action === "publish" &&
@@ -403,8 +413,9 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
       const res = await fetch(`/api/team/${teamId}/report`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        body: JSON.stringify(draft.aggregates?.program && action === "publish" ? { reportId: draft.id, action, expectedRevision: draft.revision } : {
           reportId: draft.id,
+          expectedRevision: draft.revision,
           action,
           operatingCampaignId: operatingCampaignId || null,
           ...values,
@@ -419,9 +430,11 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
         }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Hiba");
+      const savedResponse = await res.json() as { report: SerializedTeamReport };
+      if (savedResponse.report) seedFromReport(savedResponse.report);
       setSavedAt(new Date().toLocaleTimeString(isHu ? "hu-HU" : "en-GB"));
-      if (action === "preview") {
-        const { report } = (await res.json()) as { report: SerializedTeamReport };
+      if (action === "preview" || action === "review") {
+        const { report } = savedResponse;
         // A belső jegyzetet kivesszük, hogy az előnézet a vezetői nézettel
         // legyen azonos.
         setPreview({ ...report, internalNotes: null });
@@ -459,10 +472,10 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
             <button
               type="button"
               disabled={busy}
-              onClick={() => saveOrPublish("publish")}
+              onClick={() => saveOrPublish(draft?.aggregates?.program && (programDirty || draft.reviewedRevision !== draft.revision) ? "review" : "publish")}
               className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
             >
-              {isHu ? "Publikálás (validálás)" : "Publish (validate)"}
+              {draft?.aggregates?.program && (programDirty || draft.reviewedRevision !== draft.revision) ? (isHu ? "Tanácsadói jóváhagyás" : "Approve review") : (isHu ? "Publikálás" : "Publish")}
             </button>
           </div>
         </DashboardPanel>
@@ -472,7 +485,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6" onChangeCapture={() => setProgramDirty(true)} onClickCapture={(e) => { if ((e.target as HTMLElement).closest("button[data-report-edit]")) setProgramDirty(true); }}>
     {celebrating && <CelebrationBurst onDone={() => setCelebrating(false)} />}
     <DashboardPanel className="p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -540,7 +553,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
               ? "A narratív mezők a csapatadatokból generált javaslattal indulnak – szerkeszd és egészítsd ki a tanácsadói értékeléssel."
               : "Narrative fields start with suggestions generated from team data – edit and extend them with your consultant assessment."}
           </p>
-          <label className="flex flex-col gap-2 text-sm text-ink">
+          {!draft.aggregates?.program && <label className="flex flex-col gap-2 text-sm text-ink">
             {t("tos.report.source", locale)}
             <select value={operatingCampaignId} onChange={(event) => setOperatingCampaignId(event.target.value)} disabled={busy}
               className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 py-2">
@@ -548,7 +561,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
               {operatingRounds.map((round) => <option key={round.id} value={round.id}>{round.name} · {new Date(round.referenceEnd).toLocaleDateString(isHu ? "hu-HU" : "en-GB")}</option>)}
             </select>
             <span className="text-xs text-muted">{t("tos.report.sourceHelp", locale)}</span>
-          </label>
+          </label>}
           {FIELDS.map((field) => (
             <label key={field.key} className="flex flex-col gap-1">
               <span
@@ -922,10 +935,10 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
             <button
               type="button"
               disabled={busy}
-              onClick={() => saveOrPublish("publish")}
+              onClick={() => saveOrPublish(draft?.aggregates?.program && (programDirty || draft.reviewedRevision !== draft.revision) ? "review" : "publish")}
               className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
             >
-              {isHu ? "Publikálás (validálás)" : "Publish (validate)"}
+              {draft?.aggregates?.program && (programDirty || draft.reviewedRevision !== draft.revision) ? (isHu ? "Tanácsadói jóváhagyás" : "Approve review") : (isHu ? "Publikálás" : "Publish")}
             </button>
             <button
               type="button"

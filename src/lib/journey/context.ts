@@ -1,3 +1,4 @@
+import { loadProgramJourney } from "@/lib/programs/journey.server";
 import "server-only";
 
 import { cache } from "react";
@@ -514,6 +515,7 @@ async function resolveJourneyContextUncached(
     org: orgSummary,
   };
 
+  const programs = await loadProgramJourney(profileId, orgId);
   const subscriptionRecord = orgId ? await getOrgSubscription(orgId) : null;
   const subscriptionState = getSubscriptionState(subscriptionRecord, now);
   const subscriptionHasAccess = subscriptionState === "active";
@@ -530,6 +532,7 @@ async function resolveJourneyContextUncached(
 
   return {
     profileId,
+    programs,
     canManageMeasurements: canManageMeasurements(
       normalizedOrgMembership?.role,
       profile.email,

@@ -1,3 +1,5 @@
+import { ProgramSubmissionError } from "@/lib/programs/submission.server";
+import { guardProgramSubmission } from "@/lib/programs/submission.server";
 import { Prisma, type TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -47,7 +49,7 @@ function persistedAnswers(scores: unknown): string | null {
   );
 }
 
-export async function POST(req: Request) {
+async function submitRequest(req: Request) {
   const log = await getRequestLogger("assessment");
   const userId = await resolveAssessmentSubmitViewerClerkId();
   if (!userId) {
@@ -150,6 +152,7 @@ export async function POST(req: Request) {
   const scopedCampaignId = campaignId;
   try {
     result = await prisma.$transaction(async (tx) => {
+      if (campaignId) await guardProgramSubmission(tx, campaignId, profile.id, "SELF_ASSESSMENT");
       const existing = campaignId
         ? await tx.assessmentResult.findUnique({
             where: { userProfileId_campaignId: { userProfileId: profile.id, campaignId: scopedCampaignId! } },
@@ -242,4 +245,12 @@ export async function POST(req: Request) {
   );
 
   return NextResponse.json({ id: result.id });
+}
+
+export async function POST(req: Request) {
+  try { return await submitRequest(req); }
+  catch (error) {
+    if (error instanceof ProgramSubmissionError) return NextResponse.json({ error: error.code }, { status: error.code === "FORBIDDEN" ? 403 : 409 });
+    throw error;
+  }
 }

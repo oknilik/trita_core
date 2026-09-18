@@ -1,3 +1,4 @@
+import { ProgramCampaignOverview } from "@/components/campaign/ProgramCampaignOverview";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -174,7 +175,7 @@ export default async function CampaignDetailPage({
         presetId: true,
         status: true,
         type: true,
-        steps: true,
+        steps: true, programSnapshot: true,
         teamId: true,
         teamIds: true,
         stepIntervalHours: true,
@@ -191,8 +192,7 @@ export default async function CampaignDetailPage({
             userId: true,
             completedAt: true,
             currentStep: true,
-            nextStepOpensAt: true,
-            stepCompletions: true,
+            nextStepOpensAt: true, stepCompletions: true,
             user: { select: { id: true, username: true, email: true } },
           },
         },
@@ -254,6 +254,8 @@ export default async function CampaignDetailPage({
       </PlatformPageShell>
     );
   }
+
+  if (campaign.programSnapshot) return <ProgramCampaignOverview orgId={orgId} campaignId={campaignId} locale={locale} canManage={canManageCampaign} />;
 
   const participantUserIds = campaign.participants.map((p) => p.userId);
 
