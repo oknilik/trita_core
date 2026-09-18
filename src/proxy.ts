@@ -67,6 +67,9 @@ const handler = clerkMiddleware(async (auth, req) => {
   // P2.2 portfólió-parkolás: ugyanaz a központi kapu zárja le a publikus,
   // belépett és API-belépőket. A modulok és adataik a repóban/adatbázisban
   // maradnak, de rejtett mélylinkkel sem válhatnak véletlenül élő termékké.
+  if (req.nextUrl.pathname === "/patterns" || req.nextUrl.pathname === "/patterns/") {
+    return NextResponse.redirect(new URL("/operating-patterns", req.url), 308);
+  }
   const parkedSurface = parkedPortfolioSurfaceForPath(req.nextUrl.pathname);
   if (parkedSurface) {
     if (req.nextUrl.pathname.startsWith("/api/")) {

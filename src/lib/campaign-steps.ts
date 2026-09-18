@@ -3,6 +3,7 @@
 // A tiszta lépés-logika a campaign-steps-core.ts-ben él.
 // ─────────────────────────────────────────────────────────────────────
 
+import { OPERATING_STYLE_VERSION } from "@/lib/team-operating-style/questions";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import {
@@ -474,6 +475,15 @@ export async function activateCampaignAtomically(
       // A throw a korabbi ACTIVE update-et is rollbackolja. Igy a kliens a
       // konkret, javithato okot kapja, a kampany pedig DRAFT marad.
       throw new CampaignActivationPreconditionError(preconditionFailure);
+    }
+
+    if (campaignSteps.includes("TEAM_OPERATING_STYLE")) {
+      await tx.teamOperatingRound.create({ data: {
+        campaignId, teamId: campaignTeamIds[0], instrumentVersion: OPERATING_STYLE_VERSION,
+        eligibleUserIds: participants.map((p) => p.userId),
+        referenceEnd: activatedAt,
+        referenceStart: new Date(activatedAt.getTime() - 28 * 24 * 60 * 60 * 1000),
+      } });
     }
 
     if (campaignSteps.includes("TEAM_ROLE") && campaignTeamIds.length > 0) {

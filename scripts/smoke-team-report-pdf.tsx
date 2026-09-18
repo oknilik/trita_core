@@ -1,46 +1,34 @@
+import { calculateOperatingStyle } from "../src/lib/team-operating-style/scoring";
+import { ITEMS, OPERATING_STYLE_VERSION } from "../src/lib/team-operating-style/questions";
+import { snapshotComposition, compareTeamPatterns } from "../src/lib/team-operating-style/comparison";
+import { calculateTeamPattern } from "../src/lib/team-pattern";
 // Füstteszt: a TeamReportDocument node-oldali renderelése mock-adatokkal.
 // NEM része a CI-nek — kézi ellenőrzés: `npx tsx scripts/smoke-team-report-pdf.tsx`.
 // A font-átregisztráció a generate-persona-reports.tsx mintája.
-import { join } from "node:path";
-import { Font, renderToBuffer } from "@react-pdf/renderer";
+import { renderToBuffer } from "@react-pdf/renderer";
 import React from "react";
+import { registerPdfFonts } from "./pdf-report-render";
+import { makeReaderReport } from "./fixtures/team-report-reader";
 
-const FONT_DIR = join(process.cwd(), "public", "fonts");
-Font.clear();
-Font.register({
-  family: "Fraunces",
-  fonts: [
-    { src: join(FONT_DIR, "Fraunces-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "Fraunces-Regular.ttf"), fontWeight: 600 },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontStyle: "italic" },
-  ],
-});
-Font.register({
-  family: "DM Sans",
-  fonts: [
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 500 },
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 600 },
-  ],
-});
-Font.register({
-  family: "Helvetica",
-  fonts: [
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 700 },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontWeight: 400, fontStyle: "italic" },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontWeight: 700, fontStyle: "italic" },
-  ],
-});
+registerPdfFonts();
 
 async function main() {
   const { TeamReportDocument } = await import("../src/components/pdf/TeamReportPdf");
+  const operating = { ...calculateOperatingStyle({ teamId: "team_smoke", roundId: "round_smoke", instrumentVersion: OPERATING_STYLE_VERSION,
+    eligibleRespondentIds: ["a", "b", "c"], responses: ["a", "b", "c"].map((respondentId) => ({ respondentId,
+      answers: Object.fromEntries(ITEMS.map((q) => [q.id, q.pole === "left" ? 5 : 1])),
+    })),
+  }), referenceStart: "2026-08-19", referenceEnd: "2026-09-16" };
+  const composition = snapshotComposition(calculateTeamPattern(["a", "b", "c"].map((userId) => ({ userId,
+    scores: { H: 80, A: 80, X: 80, C: 80, O: 80, E: 50 },
+  }))));
   const report = {
     id: "rep_smoke",
     teamId: "team_smoke",
     status: "PUBLISHED" as const,
     title: "Termékfejlesztés — őszi kör",
     aggregates: {
+      teamStyle: { version: 1, operating, composition, sameRespondents: true, comparison: compareTeamPatterns(operating, composition) },
       generatedAt: "2026-08-15T10:00:00.000Z",
       memberCount: 9,
       completedCount: 8,
@@ -143,6 +131,11 @@ async function main() {
   );
   writeFileSync("/tmp/team-report-smoke.pdf", full);
   console.log("written /tmp/team-report-smoke.pdf");
+  for (const isHu of [true, false]) {
+    const sample = await renderToBuffer(React.createElement(TeamReportDocument, { report: makeReaderReport(true), isHu }) as never);
+    writeFileSync(`/tmp/team-report-reader-${isHu ? "hu" : "en"}.pdf`, sample);
+    console.log(`reader cohort sample (isHu=${isHu}): ${sample.length} bytes`);
+  }
 }
 
 main().catch((err) => {

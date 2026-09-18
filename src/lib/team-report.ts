@@ -1,3 +1,7 @@
+import { loadTeamStyleSnapshot } from "@/lib/team-operating-style/snapshot.server";
+import { AXES as OPERATING_AXES } from "@/lib/team-operating-style/questions";
+import { POLICY as OPERATING_POLICY } from "@/lib/team-operating-style/scoring";
+import type { TeamStyleSnapshot } from "@/lib/team-operating-style/comparison";
 import { prisma } from "@/lib/prisma";
 import { getTeamPageData, FRICTION_WEIGHTS } from "@/lib/team-stats";
 import { computeAlignedHubIds, isMeasuredDynamicsSource } from "@/lib/friction-model";
@@ -48,6 +52,9 @@ import {
 // Terv: docs/product/team-report-gating-plan.md
 
 export interface TeamReportAggregates {
+  /** Separate, frozen behavior and personality layers; absent in legacy reports. */
+  teamStyle?: TeamStyleSnapshot;
+  operatingCampaignId?: string;
   generatedAt: string;
   /** A self-eredmények forrásköre; hiányában tagonként a legfrissebb eredmény. */
   assessmentCampaignId?: string;
@@ -248,6 +255,7 @@ export type TeamReportPublishBlockReason =
   | "REPORT_CAMPAIGN_REQUIRED"
   | "REPORT_CAMPAIGN_MISMATCH"
   | "REPORT_AGGREGATES_REQUIRED"
+  | "REPORT_OPERATING_DATA_INSUFFICIENT"
   | "REPORT_SELF_DATA_INSUFFICIENT"
   | "REPORT_TRUST_DATA_INSUFFICIENT"
   | "REPORT_PULSE_DATA_INSUFFICIENT"
@@ -285,6 +293,11 @@ export function validateTeamReportForPublish(input: {
   if (input.aggregates.psychSafetyMultiTeam) return "REPORT_PULSE_MULTI_TEAM_UNSCOPED";
   if (!input.aggregates.psychSafety) return "REPORT_PULSE_DATA_INSUFFICIENT";
 
+  const operating = input.aggregates.teamStyle?.operating;
+  if (operating && OPERATING_AXES.some((axis) => operating.axes[axis].status !== "available" || operating.axes[axis].coverage < OPERATING_POLICY.minCoverage)) {
+    return "REPORT_OPERATING_DATA_INSUFFICIENT";
+  }
+
   const hasText = (value: string | null | undefined) => Boolean(value?.trim());
   if (!hasText(input.title) || !hasText(input.summary) || !hasText(input.recommendations)) {
     return "REPORT_NARRATIVE_INCOMPLETE";
@@ -321,7 +334,7 @@ export function computeTopFrictionDims(
 
 export async function buildTeamReportAggregates(
   teamId: string,
-  options?: { assessmentCampaignId?: string },
+  options?: { assessmentCampaignId?: string; operatingCampaignId?: string },
 ): Promise<TeamReportAggregates | null> {
   // Alapértelmezésben megmarad a tagonkénti legfrissebb self-eredmény.
   // Kör-riportnál az explicit campaignId minden kampány-kötött réteget
@@ -342,6 +355,7 @@ export async function buildTeamReportAggregates(
   const completedCount = assessed.length;
   const memberCount = teamData.members.length;
   const hasMinimum = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
+  const teamStyle = await loadTeamStyleSnapshot(teamId, options?.operatingCampaignId ?? options?.assessmentCampaignId, hasMinimum ? teamData.patternResult ?? null : null, assessed.map((m) => m.userId));
 
   let dimensionAverages: Record<string, number> | null = null;
   let dimensionSpread: Record<string, number> | null = null;
@@ -639,6 +653,8 @@ export async function buildTeamReportAggregates(
   const feedbackCulture = await feedbackCulturePromise;
 
   return {
+    teamStyle,
+    ...(options?.operatingCampaignId ? { operatingCampaignId: options.operatingCampaignId } : {}),
     generatedAt: new Date().toISOString(),
     ...(options?.assessmentCampaignId
       ? { assessmentCampaignId: options.assessmentCampaignId }

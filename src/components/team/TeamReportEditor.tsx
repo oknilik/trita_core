@@ -31,6 +31,7 @@ interface Props {
   campaignId: string | null;
   orgId?: string | null;
   reports: SerializedTeamReport[];
+  operatingRounds?: { id: string; name: string; referenceEnd: string }[];
   isHu: boolean;
 }
 
@@ -88,6 +89,7 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     hu: "A fordítás most nem érhető el. Próbáld újra később.",
     en: "Translation isn't available right now. Please try again later.",
   },
+  REPORT_OPERATING_DATA_INSUFFICIENT: { hu: "A csapatműködés-riporthoz tengelyenként legalább három válasz és 60% lefedettség szükséges.", en: "Operating style requires at least three responses and 60% coverage per axis." },
   REPORT_CAMPAIGN_REQUIRED: {
     hu: "A riport csak egy lezárt Team Scan mérési körből hozható létre.",
     en: "A report can only be created from a closed Team Scan cycle.",
@@ -101,8 +103,8 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     en: "The selected measurement cycle was not found or belongs to another organization.",
   },
   REPORT_CAMPAIGN_NOT_SCAN_V1: {
-    hu: "Pilot-riport csak Team Scan v1 mérési körből készíthető.",
-    en: "Pilot reports can only be created from a Team Scan v1 cycle.",
+    hu: "Riport Team Scan v1 vagy Csapatkép és működés körből készíthető.",
+    en: "Reports require a Team Scan v1 or Team profile and operating style cycle.",
   },
   REPORT_CAMPAIGN_TEAM_MISMATCH: {
     hu: "A kiválasztott mérési kör nem ehhez a csapathoz tartozik.",
@@ -165,7 +167,7 @@ const TRANSLATION_FIELDS: Array<{
   { key: "leadershipGuide", label: "How to lead this team", rows: 4 },
 ];
 
-export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, isHu }: Props) {
+export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, operatingRounds = [], isHu }: Props) {
   const router = useRouter();
   const locale: Locale = isHu ? "hu" : "en";
   const draft = reports.find((r) => r.status === "DRAFT") ?? null;
@@ -188,6 +190,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
   const [actionItems, setActionItems] = useState<TeamReportActionItem[]>(
     draft?.actionItems ?? [],
   );
+  const [operatingCampaignId, setOperatingCampaignId] = useState(draft?.aggregates?.operatingCampaignId ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
@@ -205,6 +208,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
     const code = error instanceof Error ? error.message : null;
     const known = code ? ERROR_LABELS[code] : undefined;
     if (known) return known[locale];
+    if (code === "REPORT_OPERATING_SOURCE_INVALID") return t("tos.report.invalidSource", locale);
     return t(
       presentUserError({ code, fallbackKey: "userErrors.actionFailed" }),
       locale,
@@ -215,6 +219,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
   // router.refresh() a már mountolt komponens useState-jét nem inicializálja
   // újra (üresen maradnának a mezők, mentéskor felülírva a tartalmat).
   function seedFromReport(report: SerializedTeamReport) {
+    setOperatingCampaignId(report.aggregates?.operatingCampaignId ?? "");
     setValues({
       title: report.title ?? "",
       summary: report.summary ?? "",
@@ -401,6 +406,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
         body: JSON.stringify({
           reportId: draft.id,
           action,
+          operatingCampaignId: operatingCampaignId || null,
           ...values,
           actionItems: actionItems
             .filter((item) => item.title.trim().length > 0)
@@ -534,6 +540,15 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
               ? "A narratív mezők a csapatadatokból generált javaslattal indulnak – szerkeszd és egészítsd ki a tanácsadói értékeléssel."
               : "Narrative fields start with suggestions generated from team data – edit and extend them with your consultant assessment."}
           </p>
+          <label className="flex flex-col gap-2 text-sm text-ink">
+            {t("tos.report.source", locale)}
+            <select value={operatingCampaignId} onChange={(event) => setOperatingCampaignId(event.target.value)} disabled={busy}
+              className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 py-2">
+              <option value="">{t("tos.report.sameSource", locale)}</option>
+              {operatingRounds.map((round) => <option key={round.id} value={round.id}>{round.name} · {new Date(round.referenceEnd).toLocaleDateString(isHu ? "hu-HU" : "en-GB")}</option>)}
+            </select>
+            <span className="text-xs text-muted">{t("tos.report.sourceHelp", locale)}</span>
+          </label>
           {FIELDS.map((field) => (
             <label key={field.key} className="flex flex-col gap-1">
               <span

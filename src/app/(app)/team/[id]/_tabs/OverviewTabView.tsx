@@ -1,7 +1,8 @@
+import { TeamPatternThumbnail } from "@/components/team/TeamPatternThumbnail";
+import { operatingIdentity } from "@/lib/team-operating-style/identity";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { t, tf } from "@/lib/i18n";
-import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 import { computeTeamCompletionBuckets } from "@/lib/team-stats";
 import {
   CAMPAIGN_STEP_LABELS,
@@ -33,14 +34,14 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
     receivedFeedbackRequests,
   } = ctx;
 
-  const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
+  const publishedPattern = operatingIdentity(publishedReport?.aggregates?.teamStyle, locale);
 
   // Közös vödör-számítás (team-stats) — a TeamHeroBlock-kal azonos definíció:
   // folyamatban = van vázlat, de nincs eredmény; vár = el sem kezdte.
   const { completedCount, inProgressCount, waitingCount } =
     computeTeamCompletionBuckets(teamData.members);
   const completionPct = teamData.memberCount > 0 ? Math.round((completedCount / teamData.memberCount) * 100) : 0;
-  const hasPattern = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
+  const hasPattern = publishedPattern.status === "descriptive";
 
   return (
     <PlatformPageShell
@@ -111,7 +112,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 CTA nincs (UX-audit #3): a megnyitás útja a hero gombja. */}
             {canViewRaw ? (
               <div className="rounded-[24px] border border-sand bg-surface-card p-5">
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
                     {t("teamDetail.teamPatternTitle", locale)}
                   </p>
@@ -124,14 +125,15 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   >
                     {hasPattern
                       ? t("teamDetail.teamPatternAvailable", locale)
-                      : t("teamDetail.teamPatternNotYet", locale)}
+                      : (isHu ? "Nincs biztos besorolás" : "No definitive classification")}
                   </span>
                 </div>
-                <p className="mt-2 text-caption leading-relaxed text-ink-body">
-                  {hasPattern
-                    ? teamData.patternResult?.fullLabel
-                    : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })}
-                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                  <p className="min-w-0 flex-1 basis-40 text-caption leading-relaxed text-ink-body">
+                    {publishedPattern.label}
+                  </p>
+                  <TeamPatternThumbnail identity={publishedPattern} isHu={isHu} className="max-w-40 shrink-0 sm:max-w-44" />
+                </div>
               </div>
             ) : null}
           </div>
@@ -222,15 +224,9 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       <SectionEyebrow>
                         {isHu ? "tanácsadó által jóváhagyott csapatkép" : "consultant-approved team picture"}
                       </SectionEyebrow>
-                      {publishedPattern?.label ? (
-                        <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
-                          {publishedPattern.label}
-                        </p>
-                      ) : (
-                        <p className="mt-1 font-fraunces text-xl leading-tight text-ink">
-                          {isHu ? "A csapat jóváhagyott profilja" : "The team's approved profile"}
-                        </p>
-                      )}
+                      <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
+                        {publishedPattern.label}
+                      </p>
                       {/* Szám-definíció (UX-audit #8): a chipek a PUBLIKÁLÁSKOR
                           befagyasztott aggregátumot mutatják – az élő taglétszám
                           (hero) ettől eltérhet, a címke ezt kimondja. */}

@@ -140,9 +140,9 @@ describe("szervezeti riport-PDF tördelés", () => {
   it("a teljes riportban nincs üres, lebegő lap", async () => {
     const buffer = await renderTeamReport(TEAM_REPORT_FIXTURE);
     expect(findBlankPages(buffer)).toEqual([]);
-    // Borító + 01 összkép + 02 kapcsolati kép + 03 tanácsadói értékelés.
-    // A módszertan nem csúszhat külön, gyakorlatilag üres ötödik oldalra.
-    expect(pageTextOperatorCounts(buffer)).toHaveLength(4);
+    // Mért csapatkép + személyiség-réteg + értelmezés + utánkövetés + melléklet.
+    // Rövid akció vagy forrásjegyzet nem hozhat létre külön, üres lapot.
+    expect(pageTextOperatorCounts(buffer)).toHaveLength(5);
   }, 60_000);
 
   it("üres örökség-riportnál nem készít külön, tartalom nélküli értékelés-oldalt", async () => {
@@ -158,6 +158,38 @@ describe("szervezeti riport-PDF tördelés", () => {
     };
     const buffer = await renderTeamReport(report);
     expect(findBlankPages(buffer)).toEqual([]);
-    expect(pageTextOperatorCounts(buffer)).toHaveLength(2); // borító + 01 összkép
+    expect(pageTextOperatorCounts(buffer)).toHaveLength(1); // compact legacy report, no empty cover
+  }, 60_000);
+});
+
+// New reader: charts first, comparison next, exact statistics in the appendix.
+describe("csapatriport olvasói nézet", () => {
+  it.each([true, false])("eltérő tengelylétszámok esetén sem keletkezik üres lap (HU=%s)", async (isHu) => {
+    const { makeReaderReport } = await import("../../../scripts/fixtures/team-report-reader");
+    registerPdfFonts();
+    const buffer = await renderToBuffer(React.createElement(TeamReportDocument, { report: makeReaderReport(true), isHu }) as never);
+    expect(findBlankPages(buffer)).toEqual([]);
+    expect(pageTextOperatorCounts(buffer)).toHaveLength(4);
+  }, 60_000);
+
+  it("hosszú tanácsadói szöveget és akciót is végig tördel, tartalom nélküli folytatólap nélkül", async () => {
+    const { makeReaderReport } = await import("../../../scripts/fixtures/team-report-reader");
+    const report = makeReaderReport(true);
+    report.risks = Array.from({ length: 70 }, (_, i) => `${i + 1}. Megbeszélendő helyzet: hogyan jut el a közös információ minden érintetthez?`).join("\n");
+    report.actionItems = [{ title: "Közös gyakorlat kialakítása", description: "A részletesen megbeszélt helyzeteket és tapasztalatokat közösen rögzítjük. ".repeat(80), timeframe: "30" }];
+    const buffer = await renderTeamReport(report);
+    expect(findBlankPages(buffer)).toEqual([]);
+    expect(pageTextOperatorCounts(buffer).length).toBeGreaterThan(5);
+  }, 60_000);
+});
+
+
+describe("team pattern illustration in PDF", () => {
+  it("renders the descriptive pattern with native artwork and no empty continuation page", async () => {
+    const { makeReaderReport } = await import("../../../scripts/fixtures/team-report-reader");
+    registerPdfFonts();
+    const buffer = await renderToBuffer(React.createElement(TeamReportDocument, { report: makeReaderReport(), isHu: true }) as never);
+    expect(findBlankPages(buffer)).toEqual([]);
+    expect(pageTextOperatorCounts(buffer)).toHaveLength(4);
   }, 60_000);
 });

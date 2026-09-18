@@ -1,3 +1,4 @@
+import { resolveOperatingReportSource } from "@/lib/team-operating-style/report-source.server";
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
@@ -83,6 +84,7 @@ const patchSchema = z.object({
   reportId: z.string().min(1),
   action: z.enum(["save", "preview", "publish", "unpublish"]).default("save"),
   translationsEn: translationsEnSchema,
+  operatingCampaignId: z.string().min(1).nullable().optional(),
   ...narrativeFields,
 });
 
@@ -160,11 +162,12 @@ async function updateReportWithHistory(input: {
 async function validateReportCampaign(teamId: string, orgId: string, campaignId: string) {
   const campaign = await prisma.campaign.findFirst({
     where: { id: campaignId, orgId },
-    select: { id: true, status: true, presetId: true, teamId: true, teamIds: true },
+    select: { id: true, status: true, presetId: true, teamId: true, teamIds: true, operatingRound: { select: { id: true } } },
   });
   if (!campaign) return "REPORT_CAMPAIGN_NOT_FOUND" as const;
   if (campaign.status !== "CLOSED") return "REPORT_CAMPAIGN_NOT_CLOSED" as const;
-  if (campaign.presetId !== "SCAN_V1") return "REPORT_CAMPAIGN_NOT_SCAN_V1" as const;
+  if (!["SCAN_V1", "SCAN_STYLE_V1"].includes(campaign.presetId ?? "")) return "REPORT_CAMPAIGN_NOT_SCAN_V1" as const;
+  if (campaign.presetId === "SCAN_STYLE_V1" && !campaign.operatingRound) return "REPORT_OPERATING_DATA_INSUFFICIENT" as const;
   if (campaign.teamId !== teamId && !campaign.teamIds.includes(teamId)) {
     return "REPORT_CAMPAIGN_TEAM_MISMATCH" as const;
   }
@@ -381,7 +384,7 @@ export async function PATCH(
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { reportId, action, translationsEn, ...fields } = parsed.data;
+  const { reportId, action, translationsEn, operatingCampaignId: requestedOperatingCampaignId, ...fields } = parsed.data;
 
   const existing = await prisma.teamReport.findFirst({
     where: { id: reportId, teamId },
@@ -389,6 +392,7 @@ export async function PATCH(
       id: true,
       status: true,
       campaignId: true,
+      aggregates: true,
       title: true,
       summary: true,
       recommendations: true,
@@ -442,6 +446,16 @@ export async function PATCH(
     return NextResponse.json({ error: "ALREADY_PUBLISHED" }, { status: 409 });
   }
 
+  let operatingCampaignId: string | undefined;
+  try {
+    operatingCampaignId = await resolveOperatingReportSource(teamId, ctx.orgId, requestedOperatingCampaignId, existing.aggregates);
+  } catch (error) {
+    if (error instanceof Error && error.message === "REPORT_OPERATING_SOURCE_INVALID") {
+      return NextResponse.json({ error: error.message }, { status: 409 });
+    }
+    throw error;
+  }
+
   // null-t is kiszűrjük: a kliens üres stringet/üres tömböt küld törléskor,
   // és a nullable Json mező (actionItems) plain null-t nem fogad.
   const narrativeData: Record<string, unknown> = Object.fromEntries(
@@ -464,6 +478,7 @@ export async function PATCH(
     // Publikáláskor frissítjük ÉS befagyasztjuk az aggregátumokat.
     const aggregates = await buildTeamReportAggregates(teamId, {
       assessmentCampaignId: existing.campaignId,
+      operatingCampaignId,
     });
     const publishError = validateTeamReportForPublish({
       campaignId: existing.campaignId,
@@ -512,9 +527,10 @@ export async function PATCH(
   // "preview" mentéskor az aggregátumokat is újraépítjük, hogy az előnézet
   // pontosan azt mutassa, amit a publikálás rögzítene.
   const aggregates =
-    action === "preview" && existing.campaignId
+    (action === "preview" || requestedOperatingCampaignId !== undefined) && existing.campaignId
       ? await buildTeamReportAggregates(teamId, {
           assessmentCampaignId: existing.campaignId,
+          operatingCampaignId,
         })
       : null;
 

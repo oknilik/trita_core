@@ -75,3 +75,19 @@ test("a publikálási kapu anonimitási minimum alatti pulse-t nem fogad el", ()
   input.aggregates!.psychSafety = null;
   assert.equal(validateTeamReportForPublish(input), "REPORT_PULSE_DATA_INSUFFICIENT");
 });
+
+test("an operating measurement needs three usable responses and 60% coverage per axis", async () => {
+  const { calculateOperatingStyle } = await import("@/lib/team-operating-style/scoring");
+  const { ITEMS, OPERATING_STYLE_VERSION } = await import("@/lib/team-operating-style/questions");
+  const input = validInput();
+  const operating = { ...calculateOperatingStyle({ teamId: "team", roundId: "round", instrumentVersion: OPERATING_STYLE_VERSION,
+    eligibleRespondentIds: ["a", "b", "c", "d", "e", "f"],
+    responses: ["a", "b", "c"].map((respondentId) => ({ respondentId, answers: Object.fromEntries(ITEMS.map((q) => [q.id, 3])) })),
+  }), referenceStart: "2026-08-19", referenceEnd: "2026-09-16" };
+  input.aggregates!.teamStyle = { version: 1, operating, composition: null, sameRespondents: false, comparison: null };
+  assert.equal(validateTeamReportForPublish(input), "REPORT_OPERATING_DATA_INSUFFICIENT");
+  for (const axis of Object.values(operating.axes)) axis.coverage = 1;
+  assert.equal(validateTeamReportForPublish(input), null);
+  operating.axes.information.status = "insufficient_data";
+  assert.equal(validateTeamReportForPublish(input), "REPORT_OPERATING_DATA_INSUFFICIENT");
+});

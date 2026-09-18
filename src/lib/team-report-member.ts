@@ -1,3 +1,4 @@
+import { operatingIdentity } from "./team-operating-style/identity";
 // ─────────────────────────────────────────────────────────────────────
 // Tag-nézet nézetmodell — a publikált (befagyasztott) csapat-aggregátum +
 // a néző SAJÁT eredménye alapján. Kizárólag pozitív/építő metszet: a tag
@@ -201,7 +202,7 @@ export function buildMemberReportViewModel(
     secondaryRole,
     roleSource: resolvedRoles?.source ?? null,
     roleFit,
-    patternLabel: agg?.pattern?.label ?? null,
+    patternLabel: operatingIdentity(agg?.teamStyle, loc).label,
     strengths: report.strengths,
     tips: tips.slice(0, 3),
   };

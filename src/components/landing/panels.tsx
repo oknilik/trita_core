@@ -221,8 +221,8 @@ export function TeamPanel() {
   const { locale } = useLocale();
 
   // A showcase seed ötfős Értékesítés csapatának tényleges aggregátumai
-  // (scripts/seed-showcase-org.ts). A négy érték ugyanaz a mintázatmotor-
-  // bemenet, amely ECFP-re, vagyis „Családi Vállalkozásra” értékelődik.
+  // (scripts/seed-showcase-org.ts). Személyiségből képzett tengelyek;
+  // ezekből nem adunk működésiminta-nevet.
   const dims = [
     { name: t("landing.teamAxisDrive", locale), mean: 81, color: "var(--color-layer-team-accent)" },
     { name: t("landing.teamAxisCohesion", locale), mean: 64, color: "var(--color-sage)" },
@@ -242,7 +242,7 @@ export function TeamPanel() {
         </p>
         <div className="mt-0.5 flex flex-wrap items-center gap-2.5">
           <p className="font-fraunces text-heading font-medium italic text-[var(--color-layer-team-glow)]">
-            {t("landing.teamPatternName", locale)}
+            {t("landing.teamPersonalitySummary", locale)}
           </p>
           <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
             {t("landing.teamPanelPublished", locale)}

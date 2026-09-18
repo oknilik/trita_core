@@ -54,10 +54,12 @@ export async function DELETE(
       orgId,
     );
     if (!locked) return null;
+    if (await tx.teamOperatingRound.count({ where: { campaignId } })) return "FROZEN" as const;
     return tx.campaignParticipant.deleteMany({
       where: { campaignId, userId: participantUserId },
     });
   });
+  if (removed === "FROZEN") return NextResponse.json({ error: "OPERATING_ROSTER_FROZEN" }, { status: 409 });
   if (!removed) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   if (removed.count === 0) {
     return NextResponse.json({ error: "PARTICIPANT_NOT_FOUND" }, { status: 404 });

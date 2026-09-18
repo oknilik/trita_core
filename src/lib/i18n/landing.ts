@@ -102,7 +102,7 @@ export const landingTranslations = {
     teamWatchLabel: { hu: "Figyelendő", en: "Watch" },
     teamWatchText: { hu: "Az új nézőpont könnyen háttérbe kerülhet.", en: "A new perspective can easily be overlooked." },
     teamPatternLabel: { hu: "Csapatmintázat", en: "Team pattern" },
-    teamPatternName: { hu: "Családi Vállalkozás", en: "Family Business" },
+    teamPersonalitySummary: { hu: "Személyiség-összetétel", en: "Personality composition" },
     teamNarrativeLabel: { hu: "Tanácsadói értékelés", en: "Consultant assessment" },
     teamNarrativeText: { hu: "Aktív, lojális csapat, amely a bevált utakon halad, de rugalmasan alkalmazkodik. Az elkötelezettség az összetartó erő.", en: "An active, loyal team that follows proven paths while adapting flexibly. Commitment is what holds it together." },
     // HowItWorks

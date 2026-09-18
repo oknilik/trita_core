@@ -1,3 +1,4 @@
+import { operatingIdentity } from "@/lib/team-operating-style/identity";
 import Link from "next/link";
 import { t } from "@/lib/i18n";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
@@ -18,6 +19,7 @@ import type { TeamTabContext } from "./types";
 // ── Intelligence tab: potential/types and map ───────────────────────────
 export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
   const { teamId, teamData, locale, isHu, canReachOrgCampaigns, isOrgManager } = ctx;
+  const pattern = operatingIdentity(ctx.publishedReport?.aggregates?.teamStyle, locale);
   // Visszajelzési kultúra: az EGYETLEN observer-forrású csapat-blokk.
   // `null`, ha a lefedettség a TEAM_OBSERVER_MIN_COVERED padló alatt van —
   // ilyenkor a kártya nem renderel (nem „0"-t mutat, hanem semmit).
@@ -49,6 +51,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
       >
         <TeamHeroBlock ctx={ctx} active="intelligence" />
+        <TeamPatternCard snapshot={ctx.publishedReport?.aggregates?.teamStyle} isHu={isHu} />
 
         <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,var(--color-surface-card)_0%,var(--color-surface-muted)_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
           <p className="font-mono text-micro uppercase tracking-widest text-muted">
@@ -239,29 +242,22 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               <p className="text-note text-ink-body">{isHu ? "Csapatminta státusz" : "Pattern status"}</p>
               <span
                 className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
-                  teamData.patternResult ? "bg-sage/15 text-sage-dark" : "bg-state-warning-bg text-state-warning-fg"
+                  pattern.status === "descriptive" ? "bg-sage/15 text-sage-dark" : "bg-state-warning-bg text-state-warning-fg"
                 }`}
               >
-                {teamData.patternResult ? (isHu ? "Elérhető" : "Ready") : (isHu ? "Folyamatban" : "In progress")}
+                {pattern.status === "descriptive" ? (isHu ? "Elérhető" : "Ready") : (isHu ? "Nincs biztos besorolás" : "No definitive classification")}
               </span>
             </div>
             <p className="mt-2 text-note text-muted">
-              {teamData.patternResult
-                ? teamData.patternResult.fullLabel
-                : isHu
-                  ? "Legalább 3 kitöltés szükséges"
-                  : "At least 3 completions required"}
+              {pattern.label}
             </p>
           </div>
         </div>
       </section>
 
-      {/* A számított 16-os csapatminta teljes nézete: tengelysávok, stabilitás-
-          jegyzet, confidence-badge. A fenti státusz-csempe csak a címkét adja –
-          a részletes kártya eddig árva komponens volt (nem volt importálója). */}
+      {/* Published operating identity, independent of personality composition. */}
       <TeamPatternCard
-        patternResult={teamData.patternResult}
-        totalMembers={totalCount}
+        snapshot={ctx.publishedReport?.aggregates?.teamStyle}
         isHu={isHu}
       />
 

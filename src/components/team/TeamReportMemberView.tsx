@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { TeamOperatingStyleReport } from "./TeamOperatingStyleReport";
 import { t } from "@/lib/i18n";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -106,6 +107,8 @@ export function TeamReportMemberView({
           </div>
         </div>
       </DashboardPanel>
+
+      <TeamOperatingStyleReport snapshot={report.aggregates?.teamStyle} averages={report.aggregates?.dimensionAverages} spread={report.aggregates?.dimensionSpread} personalityCount={report.aggregates?.completedCount} locale={isHu ? "hu" : "en"} />
 
       {/* 1. Te a csapatban – radar-összevetés + színes sávok */}
       {vm.hasSelfComparison ? (
@@ -318,26 +321,13 @@ export function TeamReportMemberView({
       )}
 
       {/* 3. Milyen a csapatotok – mintázat + erősségek */}
-      {(vm.patternLabel || vm.strengths) && (
+      {vm.strengths && (
         <section>
           <DashboardSectionHeader
             label={isHu ? "Milyen a csapatotok" : "What your team is like"}
             className="mb-4"
           />
           <DashboardPanel className="p-6">
-            {vm.patternLabel && (
-              <div className="mb-5 rounded-[14px] bg-gradient-to-br from-cream to-sage/10 p-4 ring-1 ring-sand">
-                <p className="font-mono text-micro uppercase tracking-widest text-muted">
-                  {isHu ? "Csapatmintázat" : "Team pattern"}
-                </p>
-                <p className="mt-1 font-fraunces text-xl leading-tight text-ink">
-                  {vm.patternLabel}
-                </p>
-                <p className="mt-3 text-micro leading-relaxed text-muted">
-                  {t("teamComp.framingNote", loc)}
-                </p>
-              </div>
-            )}
             {vm.strengths && (
               <div className="rounded-[14px] border-l-4 border-l-state-success-solid bg-state-success-bg/40 p-4">
                 <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-success-fg">

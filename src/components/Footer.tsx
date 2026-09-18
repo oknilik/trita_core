@@ -39,6 +39,7 @@ export function Footer() {
       links: [
         { label: t("footer.home", locale), href: "/" },
         { label: t("footer.teams", locale), href: "/team-dynamics" },
+        { label: locale === "hu" ? "Működési minták" : "Operating patterns", href: "/operating-patterns" },
         ...(isPortfolioSurfaceActive("blog")
           ? [{ label: t("footer.blog", locale), href: "/blog" }]
           : []),

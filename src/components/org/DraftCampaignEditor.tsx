@@ -21,6 +21,7 @@ type CampaignType = CampaignStepType;
 const STEP_ORDER: CampaignType[] = [...CAMPAIGN_STEP_ORDER];
 
 const TYPE_NAME_KEYS: Record<CampaignType, string> = {
+  TEAM_OPERATING_STYLE: "tos.title",
   SELF_ASSESSMENT: "campaignWiz.typeSelfName",
   OBSERVER_360: "campaignWiz.typeObserverName",
   TEAM_ROLE: "campaignWiz.typeRoleName",
@@ -31,6 +32,7 @@ const TYPE_NAME_KEYS: Record<CampaignType, string> = {
 };
 
 const TEAM_LOCKED = new Set<CampaignType>([
+  "TEAM_OPERATING_STYLE",
   "TEAM_ROLE",
   "TEAM_ROLE_360",
   "TRUST_360",

@@ -46,6 +46,7 @@ type CampaignPackage = CampaignPresetId | "CUSTOM";
 const STEP_ORDER: CampaignType[] = [...CAMPAIGN_STEP_ORDER];
 
 const TYPE_NAME_KEYS: Record<CampaignType, string> = {
+  TEAM_OPERATING_STYLE: "tos.title",
   SELF_ASSESSMENT: "campaignWiz.typeSelfName",
   OBSERVER_360: "campaignWiz.typeObserverName",
   TEAM_ROLE: "campaignWiz.typeRoleName",
@@ -64,6 +65,7 @@ const TYPE_CARDS: Array<{
   outKey?: string;
   comingSoon?: boolean;
 }> = [
+  { type: "TEAM_OPERATING_STYLE", nameKey: "tos.title", descKey: "tos.description", metaKey: "tos.duration", outKey: "tos.output" },
   {
     type: "SELF_ASSESSMENT",
     nameKey: "campaignWiz.typeSelfName",
@@ -256,7 +258,7 @@ export function CampaignWizard({
   // anonimitási aggregáció egyetlen csapathatárt követel.
   function toggleRoleTeam(team: TeamOption) {
     const isOn = targetTeamIds.has(team.id);
-    if (chosenSteps.includes("PSYCH_SAFETY")) {
+    if ((chosenSteps.includes("PSYCH_SAFETY") || chosenSteps.includes("TEAM_OPERATING_STYLE"))) {
       setTargetTeamIds(isOn ? new Set() : new Set([team.id]));
       setSelectedIds(isOn ? new Set() : new Set(team.members.map((member) => member.userId)));
       if (!nameTouched && !isOn) setName(buildSuggestedName(chosenSteps, team.name));
@@ -388,6 +390,7 @@ export function CampaignWizard({
   // egyetlen cél-csapaton él (az anonim aggregátum is csapatszintű).
   const isTeamLocked = chosenSteps.some(
     (tp) =>
+      tp === "TEAM_OPERATING_STYLE" ||
       tp === "TEAM_ROLE" ||
       tp === "TEAM_ROLE_360" ||
       tp === "TRUST_360" ||
@@ -451,6 +454,13 @@ export function CampaignWizard({
             {t("campaignWiz.typeTitle", locale)}
           </h2>
           <div className="grid gap-3 md:grid-cols-2">
+            <button type="button" aria-pressed={campaignPackage === "SCAN_STYLE_V1"}
+              onClick={() => selectCampaignPackage("SCAN_STYLE_V1")}
+              className={`min-h-[44px] rounded-2xl border p-4 text-left ${campaignPackage === "SCAN_STYLE_V1" ? "border-sage bg-sage/5" : "border-sand bg-surface-card"}`}>
+              <span className="block text-body font-semibold text-ink">{CAMPAIGN_PRESETS.SCAN_STYLE_V1.label[locale]}</span>
+              <span className="mt-2 block text-caption text-ink-body">{CAMPAIGN_PRESETS.SCAN_STYLE_V1.description[locale]}</span>
+            </button>
+
             <button
               type="button"
               aria-pressed={campaignPackage === "SCAN_V1"}
@@ -673,7 +683,7 @@ export function CampaignWizard({
                 </div>
               </div>
             ) : null}
-            {campaignPackage === "SCAN_V1" ? (
+            {campaignPackage !== "CUSTOM" ? (
               <div className="rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5 text-caption leading-relaxed text-ink-body">
                 <span className="font-semibold text-ink">
                   {t("campaignWiz.scanV1FreshLabel", locale)}
