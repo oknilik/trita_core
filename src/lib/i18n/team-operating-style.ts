@@ -3,6 +3,11 @@ export const operatingStyleTranslations = {
   tos: {
     singleTeam: { hu: "A csapatműködés-méréshez pontosan egy csapatot válassz.", en: "Choose exactly one team for operating style measurement." },
     rosterFrozen: { hu: "A csapatműködés-kör résztvevői induláskor rögzültek. Változó csapatnak indíts új kört.", en: "The operating round roster was fixed at launch. Start a new round for a changed team." },
+    shortInstructions: { hu: "Gondolj a csapatotok közös munkájára. Milyen gyakran történik így?", en: "Think about how your team works together. How often does this happen?" },
+    previous: { hu: "Vissza", en: "Back" },
+    next: { hu: "Következő", en: "Next" },
+    finish: { hu: "Befejezés", en: "Finish" },
+    aboutAnswers: { hu: "A válaszaidról", en: "About your answers" },
     title: { hu: "Csapatműködés", en: "Team operating style" },
     description: { hu: "Hogyan osztjátok meg az információt, hangoljátok össze a munkát, döntötök és haladtok a feladatokkal?", en: "How do you share information, coordinate work, make decisions and carry out tasks?" },
     duration: { hu: "24 állítás · körülbelül 5 perc", en: "24 statements · about 5 minutes" },

@@ -56,3 +56,11 @@ A meghívás után lokalizált sikerjelzés jelenik meg, a szervernézet frissü
 ### Mobil feladatgombok
 
 A feladatsorok reszponzív gridet használnak. Mobilon a műveleti gombok egységesen külön sorban, teljes szélességgel és legalább 44 px magassággal jelennek meg; sm mérettől a feladatnév mellett maradnak. A hosszú címek tördelhetők, a gombfelirat egy sorban marad. 390 px-es Chromium-nézetben vizuálisan ellenőrizve; a meglévő programfolyam két böngészős próbája és az érintett fájl lintje sikeres.
+
+### Csapatműködés — egyállításos kitöltő
+
+A résztvevő egyszerre egy állítást lát, a meglévő Likert-felület kör alakú választóival. A skála továbbra is gyakoriságot mér, saját lokalizált címkékkel; a „Nem megítélhető” külön választás. Kompakt fejléc, kérdésszám, megválaszoltságot jelző folyamatjelző, Vissza/Következő és Befejezés navigáció. A négyhetes felhívás és dátumtartomány kikerült a kitöltői felületről; az útmutató egy mondat, a tájékoztatás lenyitható. A szerveroldali köradatok és pontozás nem változtak.
+
+A mentés/folytatás az első megválaszolatlan kérdésre áll, a visszalépés megőrzi az értékeket és a N/A választ. A hibás beküldés után újrapróbálható az összes megőrzött válasz. A megosztott SliderSelector opcionális címkékkel és letiltással bővült; a személyiségkérdőív alapértelmezett címkéi megmaradtak.
+
+Ellenőrzés: 6/6 komponens-teszt, 24 lépéses teljes kitöltés, N/A, piszkozat, folytatás, billentyűzet és beküldési hiba; Chromium vizuális ellenőrzés 360/390/1280 px-en, vízszintes túlcsordulás nélkül. Típusellenőrzés és érintett lint sikeres.

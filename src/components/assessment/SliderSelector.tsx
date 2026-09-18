@@ -10,13 +10,15 @@ interface SliderSelectorProps {
   value: number | null
   onChange: (value: number) => void
   ariaLabel: string
+  labels?: readonly string[]
+  disabled?: boolean
 }
 
-export function SliderSelector({ value, onChange, ariaLabel }: SliderSelectorProps) {
+export function SliderSelector({ value, onChange, ariaLabel, labels: customLabels, disabled = false }: SliderSelectorProps) {
   const { locale } = useLocale()
   const [hoveredMark, setHoveredMark] = useState<number | null>(null)
 
-  const labels = [
+  const labels = customLabels ?? [
     t('assessment.scale1', locale),
     t('assessment.scale2', locale),
     t('assessment.scale3', locale),
@@ -37,6 +39,7 @@ export function SliderSelector({ value, onChange, ariaLabel }: SliderSelectorPro
             <motion.button
               key={mark}
               type="button"
+              disabled={disabled}
               onClick={() => onChange(mark)}
               onKeyDown={(event) => {
                 const delta = event.key === 'ArrowRight' || event.key === 'ArrowDown'
@@ -79,9 +82,9 @@ export function SliderSelector({ value, onChange, ariaLabel }: SliderSelectorPro
 
       {/* End labels with center dot */}
       <div className="mb-4 flex w-full max-w-[320px] items-center justify-between gap-2">
-        <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endLeft', locale)}</span>
+        <span className="text-xs font-medium text-[var(--color-text-muted)]">{customLabels ? labels[0] : t('assessment.endLeft', locale)}</span>
         <span className="text-micro text-[var(--color-border-default)]">·</span>
-        <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endRight', locale)}</span>
+        <span className="text-xs font-medium text-[var(--color-text-muted)]">{customLabels ? labels[4] : t('assessment.endRight', locale)}</span>
       </div>
 
       {/* Hover/selected label */}

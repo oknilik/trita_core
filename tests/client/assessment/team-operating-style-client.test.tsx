@@ -6,6 +6,7 @@ import { TeamOperatingStyleReport } from "@/components/team/TeamOperatingStyleRe
 import { ITEMS, OPERATING_STYLE_VERSION } from "@/lib/team-operating-style/questions";
 
 import { calculateOperatingStyle } from "@/lib/team-operating-style/scoring";
+vi.mock("@/components/LocaleProvider", () => ({ useLocale: () => ({ locale: "hu" }) }));
 const refresh = vi.fn();
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); refresh.mockClear(); });
@@ -13,15 +14,18 @@ const props = { locale: "hu" as const, campaignId: "campaign", campaignName: "Ő
   initialAnswers: {}, referenceStart: "2026-08-19", referenceEnd: "2026-09-16" };
 
 describe("Operating Style participant flow", () => {
-  it("renders 24 accessible statements, permits drafts, and guides incomplete submission to the first missing answer", async () => {
+  it("shows one statement with a frequency scale, preserves N/A when going back and saves drafts", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) }));
     render(<OperatingStyleClient {...props} />);
-    expect(screen.getAllByRole("group")).toHaveLength(24);
-    await userEvent.click(screen.getByRole("button", { name: "Válaszok véglegesítése" }));
-    expect(fetch).not.toHaveBeenCalled();
-    expect(screen.getAllByRole("radio")[0]).toHaveFocus();
-    expect(screen.getByRole("alert")).toHaveTextContent("Még megválaszolatlan állítások");
-    await userEvent.click(screen.getAllByRole("radio", { name: "Nem megítélhető" })[0]);
+    expect(screen.getAllByRole("radiogroup")).toHaveLength(1);
+    expect(screen.getAllByRole("radio")).toHaveLength(5);
+    expect(screen.queryByText(/négyhetes|2026\. 08\. 19/)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Következő" })).toBeDisabled();
+    await userEvent.click(screen.getByRole("button", { name: "Nem megítélhető" }));
+    await userEvent.click(screen.getByRole("button", { name: "Következő" }));
+    expect(screen.getByRole("heading", { level: 2 })).toHaveFocus();
+    await userEvent.click(screen.getByRole("button", { name: "Vissza" }));
+    expect(screen.getByRole("button", { name: "Nem megítélhető" })).toHaveAttribute("aria-pressed", "true");
     await userEvent.click(screen.getByRole("button", { name: "Mentés és folytatás később" }));
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elmentettük"));
     const body = JSON.parse(vi.mocked(fetch).mock.calls[0][1]!.body as string);
@@ -30,30 +34,42 @@ describe("Operating Style participant flow", () => {
     expect(body.campaignId).toBe("campaign");
     expect(body).not.toHaveProperty("userId");
   });
-  it("preserves a complete answer set after errors and can retry final submission", async () => {
-    const answers = Object.fromEntries(ITEMS.map((q) => [q.id, 3]));
+  it("preserves complete answers after network errors and retries final submission", async () => {
+    const answers = Object.fromEntries(ITEMS.map(q => [q.id, 3]));
     const fetchMock = vi.fn().mockRejectedValueOnce(new Error("offline"))
       .mockResolvedValueOnce({ ok: true, json: async () => ({ ok: true }) });
     vi.stubGlobal("fetch", fetchMock);
     render(<OperatingStyleClient {...props} initialAnswers={answers} />);
-    await userEvent.click(screen.getByRole("button", { name: "Válaszok véglegesítése" }));
+    await userEvent.click(screen.getByRole("button", { name: "Befejezés" }));
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("Nem sikerült"));
-    expect(screen.getAllByRole("radio", { checked: true })).toHaveLength(24);
-    await userEvent.click(screen.getByRole("button", { name: "Válaszok véglegesítése" }));
+    expect(screen.getAllByRole("radio", { checked: true })).toHaveLength(1);
+    await userEvent.click(screen.getByRole("button", { name: "Befejezés" }));
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elkészült"));
     expect(JSON.parse(fetchMock.mock.calls[1][1].body).answers).toEqual(answers);
     expect(refresh).toHaveBeenCalledTimes(1);
   });
-  it("submits after answering every statement from an empty form, including N/A", async () => {
+  it("walks through all 24 statements including N/A before final submission", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) }));
     render(<OperatingStyleClient {...props} />);
-    for (const radio of screen.getAllByRole("radio", { name: "Nem megítélhető" })) await userEvent.click(radio);
-    expect(screen.queryByText(/Még megválaszolatlan állítások/)).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: "Válaszok véglegesítése" }));
+    for (let i = 0; i < 24; i++) {
+      await userEvent.click(screen.getByRole("button", { name: "Nem megítélhető" }));
+      expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", String(i + 1));
+      await userEvent.click(screen.getByRole("button", { name: i === 23 ? "Befejezés" : "Következő" }));
+    }
     await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elkészült"));
     const body = JSON.parse(vi.mocked(fetch).mock.calls[0][1]!.body as string);
     expect(Object.keys(body.answers)).toHaveLength(24);
     expect(body.intent).toBe("submit");
+    expect(body.instrumentVersion).toBe(OPERATING_STYLE_VERSION);
+  });
+  it("resumes at the first unanswered statement and supports keyboard frequency selection", async () => {
+    render(<OperatingStyleClient {...props} initialAnswers={{ INF1: 4 }} />);
+    expect(screen.getByText("2 / 24")).toBeInTheDocument();
+    const first = screen.getByRole("radio", { name: /1 -/ });
+    first.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    expect(screen.getByRole("radio", { name: /2 -/ })).toHaveAttribute("aria-checked", "true");
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "2");
   });
   it("renders the three report layers in order for a legacy snapshot", () => {
     render(<TeamOperatingStyleReport locale="en" legacyPattern="Legacy composition" />);
