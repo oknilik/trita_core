@@ -284,7 +284,7 @@ async function submitRequest(req: Request) {
         "Failed to send observer invite email",
       );
       return NextResponse.json(
-        { error: "EMAIL_DELIVERY_FAILED", invitationId: invitation.id, emailSent: false },
+        { error: "EMAIL_DELIVERY_FAILED", invitationId: invitation.id, id: invitation.id, token: invitation.token, status: invitation.status, observerType: invitation.observerType, emailSent: false },
         { status: 502 },
       );
     }

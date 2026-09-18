@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
@@ -90,9 +91,24 @@ export function InvitationsTab({
 }: InvitationsTabProps) {
   const { locale } = useLocale();
   const { showToast } = useToast();
+  const router = useRouter();
 
   // ─── State & logic (create / copy / delete) ────────────────────────────────
   const [invitations, setInvitations] = useState(sentInvitations);
+  const [previousSent, setPreviousSent] = useState(sentInvitations);
+  if (previousSent !== sentInvitations) {
+    setPreviousSent(sentInvitations);
+    setInvitations(sentInvitations);
+  }
+  const [createNotice, setCreateNotice] = useState<string | null>(null);
+  function reportCreated(data: { awaitingApproval?: boolean; emailSent?: boolean }, expectsEmail: boolean) {
+    const message = data.awaitingApproval ? t("invitations.awaitingApprovalToast", locale)
+      : expectsEmail && !data.emailSent ? t("error.EMAIL_SEND_FAILED", locale)
+      : t(expectsEmail ? "invitations.emailCreated" : "invitations.linkCreated", locale);
+    setCreateNotice(message);
+    showToast(message, data.awaitingApproval || (expectsEmail && !data.emailSent) ? "info" : "success");
+    router.refresh();
+  }
   const [email, setEmail] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
@@ -141,6 +157,7 @@ export function InvitationsTab({
     if (isCreating) return;
     setIsCreating(true);
     setCreateError(null);
+    setCreateNotice(null);
     const hasEmail = email.trim().length > 0;
     try {
       const res = await fetch("/api/observer/invite", {
@@ -149,7 +166,8 @@ export function InvitationsTab({
         body: hasEmail ? JSON.stringify({ email: email.trim(), campaignId }) : JSON.stringify({ campaignId }),
       });
       const data = await res.json();
-      if (!res.ok) {
+      const persisted = data.error === "EMAIL_DELIVERY_FAILED" && typeof data.id === "string" && typeof data.token === "string";
+      if (!res.ok && !persisted) {
         const code = data.error ?? "";
         const loc = t(`error.${code}`, locale);
         setCreateError(loc !== `error.${code}` ? loc : t("invitations.errorGeneric", locale));
@@ -161,11 +179,7 @@ export function InvitationsTab({
         observerEmail: hasEmail ? email.trim() : null, observerName: null,
         observerType: data.observerType,
       }, ...prev]);
-      if (data.awaitingApproval) {
-        showToast(t("invitations.awaitingApprovalToast", locale), "info");
-      } else if (hasEmail && !data.emailSent) {
-        showToast(t("error.EMAIL_SEND_FAILED", locale), "info");
-      }
+      reportCreated(data, hasEmail);
       setEmail("");
     } catch {
       setCreateError(t("invitations.errorGeneric", locale));
@@ -178,6 +192,7 @@ export function InvitationsTab({
     if (invitingColleagueId) return;
     setInvitingColleagueId(colleagueUserId);
     setCreateError(null);
+    setCreateNotice(null);
     try {
       const res = await fetch("/api/observer/invite", {
         method: "POST",
@@ -185,7 +200,8 @@ export function InvitationsTab({
         body: JSON.stringify({ colleagueUserId, campaignId }),
       });
       const data = await res.json();
-      if (!res.ok) {
+      const persisted = data.error === "EMAIL_DELIVERY_FAILED" && typeof data.id === "string" && typeof data.token === "string";
+      if (!res.ok && !persisted) {
         const code = data.error ?? "";
         const loc = t(`error.${code}`, locale);
         setCreateError(loc !== `error.${code}` ? loc : t("invitations.errorGeneric", locale));
@@ -198,6 +214,7 @@ export function InvitationsTab({
         observerEmail: null, observerName: colleague?.name ?? null,
         observerType: data.observerType,
       }, ...prev]);
+      reportCreated(data, true);
       setColleagues((prev) =>
         prev.map((c) => (c.userId === colleagueUserId ? { ...c, alreadyInvited: true } : c)),
       );
@@ -267,6 +284,7 @@ export function InvitationsTab({
 
   return (
     <section className="flex flex-col gap-8" data-testid="observer-invitations-surface">
+      {createNotice && <p role="status" aria-live="polite" className="rounded-xl border border-sand bg-surface-card p-4 text-caption">{createNotice}</p>}
       {/* 1–3. Fejezetnyitó: cél + állapot egyetlen, erős hierarchiában. */}
       <div className="grid overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.08)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
         <div className="relative overflow-hidden bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 py-8 sm:px-9 sm:py-10 lg:px-10">

@@ -48,3 +48,7 @@ Ellenőrzések: 8 program unit + 1 életciklus-integráció egykapcsolatos pooll
 ### Journey olvasási út — második review
 
 A loadProgramJourney a safeParseProgram sikertelenségét most kihagyott kampányként kezeli, nem dob PROGRAM_SNAPSHOT_REQUIRED kivételt. A többi érvényes program változatlanul megjelenik; kizárólag hibás vagy ismeretlen verziójú programoknál üres a lista. Valódi adatbázisos regressziós teszt ellenőrzi a vegyes és a kizárólag érvénytelen esetet. A két program-integráció egykapcsolatos poollal, a típusellenőrzés és az érintett fájlok lintje sikeres. A scoring-konstansok külön modulba emelése és az observer-felülbírálás továbbra is külön feladat.
+
+### Observer-meghívó visszajelzése
+
+A meghívás után lokalizált sikerjelzés jelenik meg, a szervernézet frissül, a lista pedig átveszi a friss szerverpropokat. A mentés utáni email-küldési hiba 502-es válasza tartalmazza a már létrejött meghívó adatait; a kliens így megmutatja a meghívót és másolható linkjét, az email hibáját külön jelezve. Ez nem jelent sikeres kézbesítést. Regressziós tesztek: sikeres létrehozás, részleges siker/email-hiba, szerverlista-frissítés; összesen 6/6 komponens-teszt sikeres, típusellenőrzés és lint tiszta.
