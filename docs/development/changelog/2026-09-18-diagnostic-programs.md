@@ -44,3 +44,7 @@ Stagingen, megfelelő szerepkörökkel végigjárandó a program létrehozása, 
 - Observer-felülbírálás nem került be: a küszöb és a naplózott kivételkezelés külön termékdöntés. A main örökölt teszthibáinak javítása külön változtatás marad.
 
 Ellenőrzések: 8 program unit + 1 életciklus-integráció egykapcsolatos poollal sikeres; teljes integráció sorosan 215/215; program kliens 4/4; Chromium 2/2 (ismeretlen verzió renderelési ága is); HU/EN PDF render sikeres, az első oldal továbbra is Csapatkép. A korábbi teljes unit/client futás ismert hibái továbbra is külön kezelendők.
+
+### Journey olvasási út — második review
+
+A loadProgramJourney a safeParseProgram sikertelenségét most kihagyott kampányként kezeli, nem dob PROGRAM_SNAPSHOT_REQUIRED kivételt. A többi érvényes program változatlanul megjelenik; kizárólag hibás vagy ismeretlen verziójú programoknál üres a lista. Valódi adatbázisos regressziós teszt ellenőrzi a vegyes és a kizárólag érvénytelen esetet. A két program-integráció egykapcsolatos poollal, a típusellenőrzés és az érintett fájlok lintje sikeres. A scoring-konstansok külön modulba emelése és az observer-felülbírálás továbbra is külön feladat.

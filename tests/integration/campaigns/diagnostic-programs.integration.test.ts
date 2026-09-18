@@ -122,3 +122,36 @@ test("Team Scan → parallel submissions → review/publish → pinned Follow-up
     await prisma.userProfile.deleteMany({ where: { id: { in: ids } } });
   }
 });
+
+
+test("Journey skips unsupported and malformed snapshots while retaining valid programs", async () => {
+  assert.equal(process.env.TRITA_INTEGRATION_TEST_DB, "1");
+  const { loadProgramJourney } = await import("@/lib/programs/journey.server");
+  const userId = `journey_user_${randomUUID()}`;
+  const orgId = `journey_org_${randomUUID()}`;
+  const campaignIds = [0, 1, 2].map(() => `journey_campaign_${randomUUID()}`);
+  const program = createProgramSnapshot("TEAM_SCAN");
+  try {
+    await prisma.userProfile.create({ data: { id: userId, username: "Journey fixture" } });
+    await prisma.organization.create({ data: { id: orgId, name: "Journey fixture", ownerId: userId } });
+    const snapshots = [program, { ...program, version: 999 }, { version: 1 }];
+    for (const [index, snapshot] of snapshots.entries()) {
+      await prisma.campaign.create({ data: {
+        id: campaignIds[index], orgId, createdBy: userId, name: `Journey ${index}`,
+        status: "ACTIVE", type: "SELF_ASSESSMENT", steps: ["SELF_ASSESSMENT"],
+        programKey: "TEAM_SCAN", programVersion: snapshot.version, programSnapshot: snapshot,
+        participants: { create: { userId } },
+      } });
+    }
+    const journeys = await loadProgramJourney(userId, orgId);
+    assert.deepEqual(journeys.map(journey => journey.campaignId), [campaignIds[0]]);
+    assert.equal(journeys[0].activities.find(activity => activity.key === "SELF_ASSESSMENT")?.state, "AVAILABLE");
+    await prisma.campaign.update({ where: { id: campaignIds[0] }, data: { programSnapshot: { version: 999 } } });
+    assert.deepEqual(await loadProgramJourney(userId, orgId), []);
+    assert.deepEqual(await loadProgramJourney(userId, null), []);
+  } finally {
+    await prisma.campaign.deleteMany({ where: { id: { in: campaignIds } } });
+    await prisma.organization.deleteMany({ where: { id: orgId } });
+    await prisma.userProfile.deleteMany({ where: { id: userId } });
+  }
+});
