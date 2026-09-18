@@ -652,7 +652,8 @@ paths:
   /api/team/{id}/pattern:
     get:
       tags: [Team]
-      summary: Csapat-mintázat (TRITAN-aggregátum) — csapat-hozzáférés kell
+      summary: Mért működési csapatminta a legutóbbi publikált riportból — tanácsadói jogosultság kell
+      description: "operatingPattern objektum: code (T16 kód vagy null), status (missing/tentative/descriptive/unavailable), label (hu/en), referenceStart, referenceEnd, source (published_report). Személyiségből képzett típusnevet nem ad vissza."
       responses: { "200": { description: OK }, "403": { description: FORBIDDEN } }
   /api/team/{id}/report:
     post: { tags: [Team], summary: Csapat-riport draft létrehozása (tanácsadó), responses: { "200": { description: OK } } }

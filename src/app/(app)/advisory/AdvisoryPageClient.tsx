@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { PATTERN_NAMES } from "@/lib/team-pattern";
 import { t, tf, type Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { Card } from "@/components/ui/primitives/Card";
@@ -19,9 +18,9 @@ interface TeamInfo {
 
 interface TeamPatternSummary {
   teamId: string;
-  patternCode: string;
+  patternCode: string | null;
   patternName: string;
-  diversitySuffix: string;
+  status: string;
 }
 
 interface Props {
@@ -53,13 +52,13 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
         fetch(`/api/team/${tm.id}/pattern`)
           .then((r) => r.json())
           .then((data) => {
-            const pr = data.patternResult;
+            const pr = data.operatingPattern;
             if (!pr) return null;
             return {
               teamId: tm.id,
-              patternCode: pr.patternCode,
-              patternName: pr.patternName,
-              diversitySuffix: pr.diversitySuffix,
+              patternCode: pr.code,
+              patternName: pr.label[isHu ? "hu" : "en"],
+              status: pr.status,
             } as TeamPatternSummary;
           })
           .catch(() => null)
@@ -68,7 +67,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
       setPatterns(results.filter(Boolean) as TeamPatternSummary[]);
       setLoadingPatterns(false);
     });
-  }, [teams]);
+  }, [teams, isHu]);
 
   const handleRequestConsultation = async () => {
     setRequestLoading(true);
@@ -89,9 +88,9 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
     }
   };
 
-  const firstPattern = patterns[0];
-  const secondPattern = patterns[1];
-  const firstContent = firstPattern ? PATTERN_NAMES[firstPattern.patternCode] : null;
+  const measured = patterns.filter(p => p.status === "descriptive");
+  const firstPattern = measured[0];
+  const secondPattern = measured[1];
 
   const steps = [
     { n: "1", title: t("advisory.step1Title", locale), body: t("advisory.step1Body", locale) },
@@ -152,7 +151,6 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
                     <p className="font-semibold text-ink">{team?.name}</p>
                     <p className="mt-0.5 text-sm text-ink-body">
                       {p.patternName}
-                      {p.diversitySuffix ? ` – ${p.diversitySuffix}` : ""}
                       <span className="mx-2 text-sand">·</span>
                       {team?.memberCount} {t("advisory.members", locale)}
                     </p>
@@ -207,11 +205,6 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
             number="03"
             title={t("advisory.feature3Title", locale)}
             description={t("advisory.feature3Desc", locale)}
-            example={
-              firstContent?.leaderActions?.[0]
-                ? `${t("advisory.feature3ExamplePrefix", locale)}: \u201E${firstContent.leaderActions[0]}\u201D`
-                : undefined
-            }
           />
           <ConsultationFeature
             number="04"

@@ -19,7 +19,7 @@ export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode
   const hu = locale === "hu";
   const tr = (key: string) => t(`tos.report.${key}`, locale);
   const nearMiddle = op && AXES.every((axis) => op.axes[axis].status === "available" && op.axes[axis].flags.includes("near_midpoint"));
-  const pattern = !nearMiddle && op?.pattern ? cataloguePattern(op.pattern.code) : null;
+  const pattern = !nearMiddle && !op?.patternUnavailableReason && op?.pattern ? cataloguePattern(op.pattern.code) : null;
   const heading = nearMiddle ? tr("nearMiddleSummary") : operating.heading ?? tr("mixed");
   return <div className={mode === "overview" ? "divide-y divide-sand" : "divide-y divide-sand rounded-2xl border border-sand bg-surface-card px-5 sm:px-8"} data-testid="team-style-report">
     <section className="pb-7 pt-5 sm:pt-7">

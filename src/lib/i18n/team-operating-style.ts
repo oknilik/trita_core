@@ -67,7 +67,7 @@ export const operatingStyleTranslations = {
       drive: { hu: "Hajtóerő", en: "Drive" }, cohesion: { hu: "Kohéziós proxy", en: "Cohesion proxy" },
       discipline: { hu: "Fegyelem", en: "Discipline" }, openness: { hu: "Nyitottság", en: "Openness" },
       stable: { hu: "Összetételi mintázat", en: "Composition pattern" },
-      compositionTentative: { hu: "Az összetételi mintázat küszöbközeli; a megnevezés változhat.", en: "The composition pattern is close to a threshold; its label may change." },
+      compositionTentative: { hu: "Egyes személyiségből képzett tengelyek küszöbközeliek; a hajlamokat óvatosan értelmezzétek.", en: "Some personality-derived axes are close to a threshold; interpret these tendencies cautiously." },
       support: { hu: "Lehetséges támasz – beszéljétek át", en: "Possible support – discuss together" },
       tension: { hu: "Lehetséges súrlódás – ellenőrizzétek példával", en: "Possible friction – check against an example" },
       cohort: { hu: "A két réteg válaszadói köre eltér. Ez az eltérések egyik oka is lehet.", en: "The two layers use different respondent groups. This may itself explain differences." },

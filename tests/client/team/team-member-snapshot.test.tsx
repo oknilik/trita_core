@@ -59,7 +59,8 @@ describe("TeamMemberSnapshot", () => {
     expect(screen.queryByText("A riporttal nyílik meg")).not.toBeInTheDocument();
     expect(screen.getByText("Koordinátor · 2")).toBeInTheDocument();
     expect(screen.getByText("Megvalósító · 2")).toBeInTheDocument();
-    expect(screen.getByText("Kapcsolódó megvalósítók")).toBeInTheDocument();
+    expect(screen.queryByText("Kapcsolódó megvalósítók")).not.toBeInTheDocument();
+    expect(screen.getByText("Még nincs mért csapatminta")).toBeInTheDocument();
     expect(screen.getByText("Következő lépés")).toBeInTheDocument();
     expect(screen.getByText("A csapatriport elkészült – nézd meg a közös felismeréseket.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Riport megnyitása/ })).toHaveAttribute(

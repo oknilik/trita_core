@@ -1,7 +1,7 @@
+import { operatingIdentity } from "@/lib/team-operating-style/identity";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { t, tf } from "@/lib/i18n";
-import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 import { computeTeamCompletionBuckets } from "@/lib/team-stats";
 import {
   CAMPAIGN_STEP_LABELS,
@@ -33,14 +33,14 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
     receivedFeedbackRequests,
   } = ctx;
 
-  const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
+  const publishedPattern = operatingIdentity(publishedReport?.aggregates?.teamStyle, locale);
 
   // Közös vödör-számítás (team-stats) — a TeamHeroBlock-kal azonos definíció:
   // folyamatban = van vázlat, de nincs eredmény; vár = el sem kezdte.
   const { completedCount, inProgressCount, waitingCount } =
     computeTeamCompletionBuckets(teamData.members);
   const completionPct = teamData.memberCount > 0 ? Math.round((completedCount / teamData.memberCount) * 100) : 0;
-  const hasPattern = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
+  const hasPattern = publishedPattern.status === "descriptive";
 
   return (
     <PlatformPageShell
@@ -124,13 +124,11 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   >
                     {hasPattern
                       ? t("teamDetail.teamPatternAvailable", locale)
-                      : t("teamDetail.teamPatternNotYet", locale)}
+                      : (isHu ? "Nincs biztos besorolás" : "No definitive classification")}
                   </span>
                 </div>
                 <p className="mt-2 text-caption leading-relaxed text-ink-body">
-                  {hasPattern
-                    ? teamData.patternResult?.fullLabel
-                    : tf("teamDetail.teamPatternProgress", locale, { pct: completionPct })}
+                  {publishedPattern.label}
                 </p>
               </div>
             ) : null}
@@ -222,15 +220,9 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       <SectionEyebrow>
                         {isHu ? "tanácsadó által jóváhagyott csapatkép" : "consultant-approved team picture"}
                       </SectionEyebrow>
-                      {publishedPattern?.label ? (
-                        <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
-                          {publishedPattern.label}
-                        </p>
-                      ) : (
-                        <p className="mt-1 font-fraunces text-xl leading-tight text-ink">
-                          {isHu ? "A csapat jóváhagyott profilja" : "The team's approved profile"}
-                        </p>
-                      )}
+                      <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
+                        {publishedPattern.label}
+                      </p>
                       {/* Szám-definíció (UX-audit #8): a chipek a PUBLIKÁLÁSKOR
                           befagyasztott aggregátumot mutatják – az élő taglétszám
                           (hero) ettől eltérhet, a címke ezt kimondja. */}

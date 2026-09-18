@@ -22,7 +22,7 @@ function comp(code: string) {
   } }))));
 }
 
-test("all 16 × 16 combinations retain both distinct pattern identities and four discussion contexts", () => {
+test("all 16 × 16 combinations retain numerical composition and four discussion contexts without legacy names", () => {
   const identities = new Set();
   for (let i = 0; i < 16; i++) for (let j = 0; j < 16; j++) {
     const operating = op(i.toString(2).padStart(4, "0"));
@@ -36,7 +36,8 @@ test("all 16 × 16 combinations retain both distinct pattern identities and four
     for (const locale of ["hu", "en"] as const) {
       const sections = presentTeamStyle(snapshot, locale);
       assert.equal(sections.length, 3);
-      assert.equal(sections[1].heading, composition.name);
+      assert.equal(sections[1].heading, undefined);
+      assert.equal(sections[1].rows.length, 4);
       assert.equal(sections[2].prompts.length, 4);
       assert.doesNotMatch(JSON.stringify(sections), /tos\.|undefined|NaN|respondentId/);
     }
@@ -46,7 +47,8 @@ test("all 16 × 16 combinations retain both distinct pattern identities and four
 
 test("missing/uncertain behavior data is not synthesized from personality", () => {
   const sections = presentTeamStyle(undefined, "hu", "Régi mintázat");
-  assert.equal(sections[1].heading, "Régi mintázat");
+  assert.equal(sections[1].heading, undefined);
+  assert.doesNotMatch(JSON.stringify(sections), /Régi mintázat/);
   assert.equal(sections[2].prompts.length, 0);
   assert.equal(compareTeamPatterns(null, comp("1111")), null);
   const operating = op("0000"); operating.pattern = null; operating.axes.information.status = "insufficient_data";

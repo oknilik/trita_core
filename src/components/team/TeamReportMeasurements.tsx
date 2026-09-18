@@ -10,7 +10,6 @@ import {
 import type { SerializedTeamReport } from "@/lib/team-report";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
-import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
 import type { HexacoCode } from "@/lib/hexaco";
 
@@ -175,60 +174,6 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
               : "The team's collective character – averages and internal diversity."}
           />
           <DashboardPanel className="p-6">
-            {agg.pattern && !agg.teamStyle?.composition && (
-              <div className="mb-5 rounded-[14px] border border-sand bg-cream/60 p-4">
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div>
-                    <p className="text-caption font-semibold text-ink">
-                      {isHu ? "Csapatmintázat" : "Team pattern"}
-                    </p>
-                    <p className="mt-1 font-fraunces text-lg leading-tight text-ink">
-                      {agg.pattern.label}
-                    </p>
-                  </div>
-                  {agg.pattern.confidence ? (
-                    <span className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-micro font-semibold text-ink-body">
-                      {agg.pattern.confidence}{" "}
-                      {isHu ? "konfidencia" : "confidence"}
-                    </span>
-                  ) : null}
-                </div>
-                {/* Stabilitás-jelzés a mintázat-motorból: küszöb-közeli tengelynél
-                    a mintázat kontextusfüggő – a tanácsadói debrifen ezt ki kell
-                    mondani, ezért a riportban is látszania kell. */}
-                {agg.pattern.stability && agg.pattern.stability !== "stabil" && agg.pattern.stabilityNote ? (
-                  <div className="mt-3 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-bronze-700">
-                    {agg.pattern.stabilityNote}
-                    {agg.pattern.unstableAxes && agg.pattern.unstableAxes.length > 0 ? (
-                      <span>
-                        {" "}
-                        {isHu ? "Érintett tengely: " : "Axes involved: "}
-                        {agg.pattern.unstableAxes
-                          .map((axis) =>
-                            isHu
-                              ? AXIS_LABELS[axis as keyof typeof AXIS_LABELS]?.name ?? axis
-                              : axis,
-                          )
-                          .join(", ")}
-                        .
-                      </span>
-                    ) : null}
-                  </div>
-                ) : null}
-                {typeof agg.pattern.tensionMemberCount === "number" &&
-                agg.pattern.tensionMemberCount > 0 ? (
-                  <p className="mt-2 text-micro text-muted">
-                    {isHu
-                      ? `${agg.pattern.tensionMemberCount} tagnál 20+ pontos egyéni eltérés van a csapatmintától – a minta rájuk kevésbé illik (név nélkül, az egyéni riport tárgya).`
-                      : `${agg.pattern.tensionMemberCount} member(s) deviate 20+ points from the team pattern – the label fits them less (no names; that belongs to individual reports).`}
-                  </p>
-                ) : null}
-                <p className="mt-3 border-t border-sand pt-3 text-micro leading-relaxed text-muted">
-                  {t("teamComp.framingNote", loc)}
-                </p>
-              </div>
-            )}
-
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:items-center">
               <div className="mx-auto w-full max-w-[320px]">
                 <RadarChart dimensions={radarDimensions} uid={`report-${report.id}`} />

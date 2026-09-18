@@ -1,6 +1,6 @@
 import { t, type Locale } from "@/lib/i18n";
 import { AXES } from "./questions";
-import { cataloguePattern } from "./catalogue";
+import { operatingIdentity } from "./identity";
 import { OPERATING_PATTERNS } from "./patterns";
 import { compareTeamPatterns, COMPOSITION_AXES, type TeamStyleSnapshot } from "./comparison";
 
@@ -12,15 +12,15 @@ export interface StyleSection {
 /** Shared by web/member/PDF: one ordering, one uncertainty and evidence contract. */
 export function presentTeamStyle(snapshot: TeamStyleSnapshot | null | undefined, locale: Locale,
   legacyPattern?: string | null): StyleSection[] {
+  void legacyPattern; // Historical names remain stored but are never displayed.
   const tr = (key: string) => t(`tos.report.${key}`, locale);
   const num = (v: number) => v.toLocaleString(locale === "hu" ? "hu-HU" : "en-GB", { maximumFractionDigits: 1 });
   const op = snapshot?.operating;
   const comp = snapshot?.composition;
-  const operating: StyleSection = { title: tr("operating"), notes: [tr("experimental")], rows: [], prompts: [] };
+  const operating: StyleSection = { title: tr("operating"), heading: operatingIdentity(snapshot, locale).label, notes: [tr("experimental")], rows: [], prompts: [] };
   if (!op) operating.notes.push(tr("noOperating"));
   else {
     const allMixed = AXES.every((axis) => op.axes[axis].pole === "mixed");
-    operating.heading = allMixed ? tr("mixed") : op.pattern ? (cataloguePattern(op.pattern.code)?.name[locale] ?? op.pattern.name[locale]) : tr("mixed");
     const date = (v: string) => new Date(v).toLocaleDateString(locale === "hu" ? "hu-HU" : "en-GB", { timeZone: "UTC" });
     operating.notes.push(`${t("tos.window", locale)}: ${date(op.referenceStart)} – ${date(op.referenceEnd)}`);
     if (op.pattern?.status === "tentative") operating.notes.push(tr("tentative"));
@@ -36,9 +36,9 @@ export function presentTeamStyle(snapshot: TeamStyleSnapshot | null | undefined,
         ].join(" · ") };
     });
   }
-  const composition: StyleSection = { title: tr("composition"), heading: comp?.name ?? legacyPattern ?? undefined,
+  const composition: StyleSection = { title: tr("composition"), heading: undefined,
     notes: [tr("compositionSource")], rows: [], prompts: [] };
-  if (!comp && !legacyPattern) composition.notes.push(tr("noComposition"));
+  if (!comp) composition.notes.push(tr("noComposition"));
   if (comp) {
     if (comp.stability !== "stabil") composition.notes.push(tr("compositionTentative"));
     composition.rows = COMPOSITION_AXES.map((axis) => ({ label: tr(axis),
@@ -51,7 +51,7 @@ export function presentTeamStyle(snapshot: TeamStyleSnapshot | null | undefined,
   const prompts = compareTeamPatterns(op ?? null, comp ?? null);
   if (prompts && op && comp) {
     if (!op.pattern) comparison.notes.push(tr("dimensionComparison"));
-    comparison.heading = `${operating.heading} × ${comp.name}`;
+    comparison.heading = undefined;
     comparison.prompts = prompts.prompts.map((p) => ({
       title: `${t(`tos.axes.${p.operatingAxis}.name`, locale)} × ${tr(p.compositionAxis)}`,
       context: `${tr("mean")}: ${num(op.axes[p.operatingAxis].mean!)}/100 · ${tr(p.compositionAxis)}: ${num(comp.axes[p.compositionAxis].mean)}/100. ${t(`tos.report.grades.${comp.axes[p.compositionAxis].grade}`, locale)}`,

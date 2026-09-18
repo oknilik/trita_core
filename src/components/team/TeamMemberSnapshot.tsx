@@ -1,3 +1,4 @@
+import { operatingIdentity } from "@/lib/team-operating-style/identity";
 import Link from "next/link";
 import type { TeamReportAggregates } from "@/lib/team-report";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
@@ -120,7 +121,7 @@ export function TeamMemberSnapshot({
         roleTitle: "Csapatszerepek",
         roleCopy: "Milyen hozzájárulások tartják mozgásban a csapatot, és hol van tartalék.",
         patternTitle: "Működési mintázat",
-        patternCopy: "A közös erősség és egy figyelendő együttműködési minta.",
+        patternCopy: "A napi működés mért mintázata a publikált riportból.",
         trustTitle: "Bizalmi háló",
         trustCopy: trustStep
           ? `Már ${trustStep.done} / ${trustStep.total} csapattárs kitöltötte a kapcsolati kört.`
@@ -153,7 +154,7 @@ export function TeamMemberSnapshot({
         roleTitle: "Team roles",
         roleCopy: "Which contributions keep the team moving, and where there is backup coverage.",
         patternTitle: "Working pattern",
-        patternCopy: "A shared strength and one collaboration pattern worth watching.",
+        patternCopy: "The measured pattern of daily work from the published report.",
         trustTitle: "Trust network",
         trustCopy: trustStep
           ? `${trustStep.done} / ${trustStep.total} teammates have completed the relationship round.`
@@ -255,7 +256,7 @@ export function TeamMemberSnapshot({
           <h3 className="mt-4 font-fraunces text-xl text-ink">{copy.patternTitle}</h3>
           <p className="mt-1.5 text-note leading-relaxed text-ink-body">{copy.patternCopy}</p>
           <p className="mt-3 font-fraunces text-base text-[var(--color-layer-team-accent)]">
-            {aggregates?.pattern?.label ?? copy.patternFallback}
+            {operatingIdentity(aggregates?.teamStyle, isHu ? "hu" : "en").label}
           </p>
           {!reportReady ? <LockedPreview title={copy.lockedTitle} copy={copy.lockedPattern} /> : null}
         </Card>

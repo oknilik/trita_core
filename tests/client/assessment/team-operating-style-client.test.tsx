@@ -58,9 +58,9 @@ describe("Operating Style participant flow", () => {
   it("renders the three report layers in order for a legacy snapshot", () => {
     render(<TeamOperatingStyleReport locale="en" legacyPattern="Legacy composition" />);
     const headings = screen.getAllByRole("heading", { level: 2 }).map((e) => e.textContent);
-    expect(headings).toEqual(["1. How do you work together?", "2. What is your personality composition?", "3. The two patterns together"]);
-    expect(screen.getByText("Legacy composition")).toBeInTheDocument();
-    expect(screen.getAllByText(/no operating style measurement/)).toHaveLength(2);
+    expect(headings).toEqual(["No measured team pattern yet", "What is the team made of?", "Which tendencies can you build on?", "04 / The two layers together"]);
+    expect(screen.queryByText("Legacy composition")).not.toBeInTheDocument();
+    expect(screen.getAllByText(/no operating style measurement/).length).toBeGreaterThan(0);
   });
 });
 
@@ -73,7 +73,7 @@ it("shows measured axes and coverage while keeping exact values in native disclo
   render(<TeamOperatingStyleReport locale="hu" snapshot={{ version: 1, operating: { ...operating,
     referenceStart: "2026-08-19", referenceEnd: "2026-09-16" }, composition: null, sameRespondents: null, comparison: null }} />);
   expect(screen.getAllByRole("img")).toHaveLength(4);
-  expect(screen.getAllByText((_, element) => element?.tagName === "SPAN" && element.classList.contains("tabular-nums") && element.textContent === "Értékelhető válasz: 3/3")).toHaveLength(4);
+  expect(screen.getAllByText((_, element) => element?.tagName === "SPAN" && element.textContent === "Értékelhető válasz: 3/3")).toHaveLength(4);
   expect(screen.getByText("Nincs erős eltolódás egyik pólus felé sem.")).toBeVisible();
   const summary = screen.getAllByText("Pontos értékek és a mérés háttere")[0];
   const disclosure = summary.closest("details")!;
