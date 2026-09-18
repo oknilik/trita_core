@@ -42,7 +42,7 @@ export function OperatingPatternJourney({ locale, onExplore }: { locale: Locale;
         </li>)}
       </ol>
     </section>
-    <section aria-labelledby="operating-example-title" className="mb-12 rounded-2xl bg-[var(--color-layer-self-hero-mid)] p-6 text-[var(--color-text-on-inverse)] sm:p-8">
+    <section aria-labelledby="operating-example-title" className="mb-5 rounded-2xl bg-[var(--color-layer-self-hero-mid)] p-6 text-[var(--color-text-on-inverse)] sm:p-8">
       <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{hu ? "Egy hétköznapi helyzetből indulva · példa" : "Starting with an everyday situation · example"}</p>
       <h2 id="operating-example-title" className="mt-3 font-fraunces text-3xl leading-tight">{hu ? "„Sokat várunk egymás döntéseire.”" : "“We spend a lot of time waiting for decisions.”"}</h2>
       <div className="mt-6 grid gap-6 md:grid-cols-3">
@@ -53,6 +53,26 @@ export function OperatingPatternJourney({ locale, onExplore }: { locale: Locale;
         ].map(([title, text]) => <div key={title} className="border-t border-current/20 pt-4"><h3 className="text-xs font-semibold text-[var(--color-text-on-inverse-muted)]">{title}</h3><p className="mt-2 text-sm leading-relaxed">{text}</p></div>)}
       </div>
       <p className="mt-6 border-t border-current/20 pt-4 text-sm leading-relaxed"><span className="mr-3 text-[var(--color-text-on-inverse-muted)]">{hu ? "Utána visszanézitek:" : "Then you look back:"}</span><strong className="font-semibold">{hu ? "Kevesebb lett a várakozás? Egyértelműbb, ki dönthet?" : "Was there less waiting? Is it clearer who can decide?"}</strong></p>
+    </section>
+    <section aria-labelledby="operating-information-example-title" className="mb-12 rounded-2xl bg-[var(--color-layer-team-soft)] p-6 text-ink sm:p-8">
+      <div className="flex items-start justify-between gap-5">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-bronze-dark">{hu ? "Amikor máshogy értjük · példa" : "When we understand things differently · example"}</p>
+          <h2 id="operating-information-example-title" className="mt-3 max-w-3xl font-fraunces text-3xl leading-tight">{hu ? "„Ugyanarról beszéltünk, mégis mindenki máshogy értette.”" : "“We talked about the same thing, yet everyone understood it differently.”"}</h2>
+        </div>
+        <span aria-hidden="true" className="relative hidden h-16 w-20 shrink-0 sm:block">
+          <span className="absolute left-0 top-0 h-11 w-12 -rotate-12 rounded-t-full rounded-bl-full bg-bronze/55" />
+          <span className="absolute bottom-0 right-0 h-11 w-12 rotate-12 rounded-t-full rounded-br-full bg-sage/65" />
+        </span>
+      </div>
+      <div className="mt-6 grid gap-6 md:grid-cols-3">
+        {[
+          [hu ? "Ezt nézzük meg" : "What we explore", hu ? "Hogyan jutnak el a fontos információk a csapattagokhoz? Hol tudjátok visszakeresni, miben állapodtatok meg?" : "How does important information reach team members? Where can you look up what you agreed?"],
+          [hu ? "Ezt beszéljük meg" : "What we discuss", hu ? "Mikor elég a szóbeli egyeztetés, és mit érdemes közösen leírni? Hogyan derül ki, ha valaki máshogy értett valamit?" : "When is a conversation enough, and what is worth writing down together? How do you find out if someone understood something differently?"],
+          [hu ? "Ezt próbálhatjátok ki" : "What you could try", hu ? "Két hétig minden közös egyeztetés végén röviden rögzítitek: miben állapodtatok meg, ki mit vállal, és mi maradt nyitott kérdés." : "For two weeks, briefly record at the end of each team discussion what you agreed, who will do what, and which questions remain open."],
+        ].map(([title, text]) => <div key={title} className="border-t border-bronze/25 pt-4"><h3 className="text-xs font-semibold text-bronze-dark">{title}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{text}</p></div>)}
+      </div>
+      <p className="mt-6 border-t border-bronze/25 pt-4 text-sm leading-relaxed"><span className="mr-3 text-bronze-dark">{hu ? "Utána visszanézitek:" : "Then you look back:"}</span><strong className="font-semibold">{hu ? "Kevesebb lett a félreértés? Könnyebb volt folytatni egymás munkáját?" : "Were there fewer misunderstandings? Was it easier to pick up each other's work?"}</strong></p>
     </section>
   </>;
 }
