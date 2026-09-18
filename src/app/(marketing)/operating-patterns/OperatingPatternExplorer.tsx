@@ -5,7 +5,8 @@ import Image from "next/image";
 import { useLocale } from "@/components/LocaleProvider";
 import { useSearchParams } from "next/navigation";
 import { OPERATING_CATALOGUE, OPERATING_FAMILIES } from "@/lib/team-operating-style/catalogue";
-import { AXES, AXIS_LABELS } from "@/lib/team-operating-style/questions";
+import { AXIS_LABELS } from "@/lib/team-operating-style/questions";
+import { OperatingPatternAxes } from "@/components/team/OperatingPatternAxes";
 import { OperatingPatternMark } from "@/components/team/OperatingPatternMark";
 
 const patterns = Object.entries(OPERATING_CATALOGUE).sort(([a], [b]) => a.localeCompare(b));
@@ -17,7 +18,7 @@ export function OperatingPatternExplorer() {
   const detailRef = useRef<HTMLElement>(null);
   const [chosen, setChosen] = useState<string | null>(null);
   const selected = patterns.find(([, p]) => p.code === (chosen ?? params.get("pattern"))) ?? patterns.find(([, p]) => p.code === "IEDA")!;
-  const [key, pattern] = selected;
+  const [, pattern] = selected;
   const family = OPERATING_FAMILIES.find((f) => pattern.code.startsWith(f.code))!;
   function choose(code: string) {
     setChosen(code);
@@ -48,7 +49,7 @@ export function OperatingPatternExplorer() {
         </section>)}
       </div>
       <section ref={detailRef} id="operating-pattern-detail" aria-live="polite" aria-atomic="true" className="mt-6 scroll-mt-28 rounded-2xl border border-sand bg-surface-card p-5 sm:p-8">
-        <div className="grid gap-7 md:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-widest text-sage">{pattern.code} · {family.name[locale]}</p><h2 className="mt-3 font-fraunces text-3xl">{pattern.name[locale]}</h2><p className="mt-4 text-sm leading-relaxed text-ink-body">{pattern.description[locale]}</p><Image src={`/illustrations/operating-patterns/${pattern.code}.svg`} alt={hu ? `${pattern.name.hu} – együttműködő csapat absztrakt figurákkal` : `${pattern.name.en} – abstract figures working together`} width={400} height={224} className="mx-auto mt-6 h-auto w-full max-w-lg" /></div><dl className="divide-y divide-sand">{AXES.map((axis, i) => <div key={axis} className="py-3 first:pt-0"><dt className="flex flex-wrap justify-between gap-2 text-sm"><span>{AXIS_LABELS[axis].name[locale]}</span><strong className="font-semibold">{pattern.code[i]} · {AXIS_LABELS[axis][key[i] === "0" ? "left" : "right"][locale]}</strong></dt></div>)}</dl></div>
+        <div className="grid gap-7 md:grid-cols-2"><div><p className="text-xs font-semibold uppercase tracking-widest text-sage">{pattern.code} · {family.name[locale]}</p><h2 className="mt-3 font-fraunces text-3xl">{pattern.name[locale]}</h2><p className="mt-4 text-sm leading-relaxed text-ink-body">{pattern.description[locale]}</p><Image src={`/illustrations/operating-patterns/${pattern.code}.svg`} alt={hu ? `${pattern.name.hu} – együttműködő csapat absztrakt figurákkal` : `${pattern.name.en} – abstract figures working together`} width={400} height={224} className="mx-auto mt-6 h-auto w-full max-w-lg" /></div><OperatingPatternAxes code={pattern.code} locale={locale} /></div>
         {hu && <p className="mt-6 border-t border-sand pt-4 text-xs leading-relaxed text-muted"><strong>Előfordulhat például: </strong>{pattern.examples.join(" · ")}. A közeg önmagában nem határozza meg a mintát.</p>}
       </section>
       <details className="mt-7 border-t border-sand pt-3"><summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold">{hu ? "Hogyan olvasd ezt a térképet?" : "How to read this map"}</summary><div className="max-w-3xl space-y-3 text-sm leading-relaxed text-ink-body"><p>{hu ? "A kód sorrendje: információáramlás → koordináció → döntéshozatal → megvalósítás. Az első két betű adja a családot. A családon belül a döntési jogkör és a megvalósítás módja különbözteti meg a négy mintát." : "The code order is information flow → coordination → decision-making → implementation. The first two letters define the family; decision authority and implementation distinguish its four patterns."}</p><p>{hu ? "A csapatkép az adott időszak működését írja le. Nem személyiségtípus vagy rangsor. A személyiségi összetétel külön réteg. Az organikus koordináció önmagában nem jelent elosztott döntést." : "This describes how a team operates during a particular period, not a personality type or ranking. Personality composition is a separate layer. Organic coordination alone does not imply distributed decisions."}</p><p>{hu ? "A mért tengelyek folytonosak. A középhez közeli, megosztott vagy hiányos eredményeket a riport külön jelzi. A modell kísérleti, nem validált tipológia." : "Measured axes are continuous. Near-midpoint, divergent or incomplete results are flagged in the report. This is an experimental, unvalidated typology."}</p></div></details>
