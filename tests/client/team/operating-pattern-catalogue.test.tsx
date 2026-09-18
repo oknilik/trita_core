@@ -6,11 +6,31 @@ import { OPERATING_CATALOGUE } from "@/lib/team-operating-style/catalogue";
 import { TeamOperatingStyleReport } from "@/components/team/TeamOperatingStyleReport";
 import { makeReaderReport } from "../../../scripts/fixtures/team-report-reader";
 
-vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams("pattern=IODP") }));
+const navigation = vi.hoisted(() => ({ query: "pattern=IODP" }));
+vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams(navigation.query) }));
 vi.mock("@/components/LocaleProvider", () => ({ useLocale: () => ({ locale: "hu" }) }));
-afterEach(cleanup);
+afterEach(() => { cleanup(); navigation.query = "pattern=IODP"; });
 
 describe("operating catalogue and layered report", () => {
+  it("introduces the process before the collapsed map and opens it on request", async () => {
+    navigation.query = "";
+    render(<OperatingPatternExplorer />);
+    const catalogue = screen.getByText("Felfedezem a 16 mintát").closest("details")!;
+    expect(catalogue).not.toHaveAttribute("open");
+    expect(screen.getByRole("heading", { name: "Mit kezdhettek a csapatképetekkel?" })).toBeVisible();
+    expect(screen.getByText("Nincs egyetlen ideális csapatminta.")).toBeVisible();
+    await userEvent.click(screen.getByRole("button", { name: "A minták érdekelnek" }));
+    expect(catalogue).toHaveAttribute("open");
+    expect(screen.getByRole("button", { name: /SOCA/ })).toBeVisible();
+  });
+
+  it("keeps invalid deep links collapsed and provides the English journey", () => {
+    navigation.query = "pattern=INVALID&lang=en";
+    render(<OperatingPatternExplorer />);
+    expect(screen.getByText("Explore the 16 patterns").closest("details")).not.toHaveAttribute("open");
+    expect(screen.getByRole("heading", { name: "What can you do with your team picture?" })).toBeVisible();
+  });
+
   it("deep-links into the catalogue and selects all 16 distinct patterns without workshop questions", async () => {
     render(<OperatingPatternExplorer />);
     expect(screen.getByRole("button", { name: /IODP/ })).toHaveAttribute("aria-pressed", "true");

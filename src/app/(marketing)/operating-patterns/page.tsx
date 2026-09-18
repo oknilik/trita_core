@@ -4,8 +4,8 @@ import { OperatingPatternExplorer } from "./OperatingPatternExplorer";
 
 export const metadata = buildPageMetadata({
   path: "/operating-patterns",
-  title: "16 működési minta – Csapatkép | trita",
-  description: "Négy működési tengely, tizenhat csapatminta. Fedezd fel a jelenlegi csapatműködés kísérleti, leíró térképét.",
+  title: "A közös munkánk mintázatai | trita",
+  description: "Értsétek meg a csapatotok működését, beszéljétek meg a tapasztalataitokat, és próbáljatok ki egy közös változtatást. Fedezzétek fel a T16 működési mintáit.",
 });
 export default function OperatingPatternsPage() {
   return <Suspense><OperatingPatternExplorer /></Suspense>;
