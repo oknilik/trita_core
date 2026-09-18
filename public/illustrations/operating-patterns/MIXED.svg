@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="224" viewBox="0 0 400 224" fill="none">
+  <!-- Different, equally weighted figures sharing a space; no dominant character. -->
+  <path d="M56 174C116 201 283 198 346 163" stroke="#E7D9CB" stroke-width="2" stroke-linecap="round"/>
+  <g stroke="#3A404F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M85 148L77 184L65 188M108 148L121 181L133 183M72 112L49 102L41 86M118 113L143 124"/>
+    <path d="M177 148L166 179L154 181M201 151L215 182L226 180M166 109L143 124M212 109L240 96"/>
+    <path d="M270 144L261 180L249 185M291 148L309 177L322 175M263 102L240 96M306 107L329 91L336 72"/>
+  </g>
+  <path d="M63 139L79 86L112 91L129 146Q97 159 63 139Z" fill="#5E7569"/>
+  <path d="M79 82C57 70 64 43 89 44C111 42 124 65 110 83Z" fill="#CE9552"/>
+  <path d="M81 44L73 29L101 35" fill="#3A404F"/>
+  <path d="M151 140C158 109 170 95 189 96C211 96 221 119 219 149C197 158 170 157 151 140Z" fill="#D7865F"/>
+  <path d="M171 89L164 55L202 49L212 83Z" fill="#594E64"/>
+  <path d="M178 50L189 31L198 49" fill="#CE9552"/>
+  <path d="M249 138C247 115 256 92 278 88C307 85 318 115 311 145L280 157Z" fill="#CE9552"/>
+  <path d="M262 79C248 62 262 39 283 43C300 43 309 62 297 78Z" fill="#5E7569"/>
+  <path d="M287 42L302 29L303 51" fill="#D7865F"/>
+  <path d="M177 126C183 114 199 112 205 124C200 133 186 138 177 126Z" fill="#F5E9DA"/>
+  <path d="M277 99L292 137L267 134Z" fill="#594E64"/>
+  <path d="M83 102L105 106L102 133L80 125Z" fill="#F5E9DA"/>
+  <path d="M132 65L139 58M228 61L233 51" stroke="#3A404F" stroke-width="2" stroke-linecap="round"/>
+  <path d="M34 132L41 124L46 137Z" fill="#D7865F"/>
+  <path d="M341 122C351 119 359 128 352 137C340 140 336 131 341 122Z" fill="#594E64"/>
+</svg>

@@ -1,3 +1,4 @@
+import { TeamPatternThumbnail } from "@/components/team/TeamPatternThumbnail";
 import { operatingIdentity } from "@/lib/team-operating-style/identity";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -111,7 +112,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 CTA nincs (UX-audit #3): a megnyitás útja a hero gombja. */}
             {canViewRaw ? (
               <div className="rounded-[24px] border border-sand bg-surface-card p-5">
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
                     {t("teamDetail.teamPatternTitle", locale)}
                   </p>
@@ -127,9 +128,12 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       : (isHu ? "Nincs biztos besorolás" : "No definitive classification")}
                   </span>
                 </div>
-                <p className="mt-2 text-caption leading-relaxed text-ink-body">
-                  {publishedPattern.label}
-                </p>
+                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+                  <p className="min-w-0 flex-1 basis-40 text-caption leading-relaxed text-ink-body">
+                    {publishedPattern.label}
+                  </p>
+                  <TeamPatternThumbnail identity={publishedPattern} isHu={isHu} className="max-w-40 shrink-0 sm:max-w-44" />
+                </div>
               </div>
             ) : null}
           </div>
