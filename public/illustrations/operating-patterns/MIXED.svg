@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="224" viewBox="0 0 400 224" fill="none">
+  <g transform="translate(0,0)">
   <!-- The catalogue's eyeless, continuous organic figures, with no dominant type. -->
   <!-- Terracotta figure: rounded body, peach inset, curved plum arm. -->
   <path d="M38 182C29 161 38 123 54 94C66 71 87 48 103 51C121 56 111 78 96 93C83 107 84 119 101 138C112 151 119 172 111 184C88 169 65 169 48 190Z" fill="#CE6D52"/>
@@ -24,4 +25,5 @@
   <path d="M241 78C241 66 252 58 263 63C276 69 276 84 266 91C253 98 241 91 241 78Z" fill="#E9BB77"/>
   <path d="M142 158L149 145L165 147L162 166L145 168Z" fill="#D7CEC0"/>
   <path d="M239 160C243 148 249 145 254 152C259 160 264 155 269 151C277 154 273 166 268 170C258 177 244 170 239 160Z" fill="#AF7881"/>
+  </g>
 </svg>

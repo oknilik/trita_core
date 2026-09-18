@@ -170,7 +170,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
   const [operating, composition, comparison] = presentTeamStyle(agg?.teamStyle, locale, agg?.pattern?.label);
   const op = agg?.teamStyle?.operating;
   const comp = agg?.teamStyle?.composition;
-  const operatingPattern = op?.pattern ? cataloguePattern(op.pattern.code) : null;
+  const operatingPattern = !op?.patternUnavailableReason && op?.pattern ? cataloguePattern(op.pattern.code) : null;
   const next = reportNextStep(report, isHu);
   const signals = reportAttentionSignals(agg, isHu);
   const nearMiddle = op && AXES.every((axis) => op.axes[axis].status === "available" && op.axes[axis].flags.includes("near_midpoint"));
@@ -201,7 +201,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
           {operatingPattern && !nearMiddle && <Text style={{ ...caption, color: colors.white }}>{operatingPattern.code} · {op?.pattern?.status === "tentative" ? tr("tentative") : (isHu ? "Mért működési minta" : "Measured operating pattern")}</Text>}
           {operating.heading && <Text style={{ ...heading, color: colors.white }}>{nearMiddle ? tr("nearMiddleSummary") : operating.heading}</Text>}
           {operatingPattern && !nearMiddle && op?.pattern?.status === "descriptive" && <Text style={{ ...body, color: colors.white }}>{operatingPattern.description[locale]}</Text>}
-          {operatingPattern && !nearMiddle && op?.pattern?.status === "descriptive" && <View style={{ alignSelf: "center", padding: 6, backgroundColor: colors.white, borderRadius: 8 }}><PdfOperatingPatternIllustration code={operatingPattern.code} /></View>}
+          {op && <View style={{ alignSelf: "center", padding: 6, backgroundColor: colors.white, borderRadius: 8 }}><PdfOperatingPatternIllustration code={operatingPattern && !nearMiddle && op.pattern?.status === "descriptive" ? operatingPattern.code : "MIXED"} /></View>}
         </View>
         {nearMiddle && <Text style={body}>{tr("nearMiddleHelp")}</Text>}
         <Notes notes={operating.notes} />

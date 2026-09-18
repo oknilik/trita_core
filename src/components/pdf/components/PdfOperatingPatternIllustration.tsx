@@ -7,7 +7,7 @@ export function PdfOperatingPatternIllustration({ code }: { code: string }) {
   const vector = vectors[code as keyof typeof vectors];
   return <Svg viewBox="0 0 400 224" width={200} height={112}>
     <G transform={vector.transform}>
-      {vector.paths.map((path, i) => <Path key={i} d={path.d} fill={path.fill} transform={path.transform} />)}
+      {vector.paths.map((path, i) => <Path key={i} d={path.d} fill={path.fill} transform={"transform" in path ? path.transform : undefined} />)}
     </G>
   </Svg>;
 }

@@ -61,6 +61,7 @@ describe("operating catalogue and layered report", () => {
     const agg = makeReaderReport(true).aggregates!;
     const { rerender } = render(<TeamOperatingStyleReport snapshot={agg.teamStyle} locale="en" />);
     expect(screen.queryByRole("link", { name: "Explore this pattern" })).not.toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /Mixed team picture/ })).toHaveAttribute("src", "/illustrations/operating-patterns/MIXED.svg");
     expect(screen.getAllByText(/different respondent groups, so no combined pattern/).length).toBeGreaterThan(0);
     rerender(<TeamOperatingStyleReport snapshot={null} locale="en" legacyPattern="Legacy team" />);
     expect(screen.getAllByText(/no operating style measurement/).length).toBeGreaterThan(0);
@@ -80,6 +81,6 @@ describe("operating catalogue and layered report", () => {
     expect(screen.getByText(/Lehetséges alternatívák: Navigátorok/)).toBeVisible();
     expect(screen.getByText(/nincs egyértelmű pólus ezen a tengelyen/)).toBeVisible();
     expect(screen.queryByText(OPERATING_CATALOGUE["0000"].description.hu)).not.toBeInTheDocument();
-    expect(within(screen.getByTestId("team-style-report")).getAllByRole("img")).toHaveLength(4);
+    expect(within(screen.getByTestId("team-style-report")).getAllByRole("img")).toHaveLength(5);
   });
 });
