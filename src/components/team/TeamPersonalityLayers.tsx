@@ -9,8 +9,8 @@ export const COMPOSITION_SOURCES: Record<(typeof COMPOSITION_AXES)[number], Hexa
   drive: ["X"], cohesion: ["H", "A"], discipline: ["C"], openness: ["O"],
 };
 const valid = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100;
-export function TeamPersonalityLayers({ composition, averages, spread, count, locale }: {
-  composition?: CompositionSnapshot | null; averages?: Record<string, number> | null;
+export function TeamPersonalityLayers({ composition, averages, spread, count, locale, sourceLabel }: {
+  sourceLabel?: string; composition?: CompositionSnapshot | null; averages?: Record<string, number> | null;
   spread?: Record<string, number> | null; count?: number; locale: Locale; legacyPattern?: string | null;
 }) {
   const [selected, setSelected] = useState<(typeof COMPOSITION_AXES)[number]>("cohesion");
@@ -21,6 +21,7 @@ export function TeamPersonalityLayers({ composition, averages, spread, count, lo
   const source = COMPOSITION_SOURCES[selected];
   return <>
     <section className="py-7">
+      {sourceLabel && <p className="mb-4 rounded-lg border border-sand p-3 text-xs text-muted">{sourceLabel}</p>}
       <div className="grid gap-7 md:grid-cols-[1fr_1.4fr]">
         <div><p className="text-xs font-semibold uppercase tracking-widest text-sage">{hu ? "02 / Aggregált személyiség" : "02 / Aggregated personality"}</p><h2 className="mt-3 font-fraunces text-2xl text-ink sm:text-3xl">{hu ? "Miből épül fel a csapat?" : "What is the team made of?"}</h2><p className="mt-4 text-sm leading-relaxed text-ink-body">{hu ? "Az egyéni HEXACO-profilok összesítése. A közös átlag nem jelenti azt, hogy mindenki egyforma." : "Aggregated individual HEXACO profiles. A shared average does not mean everyone is alike."}</p>{typeof count === "number" && dims.length > 0 && <p className="mt-3 text-xs text-muted">{hu ? `${count} egyéni profil` : `${count} individual profiles`}</p>}</div>
         {dims.length > 0 ? <div><div className="space-y-2">{dims.map((dim) => {
@@ -41,6 +42,7 @@ export function TeamPersonalityLayers({ composition, averages, spread, count, lo
       </div>
     </section>
     <section className="py-7">
+      {sourceLabel && <p className="mb-4 rounded-lg border border-sand p-3 text-xs text-muted">{sourceLabel}</p>}
       <p className="text-xs font-semibold uppercase tracking-widest text-sage">{hu ? "03 / A személyiségprofilból képzett négy tengely" : "03 / Four axes derived from personality"}</p><h2 className="mt-3 font-fraunces text-2xl text-ink sm:text-3xl">{hu ? "Milyen hajlamokból építkezhettek?" : "Which tendencies can you build on?"}</h2>
       {composition ? <><p className="mt-3 text-xs text-muted">{hu ? `${composition.memberCount} profil · Válassz egy tengelyt a forrása megismeréséhez.` : `${composition.memberCount} profiles · Select an axis to see its source.`}</p>
         <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">{COMPOSITION_AXES.map((axis) => <button type="button" key={axis} aria-pressed={selected === axis} onClick={() => setSelected(axis)} className={`rounded-xl border p-4 text-left text-ink ${selected === axis ? "border-sage bg-sage-soft" : "border-sand bg-cream hover:border-sage"}`}><span className="block text-sm font-medium">{tr(axis)}</span><span className="mt-2 block font-fraunces text-3xl">{num(composition.axes[axis].mean)}<span className="font-sans text-xs text-muted"> /100</span></span><span className="mt-2 block text-xs text-muted">{COMPOSITION_SOURCES[axis].map((dim) => HEXACO_DIMENSIONS[dim][locale]).join(" + ")}</span></button>)}</div>

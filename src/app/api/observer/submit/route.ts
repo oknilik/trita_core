@@ -154,7 +154,7 @@ export async function POST(req: Request) {
     if (programCampaign?.programSnapshot) {
       await tx.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${invitation.campaignId} FOR UPDATE`;
       const active = await tx.campaign.findUnique({ where: { id: invitation.campaignId! }, select: { status: true } });
-      if (active?.status !== "ACTIVE") return false;
+      if (active?.status !== "ACTIVE") return "CAMPAIGN_CLOSED" as const;
     }
     const claimed = await tx.observerInvitation.updateMany({
       where: { id: invitation.id, status: "PENDING", completedAt: null },
@@ -178,6 +178,7 @@ export async function POST(req: Request) {
     await tx.observerDraft.deleteMany({ where: { invitationId: invitation.id } });
     return true;
   });
+  if (saved === "CAMPAIGN_CLOSED") return NextResponse.json({ error: saved }, { status: 409 });
   if (!saved) {
     return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
   }

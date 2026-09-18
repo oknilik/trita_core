@@ -1,3 +1,4 @@
+import { completionMap } from "./core";
 import type { Prisma } from "@prisma/client";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
 export class ProgramSubmissionError extends Error { constructor(public code: string) { super(code); } }
@@ -13,6 +14,6 @@ export async function guardProgramSubmission(tx: Prisma.TransactionClient, campa
     p.campaign.teamId ? tx.teamMember.findUnique({ where: { teamId_userId: { teamId: p.campaign.teamId, userId } } }) : null,
   ]);
   if (!org || org.leftAt || !team) throw new ProgramSubmissionError("FORBIDDEN");
-  const done = p.stepCompletions as Record<string, unknown> | null;
+  const done = completionMap(p.stepCompletions);
   if (!done?.[activity] && !isStepOpenFor(p.campaign, p, activity)) throw new ProgramSubmissionError("STEP_LOCKED");
 }

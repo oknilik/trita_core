@@ -1,4 +1,4 @@
-import { parseProgram, activityStates, completionMap } from "@/lib/programs/core";
+import { parseProgram, activityStates, programCompletions, type ActivityKey } from "@/lib/programs/core";
 // ─────────────────────────────────────────────────────────────────────
 // Több-lépéses kampányok — SZERVER-oldali léptetés és inicializálás.
 // A tiszta lépés-logika a campaign-steps-core.ts-ben él.
@@ -272,8 +272,8 @@ export async function advanceCampaignStepForUser(
     if (program) {
       const before = activityStates(program, p.stepCompletions);
       if (!before.some(a => a.key === completedType && a.state === "AVAILABLE")) continue;
-      const completions = { ...completionMap(p.stepCompletions), __program: 1, [completedType]: new Date().toISOString() };
-      await db.campaignParticipant.update({ where: { id: p.id }, data: { stepCompletions: completions as Prisma.InputJsonValue } });
+      const completions = programCompletions(p.stepCompletions, completedType as ActivityKey);
+      await db.campaignParticipant.update({ where: { id: p.id }, data: { stepCompletions: completions as unknown as Prisma.InputJsonValue } });
       for (const activity of activityStates(program, completions)) {
         if (activity.state !== "AVAILABLE" || before.some(a => a.key === activity.key && a.state === "AVAILABLE")) continue;
         const opening = { userId: profileId, campaignId: p.campaign.id, campaignName: p.campaign.name, stepType: activity.key };
@@ -724,8 +724,8 @@ export async function initializeCampaignProgress(
   const program = parseProgram(campaign.programSnapshot);
   if (program) {
     for (const p of campaign.participants) {
-      const completions = { ...completionMap(p.stepCompletions), __program: 1 };
-      await db.campaignParticipant.update({ where: { id: p.id }, data: { stepCompletions: completions as Prisma.InputJsonValue, nextStepOpensAt: null } });
+      const completions = programCompletions(p.stepCompletions);
+      await db.campaignParticipant.update({ where: { id: p.id }, data: { stepCompletions: completions as unknown as Prisma.InputJsonValue, nextStepOpensAt: null } });
       for (const activity of activityStates(program, completions)) {
         if (activity.state !== "AVAILABLE") continue;
         const opening = { userId: p.userId, campaignId, campaignName: campaign.name, stepType: activity.key };

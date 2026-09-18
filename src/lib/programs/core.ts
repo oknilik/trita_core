@@ -1,3 +1,4 @@
+import { POLICY } from "@/lib/team-operating-style/scoring";
 import { z } from "zod";
 
 export const PROGRAM_KEYS = ["TEAM_SCAN", "FOLLOW_UP"] as const;
@@ -10,10 +11,11 @@ const activitySchema = z.object({
   required: z.boolean(), dependencies: z.array(z.enum(ACTIVITY_KEYS)),
 }).strict();
 export const programSchema = z.object({
-  key: z.enum(PROGRAM_KEYS), version: z.number().int().positive(),
+  key: z.enum(PROGRAM_KEYS), version: z.literal(1),
   activities: z.array(activitySchema).min(1),
-  policy: z.object({ observerResponsesPerParticipant: z.literal(3), minRespondents: z.literal(3), minOperatingCoverage: z.literal(0.6) }).strict(),
+  policy: z.object({ observerResponsesPerParticipant: z.number().int().min(1).max(100), minRespondents: z.number().int().min(POLICY.minRespondents).max(10000), minOperatingCoverage: z.number().min(POLICY.minCoverage).max(1) }).strict(),
 }).strict();
+export const DEFAULT_PROGRAM_POLICY = { observerResponsesPerParticipant: 3, minRespondents: POLICY.minRespondents, minOperatingCoverage: POLICY.minCoverage };
 export type ProgramSnapshot = z.infer<typeof programSchema>;
 export function parseProgram(value: unknown): ProgramSnapshot | null {
   if (value == null) return null;
@@ -36,6 +38,10 @@ export function parseProgram(value: unknown): ProgramSnapshot | null {
   p.activities.forEach(a => visit(a.key));
   return p;
 }
+/** Read paths fail closed; write paths keep using strict parseProgram. Unknown versions are unsupported. */
+export function safeParseProgram(value: unknown): ProgramSnapshot | null {
+  try { return parseProgram(value); } catch { return null; }
+}
 export function createProgramSnapshot(key: ProgramKey): ProgramSnapshot {
   const measurement: ActivityKey[] = key === "TEAM_SCAN"
     ? ["SELF_ASSESSMENT", "TEAM_OPERATING_STYLE", "PSYCH_SAFETY", "OBSERVER_360"]
@@ -47,14 +53,26 @@ export function createProgramSnapshot(key: ProgramKey): ProgramSnapshot {
       { key: "REPORT_GENERATION", scope: "team", required: true, dependencies: measurement },
       { key: "CONSULTANT_REVIEW", scope: "team", required: true, dependencies: ["REPORT_GENERATION"] },
       { key: "PUBLISH", scope: "team", required: true, dependencies: ["CONSULTANT_REVIEW"] },
-    ], policy: { observerResponsesPerParticipant: 3, minRespondents: 3, minOperatingCoverage: 0.6 },
+    ], policy: { ...DEFAULT_PROGRAM_POLICY },
   })!;
 }
 export function participantActivities(p: ProgramSnapshot) {
   return p.activities.filter(a => a.scope === "participant");
 }
+export interface ProgramCompletions { v: 1; activities: Record<string, unknown> }
+export function isProgramCompletions(value: unknown): boolean {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const raw = value as Record<string, unknown>;
+  return raw.__program === 1 || "v" in raw;
+}
 export function completionMap(value: unknown): Record<string, unknown> {
-  return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  const raw = value as Record<string, unknown>;
+  if ("v" in raw) return raw.v === 1 && raw.activities && typeof raw.activities === "object" && !Array.isArray(raw.activities) ? raw.activities as Record<string, unknown> : {};
+  return Object.fromEntries(Object.entries(raw).filter(([key]) => key !== "__program"));
+}
+export function programCompletions(value: unknown, completed?: ActivityKey): ProgramCompletions {
+  return { v: 1, activities: { ...completionMap(value), ...(completed ? { [completed]: new Date().toISOString() } : {}) } };
 }
 export function activityStates(p: ProgramSnapshot, completions: unknown, facts: {
   started?: string[]; observerSent?: number; observerResponses?: number;

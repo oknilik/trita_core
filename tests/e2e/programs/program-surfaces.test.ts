@@ -55,4 +55,9 @@ test("completed self exposes all parallel activities despite a stale legacy open
   await page.goto(`/org/${id}/campaigns/${campaignId}`);
   await expect(page.getByRole("heading", { name: "Browser Team Scan" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Close measurement" })).toBeDisabled();
+  await prisma.campaign.update({ where: { id: campaignId }, data: { programSnapshot: { version: 999 } } });
+  await page.goto("/tasks");
+  await expect(page.locator(`a[href="/assessment/team-operating-style?campaignId=${campaignId}"]`)).toHaveCount(0);
+  await page.goto(`/org/${id}/campaigns/${campaignId}`);
+  await expect(page.getByRole("alert").filter({ hasText: "Unsupported program version." })).toBeVisible();
 });

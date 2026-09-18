@@ -30,3 +30,17 @@ Előbb alkalmazni kell a `20260918160000_diagnostic_programs` additív Prisma-mi
 ## Következő kiadási ellenőrzés
 
 Stagingen, megfelelő szerepkörökkel végigjárandó a program létrehozása, meghívás, kitöltés, kampányzárás, riportjóváhagyás és publikálás, majd Follow-up létrehozás. Külön vizsgálandó a három observer-válasz személyenkénti követelményének gyakorlati teljesíthetősége. Automatikus átugrás nincs.
+
+## PR #98 review-javítások
+
+- Az aggregálás a kampányzárás és riportmutáció tranzakciója előtt fut. Záráskor a résztvevői nyugták változását optimista token ellenőrzi; eltéréskor újrapróbálás szükséges. A riportnál a revízió, a forráskampány és annak zárt állapota a zárolás után ismét ellenőrzött.
+- A tiszta kampánysegédek, a Journey és a navigáció nem dob hibás/ismeretlen snapshotra. Az ismeretlen program nem legacy fallback: nem nyit feladatokat. Az író utak továbbra is szigorúan validálnak. A jelenlegi implementáció az 1-es sémaverziót támogatja; jövőbeli verzióhoz explicit implementáció kell.
+- A snapshot policy numerikus, validált küszöböket tárol. A minimumok a scoring POLICY adatvédelmi/mérési padlóját nem csökkenthetik; a riport és összehasonlítás a tárolt policyt használja.
+- Új teljesítési JSON: `{ v: 1, activities: {...} }`. A korábbi `__program` formátum olvasható, a következő programírás az új burkolást menti. Nincs destruktív adatmigráció.
+- A baseline másolás whitelistelt; trustHighlights, dynamics, comparisonBasis és más, az összehasonlításhoz nem szükséges mezők nem kerülnek az új kampányba.
+- Az observer-oldal a capability-motorból kapja a hozzáférési jelzőket. Lezárt körbe beadáskor külön CAMPAIGN_CLOSED hibát és lokalizált magyarázatot kap a kitöltő. A testType ellenőrzött lokális érték, non-null assertion nélkül.
+- A Follow-up személyiség- és összetételi blokkja, tagi radarja, mérési háttere és PDF-je helyben jelzi a történeti forrást és a baseline-riport dátumát. A webes összehasonlítás táblázat; a PDF összehasonlítása a meglévő fejezetstílust használja, a személyiségoldal részeként, az eredményekkel induló első oldal után.
+- A DIAGNOSTIC_PROGRAMS_ENABLED bekerült a .env.example-be. Létrehozási rollout-kapcsoló, nem portfolio parking: már létező programok elérhetőségét nem kapcsolja ki.
+- Observer-felülbírálás nem került be: a küszöb és a naplózott kivételkezelés külön termékdöntés. A main örökölt teszthibáinak javítása külön változtatás marad.
+
+Ellenőrzések: 8 program unit + 1 életciklus-integráció egykapcsolatos poollal sikeres; teljes integráció sorosan 215/215; program kliens 4/4; Chromium 2/2 (ismeretlen verzió renderelési ága is); HU/EN PDF render sikeres, az első oldal továbbra is Csapatkép. A korábbi teljes unit/client futás ismert hibái továbbra is külön kezelendők.

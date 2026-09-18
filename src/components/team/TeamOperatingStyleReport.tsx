@@ -11,8 +11,8 @@ import { TeamPersonalityLayers } from "./TeamPersonalityLayers";
 type Props = { snapshot?: TeamStyleSnapshot | null; locale: Locale; legacyPattern?: string | null };
 const number = (value: number | null, locale: Locale) => value === null ? "–" : value.toLocaleString(locale === "hu" ? "hu-HU" : "en-GB", { maximumFractionDigits: 1 });
 
-export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode = "standalone", averages, spread, personalityCount }: Props & {
-  mode?: "standalone" | "overview"; averages?: Record<string, number> | null; spread?: Record<string, number> | null; personalityCount?: number;
+export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode = "standalone", averages, spread, personalityCount, personalitySource }: Props & {
+  personalitySource?: string; mode?: "standalone" | "overview"; averages?: Record<string, number> | null; spread?: Record<string, number> | null; personalityCount?: number;
 }) {
   const [operating, , comparison] = presentTeamStyle(snapshot, locale, legacyPattern);
   const op = snapshot?.operating;
@@ -57,7 +57,7 @@ export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode
         })}<p className="mt-3 text-xs leading-relaxed text-muted">{tr("centerLegend")} {hu ? "A magasabb érték nem jobb eredmény. Jobb oldalon az átlag és az értékelhető válaszok száma látható." : "Higher is not better. The right column shows the mean and usable response count."}</p></div>}
       <p className="mt-4 text-xs leading-relaxed text-muted">{tr("experimental")}</p>
     </section>
-    <TeamPersonalityLayers composition={snapshot?.composition} averages={averages} spread={spread} count={personalityCount} locale={locale} legacyPattern={legacyPattern} />
+    <TeamPersonalityLayers sourceLabel={personalitySource} composition={snapshot?.composition} averages={averages} spread={spread} count={personalityCount} locale={locale} legacyPattern={legacyPattern} />
     <section className="py-7"><h2 className="font-fraunces text-2xl text-ink">{hu ? "04 / A két réteg együtt" : "04 / The two layers together"}</h2>
       <div className="mt-4 rounded-xl bg-sage-soft p-5"><p className="text-sm leading-relaxed text-ink-body">{tr("comparisonNote")}</p>{comparison.notes.slice(1).map((note) => <p key={note} className="mt-3 text-sm text-ink-body">{note}</p>)}</div>
       {comparison.prompts.length > 0 && <div className="mt-4 divide-y divide-sand">{comparison.prompts.map((prompt, index) => <details key={prompt.title} open={index === 0} className="py-1"><summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold text-ink">{prompt.title}</summary><div className="grid gap-5 pb-4 sm:grid-cols-2"><div className="border-l-2 border-sage/40 pl-4"><h3 className="text-xs font-semibold text-sage-dark">{tr("support")}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{prompt.support}</p></div><div className="border-l-2 border-bronze/40 pl-4"><h3 className="text-xs font-semibold text-bronze-dark">{tr("tension")}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{prompt.tension}</p></div><p className="text-xs text-muted sm:col-span-2">{prompt.context}</p></div></details>)}</div>}

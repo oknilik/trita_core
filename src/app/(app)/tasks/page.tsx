@@ -1,4 +1,4 @@
-import { parseProgram, activityStates, programActivityLink } from "@/lib/programs/core";
+import { safeParseProgram, activityStates, programActivityLink } from "@/lib/programs/core";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -152,7 +152,7 @@ export default async function MyMeasurementsPage() {
       const selfDone = selfResults.some((result) =>
         isSelfResultForCampaign(result, p.campaign),
       );
-      const program = parseProgram(p.campaign.programSnapshot);
+      const program = safeParseProgram(p.campaign.programSnapshot);
       const scopedInvites = myInvitations.filter(i => i.campaignId === p.campaign.id);
       const activities = program ? activityStates(program, p.stepCompletions, { observerSent: scopedInvites.length, observerResponses: scopedInvites.filter(i => i.status === "COMPLETED").length }) : null;
       const doneFlags = activities ? activities.map(a => a.state === "COMPLETED") : steps.map((_, idx) =>
@@ -188,7 +188,7 @@ export default async function MyMeasurementsPage() {
                 (freshFrom === null ||
                   (inv.completedAt && inv.completedAt.getTime() >= freshFrom)),
             ).length;
-            return { sent: relevant.length, received, min: OBSERVER_MIN_FOR_REVEAL };
+            return { sent: relevant.length, received, min: program?.policy.observerResponsesPerParticipant ?? OBSERVER_MIN_FOR_REVEAL };
           })()
         : null;
 

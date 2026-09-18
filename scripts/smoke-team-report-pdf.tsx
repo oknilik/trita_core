@@ -117,6 +117,18 @@ async function main() {
     console.log(`render ok (isHu=${isHu}): ${buf.length} bytes, %PDF=${buf.subarray(0, 5).toString()}`);
   }
 
+  const followUp = makeReaderReport(true);
+  followUp.aggregates!.program = { key: "FOLLOW_UP", observerReady: false, participantCount: 4,
+    baseline: { campaignId: "baseline", reportId: "baseline-report", revision: 1, publishedAt: "2026-06-01T00:00:00Z" },
+    cohortChanged: true, operatingChanges: [{ axis: "information", previous: 45, current: 55, delta: 10 }],
+  };
+  for (const isHu of [true, false]) {
+    const pdf = await renderToBuffer(React.createElement(TeamReportDocument, { report: followUp, isHu }) as never);
+    const { writeFileSync } = await import("node:fs");
+    writeFileSync(`/tmp/team-follow-up-${isHu ? "hu" : "en"}.pdf`, pdf);
+    console.log(`follow-up render (isHu=${isHu}): ${pdf.length} bytes`);
+  }
+
   // Üres-aggregátum ág (régi riport): ne dőljön el.
   const bare = { ...report, aggregates: null, actionItems: null, leadershipGuide: null };
   const buf = await renderToBuffer(

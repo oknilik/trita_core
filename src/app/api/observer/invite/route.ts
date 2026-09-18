@@ -94,6 +94,8 @@ async function submitRequest(req: Request) {
     return NextResponse.json({ error: "NO_TEST_TYPE" }, { status: 400 });
   }
 
+  const testType = profile.testType;
+
   // Aktív org-tagság (a típus-jelöléshez és a jóváhagyási szabályhoz).
   const activeOrgMembership = profile.activeOrgId
     ? await prisma.organizationMember.findUnique({
@@ -222,7 +224,7 @@ async function submitRequest(req: Request) {
       observerProfileId,
       observerEmail: targetEmail,
       observerName: targetName,
-      testType: profile.testType!,
+      testType,
       status: needsApproval ? "AWAITING_APPROVAL" : "PENDING",
       expiresAt: new Date(Date.now() + OBSERVER_INVITE_TTL_DAYS * 24 * 60 * 60 * 1000),
       observerType,

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
-import { createProgramSnapshot, participantActivities } from "@/lib/programs/core";
+import { createProgramSnapshot, participantActivities, completionMap } from "@/lib/programs/core";
 import { activateCampaignAtomically, advanceCampaignStepForUser } from "@/lib/campaign-steps";
 import { saveOperatingResponse } from "@/lib/team-operating-style/service.server";
 import { recordAnonymousPsychSafetyResponse } from "@/lib/psych-safety-submit.server";
@@ -47,8 +47,8 @@ test("Team Scan → parallel submissions → review/publish → pinned Follow-up
     // Independent activities commit together, without overwriting either completion.
     await Promise.all([saveOperatingResponse(ids[0], op(scanId)), pulse(scanId, ids[0])]);
     const after = await prisma.campaignParticipant.findUniqueOrThrow({ where: { campaignId_userId: { campaignId: scanId, userId: ids[0] } } });
-    assert.ok((after.stepCompletions as Record<string,string>).TEAM_OPERATING_STYLE);
-    assert.ok((after.stepCompletions as Record<string,string>).PSYCH_SAFETY);
+    assert.ok(completionMap(after.stepCompletions).TEAM_OPERATING_STYLE);
+    assert.ok(completionMap(after.stepCompletions).PSYCH_SAFETY);
     assert.equal(after.nextStepOpensAt, null);
     assert.equal(await prisma.observerAssessment.count({ where: { invitation: { campaignId: scanId } } }), 0);
     for (const userId of ids.slice(1)) { await saveOperatingResponse(userId, op(scanId)); await pulse(scanId, userId); }

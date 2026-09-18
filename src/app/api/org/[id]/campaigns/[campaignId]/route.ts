@@ -376,12 +376,20 @@ export async function PATCH(
       );
     }
   } else {
+    // Completion receipts are an optimistic evidence token. A concurrent participant change
+    // invalidates the precomputed readiness instead of holding a DB connection during aggregation.
+    const evidenceToken = async (db: Pick<typeof prisma, "campaignParticipant">) => JSON.stringify(
+      await db.campaignParticipant.findMany({ where: { campaignId }, orderBy: { id: "asc" }, select: { id: true, stepCompletions: true } }),
+    );
+    const before = await evidenceToken(prisma);
+    const source = await prisma.campaign.findUniqueOrThrow({ where: { id: campaignId } });
+    const aggregates = source.programKey && source.teamId ? await buildTeamReportAggregates(source.teamId, { assessmentCampaignId: campaignId }) : null;
     const closed = await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${campaignId} FOR UPDATE`;
       const current = await tx.campaign.findUniqueOrThrow({ where: { id: campaignId } });
       if (current.programKey) {
         if (current.status !== "ACTIVE") return { error: "INVALID_CAMPAIGN_TRANSITION" } as const;
-        const aggregates = current.teamId ? await buildTeamReportAggregates(current.teamId, { assessmentCampaignId: campaignId }) : null;
+        if (before !== await evidenceToken(tx) || current.teamId !== source.teamId) return { error: "CAMPAIGN_CHANGED_RETRY" } as const;
         const error = aggregates ? programDataError(aggregates) : "REPORT_AGGREGATES_REQUIRED";
         if (error) return { error } as const;
       }

@@ -1,4 +1,4 @@
-import { parseProgram, activityStates } from "@/lib/programs/core";
+import { safeParseProgram, activityStates } from "@/lib/programs/core";
 import "server-only";
 
 import type { NavHeaderUI } from "@/components/layout/nav-header-ui";
@@ -118,8 +118,11 @@ export async function resolveWorkspaceNavContext(
               : null,
           ]);
         const openStepCount = taskParticipations.filter(
-          (p) =>
-            p.campaign.programSnapshot ? activityStates(parseProgram(p.campaign.programSnapshot)!, p.stepCompletions).some(a => a.state === "AVAILABLE") : p.currentStep < getCampaignSteps(p.campaign).length && isStepGateOpen(p),
+          (p) => {
+            const program = safeParseProgram(p.campaign.programSnapshot);
+            if (p.campaign.programSnapshot) return program ? activityStates(program, p.stepCompletions).some(a => a.state === "AVAILABLE") : false;
+            return p.currentStep < getCampaignSteps(p.campaign).length && isStepGateOpen(p);
+          },
         ).length;
         const openTaskCount = openStepCount + feedbackRequestCount;
         signedInHomeHref = journey.destination;

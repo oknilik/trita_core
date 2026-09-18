@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createProgramSnapshot, parseProgram, activityStates } from "@/lib/programs/core";
+import { createProgramSnapshot, parseProgram, safeParseProgram, activityStates } from "@/lib/programs/core";
 import { isStepOpenFor, getCurrentStepType, countCampaignStepsDone } from "@/lib/campaign-steps-core";
 import { resolveJourneyFromContext } from "@/lib/journey/engine-core";
 import { buildJourneyContext } from "../../factories/journey-fixture-builder";
@@ -22,17 +22,19 @@ test("Follow-up never requires personality or observers", () => {
   const p = createProgramSnapshot("FOLLOW_UP");
   assert.deepEqual(activityStates(p, {}).map(a => [a.key, a.state]), [["TEAM_OPERATING_STYLE", "AVAILABLE"], ["PSYCH_SAFETY", "AVAILABLE"]]);
 });
-test("saved v1 snapshot stays unchanged when a later template is revised", () => {
+test("saved v1 policy stays unchanged when a later template is revised", () => {
   const saved = JSON.parse(JSON.stringify(createProgramSnapshot("TEAM_SCAN")));
-  const v2 = createProgramSnapshot("TEAM_SCAN"); v2.version = 2;
+  const v2 = createProgramSnapshot("TEAM_SCAN"); v2.policy.minOperatingCoverage = 0.8;
   v2.activities.find(a => a.key === "TEAM_OPERATING_STYLE")!.dependencies = [];
   const next = parseProgram(v2)!;
-  assert.equal(saved.version, 1); assert.equal(next.version, 2);
+  assert.equal(saved.policy.minOperatingCoverage, 0.6); assert.equal(next.policy.minOperatingCoverage, 0.8);
+  assert.equal(safeParseProgram({ ...v2, version: 2 }), null);
   assert.equal(activityStates(saved, {}).find(a => a.key === "TEAM_OPERATING_STYLE")!.state, "LOCKED");
   assert.equal(activityStates(next, {}).find(a => a.key === "TEAM_OPERATING_STYLE")!.state, "AVAILABLE");
 });
 test("invalid snapshots never fall back to legacy; cycles and cross-scope edges fail closed", () => {
-  assert.throws(() => getCurrentStepType({ type: "SELF_ASSESSMENT", steps: [], programSnapshot: {} }, { currentStep: 0 }));
+  assert.equal(getCurrentStepType({ type: "SELF_ASSESSMENT", steps: [], programSnapshot: {} }, { currentStep: 0 }), null);
+  assert.equal(isStepOpenFor({ type: "SELF_ASSESSMENT", steps: [], programSnapshot: { version: 999 } }, { currentStep: 0 }, "SELF_ASSESSMENT"), false);
   const p = createProgramSnapshot("TEAM_SCAN"); p.activities[0].dependencies = ["OBSERVER_360"];
   assert.throws(() => parseProgram(p), /CYCLE/);
   p.activities[0].dependencies = ["PUBLISH"]; assert.throws(() => parseProgram(p), /SCOPE/);
@@ -44,4 +46,31 @@ test("Journey picks available campaign work over an unrelated self draft and pre
   assert.equal(r.nextBestAction.secondary?.href, "/tasks?campaignId=b");
   const restricted = resolveJourneyFromContext({ ...context, subscription: { ...context.subscription, state: "frozen" } });
   assert.notEqual(restricted.nextBestAction.primary.id, "COMPLETE_PROGRAM_ACTIVITY");
+});
+
+
+test("completion envelopes are versioned and read the pre-release sentinel without trusting future versions", async () => {
+  const { completionMap, programCompletions } = await import("@/lib/programs/core");
+  const receipt = programCompletions({ __program: 1, SELF_ASSESSMENT: "done" });
+  assert.deepEqual(receipt, { v: 1, activities: { SELF_ASSESSMENT: "done" } });
+  assert.deepEqual(completionMap({ v: 99, activities: { SELF_ASSESSMENT: "done" } }), {});
+  assert.equal(countCampaignStepsDone(["SELF_ASSESSMENT"], { currentStep: 9, stepCompletions: { v: 99, activities: {} } }, true), 0);
+});
+
+test("baseline copy excludes unrelated and individual report data", async () => {
+  const { baselineAggregates } = await import("@/lib/programs/baseline.server");
+  const { makeReaderReport } = await import("../../../scripts/fixtures/team-report-reader");
+  const a = makeReaderReport(true).aggregates!;
+  const result = baselineAggregates({ ...a, trustHighlights: { hubs: ["private person"] } as never, comparisonBasis: { private: true } as never });
+  assert.equal("trustHighlights" in result, false);
+  assert.equal("comparisonBasis" in result, false);
+  assert.deepEqual(result.dimensionAverages, a.dimensionAverages);
+});
+
+test("snapshot policy controls report readiness", async () => {
+  const { programDataError } = await import("@/lib/programs/report");
+  const { makeReaderReport } = await import("../../../scripts/fixtures/team-report-reader");
+  const a = makeReaderReport(true).aggregates!;
+  a.program = { key: "TEAM_SCAN", observerReady: true, participantCount: 5, policy: { ...createProgramSnapshot("TEAM_SCAN").policy, minOperatingCoverage: 1 } };
+  assert.equal(programDataError(a), "REPORT_OPERATING_DATA_INSUFFICIENT");
 });

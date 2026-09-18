@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { parseProgram, activityStates, programActivityLink } from "./core";
+import { safeParseProgram, activityStates, programActivityLink } from "./core";
 import { CAMPAIGN_STEP_LABELS, type CampaignStepType } from "@/lib/campaign-steps-core";
 export async function loadProgramJourney(profileId: string, orgId: string | null) {
   if (!orgId) return [];
@@ -9,7 +9,7 @@ export async function loadProgramJourney(profileId: string, orgId: string | null
     orderBy: { addedAt: "asc" },
   });
   return participants.map(p => {
-    const program = parseProgram(p.campaign.programSnapshot);
+    const program = safeParseProgram(p.campaign.programSnapshot);
     if (!program) throw new Error("PROGRAM_SNAPSHOT_REQUIRED");
     const states = activityStates(program, p.stepCompletions, {
       observerSent: p.campaign.observerInvitations.filter(i => i.status === "COMPLETED" || (["PENDING", "AWAITING_APPROVAL"].includes(i.status) && i.expiresAt > new Date())).length,

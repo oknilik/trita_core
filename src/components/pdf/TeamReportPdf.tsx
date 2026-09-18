@@ -1,4 +1,4 @@
-import { programComparisonLines } from "@/lib/programs/report";
+import { programComparisonLines, personalitySourceLabel } from "@/lib/programs/report";
 import { Document, Page, View, Text, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import type { ReactNode } from "react";
@@ -191,7 +191,6 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
   const hasInterpretation = Boolean(op || comp || comparison.prompts.length || signals.length || narratives.length || report.actionItems?.length);
   const sourceLabel = (source?: string) => source === "trust_round" ? (isHu ? "Mért bizalmi kör" : "Measured trust round") : source === "mixed" ? (isHu ? "Vegyes: mért és becsült" : "Mixed: measured and estimated") : (isHu ? "Személyiségprofilból becsült" : "Personality-based estimate");
   return <Document title={`${report.title || "trita"} - ${isHu ? "Csapatriport" : "Team report"}`} author="trita" language={locale}>
-    {agg?.program?.baseline && <Page size="A4" style={s.page}><Text>{isHu ? "Változás a kiinduló méréshez képest" : "Change from baseline"}</Text>{programComparisonLines(agg.program, isHu).map((line, i) => <Text key={i} style={{ marginTop: 12, fontSize: 11 }}>{line}</Text>)}</Page>}
     <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Csapatkép" : "Team picture"}>
       <View wrap={false} style={{ gap: 5 }}>
         <Text style={{ ...caption, color: colors.bronze }}>{isHu ? "CSAPATKÉP" : "TEAM PICTURE"}</Text>
@@ -231,14 +230,18 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
       {!hasInterpretation && <Chapter title={isHu ? "4. A két réteg együtt" : "4. The two layers together"}><Notes notes={comparison.notes} /></Chapter>}
     </ReportPage>
     {(dims.length > 0 || comp || composition.heading) && <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Személyiség-összetétel" : "Personality composition"}>
+      {agg?.program?.baseline && <Chapter title={isHu ? "Változás a kiinduló méréshez képest" : "Change from baseline"}>
+        <Notes notes={programComparisonLines(agg.program, isHu)} />
+      </Chapter>}
       {dims.length > 0 && agg && <Chapter title={isHu ? "2. Miből épül fel a csapat?" : "2. What is the team made of?"}>
         <Text style={caption}>{agg.completedCount} {isHu ? "egyéni HEXACO-profil összesítése" : "aggregated individual HEXACO profiles"}</Text>
+        <Text style={caption}>{personalitySourceLabel(agg?.program, isHu)}</Text>
         <View>{dims.map((code) => <DimRow key={code} code={code} avg={agg.dimensionAverages![code]} spread={agg.dimensionSpread?.[code] ?? null} isHu={isHu} />)}</View>
         <Text style={caption}>{isHu ? "A halvány sáv az átlag körüli egy mintaszórást jelöli, nem konfidenciaintervallumot. Egyéni eredmény nem jelenik meg." : "The faint band shows one sample SD around the mean, not a confidence interval. No individual results are shown."}</Text>
       </Chapter>}
       <Chapter title={isHu ? "3. A személyiségprofilból képzett négy tengely" : "3. Four axes derived from personality"}>
         {composition.heading && <Text style={heading}>{composition.heading}</Text>}
-        <Notes notes={composition.notes} />
+        <Notes notes={[...(personalitySourceLabel(agg?.program, isHu) ? [personalitySourceLabel(agg?.program, isHu)!] : []), ...composition.notes]} />
         <Text style={caption}>{isHu ? "Hajtóerő: X · Kohéziós proxy: tagonként (H + A) / 2, majd csapatátlag · Fegyelem: C · Nyitottság: O. Az Emocionalitás nem vesz részt a négytengelyes képzésben." : "Drive: X · Cohesion proxy: (H + A) / 2 per member, then team mean · Discipline: C · Openness: O. Emotionality is not part of this four-axis derivation."}</Text>
         {comp && <View style={{ gap: 9 }}>
           {COMPOSITION_AXES.map((axis) => <View key={axis} wrap={false} style={{ flexDirection: "row", alignItems: "center", gap: 14 }}>
@@ -292,7 +295,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
         {AXES.map((axis) => <Text key={axis} style={caption}>{t(`tos.axes.${axis}.name`, locale)}: {num(op.axes[axis].leftFrequency, isHu)} / {num(op.axes[axis].rightFrequency, isHu)} · {t(`tos.axes.${axis}.left`, locale)} / {t(`tos.axes.${axis}.right`, locale)}{op.axes[axis].flags.length ? ` · ${op.axes[axis].flags.map((flag) => tr(`flags.${flag}`)).join(", ")}` : ""}</Text>)}
       </Chapter>}
       {comp && <Chapter title={isHu ? "Személyiség-összetétel" : "Personality composition"}>
-        <Notes notes={composition.notes} />
+        <Notes notes={[...(personalitySourceLabel(agg?.program, isHu) ? [personalitySourceLabel(agg?.program, isHu)!] : []), ...composition.notes]} />
         <StatsTable headers={[isHu ? "Terület" : "Dimension", `${tr("mean")} /100`, tr("sd"), "n"]} rows={COMPOSITION_AXES.map((axis) => [tr(axis), num(comp.axes[axis].mean, isHu), num(comp.axes[axis].sd, isHu), String(comp.memberCount)])} />
       </Chapter>}
       <Text style={caption}>{isHu ? "Az átlag a közös irányt, a mintaszórás a tagok közötti eltérést jelzi. A működésmérés kísérleti, nem validált tipológia. A két réteg eltérő konstrukciókat mér; nem képezünk közös illeszkedési százalékot." : "The mean shows the shared direction; sample SD describes differences between members. Operating style is experimental, not a validated typology. The layers measure different constructs and do not form a compatibility percentage."}</Text>
