@@ -17,7 +17,7 @@ describe("operating catalogue and layered report", () => {
     render(<OperatingPatternExplorer />);
     const catalogue = screen.getByText("Felfedezem a 16 mintát").closest("details")!;
     expect(catalogue).not.toHaveAttribute("open");
-    expect(screen.getByRole("heading", { name: "Mit kezdhettek a csapatképetekkel?" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Miben segíthet a megismert csapatmintázat?" })).toBeVisible();
     expect(screen.getByText("Nincs egyetlen ideális csapatminta.")).toBeVisible();
     await userEvent.click(screen.getByRole("button", { name: "A minták érdekelnek" }));
     expect(catalogue).toHaveAttribute("open");
@@ -28,7 +28,7 @@ describe("operating catalogue and layered report", () => {
     navigation.query = "pattern=INVALID&lang=en";
     render(<OperatingPatternExplorer />);
     expect(screen.getByText("Explore the 16 patterns").closest("details")).not.toHaveAttribute("open");
-    expect(screen.getByRole("heading", { name: "What can you do with your team picture?" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "How can understanding your team pattern help?" })).toBeVisible();
   });
 
   it("deep-links into the catalogue and selects all 16 distinct patterns without workshop questions", async () => {
