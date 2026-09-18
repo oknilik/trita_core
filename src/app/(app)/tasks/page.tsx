@@ -351,7 +351,7 @@ export default async function MyMeasurementsPage() {
                         <div
                           key={stepType}
                           className={[
-                            "flex flex-wrap items-center justify-between gap-2 rounded-xl border px-3.5 py-2.5",
+                            "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border px-3.5 py-2.5",
                             isDone
                               ? "border-sage/30 bg-sage/5"
                               : isCurrent
@@ -372,7 +372,7 @@ export default async function MyMeasurementsPage() {
                             >
                               {isDone ? "✓" : idx + 1}
                             </span>
-                            <span className="text-caption font-medium text-ink">
+                            <span className="min-w-0 break-words text-caption font-medium text-ink">
                               {label}
                             </span>
                             {isCurrent && card.partial && (
@@ -396,11 +396,11 @@ export default async function MyMeasurementsPage() {
                               </span>
                             )}
                           </span>
-                          <span className="shrink-0">
+                          <span className={observerGathering || (!isDone && isCurrent && card.gateOpen) ? "col-span-2 w-full sm:col-span-1 sm:w-auto" : "text-right"}>
                             {observerGathering ? (
                               <Link
                                 href="/profile/results?tab=comparison#observer-flow"
-                                className={getButtonClassName({ size: "sm" })}
+                                className={getButtonClassName({ size: "sm", className: "min-h-[44px] w-full whitespace-nowrap sm:w-auto" })}
                               >
                                 {observerGathering.sent < observerGathering.min
                                   ? tf("myTasks.observerAskCta", loc, {
@@ -415,7 +415,7 @@ export default async function MyMeasurementsPage() {
                             ) : isCurrent && card.gateOpen ? (
                               <Link
                                 href={link}
-                                className={getButtonClassName({ size: "sm" })}
+                                className={getButtonClassName({ size: "sm", className: "min-h-[44px] w-full whitespace-nowrap sm:w-auto" })}
                               >
                                 {started
                                   ? t("myTasks.stepOpen", loc)

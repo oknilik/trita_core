@@ -52,3 +52,7 @@ A loadProgramJourney a safeParseProgram sikertelenségét most kihagyott kampán
 ### Observer-meghívó visszajelzése
 
 A meghívás után lokalizált sikerjelzés jelenik meg, a szervernézet frissül, a lista pedig átveszi a friss szerverpropokat. A mentés utáni email-küldési hiba 502-es válasza tartalmazza a már létrejött meghívó adatait; a kliens így megmutatja a meghívót és másolható linkjét, az email hibáját külön jelezve. Ez nem jelent sikeres kézbesítést. Regressziós tesztek: sikeres létrehozás, részleges siker/email-hiba, szerverlista-frissítés; összesen 6/6 komponens-teszt sikeres, típusellenőrzés és lint tiszta.
+
+### Mobil feladatgombok
+
+A feladatsorok reszponzív gridet használnak. Mobilon a műveleti gombok egységesen külön sorban, teljes szélességgel és legalább 44 px magassággal jelennek meg; sm mérettől a feladatnév mellett maradnak. A hosszú címek tördelhetők, a gombfelirat egy sorban marad. 390 px-es Chromium-nézetben vizuálisan ellenőrizve; a meglévő programfolyam két böngészős próbája és az érintett fájl lintje sikeres.
