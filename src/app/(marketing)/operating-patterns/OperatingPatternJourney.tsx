@@ -43,8 +43,7 @@ export function OperatingPatternJourney({ locale, onExplore }: { locale: Locale;
       </ol>
     </section>
     <section aria-labelledby="operating-example-title" className="mb-5 rounded-2xl bg-[var(--color-layer-self-hero-mid)] p-6 text-[var(--color-text-on-inverse)] sm:p-8">
-      <p className="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{hu ? "Egy hétköznapi helyzetből indulva · példa" : "Starting with an everyday situation · example"}</p>
-      <h2 id="operating-example-title" className="mt-3 font-fraunces text-3xl leading-tight">{hu ? "„Sokat várunk egymás döntéseire.”" : "“We spend a lot of time waiting for decisions.”"}</h2>
+      <h2 id="operating-example-title" className="font-fraunces text-3xl leading-tight">{hu ? "„Sokat várunk egymás döntéseire.”" : "“We spend a lot of time waiting for decisions.”"}</h2>
       <div className="mt-6 grid gap-6 md:grid-cols-3">
         {[
           [hu ? "Ezt nézzük meg" : "What we explore", hu ? "Hol születnek a döntések, és mely helyzetekben akad el a munka?" : "Where are decisions made, and when does work get stuck?"],
@@ -57,8 +56,7 @@ export function OperatingPatternJourney({ locale, onExplore }: { locale: Locale;
     <section aria-labelledby="operating-information-example-title" className="mb-12 rounded-2xl bg-[var(--color-layer-team-soft)] p-6 text-ink sm:p-8">
       <div className="flex items-start justify-between gap-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-bronze-dark">{hu ? "Amikor máshogy értjük · példa" : "When we understand things differently · example"}</p>
-          <h2 id="operating-information-example-title" className="mt-3 max-w-3xl font-fraunces text-3xl leading-tight">{hu ? "„Ugyanarról beszéltünk, mégis mindenki máshogy értette.”" : "“We talked about the same thing, yet everyone understood it differently.”"}</h2>
+          <h2 id="operating-information-example-title" className="max-w-3xl font-fraunces text-3xl leading-tight">{hu ? "„Ugyanarról beszéltünk, mégis mindenki máshogy értette.”" : "“We talked about the same thing, yet everyone understood it differently.”"}</h2>
         </div>
         <span aria-hidden="true" className="relative hidden h-16 w-20 shrink-0 sm:block">
           <span className="absolute left-0 top-0 h-11 w-12 -rotate-12 rounded-t-full rounded-bl-full bg-bronze/55" />
