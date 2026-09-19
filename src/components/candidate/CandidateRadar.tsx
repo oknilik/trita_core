@@ -1,3 +1,4 @@
+import { CandidateMeasurementNote } from "./CandidateMeasurementNote";
 import { HEXACO_DIMENSIONS, HEXACO_ORDER } from "@/lib/hexaco";
 import { t, type Locale } from "@/lib/i18n";
 export function CandidateRadar({
@@ -71,7 +72,7 @@ export function CandidateRadar({
                 dominantBaseline="middle"
                 className="fill-current text-muted text-caption"
               >
-                {d}
+                {HEXACO_DIMENSIONS[d].letter}
               </text>
             </g>
           );
@@ -120,6 +121,7 @@ export function CandidateRadar({
       </svg>
       {!compact && (
         <>
+          <CandidateMeasurementNote locale={locale} />
           <div className="flex flex-wrap justify-center gap-5 text-caption">
             <span className="text-sage">● {name}</span>
             {baseline && <span className="text-bronze">┄ {teamName}</span>}
@@ -127,8 +129,10 @@ export function CandidateRadar({
           <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-2 text-note text-muted">
             {HEXACO_ORDER.map((d) => (
               <span key={d}>
-                <strong className="text-ink">{d}</strong> ·{" "}
-                {HEXACO_DIMENSIONS[d][locale]}
+                <strong className="text-ink">
+                  {HEXACO_DIMENSIONS[d].letter}
+                </strong>{" "}
+                · {HEXACO_DIMENSIONS[d][locale]}
               </span>
             ))}
           </div>
@@ -151,7 +155,8 @@ export function CandidateRadar({
                 {HEXACO_ORDER.map((d) => (
                   <tr key={d} className="border-t border-sand">
                     <th className="py-2 font-normal">
-                      {d} · {HEXACO_DIMENSIONS[d][locale]}
+                      {HEXACO_DIMENSIONS[d].letter} ·{" "}
+                      {HEXACO_DIMENSIONS[d][locale]}
                     </th>
                     <td>{Math.round(dimensions[d])}</td>
                     {baseline && <td>{Math.round(baseline[d])}</td>}

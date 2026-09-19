@@ -1,4 +1,5 @@
 "use client";
+import { TextareaField } from "@/components/ui/primitives/TextareaField";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -192,12 +193,14 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
     leadershipGuide: draft?.leadershipGuide ?? "",
     internalNotes: draft?.internalNotes ?? "",
   });
-  const [actionItems, setActionItemsRaw] = useState<TeamReportActionItem[]>(
+  const [actionItems, setActionItems] = useState<TeamReportActionItem[]>(
     draft?.actionItems ?? [],
   );
   const [operatingCampaignId, setOperatingCampaignId] = useState(draft?.aggregates?.operatingCampaignId ?? "");
-  const [programDirty, setProgramDirty] = useState(false);
-  function setActionItems(value: React.SetStateAction<TeamReportActionItem[]>) { setProgramDirty(true); setActionItemsRaw(value); }
+  const [observerOverrideReason, setObserverOverrideReason] = useState(draft?.aggregates?.program?.observerOverride?.reason ?? "");
+  const narrativeDirty = observerOverrideReason !== (draft?.aggregates?.program?.observerOverride?.reason ?? "") || Object.entries(values).some(([key, value]) => value !== (draft?.[key as NarrativeKey] ?? ""))
+    || JSON.stringify(actionItems) !== JSON.stringify(draft?.actionItems ?? [])
+    || operatingCampaignId !== (draft?.aggregates?.operatingCampaignId ?? "");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<string | null>(null);
@@ -209,10 +212,12 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
   const [translation, setTranslation] = useState<ReportTranslationEn | null>(
     draft?.translationsEn?.en ?? null,
   );
+  const programDirty = narrativeDirty || JSON.stringify(translation) !== JSON.stringify(draft?.translationsEn?.en ?? null);
   const [translating, setTranslating] = useState(false);
 
   function reportErrorMessage(error: unknown): string {
     const code = error instanceof Error ? error.message : null;
+    if (code === "PROGRAM_SNAPSHOT_REQUIRED") return t("programUi.unsupported", locale);
     const known = code ? ERROR_LABELS[code] : undefined;
     if (known) return known[locale];
     if (code === "REPORT_OPERATING_SOURCE_INVALID") return t("tos.report.invalidSource", locale);
@@ -226,7 +231,8 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
   // router.refresh() a már mountolt komponens useState-jét nem inicializálja
   // újra (üresen maradnának a mezők, mentéskor felülírva a tartalmat).
   function seedFromReport(report: SerializedTeamReport) {
-    setSavedDraft(report); setProgramDirty(false);
+    setObserverOverrideReason(report.aggregates?.program?.observerOverride?.reason ?? "");
+    setSavedDraft(report);
     setOperatingCampaignId(report.aggregates?.operatingCampaignId ?? "");
     setValues({
       title: report.title ?? "",
@@ -238,7 +244,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
       leadershipGuide: report.leadershipGuide ?? "",
       internalNotes: report.internalNotes ?? "",
     });
-    setActionItemsRaw(report.actionItems ?? []);
+    setActionItems(report.actionItems ?? []);
     setTranslation(report.translationsEn?.en ?? null);
   }
 
@@ -416,9 +422,11 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
         body: JSON.stringify(draft.aggregates?.program && action === "publish" ? { reportId: draft.id, action, expectedRevision: draft.revision } : {
           reportId: draft.id,
           expectedRevision: draft.revision,
+          ...(draft.aggregates?.program ? { observerOverrideReason: observerOverrideReason.trim() || null } : {}),
           action,
           operatingCampaignId: operatingCampaignId || null,
           ...values,
+          ...(translation ? { translationsEn: { en: translation } } : {}),
           actionItems: actionItems
             .filter((item) => item.title.trim().length > 0)
             .map((item) => ({
@@ -431,8 +439,10 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Hiba");
       const savedResponse = await res.json() as { report: SerializedTeamReport };
-      if (savedResponse.report) seedFromReport(savedResponse.report);
-      setSavedAt(new Date().toLocaleTimeString(isHu ? "hu-HU" : "en-GB"));
+      if (savedResponse.report && action !== "preview") {
+        seedFromReport(savedResponse.report);
+        setSavedAt(new Date().toLocaleTimeString(isHu ? "hu-HU" : "en-GB"));
+      }
       if (action === "preview" || action === "review") {
         const { report } = savedResponse;
         // A belső jegyzetet kivesszük, hogy az előnézet a vezetői nézettel
@@ -485,7 +495,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
   }
 
   return (
-    <div className="flex flex-col gap-6" onChangeCapture={() => setProgramDirty(true)} onClickCapture={(e) => { if ((e.target as HTMLElement).closest("button[data-report-edit]")) setProgramDirty(true); }}>
+    <div className="flex flex-col gap-6">
     {celebrating && <CelebrationBurst onDone={() => setCelebrating(false)} />}
     <DashboardPanel className="p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
@@ -532,6 +542,11 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
         </div>
       ) : (
         <div className="flex flex-col gap-4">
+          {draft.aggregates?.program?.key === "TEAM_SCAN" && !draft.aggregates.program.observerReady && (
+            <div className="rounded-xl border border-sand p-4">
+              <TextareaField id="observer-override" label={t("programReview.overrideTitle", locale)} helpText={t("programReview.overrideHelp", locale)} value={observerOverrideReason} onChange={e => setObserverOverrideReason(e.target.value)} minLength={20} maxLength={2000} rows={3} />
+            </div>
+          )}
           {orgId && (draft.aggregates?.evidence?.measuredEdgeCount ?? 0) === 0 && (
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2.5">
               <p className="text-xs text-bronze-700">

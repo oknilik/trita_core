@@ -1,6 +1,4 @@
-import { buildTeamReportAggregates } from "@/lib/team-report";
-import { programDataError } from "@/lib/programs/report";
-import { auth } from "@clerk/nextjs/server";
+import { getServerAuth } from "@/lib/auth-server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -119,7 +117,7 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const { id: orgId, campaignId } = await params;
@@ -158,7 +156,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
   const log = await getRequestLogger("campaign");
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const { id: orgId, campaignId } = await params;
@@ -376,22 +374,12 @@ export async function PATCH(
       );
     }
   } else {
-    // Completion receipts are an optimistic evidence token. A concurrent participant change
-    // invalidates the precomputed readiness instead of holding a DB connection during aggregation.
-    const evidenceToken = async (db: Pick<typeof prisma, "campaignParticipant">) => JSON.stringify(
-      await db.campaignParticipant.findMany({ where: { campaignId }, orderBy: { id: "asc" }, select: { id: true, stepCompletions: true } }),
-    );
-    const before = await evidenceToken(prisma);
-    const source = await prisma.campaign.findUniqueOrThrow({ where: { id: campaignId } });
-    const aggregates = source.programKey && source.teamId ? await buildTeamReportAggregates(source.teamId, { assessmentCampaignId: campaignId }) : null;
     const closed = await prisma.$transaction(async (tx) => {
       await tx.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${campaignId} FOR UPDATE`;
       const current = await tx.campaign.findUniqueOrThrow({ where: { id: campaignId } });
       if (current.programKey) {
         if (current.status !== "ACTIVE") return { error: "INVALID_CAMPAIGN_TRANSITION" } as const;
-        if (before !== await evidenceToken(tx) || current.teamId !== source.teamId) return { error: "CAMPAIGN_CHANGED_RETRY" } as const;
-        const error = aggregates ? programDataError(aggregates) : "REPORT_AGGREGATES_REQUIRED";
-        if (error) return { error } as const;
+
       }
       const campaign = await tx.campaign.update({
         where: { id: campaignId },
@@ -411,7 +399,7 @@ export async function PATCH(
         });
       }
       return { outcome: "closed" as const, campaign, openings: [] as const };
-    }, { timeout: 20000 });
+    });
     if ("error" in closed) return NextResponse.json({ error: closed.error }, { status: 409 });
     transition = { ...closed, openings: [] };
   }
@@ -484,7 +472,7 @@ export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const { id: orgId, campaignId } = await params;
@@ -546,7 +534,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const { id: orgId, campaignId } = await params;

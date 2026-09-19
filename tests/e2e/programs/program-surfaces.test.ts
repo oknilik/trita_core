@@ -40,6 +40,7 @@ test.beforeEach(async ({ context, baseURL }) => {
 
 test("program chooser prevents Follow-up without a published baseline", async ({ page }) => {
   await page.goto(`/org/${id}/campaigns/new`);
+  await expect(page.locator(`a[href="/hiring/${id}"]`)).toHaveCount(0);
   await expect(page.getByRole("group", { name: "Diagnostic program" }).getByRole("radio")).toHaveCount(2);
   await expect(page.getByRole("button", { name: "Create program draft" })).toBeEnabled();
   await expect(page.getByRole("checkbox", { name: "Measure trust network" })).not.toBeChecked();
@@ -57,10 +58,17 @@ test("completed self exposes all parallel activities despite a stale legacy open
   }
   await page.goto(`/org/${id}/campaigns/${campaignId}`);
   await expect(page.getByRole("heading", { name: "Browser Team Scan" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Close measurement" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Close measurement" })).toBeEnabled();
   await prisma.campaign.update({ where: { id: campaignId }, data: { programSnapshot: { version: 999 } } });
   await page.goto("/tasks");
   await expect(page.locator(`a[href="/assessment/team-operating-style?campaignId=${campaignId}"]`)).toHaveCount(0);
   await page.goto(`/org/${id}/campaigns/${campaignId}`);
   await expect(page.getByRole("alert").filter({ hasText: "Unsupported program version." })).toBeVisible();
+  await prisma.campaign.update({ where: { id: campaignId }, data: { programSnapshot: createProgramSnapshot("TEAM_SCAN", { includeTrustNetwork: true }) } });
+  await page.reload();
+  page.once("dialog", dialog => dialog.accept());
+  const closeResponse = page.waitForResponse(r => r.url().includes(`/campaigns/${campaignId}`) && r.request().method() === "PATCH");
+  await page.getByRole("button", { name: "Close measurement" }).click();
+  expect((await closeResponse).status()).toBe(200);
+  expect((await prisma.campaign.findUniqueOrThrow({ where: { id: campaignId } })).status).toBe("CLOSED");
 });

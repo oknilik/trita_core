@@ -84,3 +84,16 @@ for (const key of ["TEAM_SCAN", "FOLLOW_UP"] as const) test(`${key}: trust is op
   assert.equal(activityStates(p, {}).find(a => a.key === "TRUST_360")!.state, key === "TEAM_SCAN" ? "LOCKED" : "AVAILABLE");
   assert.equal(activityStates(p, { v: 1, activities: { SELF_ASSESSMENT: "done" } }).find(a => a.key === "TRUST_360")!.state, "AVAILABLE");
 });
+
+for (const role of ["org-admin", "org-manager"] as const) test(`${role} keeps its cockpit, stage and blockers when participating in a program`, async () => {
+  const { computeJourneyState } = await import("@/lib/journey/state");
+  const { resolveHome } = await import("@/lib/journey/home");
+  const base = buildJourneyContext({ currentContext: role, orgId: "org", assessment: { completed: true, hasResult: true }, subscription: { state: "frozen" } });
+  const programs = [{ campaignId: "c", name: "Scan", programKey: "TEAM_SCAN" as const, activities: [{ key: "PSYCH_SAFETY", state: "AVAILABLE" as const, href: "/tasks", label: { hu: "Pulse", en: "Pulse" } }] }];
+  const without = computeJourneyState(base);
+  const withProgram = computeJourneyState({ ...base, programs });
+  assert.equal(withProgram.currentStage, without.currentStage);
+  assert.deepEqual(withProgram.blockingReasons, without.blockingReasons);
+  assert.equal(resolveHome({ context: { ...base, programs }, state: withProgram }).home.destination, role === "org-admin" ? "/org/org" : "/manager");
+  assert.ok(withProgram.availableNextActions.some(a => a.id === "COMPLETE_PROGRAM_ACTIVITY"));
+});

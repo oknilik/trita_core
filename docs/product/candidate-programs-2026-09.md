@@ -14,7 +14,7 @@ A jelölti felület tanácsadói előkészítést, önjellemzést és ember ált
 
 A tanácsadó leíró profilábrát lát, opcionális, dátumozott csapatreferenciával. Külön szerkeszti a jelölti visszajelzést, a megbízói kivonatot és a belső jegyzetet. Mentés után új jóváhagyás szükséges; függő csapatszerep mellett a jóváhagyás nem engedélyezett.
 
-A megosztott kivonat immutábilis, közönségenként elkülönített snapshot, 30 napos, visszavonható tokennel. Nem tartalmaz nyers válaszokat, emailt, belső jegyzetet, másik közönség szövegét vagy csapatszintű adatokat. Forrásriport visszavonása vagy revízióváltása blokkolja az új megosztást. A korábbi megosztást külön lehet visszavonni.
+A megosztott kivonat immutábilis, közönségenként elkülönített snapshot, 30 napos, visszavonható tokennel. Nem tartalmaz nyers válaszokat, emailt, belső jegyzetet, másik közönség szövegét vagy csapatszintű adatokat. Forrásriport visszavonása vagy revízióváltása blokkolja az új megosztást. A megosztások visszavonása a riport összes aktív megosztási linkjét egyszerre érvényteleníti; egyedi link-visszavonás nincs.
 
 ## Aktiválás és hatókör
 
@@ -29,3 +29,7 @@ A kiadás előtt az adatbázis-migrációt kell alkalmazni, utána lehet a kivá
 A report szintjén legfeljebb nyolc, ugyanazon szervezeten belüli csapat referencia-riportja rögzíthető. Az eredeti meghívó programja nem módosul. Egy csapat egyszer szerepel; forráscseréhez az adott referencia eltávolítható, majd az új publikált riport hozzáadható. Minden változás új tanácsadói jóváhagyást igényel.
 
 A radar azonos skálán és tengelysorrendben mutatja a jelöltet és az aktív csapatátlagot. A többi csapat saját kártyán marad. A sorrend a hozzáadás sorrendje, nincs összesített illeszkedési szám vagy rangsor. A kapcsolódások és eltérések tanácsadói szövegek, nem személyiségpontszámokból generált következtetések. A csapatreferenciák a tanácsadói munkanézethez tartoznak; a megosztott kivonatok továbbra is külön jóváhagyott, adatszegény snapshotok.
+
+## Mérési bizonytalanság és értelmezés
+
+A munkanézet nem ad automatikus alkalmassági, hasonlósági vagy erősség–gyengeség minősítést. Az egyéni rövid kérdőív becsült mérési hibasávját a közös `dimStandardError` alapján jelzi (közelítő 95%: 1,96 × SEM). Ez nem a jelölt és a csapatátlag különbségének szignifikanciatesztje: a két egyéni mérésre vonatkozó `diffStandardError` közvetlen alkalmazása itt félrevezető lenne. A kanonikus valenciakapuk mindkét slotból kizárt dimenziói külön semleges magyarázatot kapnak. Hiányzó vagy érvénytelen dimenzió nem jelenik meg nullaként.

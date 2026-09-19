@@ -46,7 +46,7 @@ export function resolveHome(params: {
     };
   }
 
-  if (context.programs?.length) return { activeSurface: "team", home: buildHomeResolution("/tasks", "team_home", primaryAction) };
+  if (context.programs?.length && !["org-admin", "org-manager"].includes(context.currentContext)) return { activeSurface: "team", home: buildHomeResolution("/tasks", "team_home", primaryAction) };
 
   // 2) Current obligation: unfinished self assessment.
   if (state.currentStage === "SELF_IN_PROGRESS") {

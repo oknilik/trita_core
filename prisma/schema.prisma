@@ -338,11 +338,11 @@ model Team {
 }
 
 model TeamReport {
+  id                String    @id @default(cuid())
   revision          Int       @default(1)
   reviewedRevision  Int?
   reviewedAt        DateTime?
   reviewedById      String?
-  id                String    @id @default(cuid())
   teamId            String
   // A riport mérési forrásköre. Új pilot-riportnál kötelező a runtime-ban;
   // adatbázisban azért nullable, hogy a korábbi, kampány nélküli riportok
@@ -440,6 +440,7 @@ model TeamPendingInvite {
 // ============================================
 
 model CandidateInvite {
+  id                 String    @id @default(cuid())
   programSnapshot Json?
   draftAnswers Json?
   draftRevision Int @default(0)
@@ -449,7 +450,6 @@ model CandidateInvite {
   inviteLocale String @default("hu")
   report CandidateReport?
 
-  id                 String    @id @default(cuid())
   token              String    @unique @default(cuid())
   managerId          String
   // Szervezet-hatókör (2026-07-23, jelölt-flow újraélesztés): a team
@@ -528,8 +528,8 @@ model CandidateResult {
 // ============================================
 
 model Organization {
-  candidateProgramsEnabled Boolean @default(false)
   id               String   @id @default(cuid())
+  candidateProgramsEnabled Boolean @default(false)
   name             String
   ownerId          String
   status           String   @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "PENDING_SETUP"

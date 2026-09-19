@@ -84,6 +84,7 @@ const translationsEnSchema = z
 
 const patchSchema = z.object({
   reportId: z.string().min(1),
+  observerOverrideReason: z.string().trim().min(20).max(2000).nullable().optional(),
   expectedRevision: z.number().int().positive().optional(),
   action: z.enum(["save", "preview", "review", "publish", "unpublish"]).default("save"),
   translationsEn: translationsEnSchema,
@@ -390,7 +391,7 @@ export async function PATCH(
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
-  const { reportId, action, expectedRevision, translationsEn, operatingCampaignId: requestedOperatingCampaignId, ...fields } = parsed.data;
+  const { reportId, action, expectedRevision, observerOverrideReason, translationsEn, operatingCampaignId: requestedOperatingCampaignId, ...fields } = parsed.data;
 
   const existing = await prisma.teamReport.findFirst({
     where: { id: reportId, teamId },
@@ -411,7 +412,7 @@ export async function PATCH(
   const sourceCampaign = existing.campaignId ? await prisma.campaign.findUnique({ where: { id: existing.campaignId }, select: { programKey: true } }) : null;
   if (sourceCampaign?.programKey) {
     try {
-      const programFields = { ...fields, ...(translationsEn !== undefined ? { translationsEn } : {}), ...(requestedOperatingCampaignId !== undefined ? { operatingCampaignId: requestedOperatingCampaignId } : {}) };
+      const programFields = { ...fields, ...(observerOverrideReason !== undefined ? { observerOverrideReason } : {}), ...(translationsEn !== undefined ? { translationsEn } : {}), ...(requestedOperatingCampaignId !== undefined ? { operatingCampaignId: requestedOperatingCampaignId } : {}) };
       const report = await mutateProgramReport({ reportId, teamId, actorId: ctx.profileId, action, expectedRevision, fields: programFields });
       if (action === "publish") {
         const team = await prisma.team.findUnique({ where: { id: teamId }, select: { name: true } });

@@ -515,8 +515,10 @@ async function resolveJourneyContextUncached(
     org: orgSummary,
   };
 
-  const programs = await loadProgramJourney(profileId, orgId);
-  const subscriptionRecord = orgId ? await getOrgSubscription(orgId) : null;
+  const [programs, subscriptionRecord] = await Promise.all([
+    loadProgramJourney(profileId, orgId),
+    orgId ? getOrgSubscription(orgId) : null,
+  ]);
   const subscriptionState = getSubscriptionState(subscriptionRecord, now);
   const subscriptionHasAccess = subscriptionState === "active";
 

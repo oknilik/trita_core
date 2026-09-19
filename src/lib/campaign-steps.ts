@@ -237,19 +237,7 @@ export async function advanceCampaignStepForUser(
   },
 ): Promise<CampaignStepOpening[]> {
   const db = options.db ?? prisma;
-  const source = await db.campaign.findUnique({ where: { id: options.campaignId }, select: { programKey: true } });
-  // Only the new program path owns this exclusive lock. Legacy peer submissions
-  // already hold a shared Campaign lock and must never upgrade it here.
-  if (source?.programKey) {
-    if (!options.db) {
-      const openings = await prisma.$transaction(tx => advanceCampaignStepForUser(profileId, completedType, { ...options, db: tx, emitNotifications: false }));
-      if (options.emitNotifications !== false) await notifyCampaignStepOpenings(openings);
-      return openings;
-    }
-    await db.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${options.campaignId} FOR UPDATE`;
-  }
-  const openings: CampaignStepOpening[] = [];
-  const participants = await db.campaignParticipant.findMany({
+  const loadParticipants = () => db.campaignParticipant.findMany({
     where: {
       userId: profileId,
       campaign: {
@@ -262,10 +250,24 @@ export async function advanceCampaignStepForUser(
       currentStep: true,
       nextStepOpensAt: true, stepCompletions: true,
       campaign: {
-        select: { id: true, name: true, type: true, steps: true, programSnapshot: true, stepIntervalHours: true },
+        select: { id: true, name: true, type: true, steps: true, programKey: true, programSnapshot: true, stepIntervalHours: true },
       },
     },
   });
+  let participants = await loadParticipants();
+  // Only the new program path owns this exclusive lock. Legacy peer submissions
+  // already hold a shared Campaign lock and must never upgrade it here.
+  if (participants.some(p => p.campaign.programKey)) {
+    if (!options.db) {
+      const openings = await prisma.$transaction(tx => advanceCampaignStepForUser(profileId, completedType, { ...options, db: tx, emitNotifications: false }));
+      if (options.emitNotifications !== false) await notifyCampaignStepOpenings(openings);
+      return openings;
+    }
+    await db.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${options.campaignId} FOR UPDATE`;
+    participants = await loadParticipants();
+  }
+  const openings: CampaignStepOpening[] = [];
+
 
   for (const p of participants) {
     const program = parseProgram(p.campaign.programSnapshot);

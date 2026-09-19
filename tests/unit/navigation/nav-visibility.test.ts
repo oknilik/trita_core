@@ -14,7 +14,7 @@ const baseContext: WorkspaceNavContext = {
   homeHref: "/dashboard",
   org: { id: "org_1", name: "Acme" },
   teams: [{ id: "team_1", name: "Alpha Team" }],
-  hasHiringAccess: true,
+  hasHiringAccess: false,
   openTaskCount: 0,
   activeCampaignCount: 2,
 };
@@ -31,7 +31,7 @@ test("a pilot operációs és disztribúciós felületei aktívak maradnak", () 
   assert.equal(isPortfolioSurfaceActive("crm"), true);
   assert.equal(isPortfolioSurfaceActive("publicSharing"), true);
   assert.equal(isPortfolioSurfaceActive("career"), false);
-  assert.equal(isPortfolioSurfaceActive("hiring"), false);
+  assert.equal(isPortfolioSurfaceActive("hiring"), true);
 });
 
 test("admin topnav is the simplified IA menu (no analytics)", () => {
@@ -253,9 +253,16 @@ test("karrier menüpont: amíg a modul nem kész, nincs a menüben", () => {
 });
 
 test("a parkolt hiring hozzáféréssel sem kerül vissza a munkatér-menübe", () => {
-  assert.equal(isPortfolioSurfaceActive("hiring"), false);
+  assert.equal(isPortfolioSurfaceActive("hiring"), true);
   assert.equal(
     buildWorkspaceNavigation("org_admin", baseContext).some((item) => item.id === "hiring"),
     false,
   );
+});
+
+test("candidate navigation follows the server-resolved organization gate", () => {
+  for (const hasHiringAccess of [false, true]) {
+    const nav = buildWorkspaceNavigation("org_admin", { ...baseContext, hasHiringAccess });
+    assert.equal(nav.some(item => item.id === "hiring"), hasHiringAccess);
+  }
 });

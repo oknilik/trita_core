@@ -18,3 +18,10 @@ it("shows optional network coverage even with no usable pairs", async () => {
   rerender(<ProgramTrustCoverage isHu={false} program={{ key: "FOLLOW_UP", observerReady: false, participantCount: 3 }} />);
   expect(screen.queryByText(/measured pairs/)).not.toBeInTheDocument();
 });
+
+it("discloses incomplete observer coverage and the consultant rationale in the reader view", async () => {
+  const { ProgramTrustCoverage } = await import("@/components/team/ProgramTrustCoverage");
+  render(<ProgramTrustCoverage isHu={false} program={{ key: "TEAM_SCAN", observerReady: false, participantCount: 8, observerCompletedParticipants: 6, observerOverride: { reason: "Discuss remaining gaps with the team.", actorId: "consultant", at: "2026-09-19" } }} />);
+  expect(screen.getByText(/6\/8 participants/)).toBeInTheDocument();
+  expect(screen.getByText(/Consultant rationale: Discuss remaining gaps/)).toBeInTheDocument();
+});

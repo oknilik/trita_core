@@ -251,7 +251,7 @@ test("csapat-felület: a „Csapat erőssége” kártya a kanonikus kapun megy"
 });
 
 test("jelölt-felület: a valencia-szűrés a kanonikus kapuból jön, nem kézi E-literálból", () => {
-  const source = read("src/app/(app)/hiring/[orgId]/candidates/[inviteId]/page.tsx");
+  const source = read("src/components/candidate/CandidateMeasurementNote.tsx");
   // A sor-kommentek (köztük ez a döntés-indoklás) nem részei a viselkedésnek
   // és nem mennek ki a felületre – a guard a kód-törzsre néz.
   const code = source.replace(/\/\/.*$/gm, "");

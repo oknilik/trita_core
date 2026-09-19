@@ -267,14 +267,17 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
 }
 
 export function computeJourneyState(context: JourneyContextSnapshot): JourneyState {
-  if (context.programs?.length) {
-    const actions: JourneyAction[] = context.programs.flatMap(p => p.activities.filter(a => ["AVAILABLE", "IN_PROGRESS"].includes(a.state)).map(a => ({ id: "COMPLETE_PROGRAM_ACTIVITY" as const, href: a.href, scope: "team" as const, label: a.label })));
-    // Waiting is never ranked above a task the participant can complete now.
-    if (!actions.length) actions.push({ id: "COMPLETE_PROGRAM_ACTIVITY", href: "/tasks", scope: "team", label: { hu: "Mérési feladataim és állapotuk", en: "My measurements and progress" } });
-    return { currentStage: "TEAM_PARTIAL", recommendedNextAction: actions[0], availableNextActions: actions, blockingReasons: [], completionSummary: context.completionSummary };
-  }
   const currentStage = computeStage(context);
-  const availableNextActions = computeActions(currentStage, context);
+  const baseActions = computeActions(currentStage, context);
+  const programActions: JourneyAction[] = (context.programs ?? []).flatMap(p =>
+    p.activities.filter(a => ["AVAILABLE", "IN_PROGRESS"].includes(a.state)).map(a => ({
+      id: "COMPLETE_PROGRAM_ACTIVITY" as const, href: a.href, scope: "team" as const, label: a.label,
+    })),
+  );
+  const managesWorkspace = ["org-admin", "org-manager"].includes(context.currentContext);
+  const availableNextActions = managesWorkspace
+    ? [...baseActions, ...programActions]
+    : programActions.length ? programActions : baseActions;
 
   return {
     currentStage,
