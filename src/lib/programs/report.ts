@@ -1,9 +1,11 @@
+import { t, tf } from "@/lib/i18n";
 import { DEFAULT_PROGRAM_POLICY, type ProgramSnapshot } from "./core";
 import type { TeamReportAggregates } from "@/lib/team-report";
 import { AXES, AXIS_LABELS, type OperatingAxis } from "@/lib/team-operating-style/questions";
 export interface ProgramReportEvidence {
   key: "TEAM_SCAN" | "FOLLOW_UP";
   policy?: ProgramSnapshot["policy"];
+  trustNetwork?: { measuredPairCount: number; possiblePairCount: number; coveragePct: number };
   observerReady: boolean;
   participantCount: number;
   baseline?: { campaignId: string; reportId: string; revision: number; publishedAt: string | null };
@@ -49,4 +51,12 @@ export function personalitySourceLabel(p: ProgramReportEvidence | undefined, hu:
   if (!p?.baseline) return undefined;
   const date = p.baseline.publishedAt?.slice(0, 10) ?? "–";
   return hu ? `Korábbi személyiségmérés · kiinduló riport: ${date}. Történeti háttér, nem a jelen kör újramérése.` : `Previous personality measurement · baseline report: ${date}. Historical context, not remeasured in this round.`;
+}
+
+export function programTrustLines(p: ProgramReportEvidence | undefined, hu: boolean): string[] {
+  if (!p?.trustNetwork) return [];
+  const locale = hu ? "hu" : "en";
+  const trust = p.trustNetwork;
+  return [tf("programTrust.coverage", locale, { measured: trust.measuredPairCount, possible: trust.possiblePairCount, coverage: trust.coveragePct }),
+    t(trust.measuredPairCount ? "programTrust.note" : "programTrust.empty", locale)];
 }

@@ -1,4 +1,4 @@
-import { programComparisonLines, personalitySourceLabel } from "@/lib/programs/report";
+import { programTrustLines, programComparisonLines, personalitySourceLabel } from "@/lib/programs/report";
 import { Document, Page, View, Text, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
 import type { ReactNode } from "react";
@@ -308,6 +308,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
         <Text style={body}>{isHu ? "Lefedettség" : "Coverage"}: {agg.feedbackCulture.coveredCount}/{agg.feedbackCulture.memberCount} · {isHu ? "Összhang" : "Aligned"}: {agg.feedbackCulture.alignedCount} · {isHu ? "Érdemi eltérés" : "Meaningful difference"}: {agg.feedbackCulture.gapCount}</Text>
       </Chapter>}
 
+      <Notes notes={programTrustLines(agg?.program, isHu)} />
       {(psych || trust) && <View wrap={false} style={{ flexDirection: "row", gap: 20 }}>
         {psych && <View style={{ flex: 1 }}><Chapter keepTogether title={isHu ? "Pszichológiai biztonság" : "Psychological safety"}>
         <Text style={body}>{psych.index}/100 · {psych.count} {isHu ? "névtelen válasz" : "anonymous responses"} · {psych.campaignName}</Text>

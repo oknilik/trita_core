@@ -1,4 +1,5 @@
 "use client";
+import { t } from "@/lib/i18n";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PROGRAM_KEYS, PROGRAM_LABELS, PROGRAM_DESCRIPTIONS, type ProgramKey } from "@/lib/programs/core";
@@ -11,6 +12,7 @@ export function ProgramWizard({ orgId, teams, baselines, locale, preselectedTeam
 }) {
   const router = useRouter(); const hu = locale === "hu";
   const [programKey, setProgram] = useState<ProgramKey>("TEAM_SCAN");
+  const [includeTrustNetwork, setIncludeTrustNetwork] = useState(false);
   const [teamId, setTeam] = useState(preselectedTeamId ?? teams[0]?.id ?? "");
   const [baselineId, setBaseline] = useState(""); const [name, setName] = useState("");
   const [busy, setBusy] = useState(false); const [error, setError] = useState(false);
@@ -22,7 +24,7 @@ export function ProgramWizard({ orgId, teams, baselines, locale, preselectedTeam
     setBusy(true); setError(false);
     try {
       if (!created.current) {
-        const res = await fetch(`/api/org/${orgId}/campaigns`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ programKey, name: name.trim() || `${team?.name} — ${PROGRAM_LABELS[programKey][locale]}`, teamIds: [teamId], ...(programKey === "FOLLOW_UP" ? { baselineCampaignId: baseline } : {}) }) });
+        const res = await fetch(`/api/org/${orgId}/campaigns`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ programKey, includeTrustNetwork, name: name.trim() || `${team?.name} — ${PROGRAM_LABELS[programKey][locale]}`, teamIds: [teamId], ...(programKey === "FOLLOW_UP" ? { baselineCampaignId: baseline } : {}) }) });
         if (!res.ok) throw new Error();
         created.current = (await res.json()).campaign.id;
       }
@@ -41,6 +43,10 @@ export function ProgramWizard({ orgId, teams, baselines, locale, preselectedTeam
       <label className="block">{hu ? "Csapat" : "Team"}<select className="mt-2 block min-h-[44px] w-full rounded-lg border border-sand p-2" value={teamId} onChange={e => { setTeam(e.target.value); setBaseline(""); }}>{teams.map(t => <option key={t.id} value={t.id}>{t.name} ({t.members.length})</option>)}</select></label>
       <label className="block">{hu ? "Mérés neve" : "Measurement name"}<input maxLength={100} className="mt-2 block min-h-[44px] w-full rounded-lg border border-sand p-2" value={name} onChange={e => setName(e.target.value)} placeholder={`${team?.name ?? ""} — ${PROGRAM_LABELS[programKey][locale]}`} /></label>
       {programKey === "FOLLOW_UP" && <label className="block">{hu ? "Kiinduló, publikált mérés" : "Published baseline"}<select className="mt-2 block min-h-[44px] w-full rounded-lg border border-sand p-2" value={baseline ?? ""} onChange={e => setBaseline(e.target.value)}>{candidates.length === 0 && <option value="">{hu ? "Nincs kompatibilis publikált Team Scan" : "No compatible published Team Scan"}</option>}{candidates.map(b => <option key={b.campaignId} value={b.campaignId}>{b.title}</option>)}</select></label>}
+      <label className="block rounded-xl border border-sand p-4">
+        <span className="flex min-h-[44px] items-center gap-3"><input type="checkbox" aria-label={t("programTrust.title", locale)} aria-describedby="trust-description" checked={includeTrustNetwork} onChange={e => setIncludeTrustNetwork(e.target.checked)} />{t("programTrust.title", locale)}</span>
+        <span id="trust-description" className="mt-2 block text-caption text-muted">{t("programTrust.description", locale)}</span>
+      </label>
       <p className="text-caption text-muted">{hu ? "A csapat tagjai résztvevőként kerülnek a vázlatba. A névsort aktiválás előtt ellenőrizheted; legalább három résztvevő szükséges." : "Team members are added to the draft. Review the roster before activation; at least three participants are required."}</p>
     </fieldset>
     {error && <p role="alert" className="text-ink">{hu ? "A mentés nem sikerült. Ellenőrizd a jogosultságot és a kiinduló mérést, majd próbáld újra." : "Could not save. Check access and the baseline, then retry."}</p>}

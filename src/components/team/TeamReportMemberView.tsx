@@ -1,3 +1,4 @@
+import { ProgramTrustCoverage } from "./ProgramTrustCoverage";
 import { ProgramComparison } from "./ProgramComparison";
 import { personalitySourceLabel } from "@/lib/programs/report";
 import Link from "next/link";
@@ -111,6 +112,7 @@ export function TeamReportMemberView({
       </DashboardPanel>
 
       <ProgramComparison program={report.aggregates?.program} isHu={isHu} />
+    <ProgramTrustCoverage program={report.aggregates?.program} isHu={isHu} />
       <TeamOperatingStyleReport personalitySource={personalitySourceLabel(report.aggregates?.program, isHu)} snapshot={report.aggregates?.teamStyle} averages={report.aggregates?.dimensionAverages} spread={report.aggregates?.dimensionSpread} personalityCount={report.aggregates?.completedCount} locale={isHu ? "hu" : "en"} />
 
       {/* 1. Te a csapatban – radar-összevetés + színes sávok */}

@@ -16,6 +16,7 @@ import {
 
 const createSchema = z.object({
   programKey: z.enum(PROGRAM_KEYS).optional(),
+  includeTrustNetwork: z.boolean().optional(),
   baselineCampaignId: z.string().min(1).optional(),
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
@@ -149,7 +150,8 @@ export async function POST(
   // legacy type) kerül kanonikus sorrendbe.
   if (body.data.programKey && process.env.DIAGNOSTIC_PROGRAMS_ENABLED !== "true") return NextResponse.json({ error: "PROGRAMS_NOT_ENABLED" }, { status: 409 });
   if (body.data.programKey && (body.data.presetId || body.data.types)) return NextResponse.json({ error: "PROGRAM_CONFIGURATION_FIXED" }, { status: 400 });
-  const program = body.data.programKey ? createProgramSnapshot(body.data.programKey) : null;
+  if (body.data.includeTrustNetwork && !body.data.programKey) return NextResponse.json({ error: "PROGRAM_REQUIRED" }, { status: 400 });
+  const program = body.data.programKey ? createProgramSnapshot(body.data.programKey, { includeTrustNetwork: body.data.includeTrustNetwork }) : null;
   if (program && requestedTeamIds.length !== 1) return NextResponse.json({ error: "OPERATING_STYLE_SINGLE_TEAM_REQUIRED" }, { status: 409 });
   if (body.data.baselineCampaignId && program?.key !== "FOLLOW_UP") return NextResponse.json({ error: "BASELINE_NOT_ALLOWED" }, { status: 400 });
   const baseline = program?.key === "FOLLOW_UP" && body.data.baselineCampaignId

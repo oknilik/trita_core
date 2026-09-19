@@ -22,7 +22,8 @@ export async function generateMetadata(): Promise<Metadata> {
 // meg, ahol az aktuális nyitott lépése a TRUST_360. A megjelenítés pár-
 // szinten összevont (vezető/tanácsadó), egyéni válasz nem jelenik meg —
 // ld. src/lib/trust-network.ts fejkomment. Minta: team-roles/peers.
-export default async function TrustPeersPage() {
+export default async function TrustPeersPage({ searchParams }: { searchParams: Promise<{ campaignId?: string }> }) {
+  const { campaignId } = await searchParams;
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
   if (!userId) return redirectToSignIn();
 
@@ -38,7 +39,7 @@ export default async function TrustPeersPage() {
   const candidates = await prisma.campaignParticipant.findMany({
     where: {
       userId: profile.id,
-      campaign: { status: "ACTIVE", steps: { has: "TRUST_360" } },
+      campaign: { ...(campaignId ? { id: campaignId } : {}), status: "ACTIVE", steps: { has: "TRUST_360" } },
     },
     orderBy: { addedAt: "asc" },
     select: {

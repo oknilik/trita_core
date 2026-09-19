@@ -284,7 +284,7 @@ function compareTrustNetwork(
   current: SerializedTeamReport["aggregates"],
   previous: SerializedTeamReport["aggregates"],
 ): TrustNetworkComparison | null {
-  if (!current || !previous) return null;
+  if (!current || !previous || current.program || previous.program) return null;
   const currentPairs = measuredTrustPairs(current);
   const previousPairs = measuredTrustPairs(previous);
   if (currentPairs === null || previousPairs === null) return null;
@@ -496,7 +496,7 @@ function compareActionOutcomes(params: {
         ? current.aggregates.trustHighlights
         : null;
       const previousHasNoMeasuredRelationships =
-        previous.aggregates?.evidence?.measuredEdgeCount === 0;
+        previous.aggregates?.evidence?.measuredEdgeCount === 0 && !current.aggregates?.program && !previous.aggregates?.program;
       const metric = target.kind === "trust_coverage"
         ? trustNetwork?.coveragePct ?? (
             currentTrust?.coveragePct !== null &&

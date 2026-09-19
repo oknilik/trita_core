@@ -193,7 +193,7 @@ export default async function MyMeasurementsPage() {
         : null;
 
       return {
-        program: Boolean(program), activities,
+        program: Boolean(program), activities, optionalSteps: program?.activities.filter(a => !a.required).map(a => a.key) ?? [],
         id: p.campaign.id,
         name: p.campaign.name,
         description: p.campaign.description,
@@ -328,9 +328,10 @@ export default async function MyMeasurementsPage() {
 
                   <div className="mt-4 flex flex-col gap-2">
                     {card.steps.map((stepType, idx) => {
-                      const label = isCampaignStepType(stepType)
+                      const baseLabel = isCampaignStepType(stepType)
                         ? stepType === "OBSERVER_360" && card.program ? (loc === "hu" ? "Külső visszajelzés" : "Observer feedback") : CAMPAIGN_STEP_LABELS[stepType][loc === "en" ? "en" : "hu"]
                         : stepType;
+                      const label = card.optionalSteps.some(key => key === stepType) ? `${baseLabel} · ${t("programTrust.optional", loc)}` : baseLabel;
                       const isDone = card.doneFlags[idx];
                       const isCurrent = card.activities ? ["AVAILABLE", "IN_PROGRESS", "WAITING"].includes(card.activities[idx].state) : idx === card.currentIdx;
                       const link = card.program ? programActivityLink(stepType, card.id) : isCampaignStepType(stepType)

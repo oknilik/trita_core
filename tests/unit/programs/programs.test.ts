@@ -74,3 +74,13 @@ test("snapshot policy controls report readiness", async () => {
   a.program = { key: "TEAM_SCAN", observerReady: true, participantCount: 5, policy: { ...createProgramSnapshot("TEAM_SCAN").policy, minOperatingCoverage: 1 } };
   assert.equal(programDataError(a), "REPORT_OPERATING_DATA_INSUFFICIENT");
 });
+
+for (const key of ["TEAM_SCAN", "FOLLOW_UP"] as const) test(`${key}: trust is opt-in, parallel and never a report dependency`, () => {
+  assert.equal(createProgramSnapshot(key).activities.some(a => a.key === "TRUST_360"), false);
+  const p = createProgramSnapshot(key, { includeTrustNetwork: true });
+  const trust = p.activities.find(a => a.key === "TRUST_360")!;
+  assert.equal(trust.required, false);
+  assert.equal(p.activities.find(a => a.key === "REPORT_GENERATION")!.dependencies.includes("TRUST_360"), false);
+  assert.equal(activityStates(p, {}).find(a => a.key === "TRUST_360")!.state, key === "TEAM_SCAN" ? "LOCKED" : "AVAILABLE");
+  assert.equal(activityStates(p, { v: 1, activities: { SELF_ASSESSMENT: "done" } }).find(a => a.key === "TRUST_360")!.state, "AVAILABLE");
+});

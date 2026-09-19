@@ -27,7 +27,7 @@ test.beforeAll(async () => {
   await prisma.team.create({ data: { id, name: "Program browser team", orgId: id, ownerId: id } });
   await prisma.teamMember.create({ data: { teamId: id, userId: id } });
   await prisma.userProfile.update({ where: { id }, data: { activeOrgId: id } });
-  const p = createProgramSnapshot("TEAM_SCAN");
+  const p = createProgramSnapshot("TEAM_SCAN", { includeTrustNetwork: true });
   await prisma.campaign.create({ data: { id: campaignId, orgId: id, createdBy: id, name: "Browser Team Scan", type: "SELF_ASSESSMENT", status: "ACTIVE", teamId: id, teamIds: [id], steps: participantActivities(p).map(a => a.key), programKey: p.key, programVersion: p.version, programSnapshot: p, participants: { create: { userId: id, nextStepOpensAt: new Date("2099-01-01"), stepCompletions: { __program: 1, SELF_ASSESSMENT: new Date().toISOString() } } } } });
 });
 test.afterAll(async () => { await cleanup(); await prisma.$disconnect(); });
@@ -42,14 +42,17 @@ test("program chooser prevents Follow-up without a published baseline", async ({
   await page.goto(`/org/${id}/campaigns/new`);
   await expect(page.getByRole("group", { name: "Diagnostic program" }).getByRole("radio")).toHaveCount(2);
   await expect(page.getByRole("button", { name: "Create program draft" })).toBeEnabled();
+  await expect(page.getByRole("checkbox", { name: "Measure trust network" })).not.toBeChecked();
+  await page.getByRole("checkbox", { name: "Measure trust network" }).check();
   await page.getByRole("radio", { name: /Follow-up/ }).check();
+  await expect(page.getByRole("checkbox", { name: "Measure trust network" })).toBeChecked();
   await expect(page.getByRole("button", { name: "Create program draft" })).toBeDisabled();
   await expect(page.getByRole("option", { name: "No compatible published Team Scan" })).toBeAttached();
 });
 
 test("completed self exposes all parallel activities despite a stale legacy opening time", async ({ page }) => {
   await page.goto("/tasks");
-  for (const path of ["/assessment/team-operating-style", "/assessment/psych-safety", "/tasks/observers"]) {
+  for (const path of ["/assessment/trust", "/assessment/team-operating-style", "/assessment/psych-safety", "/tasks/observers"]) {
     await expect(page.locator(`a[href="${path}?campaignId=${campaignId}"]`).first()).toBeVisible();
   }
   await page.goto(`/org/${id}/campaigns/${campaignId}`);

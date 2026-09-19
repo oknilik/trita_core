@@ -1,6 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import { lockAndValidatePeerSubmission } from "@/lib/peer-submission-coverage";
+import { TRUST_QUESTIONS } from "@/lib/trust-network";
 import { prisma } from "@/lib/prisma";
 import { createProgramSnapshot, participantActivities, completionMap } from "@/lib/programs/core";
 import { activateCampaignAtomically, advanceCampaignStepForUser } from "@/lib/campaign-steps";
@@ -16,17 +18,32 @@ import { loadBaseline } from "@/lib/programs/baseline.server";
 import { PSYCH_SAFETY_ITEMS } from "@/lib/psych-safety";
 import type { Prisma } from "@prisma/client";
 
-test("Team Scan → parallel submissions → review/publish → pinned Follow-up; concurrent writes and scopes", async () => {
+for (const includeTrustNetwork of [false, true]) test(`Team Scan → parallel submissions → review/publish → pinned Follow-up; trust=${includeTrustNetwork}`, async () => {
   assert.equal(process.env.TRITA_INTEGRATION_TEST_DB, "1");
   const orgId = `program_org_${randomUUID()}`, teamId = `program_team_${randomUUID()}`;
   const ids = [0,1,2].map(() => `program_user_${randomUUID()}`);
   const scanId = `program_scan_${randomUUID()}`, followId = `program_follow_${randomUUID()}`;
-  const scan = createProgramSnapshot("TEAM_SCAN");
+  const scan = createProgramSnapshot("TEAM_SCAN", { includeTrustNetwork });
   const scores = { H: 60, E: 50, X: 65, A: 55, C: 70, O: 60 };
   const op = (campaignId: string) => ({ campaignId, instrumentVersion: OPERATING_STYLE_VERSION, intent: "submit", answers: Object.fromEntries(ITEMS.map(q => [q.id, q.pole === "left" ? 5 : 1])) });
   async function pulse(campaignId: string, userId: string) {
     const p = await prisma.campaignParticipant.findUniqueOrThrow({ where: { campaignId_userId: { campaignId, userId } } });
     return recordAnonymousPsychSafetyResponse({ participantId: p.id, profileId: userId, campaignId, teamId, submittedOn: new Date("2026-09-18"), answers: Object.fromEntries(PSYCH_SAFETY_ITEMS.map(i => [i.id, 4])) });
+  }
+  async function submitTrust(campaignId: string) {
+    await Promise.all(ids.map(userId => prisma.$transaction(async tx => {
+      const guard = await lockAndValidatePeerSubmission(tx, campaignId, userId, "TRUST_360");
+      assert.equal(guard.ok, true);
+      for (const aboutUserId of ids.filter(id => id !== userId)) await tx.trustObservation.create({ data: {
+        campaignId, teamId, raterUserId: userId, aboutUserId,
+        answers: Object.fromEntries(TRUST_QUESTIONS.map(q => [q.id, q.max])),
+      } });
+      await advanceCampaignStepForUser(userId, "TRUST_360", { campaignId, db: tx, emitNotifications: false });
+    })));
+    for (const userId of ids) {
+      const p = await prisma.campaignParticipant.findUniqueOrThrow({ where: { campaignId_userId: { campaignId, userId } } });
+      assert.ok(completionMap(p.stepCompletions).TRUST_360);
+    }
   }
   try {
     for (const id of ids) await prisma.userProfile.create({ data: { id, username: "Program fixture" } });
@@ -59,7 +76,14 @@ test("Team Scan → parallel submissions → review/publish → pinned Follow-up
       for (let i=0;i<3;i++) await tx.observerInvitation.create({ data: { inviterId: userId, campaignId: scanId, testType: "TRITAN", status: "COMPLETED", completedAt: new Date(), expiresAt: new Date(Date.now()+86400000), assessment: { create: { relationshipType: "COLLEAGUE", knownDuration: "1-3", scores } } } });
       await reconcileProgramObserver(tx, scanId, userId, scan);
     });
+    const noTrust = (await buildTeamReportAggregates(teamId, { assessmentCampaignId: scanId }))!;
+    assert.equal(programDataError(noTrust), null); // missing optional trust never blocks
+    if (includeTrustNetwork) {
+      assert.equal(noTrust.program?.trustNetwork?.measuredPairCount, 0);
+      await submitTrust(scanId);
+    } else assert.equal(noTrust.program?.trustNetwork, undefined);
     const aggregates = (await buildTeamReportAggregates(teamId, { assessmentCampaignId: scanId }))!;
+    if (includeTrustNetwork) assert.equal(aggregates.program?.trustNetwork?.coveragePct, 100);
     assert.equal(programDataError(aggregates), null);
     await prisma.campaign.update({ where: { id: scanId }, data: { status: "CLOSED", closedAt: new Date() } });
     const report = await prisma.teamReport.create({ data: { teamId, campaignId: scanId, orgId, createdById: ids[0], title: "Scan", summary: "Summary", recommendations: "Actions", actionItems: [{ title: "Try", description: "Practice", timeframe: "30", targetMetric: { kind: "psych_safety_index" } }], aggregates: aggregates as unknown as Prisma.InputJsonValue } });
@@ -74,7 +98,7 @@ test("Team Scan → parallel submissions → review/publish → pinned Follow-up
     assert.deepEqual(published.aggregates, reviewed.aggregates);
     const baseline = await loadBaseline(orgId, teamId, scanId); assert.ok(baseline);
     assert.equal(await loadBaseline("other", teamId, scanId), null);
-    const follow = createProgramSnapshot("FOLLOW_UP");
+    const follow = createProgramSnapshot("FOLLOW_UP", { includeTrustNetwork });
     await prisma.campaign.create({ data: { id: followId, orgId, createdBy: ids[0], name: "Follow-up", teamId, teamIds: [teamId], type: "TEAM_OPERATING_STYLE", steps: participantActivities(follow).map(a => a.key), programKey: follow.key, programVersion: 1, programSnapshot: follow, baselineCampaignId: scanId, baselineReportSnapshot: baseline, participants: { create: ids.map(userId => ({ userId })) } } });
     await activateCampaignAtomically(followId);
     for (const userId of ids) { await saveOperatingResponse(userId, op(followId)); await pulse(followId, userId); }
@@ -82,6 +106,15 @@ test("Team Scan → parallel submissions → review/publish → pinned Follow-up
     assert.equal(await prisma.observerInvitation.count({ where: { campaignId: followId } }), 0);
     const followAgg = (await buildTeamReportAggregates(teamId, { assessmentCampaignId: followId }))!;
     assert.equal(programDataError(followAgg), null);
+    assert.equal(followAgg.trustHighlights, null); // baseline network never reused
+    if (includeTrustNetwork) {
+      assert.equal(followAgg.program?.trustNetwork?.measuredPairCount, 0);
+      await submitTrust(followId);
+      const measured = (await buildTeamReportAggregates(teamId, { assessmentCampaignId: followId }))!;
+      assert.equal(measured.trustHighlights?.source, "trust_round");
+      assert.equal(measured.program?.trustNetwork?.coveragePct, 100);
+      assert.equal(programDataError(measured), null);
+    }
     assert.deepEqual(followAgg.dimensionAverages, published.aggregates!.dimensionAverages);
     assert.equal(followAgg.program?.operatingChanges?.length, 4);
     assert.equal(followAgg.program?.psychSafetyChange?.delta, 0);

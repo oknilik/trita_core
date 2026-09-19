@@ -3,7 +3,7 @@ import { z } from "zod";
 
 export const PROGRAM_KEYS = ["TEAM_SCAN", "FOLLOW_UP"] as const;
 export type ProgramKey = typeof PROGRAM_KEYS[number];
-export const ACTIVITY_KEYS = ["SELF_ASSESSMENT", "OBSERVER_360", "TEAM_OPERATING_STYLE", "PSYCH_SAFETY", "REPORT_GENERATION", "CONSULTANT_REVIEW", "PUBLISH"] as const;
+export const ACTIVITY_KEYS = ["SELF_ASSESSMENT", "OBSERVER_360", "TEAM_OPERATING_STYLE", "PSYCH_SAFETY", "TRUST_360", "REPORT_GENERATION", "CONSULTANT_REVIEW", "PUBLISH"] as const;
 export type ActivityKey = typeof ACTIVITY_KEYS[number];
 export type ActivityState = "LOCKED" | "AVAILABLE" | "IN_PROGRESS" | "WAITING" | "COMPLETED" | "SKIPPED";
 const activitySchema = z.object({
@@ -42,7 +42,7 @@ export function parseProgram(value: unknown): ProgramSnapshot | null {
 export function safeParseProgram(value: unknown): ProgramSnapshot | null {
   try { return parseProgram(value); } catch { return null; }
 }
-export function createProgramSnapshot(key: ProgramKey): ProgramSnapshot {
+export function createProgramSnapshot(key: ProgramKey, options: { includeTrustNetwork?: boolean } = {}): ProgramSnapshot {
   const measurement: ActivityKey[] = key === "TEAM_SCAN"
     ? ["SELF_ASSESSMENT", "TEAM_OPERATING_STYLE", "PSYCH_SAFETY", "OBSERVER_360"]
     : ["TEAM_OPERATING_STYLE", "PSYCH_SAFETY"];
@@ -50,6 +50,7 @@ export function createProgramSnapshot(key: ProgramKey): ProgramSnapshot {
     activities: [
       ...measurement.map(k => ({ key: k, scope: "participant", required: true,
         dependencies: key === "TEAM_SCAN" && k !== "SELF_ASSESSMENT" ? ["SELF_ASSESSMENT"] : [] })),
+      ...(options.includeTrustNetwork ? [{ key: "TRUST_360", scope: "participant", required: false, dependencies: key === "TEAM_SCAN" ? ["SELF_ASSESSMENT"] : [] }] : []),
       { key: "REPORT_GENERATION", scope: "team", required: true, dependencies: measurement },
       { key: "CONSULTANT_REVIEW", scope: "team", required: true, dependencies: ["REPORT_GENERATION"] },
       { key: "PUBLISH", scope: "team", required: true, dependencies: ["CONSULTANT_REVIEW"] },
@@ -86,7 +87,7 @@ export function activityStates(p: ProgramSnapshot, completions: unknown, facts: 
   });
 }
 export function programActivityLink(key: string, campaignId: string) {
-  const paths: Record<string, string> = { SELF_ASSESSMENT: "/assessment", TEAM_OPERATING_STYLE: "/assessment/team-operating-style", PSYCH_SAFETY: "/assessment/psych-safety", OBSERVER_360: "/tasks/observers" };
+  const paths: Record<string, string> = { SELF_ASSESSMENT: "/assessment", TEAM_OPERATING_STYLE: "/assessment/team-operating-style", PSYCH_SAFETY: "/assessment/psych-safety", OBSERVER_360: "/tasks/observers", TRUST_360: "/assessment/trust" };
   return `${paths[key] ?? "/tasks"}?campaignId=${encodeURIComponent(campaignId)}`;
 }
 export const PROGRAM_LABELS = {

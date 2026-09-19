@@ -9,3 +9,12 @@ it("labels historical personality directly in its chart section", () => {
   const source = screen.getAllByText(/Previous personality measurement.*2026-06-01/)[0];
   expect(source.closest("section")?.querySelector('[role="img"]')).not.toBeNull();
 });
+
+it("shows optional network coverage even with no usable pairs", async () => {
+  const { ProgramTrustCoverage } = await import("@/components/team/ProgramTrustCoverage");
+  const { rerender } = render(<ProgramTrustCoverage isHu={false} program={{ key: "TEAM_SCAN", observerReady: true, participantCount: 3, trustNetwork: { measuredPairCount: 0, possiblePairCount: 3, coveragePct: 0 } }} />);
+  expect(screen.getByText(/measured pairs: 0\/3/)).toBeInTheDocument();
+  expect(screen.getByText(/No usable network data/)).toBeInTheDocument();
+  rerender(<ProgramTrustCoverage isHu={false} program={{ key: "FOLLOW_UP", observerReady: false, participantCount: 3 }} />);
+  expect(screen.queryByText(/measured pairs/)).not.toBeInTheDocument();
+});
