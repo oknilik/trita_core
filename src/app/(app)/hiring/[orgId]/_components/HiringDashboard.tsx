@@ -52,6 +52,7 @@ interface CreditBalance {
 
 
 interface HiringDashboardProps {
+  baselines?: { id: string; teamId: string; title: string }[];
   orgId: string;
   orgName: string;
   teams: Team[];
@@ -226,6 +227,7 @@ function CandidateSection({
 }
 
 export function HiringDashboard({
+  baselines = [],
   orgId,
   orgName,
   teams,
@@ -451,6 +453,7 @@ export function HiringDashboard({
           </div>
           <div className="p-5 sm:p-6">
             <CandidateInviteForm
+              baselines={baselines}
               locale={locale}
               teams={teams}
               orgId={orgId}

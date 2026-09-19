@@ -1,4 +1,5 @@
-import { auth } from "@clerk/nextjs/server";
+import { candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
+import { getServerAuth } from "@/lib/auth-server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
@@ -14,7 +15,7 @@ export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const profile = await prisma.userProfile.findUnique({
@@ -43,6 +44,7 @@ export async function DELETE(
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
   const inviteOrgId = invite.orgId ?? invite.team?.orgId ?? null;
+  if (!await candidateOrgEnabled(inviteOrgId)) return NextResponse.json({ error: "FEATURE_PARKED" }, { status: 404 });
   // leftAt: null — a szervezetből kilépett (volt) tag nem nyúlhat a meghívókhoz.
   const orgMembership = inviteOrgId
     ? await prisma.organizationMember.findFirst({
@@ -50,7 +52,7 @@ export async function DELETE(
         select: { role: true },
       })
     : null;
-  const allowed = isConsultantSurface(
+  const allowed = Boolean(orgMembership) && isConsultantSurface(
     orgMembership?.role ?? null,
     profile.email,
     profile.isConsultant,
@@ -59,10 +61,12 @@ export async function DELETE(
 
   if (invite.status !== "PENDING") return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
 
-  await prisma.candidateInvite.update({
-    where: { id },
+  const revoked = await prisma.candidateInvite.updateMany({
+    where: { id, status: "PENDING" },
     data: { status: "CANCELED" },
   });
+
+  if (revoked.count !== 1) return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
 
   // Kredit-visszatérítés csak élő gating mellett (operating-mode kapcsoló)
   if (isCandidateGatingEnabled()) {

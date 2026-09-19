@@ -107,7 +107,7 @@ export async function resolveWorkspaceNavContext(
               ? Promise.all([
                   prisma.organization.findUnique({
                     where: { id: membership.orgId },
-                    select: { id: true, name: true },
+                    select: { id: true, name: true, candidateProgramsEnabled: true },
                   }),
                   // Csapatok NÉVVEL, egy körben (ld. getAccessibleTeams).
                   getAccessibleTeams(profile.id, membership.orgId, membership.role),
@@ -152,7 +152,7 @@ export async function resolveWorkspaceNavContext(
 
           // Jelölt-felület (2026-07-23): a tanácsadói kör kapja — nem
           // előfizetés-capability (a gating az operating-mode kapcsolón).
-          const hasHiringAccess = isConsultantSurface(
+          const hasHiringAccess = Boolean(org?.candidateProgramsEnabled) && isConsultantSurface(
             membership.role,
             profile.email,
             profile.isConsultant,

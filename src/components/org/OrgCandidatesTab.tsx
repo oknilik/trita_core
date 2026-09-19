@@ -57,8 +57,8 @@ export function OrgCandidatesTab({
           </h2>
           <p className="mt-1 text-xs text-ink-body">
             {isHu
-              ? "Személyiség-felmérés (opcionális csapatszerep-kérdőívvel) a szervezeten kívüli jelölteknek – kitöltés után szabadon illeszthető bármely csapathoz."
-              : "Personality assessment (with optional team-role questionnaire) for external candidates – freely matched to any team after completion."}
+              ? "Személyiség-felmérés (opcionális csapatszerep-kérdőívvel) a szervezeten kívüli jelölteknek – tanácsadó által jóváhagyott visszajelzéssel."
+              : "Personality assessment (with optional team-role questionnaire) for external candidates – with consultant-reviewed feedback."}
           </p>
         </div>
         <Link

@@ -16,6 +16,7 @@ interface OrgRow {
   status: string;
   billingProfile: OrgBillingProfile;
   hideCareerModule: boolean;
+  candidateProgramsEnabled: boolean;
   createdAt: string;
   memberCount: number;
   consultants: Array<{ userId: string; email: string | null; username: string | null }>;
@@ -124,10 +125,12 @@ export function AdminOrgAccessSection({ orgs }: Props) {
       | "assign_consultant"
       | "remove_consultant"
       | "set_career_module"
+      | "set_candidate_programs"
       | "set_org_status",
     extra?: {
       consultantEmail?: string;
       hideCareerModule?: boolean;
+      candidateProgramsEnabled?: boolean;
       orgStatus?: "ACTIVE" | "INACTIVE";
     },
   ) {
@@ -405,6 +408,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                         </button>
                       </div>
                     </div>
+                    <label className="mt-3 flex min-h-[44px] items-center gap-3 text-caption text-ink-body"><input type="checkbox" checked={org.candidateProgramsEnabled} disabled={state.loading} onChange={e => callAction(org.id, "set_candidate_programs", { candidateProgramsEnabled: e.target.checked })} />{t("candidateProgram.pilot", "hu")}</label>
                     {/* ── Modul-kapcsolók – csak trita admin ── */}
                     <div className="mt-3 border-t border-sand pt-3">
                       <p className="mb-1.5 font-mono text-micro uppercase tracking-widest text-muted">

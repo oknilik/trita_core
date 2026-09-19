@@ -1,4 +1,6 @@
-import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
+import { CandidateProgramError } from "@/lib/candidate-programs/service.server";
+import { getServerAuth } from "@/lib/auth-server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -19,18 +21,20 @@ const bodySchema = z.object({
   orgId: z.string().optional(),
   teamId: z.string().optional(),
   includeTeamRole: z.boolean().optional(),
+  baselineReportId: z.string().min(1).optional(),
+  focus: z.string().max(2000).optional(),
   inviteLocale: z.enum(["hu", "en"]).optional(),
 });
 
 // POST /api/manager/candidates — create a candidate invite link (+ optionally send email)
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
-  const parsed = bodySchema.safeParse(await req.json());
+  const parsed = bodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
-  const { email, name, position, orgId, teamId, includeTeamRole, inviteLocale } = parsed.data;
+  const { email, name, position, orgId, teamId, includeTeamRole, inviteLocale, baselineReportId, focus } = parsed.data;
   const rateLimitResponse = await checkRateLimit(email ? "contact" : "api", userId);
   if (rateLimitResponse) return rateLimitResponse;
   let serviceResult;
@@ -42,14 +46,14 @@ export async function POST(req: Request) {
       position,
       orgId,
       teamId,
-      includeTeamRole,
+      includeTeamRole, inviteLocale, baselineReportId, focus,
     });
   } catch (error) {
-    if (error instanceof CandidateApplyServiceError) {
+    if (error instanceof CandidateApplyServiceError || error instanceof CandidateProgramError) {
       return NextResponse.json(
         {
           error: error.code,
-          ...(error.details ?? {}),
+          ...(error instanceof CandidateApplyServiceError ? error.details ?? {} : {}),
         },
         { status: error.status },
       );
@@ -71,5 +75,6 @@ export async function POST(req: Request) {
     });
   }
 
+  await prisma.candidateInvite.update({ where: { id: serviceResult.invite.id }, data: { deliveryState: !email ? "NOT_SENT" : emailSent ? "SENT" : "FAILED" } });
   return NextResponse.json({ invite: serviceResult.invite, emailSent }, { status: 201 });
 }

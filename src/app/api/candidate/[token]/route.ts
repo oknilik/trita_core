@@ -1,41 +1,27 @@
 import { NextResponse } from "next/server";
-import { resolveAcceptance } from "@/lib/acceptance/service";
-
-// GET /api/candidate/[token] — validate token and return invite info
+import { loadCandidate } from "@/lib/candidate-programs/service.server";
+import { candidateError } from "@/lib/candidate-programs/http";
+import { checkTokenRateLimit } from "@/lib/rate-limit";
 export async function GET(
   _req: Request,
-  { params }: { params: Promise<{ token: string }> }
+  { params }: { params: Promise<{ token: string }> },
 ) {
   const { token } = await params;
-
-  const acceptance = await resolveAcceptance({
-    token,
-    routeSource: "api.candidate.lookup",
-    targetContext: { kind: "candidate" },
-  });
-  const invite = acceptance.candidateContext;
-
-  if (!invite || acceptance.acceptanceState === "APPLY_NOT_FOUND") {
-    return NextResponse.json({ error: "INVALID_TOKEN" }, { status: 404 });
+  const limited = await checkTokenRateLimit("candidate", token);
+  if (limited) return limited;
+  try {
+    const { invite } = await loadCandidate(token);
+    return NextResponse.json(
+      {
+        answers: invite.draftAnswers ?? {},
+        revision: invite.draftRevision,
+        acknowledged: Boolean(invite.acknowledgedAt),
+        submitted: invite.status === "COMPLETED",
+        teamRoleState: invite.teamRoleState,
+      },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  } catch (e) {
+    return candidateError(e);
   }
-
-  if (acceptance.acceptanceState === "APPLY_COMPLETED") {
-    return NextResponse.json({ error: "ALREADY_USED", status: "COMPLETED" }, { status: 410 });
-  }
-
-  if (acceptance.acceptanceState === "APPLY_EXPIRED") {
-    return NextResponse.json({ error: "INVITE_EXPIRED", status: "EXPIRED" }, { status: 410 });
-  }
-
-  if (acceptance.acceptanceState === "APPLY_CANCELED") {
-    return NextResponse.json({ error: "INVITE_REVOKED", status: "CANCELED" }, { status: 410 });
-  }
-
-  return NextResponse.json({
-    testType: invite.testType,
-    position: invite.position,
-    candidateName: invite.name,
-    status: invite.status,
-    expiresAt: invite.expiresAt,
-  });
 }

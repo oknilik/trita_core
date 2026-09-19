@@ -1,10 +1,11 @@
+import { Prisma } from "@prisma/client";
+import { candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
+import { t } from "@/lib/i18n";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import type { TestType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { getTestConfig } from "@/lib/questions";
-import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
+import { readCandidateProgram } from "@/lib/candidate-programs/core";
 import { requireOrgContext } from "@/lib/auth";
 import { getPlanTier } from "@/lib/subscription";
 import { getCreditBalance } from "@/lib/candidate-credits";
@@ -51,9 +52,19 @@ export default async function HiringPage({
     viewer?.isConsultant,
   );
   if (!isConsultantView) notFound();
+  if (!(await candidateOrgEnabled(orgId)))
+    return (
+      <PlatformPageShell surface="team" contentClassName="max-w-3xl px-4 py-10">
+        <p>{t("candidateProgram.disabled", locale)}</p>
+      </PlatformPageShell>
+    );
 
   const gating = isCandidateGatingEnabled();
-  let creditBalance: { available: number; totalPurchased: number; totalUsed: number } | null = null;
+  let creditBalance: {
+    available: number;
+    totalPurchased: number;
+    totalUsed: number;
+  } | null = null;
   let tier: ReturnType<typeof getPlanTier> = "team";
   let canInviteNew = true;
 
@@ -66,15 +77,25 @@ export default async function HiringPage({
       policySnapshot,
       "candidateEvaluate",
     );
-    const bannerState = toOrgSubscriptionBannerState(policySnapshot.policy.policyState);
+    const bannerState = toOrgSubscriptionBannerState(
+      policySnapshot.policy.policyState,
+    );
 
     if (!candidateEvaluateDecision.allowed) {
       return (
-        <PlatformPageShell surface="team" contentClassName="max-w-5xl gap-5 px-4 py-10">
+        <PlatformPageShell
+          surface="team"
+          contentClassName="max-w-5xl gap-5 px-4 py-10"
+        >
           {bannerState ? (
             <OrgSubscriptionBanner state={bannerState} locale={locale} />
           ) : null}
-          <HiringPaywall orgId={orgId} locale={locale} variant="no-subscription" isAdmin={isConsultantView} />
+          <HiringPaywall
+            orgId={orgId}
+            locale={locale}
+            variant="no-subscription"
+            isAdmin={isConsultantView}
+          />
         </PlatformPageShell>
       );
     }
@@ -90,8 +111,17 @@ export default async function HiringPage({
         });
         if (existingCount === 0) {
           return (
-            <PlatformPageShell surface="team" contentClassName="max-w-5xl px-4 py-10">
-              <HiringPaywall orgId={orgId} locale={locale} variant="addon" planTier={tier} isAdmin={isConsultantView} />
+            <PlatformPageShell
+              surface="team"
+              contentClassName="max-w-5xl px-4 py-10"
+            >
+              <HiringPaywall
+                orgId={orgId}
+                locale={locale}
+                variant="addon"
+                planTier={tier}
+                isAdmin={isConsultantView}
+              />
             </PlatformPageShell>
           );
         }
@@ -102,14 +132,14 @@ export default async function HiringPage({
 
   // Tanácsadói felület: az org minden jelöltje látszik — az org-kötés az
   // orgId mezőn (backfill előtti sorokon a team.orgId-n) keresztül.
-  const [teams, invitesRaw] = await Promise.all([
+  const [teams, invitesRaw, baselines] = await Promise.all([
     prisma.team.findMany({
       where: { orgId },
       orderBy: { createdAt: "asc" },
       select: { id: true, name: true },
     }),
     prisma.candidateInvite.findMany({
-      where: { OR: [{ orgId }, { team: { orgId } }] },
+      where: { orgId, programSnapshot: { not: Prisma.DbNull } },
       orderBy: { createdAt: "desc" },
       select: {
         id: true,
@@ -117,7 +147,7 @@ export default async function HiringPage({
         name: true,
         position: true,
         status: true,
-        testType: true,
+        programSnapshot: true,
         expiresAt: true,
         createdAt: true,
         teamId: true,
@@ -127,36 +157,39 @@ export default async function HiringPage({
         result: { select: { id: true } },
       },
     }),
+    prisma.teamReport.findMany({
+      where: {
+        orgId,
+        status: "PUBLISHED",
+        campaign: {
+          status: "CLOSED",
+          OR: [
+            { programKey: "TEAM_SCAN" },
+            { programKey: null, presetId: "SCAN_STYLE_V1" },
+          ],
+        },
+      },
+      select: { id: true, teamId: true, title: true, publishedAt: true },
+    }),
   ]);
 
-  // A nevező FORMA-TUDATOS (2026-08-11, fix): a jelölt-flow a
-  // DEFAULT_ASSESSMENT_FORM kérdéslistáját kapja (apply/page.tsx), a
-  // haladás-nevező ugyanabból a konfigból jön — a korábbi fix 60 a forma
-  // váltásakor némán hazudott volna. A progress-végpont ugyanerre a plafonra
-  // vágja a tárolt számlálót, tehát "500/60" szerkezetileg nem létezhet.
-  const totalQuestionsFor = (testType: string): number => {
-    try {
-      return getTestConfig(testType as TestType, locale, DEFAULT_ASSESSMENT_FORM)
-        .questions.length;
-    } catch {
-      return 60;
-    }
-  };
-
-  const invites = invitesRaw.map((inv) => ({
-    id: inv.id,
-    email: inv.email,
-    name: inv.name,
-    position: inv.position,
-    status: inv.status,
-    expiresAt: inv.expiresAt.toISOString(),
-    createdAt: inv.createdAt.toISOString(),
-    teamId: inv.teamId,
-    teamName: inv.team?.name ?? null,
-    hasResult: !!inv.result,
-    draftAnsweredCount: inv.draftAnsweredCount,
-    totalQuestions: totalQuestionsFor(inv.testType),
-  }));
+  const invites = invitesRaw
+    .filter((inv) => readCandidateProgram(inv.programSnapshot))
+    .map((inv) => ({
+      id: inv.id,
+      email: inv.email,
+      name: inv.name,
+      position: inv.position,
+      status: inv.status,
+      expiresAt: inv.expiresAt.toISOString(),
+      createdAt: inv.createdAt.toISOString(),
+      teamId: inv.teamId,
+      teamName: inv.team?.name ?? null,
+      hasResult: !!inv.result,
+      draftAnsweredCount: inv.draftAnsweredCount,
+      totalQuestions: readCandidateProgram(inv.programSnapshot)!.questionIds
+        .length,
+    }));
 
   return (
     <PlatformPageShell
@@ -167,6 +200,11 @@ export default async function HiringPage({
         orgId={orgId}
         orgName={org.name}
         teams={teams}
+        baselines={baselines.map((b) => ({
+          id: b.id,
+          teamId: b.teamId,
+          title: `${b.title} · ${b.publishedAt?.toISOString().slice(0, 10)}`,
+        }))}
         invites={invites}
         locale={locale}
         planTier={gating ? tier : "org"}

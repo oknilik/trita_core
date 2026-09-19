@@ -1,3 +1,5 @@
+import { candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
+import { Prisma } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -288,9 +290,9 @@ export default async function OrgDetailPage({
   }
 
   // Jelöltek — csak tanácsadói felületen (Jelöltek fül)
-  const candidateInvites = isConsultantView && isPortfolioSurfaceActive("hiring")
+  const candidateInvites = isConsultantView && isPortfolioSurfaceActive("hiring") && await candidateOrgEnabled(orgId)
     ? await prisma.candidateInvite.findMany({
-        where: { OR: [{ orgId }, { team: { orgId } }] },
+        where: { orgId, programSnapshot: { not: Prisma.DbNull } },
         orderBy: { createdAt: "desc" },
         take: 50,
         select: {
