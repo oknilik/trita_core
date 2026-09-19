@@ -24,3 +24,23 @@ test("candidate program pins its instrument and optional activity and fails clos
     true,
   );
 });
+
+test("comparison snapshots distinguish inherited, explicitly empty and unsupported data", async () => {
+  const { readComparisons } = await import(
+    "@/lib/candidate-programs/comparisons"
+  );
+  const p = createCandidateProgram(false, "", {
+    reportId: "r",
+    teamId: "t",
+    revision: 1,
+    publishedAt: "2026-09-12",
+    count: 4,
+    dimensions: { H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 },
+  });
+  assert.equal(readComparisons(null, p)?.length, 1);
+  assert.deepEqual(readComparisons([], p), []);
+  assert.equal(readComparisons({ unexpected: true }, p), null);
+  const c = readComparisons(null, p)![0];
+  assert.equal(readComparisons([c, c], p), null);
+  assert.equal(readComparisons([{ ...c, dimensions: { H: 50 } }], p), null);
+});

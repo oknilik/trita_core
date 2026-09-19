@@ -1,4 +1,5 @@
 import "server-only";
+import { HEXACO_ORDER } from "@/lib/hexaco";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { calculateScores, extractDimensionScores } from "@/lib/scoring";
@@ -189,10 +190,11 @@ export async function candidateBaseline(
   orgId: string,
   teamId: string | undefined,
   reportId: string | undefined,
+  db: Prisma.TransactionClient = prisma,
 ): Promise<CandidateProgram["baseline"]> {
   if (!reportId) return null;
   if (!teamId) throw new CandidateProgramError("BASELINE_INVALID", 400);
-  const r = await prisma.teamReport.findFirst({
+  const r = await db.teamReport.findFirst({
     where: {
       id: reportId,
       orgId,
@@ -215,7 +217,13 @@ export async function candidateBaseline(
   if (
     !r?.publishedAt ||
     !dimensions ||
-    Object.keys(dimensions).length !== 6 ||
+    !HEXACO_ORDER.every(
+      (d) =>
+        Number.isFinite(dimensions[d]) &&
+        dimensions[d] >= 0 &&
+        dimensions[d] <= 100,
+    ) ||
+    !Number.isInteger(a?.completedCount) ||
     (a?.completedCount ?? 0) < 3
   )
     throw new CandidateProgramError("BASELINE_INVALID", 400);

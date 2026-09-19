@@ -1,5 +1,6 @@
 import {
   render,
+  within,
   screen,
   waitFor,
   cleanup,
@@ -30,12 +31,10 @@ const initial = {
 };
 it("uses the self/observer card, leaves answers unselected and restores answers on back", async () => {
   let revision = 0;
-  const fetcher = vi
-    .fn()
-    .mockImplementation(async () => ({
-      ok: true,
-      json: async () => ({ revision: ++revision }),
-    }));
+  const fetcher = vi.fn().mockImplementation(async () => ({
+    ok: true,
+    json: async () => ({ revision: ++revision }),
+  }));
   vi.stubGlobal("fetch", fetcher);
   render(
     <CandidateClient
@@ -161,4 +160,74 @@ it("requires saving changed text before review and sharing", async () => {
   ).toBeDisabled();
   expect(screen.getByRole("button", { name: "Review" })).toBeDisabled();
   expect(screen.getByRole("button", { name: "Save draft" })).toBeEnabled();
+});
+
+it("switches team reference without ranking and protects unsaved consultant observations", async () => {
+  const { CandidateReportWorkspace } = await import(
+    "@/components/candidate/CandidateReportWorkspace"
+  );
+  const d = { H: 50, E: 60, X: 40, A: 55, C: 70, O: 65 };
+  render(
+    <CandidateReportWorkspace
+      inviteId="i"
+      name="Anna"
+      position="Designer"
+      measuredAt="2026-09-19"
+      dimensions={d}
+      comparisons={[
+        {
+          reportId: "r1",
+          teamId: "t1",
+          teamName: "Product",
+          revision: 1,
+          publishedAt: "2026-09-12",
+          count: 8,
+          dimensions: d,
+          connection: "",
+          difference: "",
+          prompt: "",
+        },
+        {
+          reportId: "r2",
+          teamId: "t2",
+          teamName: "Service",
+          revision: 1,
+          publishedAt: "2026-09-10",
+          count: 6,
+          dimensions: { ...d, X: 70 },
+          connection: "",
+          difference: "",
+          prompt: "",
+        },
+      ]}
+      sources={[]}
+      report={{
+        revision: 1,
+        reviewedRevision: null,
+        candidateSummary: "",
+        managerSummary: "",
+        internalNotes: "",
+      }}
+      locale="en"
+      rolePending={false}
+      roles={[]}
+      focus=""
+      invalidSources={[]}
+    />,
+  );
+  const service = screen.getByRole("button", { name: /Service/ });
+  await userEvent.click(service);
+  expect(service).toHaveAttribute("aria-pressed", "true");
+  expect(
+    within(
+      screen.getByRole("tabpanel", { name: "Team comparisons" }),
+    ).getAllByText("No consultant observation yet."),
+  ).toHaveLength(4);
+  await userEvent.click(screen.getByText(/Edit consultant observations/));
+  await userEvent.type(
+    screen.getByRole("textbox", { name: "Connection" }),
+    "Discuss collaboration",
+  );
+  expect(screen.getByRole("tab", { name: "Feedback" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: /Product/ })).toBeDisabled();
 });

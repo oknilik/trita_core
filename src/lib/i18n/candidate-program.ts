@@ -1,5 +1,73 @@
 export const candidateProgramTranslations = {
   candidateProgram: {
+    profileTab: { hu: "Profilkép", en: "Profile" },
+    teamsTab: { hu: "Csapatok összevetése", en: "Team comparisons" },
+    feedbackTab: { hu: "Visszajelzés", en: "Feedback" },
+    visualSubtitle: {
+      hu: "Egy profil. Több csapatnézőpont.",
+      en: "One profile. Multiple team perspectives.",
+    },
+    editFeedback: { hu: "Visszajelzés szerkesztése", en: "Edit feedback" },
+    radarTitle: {
+      hu: "A jelölt és a kiválasztott csapat",
+      en: "Candidate and selected team",
+    },
+    exactValues: {
+      hu: "Dimenziók és pontos értékek · 0–100",
+      en: "Dimensions and exact values · 0–100",
+    },
+    dimension: { hu: "Dimenzió", en: "Dimension" },
+    chartMissing: {
+      hu: "Nincs elegendő érvényes adat az ábrához.",
+      en: "Insufficient valid data for the chart.",
+    },
+    addTeam: { hu: "Csapat hozzáadása", en: "Add team" },
+    removeTeam: { hu: "Referencia eltávolítása", en: "Remove reference" },
+    connection: { hu: "Kapcsolódás", en: "Connection" },
+    difference: { hu: "Megbeszélendő", en: "To discuss" },
+    prompt: { hu: "Beszélgetésindító", en: "Conversation starter" },
+    prompts: { hu: "Beszélgetésindítók", en: "Conversation starters" },
+    selectTeam: {
+      hu: "Publikált csapatriport kiválasztása",
+      en: "Select a published team report",
+    },
+    noTeams: {
+      hu: "Adj hozzá egy publikált csapatriportot az összevetéshez.",
+      en: "Add a published team report to compare.",
+    },
+    noSources: {
+      hu: "Jelenleg nincs hozzáadható publikált Scan-riport.",
+      en: "No published Scan report is currently available to add.",
+    },
+    selectedTeam: { hu: "Kiválasztott csapat", en: "Selected team" },
+    sourceNote: {
+      hu: "Rögzített, publikált csapatriportok alapján. A csapatátlag nem ideális profil és nem alkalmassági mérce.",
+      en: "Based on pinned, published team reports. The team average is neither an ideal profile nor a suitability benchmark.",
+    },
+    sourceChanged: {
+      hu: "A forrás módosult vagy visszavonták. Új megosztás előtt távolítsd el ezt a referenciát, és válassz érvényes riportot.",
+      en: "The source changed or was withdrawn. Remove this reference and select a valid report before sharing again.",
+    },
+    emptyObservation: {
+      hu: "Még nincs tanácsadói megállapítás.",
+      en: "No consultant observation yet.",
+    },
+    notesTitle: {
+      hu: "Tanácsadói megállapítások szerkesztése",
+      en: "Edit consultant observations",
+    },
+    annotationNotice: {
+      hu: "A megállapításokat a tanácsadó írja. Mentésük új riportjóváhagyást igényel; a megosztott kivonatokba automatikusan nem kerülnek át.",
+      en: "Observations are written by the consultant. Saving requires a new report review; they are not automatically included in shared summaries.",
+    },
+    unsaved: {
+      hu: "A nézetváltás előtt mentsd a módosításokat.",
+      en: "Save changes before switching views.",
+    },
+    skipped: { hu: "Kihagyva", en: "Skipped" },
+    completed: { hu: "Elkészült", en: "Completed" },
+    pending: { hu: "Kitöltésre vár", en: "Awaiting completion" },
+
     frozen: {
       hu: "A program beállításai a meghívó létrehozásakor rögzülnek.",
       en: "Program settings are frozen when the invitation is created.",

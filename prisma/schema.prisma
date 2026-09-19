@@ -481,6 +481,7 @@ model CandidateInvite {
 }
 
 model CandidateReport {
+  comparisons Json?
   id String @id @default(cuid())
   inviteId String @unique
   revision Int @default(1)

@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { prisma } from "../../../src/lib/prisma";
+import { createProgramSnapshot } from "../../../src/lib/programs/core";
 import { createCandidateProgram } from "../../../src/lib/candidate-programs/core";
 test.describe.configure({ mode: "serial" });
 const id = "e2e_candidate_program";
@@ -12,6 +13,9 @@ async function cleanup() {
     where: { id },
     data: { activeOrgId: null },
   });
+  await prisma.teamReport.deleteMany({ where: { orgId: id } });
+  await prisma.team.deleteMany({ where: { orgId: id } });
+  await prisma.campaign.deleteMany({ where: { orgId: id } });
   await prisma.organization.deleteMany({ where: { id } });
   await prisma.userProfile.deleteMany({ where: { id } });
 }
@@ -38,6 +42,50 @@ test.beforeAll(async () => {
     },
   });
   await prisma.userProfile.update({ where: { id }, data: { activeOrgId: id } });
+  await prisma.campaign.create({
+    data: {
+      id,
+      orgId: id,
+      name: "Scan",
+      createdBy: id,
+      status: "CLOSED",
+      programKey: "TEAM_SCAN",
+      programVersion: 1,
+      programSnapshot: createProgramSnapshot("TEAM_SCAN"),
+    },
+  });
+  for (const [index, name] of [
+    "Termékfejlesztés",
+    "Ügyfélélmény",
+    "Stratégia",
+  ].entries()) {
+    const teamId = `${id}_${index}`;
+    await prisma.team.create({
+      data: { id: teamId, orgId: id, ownerId: id, name },
+    });
+    await prisma.teamReport.create({
+      data: {
+        id: teamId,
+        teamId,
+        orgId: id,
+        campaignId: id,
+        createdById: id,
+        status: "PUBLISHED",
+        publishedAt: new Date("2026-09-12"),
+        aggregates: {
+          completedCount: 8 - index,
+          dimensionAverages: {
+            H: 65 - index * 5,
+            E: 45 + index * 8,
+            X: 70 - index * 12,
+            A: 55 + index * 10,
+            C: 75 - index * 7,
+            O: 60 + index * 8,
+          },
+        },
+      },
+    });
+  }
   await prisma.candidateInvite.create({
     data: {
       id,
@@ -112,6 +160,65 @@ test("consultant reviews and shares only the approved candidate summary", async 
     { name: "trita_e2e_user_id", value: id, url: baseURL! },
   ]);
   await page.goto(`/hiring/${id}/candidates/${id}`);
+  await page.getByRole("tab", { name: "Team comparisons" }).click();
+  for (let index = 0; index < 3; index++) {
+    await page
+      .getByLabel("Select a published team report")
+      .selectOption(`${id}_${index}`);
+    await page.getByRole("button", { name: "Add team", exact: true }).click();
+    await expect(page.locator("article")).toHaveCount(index + 1);
+  }
+  await page.locator("article").nth(1).getByRole("button").click();
+  await expect(
+    page.locator("article").nth(1).getByRole("button"),
+  ).toHaveAttribute("aria-pressed", "true");
+  await page
+    .locator("summary")
+    .filter({ hasText: "Edit consultant observations" })
+    .click();
+  await page
+    .getByRole("textbox", { name: "Connection", exact: true })
+    .fill("Similar planning preferences");
+  await page
+    .getByRole("textbox", { name: "To discuss", exact: true })
+    .fill("Discuss different social rhythms");
+  await page
+    .getByRole("textbox", { name: "Conversation starter", exact: true })
+    .fill("How do you make decisions together?");
+  await expect(
+    page.getByRole("tab", { name: "Feedback", exact: true }),
+  ).toBeDisabled();
+  await page.getByRole("button", { name: "Save draft", exact: true }).click();
+  await expect(
+    page.getByRole("tab", { name: "Feedback", exact: true }),
+  ).toBeEnabled();
+  await expect(page.locator("article").nth(1)).toContainText(
+    "Similar planning preferences",
+  );
+  await page.addStyleTag({
+    content:
+      "html{scroll-behavior:auto!important} nextjs-portal{display:none!important}",
+  });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  await page.screenshot({
+    path: "../../outputs/candidate-multiteam-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    )
+    .toBe(true);
+  await page.screenshot({
+    path: "../../outputs/candidate-multiteam-mobile.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.getByRole("button", { name: "Edit feedback" }).click();
   await page
     .getByRole("textbox", { name: "Feedback for the candidate" })
     .fill("Candidate feedback");
@@ -129,7 +236,12 @@ test("consultant reviews and shares only the approved candidate summary", async 
   await expect(
     page.getByRole("button", { name: "Share candidate feedback" }),
   ).toBeEnabled();
+  await page.addStyleTag({
+    content:
+      "html{scroll-behavior:auto!important} nextjs-portal{display:none!important}",
+  });
   await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
   await page.screenshot({
     path: "../candidate-design/candidate-live-report.png",
     fullPage: true,
@@ -148,6 +260,80 @@ test("consultant reviews and shares only the approved candidate summary", async 
   await expect(page.getByText("Client feedback", { exact: true })).toHaveCount(
     0,
   );
+});
+test("Hungarian comparison workspace renders on desktop and mobile", async ({
+  page,
+  context,
+  baseURL,
+}) => {
+  await context.addCookies([
+    { name: "trita_locale", value: "hu", url: baseURL! },
+    { name: "trita_e2e_user_id", value: id, url: baseURL! },
+  ]);
+  await context.addInitScript(() => {
+    localStorage.setItem("trita_locale", "hu");
+    sessionStorage.setItem("trita_locale_synced", "1");
+  });
+  await prisma.candidateInvite.update({
+    where: { id },
+    data: { name: "Nagy Anna", position: "Terméktervező" },
+  });
+  const report = await prisma.candidateReport.findUniqueOrThrow({
+    where: { inviteId: id },
+  });
+  const comparisons = report.comparisons as {
+    connection: string;
+    difference: string;
+    prompt: string;
+  }[];
+  await prisma.candidateReport.update({
+    where: { id: report.id },
+    data: {
+      comparisons: comparisons.map((c, i) => ({
+        ...c,
+        connection: [
+          "Hasonló tervezettség",
+          "Egyeztetésre épülő közös munka",
+          "Új lehetőségek közös feltárása",
+        ][i],
+        difference: [
+          "A társas tempó egyeztetése",
+          "Döntési helyzetek tisztázása",
+          "Önállóság és közös tervezés",
+        ][i],
+        prompt: [
+          "Hogyan egyeztetsz eltérő munkatempó mellett?",
+          "Hogyan hoztok közös döntéseket?",
+          "Mennyi önállóság segíti a jó munkádat?",
+        ][i],
+      })),
+    },
+  });
+  await page.setViewportSize({ width: 1440, height: 1400 });
+  await page.goto(`/hiring/${id}/candidates/${id}`);
+  await expect(
+    page.getByRole("tab", { name: "Csapatok összevetése" }),
+  ).toHaveAttribute("aria-selected", "true");
+  await page.addStyleTag({
+    content:
+      "html{scroll-behavior:auto!important} nextjs-portal{display:none!important}",
+  });
+  await page.evaluate(() => document.fonts.ready);
+  await page.screenshot({
+    path: "../../outputs/candidate-multiteam-hu-desktop.png",
+    animations: "disabled",
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(() =>
+      page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
+    )
+    .toBe(true);
+  await page.screenshot({
+    path: "../../outputs/candidate-multiteam-hu-mobile.png",
+    fullPage: true,
+    animations: "disabled",
+  });
 });
 test("disabled organization and legacy tokens fail closed", async ({
   request,

@@ -9,8 +9,9 @@ import {
 } from "@/lib/candidate-programs/service.server";
 import { readCandidateProgram } from "@/lib/candidate-programs/core";
 import { extractDimensionScores } from "@/lib/scoring";
-import { CandidateProfileChart } from "@/components/candidate/CandidateProfileChart";
-import { CandidateReportEditor } from "@/components/candidate/CandidateReportEditor";
+import { CandidateReportWorkspace } from "@/components/candidate/CandidateReportWorkspace";
+import { readComparisons } from "@/lib/candidate-programs/comparisons";
+import { HEXACO_ORDER } from "@/lib/hexaco";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { t } from "@/lib/i18n";
 import {
@@ -46,76 +47,118 @@ export default async function CandidateResultPage({
   const p = readCandidateProgram(invite.programSnapshot);
   if (!p) notFound();
   const dimensions = extractDimensionScores(invite.result?.scores) ?? {};
+  const comparisons = readComparisons(invite.report?.comparisons, p);
+  if (!comparisons) notFound();
+  const reports = await prisma.teamReport.findMany({
+    where: {
+      orgId,
+      status: "PUBLISHED",
+      campaign: {
+        status: "CLOSED",
+        OR: [
+          { programKey: "TEAM_SCAN" },
+          { programKey: null, presetId: "SCAN_STYLE_V1" },
+        ],
+      },
+    },
+    include: { team: { select: { name: true } } },
+    orderBy: { publishedAt: "desc" },
+  });
+  const sources = reports.flatMap((r) => {
+    const aggregate = r.aggregates as {
+      completedCount?: number;
+      dimensionAverages?: Record<string, number>;
+    } | null;
+    const values = extractDimensionScores(aggregate?.dimensionAverages ?? {});
+    if (
+      !r.publishedAt ||
+      !Number.isInteger(aggregate?.completedCount) ||
+      (aggregate?.completedCount ?? 0) < 3 ||
+      !values ||
+      !HEXACO_ORDER.every(
+        (d) => Number.isFinite(values[d]) && values[d] >= 0 && values[d] <= 100,
+      )
+    )
+      return [];
+    return [
+      {
+        reportId: r.id,
+        teamId: r.teamId,
+        teamName: r.team.name,
+        publishedAt: r.publishedAt.toISOString(),
+        revision: r.revision,
+        count: aggregate!.completedCount!,
+      },
+    ];
+  });
+  const invalidSources = comparisons
+    .filter(
+      (c) =>
+        !sources.some(
+          (s) => s.reportId === c.reportId && s.revision === c.revision,
+        ),
+    )
+    .map((c) => c.reportId);
   return (
     <PlatformPageShell
       surface="team"
-      contentClassName="max-w-6xl space-y-6 px-4 py-8"
+      contentClassName="max-w-7xl space-y-6 px-4 py-8"
     >
       <Link className="text-caption text-sage" href={`/hiring/${orgId}`}>
         {t("candidateProgram.title", locale)}
       </Link>
-      <h1 className="font-fraunces text-title text-ink">{invite.name}</h1>
-      <p className="text-caption text-muted">
-        {invite.position} ·{" "}
-        {invite.completedAt?.toLocaleDateString(
-          locale === "hu" ? "hu-HU" : "en-GB",
-        )}
-      </p>
-      {invite.result ? (
-        <div className="grid gap-6 lg:grid-cols-2">
-          <div className="space-y-5">
-            <CandidateProfileChart
-              dimensions={dimensions}
-              baseline={p.baseline?.dimensions}
-              locale={locale}
-            />
-            {p.baseline && (
-              <p className="text-caption text-muted">
-                {t("candidateProgram.baseline", locale)} ·{" "}
-                {p.baseline.publishedAt.slice(0, 10)} · n={p.baseline.count} · v
-                {p.baseline.revision}
-              </p>
-            )}
-            {p.focus && (
-              <section className="rounded-xl border border-sand bg-surface-card p-5">
-                <h2 className="font-fraunces text-heading text-ink">
-                  {t("candidateProgram.focus", locale)}
-                </h2>
-                <p className="mt-3 whitespace-pre-wrap text-ink-body">
-                  {p.focus}
-                </p>
-              </section>
-            )}
-            {p.includeTeamRole && (
-              <section className="rounded-xl border border-sand bg-surface-card p-5">
-                <h2 className="font-fraunces text-heading text-ink">
-                  {t("candidateProgram.optional", locale)}
-                </h2>
-                <p className="mt-2 text-caption text-muted">
-                  {invite.teamRoleState}
-                </p>
-                {invite.result.teamRoleSelections &&
-                  getTopRoles(
-                    calculateTeamRoleScores(
-                      invite.result.teamRoleSelections as TeamRoleSelections,
-                    ),
-                  ).map((role) => (
-                    <p key={role.role} className="mt-2 text-caption text-ink">
-                      {TEAM_ROLES[role.role][locale]}
-                    </p>
-                  ))}
-              </section>
-            )}
-          </div>
-          {invite.report && (
-            <CandidateReportEditor
-              inviteId={invite.id}
-              initial={invite.report}
-              locale={locale}
-              rolePending={invite.teamRoleState === "PENDING"}
-            />
-          )}
-        </div>
+      {invite.result && invite.report ? (
+        <CandidateReportWorkspace
+          inviteId={invite.id}
+          name={invite.name ?? t("candidateProgram.title", locale)}
+          position={invite.position ?? ""}
+          measuredAt={
+            invite.completedAt?.toLocaleDateString(
+              locale === "hu" ? "hu-HU" : "en-GB",
+            ) ?? ""
+          }
+          dimensions={dimensions}
+          comparisons={comparisons.map((c) => ({
+            ...c,
+            teamName:
+              c.teamName ||
+              sources.find((s) => s.teamId === c.teamId)?.teamName ||
+              t("candidateProgram.team", locale),
+          }))}
+          sources={sources}
+          invalidSources={invalidSources}
+          report={{
+            revision: invite.report.revision,
+            reviewedRevision: invite.report.reviewedRevision,
+            candidateSummary: invite.report.candidateSummary,
+            managerSummary: invite.report.managerSummary,
+            internalNotes: invite.report.internalNotes,
+          }}
+          locale={locale}
+          focus={p.focus}
+          rolePending={invite.teamRoleState === "PENDING"}
+          roleLabel={
+            p.includeTeamRole
+              ? t(
+                  invite.teamRoleState === "SKIPPED"
+                    ? "candidateProgram.skipped"
+                    : invite.teamRoleState === "COMPLETED"
+                      ? "candidateProgram.completed"
+                      : "candidateProgram.pending",
+                  locale,
+                )
+              : undefined
+          }
+          roles={
+            invite.result.teamRoleSelections
+              ? getTopRoles(
+                  calculateTeamRoleScores(
+                    invite.result.teamRoleSelections as TeamRoleSelections,
+                  ),
+                ).map((role) => TEAM_ROLES[role.role][locale])
+              : []
+          }
+        />
       ) : (
         <p>{t("candidateProgram.reportPending", locale)}</p>
       )}

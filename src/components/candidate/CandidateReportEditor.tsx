@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/primitives/Button";
 import { t, type Locale } from "@/lib/i18n";
@@ -8,6 +8,7 @@ export function CandidateReportEditor({
   initial,
   locale,
   rolePending,
+  onDirtyChange,
 }: {
   inviteId: string;
   initial: {
@@ -19,6 +20,7 @@ export function CandidateReportEditor({
   };
   locale: Locale;
   rolePending: boolean;
+  onDirtyChange?: (dirty: boolean) => void;
 }) {
   const router = useRouter();
   const [report, setReport] = useState(initial),
@@ -30,6 +32,9 @@ export function CandidateReportEditor({
     (key) =>
       fields[key as keyof typeof fields] !== report[key as keyof typeof report],
   );
+  useEffect(() => {
+    onDirtyChange?.(dirty);
+  }, [dirty, onDirtyChange]);
   async function mutate(action: string, audience?: string) {
     setBusy(true);
     setError(false);
