@@ -43,6 +43,7 @@ export type TeamScanDeliveryBlockReason =
   | "invalid_prior_delivery_count";
 
 export interface TeamScanDeliveryEvidence {
+  programKey?: "TEAM_SCAN" | "FOLLOW_UP" | null;
   /** Csak az explicit, adatbázisban megőrzött preset-eredet fogadható el. */
   presetId: CampaignPresetId | string | null | undefined;
   campaignId: string;
@@ -112,7 +113,7 @@ export function resolveTeamScanDelivery(
   });
 
   if (!idempotencyKey) return blocked("invalid_identity");
-  if (evidence.presetId !== "SCAN_V1") return blocked("not_scan_v1");
+  if (evidence.programKey != null ? !["TEAM_SCAN", "FOLLOW_UP"].includes(evidence.programKey) : evidence.presetId !== "SCAN_V1") return blocked("not_scan_v1");
   if (evidence.campaignStatus !== "CLOSED") return blocked("campaign_not_closed");
   if (evidence.reportStatus !== "PUBLISHED") return blocked("report_not_published");
   if (evidence.reportAssessmentCampaignId !== evidence.campaignId) {
@@ -127,7 +128,7 @@ export function resolveTeamScanDelivery(
 
   return {
     status: "delivered",
-    unit:
+    unit: evidence.programKey === "FOLLOW_UP" ? "REMEASUREMENT_CYCLE" : evidence.programKey === "TEAM_SCAN" ? "TEAM_SCAN_LICENSE" :
       evidence.priorDeliveredScanCount === 0
         ? "TEAM_SCAN_LICENSE"
         : "REMEASUREMENT_CYCLE",

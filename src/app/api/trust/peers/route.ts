@@ -29,9 +29,9 @@ export async function GET(req: NextRequest) {
     where: { campaignId_userId: { campaignId, userId: profile.id } },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
-        select: { id: true, status: true, type: true, steps: true, teamId: true, teamIds: true },
+        select: { id: true, status: true, type: true, steps: true, programSnapshot: true, teamId: true, teamIds: true },
       },
     },
   });

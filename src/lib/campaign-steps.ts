@@ -1,3 +1,4 @@
+import { parseProgram, activityStates, programCompletions, type ActivityKey } from "@/lib/programs/core";
 // ─────────────────────────────────────────────────────────────────────
 // Több-lépéses kampányok — SZERVER-oldali léptetés és inicializálás.
 // A tiszta lépés-logika a campaign-steps-core.ts-ben él.
@@ -174,8 +175,8 @@ export async function resolveActiveCampaignIdForStep(
     orderBy: { campaign: { createdAt: "asc" } },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
-      campaign: { select: { id: true, type: true, steps: true } },
+      nextStepOpensAt: true, stepCompletions: true,
+      campaign: { select: { id: true, type: true, steps: true, programSnapshot: true } },
     },
   });
   for (const p of participants) {
@@ -204,7 +205,13 @@ export async function resolveActiveSelfAssessmentCampaign(
       stepType,
       options,
     );
-    if (campaignId) return { campaignId, stepType };
+    if (campaignId) {
+      if (stepType === "OBSERVER_360") {
+        const campaign = await prisma.campaign.findUnique({ where: { id: campaignId }, select: { programSnapshot: true } });
+        if (campaign?.programSnapshot) continue;
+      }
+      return { campaignId, stepType };
+    }
   }
   return null;
 }
@@ -230,8 +237,7 @@ export async function advanceCampaignStepForUser(
   },
 ): Promise<CampaignStepOpening[]> {
   const db = options.db ?? prisma;
-  const openings: CampaignStepOpening[] = [];
-  const participants = await db.campaignParticipant.findMany({
+  const loadParticipants = () => db.campaignParticipant.findMany({
     where: {
       userId: profileId,
       campaign: {
@@ -242,15 +248,42 @@ export async function advanceCampaignStepForUser(
     select: {
       id: true,
       currentStep: true,
-      nextStepOpensAt: true,
-      stepCompletions: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
-        select: { id: true, name: true, type: true, steps: true, stepIntervalHours: true },
+        select: { id: true, name: true, type: true, steps: true, programKey: true, programSnapshot: true, stepIntervalHours: true },
       },
     },
   });
+  let participants = await loadParticipants();
+  // Only the new program path owns this exclusive lock. Legacy peer submissions
+  // already hold a shared Campaign lock and must never upgrade it here.
+  if (participants.some(p => p.campaign.programKey)) {
+    if (!options.db) {
+      const openings = await prisma.$transaction(tx => advanceCampaignStepForUser(profileId, completedType, { ...options, db: tx, emitNotifications: false }));
+      if (options.emitNotifications !== false) await notifyCampaignStepOpenings(openings);
+      return openings;
+    }
+    await db.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${options.campaignId} FOR UPDATE`;
+    participants = await loadParticipants();
+  }
+  const openings: CampaignStepOpening[] = [];
+
 
   for (const p of participants) {
+    const program = parseProgram(p.campaign.programSnapshot);
+    if (program) {
+      const before = activityStates(program, p.stepCompletions);
+      if (!before.some(a => a.key === completedType && a.state === "AVAILABLE")) continue;
+      const completions = programCompletions(p.stepCompletions, completedType as ActivityKey);
+      await db.campaignParticipant.update({ where: { id: p.id }, data: { stepCompletions: completions as unknown as Prisma.InputJsonValue } });
+      for (const activity of activityStates(program, completions)) {
+        if (activity.state !== "AVAILABLE" || before.some(a => a.key === activity.key && a.state === "AVAILABLE")) continue;
+        const opening = { userId: profileId, campaignId: p.campaign.id, campaignName: p.campaign.name, stepType: activity.key };
+        openings.push(opening);
+        if (options.emitNotifications !== false) await handleMeasurementStepOpened(opening);
+      }
+      continue;
+    }
     const steps = getCampaignSteps(p.campaign);
     if (!isStepOpenFor(p.campaign, p, completedType)) continue;
 
@@ -384,7 +417,7 @@ export async function updateDraftCampaignAtomically(
         status: true,
         presetId: true,
         type: true,
-        steps: true,
+        steps: true, programSnapshot: true,
         teamId: true,
         teamIds: true,
         stepIntervalHours: true,
@@ -425,7 +458,7 @@ export async function activateCampaignAtomically(
         closedAt: true,
         presetId: true,
         type: true,
-        steps: true,
+        steps: true, programSnapshot: true,
         teamId: true,
         teamIds: true,
       },
@@ -542,14 +575,17 @@ export async function reconcileCampaignStepOpenings(options?: {
     },
     select: {
       userId: true,
+      stepCompletions: true,
       currentStep: true,
       campaign: {
-        select: { id: true, name: true, type: true, steps: true },
+        select: { id: true, name: true, type: true, steps: true, programSnapshot: true },
       },
     },
   });
 
   const openings = participants.flatMap((participant) => {
+    const program = parseProgram(participant.campaign.programSnapshot);
+    if (program) return activityStates(program, participant.stepCompletions).filter(a => a.state === "AVAILABLE").map(a => ({ userId: participant.userId, campaignId: participant.campaign.id, campaignName: participant.campaign.name, stepType: a.key }));
     const stepType = getCampaignSteps(participant.campaign)[participant.currentStep];
     return stepType
       ? [
@@ -592,7 +628,7 @@ export async function releaseDueCampaignSteps(options?: {
     : { lte: releaseCutoff };
   const due = await prisma.campaignParticipant.findMany({
     where: {
-      campaign: { status: "ACTIVE", ...(options?.campaignId ? { id: options.campaignId } : {}) },
+      campaign: { status: "ACTIVE", programKey: null, ...(options?.campaignId ? { id: options.campaignId } : {}) },
       ...(options?.userId ? { userId: options.userId } : {}),
       nextStepOpensAt: gatePredicate,
     },
@@ -600,8 +636,8 @@ export async function releaseDueCampaignSteps(options?: {
       id: true,
       userId: true,
       currentStep: true,
-      nextStepOpensAt: true,
-      campaign: { select: { id: true, name: true, type: true, steps: true } },
+      nextStepOpensAt: true, stepCompletions: true,
+      campaign: { select: { id: true, name: true, type: true, steps: true, programSnapshot: true } },
     },
   });
 
@@ -675,7 +711,7 @@ export async function initializeCampaignProgress(
       id: true,
       name: true,
       type: true,
-      steps: true,
+      steps: true, programSnapshot: true,
       status: true,
       requireFreshResults: true,
       activatedAt: true,
@@ -687,6 +723,20 @@ export async function initializeCampaignProgress(
   });
   if (!campaign || campaign.status !== "ACTIVE") return openings;
 
+  const program = parseProgram(campaign.programSnapshot);
+  if (program) {
+    for (const p of campaign.participants) {
+      const completions = programCompletions(p.stepCompletions);
+      await db.campaignParticipant.update({ where: { id: p.id }, data: { stepCompletions: completions as unknown as Prisma.InputJsonValue, nextStepOpensAt: null } });
+      for (const activity of activityStates(program, completions)) {
+        if (activity.state !== "AVAILABLE") continue;
+        const opening = { userId: p.userId, campaignId, campaignName: campaign.name, stepType: activity.key };
+        openings.push(opening);
+        if (options?.emitNotifications !== false) await handleMeasurementStepOpened(opening);
+      }
+    }
+    return openings;
+  }
   const steps = getCampaignSteps(campaign);
   if (steps.length === 0 || campaign.participants.length === 0) return openings;
 

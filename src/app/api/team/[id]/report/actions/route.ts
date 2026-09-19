@@ -4,7 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
 import { hasOrgRole } from "@/lib/org-roles";
-import { serializeTeamReport } from "@/lib/team-report";
+import { parseActionItems, serializeTeamReport } from "@/lib/team-report";
 import { teamActionTargetSchema } from "@/lib/team-action-target-schema";
 
 const actionItemSchema = z.object({
@@ -61,10 +61,37 @@ export async function PATCH(
   const latestPublished = await prisma.teamReport.findFirst({
     where: { teamId, status: "PUBLISHED" },
     orderBy: { publishedAt: "desc" },
-    select: { id: true },
+    select: { id: true, campaign: { select: { programKey: true } } },
   });
   if (latestPublished?.id !== parsed.data.reportId) {
     return NextResponse.json({ error: "NOT_LATEST" }, { status: 409 });
+  }
+
+  if (latestPublished.campaign?.programKey) {
+    // Tracking may update execution fields, never the approved diagnostic plan.
+    const result = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "TeamReport" WHERE "id" = ${parsed.data.reportId} FOR UPDATE`;
+      const current = await tx.teamReport.findUnique({ where: { id: parsed.data.reportId } });
+      if (!current || current.status !== "PUBLISHED") return null;
+      const approved = parseActionItems(current.actionItems) ?? [];
+      const submitted = parsed.data.actionItems;
+      if (approved.length !== submitted.length || approved.some((item, index) => {
+        const next = submitted[index];
+        return item.title !== next.title || item.description !== next.description ||
+          item.timeframe !== next.timeframe || JSON.stringify(item.targetMetric) !== JSON.stringify(next.targetMetric);
+      })) return null;
+      const actionItems = approved.map((item, index) => ({
+        ...item, owner: submitted[index].owner, dueDate: submitted[index].dueDate, status: submitted[index].status,
+      }));
+      const updated = await tx.teamReport.update({ where: { id: current.id }, data: { actionItems: actionItems as unknown as object[] } });
+      await tx.teamActionEvent.create({ data: {
+        reportId: current.id, actionKey: "report:tracking", eventType: "TRACKING_UPDATED", actorUserId: profile.id,
+        payload: { revision: current.revision },
+      } });
+      return updated;
+    });
+    if (!result) return NextResponse.json({ error: "PROGRAM_REVIEW_REQUIRED" }, { status: 409 });
+    return NextResponse.json({ ok: true, report: serializeTeamReport(result, { includeInternalNotes: false }) });
   }
 
   const report = await prisma.teamReport.update({

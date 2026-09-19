@@ -415,3 +415,17 @@ test("az első mért bizalmi kör adatgyűjtési akciója 0-ról kap lefedettsé
   assert.equal(outcome.significant, null);
   assert.equal(outcome.direction, "improved");
 });
+
+test("program trust stays descriptive without automatic longitudinal deltas or action outcomes", () => {
+  const previous = report(100, { H: 60 }, 70);
+  const current = report(100, { H: 60 }, 70);
+  current.aggregates!.program = { key: "FOLLOW_UP", participantCount: 5, observerReady: false };
+  for (const r of [previous, current]) r.aggregates!.trustHighlights = { source: "trust_round", measuredPairCount: 3, possiblePairCount: 10, coveragePct: 30, hubs: [], isolated: [] };
+  assert.equal(compareTeamReports(current, previous).trustNetwork, null);
+  previous.aggregates!.trustHighlights = null;
+  previous.aggregates!.evidence = { measuredEdgeCount: 0 } as never;
+  previous.actionItems = [{ title: "Trust", description: "Measure", timeframe: "30", targetMetric: { kind: "trust_coverage" } }];
+  const result = compareTeamReports(current, previous);
+  assert.equal(result.trustNetwork, null);
+  assert.equal(result.actionOutcomes[0].gate, "unavailable");
+});

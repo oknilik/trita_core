@@ -1,3 +1,6 @@
+import { ProgramTrustCoverage } from "./ProgramTrustCoverage";
+import { ProgramComparison } from "./ProgramComparison";
+import { personalitySourceLabel } from "@/lib/programs/report";
 import type { SerializedTeamReport } from "@/lib/team-report";
 import { hasApprovedEnTranslation, localizeTeamReport } from "@/lib/team-report-i18n";
 import { reportAttentionSignals, reportNextStep } from "@/lib/team-report-reader";
@@ -40,10 +43,12 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
       {report.status === "PUBLISHED" ? <TeamReportPdfButton report={report} isHu={isHu} /> :
         <span className="rounded-full bg-state-warning-bg px-3 py-1.5 text-xs font-medium text-state-warning-fg">{isHu ? "Vázlat-előnézet" : "Draft preview"}</span>}
     </header>
+    <ProgramComparison program={agg?.program} isHu={isHu} />
+    <ProgramTrustCoverage program={agg?.program} isHu={isHu} />
     <TeamReportTabs isHu={isHu}
       overview={<>
         <div className="overflow-hidden rounded-2xl border border-sand bg-surface-card px-5 sm:px-8">
-          <TeamOperatingStyleReport snapshot={agg?.teamStyle} locale={locale} mode="overview" averages={agg?.dimensionAverages} spread={agg?.dimensionSpread} personalityCount={agg?.completedCount} />
+          <TeamOperatingStyleReport personalitySource={personalitySourceLabel(agg?.program, isHu)} snapshot={agg?.teamStyle} locale={locale} mode="overview" averages={agg?.dimensionAverages} spread={agg?.dimensionSpread} personalityCount={agg?.completedCount} />
           {signals.length > 0 && <section className="border-t border-sand py-6">
             <h2 className="font-fraunces text-xl text-ink">{isHu ? "Ami most külön figyelmet kér" : "What needs attention now"}</h2>
             <ul className="mt-4 space-y-3">{signals.map((signal) => <li key={signal} className="rounded-xl border border-state-warning-border bg-state-warning-bg px-4 py-3 text-sm leading-relaxed text-state-warning-fg">{signal}</li>)}</ul>
@@ -69,6 +74,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
       </>}
       measurements={<div className="space-y-6">
         <div><h2 className="font-fraunces text-2xl text-ink">{isHu ? "A számok és a forrásuk." : "The data and its sources."}</h2><p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">{isHu ? "Itt találjátok az átlagokat, a szórást, a lefedettséget és a további mérések részletes eredményeit." : "Explore means, spread, coverage and the detailed results of additional measurements here."}</p></div>
+        <p className="text-xs text-muted">{personalitySourceLabel(agg?.program, isHu)}</p>
         <TeamStyleMeasurements snapshot={agg?.teamStyle} locale={locale} />
         <TeamReportMeasurements report={report} isHu={isHu} />
       </div>}

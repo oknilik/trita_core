@@ -2061,6 +2061,8 @@ export const resultsTranslations = {
     careerFitLabel: { hu: "Illeszkedés", en: "Fit" },
   },
   invitations: {
+    emailCreated: { hu: "A meghívó létrejött, az emailt elküldtük. A meghívó megjelent az alábbi listában.", en: "Invitation created and email sent. It is now shown in the list below." },
+    linkCreated: { hu: "A meghívó létrejött. Az alábbi listából kimásolhatod a meghívólinket.", en: "Invitation created. You can copy its link from the list below." },
     eyebrow: { hu: "Visszajelzési meghívók", en: "Feedback invitations" },
     title: { hu: "Kérd ki mások véleményét", en: "Get others' perspective" },
     sub: { hu: "Hívd meg kollégáidat, barátaidat vagy családtagjaidat egy rövid értékelésre. A visszajelzések név nélkül jelennek meg, és összesített átlagokat mutatunk.", en: "Invite your colleagues, friends, or family to a short assessment. Feedback is anonymous – we show aggregated averages." },

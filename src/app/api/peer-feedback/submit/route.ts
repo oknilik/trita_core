@@ -51,13 +51,13 @@ export async function POST(req: Request) {
     },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
         select: {
           id: true,
           status: true,
           type: true,
-          steps: true,
+          steps: true, programSnapshot: true,
           teamId: true,
           teamIds: true,
           peerFeedbackAnonymous: true,

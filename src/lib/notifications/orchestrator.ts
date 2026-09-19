@@ -1,3 +1,4 @@
+import { programActivityLink, parseProgram, completionMap } from "@/lib/programs/core";
 /**
  * Notification orchestrator — central business decision layer.
  *
@@ -259,7 +260,7 @@ export async function handleMeasurementStepOpened(params: {
     const [campaign, selfResults] = await Promise.all([
       prisma.campaign.findUnique({
         where: { id: params.campaignId },
-        select: { id: true, requireFreshResults: true, activatedAt: true },
+        select: { id: true, programKey: true, requireFreshResults: true, activatedAt: true },
       }),
       prisma.assessmentResult.findMany({
         where: { userProfileId: params.userId, isSelfAssessment: true },
@@ -270,7 +271,7 @@ export async function handleMeasurementStepOpened(params: {
       campaign &&
       selfResults.some((result) => isSelfResultForCampaign(result, campaign))
     ) {
-      link = "/profile/results?tab=comparison#observer-flow";
+      link = campaign.programKey ? programActivityLink("OBSERVER_360", campaign.id) : "/profile/results?tab=comparison#observer-flow";
     }
   }
   await persistNotificationBatch([
@@ -349,13 +350,14 @@ export async function handleCampaignProgressMilestone(campaignId: string) {
       orgId: true,
       name: true,
       type: true,
-      steps: true,
-      participants: { select: { currentStep: true } },
+      steps: true, programSnapshot: true,
+      participants: { select: { currentStep: true, stepCompletions: true } },
     },
   });
   if (!campaign || campaign.participants.length === 0) return;
   const stepCount = getCampaignSteps(campaign).length;
-  const completed = campaign.participants.filter((participant) => participant.currentStep >= stepCount).length;
+  const program = parseProgram(campaign.programSnapshot);
+  const completed = campaign.participants.filter(p => program ? getCampaignSteps(campaign).every(key => Boolean(completionMap(p.stepCompletions)[key])) : p.currentStep >= stepCount).length;
   const percent = Math.floor((completed / campaign.participants.length) * 100);
   const milestone = percent >= 100 ? 100 : percent >= 50 ? 50 : null;
   if (!milestone) return;

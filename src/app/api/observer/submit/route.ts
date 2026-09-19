@@ -1,3 +1,4 @@
+import { reconcileProgramObserver } from "@/lib/programs/observer.server";
 import type { TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -149,6 +150,12 @@ export async function POST(req: Request) {
   // claim turns concurrent double submit into a stable ALREADY_USED response
   // instead of a unique-constraint 500.
   const saved = await prisma.$transaction(async (tx) => {
+    const programCampaign = invitation.campaignId ? await tx.campaign.findUnique({ where: { id: invitation.campaignId }, select: { programSnapshot: true } }) : null;
+    if (programCampaign?.programSnapshot) {
+      await tx.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${invitation.campaignId} FOR UPDATE`;
+      const active = await tx.campaign.findUnique({ where: { id: invitation.campaignId! }, select: { status: true } });
+      if (active?.status !== "ACTIVE") return "CAMPAIGN_CLOSED" as const;
+    }
     const claimed = await tx.observerInvitation.updateMany({
       where: { id: invitation.id, status: "PENDING", completedAt: null },
       data: { status: "COMPLETED", completedAt: new Date() },
@@ -167,9 +174,11 @@ export async function POST(req: Request) {
         },
       },
     });
+    if (invitation.campaignId) await reconcileProgramObserver(tx, invitation.campaignId, invitation.inviterId, programCampaign?.programSnapshot);
     await tx.observerDraft.deleteMany({ where: { invitationId: invitation.id } });
     return true;
   });
+  if (saved === "CAMPAIGN_CLOSED") return NextResponse.json({ error: saved }, { status: 409 });
   if (!saved) {
     return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
   }

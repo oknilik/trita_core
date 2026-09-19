@@ -1,3 +1,4 @@
+import { isCandidateGatingEnabled } from "@/lib/operating-mode";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
@@ -39,7 +40,7 @@ export default async function OrgSettingsPage({
     orgRole: role,
   });
 
-  const hiringActive = isPortfolioSurfaceActive("hiring");
+  const hiringActive = isPortfolioSurfaceActive("hiring") && isCandidateGatingEnabled();
   const [members, creditBalance] = await Promise.all([
     prisma.organizationMember.findMany({
       where: { orgId, leftAt: null },

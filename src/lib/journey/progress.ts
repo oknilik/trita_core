@@ -209,6 +209,10 @@ export function computeScopeProgress(
   context: JourneyContextSnapshot,
   options: ComputeScopeProgressOptions = {},
 ): JourneyScopeProgress {
+  if (context.programs?.length) {
+    const activities = context.programs.flatMap(p => p.activities.map(a => ({ ...a, id: `${p.campaignId}:${a.key}` })));
+    return { scope: "team", label: { hu: "Saját mérési feladatok", en: "My measurement tasks" }, scopeProgress: Math.round(100 * activities.filter(a => a.state === "COMPLETED").length / Math.max(1, activities.length)), substeps: activities.map(a => ({ id: a.id, label: a.label, done: a.state === "COMPLETED" })) };
+  }
   const scope = resolveProgressScope(context, options);
 
   switch (scope) {

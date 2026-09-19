@@ -10,6 +10,7 @@ interface Team {
 }
 
 interface CandidateInviteFormProps {
+  baselines?: { id: string; teamId: string; title: string }[];
   locale: string;
   teams: Team[];
   /**
@@ -29,7 +30,7 @@ interface CreatedInvite {
   position?: string | null;
 }
 
-export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }: CandidateInviteFormProps) {
+export function CandidateInviteForm({ baselines = [], locale, teams, orgId, preselectedTeamId }: CandidateInviteFormProps) {
   const loc: Locale = locale === "en" ? "en" : "hu";
   const isHu = loc !== "en";
   const router = useRouter();
@@ -40,6 +41,9 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
   const [teamId, setTeamId] = useState(preselectedTeamId ?? "");
   const [inviteLocale, setInviteLocale] = useState<"hu" | "en">(locale === "en" ? "en" : "hu");
   const [includeTeamRole, setIncludeTeamRole] = useState(false);
+  const [baselineReportId, setBaseline] = useState("");
+  const [focus, setFocus] = useState("");
+  const [deliveryFailed, setDeliveryFailed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [createdInvite, setCreatedInvite] = useState<CreatedInvite | null>(null);
@@ -70,19 +74,22 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
       if (teamId) body.teamId = teamId;
       if (includeTeamRole) body.includeTeamRole = true;
       body.inviteLocale = inviteLocale;
+      body.focus = focus;
+      if (baselineReportId && baselines.some(b => b.id === baselineReportId && b.teamId === teamId)) body.baselineReportId = baselineReportId;
 
       const res = await fetch("/api/manager/candidates", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      const data = await res.json() as { invite?: CreatedInvite; error?: string };
+      const data = await res.json() as { invite?: CreatedInvite; error?: string; emailSent?: boolean };
       if (!res.ok) {
         setError(t("manager.candidateInvite.createError", loc));
         return;
       }
       if (data.invite) {
         setCreatedInvite(data.invite);
+        setDeliveryFailed(Boolean(email.trim()) && !data.emailSent);
         setEmail("");
         setName("");
         setPosition("");
@@ -158,7 +165,7 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
               <span className={labelClass}>{t("manager.candidateInvite.teamLabel", loc)}</span>
               <select
                 value={teamId}
-                onChange={(e) => setTeamId(e.target.value)}
+                onChange={(e) => { setTeamId(e.target.value); setBaseline(""); }}
                 className={inputClass}
               >
                 <option value="">{t("manager.candidateInvite.noTeam", loc)}</option>
@@ -169,6 +176,8 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
             </label>
           )}
         </div>
+        <label className="flex flex-col gap-2"><span className={labelClass}>{t("candidateProgram.focus", loc)}</span><textarea className={inputClass} maxLength={2000} value={focus} onChange={e => setFocus(e.target.value)} /></label>
+        {teamId && <label className="flex flex-col gap-2"><span className={labelClass}>{t("candidateProgram.baseline", loc)}</span><select className={inputClass} value={baselineReportId} onChange={e => setBaseline(e.target.value)}><option value="">{t("candidateProgram.noBaseline", loc)}</option>{baselines.filter(b => b.teamId === teamId).map(b => <option key={b.id} value={b.id}>{b.title}</option>)}</select></label>}
         {/* Opcionális 2. lépés: csapatszerep-kérdőív a TRITAN után */}
         <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-surface-card px-4 py-3 transition hover:border-accent-candidate-border">
           <input
@@ -219,7 +228,8 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
           </div>
         </div>
 
-        {error && (
+        {deliveryFailed && <p role="status" className="text-caption text-ink-body">{t("candidateProgram.deliveryFailed", loc)}</p>}
+      {error && (
           <p className="rounded-xl border border-state-error-border bg-state-error-bg px-4 py-2.5 text-caption text-state-error-fg">
             {error}
           </p>
@@ -227,7 +237,7 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
 
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-sand bg-surface-card px-4 py-3">
           <p className="text-xs text-ink-body">
-            {isHu ? "Meghívónként 1 credit kerül felhasználásra." : "Each invite uses 1 credit."}
+            {t("candidateProgram.frozen", loc)}
           </p>
           <button
             type="submit"

@@ -10,7 +10,8 @@ import { prisma } from "@/lib/prisma";
  * tanácsadókat (ORG_CONSULTANT — nem értékelő kolléga), és jelezzük,
  * kire van már aktív meghívó.
  */
-export async function GET() {
+export async function GET(req: Request) {
+  const campaignId = new URL(req.url).searchParams.get("campaignId");
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -49,6 +50,7 @@ export async function GET() {
     prisma.observerInvitation.findMany({
       where: {
         inviterId: profile.id,
+        ...(campaignId ? { campaignId } : {}),
         status: { in: ["AWAITING_APPROVAL", "PENDING", "COMPLETED"] },
         observerProfileId: { not: null },
       },

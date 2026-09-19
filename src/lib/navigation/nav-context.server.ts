@@ -1,3 +1,4 @@
+import { safeParseProgram, activityStates } from "@/lib/programs/core";
 import "server-only";
 
 import type { NavHeaderUI } from "@/components/layout/nav-header-ui";
@@ -89,8 +90,8 @@ export async function resolveWorkspaceNavContext(
               where: { userId: profile.id, campaign: { status: "ACTIVE" } },
               select: {
                 currentStep: true,
-                nextStepOpensAt: true,
-                campaign: { select: { type: true, steps: true } },
+                nextStepOpensAt: true, stepCompletions: true,
+                campaign: { select: { type: true, steps: true, programSnapshot: true } },
               },
             }),
             // …plusz a rám váró (belsős/külsős) visszajelzés-kérések.
@@ -106,7 +107,7 @@ export async function resolveWorkspaceNavContext(
               ? Promise.all([
                   prisma.organization.findUnique({
                     where: { id: membership.orgId },
-                    select: { id: true, name: true },
+                    select: { id: true, name: true, candidateProgramsEnabled: true },
                   }),
                   // Csapatok NÉVVEL, egy körben (ld. getAccessibleTeams).
                   getAccessibleTeams(profile.id, membership.orgId, membership.role),
@@ -117,8 +118,11 @@ export async function resolveWorkspaceNavContext(
               : null,
           ]);
         const openStepCount = taskParticipations.filter(
-          (p) =>
-            p.currentStep < getCampaignSteps(p.campaign).length && isStepGateOpen(p),
+          (p) => {
+            const program = safeParseProgram(p.campaign.programSnapshot);
+            if (p.campaign.programSnapshot) return program ? activityStates(program, p.stepCompletions).some(a => a.state === "AVAILABLE") : false;
+            return p.currentStep < getCampaignSteps(p.campaign).length && isStepGateOpen(p);
+          },
         ).length;
         const openTaskCount = openStepCount + feedbackRequestCount;
         signedInHomeHref = journey.destination;
@@ -148,7 +152,7 @@ export async function resolveWorkspaceNavContext(
 
           // Jelölt-felület (2026-07-23): a tanácsadói kör kapja — nem
           // előfizetés-capability (a gating az operating-mode kapcsolón).
-          const hasHiringAccess = isConsultantSurface(
+          const hasHiringAccess = Boolean(org?.candidateProgramsEnabled) && isConsultantSurface(
             membership.role,
             profile.email,
             profile.isConsultant,

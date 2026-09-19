@@ -283,6 +283,7 @@ export const commonTranslations = {
       hu: "Érvénytelen meghívó link.",
       en: "Invalid invite link.",
     },
+    CAMPAIGN_CLOSED: { hu: "Ez a mérési kör már lezárult. A válaszokat nem küldtük be; egyeztess a meghívóval.", en: "This measurement round has closed. Your answers were not submitted; please contact the person who invited you." },
     ALREADY_USED: {
       hu: "Ez a meghívó már fel lett használva.",
       en: "This invite has already been used.",

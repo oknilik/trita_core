@@ -1,3 +1,5 @@
+import { ProgramWizard } from "@/components/campaign/ProgramWizard";
+import { compatibleBaseline } from "@/lib/programs/baseline.server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -132,6 +134,12 @@ export default async function NewCampaignPage({
     }),
   ]);
 
+  const programsEnabled = process.env.DIAGNOSTIC_PROGRAMS_ENABLED === "true";
+  const baselineReports = programsEnabled ? await prisma.teamReport.findMany({
+    where: { orgId, status: "PUBLISHED", campaign: { status: "CLOSED", OR: [{ programKey: "TEAM_SCAN" }, { presetId: "SCAN_STYLE_V1", programKey: null }] } },
+    orderBy: { publishedAt: "desc" }, select: { campaignId: true, teamId: true, title: true, aggregates: true, campaign: { select: { name: true } } },
+  }) : [];
+  const baselines = baselineReports.filter(r => r.campaignId && compatibleBaseline(r.aggregates)).map(r => ({ campaignId: r.campaignId!, teamId: r.teamId, title: r.title ?? r.campaign!.name }));
   const serializedMembers = members.map((m) => ({
     userId: m.userId,
     displayName: m.user.username ?? m.user.email ?? m.userId,
@@ -161,13 +169,13 @@ export default async function NewCampaignPage({
         subtitle: tf("org.campaign.backWithName", locale, { orgName: org.name }),
       }}
     >
-        <CampaignWizard
+        {programsEnabled ? <ProgramWizard orgId={orgId} teams={serializedTeams} baselines={baselines} locale={locale} preselectedTeamId={preselectedTeamId ?? null} /> : <CampaignWizard
           orgId={orgId}
           members={serializedMembers}
           teams={serializedTeams}
           preselectedTeamId={preselectedTeamId ?? null}
           locale={locale}
-        />
+        />}
     </PlatformPageShell>
   );
 }

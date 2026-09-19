@@ -35,6 +35,7 @@ interface GuardrailOutput {
 }
 
 const WRITE_BLOCKED_ACTION_IDS = new Set<JourneyActionId>([
+  "COMPLETE_PROGRAM_ACTIVITY",
   "CREATE_TEAM",
   "INVITE_TEAM_MEMBERS",
   "CREATE_ORG_TEAM",
@@ -123,7 +124,7 @@ function enforceHomePriorityInvariants(
   }
 
   // Current obligation: unfinished assessment must go to /assessment.
-  if (context.assessment.started && !context.assessment.completed) {
+  if (!context.programs?.length && context.assessment.started && !context.assessment.completed) {
     return {
       activeSurface: "continuation",
       destination: "/assessment",
@@ -173,6 +174,7 @@ export function assertJourneyInvariants(input: {
   const violations: JourneyInvariantViolation[] = [];
 
   if (
+    !input.context.programs?.length &&
     input.context.assessment.started &&
     !input.context.assessment.completed &&
     input.home.destination !== "/assessment"

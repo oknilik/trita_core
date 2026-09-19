@@ -1,3 +1,4 @@
+import { safeParseProgram, activityStates, participantActivities, completionMap, isProgramCompletions } from "@/lib/programs/core";
 // ─────────────────────────────────────────────────────────────────────
 // Több-lépéses kampányok — TISZTA lépés-logika (kliens-oldalon is
 // importálható, nincs prisma-függése).
@@ -141,7 +142,10 @@ export function normalizeCampaignSteps(types: string[]): CampaignStepType[] {
 }
 
 /** A kampány effektív lépései – üres steps-nél a legacy `type` az egyetlen lépés. */
-export function getCampaignSteps(campaign: { type: string; steps: string[] }): string[] {
+export function getCampaignSteps(campaign: { type: string; steps: string[]; programSnapshot?: unknown }): string[] {
+  const program = safeParseProgram(campaign.programSnapshot);
+  if (program) return participantActivities(program).map(a => a.key);
+  if (campaign.programSnapshot != null) return [];
   return campaign.steps.length > 0 ? campaign.steps : [campaign.type];
 }
 
@@ -159,9 +163,12 @@ export function getCampaignTeamIds(campaign: {
 
 /** A résztvevő aktuális (nyitott) lépésének típusa; null = minden lépés kész. */
 export function getCurrentStepType(
-  campaign: { type: string; steps: string[] },
-  participant: { currentStep: number },
+  campaign: { type: string; steps: string[]; programSnapshot?: unknown },
+  participant: { currentStep: number; stepCompletions?: unknown },
 ): string | null {
+  const program = safeParseProgram(campaign.programSnapshot);
+  if (program) return activityStates(program, participant.stepCompletions).find(a => a.state === "AVAILABLE" || a.state === "IN_PROGRESS")?.key ?? null;
+  if (campaign.programSnapshot != null) return null;
   const steps = getCampaignSteps(campaign);
   return steps[participant.currentStep] ?? null;
 }
@@ -194,6 +201,7 @@ export function isCampaignStepDone(
   hasFreshSelfResult: boolean,
 ): boolean {
   const stepType = steps[idx];
+  if (isProgramCompletions(participant.stepCompletions)) return Boolean(completionMap(participant.stepCompletions)[stepType]);
   if (!stepType) return false;
   const sc = participant.stepCompletions;
   const completions =
@@ -224,10 +232,13 @@ export function countCampaignStepsDone(
  * enélkül a kapu mindig nyitottnak számít).
  */
 export function isStepOpenFor(
-  campaign: { type: string; steps: string[] },
-  participant: { currentStep: number; nextStepOpensAt?: Date | string | null },
+  campaign: { type: string; steps: string[]; programSnapshot?: unknown },
+  participant: { currentStep: number; nextStepOpensAt?: Date | string | null; stepCompletions?: unknown },
   stepType: string,
 ): boolean {
+  const program = safeParseProgram(campaign.programSnapshot);
+  if (program) return activityStates(program, participant.stepCompletions).some(a => a.key === stepType && (a.state === "AVAILABLE" || a.state === "IN_PROGRESS"));
+  if (campaign.programSnapshot != null) return false;
   return (
     getCurrentStepType(campaign, participant) === stepType &&
     isStepGateOpen(participant)

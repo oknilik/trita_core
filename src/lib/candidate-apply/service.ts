@@ -1,5 +1,7 @@
 import "server-only";
 
+import { createCandidateProgram } from "@/lib/candidate-programs/core";
+import { candidateBaseline, candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership } from "@/lib/org-context";
@@ -27,6 +29,9 @@ export interface CreateCandidateApplyInviteInput {
   orgId?: string;
   teamId?: string;
   includeTeamRole?: boolean;
+  baselineReportId?: string;
+  focus?: string;
+  inviteLocale?: "hu" | "en";
 }
 
 export interface CreateCandidateApplyInviteResult {
@@ -144,6 +149,10 @@ export async function createCandidateApplyInvite(
     throw new CandidateApplyServiceError("FORBIDDEN", 403);
   }
 
+  if (!await candidateOrgEnabled(orgId)) throw new CandidateApplyServiceError("FORBIDDEN", 403);
+  const baseline = await candidateBaseline(orgId, input.teamId, input.baselineReportId);
+  const program = createCandidateProgram(input.includeTeamRole, input.focus, baseline);
+
   // Kredit/előfizetés-kapu — kapcsolóval kivezetve (operating-mode,
   // CANDIDATE_GATING_ENABLED). Visszakapcsoláskor változatlanul élesedik.
   if (isCandidateGatingEnabled()) {
@@ -194,6 +203,9 @@ export async function createCandidateApplyInvite(
       name: input.name ?? null,
       position: input.position ?? null,
       includeTeamRole: input.includeTeamRole ?? false,
+      programSnapshot: program,
+      teamRoleState: input.includeTeamRole ? "PENDING" : "NOT_ENABLED",
+      inviteLocale: input.inviteLocale ?? "hu",
       expiresAt,
     },
     select: { id: true, token: true, email: true, name: true, position: true },

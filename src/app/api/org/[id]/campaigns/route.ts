@@ -1,3 +1,5 @@
+import { PROGRAM_KEYS, createProgramSnapshot, participantActivities } from "@/lib/programs/core";
+import { loadBaseline } from "@/lib/programs/baseline.server";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -13,6 +15,9 @@ import {
 } from "@/lib/campaign-steps-core";
 
 const createSchema = z.object({
+  programKey: z.enum(PROGRAM_KEYS).optional(),
+  includeTrustNetwork: z.boolean().optional(),
+  baselineCampaignId: z.string().min(1).optional(),
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
   type: z.enum(CAMPAIGN_STEP_ORDER).default("OBSERVER_360"),
@@ -67,6 +72,7 @@ export async function GET(
       name: true,
       description: true,
       presetId: true,
+      programKey: true, programVersion: true, baselineCampaignId: true,
       status: true,
       createdAt: true,
       closedAt: true,
@@ -142,7 +148,16 @@ export async function POST(
   }
   // Presetnél a szerver-konstans az igazság; egyedi körnél a types (vagy a
   // legacy type) kerül kanonikus sorrendbe.
-  const steps = body.data.presetId
+  if (body.data.programKey && process.env.DIAGNOSTIC_PROGRAMS_ENABLED !== "true") return NextResponse.json({ error: "PROGRAMS_NOT_ENABLED" }, { status: 409 });
+  if (body.data.programKey && (body.data.presetId || body.data.types)) return NextResponse.json({ error: "PROGRAM_CONFIGURATION_FIXED" }, { status: 400 });
+  if (body.data.includeTrustNetwork && !body.data.programKey) return NextResponse.json({ error: "PROGRAM_REQUIRED" }, { status: 400 });
+  const program = body.data.programKey ? createProgramSnapshot(body.data.programKey, { includeTrustNetwork: body.data.includeTrustNetwork }) : null;
+  if (program && requestedTeamIds.length !== 1) return NextResponse.json({ error: "OPERATING_STYLE_SINGLE_TEAM_REQUIRED" }, { status: 409 });
+  if (body.data.baselineCampaignId && program?.key !== "FOLLOW_UP") return NextResponse.json({ error: "BASELINE_NOT_ALLOWED" }, { status: 400 });
+  const baseline = program?.key === "FOLLOW_UP" && body.data.baselineCampaignId
+    ? await loadBaseline(orgId, requestedTeamIds[0], body.data.baselineCampaignId) : null;
+  if (program?.key === "FOLLOW_UP" && !baseline) return NextResponse.json({ error: "BASELINE_INVALID" }, { status: 409 });
+  const steps = program ? participantActivities(program).map(a => a.key) : body.data.presetId
     ? getCampaignPresetSteps(body.data.presetId)
     : normalizeCampaignSteps(body.data.types ?? [body.data.type]);
   if (steps.length === 0) {
@@ -187,15 +202,19 @@ export async function POST(
       orgId,
       name: body.data.name,
       description: body.data.description,
+      programKey: program?.key, programVersion: program?.version,
+      programSnapshot: program ?? undefined,
+      baselineCampaignId: baseline?.campaignId,
+      baselineReportSnapshot: baseline ?? undefined,
       presetId: body.data.presetId ?? null,
       type: steps[0],
       steps,
       teamId: requestedTeamIds[0] ?? null,
       teamIds: requestedTeamIds,
       allowExternalObservers: body.data.allowExternalObservers,
-      stepIntervalHours: body.data.stepIntervalHours,
+      stepIntervalHours: program ? 0 : body.data.stepIntervalHours,
       peerFeedbackAnonymous: body.data.peerFeedbackAnonymous,
-      requireFreshResults,
+      requireFreshResults: program ? true : requireFreshResults,
       createdBy: profile.id,
     },
     select: {
@@ -203,6 +222,7 @@ export async function POST(
       name: true,
       description: true,
       presetId: true,
+      programKey: true, programVersion: true, baselineCampaignId: true,
       type: true,
       teamId: true,
       status: true,

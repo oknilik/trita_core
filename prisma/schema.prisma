@@ -339,6 +339,10 @@ model Team {
 
 model TeamReport {
   id                String    @id @default(cuid())
+  revision          Int       @default(1)
+  reviewedRevision  Int?
+  reviewedAt        DateTime?
+  reviewedById      String?
   teamId            String
   // A riport mérési forrásköre. Új pilot-riportnál kötelező a runtime-ban;
   // adatbázisban azért nullable, hogy a korábbi, kampány nélküli riportok
@@ -437,6 +441,15 @@ model TeamPendingInvite {
 
 model CandidateInvite {
   id                 String    @id @default(cuid())
+  programSnapshot Json?
+  draftAnswers Json?
+  draftRevision Int @default(0)
+  acknowledgedAt DateTime?
+  teamRoleState String @default("NOT_ENABLED")
+  deliveryState String @default("NOT_SENT")
+  inviteLocale String @default("hu")
+  report CandidateReport?
+
   token              String    @unique @default(cuid())
   managerId          String
   // Szervezet-hatókör (2026-07-23, jelölt-flow újraélesztés): a team
@@ -467,6 +480,36 @@ model CandidateInvite {
   @@index([orgId])
 }
 
+model CandidateReport {
+  comparisons Json?
+  id String @id @default(cuid())
+  inviteId String @unique
+  revision Int @default(1)
+  reviewedRevision Int?
+  reviewedAt DateTime?
+  reviewedById String?
+  candidateSummary String @default("")
+  managerSummary String @default("")
+  internalNotes String @default("")
+  updatedAt DateTime @updatedAt
+  invite CandidateInvite @relation(fields: [inviteId], references: [id], onDelete: Cascade)
+  shares CandidateReportShare[]
+}
+
+model CandidateReportShare {
+  id String @id @default(cuid())
+  token String @unique
+  reportId String
+  audience String
+  revision Int
+  snapshot Json
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  report CandidateReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  @@index([reportId])
+}
+
 model CandidateResult {
   id                 String   @id @default(cuid())
   inviteId           String   @unique
@@ -486,6 +529,7 @@ model CandidateResult {
 
 model Organization {
   id               String   @id @default(cuid())
+  candidateProgramsEnabled Boolean @default(false)
   name             String
   ownerId          String
   status           String   @default("ACTIVE") // "ACTIVE" | "INACTIVE" | "PENDING_SETUP"
@@ -592,6 +636,13 @@ model Campaign {
   // A nevesített mérési csomag eredete. Nem a steps-ből következtetjük
   // vissza: egy azonos lépéssorú CUSTOM kampány nem válhat észrevétlenül
   // Scan v1 kohorsz- vagy kereskedelmi egységgé.
+  programKey             String?
+  programVersion         Int?
+  programSnapshot        Json?
+  baselineCampaignId     String?
+  baselineReportSnapshot Json?
+  baselineCampaign       Campaign? @relation("ProgramBaseline", fields: [baselineCampaignId], references: [id], onDelete: Restrict)
+  followUps              Campaign[] @relation("ProgramBaseline")
   presetId               String?
   // Mérés-típus: pl. "SELF_ASSESSMENT" | "OBSERVER_360" | "TRUST_360"
   // Több-lépéses kampánynál az első lépés típusa (kompatibilitás).
@@ -644,6 +695,7 @@ model Campaign {
   @@index([createdBy])
   @@index([teamId])
   @@index([presetId])
+  @@index([baselineCampaignId])
 }
 
 model CampaignParticipant {

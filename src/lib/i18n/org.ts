@@ -1,4 +1,12 @@
 export const orgTranslations = {
+  programTrust: {
+    optional: { hu: "Opcionális", en: "Optional" },
+    title: { hu: "Bizalmi háló mérése", en: "Measure trust network" },
+    description: { hu: "Opcionális kiegészítés. Külön lefedettséggel kerül a riportba; hiányos kitöltése nem akadályozza az alapriportot. A választás a kör létrehozása után nem módosítható.", en: "Optional addition with separate report coverage. Incomplete responses do not block the core report. This choice cannot be changed after creating the round." },
+    coverage: { hu: "Bizalmi háló · mért párok: {measured}/{possible} · lefedettség: {coverage}%.", en: "Trust network · measured pairs: {measured}/{possible} · coverage: {coverage}%." },
+    empty: { hu: "Nincs értékelhető hálóadat ebben a körben. Az alapriport ettől függetlenül elkészülhet.", en: "No usable network data in this round. The core report can still be prepared." },
+    note: { hu: "Kizárólag a jelen kör adatai; a részleges lefedettség nem a teljes csapat hálózata. Nincs automatikus összehasonlítás a korábbi körrel.", en: "Data from this round only; partial coverage does not represent the whole team network. No automatic comparison with previous rounds." },
+  },
   advisory: {
     eyebrow: {
       hu: "tanácsadói konzultáció",

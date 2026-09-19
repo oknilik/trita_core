@@ -1,3 +1,5 @@
+import { isCandidateGatingEnabled } from "@/lib/operating-mode";
+import { candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -9,6 +11,7 @@ import { sendHiringCreditsRequestEmail } from "@/lib/emails";
 const schema = z.object({ orgId: z.string() });
 
 export async function POST(req: Request) {
+  if (!isCandidateGatingEnabled()) return NextResponse.json({ error: "FEATURE_PARKED" }, { status: 404 });
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -27,6 +30,7 @@ export async function POST(req: Request) {
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
   const { orgId } = body.data;
+  if (!await candidateOrgEnabled(orgId)) return NextResponse.json({ error: "FEATURE_PARKED" }, { status: 404 });
 
   // Verify requester is a manager in this org
   const membership = await prisma.organizationMember.findUnique({

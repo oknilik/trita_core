@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { getServerAuth } from "@/lib/auth-server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -61,11 +61,11 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
         id: true,
         orgId: true,
         status: true,
-        presetId: true,
+        presetId: true, programKey: true,
         type: true,
         teamId: true,
         teamIds: true,
-        steps: true,
+        steps: true, programSnapshot: true,
         activatedAt: true,
       },
     }),
@@ -117,7 +117,7 @@ export async function GET(
   _req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const { id: orgId, campaignId } = await params;
@@ -131,7 +131,7 @@ export async function GET(
       id: true,
       name: true,
       description: true,
-      presetId: true,
+      presetId: true, programKey: true,
       status: true,
       createdAt: true,
       closedAt: true,
@@ -156,7 +156,7 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
   const log = await getRequestLogger("campaign");
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const { id: orgId, campaignId } = await params;
@@ -191,6 +191,7 @@ export async function PATCH(
 
     // A nevesített preset mérési készlete szerződés, nem kiinduló sablon.
     // Célzás és pacing tovább szerkeszthető, a steps csak CUSTOM körnél.
+    if (ctx.campaign.programKey && (edit.types !== undefined || edit.teamIds !== undefined || edit.teamId !== undefined || edit.stepIntervalHours !== undefined)) return NextResponse.json({ error: "PROGRAM_CONFIGURATION_FIXED" }, { status: 409 });
     if (ctx.campaign.presetId && edit.types !== undefined) {
       return NextResponse.json(
         { error: "PRESET_STEPS_IMMUTABLE" },
@@ -373,7 +374,13 @@ export async function PATCH(
       );
     }
   } else {
-    transition = await prisma.$transaction(async (tx) => {
+    const closed = await prisma.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT "id" FROM "Campaign" WHERE "id" = ${campaignId} FOR UPDATE`;
+      const current = await tx.campaign.findUniqueOrThrow({ where: { id: campaignId } });
+      if (current.programKey) {
+        if (current.status !== "ACTIVE") return { error: "INVALID_CAMPAIGN_TRANSITION" } as const;
+
+      }
       const campaign = await tx.campaign.update({
         where: { id: campaignId },
         data: { status: "CLOSED", closedAt: new Date() },
@@ -393,6 +400,8 @@ export async function PATCH(
       }
       return { outcome: "closed" as const, campaign, openings: [] as const };
     });
+    if ("error" in closed) return NextResponse.json({ error: closed.error }, { status: 409 });
+    transition = { ...closed, openings: [] };
   }
 
   const { campaign, openings } = transition;
@@ -463,7 +472,7 @@ export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const { id: orgId, campaignId } = await params;
@@ -525,7 +534,7 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
 ) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const { id: orgId, campaignId } = await params;

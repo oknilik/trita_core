@@ -1,0 +1,9 @@
+ALTER TABLE "Organization" ADD COLUMN "candidateProgramsEnabled" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "CandidateInvite" ADD COLUMN "programSnapshot" JSONB, ADD COLUMN "draftAnswers" JSONB, ADD COLUMN "draftRevision" INTEGER NOT NULL DEFAULT 0, ADD COLUMN "acknowledgedAt" TIMESTAMP(3), ADD COLUMN "teamRoleState" TEXT NOT NULL DEFAULT 'NOT_ENABLED', ADD COLUMN "deliveryState" TEXT NOT NULL DEFAULT 'NOT_SENT', ADD COLUMN "inviteLocale" TEXT NOT NULL DEFAULT 'hu';
+CREATE TABLE "CandidateReport" ("id" TEXT NOT NULL, "inviteId" TEXT NOT NULL, "revision" INTEGER NOT NULL DEFAULT 1, "reviewedRevision" INTEGER, "reviewedAt" TIMESTAMP(3), "reviewedById" TEXT, "candidateSummary" TEXT NOT NULL DEFAULT '', "managerSummary" TEXT NOT NULL DEFAULT '', "internalNotes" TEXT NOT NULL DEFAULT '', "updatedAt" TIMESTAMP(3) NOT NULL, CONSTRAINT "CandidateReport_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "CandidateReport_inviteId_key" ON "CandidateReport"("inviteId");
+ALTER TABLE "CandidateReport" ADD CONSTRAINT "CandidateReport_inviteId_fkey" FOREIGN KEY ("inviteId") REFERENCES "CandidateInvite"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE "CandidateReportShare" ("id" TEXT NOT NULL, "token" TEXT NOT NULL, "reportId" TEXT NOT NULL, "audience" TEXT NOT NULL, "revision" INTEGER NOT NULL, "snapshot" JSONB NOT NULL, "expiresAt" TIMESTAMP(3) NOT NULL, "revokedAt" TIMESTAMP(3), "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "CandidateReportShare_pkey" PRIMARY KEY ("id"));
+CREATE UNIQUE INDEX "CandidateReportShare_token_key" ON "CandidateReportShare"("token");
+CREATE INDEX "CandidateReportShare_reportId_idx" ON "CandidateReportShare"("reportId");
+ALTER TABLE "CandidateReportShare" ADD CONSTRAINT "CandidateReportShare_reportId_fkey" FOREIGN KEY ("reportId") REFERENCES "CandidateReport"("id") ON DELETE CASCADE ON UPDATE CASCADE;

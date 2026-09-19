@@ -1,10 +1,11 @@
-import { auth } from "@clerk/nextjs/server";
+import { readCandidateProgram } from "@/lib/candidate-programs/core";
+import { candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
+import { getServerAuth } from "@/lib/auth-server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { sendCandidateInviteEmail } from "@/lib/emails";
 import { isConsultantSurface } from "@/lib/measurement-auth";
-import { getServerLocale } from "@/lib/i18n-server";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
 
@@ -15,7 +16,7 @@ export async function POST(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const profile = await prisma.userProfile.findUnique({
@@ -40,6 +41,8 @@ export async function POST(
       expiresAt: true,
       email: true,
       token: true,
+      programSnapshot: true,
+      inviteLocale: true,
       position: true,
       team: { select: { orgId: true } },
     },
@@ -48,6 +51,7 @@ export async function POST(
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
   const inviteOrgId = invite.orgId ?? invite.team?.orgId ?? null;
+  if (!await candidateOrgEnabled(inviteOrgId)) return NextResponse.json({ error: "FEATURE_PARKED" }, { status: 404 });
   // leftAt: null – a szervezetből kilépett (volt) tag nem küldhet újra meghívót.
   const orgMembership = inviteOrgId
     ? await prisma.organizationMember.findFirst({
@@ -55,13 +59,14 @@ export async function POST(
         select: { role: true },
       })
     : null;
-  const allowed = isConsultantSurface(
+  const allowed = Boolean(orgMembership) && isConsultantSurface(
     orgMembership?.role ?? null,
     profile.email,
     profile.isConsultant,
   );
   if (!allowed) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
+  if (!readCandidateProgram(invite.programSnapshot)) return NextResponse.json({ error: "PROGRAM_UNSUPPORTED" }, { status: 404 });
   if (invite.status !== "PENDING") return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
   if (!invite.email) return NextResponse.json({ error: "NO_EMAIL" }, { status: 400 });
   if (invite.expiresAt < new Date()) return NextResponse.json({ error: "EXPIRED" }, { status: 409 });
@@ -73,10 +78,10 @@ export async function POST(
     token: invite.token,
     position: invite.position ?? undefined,
     applyUrl: `${APP_URL}/apply/${invite.token}`,
-    // A CandidateInvite nem tárol nyelvet; az újraküldést indító menedzser
-    // felületi nyelve ugyanaz, amit a létrehozáskor is átadott.
-    locale: await getServerLocale(),
+    // Az eredeti meghívó nyelvét tartjuk meg.
+    locale: invite.inviteLocale === "en" ? "en" : "hu",
   });
 
+  await prisma.candidateInvite.update({ where: { id }, data: { deliveryState: emailSent ? "SENT" : "FAILED" } });
   return NextResponse.json({ ok: true, emailSent });
 }

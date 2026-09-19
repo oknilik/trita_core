@@ -465,7 +465,7 @@ export async function getTeamPageData(
             orgId: true,
             createdAt: true,
             type: true,
-            steps: true,
+            steps: true, programSnapshot: true,
             teamId: true,
             teamIds: true,
             requireFreshResults: true,

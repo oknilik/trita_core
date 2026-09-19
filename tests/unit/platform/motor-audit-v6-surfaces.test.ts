@@ -19,32 +19,19 @@ import { HEXACO_DIMENSIONS, HEXACO_ORDER } from "@/lib/hexaco";
 const read = (relative: string) =>
   readFileSync(join(process.cwd(), relative), "utf8");
 
-const HIRING_PAGE = "src/app/(app)/hiring/[orgId]/candidates/[inviteId]/page.tsx";
+const HIRING_PAGE = "src/components/candidate/CandidateProfileChart.tsx";
 const BLOG_PAGE = "src/app/(marketing)/blog/[slug]/page.tsx";
 const TEAM_ROLES_CLIENT = "src/app/(app)/assessment/team-roles/TeamRolesClient.tsx";
 
-test("jelölt-oldal: a hasonlóság-címke SE-tudatos, nem nyers pont-vágás", () => {
-  const source = read(HIRING_PAGE);
-  // A gap-hiba a közös pszichometriai magból terjed (√2·SEM).
-  assert.ok(
-    source.includes("diffStandardError"),
-    "a jelölt-oldal nem a közös diffStandardError-ból számol",
-  );
-  // Eltérést csak ~1,96·SE fölött állítunk.
-  assert.ok(
-    source.includes("1.96"),
-    "hiányzik az állíthatósági (~1,96·SE) küszöb",
-  );
-  // A régi, zajszint alatti nyers vágások nem térhetnek vissza.
-  assert.ok(
-    !/avgAbsGap\s*<\s*10\b/.test(source) && !/avgAbsGap\s*<\s*20\b/.test(source),
-    "a nyers (<10/<20 pontos) hasonlóság-vágás visszakerült",
-  );
-  // A zaj-padló alatti hasonlóság a mérési hibán belüli egyezésként jelenik meg.
-  assert.ok(
-    source.includes("similarityWithinError"),
-    "a zaj-padló alatti egyezésnek nincs mérési-hibás címkéje",
-  );
+test("candidate charts expose individual measurement uncertainty without fit ratings", () => {
+  const source = read("src/components/candidate/CandidateMeasurementNote.tsx");
+  assert.ok(source.includes('dimStandardError("short")'));
+  assert.ok(source.includes("1.96"));
+  for (const file of [HIRING_PAGE, "src/components/candidate/CandidateRadar.tsx"]) {
+    const chart = read(file);
+    assert.ok(chart.includes("CandidateMeasurementNote"));
+    assert.ok(!/avgAbsGap\s*<\s*(10|20)\b/.test(chart));
+  }
 });
 
 test("jelölt-oldal: a régi vágások a mérési hibán belül jártak (számszerű)", () => {

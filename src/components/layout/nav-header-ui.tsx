@@ -433,7 +433,8 @@ function NavHeaderContent({
     pathname === "/try" ||
     pathname === "/assessment" ||
     pathname === "/observe" ||
-    pathname.startsWith("/observe/")
+    pathname.startsWith("/observe/") ||
+    pathname.startsWith("/apply/")
   ) {
     return null;
   }

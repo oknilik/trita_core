@@ -772,7 +772,7 @@ export async function resolveMembershipInviteResolution(params: {
 // Jelölt-kitöltés értesítései: in-app notif + email az org tanácsadóinak
 // (ORG_CONSULTANT) és adminjainak (ORG_ADMIN). Lazy importok, hogy a
 // levelezés/notif-réteg csak ilyenkor töltődjön.
-async function notifyCandidateCompleted(inviteId: string): Promise<void> {
+export async function notifyCandidateCompleted(inviteId: string): Promise<void> {
   const invite = await prisma.candidateInvite.findUnique({
     where: { id: inviteId },
     select: {
