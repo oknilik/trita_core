@@ -8,7 +8,8 @@
  */
 export const PORTFOLIO_SURFACE_STATE = {
   career: "parked",
-  hiring: "parked",
+  // Routes are restored; candidateProgramsEnabled gates every organization.
+  hiring: "active",
   // A fizetett pilotok intake → ajánlat → utánkövetés operációs gerince.
   crm: "active",
   blog: "active",
