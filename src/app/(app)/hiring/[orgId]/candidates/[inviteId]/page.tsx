@@ -1,3 +1,4 @@
+import { CANDIDATE_LEADER_ROLES } from "@/lib/candidate-programs/share.server";
 import { candidateSuggestions } from "@/lib/candidate-programs/suggestions";
 import { referenceEvidence } from "@/lib/candidate-programs/reference-evidence";
 import { isValidTeamRoleSelectionSet } from "@/lib/team-role-questions";
@@ -52,6 +53,16 @@ export default async function CandidateResultPage({
   const dimensions = extractDimensionScores(invite.result?.scores) ?? {};
   const comparisons = readComparisons(invite.report?.comparisons, p);
   if (!comparisons) notFound();
+  const leaders = await prisma.organizationMember.findMany({
+    where: {
+      orgId,
+      leftAt: null,
+      role: { in: CANDIDATE_LEADER_ROLES },
+      user: { deleted: false, clerkId: { not: null } },
+    },
+    select: { user: { select: { id: true, username: true, email: true } } },
+    orderBy: { userId: "asc" },
+  });
   const reports = await prisma.teamReport.findMany({
     where: {
       orgId,
@@ -112,6 +123,10 @@ export default async function CandidateResultPage({
       </Link>
       {invite.result && invite.report ? (
         <CandidateReportWorkspace
+          leaderRecipients={leaders.map(({ user }) => ({
+            id: user.id,
+            label: user.username || user.email || user.id,
+          }))}
           suggestions={candidateSuggestions({
             dimensions,
             measuredAt: invite.completedAt?.toISOString().slice(0, 10) ?? "",

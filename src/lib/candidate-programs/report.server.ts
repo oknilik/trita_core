@@ -11,6 +11,7 @@ import {
 import { readComparisons } from "./comparisons";
 import { MAX_CANDIDATE_COMPARISONS } from "./limits";
 import { readCandidateProgram } from "./core";
+import { candidateArtwork, CANDIDATE_LEADER_ROLES } from "./share.server";
 import type { Prisma } from "@prisma/client";
 export const candidateReportMutation = z
   .object({
@@ -32,6 +33,7 @@ export const candidateReportMutation = z
     candidateSummary: z.string().max(12000).optional(),
     managerSummary: z.string().max(12000).optional(),
     internalNotes: z.string().max(20000).optional(),
+    recipientUserId: z.string().min(1).optional(),
     audience: z.enum(["candidate", "manager"]).optional(),
   })
   .strict();
@@ -186,13 +188,33 @@ export async function mutateCandidateReport(
       )
         throw new CandidateProgramError("BASELINE_UNAVAILABLE");
     }
+    if (input.audience === "manager") {
+      if (
+        !input.recipientUserId ||
+        !(await tx.organizationMember.findFirst({
+          where: {
+            orgId,
+            userId: input.recipientUserId,
+            leftAt: null,
+            role: { in: CANDIDATE_LEADER_ROLES },
+            user: { deleted: false, clerkId: { not: null } },
+          },
+          select: { id: true },
+        }))
+      )
+        throw new CandidateProgramError("LEADER_RECIPIENT_REQUIRED", 400);
+    }
     const token = crypto.randomBytes(32).toString("hex");
     const snapshot = {
+      v: 2,
+      ...(input.audience === "manager"
+        ? { recipientUserId: input.recipientUserId }
+        : {}),
       name: invite.name,
       position: invite.position,
       revision: r.revision,
       measuredAt: invite.completedAt?.toISOString(),
-      dimensions: extractDimensionScores(invite.result.scores),
+      artwork: candidateArtwork(extractDimensionScores(invite.result.scores)),
       summary:
         input.audience === "candidate" ? r.candidateSummary : r.managerSummary,
     };

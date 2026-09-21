@@ -1,4 +1,7 @@
 "use client";
+import { TypeGlyph } from "@/components/type/TypeGlyph";
+import { resolveGlyphPair } from "@/lib/type-glyph";
+import { isSecondaryUncertain } from "@/lib/personality-type";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { CandidateWorkshopNote } from "./CandidateWorkshopNote";
@@ -44,6 +47,7 @@ export function CandidateReportWorkspace({
   focus,
   invalidSources,
   suggestions = [],
+  leaderRecipients = [],
   comparisonSuggestions = {},
 }: {
   inviteId: string;
@@ -61,9 +65,15 @@ export function CandidateReportWorkspace({
   focus: string;
   invalidSources: string[];
   suggestions?: Suggestion[];
+  leaderRecipients?: { id: string; label: string }[];
   comparisonSuggestions?: Record<string, Suggestion[]>;
 }) {
   const router = useRouter();
+  const glyphDimensions = Object.entries(dimensions).map(([code, score]) => ({
+    code,
+    score,
+  }));
+  const glyph = resolveGlyphPair(glyphDimensions);
   const [tab, setTab] = useState<"profile" | "teams" | "feedback">(
     comparisons.length ? "teams" : "profile",
   );
@@ -112,16 +122,27 @@ export function CandidateReportWorkspace({
     <div className="space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-5 py-3">
         <div className="flex items-center gap-4">
-          <span
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-sage/10 font-fraunces text-heading text-sage"
-            aria-hidden="true"
-          >
-            {name
-              .split(/\s+/)
-              .map((n) => n[0])
-              .slice(0, 2)
-              .join("")}
-          </span>
+          {glyph ? (
+            <TypeGlyph
+              {...glyph}
+              secondaryUncertain={isSecondaryUncertain(glyphDimensions)}
+              typeLabel={t("candidateProgram.personalityArtwork", locale)}
+              locale={locale}
+              variant="badge"
+              className="h-16 w-16 shrink-0 rounded-[var(--ui-radius-lg)]"
+            />
+          ) : (
+            <span
+              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-sage/10 font-fraunces text-heading text-sage"
+              aria-hidden="true"
+            >
+              {name
+                .split(/\s+/)
+                .map((n) => n[0])
+                .slice(0, 2)
+                .join("")}
+            </span>
+          )}
           <div>
             <h1 className="font-fraunces text-title text-ink">{name}</h1>
             <p className="mt-2 text-caption text-muted">
@@ -453,6 +474,7 @@ export function CandidateReportWorkspace({
       >
         <div className={editing ? "" : "hidden"}>
           <CandidateReportEditor
+            leaderRecipients={leaderRecipients}
             key={report.revision}
             inviteId={inviteId}
             suggestions={suggestions}

@@ -131,8 +131,8 @@ export const candidateProgramTranslations = {
       en: "Feedback for the candidate",
     },
     managerSummary: {
-      hu: "Megbízónak szánt kivonat",
-      en: "Summary for the client",
+      hu: "Vezetőnek szánt visszajelzés",
+      en: "Feedback for the leader",
     },
     notes: { hu: "Belső tanácsadói jegyzet", en: "Internal consultant notes" },
     save: { hu: "Vázlat mentése", en: "Save draft" },
@@ -142,8 +142,30 @@ export const candidateProgramTranslations = {
       en: "Share candidate feedback",
     },
     shareManager: {
-      hu: "Megbízói kivonat megosztása",
-      en: "Share client summary",
+      hu: "Vezetői visszajelzés megosztása",
+      en: "Share leader feedback",
+    },
+    personalityArtwork: {
+      hu: "Személyiségkép",
+      en: "Personality illustration",
+    },
+    artworkNote: {
+      hu: "Önjellemzésből származó illusztráció, nem alkalmassági minősítés.",
+      en: "An illustration based on self-report, not a suitability rating.",
+    },
+    leaderRecipient: { hu: "Kijelölt vezető", en: "Designated leader" },
+    chooseLeader: { hu: "Válassz vezetőt", en: "Choose a leader" },
+    leaderAccessNote: {
+      hu: "A vezetői linket csak a kiválasztott vezető nyithatja meg, bejelentkezés után. Más szervezeti tag nem fér hozzá.",
+      en: "Only the selected leader can open the leader link after signing in. Other organization members cannot access it.",
+    },
+    noLeaderRecipient: {
+      hu: "Nincs aktív, bejelentkezésre jogosult szervezeti vezető. A vezetői megosztáshoz előbb vezetői jogosultság szükséges.",
+      en: "There is no active organization leader with a sign-in account. Leader access must be set up before sharing.",
+    },
+    sharePrivacyNote: {
+      hu: "A megosztás a személyiségképet és a jóváhagyott szöveget tartalmazza. A radar és a dimenzióértékek a tanácsadói munkatérben maradnak; a visszajelzésbe se másolj pontszámokat vagy belső jegyzeteket.",
+      en: "Shares contain the personality illustration and approved text. Radar charts and dimension values stay in the consultant workspace; do not copy scores or internal notes into feedback.",
     },
     revoke: { hu: "Megosztások visszavonása", en: "Revoke shared links" },
     reportError: {

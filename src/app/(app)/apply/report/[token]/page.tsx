@@ -1,10 +1,12 @@
 import { CandidateWorkshopNote } from "@/components/candidate/CandidateWorkshopNote";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
+import { getServerAuth } from "@/lib/auth-server";
+import { loadCandidateShare } from "@/lib/candidate-programs/share.server";
+import { TypeGlyph } from "@/components/type/TypeGlyph";
+import { Card } from "@/components/ui/primitives/Card";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { getServerLocale } from "@/lib/i18n-server";
-import { CandidateProfileChart } from "@/components/candidate/CandidateProfileChart";
 import { t } from "@/lib/i18n";
 export const dynamic = "force-dynamic";
 export const metadata = {
@@ -19,32 +21,15 @@ export default async function CandidateSharedReport({
 }) {
   const { token } = await params;
   const locale = await getServerLocale();
-  const share = await prisma.candidateReportShare.findUnique({
-    where: { token },
-    include: {
-      report: {
-        include: { invite: { select: { orgId: true, status: true } } },
-      },
-    },
-  });
-  if (
-    !share ||
-    share.revokedAt ||
-    share.expiresAt <= new Date() ||
-    share.report.invite.status === "CANCELED" ||
-    !(await candidateOrgEnabled(share.report.invite.orgId))
-  )
-    notFound();
-  const data = share.snapshot as {
-    name: string | null;
-    position: string | null;
-    summary: string;
-    dimensions: Record<string, number>;
-    measuredAt: string;
-    revision: number;
-  };
+  const { userId } = await getServerAuth();
+  const share = await loadCandidateShare(token, userId);
+  if (!share) notFound();
+  const { data } = share;
   return (
-    <main className="mx-auto max-w-6xl space-y-6 px-4 py-10">
+    <PlatformPageShell
+      surface={share.audience === "manager" ? "org" : "self"}
+      contentClassName="max-w-6xl space-y-6 px-4 py-8"
+    >
       <p className="text-caption text-muted">
         {t("candidateProgram.reviewed", locale)} · v{data.revision}
       </p>
@@ -53,12 +38,23 @@ export default async function CandidateSharedReport({
         {data.position} · {data.measuredAt?.slice(0, 10)}
       </p>
       <div className="grid items-start gap-6 lg:grid-cols-2">
-        <div className="min-w-0 lg:order-2">
-          <CandidateProfileChart
-            dimensions={data.dimensions ?? {}}
-            locale={locale}
-          />
-        </div>
+        {data.artwork && (
+          <Card className="min-w-0 lg:order-2" spacing="lg">
+            <SectionEyebrow>
+              {t("candidateProgram.personalityArtwork", locale)}
+            </SectionEyebrow>
+            <TypeGlyph
+              {...data.artwork}
+              typeLabel={t("candidateProgram.personalityArtwork", locale)}
+              locale={locale}
+              variant="card"
+              className="mx-auto w-full max-w-sm"
+            />
+            <p className="text-caption text-muted">
+              {t("candidateProgram.artworkNote", locale)}
+            </p>
+          </Card>
+        )}
         <CandidateWorkshopNote
           tone={share.audience === "candidate" ? "connection" : "role"}
           className="lg:order-1"
@@ -80,6 +76,6 @@ export default async function CandidateSharedReport({
           </p>
         </CandidateWorkshopNote>
       </div>
-    </main>
+    </PlatformPageShell>
   );
 }

@@ -231,3 +231,43 @@ it("switches team reference without ranking and protects unsaved consultant obse
   expect(screen.getByRole("tab", { name: "Feedback" })).toBeDisabled();
   expect(screen.getByRole("button", { name: /Product/ })).toBeDisabled();
 });
+
+it("requires a designated leader and sends only that recipient with leader shares", async () => {
+  const report = {
+    revision: 2,
+    reviewedRevision: 2,
+    candidateSummary: "Candidate",
+    managerSummary: "Leader",
+    internalNotes: "Private",
+  };
+  const fetcher = vi
+    .fn()
+    .mockResolvedValue({
+      ok: true,
+      json: async () => ({ ...report, sharePath: "/apply/report/test" }),
+    });
+  vi.stubGlobal("fetch", fetcher);
+  render(
+    <CandidateReportEditor
+      inviteId="i"
+      initial={report}
+      locale="en"
+      rolePending={false}
+      leaderRecipients={[{ id: "leader", label: "Team leader" }]}
+    />,
+  );
+  const button = screen.getByRole("button", { name: "Share leader feedback" });
+  expect(button).toBeDisabled();
+  await userEvent.selectOptions(
+    screen.getByRole("combobox", { name: "Designated leader" }),
+    "leader",
+  );
+  await userEvent.click(button);
+  await waitFor(() => expect(fetcher).toHaveBeenCalled());
+  expect(JSON.parse(fetcher.mock.calls[0][1].body)).toEqual({
+    action: "share",
+    expectedRevision: 2,
+    audience: "manager",
+    recipientUserId: "leader",
+  });
+});

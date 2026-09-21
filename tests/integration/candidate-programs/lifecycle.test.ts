@@ -11,6 +11,10 @@ import {
   requireCandidateConsultant,
 } from "@/lib/candidate-programs/service.server";
 import { createProgramSnapshot } from "@/lib/programs/core";
+import {
+  loadCandidateShare,
+  readCandidateShareSnapshot,
+} from "@/lib/candidate-programs/share.server";
 import { mutateCandidateReport } from "@/lib/candidate-programs/report.server";
 
 test("candidate: gated program, cross-device revisions, optional skip, immutable audience shares", async () => {
@@ -29,6 +33,12 @@ test("candidate: gated program, cross-device revisions, optional skip, immutable
     });
     await prisma.organizationMember.create({
       data: { orgId: id, userId: id, role: "ORG_CONSULTANT" },
+    });
+    await prisma.userProfile.create({
+      data: { id: id + "_leader", clerkId: id + "_leader" },
+    });
+    await prisma.organizationMember.create({
+      data: { orgId: id, userId: id + "_leader", role: "ORG_MANAGER" },
     });
     await prisma.candidateInvite.create({
       data: {
@@ -122,12 +132,84 @@ test("candidate: gated program, cross-device revisions, optional skip, immutable
     await mutateCandidateReport(id, id, id, {
       action: "share",
       audience: "manager",
+      recipientUserId: id + "_leader",
       expectedRevision: saved.revision,
     });
     const shares = await prisma.candidateReportShare.findMany({
       where: { report: { inviteId: id } },
     });
     assert.equal(shares.length, 2);
+    for (const share of shares) {
+      assert.equal("dimensions" in (share.snapshot as object), false);
+      assert.equal(JSON.stringify(share.snapshot).includes("intensity"), false);
+    }
+    const leaderShare = shares.find((s) => s.audience === "manager")!;
+    assert.ok(await loadCandidateShare(leaderShare.token, id + "_leader"));
+    assert.equal(await loadCandidateShare(leaderShare.token, null), null);
+    assert.equal(await loadCandidateShare(leaderShare.token, id), null);
+    await assert.rejects(
+      mutateCandidateReport(id, id, id, {
+        action: "share",
+        audience: "manager",
+        expectedRevision: saved.revision,
+      }),
+      /LEADER_RECIPIENT_REQUIRED/,
+    );
+    await assert.rejects(
+      mutateCandidateReport(id, id, id, {
+        action: "share",
+        audience: "manager",
+        recipientUserId: id,
+        expectedRevision: saved.revision,
+      }),
+      /LEADER_RECIPIENT_REQUIRED/,
+    );
+    await prisma.organizationMember.update({
+      where: { orgId_userId: { orgId: id, userId: id + "_leader" } },
+      data: { role: "ORG_MEMBER" },
+    });
+    assert.equal(
+      await loadCandidateShare(leaderShare.token, id + "_leader"),
+      null,
+    );
+    await assert.rejects(
+      mutateCandidateReport(id, id, id, {
+        action: "share",
+        audience: "manager",
+        recipientUserId: id + "_leader",
+        expectedRevision: saved.revision,
+      }),
+      /LEADER_RECIPIENT_REQUIRED/,
+    );
+    await prisma.organizationMember.update({
+      where: { orgId_userId: { orgId: id, userId: id + "_leader" } },
+      data: { role: "ORG_MANAGER", leftAt: new Date() },
+    });
+    assert.equal(
+      await loadCandidateShare(leaderShare.token, id + "_leader"),
+      null,
+    );
+    await prisma.organizationMember.update({
+      where: { orgId_userId: { orgId: id, userId: id + "_leader" } },
+      data: { leftAt: null },
+    });
+    const legacy = {
+      name: "Legacy",
+      position: null,
+      summary: "Approved",
+      revision: 1,
+      dimensions: { H: 60, E: 45, X: 70, A: 55, C: 80, O: 50 },
+    };
+    assert.equal(readCandidateShareSnapshot(legacy, "manager"), null);
+    assert.equal(
+      readCandidateShareSnapshot({ ...legacy, v: 99 }, "candidate"),
+      null,
+    );
+    const projected = readCandidateShareSnapshot(legacy, "candidate");
+    assert.ok(projected?.artwork);
+    assert.equal("dimensions" in projected!, false);
+    assert.equal("intensity" in projected!.artwork!, false);
+
     const candidate = shares.find((s) => s.audience === "candidate")!;
     assert.equal(
       (candidate.snapshot as { summary: string }).summary,
@@ -192,7 +274,9 @@ test("candidate: gated program, cross-device revisions, optional skip, immutable
     await prisma.candidateResult.deleteMany({ where: { inviteId: id } });
     await prisma.candidateInvite.deleteMany({ where: { id } });
     await prisma.organization.deleteMany({ where: { id } });
-    await prisma.userProfile.deleteMany({ where: { id } });
+    await prisma.userProfile.deleteMany({
+      where: { id: { in: [id, id + "_leader"] } },
+    });
   }
 });
 
@@ -253,6 +337,12 @@ test("candidate baseline is scoped, frozen and withdrawn sources block new share
     assert.equal(baseline?.count, 4);
     assert.equal(JSON.stringify(baseline).includes("private"), false);
     const program = createCandidateProgram(false, "Interview focus", baseline);
+    await prisma.userProfile.create({
+      data: { id: id + "_leader", clerkId: id + "_leader" },
+    });
+    await prisma.organizationMember.create({
+      data: { orgId: id, userId: id + "_leader", role: "ORG_MANAGER" },
+    });
     await prisma.candidateInvite.create({
       data: {
         id,
@@ -305,7 +395,9 @@ test("candidate baseline is scoped, frozen and withdrawn sources block new share
     await prisma.campaign.deleteMany({ where: { id } });
     await prisma.team.deleteMany({ where: { id } });
     await prisma.organization.deleteMany({ where: { id } });
-    await prisma.userProfile.deleteMany({ where: { id } });
+    await prisma.userProfile.deleteMany({
+      where: { id: { in: [id, id + "_leader"] } },
+    });
   }
 });
 
@@ -367,6 +459,12 @@ test("multiple team snapshots are scoped, revisioned, annotated and excluded fro
         },
       });
     }
+    await prisma.userProfile.create({
+      data: { id: id + "_leader", clerkId: id + "_leader" },
+    });
+    await prisma.organizationMember.create({
+      data: { orgId: id, userId: id + "_leader", role: "ORG_MANAGER" },
+    });
     await prisma.candidateInvite.create({
       data: {
         id,
@@ -468,6 +566,7 @@ test("multiple team snapshots are scoped, revisioned, annotated and excluded fro
       action: "share",
       expectedRevision: row.revision,
       audience: "manager",
+      recipientUserId: id + "_leader",
     });
     const share = await prisma.candidateReportShare.findFirstOrThrow({
       where: { reportId: row.id },
@@ -520,6 +619,8 @@ test("multiple team snapshots are scoped, revisioned, annotated and excluded fro
     await prisma.team.deleteMany({ where: { orgId: id } });
     await prisma.campaign.deleteMany({ where: { id } });
     await prisma.organization.deleteMany({ where: { id } });
-    await prisma.userProfile.deleteMany({ where: { id } });
+    await prisma.userProfile.deleteMany({
+      where: { id: { in: [id, id + "_leader"] } },
+    });
   }
 });

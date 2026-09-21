@@ -1,3 +1,5 @@
+import { candidateArtwork } from "@/lib/candidate-programs/share.server";
+import { extractDimensionScores } from "@/lib/scoring";
 import { Prisma } from "@prisma/client";
 import { candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
 import { t } from "@/lib/i18n";
@@ -154,7 +156,7 @@ export default async function HiringPage({
         includeTeamRole: true,
         draftAnsweredCount: true,
         team: { select: { id: true, name: true } },
-        result: { select: { id: true } },
+        result: { select: { id: true, scores: true } },
       },
     }),
     prisma.teamReport.findMany({
@@ -186,6 +188,9 @@ export default async function HiringPage({
       teamId: inv.teamId,
       teamName: inv.team?.name ?? null,
       hasResult: !!inv.result,
+      artwork: inv.result
+        ? candidateArtwork(extractDimensionScores(inv.result.scores))
+        : null,
       draftAnsweredCount: inv.draftAnsweredCount,
       totalQuestions: readCandidateProgram(inv.programSnapshot)!.questionIds
         .length,

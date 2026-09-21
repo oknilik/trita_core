@@ -17,7 +17,9 @@ async function cleanup() {
   await prisma.team.deleteMany({ where: { orgId: id } });
   await prisma.campaign.deleteMany({ where: { orgId: id } });
   await prisma.organization.deleteMany({ where: { id } });
-  await prisma.userProfile.deleteMany({ where: { id } });
+  await prisma.userProfile.deleteMany({
+    where: { id: { in: [id, id + "_leader", id + "_member"] } },
+  });
 }
 test.beforeAll(async () => {
   await cleanup();
@@ -41,6 +43,24 @@ test.beforeAll(async () => {
       members: { create: { userId: id, role: "ORG_CONSULTANT" } },
     },
   });
+  for (const [suffix, role] of [
+    ["_leader", "ORG_MANAGER"],
+    ["_member", "ORG_MEMBER"],
+  ]) {
+    await prisma.userProfile.create({
+      data: {
+        id: id + suffix,
+        clerkId: id + suffix,
+        username: suffix,
+        locale: "en",
+        onboardedAt: new Date(),
+        consentedAt: new Date(),
+      },
+    });
+    await prisma.organizationMember.create({
+      data: { orgId: id, userId: id + suffix, role },
+    });
+  }
   await prisma.userProfile.update({ where: { id }, data: { activeOrgId: id } });
   await prisma.campaign.create({
     data: {
@@ -252,7 +272,7 @@ test("consultant reviews and shares only the approved candidate summary", async 
     .getByRole("textbox", { name: "Feedback for the candidate" })
     .fill("Candidate feedback");
   await page
-    .getByRole("textbox", { name: "Summary for the client" })
+    .getByRole("textbox", { name: "Feedback for the leader" })
     .fill("Client feedback");
   await page
     .getByRole("textbox", { name: "Internal consultant notes" })
@@ -280,12 +300,64 @@ test("consultant reviews and shares only the approved candidate summary", async 
     .getByRole("link", { name: "Open shared summary" })
     .getAttribute("href");
   expect(href).toBeTruthy();
+  await page
+    .getByRole("combobox", { name: "Designated leader" })
+    .selectOption(id + "_leader");
+  await page.getByRole("button", { name: "Share leader feedback" }).click();
+  await expect(
+    page.getByRole("link", { name: "Open shared summary" }),
+  ).not.toHaveAttribute("href", href!);
+  const leaderHref = await page
+    .getByRole("link", { name: "Open shared summary" })
+    .getAttribute("href");
+  await context.clearCookies();
+  await page.goto(leaderHref!);
+  await expect(
+    page.getByText(/This page could not be found|Ez az oldal nem található/),
+  ).toBeVisible();
+  await expect(page.getByText("Client feedback", { exact: true })).toHaveCount(
+    0,
+  );
+  await context.addCookies([
+    { name: "trita_e2e_user_id", value: id + "_member", url: baseURL! },
+  ]);
+  await page.goto(leaderHref!);
+  await expect(
+    page.getByText(/This page could not be found|Ez az oldal nem található/),
+  ).toBeVisible();
+  await expect(page.getByText("Client feedback", { exact: true })).toHaveCount(
+    0,
+  );
+  await context.addCookies([
+    { name: "trita_e2e_user_id", value: id + "_leader", url: baseURL! },
+    { name: "trita_locale", value: "en", url: baseURL! },
+  ]);
+  await page.goto(leaderHref!);
+  await expect(
+    page.getByText("Client feedback", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("img", { name: /Personality illustration|Személyiségkép/ }),
+  ).toBeVisible();
+  await expect(page.getByText("PRIVATE CONSULTANT NOTE")).toHaveCount(0);
+  await expect(page.locator("svg").filter({ hasText: "100" })).toHaveCount(0);
+  await page.screenshot({
+    path: "../../outputs/candidate-leader-feedback.png",
+    fullPage: true,
+  });
   await context.clearCookies();
   await page.goto(href!);
   await expect(
     page.getByText("Candidate feedback", { exact: true }),
   ).toBeVisible();
   await expect(page.getByText("PRIVATE CONSULTANT NOTE")).toHaveCount(0);
+  await expect(
+    page.getByRole("img", { name: /Personality illustration|Személyiségkép/ }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: "../../outputs/candidate-personal-feedback.png",
+    fullPage: true,
+  });
   await expect(page.getByText("Client feedback", { exact: true })).toHaveCount(
     0,
   );
