@@ -1,3 +1,5 @@
+import { CandidateWorkshopNote } from "@/components/candidate/CandidateWorkshopNote";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { candidateOrgEnabled } from "@/lib/candidate-programs/service.server";
@@ -42,7 +44,7 @@ export default async function CandidateSharedReport({
     revision: number;
   };
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
+    <main className="mx-auto max-w-6xl space-y-6 px-4 py-10">
       <p className="text-caption text-muted">
         {t("candidateProgram.reviewed", locale)} · v{data.revision}
       </p>
@@ -50,21 +52,34 @@ export default async function CandidateSharedReport({
       <p className="text-caption text-muted">
         {data.position} · {data.measuredAt?.slice(0, 10)}
       </p>
-      <CandidateProfileChart
-        dimensions={data.dimensions ?? {}}
-        locale={locale}
-      />
-      <section className="rounded-2xl border border-sand bg-surface-card p-6">
-        <h2 className="font-fraunces text-heading text-ink">
-          {t(
-            share.audience === "candidate"
-              ? "candidateProgram.candidateSummary"
-              : "candidateProgram.managerSummary",
-            locale,
-          )}
-        </h2>
-        <p className="mt-4 whitespace-pre-wrap text-ink-body">{data.summary}</p>
-      </section>
+      <div className="grid items-start gap-6 lg:grid-cols-2">
+        <div className="min-w-0 lg:order-2">
+          <CandidateProfileChart
+            dimensions={data.dimensions ?? {}}
+            locale={locale}
+          />
+        </div>
+        <CandidateWorkshopNote
+          tone={share.audience === "candidate" ? "connection" : "role"}
+          className="lg:order-1"
+        >
+          <SectionEyebrow tone="candidate" className="mb-4">
+            {t("candidateProgram.reviewed", locale)}
+          </SectionEyebrow>
+
+          <h2 className="font-fraunces text-heading text-ink">
+            {t(
+              share.audience === "candidate"
+                ? "candidateProgram.candidateSummary"
+                : "candidateProgram.managerSummary",
+              locale,
+            )}
+          </h2>
+          <p className="mt-4 whitespace-pre-wrap break-words text-body text-ink-body">
+            {data.summary}
+          </p>
+        </CandidateWorkshopNote>
+      </div>
     </main>
   );
 }

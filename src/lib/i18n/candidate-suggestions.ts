@@ -1,5 +1,17 @@
 export const candidateSuggestionTranslations = {
   candidateSuggestions: {
+    workshop: { hu: "Tanácsadói műhely", en: "Consultant workshop" },
+    observations: {
+      hu: "Megfigyelések a közös munkához",
+      en: "Observations for working together",
+    },
+    journey: { hu: "A személyestől a közösig", en: "From personal to shared" },
+    selfStep: { hu: "Önértékelés", en: "Self-assessment" },
+    roleStep: {
+      hu: "Csapatszerepek · opcionális",
+      en: "Team roles · optional",
+    },
+    feedbackStep: { hu: "Tanácsadói visszajelzés", en: "Consultant feedback" },
     title: {
       hu: "Tanácsadói szövegjavaslatok",
       en: "Consultant text suggestions",

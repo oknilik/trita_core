@@ -1,0 +1,27 @@
+.board {
+  background-color: var(--color-surface-canvas);
+  background-image: radial-gradient(
+    var(--color-border-default) 1px,
+    transparent 1px
+  );
+  background-size: var(--ui-space-6) var(--ui-space-6);
+  border-radius: var(--ui-radius-2xl);
+  padding: var(--ui-space-4);
+}
+.note {
+  border-top-left-radius: var(--ui-radius-sm);
+  box-shadow: var(--ui-shadow-sm);
+  overflow-wrap: anywhere;
+}
+.connection {
+  background-color: var(--color-surface-self-accent-soft);
+}
+.difference {
+  background-color: var(--color-surface-team-accent-soft);
+}
+.role {
+  background-color: var(--color-layer-candidate-soft);
+}
+.neutral {
+  background-color: var(--color-surface-card);
+}

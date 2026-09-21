@@ -1,4 +1,6 @@
 "use client";
+import { CandidateWorkshopNote } from "./CandidateWorkshopNote";
+import styles from "./CandidateWorkshop.module.css";
 import { useState } from "react";
 import { Button } from "@/components/ui/primitives/Button";
 import { TextareaField } from "@/components/ui/primitives/TextareaField";
@@ -19,14 +21,14 @@ export function CandidateSuggestions({
   const [generation, setGeneration] = useState(0);
   if (!suggestions.length) return null;
   return (
-    <section className="rounded-2xl border border-sage/30 bg-sage/5 p-4 sm:p-5">
+    <section className={styles.board}>
       <h3 className="font-fraunces text-heading">
         {t("candidateSuggestions.title", locale)}
       </h3>
       <p className="my-3 text-caption text-muted">
         {t("candidateSuggestions.notice", locale)}
       </p>
-      <div className="space-y-3">
+      <div className="grid items-start gap-4 lg:grid-cols-2">
         {suggestions.map((s) => (
           <SuggestionCard
             key={`${generation}:${s.id}`}
@@ -65,12 +67,22 @@ function SuggestionCard({
     [error, setError] = useState(false);
   if (dismissed) return null;
   return (
-    <div
-      role="group"
-      aria-label={suggestion.title}
-      className="rounded-xl border border-sand bg-surface-card p-4"
+    <CandidateWorkshopNote
+      label={suggestion.title}
+      tone={
+        suggestion.id.endsWith(":roles")
+          ? "role"
+          : suggestion.target === "difference"
+            ? "difference"
+            : suggestion.target === "connection" ||
+                suggestion.target === "candidateSummary"
+              ? "connection"
+              : "neutral"
+      }
     >
-      <h4 className="text-body font-semibold">{suggestion.title}</h4>
+      <h4 className="font-fraunces text-heading text-ink">
+        {suggestion.title}
+      </h4>
       <p className="my-2 whitespace-pre-line text-note text-muted">
         {suggestion.source}
       </p>
@@ -119,6 +131,6 @@ function SuggestionCard({
           {t("candidateSuggestions.dismiss", locale)}
         </Button>
       </div>
-    </div>
+    </CandidateWorkshopNote>
   );
 }

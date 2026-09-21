@@ -222,7 +222,7 @@ it("switches team reference without ranking and protects unsaved consultant obse
     within(
       screen.getByRole("tabpanel", { name: "Team comparisons" }),
     ).getAllByText("No consultant observation yet."),
-  ).toHaveLength(4);
+  ).toHaveLength(3);
   await userEvent.click(screen.getByText(/Edit consultant observations/));
   await userEvent.type(
     screen.getByRole("textbox", { name: "Connection" }),

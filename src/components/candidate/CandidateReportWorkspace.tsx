@@ -1,4 +1,8 @@
 "use client";
+import { Card } from "@/components/ui/primitives/Card";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { CandidateWorkshopNote } from "./CandidateWorkshopNote";
+import workshop from "./CandidateWorkshop.module.css";
 import { CandidateSuggestions } from "./CandidateSuggestions";
 import type { Suggestion } from "@/lib/candidate-programs/suggestions";
 import { useState } from "react";
@@ -248,8 +252,17 @@ export function CandidateReportWorkspace({
         hidden={tab !== "teams"}
         className="space-y-6"
       >
-        <div className="grid items-start gap-6 lg:grid-cols-2">
-          <section className={panel}>
+        <div
+          className={`${workshop.board} grid items-start gap-6 lg:grid-cols-12`}
+        >
+          <Card
+            as="section"
+            surface="team"
+            className="min-w-0 lg:col-span-5 lg:col-start-4 lg:row-start-1"
+          >
+            <SectionEyebrow tone="team" className="mb-3">
+              {t("candidateSuggestions.workshop", locale)}
+            </SectionEyebrow>
             <h2 className="font-fraunces text-heading text-ink">
               {t("candidateProgram.radarTitle", locale)}
             </h2>
@@ -263,8 +276,8 @@ export function CandidateReportWorkspace({
             <p className="mt-4 text-caption text-muted">
               {t("candidateProgram.sourceNote", locale)}
             </p>
-          </section>
-          <div className="space-y-3">
+          </Card>
+          <div className="min-w-0 space-y-3 lg:col-span-3 lg:col-start-1 lg:row-start-1">
             {comparisons.length === 0 && (
               <p className={`${panel} text-muted`}>
                 {t("candidateProgram.noTeams", locale)}
@@ -281,7 +294,7 @@ export function CandidateReportWorkspace({
                   onClick={() => setSelected(c.teamId)}
                   className="flex w-full items-center gap-3 text-left disabled:opacity-60"
                 >
-                  <div className="w-24 shrink-0 sm:w-28">
+                  <div className="w-20 shrink-0 lg:hidden">
                     <CandidateRadar
                       compact
                       name={name}
@@ -304,26 +317,11 @@ export function CandidateReportWorkspace({
                     )}
                   </div>
                 </button>
-                <div className="mt-3 grid gap-3 border-t border-sand pt-3 sm:grid-cols-2">
-                  <div>
-                    <p className="text-caption font-semibold text-sage">
-                      {t("candidateProgram.connection", locale)}
-                    </p>
-                    <p className="mt-1 whitespace-pre-wrap break-words text-caption text-ink-body">
-                      {c.connection ||
-                        t("candidateProgram.emptyObservation", locale)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-caption font-semibold text-bronze">
-                      {t("candidateProgram.difference", locale)}
-                    </p>
-                    <p className="mt-1 whitespace-pre-wrap break-words text-caption text-ink-body">
-                      {c.difference ||
-                        t("candidateProgram.emptyObservation", locale)}
-                    </p>
-                  </div>
-                </div>
+                {c.connection && (
+                  <p className="mt-3 line-clamp-2 break-words text-caption text-ink-body">
+                    {c.connection}
+                  </p>
+                )}
                 {invalidSources.includes(c.reportId) && (
                   <p className="mt-3 text-caption text-bronze">
                     {t("candidateProgram.sourceChanged", locale)}
@@ -378,6 +376,30 @@ export function CandidateReportWorkspace({
                   {t("candidateProgram.addTeam", locale)}
                 </Button>
               </div>
+            )}
+          </div>
+          <div className="min-w-0 space-y-4 lg:col-span-4 lg:col-start-9 lg:row-start-1">
+            <SectionEyebrow tone="team">
+              {t("candidateSuggestions.observations", locale)}
+            </SectionEyebrow>
+            {(["connection", "difference", "prompt"] as const).map(
+              (key, index) => (
+                <CandidateWorkshopNote
+                  key={key}
+                  tone={key === "prompt" ? "neutral" : key}
+                >
+                  <p aria-hidden="true" className="mb-3 text-label text-muted">
+                    0{index + 1}
+                  </p>
+                  <h3 className="font-fraunces text-heading text-ink">
+                    {t(`candidateProgram.${key}`, locale)}
+                  </h3>
+                  <p className="mt-3 whitespace-pre-wrap break-words text-caption text-ink-body">
+                    {active?.[key] ||
+                      t("candidateProgram.emptyObservation", locale)}
+                  </p>
+                </CandidateWorkshopNote>
+              ),
             )}
           </div>
         </div>

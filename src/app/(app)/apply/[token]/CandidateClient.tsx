@@ -1,9 +1,11 @@
 "use client";
+import { CandidateWorkshopIntro } from "@/components/candidate/CandidateWorkshopIntro";
+import { CandidateJourneyOverview } from "@/components/candidate/CandidateJourneyOverview";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
 import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
-import { AssessmentIntro, AssessmentStatus } from "@/components/assessment/AssessmentFlowShell";
+import { AssessmentStatus } from "@/components/assessment/AssessmentFlowShell";
 import { useAssessmentStepController } from "@/components/assessment/useAssessmentStepController";
 import { TeamRoleQuestionnaire } from "@/components/assessment/TeamRoleQuestionnaire";
 import { Button } from "@/components/ui/primitives/Button";
@@ -68,7 +70,7 @@ export function CandidateClient({ token, position, organizationName, candidateNa
     const res = await fetch(`/api/candidate/${token}/team-role`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ selections }) });
     const data = await res.json(); if (!res.ok) throw new Error(data.error); setPhase("done"); setError(null);
   } catch(e) { setError((e as Error).message); } finally { setBusy(false); } }
-  if (phase === "intro") return <><AssessmentFocusHeader homeHref={`/apply/${token}`} /><AssessmentIntro eyebrow={t("candidateProgram.title", locale)} title={candidateName ?? t("candidateProgram.title", locale)} campaignName={[organizationName, position].filter(Boolean).join(" · ")} body={t("candidateProgram.intro", locale)} notice={<><a href="/privacy" target="_blank" rel="noreferrer" className="underline">{t("candidateProgram.notice", locale)}</a><label className="mt-3 flex min-h-[44px] items-center gap-3"><input type="checkbox" checked={ack} onChange={e => setAck(e.target.checked)} />{t("candidateProgram.acknowledge", locale)}</label></>} action={<Button disabled={!ack || busy} onClick={() => void start()}>{t(Object.keys(answers).length ? "candidateProgram.resume" : "candidateProgram.start", locale)}</Button>} meta={tf("assessment.progressLabel", locale, { done: Object.keys(answers).length, total: questions.length })} />{fail}</>;
+  if (phase === "intro") return <><AssessmentFocusHeader homeHref={`/apply/${token}`} /><CandidateWorkshopIntro overview={<CandidateJourneyOverview locale={locale} withRoles={initial.teamRoleState === "PENDING"} />} eyebrow={t("candidateProgram.title", locale)} title={candidateName ?? t("candidateProgram.title", locale)} campaignName={[organizationName, position].filter(Boolean).join(" · ")} body={t("candidateProgram.intro", locale)} notice={<><a href="/privacy" target="_blank" rel="noreferrer" className="underline">{t("candidateProgram.notice", locale)}</a><label className="mt-3 flex min-h-[44px] items-center gap-3"><input type="checkbox" checked={ack} onChange={e => setAck(e.target.checked)} />{t("candidateProgram.acknowledge", locale)}</label></>} action={<Button disabled={!ack || busy} onClick={() => void start()}>{t(Object.keys(answers).length ? "candidateProgram.resume" : "candidateProgram.start", locale)}</Button>} meta={tf("assessment.progressLabel", locale, { done: Object.keys(answers).length, total: questions.length })} />{fail}</>;
   if (phase === "paused") return <AssessmentStatus tone="success" title={t("candidateProgram.saved", locale)} body={t("candidateProgram.paused", locale)} action={<Button onClick={() => setPhase("assessment")}>{t("candidateProgram.resume", locale)}</Button>} />;
   if (phase === "done") return <AssessmentStatus tone="success" title={t("candidateProgram.submitted", locale)} body={t("candidateProgram.next", locale)} />;
   if (phase === "role") return <div className="mx-auto max-w-2xl px-4 py-8"><h1 className="mb-6 font-fraunces text-title text-ink">{t("candidateProgram.optional", locale)}</h1><TeamRoleQuestionnaire locale={locale} submitting={busy} onComplete={v => void role(v)} onSkip={() => void role(null)} />{fail}</div>;

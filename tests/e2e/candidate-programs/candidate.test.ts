@@ -119,6 +119,10 @@ test("mobile candidate resumes server draft and submits with the self/observer U
   ]);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`/apply/${id}`);
+  await page.screenshot({
+    path: "../../outputs/candidate-workshop-intro-mobile.png",
+    fullPage: true,
+  });
   await page.getByRole("button", { name: "Continue assessment" }).click();
   await expect(page.getByTestId("assessment-focus-header")).toBeVisible();
   await expect(page.getByRole("radio", { name: /^[1-5] -/ })).toHaveCount(5);
