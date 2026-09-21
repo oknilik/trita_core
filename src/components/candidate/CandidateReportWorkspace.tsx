@@ -10,6 +10,10 @@ import { CandidateSuggestions } from "./CandidateSuggestions";
 import type { Suggestion } from "@/lib/candidate-programs/suggestions";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PersonalityOverview } from "@/components/results/PersonalityOverview";
+import { CandidateMeasurementNote } from "./CandidateMeasurementNote";
+import { HEXACO_ORDER, HEXACO_DIMENSIONS } from "@/lib/hexaco";
+import { dimColorsCss } from "@/lib/color-system";
 import { CandidateRadar } from "./CandidateRadar";
 import { CandidateReportEditor } from "./CandidateReportEditor";
 import { Button } from "@/components/ui/primitives/Button";
@@ -203,21 +207,38 @@ export function CandidateReportWorkspace({
         aria-labelledby="candidate-tab-profile"
         hidden={tab !== "profile"}
       >
-        <div className="grid gap-6 lg:grid-cols-[1.15fr_1fr]">
+        <div className="space-y-6">
           <section className={panel}>
             <h2 className="font-fraunces text-heading text-ink">
               {t("candidateProgram.self", locale)}
             </h2>
-            <CandidateRadar
-              name={name}
-              dimensions={dimensions}
-              locale={locale}
-            />
-            <p className="mt-3 text-caption text-muted">
-              {t("candidateProgram.reportNote", locale)}
-            </p>
+            <div className="mt-5">
+              {HEXACO_ORDER.every(
+                (code) =>
+                  Number.isFinite(dimensions[code]) &&
+                  dimensions[code] >= 0 &&
+                  dimensions[code] <= 100,
+              ) ? (
+                <PersonalityOverview
+                  dimensions={HEXACO_ORDER.map((code) => ({
+                    code,
+                    label: HEXACO_DIMENSIONS[code][locale],
+                    color: dimColorsCss(code).base,
+                    score: dimensions[code],
+                  }))}
+                  locale={locale}
+                  uid={`candidate-profile-${inviteId}`}
+                  note={t("candidateProgram.reportNote", locale)}
+                />
+              ) : (
+                <p className="text-caption text-muted">
+                  {t("candidateProgram.chartMissing", locale)}
+                </p>
+              )}
+            </div>
+            <CandidateMeasurementNote locale={locale} />
           </section>
-          <div className="space-y-5">
+          <div className="grid items-start gap-5 md:grid-cols-2">
             {suggestions.length > 0 && (
               <Button
                 disabled={blocked}
