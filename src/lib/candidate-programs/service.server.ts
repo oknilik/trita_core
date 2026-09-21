@@ -1,4 +1,5 @@
 import "server-only";
+import { referenceEvidence } from "./reference-evidence";
 import { HEXACO_ORDER } from "@/lib/hexaco";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
@@ -229,6 +230,7 @@ export async function candidateBaseline(
     throw new CandidateProgramError("BASELINE_INVALID", 400);
   return {
     reportId: r.id,
+    evidence: referenceEvidence(r.aggregates),
     teamId,
     revision: r.revision,
     publishedAt: r.publishedAt.toISOString(),

@@ -1,4 +1,6 @@
 "use client";
+import { CandidateSuggestions } from "./CandidateSuggestions";
+import type { Suggestion } from "@/lib/candidate-programs/suggestions";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/primitives/Button";
@@ -9,6 +11,7 @@ export function CandidateReportEditor({
   locale,
   rolePending,
   onDirtyChange,
+  suggestions = [],
 }: {
   inviteId: string;
   initial: {
@@ -21,6 +24,7 @@ export function CandidateReportEditor({
   locale: Locale;
   rolePending: boolean;
   onDirtyChange?: (dirty: boolean) => void;
+  suggestions?: Suggestion[];
 }) {
   const router = useRouter();
   const [report, setReport] = useState(initial),
@@ -78,6 +82,21 @@ export function CandidateReportEditor({
         )}{" "}
         · v{report.revision}
       </h2>
+      <CandidateSuggestions
+        suggestions={suggestions}
+        locale={locale}
+        disabled={busy}
+        insert={(suggestion, text) => {
+          const key = suggestion.target;
+          if (key !== "candidateSummary" && key !== "managerSummary")
+            return false;
+          const value = [fields[key], text].filter(Boolean).join("\n\n");
+          if (value.length > 12000) return false;
+          setFields({ ...fields, [key]: value });
+          setShare(null);
+          return true;
+        }}
+      />
       {(["candidateSummary", "managerSummary", "internalNotes"] as const).map(
         (key) => (
           <label key={key} className="block text-caption text-ink">

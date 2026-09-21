@@ -33,3 +33,32 @@ A radar azonos skálán és tengelysorrendben mutatja a jelöltet és az aktív 
 ## Mérési bizonytalanság és értelmezés
 
 A munkanézet nem ad automatikus alkalmassági, hasonlósági vagy erősség–gyengeség minősítést. Az egyéni rövid kérdőív becsült mérési hibasávját a közös `dimStandardError` alapján jelzi (közelítő 95%: 1,96 × SEM). Ez nem a jelölt és a csapatátlag különbségének szignifikanciatesztje: a két egyéni mérésre vonatkozó `diffStandardError` közvetlen alkalmazása itt félrevezető lenne. A kanonikus valenciakapuk mindkét slotból kizárt dimenziói külön semleges magyarázatot kapnak. Hiányzó vagy érvénytelen dimenzió nem jelenik meg nullaként.
+
+## Tanácsadói szövegjavaslatok (2026-09-21)
+
+A profilképről a „Tanácsadói szövegjavaslatok” gomb nyitja a visszajelzés
+szerkesztését. A csapatok összevetésénél a tanácsadói megfigyelések szerkesztője
+csapatonként kínál kapcsolódási, eltérési, szerep- és beszélgetésindító kártyákat.
+A személyes profil a meglévő profilértelmezés szövegeit használja.
+
+Minden kártya szerkeszthető, elvethető és újragenerálható. A beillesztés a meglévő
+szöveg végére fűz, a forrást is megtartja. Újragenerálás nem írja felül a jegyzetet.
+Mentés és új tanácsadói jóváhagyás szükséges a megosztáshoz; nincs automatikus
+alkalmassági minősítés vagy csapatrangsor.
+
+A v1 determinisztikus, szabályalapú javaslat. A személyes önértékelés dátumát,
+a csapatriport dátumát, revízióját és elemszámát jelöli. A csapatadat az adott
+publikált riportból fagyasztott dimenziószórás és szerepeloszlás; tagszintű adat
+nem kerül a referencia mellé. Régi referencia esetén csak azonos riportazonosító
+és revízió publikált adata egészítheti ki az olvasást. Nincs adatbázis-migráció.
+
+Eltérés csak teljes dimenziószórás mellett jelenik meg, ha a pontkülönbség nagyobb,
+mint a rövid kérdőív egyéni standard hibájának 1,96-szorosa és a csapat szórása.
+Ez szerkesztési küszöb, nem szignifikanciateszt. Közeli értékek sem bizonyítanak
+azonos viselkedést vagy illeszkedést. Hiányos adatoknál a korlátot jelzi a kártya.
+
+Csapatszerep csak érvényes, befejezett jelölti szerepkérdőívből értelmezhető.
+Csapathoz viszonyított szerepszöveghez legalább három, teljes lefedettségű,
+kérdőívvel mért szerep és elsődleges/másodlagos eloszlás szükséges; becsült vagy
+vegyes forrásból nincs hiányzó szerepre következtetés. Külön szerepkérdőív-dátum
+jelenleg nincs tárolva, ezt a forrásjelzés kimondja.

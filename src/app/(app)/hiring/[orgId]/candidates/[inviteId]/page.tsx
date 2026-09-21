@@ -1,3 +1,6 @@
+import { candidateSuggestions } from "@/lib/candidate-programs/suggestions";
+import { referenceEvidence } from "@/lib/candidate-programs/reference-evidence";
+import { isValidTeamRoleSelectionSet } from "@/lib/team-role-questions";
 import { notFound } from "next/navigation";
 import { getServerAuth } from "@/lib/auth-server";
 import Link from "next/link";
@@ -109,6 +112,42 @@ export default async function CandidateResultPage({
       </Link>
       {invite.result && invite.report ? (
         <CandidateReportWorkspace
+          suggestions={candidateSuggestions({
+            dimensions,
+            measuredAt: invite.completedAt?.toISOString().slice(0, 10) ?? "",
+            locale,
+            roleCompleted: invite.teamRoleState === "COMPLETED",
+            roleSelections: invite.result.teamRoleSelections,
+          })}
+          comparisonSuggestions={Object.fromEntries(
+            comparisons.map((c) => {
+              const frozen = reports.find(
+                (r) =>
+                  r.id === c.reportId &&
+                  r.teamId === c.teamId &&
+                  r.revision === c.revision,
+              );
+              return [
+                c.teamId,
+                !frozen || invalidSources.includes(c.reportId)
+                  ? []
+                  : candidateSuggestions({
+                      dimensions,
+                      measuredAt:
+                        invite.completedAt?.toISOString().slice(0, 10) ?? "",
+                      locale,
+                      roleCompleted: invite.teamRoleState === "COMPLETED",
+                      roleSelections: invite.result!.teamRoleSelections,
+                      comparison: {
+                        ...c,
+                        teamName: c.teamName || frozen.team.name,
+                        evidence:
+                          c.evidence ?? referenceEvidence(frozen.aggregates),
+                      },
+                    }),
+              ];
+            }),
+          )}
           inviteId={invite.id}
           name={invite.name ?? t("candidateProgram.title", locale)}
           position={invite.position ?? ""}
@@ -150,7 +189,8 @@ export default async function CandidateResultPage({
               : undefined
           }
           roles={
-            invite.result.teamRoleSelections
+            invite.teamRoleState === "COMPLETED" &&
+            isValidTeamRoleSelectionSet(invite.result.teamRoleSelections)
               ? getTopRoles(
                   calculateTeamRoleScores(
                     invite.result.teamRoleSelections as TeamRoleSelections,

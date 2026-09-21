@@ -1,4 +1,6 @@
 "use client";
+import { CandidateSuggestions } from "./CandidateSuggestions";
+import type { Suggestion } from "@/lib/candidate-programs/suggestions";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CandidateRadar } from "./CandidateRadar";
@@ -37,6 +39,8 @@ export function CandidateReportWorkspace({
   roles,
   focus,
   invalidSources,
+  suggestions = [],
+  comparisonSuggestions = {},
 }: {
   inviteId: string;
   name: string;
@@ -52,6 +56,8 @@ export function CandidateReportWorkspace({
   roles: string[];
   focus: string;
   invalidSources: string[];
+  suggestions?: Suggestion[];
+  comparisonSuggestions?: Record<string, Suggestion[]>;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<"profile" | "teams" | "feedback">(
@@ -187,6 +193,17 @@ export function CandidateReportWorkspace({
             </p>
           </section>
           <div className="space-y-5">
+            {suggestions.length > 0 && (
+              <Button
+                disabled={blocked}
+                onClick={() => {
+                  setTab("feedback");
+                  setEditing(true);
+                }}
+              >
+                {t("candidateSuggestions.title", locale)}
+              </Button>
+            )}
             {focus && (
               <section className={panel}>
                 <h2 className="font-fraunces text-heading">
@@ -367,6 +384,7 @@ export function CandidateReportWorkspace({
         {active && (
           <ComparisonNotes
             key={`${active.teamId}-${report.revision}`}
+            suggestions={comparisonSuggestions[active.teamId] ?? []}
             comparison={active}
             locale={locale}
             busy={busy}
@@ -415,6 +433,7 @@ export function CandidateReportWorkspace({
           <CandidateReportEditor
             key={report.revision}
             inviteId={inviteId}
+            suggestions={suggestions}
             initial={report}
             locale={locale}
             rolePending={rolePending}
@@ -450,6 +469,7 @@ export function CandidateReportWorkspace({
 }
 function ComparisonNotes({
   comparison,
+  suggestions,
   locale,
   busy,
   onDirty,
@@ -457,6 +477,7 @@ function ComparisonNotes({
   remove,
 }: {
   comparison: CandidateComparison;
+  suggestions: Suggestion[];
   locale: Locale;
   busy: boolean;
   onDirty: (v: boolean) => void;
@@ -482,6 +503,21 @@ function ComparisonNotes({
       <p className="my-3 text-caption text-muted">
         {t("candidateProgram.annotationNotice", locale)}
       </p>
+      <CandidateSuggestions
+        suggestions={suggestions}
+        locale={locale}
+        disabled={busy}
+        insert={(suggestion, text) => {
+          const key = suggestion.target;
+          if (key !== "connection" && key !== "difference" && key !== "prompt")
+            return false;
+          const value = [fields[key], text].filter(Boolean).join("\n\n");
+          if (value.length > 2000) return false;
+          setFields({ ...fields, [key]: value });
+          onDirty(true);
+          return true;
+        }}
+      />
       <div className="grid gap-4 md:grid-cols-3">
         {(["connection", "difference", "prompt"] as const).map((k) => (
           <label key={k} className="text-caption">

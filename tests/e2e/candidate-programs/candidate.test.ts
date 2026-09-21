@@ -177,6 +177,13 @@ test("consultant reviews and shares only the approved candidate summary", async 
     .filter({ hasText: "Edit consultant observations" })
     .click();
   await page
+    .getByRole("group", { name: "Connections with the team", exact: true })
+    .getByRole("button", { name: "Insert", exact: true })
+    .click();
+  await expect(
+    page.getByRole("textbox", { name: "Connection", exact: true }),
+  ).toHaveValue(/Source:/);
+  await page
     .getByRole("textbox", { name: "Connection", exact: true })
     .fill("Similar planning preferences");
   await page
@@ -219,6 +226,24 @@ test("consultant reviews and shares only the approved candidate summary", async 
   });
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.getByRole("button", { name: "Edit feedback" }).click();
+  const suggestionsPanel = page
+    .getByRole("heading", { name: "Consultant text suggestions", exact: true })
+    .locator("..");
+  await suggestionsPanel.screenshot({
+    path: "../../outputs/candidate-suggestions-desktop.png",
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () => document.documentElement.scrollWidth <= window.innerWidth,
+      ),
+    )
+    .toBe(true);
+  await suggestionsPanel.screenshot({
+    path: "../../outputs/candidate-suggestions-mobile.png",
+  });
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page
     .getByRole("textbox", { name: "Feedback for the candidate" })
     .fill("Candidate feedback");

@@ -1,3 +1,4 @@
+import { referenceEvidenceSchema } from "./reference-evidence";
 import { z } from "zod";
 import { getTestConfig } from "@/lib/questions";
 import type { Locale } from "@/lib/i18n";
@@ -19,6 +20,7 @@ export const candidateProgramSchema = z
         revision: z.number(),
         publishedAt: z.string(),
         count: z.number().min(3),
+        evidence: referenceEvidenceSchema.optional(),
         dimensions: z.record(z.string(), z.number().min(0).max(100)),
       })
       .nullable(),

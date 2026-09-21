@@ -355,6 +355,13 @@ test("multiple team snapshots are scoped, revisioned, annotated and excluded fro
           aggregates: {
             completedCount: 4,
             dimensionAverages: dims,
+            dimensionSpread: { H: 10, E: 10, X: 10, A: 10, C: 10, O: 10 },
+            roleDistribution: {
+              counts: { OG: 4 },
+              secondaryCounts: { KO: 4 },
+              questionnaireCount: 4,
+              estimateCount: 0,
+            },
             members: ["SECRET"],
           },
         },
@@ -408,6 +415,9 @@ test("multiple team snapshots are scoped, revisioned, annotated and excluded fro
       where: { inviteId: id },
     });
     const first = readComparisons(row.comparisons, program)!;
+    assert.equal(first[0].evidence?.spread?.H, 10);
+    assert.equal(first[0].evidence?.roles?.questionnaireCount, 4);
+    assert.equal(JSON.stringify(first).includes("SECRET"), false);
     const missing = first[0].teamId === id + "a" ? "b" : "a";
     row = await mutateCandidateReport(id, id, id, {
       action: "addTeam",
