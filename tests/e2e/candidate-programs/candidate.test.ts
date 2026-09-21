@@ -354,6 +354,13 @@ test("consultant reviews and shares only the approved candidate summary", async 
   await expect(
     page.getByRole("img", { name: /Personality illustration|Személyiségkép/ }),
   ).toBeVisible();
+  const explanation = page.getByRole("link", { name: /Mit jelent ez az ábra|What does this illustration mean/ });
+  await expect(explanation).toHaveAttribute("href", "/character-glyphs");
+  const guide = await context.newPage();
+  await guide.goto("/character-glyphs");
+  await expect(guide.getByRole("heading", { level: 1 })).toHaveText(/A karakterábrák nyelve|The language of character illustrations/);
+  await expect(guide.locator("main svg")).toHaveCount(6);
+  await guide.close();
   await page.screenshot({
     path: "../../outputs/candidate-personal-feedback.png",
     fullPage: true,

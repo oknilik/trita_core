@@ -145,6 +145,30 @@ export const candidateProgramTranslations = {
       hu: "Vezetői visszajelzés megosztása",
       en: "Share leader feedback",
     },
+    artworkExplanation: {
+      hu: "Mit jelent ez az ábra? ↗",
+      en: "What does this illustration mean? ↗",
+    },
+    artworkGuideTitle: {
+      hu: "A karakterábrák nyelve",
+      en: "The language of character illustrations",
+    },
+    artworkGuideIntro: {
+      hu: "A karakterábra az önjellemzés vizuális összefoglalója. A név és a forma beszélgetést segít: nem diagnózis, alkalmassági minősítés vagy állandó személyiségtípus.",
+      en: "A character illustration is a visual summary of self-report. Its name and shape support conversation; they are not a diagnosis, suitability rating or fixed personality type.",
+    },
+    artworkGuideShape: {
+      hu: "A nagy bronz forma a legmagasabb pontértékű dimenzióhoz, a vékony belső motívum a másodikhoz kapcsolódik. Ha az értékek közeliek, a sorrend bizonytalan; ilyenkor a név is rövidebb, jelző nélküli lehet.",
+      en: "The large bronze shape corresponds to the highest-scoring dimension, and the thin inner motif to the second. When scores are close, their order is uncertain; the name may therefore be shortened, without an adjective.",
+    },
+    artworkGuidePrivacy: {
+      hu: "A megosztott jelölti és vezetői képen a kitöltés erőssége egységes: abból nem olvasható ki pontszám. A dimenzióértékek és a teljes radar a tanácsadói munkatérben maradnak.",
+      en: "Shared candidate and leader illustrations use a uniform fill weight that does not encode a score. Dimension values and the full radar remain in the consultant workspace.",
+    },
+    artworkGuideExamples: {
+      hu: "A hat alapforma · illusztratív példák",
+      en: "The six base shapes · illustrative examples",
+    },
     personalityArtwork: {
       hu: "Személyiségkép",
       en: "Personality illustration",

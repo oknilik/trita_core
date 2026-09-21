@@ -3,6 +3,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { notFound } from "next/navigation";
 import { getServerAuth } from "@/lib/auth-server";
 import { loadCandidateShare } from "@/lib/candidate-programs/share.server";
+import { CandidateCharacterCaption } from "@/components/candidate/CandidateCharacterCaption";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { Card } from "@/components/ui/primitives/Card";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
@@ -43,6 +44,7 @@ export default async function CandidateSharedReport({
             <SectionEyebrow>
               {t("candidateProgram.personalityArtwork", locale)}
             </SectionEyebrow>
+            <CandidateCharacterCaption artwork={data.artwork} locale={locale} />
             <TypeGlyph
               {...data.artwork}
               typeLabel={t("candidateProgram.personalityArtwork", locale)}

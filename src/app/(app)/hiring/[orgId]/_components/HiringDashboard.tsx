@@ -1,5 +1,6 @@
 "use client";
 
+import { CandidateCharacterCaption } from "@/components/candidate/CandidateCharacterCaption";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { useState } from "react";
 import Link from "next/link";
@@ -142,6 +143,7 @@ function CandidateRow({
             {invite.teamName && `${invite.teamName} · `}
             {new Date(invite.createdAt).toLocaleDateString(dateLocale)}
           </p>
+          {invite.artwork && <CandidateCharacterCaption artwork={invite.artwork} locale={locale} />}
           {invite.status === "PENDING" && !isExpired && invite.draftAnsweredCount > 0 && (
             <div className="mt-2 flex items-center gap-2">
               <div className="h-1 flex-1 overflow-hidden rounded-full bg-warm-mid">

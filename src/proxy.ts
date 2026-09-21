@@ -42,6 +42,7 @@ const isProtectedRoute = createRouteMatcher([
 
 // Public pages (no auth required)
 const isPublicRoute = createRouteMatcher([
+  "/character-glyphs",
   "/team-dynamics",
   "/observe(.*)",
   "/share(.*)",

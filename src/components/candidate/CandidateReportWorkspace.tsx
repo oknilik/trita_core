@@ -1,4 +1,5 @@
 "use client";
+import { CandidateCharacterCaption } from "@/components/candidate/CandidateCharacterCaption";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import { isSecondaryUncertain } from "@/lib/personality-type";
@@ -152,6 +153,15 @@ export function CandidateReportWorkspace({
             <p className="mt-2 text-caption text-muted">
               {position} · {measuredAt}
             </p>
+            {glyph && (
+              <CandidateCharacterCaption
+                artwork={{
+                  ...glyph,
+                  secondaryUncertain: isSecondaryUncertain(glyphDimensions),
+                }}
+                locale={locale}
+              />
+            )}
           </div>
         </div>
         <Button
