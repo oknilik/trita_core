@@ -24,7 +24,7 @@ export function CandidateWorkshopIntro({
   meta: ReactNode;
 }) {
   return (
-    <AssessmentFlowShell width="compact" centered>
+    <AssessmentFlowShell width="wide" centered>
       <SectionEyebrow tone="candidate">{eyebrow}</SectionEyebrow>
       <h1 className="mt-4 text-center font-fraunces text-title text-ink">
         {title}

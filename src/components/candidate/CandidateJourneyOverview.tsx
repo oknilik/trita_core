@@ -1,3 +1,4 @@
+import { CandidateJourneyArtwork } from "./CandidateJourneyArtwork";
 import { t, type Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { CandidateWorkshopNote } from "./CandidateWorkshopNote";
@@ -26,7 +27,7 @@ export function CandidateJourneyOverview({
         className={`grid gap-3 ${withRoles ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
       >
         {steps.map((step, index) => (
-          <li key={step}>
+          <li key={step} className="min-w-0">
             <CandidateWorkshopNote
               tone={
                 step === "roleStep"
@@ -37,15 +38,23 @@ export function CandidateJourneyOverview({
               }
               className="h-full"
             >
-              <span
-                aria-hidden="true"
-                className="mb-3 block font-fraunces text-heading text-muted"
-              >
-                0{index + 1}
-              </span>
-              <h2 className="font-fraunces text-heading text-ink">
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <span
+                  aria-hidden="true"
+                  className="font-fraunces text-heading text-muted"
+                >
+                  0{index + 1}
+                </span>
+                <CandidateJourneyArtwork step={step} />
+              </div>
+              <h2 className="break-normal font-fraunces text-heading text-ink [overflow-wrap:normal] [hyphens:none]">
                 {t(`candidateSuggestions.${step}`, locale)}
               </h2>
+              {step === "roleStep" && (
+                <p className="mt-2 text-caption text-muted">
+                  {t("candidateSuggestions.optionalStep", locale)}
+                </p>
+              )}
             </CandidateWorkshopNote>
           </li>
         ))}

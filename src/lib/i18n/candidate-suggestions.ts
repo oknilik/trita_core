@@ -8,9 +8,10 @@ export const candidateSuggestionTranslations = {
     journey: { hu: "A személyestől a közösig", en: "From personal to shared" },
     selfStep: { hu: "Önértékelés", en: "Self-assessment" },
     roleStep: {
-      hu: "Csapatszerepek · opcionális",
-      en: "Team roles · optional",
+      hu: "Csapatszerepek",
+      en: "Team roles",
     },
+    optionalStep: { hu: "Opcionális", en: "Optional" },
     feedbackStep: { hu: "Tanácsadói visszajelzés", en: "Consultant feedback" },
     title: {
       hu: "Tanácsadói szövegjavaslatok",
