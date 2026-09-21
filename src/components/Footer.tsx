@@ -20,7 +20,8 @@ export function Footer() {
   if (
     currentPath.startsWith("/try") ||
     currentPath.startsWith("/assessment") ||
-    currentPath.startsWith("/observe")
+    currentPath.startsWith("/observe") ||
+    currentPath.startsWith("/apply/")
   ) return null;
 
   const accountLinks = isSignedIn

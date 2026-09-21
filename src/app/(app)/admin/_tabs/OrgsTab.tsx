@@ -12,6 +12,7 @@ export async function OrgsTab() {
       status: true,
       billingProfile: true,
       hideCareerModule: true,
+      candidateProgramsEnabled: true,
       createdAt: true,
       _count: {
         select: {
@@ -45,6 +46,7 @@ export async function OrgsTab() {
         status: org.status,
         billingProfile: sanitizeOrgBillingProfile(org.billingProfile),
         hideCareerModule: org.hideCareerModule,
+        candidateProgramsEnabled: org.candidateProgramsEnabled,
         createdAt: org.createdAt.toISOString(),
         memberCount: org._count.members,
         consultants: org.members.map((m) => ({

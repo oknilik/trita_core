@@ -1,3 +1,6 @@
+import { ProgramSubmissionError } from "@/lib/programs/submission.server";
+import { guardProgramSubmission } from "@/lib/programs/submission.server";
+import { isStepOpenFor } from "@/lib/campaign-steps-core";
 import { auth } from "@clerk/nextjs/server";
 import { after } from "next/server";
 import { NextResponse } from "next/server";
@@ -23,6 +26,7 @@ import {
 const inviteSchema = z
   .object({
     // Kolléga-meghívó: a szervezet tagjai közül, listából.
+    campaignId: z.string().min(1).optional(),
     colleagueUserId: z.string().min(1).optional(),
     // Email-alapú (külső / szervezeten kívüli) meghívó.
     email: z.string().email().optional(),
@@ -46,7 +50,7 @@ async function resolveInviteCampaignContext(profileId: string, activeOrgId: stri
       userId: profileId,
       campaign: {
         orgId: activeOrgId,
-        status: "ACTIVE",
+        status: "ACTIVE", programKey: null,
         OR: [{ steps: { has: "OBSERVER_360" } }, { steps: { isEmpty: true }, type: "OBSERVER_360" }],
       },
     },
@@ -60,7 +64,7 @@ async function resolveInviteCampaignContext(profileId: string, activeOrgId: stri
   return participation?.campaign ?? null;
 }
 
-export async function POST(req: Request) {
+async function submitRequest(req: Request) {
   const log = await getRequestLogger("observer");
   const body = await req.json().catch(() => ({}));
   const parsed = inviteSchema.safeParse(body);
@@ -90,6 +94,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "NO_TEST_TYPE" }, { status: 400 });
   }
 
+  const testType = profile.testType;
+
   // Aktív org-tagság (a típus-jelöléshez és a jóváhagyási szabályhoz).
   const activeOrgMembership = profile.activeOrgId
     ? await prisma.organizationMember.findUnique({
@@ -98,6 +104,12 @@ export async function POST(req: Request) {
       })
     : null;
   const inOrg = Boolean(activeOrgMembership && !activeOrgMembership.leftAt);
+
+  const scopedParticipant = parsed.data.campaignId ? await prisma.campaignParticipant.findUnique({
+    where: { campaignId_userId: { campaignId: parsed.data.campaignId, userId: profile.id } }, include: { campaign: true },
+  }) : null;
+  if (parsed.data.campaignId && (!scopedParticipant || !inOrg || scopedParticipant.campaign.orgId !== profile.activeOrgId || scopedParticipant.campaign.status !== "ACTIVE" || !isStepOpenFor(scopedParticipant.campaign, scopedParticipant, "OBSERVER_360"))) return NextResponse.json({ error: "STEP_LOCKED" }, { status: 409 });
+  const campaign = scopedParticipant?.campaign ?? await resolveInviteCampaignContext(profile.id, profile.activeOrgId);
 
   // ── Kolléga-ág: címzett feloldása + típus (TEAM/ORG) ──────────────────────
   let observerType: "TEAM" | "ORG" | "EXTERNAL" | "INTERNAL" = "INTERNAL";
@@ -146,6 +158,7 @@ export async function POST(req: Request) {
     const existingActive = await prisma.observerInvitation.findFirst({
       where: {
         inviterId: profile.id,
+        ...(scopedParticipant ? { campaignId: scopedParticipant.campaignId } : {}),
         observerProfileId,
         status: { in: ["AWAITING_APPROVAL", "PENDING", "COMPLETED"] },
       },
@@ -173,6 +186,7 @@ export async function POST(req: Request) {
     const existingActiveInvite = await prisma.observerInvitation.findFirst({
       where: {
         inviterId: profile.id,
+        ...(scopedParticipant ? { campaignId: scopedParticipant.campaignId } : {}),
         observerEmail: { equals: parsed.data.email, mode: "insensitive" },
         status: { in: ["AWAITING_APPROVAL", "PENDING", "COMPLETED"] },
       },
@@ -197,10 +211,11 @@ export async function POST(req: Request) {
   }
 
   // ── Jóváhagyási szabály (kampány-kontextusban, külső meghívóra) ───────────
-  const campaign = await resolveInviteCampaignContext(profile.id, profile.activeOrgId);
   const needsApproval = observerInviteRequiresApproval({ observerType, campaign });
 
-  const invitation = await prisma.observerInvitation.create({
+  const invitation = await prisma.$transaction(async tx => {
+    if (scopedParticipant) await guardProgramSubmission(tx, scopedParticipant.campaignId, profile.id, "OBSERVER_360");
+    return tx.observerInvitation.create({
     data: {
       // Kriptográfiailag véletlen bearer token — a séma cuid() defaultja
       // részben megjósolható, publikus linkhez nem elég erős.
@@ -209,13 +224,14 @@ export async function POST(req: Request) {
       observerProfileId,
       observerEmail: targetEmail,
       observerName: targetName,
-      testType: profile.testType,
+      testType,
       status: needsApproval ? "AWAITING_APPROVAL" : "PENDING",
       expiresAt: new Date(Date.now() + OBSERVER_INVITE_TTL_DAYS * 24 * 60 * 60 * 1000),
       observerType,
       externalContext: parsed.data.externalContext ?? null,
       campaignId: campaign?.id ?? null,
     },
+  });
   });
 
   // Analitika: a meghívó-lánc első lépése (A3 kérdés). A címzett e-mail
@@ -268,7 +284,7 @@ export async function POST(req: Request) {
         "Failed to send observer invite email",
       );
       return NextResponse.json(
-        { error: "EMAIL_DELIVERY_FAILED", invitationId: invitation.id, emailSent: false },
+        { error: "EMAIL_DELIVERY_FAILED", invitationId: invitation.id, id: invitation.id, token: invitation.token, status: invitation.status, observerType: invitation.observerType, emailSent: false },
         { status: 502 },
       );
     }
@@ -302,3 +318,11 @@ export async function POST(req: Request) {
 // újranyitva a W1 differencia-csatornát, amit a results-oldal nap-pontos
 // csonkolása lezárt. Ha valaha kell listázó endpoint, nap-pontos completedAt-tel
 // és self-guarddal térjen vissza.
+
+export async function POST(req: Request) {
+  try { return await submitRequest(req); }
+  catch (error) {
+    if (error instanceof ProgramSubmissionError) return NextResponse.json({ error: error.code }, { status: error.code === "FORBIDDEN" ? 403 : 409 });
+    throw error;
+  }
+}

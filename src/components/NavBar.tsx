@@ -179,7 +179,8 @@ export function NavBar({
   if (
     currentPath.startsWith("/try") ||
     currentPath.startsWith("/assessment") ||
-    currentPath.startsWith("/observe")
+    currentPath.startsWith("/observe") ||
+    currentPath.startsWith("/apply/")
   ) return null;
 
   // A fejléc CTA-ja az ÚTVONALBÓL tudja, milyen közönségnek szól: a

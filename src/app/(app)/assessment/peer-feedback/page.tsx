@@ -41,13 +41,13 @@ export default async function PeerFeedbackPage() {
     orderBy: { addedAt: "asc" },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
         select: {
           id: true,
           name: true,
           type: true,
-          steps: true,
+          steps: true, programSnapshot: true,
           teamId: true,
           teamIds: true,
           peerFeedbackAnonymous: true,

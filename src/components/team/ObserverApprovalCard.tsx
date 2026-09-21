@@ -7,7 +7,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
+import { Card } from "@/components/ui/primitives/Card";
+import { Button } from "@/components/ui/primitives/Button";
+import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 
 export interface PendingObserverApproval {
   id: string;
@@ -47,7 +49,9 @@ export function ObserverApprovalCard({
       router.refresh();
     } catch {
       setError(
-        isHu ? "A döntést nem sikerült elmenteni. Próbáld újra!" : "Could not save the decision. Please retry.",
+        isHu
+          ? "A döntést nem sikerült elmenteni. Próbáld újra!"
+          : "Could not save the decision. Please retry.",
       );
     } finally {
       setDecidingId(null);
@@ -57,60 +61,75 @@ export function ObserverApprovalCard({
   return (
     <section>
       <DashboardSectionHeader
-        label={isHu ? "Jóváhagyásra váró külső értékelők" : "External observers awaiting approval"}
+        label={
+          isHu
+            ? "Jóváhagyásra váró külső értékelők"
+            : "External observers awaiting approval"
+        }
         className="mb-3"
       />
-      <DashboardPanel>
-        <p className="text-xs leading-relaxed text-muted">
+      <Card spacing="lg" className="@container">
+        <p className="max-w-3xl text-caption text-muted">
           {isHu
             ? "A futó mérés-kör szabálya szerint a szervezeten kívüli értékelő-meghívókhoz jóváhagyás kell. Jóváhagyáskor a meghívó e-mail azonnal kimegy."
             : "Per the running measurement round's rules, observer invites outside the organization need approval. On approval the invitation email goes out immediately."}
         </p>
-        <div className="mt-3 flex flex-col gap-2">
+        <ul className="mt-5 divide-y divide-border-default border-t border-border-default">
           {visible.map((a) => (
-            <div
+            <li
               key={a.id}
-              className="flex flex-col gap-2 rounded-xl border border-sand bg-cream/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+              className="flex min-w-0 flex-col gap-4 py-5 last:pb-0 @xl:flex-row @xl:items-center @xl:justify-between"
             >
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 {/* A címkék gyakran nyers e-mail címek – törés nélkül
                     kifutnának a kártyából (oldal-szintű vízszintes scroll). */}
-                <p className="break-words text-caption text-ink">
+                <p className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-body text-ink [overflow-wrap:anywhere]">
                   <span className="font-semibold">{a.inviterName}</span>
-                  {" → "}
+                  <span aria-hidden="true" className="text-muted">
+                    →
+                  </span>
                   <span className="font-semibold">{a.targetLabel}</span>
                 </p>
-                <p className="break-words text-note text-muted">
+                <p className="mt-1 text-caption text-muted [overflow-wrap:anywhere]">
                   {a.campaignName} ·{" "}
-                  {new Date(a.createdAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB", {
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  {new Date(a.createdAt).toLocaleDateString(
+                    isHu ? "hu-HU" : "en-GB",
+                    {
+                      month: "short",
+                      day: "numeric",
+                    },
+                  )}
                 </p>
               </div>
-              <div className="flex flex-wrap items-center gap-2 sm:shrink-0 sm:flex-nowrap">
-                <button
+              <div className="grid grid-cols-2 gap-2 @xl:flex @xl:shrink-0">
+                <Button
                   type="button"
                   disabled={decidingId !== null}
                   onClick={() => decide(a.id, "approve")}
-                  className="inline-flex min-h-[36px] items-center rounded-[10px] bg-sage px-4 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
                 >
                   {decidingId === a.id ? "…" : isHu ? "Jóváhagyom" : "Approve"}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   disabled={decidingId !== null}
                   onClick={() => decide(a.id, "decline")}
-                  className="inline-flex min-h-[36px] items-center rounded-[10px] border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:bg-cream disabled:opacity-50"
+                  variant="secondary"
                 >
                   {isHu ? "Elutasítom" : "Decline"}
-                </button>
+                </Button>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
-        {error ? <p className="mt-2 text-xs font-semibold text-state-warning-fg">{error}</p> : null}
-      </DashboardPanel>
+        </ul>
+        {error ? (
+          <p
+            role="alert"
+            className="mt-4 text-caption font-semibold text-state-warning-fg"
+          >
+            {error}
+          </p>
+        ) : null}
+      </Card>
     </section>
   );
 }

@@ -1,3 +1,4 @@
+import { safeParseProgram, activityStates, programActivityLink } from "@/lib/programs/core";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -60,15 +61,14 @@ export default async function MyMeasurementsPage() {
     orderBy: { campaign: { createdAt: "desc" } },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
-      stepCompletions: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
         select: {
           id: true,
           name: true,
           description: true,
           type: true,
-          steps: true,
+          steps: true, programSnapshot: true,
           teamId: true,
           teamIds: true,
           requireFreshResults: true,
@@ -126,7 +126,7 @@ export default async function MyMeasurementsPage() {
             // team/[id] oldallal közös szabály (invite-policy).
             ...sentObserverInviteWhere(),
           },
-          select: { status: true, createdAt: true, completedAt: true },
+          select: { campaignId: true, status: true, createdAt: true, completedAt: true },
         })
       : [];
 
@@ -152,12 +152,15 @@ export default async function MyMeasurementsPage() {
       const selfDone = selfResults.some((result) =>
         isSelfResultForCampaign(result, p.campaign),
       );
-      const doneFlags = steps.map((_, idx) =>
+      const program = safeParseProgram(p.campaign.programSnapshot);
+      const scopedInvites = myInvitations.filter(i => i.campaignId === p.campaign.id);
+      const activities = program ? activityStates(program, p.stepCompletions, { observerSent: scopedInvites.length, observerResponses: scopedInvites.filter(i => i.status === "COMPLETED").length }) : null;
+      const doneFlags = activities ? activities.map(a => a.state === "COMPLETED") : steps.map((_, idx) =>
         isCampaignStepDone(steps, idx, p, selfDone),
       );
       const doneCount = doneFlags.filter(Boolean).length;
       const currentIdx = doneFlags.findIndex((f) => !f);
-      const gateOpen = isStepGateOpen(p);
+      const gateOpen = program ? true : isStepGateOpen(p);
 
       // Rész-haladás a nyitott lépésen (értékelős lépések) + „megkezdte-e"
       // (OBSERVER_360-nál a szerver-oldali felmérés-piszkozat is számít).
@@ -176,19 +179,21 @@ export default async function MyMeasurementsPage() {
       const observer = steps.includes("OBSERVER_360")
         ? (() => {
             const relevant = myInvitations.filter(
-              (inv) => freshFrom === null || inv.createdAt.getTime() >= freshFrom,
+              (inv) => program ? inv.campaignId === p.campaign.id : freshFrom === null || inv.createdAt.getTime() >= freshFrom,
             );
             const received = myInvitations.filter(
               (inv) =>
                 inv.status === "COMPLETED" &&
+                (!program || inv.campaignId === p.campaign.id) &&
                 (freshFrom === null ||
                   (inv.completedAt && inv.completedAt.getTime() >= freshFrom)),
             ).length;
-            return { sent: relevant.length, received, min: OBSERVER_MIN_FOR_REVEAL };
+            return { sent: relevant.length, received, min: program?.policy.observerResponsesPerParticipant ?? OBSERVER_MIN_FOR_REVEAL };
           })()
         : null;
 
       return {
+        program: Boolean(program), activities, optionalSteps: program?.activities.filter(a => !a.required).map(a => a.key) ?? [],
         id: p.campaign.id,
         name: p.campaign.name,
         description: p.campaign.description,
@@ -197,7 +202,7 @@ export default async function MyMeasurementsPage() {
         doneCount,
         currentIdx,
         gateOpen,
-        nextStepOpensAt: p.nextStepOpensAt,
+        nextStepOpensAt: program ? null : p.nextStepOpensAt,
         partial,
         started,
         observer,
@@ -323,12 +328,13 @@ export default async function MyMeasurementsPage() {
 
                   <div className="mt-4 flex flex-col gap-2">
                     {card.steps.map((stepType, idx) => {
-                      const label = isCampaignStepType(stepType)
-                        ? CAMPAIGN_STEP_LABELS[stepType][loc === "en" ? "en" : "hu"]
+                      const baseLabel = isCampaignStepType(stepType)
+                        ? stepType === "OBSERVER_360" && card.program ? (loc === "hu" ? "Külső visszajelzés" : "Observer feedback") : CAMPAIGN_STEP_LABELS[stepType][loc === "en" ? "en" : "hu"]
                         : stepType;
+                      const label = card.optionalSteps.some(key => key === stepType) ? `${baseLabel} · ${t("programTrust.optional", loc)}` : baseLabel;
                       const isDone = card.doneFlags[idx];
-                      const isCurrent = idx === card.currentIdx;
-                      const link = isCampaignStepType(stepType)
+                      const isCurrent = card.activities ? ["AVAILABLE", "IN_PROGRESS", "WAITING"].includes(card.activities[idx].state) : idx === card.currentIdx;
+                      const link = card.program ? programActivityLink(stepType, card.id) : isCampaignStepType(stepType)
                         ? getCampaignStepLink(stepType, card.id)
                         : "/dashboard";
                       const started = isCurrent && card.started;
@@ -346,7 +352,7 @@ export default async function MyMeasurementsPage() {
                         <div
                           key={stepType}
                           className={[
-                            "flex flex-wrap items-center justify-between gap-2 rounded-xl border px-3.5 py-2.5",
+                            "grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl border px-3.5 py-2.5",
                             isDone
                               ? "border-sage/30 bg-sage/5"
                               : isCurrent
@@ -367,7 +373,7 @@ export default async function MyMeasurementsPage() {
                             >
                               {isDone ? "✓" : idx + 1}
                             </span>
-                            <span className="text-caption font-medium text-ink">
+                            <span className="min-w-0 break-words text-caption font-medium text-ink">
                               {label}
                             </span>
                             {isCurrent && card.partial && (
@@ -391,11 +397,11 @@ export default async function MyMeasurementsPage() {
                               </span>
                             )}
                           </span>
-                          <span className="shrink-0">
+                          <span className={observerGathering || (!isDone && isCurrent && card.gateOpen) ? "col-span-2 w-full sm:col-span-1 sm:w-auto" : "text-right"}>
                             {observerGathering ? (
                               <Link
                                 href="/profile/results?tab=comparison#observer-flow"
-                                className={getButtonClassName({ size: "sm" })}
+                                className={getButtonClassName({ size: "sm", className: "min-h-[44px] w-full whitespace-nowrap sm:w-auto" })}
                               >
                                 {observerGathering.sent < observerGathering.min
                                   ? tf("myTasks.observerAskCta", loc, {
@@ -410,7 +416,7 @@ export default async function MyMeasurementsPage() {
                             ) : isCurrent && card.gateOpen ? (
                               <Link
                                 href={link}
-                                className={getButtonClassName({ size: "sm" })}
+                                className={getButtonClassName({ size: "sm", className: "min-h-[44px] w-full whitespace-nowrap sm:w-auto" })}
                               >
                                 {started
                                   ? t("myTasks.stepOpen", loc)

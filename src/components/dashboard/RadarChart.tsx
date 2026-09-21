@@ -26,6 +26,7 @@ interface RadarChartProps {
   dimensions: RadarDimension[];
   showObserver?: boolean;
   uid?: string;
+  ariaLabel?: string;
 }
 
 function getPoint(index: number, total: number, radius: number) {
@@ -64,6 +65,7 @@ export const RadarChart = memo(function RadarChart({
   dimensions,
   showObserver = false,
   uid = "rc",
+  ariaLabel = "Radar chart",
 }: RadarChartProps) {
   const { locale } = useLocale();
 
@@ -126,7 +128,7 @@ export const RadarChart = memo(function RadarChart({
       preserveAspectRatio="xMidYMid meet"
       className="mx-auto h-full w-full overflow-visible"
       role="img"
-      aria-label="Radar chart"
+      aria-label={ariaLabel}
     >
       <defs>
         <radialGradient id={auraId} cx="50%" cy="50%">

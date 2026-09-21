@@ -50,6 +50,13 @@ async function lockPeerSubmissionCampaign(
   db: Prisma.TransactionClient,
   campaignId: string,
 ): Promise<boolean> {
+  const campaign = await db.campaign.findUnique({ where: { id: campaignId }, select: { programKey: true } });
+  // Program advancement uses an exclusive campaign lock. Acquire it first,
+  // avoiding SHARE → UPDATE upgrades by simultaneous raters.
+  if (campaign?.programKey) {
+    const rows = await db.$queryRaw<Array<{ id: string }>>`SELECT "id" FROM "Campaign" WHERE "id" = ${campaignId} FOR UPDATE`;
+    return rows.length > 0;
+  }
   const rows = await db.$queryRaw<Array<{ id: string }>>`
     SELECT "id"
     FROM "Campaign"
@@ -93,12 +100,12 @@ export async function lockAndValidatePeerSubmission(
     where: { campaignId_userId: { campaignId, userId: raterUserId } },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
         select: {
           status: true,
           type: true,
-          steps: true,
+          steps: true, programSnapshot: true,
           teamId: true,
           teamIds: true,
         },

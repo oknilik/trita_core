@@ -56,7 +56,7 @@ export async function resolveObserverFlowStatus(
       orderBy: { addedAt: "desc" },
       select: {
         campaign: {
-          select: { name: true, activatedAt: true, requireFreshResults: true },
+          select: { id: true, programKey: true, name: true, activatedAt: true, requireFreshResults: true },
         },
       },
     }),
@@ -78,6 +78,7 @@ export async function resolveObserverFlowStatus(
     where: {
       invitation: {
         inviterId: profileId,
+        ...(participant?.campaign.programKey ? { campaignId: participant.campaign.id } : {}),
         status: InvitationStatus.COMPLETED,
         ...(freshFrom ? { completedAt: { gte: freshFrom } } : {}),
       },

@@ -1,3 +1,4 @@
+import { completionMap } from "@/lib/programs/core";
 import { prisma } from "./prisma";
 import { extractDimensionScores } from "./scoring";
 import {
@@ -90,7 +91,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       description: true,
       status: true,
       type: true,
-      steps: true,
+      steps: true, programSnapshot: true,
       requireFreshResults: true,
       activatedAt: true,
       createdAt: true,
@@ -120,7 +121,7 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
         (p.stepCompletions &&
           typeof p.stepCompletions === "object" &&
           !Array.isArray(p.stepCompletions) &&
-          Object.keys(p.stepCompletions as Record<string, unknown>).length > 0),
+          Object.keys(completionMap(p.stepCompletions)).length > 0),
     );
   });
 

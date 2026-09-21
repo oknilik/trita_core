@@ -35,6 +35,7 @@ const postSchema = z.object({
     "remove_consultant",
     "update_billing",
     "set_career_module",
+    "set_candidate_programs",
     "set_org_status",
   ]),
   // Szervezet-státusz (set_org_status) — az org-admin danger zone-ból indított
@@ -46,6 +47,7 @@ const postSchema = z.object({
   billing: z.record(z.string(), z.string()).optional(),
   // Karrier-modul elrejtése az org tagjainak (set_career_module).
   hideCareerModule: z.boolean().optional(),
+  candidateProgramsEnabled: z.boolean().optional(),
   planType: z.enum(["team", "org", "scale"]).optional(),
   months: z.number().int().min(1).max(36).optional(),
   candidateCredits: z.number().int().min(0).max(1000).optional(),
@@ -68,6 +70,7 @@ export async function GET() {
       status: true,
       billingProfile: true,
       hideCareerModule: true,
+      candidateProgramsEnabled: true,
       createdAt: true,
       _count: {
         select: {
@@ -97,6 +100,7 @@ export async function GET() {
     orgs: orgs.map((org) => ({
       id: org.id,
       name: org.name,
+      candidateProgramsEnabled: org.candidateProgramsEnabled,
       status: org.status,
       createdAt: org.createdAt.toISOString(),
       memberCount: org._count.members,
@@ -144,6 +148,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
 
+  if (action === "set_candidate_programs") {
+    if (parsed.data.candidateProgramsEnabled === undefined) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+    await prisma.organization.update({ where: { id: orgId }, data: { candidateProgramsEnabled: parsed.data.candidateProgramsEnabled } });
+    return NextResponse.json({ ok: true });
+  }
   const now = new Date();
 
   // Cégadatok mentése (számlázáshoz) — csak admin felületen szerkeszthető.

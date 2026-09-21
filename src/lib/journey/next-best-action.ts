@@ -14,6 +14,7 @@ export type { JourneyNextBestAction, JourneyResolvedCta as ResolvedJourneyCta } 
 
 const LABELS: Record<JourneyResolverLocale, Record<JourneyActionId, string>> = {
   hu: {
+    COMPLETE_PROGRAM_ACTIVITY: "Folytasd a mérési programot",
     START_SELF_ASSESSMENT: "Indítsd el az önértékelést",
     CONTINUE_SELF_ASSESSMENT: "Folytasd a kérdőívet",
     REVIEW_SELF_RESULTS: "Nézd át a személyes eredményed",
@@ -30,6 +31,7 @@ const LABELS: Record<JourneyResolverLocale, Record<JourneyActionId, string>> = {
     VIEW_ORG_INSIGHTS: "Nyisd meg a szervezet eredményeit",
   },
   en: {
+    COMPLETE_PROGRAM_ACTIVITY: "Continue your diagnostic program",
     START_SELF_ASSESSMENT: "Start your self assessment",
     CONTINUE_SELF_ASSESSMENT: "Continue the questionnaire",
     REVIEW_SELF_RESULTS: "Review your self insights",
@@ -347,6 +349,10 @@ export function resolveNextBestAction(
   state: JourneyState,
   locale: JourneyResolverLocale = "en",
 ): JourneyNextBestAction {
+  if (state.recommendedNextAction?.id === "COMPLETE_PROGRAM_ACTIVITY") {
+    const toProgramCta = (a: NonNullable<typeof state.recommendedNextAction>) => ({ id: a.id, href: a.href, label: a.label?.[locale] ?? LABELS[locale].COMPLETE_PROGRAM_ACTIVITY });
+    return { stage: state.currentStage, primary: toProgramCta(state.recommendedNextAction), secondary: state.availableNextActions[1] ? toProgramCta(state.availableNextActions[1]) : null, explanation: locale === "hu" ? "Az elérhető feladatokat a visszajelzésekre várva is folytathatod." : "Available tasks can continue while feedback is pending." };
+  }
   const safeLocale: JourneyResolverLocale = locale === "hu" ? "hu" : "en";
   let resolved = resolveCtaIdsWithLocale(state, safeLocale);
 

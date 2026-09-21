@@ -1,82 +1,19 @@
-import { notFound } from "next/navigation";
-import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
+import { LocaleProvider } from "@/components/LocaleProvider";
+import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
-import { getTestConfig } from "@/lib/questions";
-import type { TestType } from "@prisma/client";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
-import { resolveCandidateApplyPageModel } from "@/lib/acceptance/service";
+import { loadCandidate, CandidateProgramError } from "@/lib/candidate-programs/service.server";
+import { candidateQuestions } from "@/lib/candidate-programs/core";
+import { AssessmentStatus } from "@/components/assessment/AssessmentFlowShell";
 import { CandidateClient } from "./CandidateClient";
-import { CandidateStateCard } from "./CandidateStateCard";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getServerLocale();
-  return {
-    title: t("candidate.metaTitle", locale),
-    robots: {
-      index: false,
-      follow: false,
-      nocache: true,
-      googleBot: { index: false, follow: false, noimageindex: true },
-    },
-  };
-}
-
-interface ApplyPageProps {
-  params: Promise<{ token: string }>;
-}
-
-export default async function ApplyPage({ params }: ApplyPageProps) {
-  const { token } = await params;
-  const locale = await getServerLocale();
-
-  const model = await resolveCandidateApplyPageModel({ token });
-  if (model.state === "invalid_token") {
-    notFound();
-  }
-  const invite = model.invite;
-
-  if (model.state === "already_accepted") {
-    return (
-      <CandidateStateCard
-        icon="🎉"
-        title={t("candidate.pageCompletedTitle", locale)}
-        body={t("candidate.pageCompletedBody", locale)}
-      />
-    );
-  }
-
-  if (model.state === "policy_restricted") {
-    return (
-      <CandidateStateCard
-        icon="🔒"
-        title={t("candidate.pageCanceledTitle", locale)}
-        body={t("candidate.pageCanceledBody", locale)}
-      />
-    );
-  }
-
-  if (model.state === "expired_token") {
-    return (
-      <CandidateStateCard
-        icon="⏰"
-        title={t("candidate.pageExpiredTitle", locale)}
-        body={t("candidate.pageExpiredBody", locale)}
-      />
-    );
-  }
-
-  const testType = invite.testType as TestType;
-  const config = getTestConfig(testType, locale, DEFAULT_ASSESSMENT_FORM);
-
-  return (
-    <CandidateClient
-      token={token}
-      position={invite.position ?? undefined}
-      testName={config.name}
-      questions={config.questions}
-      locale={locale}
-      includeTeamRole={invite.includeTeamRole}
-    />
-  );
+export const dynamic = "force-dynamic";
+export async function generateMetadata(): Promise<Metadata> { return { title: "Jelölti profil | trita", robots: { index: false, follow: false, nocache: true } }; }
+export default async function ApplyPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params; const locale = await getServerLocale();
+  const loaded = await loadCandidate(token).catch(e => { if (!(e instanceof CandidateProgramError)) throw e; return null; });
+  if (!loaded) return <AssessmentStatus tone="empty" title={t("candidateProgram.title", locale)} body={t("candidateProgram.unavailable", locale)} />;
+  const { invite, program } = loaded;
+  const org = await prisma.organization.findUnique({ where: { id: invite.orgId! }, select: { name: true } });
+  return <LocaleProvider initialLocale={locale}><CandidateClient organizationName={org?.name} candidateName={invite.name ?? undefined} token={token} locale={locale} position={invite.position ?? undefined} testName="TSFI" questions={candidateQuestions(program, locale)} initial={{ answers: invite.draftAnswers as Record<string, number> ?? {}, revision: invite.draftRevision, acknowledged: Boolean(invite.acknowledgedAt), submitted: invite.status === "COMPLETED", teamRoleState: invite.teamRoleState }} /></LocaleProvider>;
 }

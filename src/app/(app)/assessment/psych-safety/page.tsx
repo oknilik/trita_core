@@ -21,7 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
 // Pszichológiai biztonság pulse kitöltő — a bejelentkezett tag aktív,
 // még ki nem töltött PSYCH_SAFETY kampányát keresi meg. A válasz anonim
 // (lásd /api/psych-safety/submit).
-export default async function PsychSafetyPage() {
+export default async function PsychSafetyPage({ searchParams }: { searchParams: Promise<{ campaignId?: string }> }) {
+  const query = await searchParams;
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
   if (!userId) return redirectToSignIn();
 
@@ -42,19 +43,20 @@ export default async function PsychSafetyPage() {
       completedAt: null,
       campaign: {
         status: "ACTIVE",
+        ...(query.campaignId ? { id: query.campaignId } : {}),
         OR: [{ type: "PSYCH_SAFETY" }, { steps: { has: "PSYCH_SAFETY" } }],
       },
     },
     orderBy: { addedAt: "asc" },
     select: {
       currentStep: true,
-      nextStepOpensAt: true,
-      campaign: { select: { id: true, name: true, type: true, steps: true } },
+      nextStepOpensAt: true, stepCompletions: true,
+      campaign: { select: { id: true, name: true, type: true, steps: true, programSnapshot: true } },
     },
   });
-  const pending = candidates.find((p) =>
-    isStepOpenFor(p.campaign, p, "PSYCH_SAFETY"),
-  );
+  const available = candidates.filter(p => isStepOpenFor(p.campaign, p, "PSYCH_SAFETY"));
+  if (available.length > 1) return <main className="mx-auto max-w-3xl space-y-4 p-6"><h1>{locale === "hu" ? "Válassz mérési kört" : "Choose a measurement"}</h1>{available.map(p => <Link className="block min-h-[44px] p-3" key={p.campaign.id} href={`/assessment/psych-safety?campaignId=${encodeURIComponent(p.campaign.id)}`}>{p.campaign.name}</Link>)}</main>;
+  const pending = available[0];
 
   if (!pending) {
     return (

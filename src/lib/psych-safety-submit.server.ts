@@ -1,3 +1,4 @@
+import { guardProgramSubmission } from "@/lib/programs/submission.server";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import {
@@ -24,6 +25,7 @@ export async function recordAnonymousPsychSafetyResponse(input: {
   completedAt?: Date;
 }): Promise<{ created: boolean; openings: CampaignStepOpening[] }> {
   return prisma.$transaction(async (tx) => {
+    await guardProgramSubmission(tx, input.campaignId, input.profileId, "PSYCH_SAFETY");
     const claimed = await tx.campaignParticipant.updateMany({
       where: {
         id: input.participantId,

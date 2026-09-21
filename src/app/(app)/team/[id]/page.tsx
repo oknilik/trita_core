@@ -1,3 +1,4 @@
+import { programActivityLink } from "@/lib/programs/core";
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
@@ -166,13 +167,13 @@ export default async function TeamDetailPage({
       orderBy: { addedAt: "asc" },
       select: {
         currentStep: true,
-        nextStepOpensAt: true,
+        nextStepOpensAt: true, stepCompletions: true,
         campaign: {
           select: {
             id: true,
             name: true,
             type: true,
-            steps: true,
+            steps: true, programSnapshot: true,
             teamId: true,
             teamIds: true,
             requireFreshResults: true,
@@ -207,7 +208,7 @@ export default async function TeamDetailPage({
             campaignName: p.campaign.name,
             stepType,
             // Ütemezett (még zárt) lépés: időpontot mutatunk CTA helyett.
-            opensAt: !isStepGateOpen(p) ? p.nextStepOpensAt : null,
+            opensAt: !p.campaign.programSnapshot && !isStepGateOpen(p) ? p.nextStepOpensAt : null,
           }
         : null;
     })
@@ -249,6 +250,9 @@ export default async function TeamDetailPage({
         stepType: pendingMeasurementBase.stepType,
         opensAt: pendingMeasurementBase.opensAt,
         started: stepStarted,
+        href: pendingMeasurementBase.campaign.programSnapshot
+          ? programActivityLink(pendingMeasurementBase.stepType, pendingMeasurementBase.campaign.id)
+          : undefined,
       }
     : null;
 

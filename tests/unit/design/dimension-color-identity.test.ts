@@ -100,7 +100,7 @@ test("a fordított skálájú E ugyanolyan semleges kezelést kap, mint a többi
 const DIMENSION_SURFACES = [
   "src/components/results/DimensionAccordion.tsx",
   "src/components/results/AltruismCard.tsx",
-  "src/components/profile/ProfileTabs.tsx",
+  "src/components/results/PersonalityOverview.tsx",
   "src/components/landing/panels.tsx",
   "src/app/(app)/share/[token]/page.tsx",
   "src/components/pdf/components/PdfDimensionChart.tsx",
@@ -142,4 +142,10 @@ test("a kivezetett tierColors nem születik újra", () => {
   // A szöveges tier-címke ELLENBEN szándékosan megmarad.
   assert.ok(source.includes("export function getDimensionTier"));
   assert.ok(source.includes("export function getDimensionLabel"));
+});
+
+ test("individual and candidate profiles share the canonical overview", () => {
+  for (const file of ["src/components/profile/ProfileTabs.tsx", "src/components/candidate/CandidateReportWorkspace.tsx"]) {
+    assert.match(readCode(file), /<PersonalityOverview\b/, file);
+  }
 });

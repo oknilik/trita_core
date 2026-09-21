@@ -60,7 +60,7 @@ export async function POST(
       name: true,
       status: true,
       type: true,
-      steps: true,
+      steps: true, programSnapshot: true,
       requireFreshResults: true,
       activatedAt: true,
       participants: {

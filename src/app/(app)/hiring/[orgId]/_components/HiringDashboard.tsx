@@ -1,5 +1,7 @@
 "use client";
 
+import { CandidateCharacterCaption } from "@/components/candidate/CandidateCharacterCaption";
+import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { useState } from "react";
 import Link from "next/link";
 import { t, type Locale } from "@/lib/i18n";
@@ -40,6 +42,7 @@ interface SerializedInvite {
   teamId: string | null;
   teamName: string | null;
   hasResult: boolean;
+  artwork?: { primaryCode: string; secondaryCode: string; secondaryUncertain: boolean } | null;
   draftAnsweredCount: number;
   totalQuestions: number;
 }
@@ -52,6 +55,7 @@ interface CreditBalance {
 
 
 interface HiringDashboardProps {
+  baselines?: { id: string; teamId: string; title: string }[];
   orgId: string;
   orgName: string;
   teams: Team[];
@@ -115,11 +119,21 @@ function CandidateRow({
   }
 
   return (
-    <div className="rounded-2xl border border-sand bg-surface-card px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.03)] transition-shadow hover:shadow-[0_12px_30px_rgba(26,26,46,0.06)]">
+    <div className="rounded-2xl border border-sand bg-surface-card px-4 py-3 shadow-[var(--ui-shadow-sm)] transition-shadow hover:shadow-[var(--ui-shadow-md)]">
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-accent-candidate-soft text-note font-bold text-accent-candidate-strong">
-          {initial}
-        </div>
+        {invite.artwork ? (
+          <TypeGlyph
+            {...invite.artwork}
+            typeLabel={t("candidateProgram.personalityArtwork", locale)}
+            locale={locale}
+            variant="badge"
+            className="h-16 w-16 shrink-0 rounded-[var(--ui-radius-lg)]"
+          />
+        ) : (
+          <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[var(--ui-radius-lg)] bg-accent-candidate-soft text-note font-bold text-accent-candidate-strong">
+            {initial}
+          </div>
+        )}
         <div className="min-w-0 flex-1">
           <p className="truncate text-caption font-semibold text-ink">
             {displayName}
@@ -129,6 +143,7 @@ function CandidateRow({
             {invite.teamName && `${invite.teamName} · `}
             {new Date(invite.createdAt).toLocaleDateString(dateLocale)}
           </p>
+          {invite.artwork && <CandidateCharacterCaption artwork={invite.artwork} locale={locale} />}
           {invite.status === "PENDING" && !isExpired && invite.draftAnsweredCount > 0 && (
             <div className="mt-2 flex items-center gap-2">
               <div className="h-1 flex-1 overflow-hidden rounded-full bg-warm-mid">
@@ -226,6 +241,7 @@ function CandidateSection({
 }
 
 export function HiringDashboard({
+  baselines = [],
   orgId,
   orgName,
   teams,
@@ -451,6 +467,7 @@ export function HiringDashboard({
           </div>
           <div className="p-5 sm:p-6">
             <CandidateInviteForm
+              baselines={baselines}
               locale={locale}
               teams={teams}
               orgId={orgId}

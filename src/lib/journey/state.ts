@@ -50,6 +50,7 @@ function buildActionMap(context: JourneyContextSnapshot): Record<JourneyActionId
   const orgCampaignHref = context.orgId ? `/org/${context.orgId}/campaigns/new` : "/org";
 
   return {
+    COMPLETE_PROGRAM_ACTIVITY: { id: "COMPLETE_PROGRAM_ACTIVITY", href: "/tasks", scope: "team" },
     START_SELF_ASSESSMENT: { id: "START_SELF_ASSESSMENT", href: "/assessment", scope: "self" },
     CONTINUE_SELF_ASSESSMENT: { id: "CONTINUE_SELF_ASSESSMENT", href: "/assessment", scope: "self" },
     REVIEW_SELF_RESULTS: { id: "REVIEW_SELF_RESULTS", href: "/profile/results", scope: "self" },
@@ -267,7 +268,16 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
 
 export function computeJourneyState(context: JourneyContextSnapshot): JourneyState {
   const currentStage = computeStage(context);
-  const availableNextActions = computeActions(currentStage, context);
+  const baseActions = computeActions(currentStage, context);
+  const programActions: JourneyAction[] = (context.programs ?? []).flatMap(p =>
+    p.activities.filter(a => ["AVAILABLE", "IN_PROGRESS"].includes(a.state)).map(a => ({
+      id: "COMPLETE_PROGRAM_ACTIVITY" as const, href: a.href, scope: "team" as const, label: a.label,
+    })),
+  );
+  const managesWorkspace = ["org-admin", "org-manager"].includes(context.currentContext);
+  const availableNextActions = managesWorkspace
+    ? [...baseActions, ...programActions]
+    : programActions.length ? programActions : baseActions;
 
   return {
     currentStage,

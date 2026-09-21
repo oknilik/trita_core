@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
 import type {
@@ -7,6 +7,8 @@ import type {
 } from "@/components/profile/ProfileTabs";
 
 const showToast = vi.fn();
+const refresh = vi.fn();
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));
 
 vi.mock("@/components/LocaleProvider", () => ({
   useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
@@ -102,5 +104,31 @@ describe("InvitationsTab – új observer design", () => {
       expect(screen.getByText("Aurora Levente")).toBeInTheDocument();
     });
     expect(screen.getByRole("button", { name: /Meghívom/i })).toHaveClass("min-h-[44px]");
+  });
+});
+
+
+describe("invitation creation feedback", () => {
+  for (const deliveryFailed of [false, true]) {
+    it(deliveryFailed ? "shows the persisted invite even when email delivery fails" : "shows successful creation immediately and refreshes server state", async () => {
+      const fetcher = vi.fn().mockImplementation(async (_url, options) => options?.method === "POST"
+        ? new Response(JSON.stringify({ id: "new", token: "new-token", status: "PENDING", emailSent: !deliveryFailed, ...(deliveryFailed ? { error: "EMAIL_DELIVERY_FAILED" } : {}) }), { status: deliveryFailed ? 502 : 200 })
+        : new Response(JSON.stringify({ colleagues: [] })));
+      vi.stubGlobal("fetch", fetcher);
+      refresh.mockClear();
+      render(<InvitationsTab sentInvitations={[]} receivedInvitations={[]} isPlus campaignId="campaign" />);
+      fireEvent.change(screen.getByRole("textbox"), { target: { value: "new@example.com" } });
+      fireEvent.click(screen.getByRole("button", { name: /Létrehozás/i }));
+      await waitFor(() => expect(screen.getByText("new@example.com")).toBeInTheDocument());
+      expect(screen.getByRole("status")).toHaveTextContent(deliveryFailed ? "email küldése nem sikerült" : "emailt elküldtük");
+      expect(refresh).toHaveBeenCalledOnce();
+      expect(screen.getByRole("textbox")).toHaveValue("");
+    });
+  }
+  it("accepts refreshed server invitation props without a page reload", () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ colleagues: [] }))));
+    const { rerender } = render(<InvitationsTab sentInvitations={[]} receivedInvitations={[]} isPlus />);
+    rerender(<InvitationsTab sentInvitations={SENT} receivedInvitations={[]} isPlus />);
+    expect(screen.getByText("observer@example.com")).toBeInTheDocument();
   });
 });

@@ -69,6 +69,7 @@ async function createOrgAndTeam(ownerId: string) {
       name: `Org ${makeId("name")}`,
       ownerId,
       status: "ACTIVE",
+      candidateProgramsEnabled: true,
     },
   });
 

@@ -1,3 +1,4 @@
+import { createCandidateProgram } from "@/lib/candidate-programs/core";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
@@ -104,6 +105,7 @@ async function createOrgInvite(orgId: string, email?: string, role = "ORG_MEMBER
 
 async function createCandidateInvite(options: {
   managerId: string;
+  orgId?: string;
   teamId?: string | null;
   status?: "PENDING" | "COMPLETED" | "CANCELED";
   expiresAt?: Date;
@@ -114,6 +116,7 @@ async function createCandidateInvite(options: {
       id: makeId("candidate_invite"),
       token: options.token ?? makeId("candidate_token"),
       managerId: options.managerId,
+      ...(options.orgId ? { orgId: options.orgId, programSnapshot: createCandidateProgram() } : {}),
       teamId: options.teamId ?? null,
       email: `${makeId("candidate")}@integration.trita.app`,
       name: "Candidate Integration",
@@ -429,15 +432,18 @@ test("pending assessment + join: journey handoff keeps destination on /assessmen
 });
 
 test("relevant apply endpoints: /api/candidate/[token] handles invalid, expired and already accepted states", async () => {
-  const { owner, team } = await createOrgGraph();
+  const { owner, team, org } = await createOrgGraph();
+  await prisma.organization.update({ where: { id: org.id }, data: { candidateProgramsEnabled: true } });
   const completedInvite = await createCandidateInvite({
     managerId: owner.id,
+    orgId: org.id,
     teamId: team.id,
     status: "COMPLETED",
     expiresAt: FUTURE,
   });
   const expiredInvite = await createCandidateInvite({
     managerId: owner.id,
+    orgId: org.id,
     teamId: team.id,
     status: "PENDING",
     expiresAt: PAST,
@@ -447,15 +453,15 @@ test("relevant apply endpoints: /api/candidate/[token] handles invalid, expired 
     new Request(`http://localhost/api/candidate/${completedInvite.token}`),
     { params: Promise.resolve({ token: completedInvite.token }) },
   );
-  assert.equal(completedResponse.status, 410);
-  assert.equal((await completedResponse.json()).error, "ALREADY_USED");
+  assert.equal(completedResponse.status, 200);
+  assert.equal((await completedResponse.json()).submitted, true);
 
   const expiredResponse = await candidateLookupGET(
     new Request(`http://localhost/api/candidate/${expiredInvite.token}`),
     { params: Promise.resolve({ token: expiredInvite.token }) },
   );
-  assert.equal(expiredResponse.status, 410);
-  assert.equal((await expiredResponse.json()).error, "INVITE_EXPIRED");
+  assert.equal(expiredResponse.status, 409);
+  assert.equal((await expiredResponse.json()).error, "EXPIRED");
 
   const invalidResponse = await candidateLookupGET(
     new Request("http://localhost/api/candidate/invalid-token"),
@@ -466,9 +472,11 @@ test("relevant apply endpoints: /api/candidate/[token] handles invalid, expired 
 });
 
 test("relevant apply endpoint: /api/candidate/[token]/progress mutates draft progress for ready invite", async () => {
-  const { owner, team } = await createOrgGraph();
+  const { owner, team, org } = await createOrgGraph();
+  await prisma.organization.update({ where: { id: org.id }, data: { candidateProgramsEnabled: true } });
   const pendingInvite = await createCandidateInvite({
     managerId: owner.id,
+    orgId: org.id,
     teamId: team.id,
     status: "PENDING",
     expiresAt: FUTURE,
@@ -478,13 +486,13 @@ test("relevant apply endpoint: /api/candidate/[token]/progress mutates draft pro
     new Request(`http://localhost/api/candidate/${pendingInvite.token}/progress`, {
       method: "PATCH",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ answeredCount: 17 }),
+      body: JSON.stringify({ expectedRevision: 0, acknowledge: true, answers: Object.fromEntries(createCandidateProgram().questionIds.slice(0, 17).map(id => [id, 3])) }),
     }) as unknown as Parameters<typeof candidateProgressPATCH>[0],
     { params: Promise.resolve({ token: pendingInvite.token }) },
   );
 
   assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), { ok: true });
+  assert.deepEqual(await response.json(), { revision: 1 });
 
   const updated = await prisma.candidateInvite.findUnique({
     where: { id: pendingInvite.id },

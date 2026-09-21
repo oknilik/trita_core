@@ -16,6 +16,10 @@ export {
 import { createTranslator, mergeDomains } from "./core";
 
 // ── Domain imports ──────────────────────────────────────────────────────────
+import { programUiTranslations } from "./program-ui";
+import { programReviewTranslations } from "./program-review";
+import { candidateSuggestionTranslations } from "./candidate-suggestions";
+import { candidateProgramTranslations } from "./candidate-program";
 import { operatingStyleTranslations } from "./team-operating-style";
 import { commonTranslations } from "./common";
 import { landingTranslations } from "./landing";
@@ -32,6 +36,10 @@ import { legalTranslations } from "./legal";
 
 // ── Merged dictionary ───────────────────────────────────────────────────────
 const translations = mergeDomains([
+  programUiTranslations,
+  programReviewTranslations,
+  candidateSuggestionTranslations,
+  candidateProgramTranslations,
   operatingStyleTranslations,
   commonTranslations,
   landingTranslations,

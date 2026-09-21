@@ -1,3 +1,4 @@
+import { ProgramSubmissionError } from "@/lib/programs/submission.server";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
@@ -25,7 +26,7 @@ const bodySchema = z.object({
  * - A kitöltöttség tényét a résztvevő-rekordon jelöljük, értékek nélkül —
  *   ez kell az emlékeztetőkhöz és a lefedettség kijelzéséhez.
  */
-export async function POST(req: NextRequest) {
+async function submitRequest(req: NextRequest) {
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -50,9 +51,9 @@ export async function POST(req: NextRequest) {
       id: true,
       completedAt: true,
       currentStep: true,
-      nextStepOpensAt: true,
+      nextStepOpensAt: true, stepCompletions: true,
       campaign: {
-        select: { id: true, type: true, status: true, steps: true, teamId: true, teamIds: true },
+        select: { id: true, type: true, status: true, steps: true, programSnapshot: true, teamId: true, teamIds: true },
       },
     },
   });
@@ -107,4 +108,12 @@ export async function POST(req: NextRequest) {
   await handleCampaignProgressMilestone(body.data.campaignId);
 
   return NextResponse.json({ ok: true });
+}
+
+export async function POST(req: NextRequest) {
+  try { return await submitRequest(req); }
+  catch (error) {
+    if (error instanceof ProgramSubmissionError) return NextResponse.json({ error: error.code }, { status: error.code === "FORBIDDEN" ? 403 : 409 });
+    throw error;
+  }
 }
