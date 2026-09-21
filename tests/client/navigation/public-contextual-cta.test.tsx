@@ -116,6 +116,7 @@ describe("publikus footer – menüstruktúra", () => {
     expect(Array.from(exploreLinks ?? []).map((link) => [link.textContent, link.getAttribute("href")])).toEqual([
       ["Egyéni", "/"],
       ["Csapatoknak", "/team-dynamics"],
+      ["Működési minták", "/operating-patterns"],
       ["Blog", "/blog"],
       ["Árazás", "/pricing"],
     ]);

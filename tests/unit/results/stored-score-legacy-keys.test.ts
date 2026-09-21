@@ -105,7 +105,6 @@ const STORED_SCORE_READERS = [
   "src/app/(app)/share/[token]/page.tsx",
   "src/app/(app)/career/page.tsx",
   "src/app/(app)/interaction/page.tsx",
-  "src/app/api/team/[id]/pattern/route.ts",
   "src/lib/share-og.ts",
   "src/lib/member-dossier.server.ts",
   "src/lib/notifications/sweep.ts",
@@ -144,4 +143,12 @@ test("nyers scores.dimensions / scores.facets indexelés nem tér vissza", () =>
       `${file}: nyers facets-indexelés – örökség-soron üres facet-listát ad`,
     );
   }
+});
+
+test("team pattern uses published operating measurements, never personality scores", () => {
+  const source = read("src/app/api/team/[id]/pattern/route.ts");
+  assert.match(source, /getLatestPublishedReport\(teamId\)/);
+  assert.match(source, /aggregates\?\.teamStyle/);
+  assert.match(source, /operatingIdentity\(snapshot/);
+  assert.doesNotMatch(source, /extractDimensionScores|assessmentResult|dimensions\[/);
 });

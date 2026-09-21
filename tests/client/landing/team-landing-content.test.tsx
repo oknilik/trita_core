@@ -36,7 +36,9 @@ describe("csapat-oldal (egyesített)", () => {
     const preview = container.querySelector("[data-landing-hero-preview]");
     expect(preview).not.toBeNull();
     expect(container.querySelector('[data-landing-preview-detail="team-narrative"]')).not.toBeNull();
-    expect(screen.getByText("Családi Vállalkozás")).toBeInTheDocument();
+    expect(within(preview as HTMLElement).getByText("Személyiség-összetétel")).toBeInTheDocument();
+    expect(within(preview as HTMLElement).getByText("Tanácsadói értékelés")).toBeInTheDocument();
+    expect(screen.queryByText("Családi Vállalkozás")).not.toBeInTheDocument();
   });
 
   it("az elsődleges út az egyeztetés, az árak és a pilot másodlagosak", () => {
