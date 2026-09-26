@@ -16,7 +16,7 @@ export const commonTranslations = {
       en: "Couldn't load the organization data",
     },
     assessmentTitle: {
-      hu: "Hiba a teszt betöltésekor",
+      hu: "Nem sikerült betölteni a tesztet",
       en: "Error loading the assessment",
     },
     body: {
@@ -109,7 +109,7 @@ export const commonTranslations = {
     // magyarul"), nem a felszólítással — a snippet első
     // szavai döntik el, hogy a találat relevánsnak látszik-e.
     description: {
-      hu: "Személyiségteszt magyarul, hat dimenzió mentén: vesd össze az önértékelésed a környezeted visszajelzésével, és lásd tisztán a csapatod működését.",
+      hu: "Személyiségteszt magyarul, hat dimenzió mentén. Vesd össze az önértékelésed mások visszajelzésével, és ismerd meg jobban, hogyan dolgoztok együtt a csapatodban.",
       en: "A personality test across six dimensions: compare your self-image with feedback from people who know you, and see how your team really works.",
     },
     assessmentTitle: {
@@ -352,8 +352,8 @@ export const commonTranslations = {
     tag: { hu: "Tanácsadói program", en: "Coach program" },
     title: { hu: "Csatlakozz tanácsadóként", en: "Become a coach on trita" },
     subtitle: {
-      hu: "Segíts ügyfeleidnek jobban megismerni önmagukat a személyiségfelmérés eredményeivel és a mesterséges intelligencia támogatásával készült kiértékeléssel.",
-      en: "Help your clients understand themselves more deeply with validated personality data and AI-powered debriefs.",
+      hu: "A személyiségfelmérés és a hozzá tartozó magyarázatok segítenek beszélgetést indítani az ügyfeleid tapasztalatairól, erősségeiről és nehézségeiről.",
+      en: "Use the personality assessment and its explanations to start conversations about your clients' experiences, strengths, and difficulties.",
     },
     featuresTitle: { hu: "Mit kapsz?", en: "What you get" },
     feature1Title: { hu: "Ügyfélkezelés", en: "Client management" },
@@ -361,10 +361,10 @@ export const commonTranslations = {
       hu: "Egy helyen tekintheted át ügyfeleid személyiségprofilját, és vetheted össze az önértékelésüket mások visszajelzéseivel.",
       en: "View your clients' personality profiles, self-assessments, and observer comparisons in one place.",
     },
-    feature2Title: { hu: "Kiértékelés mesterséges intelligenciával", en: "AI-generated debrief" },
+    feature2Title: { hu: "Értelmezés és gyakorlati javaslatok", en: "Interpretation and practical suggestions" },
     feature2Body: {
-      hu: "Minden ügyfélhez személyre szabott tanácsadói összefoglaló készül az erősségeiről és a fejlődési lehetőségeiről, a beszélgetést segítő kérdésekkel.",
-      en: "A personalized coaching debrief is generated for each client, covering strengths, development areas, and targeted coaching questions.",
+      hu: "Az eredményeket szöveges magyarázatok és gyakorlati javaslatok egészítik ki. Ezekből kiindulva beszélhettek arról, mire ismer rá az ügyfeled, és min szeretne változtatni.",
+      en: "Results come with written explanations and practical suggestions. Use them to discuss what your client recognizes and what they would like to change.",
     },
     feature3Title: { hu: "Önértékelés és mások visszajelzései", en: "Self-image vs. how others see them" },
     feature3Body: {
@@ -373,7 +373,7 @@ export const commonTranslations = {
     },
     forTitle: { hu: "Kinek szól?", en: "Who is it for?" },
     forItems: {
-      hu: "Tanúsított coachok (ICF, EMCC)|HR szakemberek és szervezetfejlesztők|Pszichológusok és tanácsadók|Karriercoachok és mentálhigiénés szakemberek",
+      hu: "Minősített coachok (ICF, EMCC)|HR-szakemberek és szervezetfejlesztők|Pszichológusok és tanácsadók|Karrier-tanácsadók és mentálhigiénés szakemberek",
       en: "Certified coaches (ICF, EMCC)|HR professionals and OD consultants|Psychologists and counselors|Career coaches and wellbeing professionals",
     },
     formTitle: { hu: "Jelentkezés", en: "Apply now" },
@@ -404,7 +404,7 @@ export const commonTranslations = {
     submitting: { hu: "Küldés...", en: "Submitting..." },
     successTitle: { hu: "Köszönjük a jelentkezést!", en: "Thank you for applying!" },
     successBody: {
-      hu: "Megkaptuk a kérelmedet. Hamarosan felvesszük veled a kapcsolatot az általad megadott e-mail-címen.",
+      hu: "Megkaptuk a jelentkezésedet. Hamarosan írunk a megadott e-mail-címedre.",
       en: "We received your application. We will get back to you shortly at the email address you provided.",
     },
     errorGeneric: {
@@ -426,7 +426,7 @@ export const commonTranslations = {
     title: { hu: "Írj nekünk.", en: "Write to us." },
     titleEm: { hu: "Pár mondat is elég.", en: "A few lines are enough." },
     subtitle: {
-      hu: "Demó, árazás, partnerség, támogatás vagy bármi más – jó helyen jársz. Az üzeneted közvetlenül a csapathoz érkezik.",
+      hu: "Kérj bemutatót, érdeklődj az árakról vagy az együttműködésről. Akkor is írj, ha elakadtál valamiben: az üzeneted közvetlenül a csapathoz érkezik.",
       en: "Demo, pricing, partnerships, support, or anything else – you're in the right place. Your message goes straight to the team.",
     },
     heroCta: { hu: "Írok nektek", en: "Send a message" },
@@ -447,7 +447,7 @@ export const commonTranslations = {
 
     // Info cards
     infoTitle: { hu: "Mi történik beküldés után?", en: "What happens next?" },
-    infoBody: { hu: "Az üzeneted közvetlenül a csapathoz érkezik, a válasz e-mailben jön.", en: "Your message goes to the team directly. We reply by email." },
+    infoBody: { hu: "A csapat elolvassa az üzenetedet, és e-mailben válaszol.", en: "Your message goes to the team directly. We reply by email." },
     responseTitle: { hu: "Válaszidő", en: "Response time" },
     responseBody: { hu: "Munkanapokon jellemzően 24 órán belül.", en: "Usually within 24 hours on business days." },
     legalTitle: { hu: "Adatkezelés", en: "Data handling" },

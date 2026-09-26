@@ -45,7 +45,7 @@ export const CAMPAIGN_PRESETS: Record<
 > = {
   SCAN_STYLE_V1: {
     label: { hu: "Csapatkép és működés", en: "Team profile and operating style" },
-    description: { hu: "Csapatműködés, friss személyiségkép, bizalmi háló és pszichológiai biztonság – két mintázat egy riportban.", en: "Operating style, fresh personality profiles, trust and psychological safety – two patterns in one report." },
+    description: { hu: "Felmérjük a közös munkaszokásokat, az egyéni személyiségjellemzőket, a bizalmi kapcsolatokat és a pszichológiai biztonságot. A riportban a mért működést a személyiségprofilokkal is összevethetitek.", en: "Operating style, fresh personality profiles, trust and psychological safety – two patterns in one report." },
     steps: ["TEAM_OPERATING_STYLE", "SELF_ASSESSMENT", "TRUST_360", "PSYCH_SAFETY"],
     requireFreshResults: true,
   },

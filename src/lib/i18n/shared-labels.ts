@@ -11,6 +11,6 @@ export const sharedLabelTranslations = {
     roleFitEyebrow: { hu: "Munkaköri illeszkedés", en: "Work-role fit" },
   },
   content: {
-    roleFitStrong: { hu: "Jól illeszkedsz ide", en: "You fit well here" },
+    roleFitStrong: { hu: "Szerepek, amelyek közel állhatnak hozzád", en: "Roles that may suit you" },
   },
 };

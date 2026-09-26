@@ -301,7 +301,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   </p>
                   <p className="mt-1 text-xs leading-relaxed text-ink-body">
                     {isHu
-                      ? "A csapatszintű eredményeket a tanácsadó összesíti és jóváhagyja – a személyes beszélgetések tanulságaival együtt, összesítve lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
+                      ? "A tanácsadó most összegzi és értelmezi a csapat eredményeit. Jóváhagyás után az összesített adatokat és az értékelést is elolvashatod. Addig ezen az oldalon követheted a kitöltések haladását."
                       : "Team-level results are aggregated and approved by your consultant – they become available in aggregate form, together with insights from the personal interviews. Until then you can track completion progress on this page."}
                   </p>
                 </div>

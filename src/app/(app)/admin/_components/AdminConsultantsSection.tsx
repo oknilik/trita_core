@@ -135,8 +135,8 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
       const data = await res.json();
       setInviteMessage(
         data.appliedNow
-          ? "Kész – a fiók már létezett, azonnal tanácsadó lett."
-          : "Meghívó rögzítve – regisztrációkor automatikusan tanácsadó lesz.",
+          ? "A meglévő fiók megkapta a tanácsadói hozzáférést."
+          : "A meghívót rögzítettük. Regisztrációkor automatikusan megkapja a tanácsadói hozzáférést.",
       );
       setInviteEmail("");
       setInviteNote("");

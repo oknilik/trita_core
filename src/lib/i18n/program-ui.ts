@@ -1,7 +1,7 @@
 export const programUiTranslations = {
   programUi: {
     wizardTitle: {
-      hu: "Diagnosztikai program",
+      hu: "Mérési program",
       en: "Diagnostic program",
     },
     team: {
@@ -21,7 +21,7 @@ export const programUiTranslations = {
       en: "No compatible published Team Scan",
     },
     rosterHelp: {
-      hu: "A csapat tagjai résztvevőként kerülnek a vázlatba. A névsort aktiválás előtt ellenőrizheted; legalább három résztvevő szükséges.",
+      hu: "A piszkozat résztvevői közé felvesszük a csapat tagjait. Indítás előtt ellenőrizd a névsort; legalább három résztvevő szükséges.",
       en: "Team members are added to the draft. Review the roster before activation; at least three participants are required.",
     },
     saveError: {
@@ -29,7 +29,7 @@ export const programUiTranslations = {
       en: "Could not save. Check access and the baseline, then retry.",
     },
     createDraft: {
-      hu: "Programvázlat létrehozása",
+      hu: "Programpiszkozat létrehozása",
       en: "Create program draft",
     },
     unsupported: {
@@ -65,7 +65,7 @@ export const programUiTranslations = {
       en: "Reviewed",
     },
     draftAwaitingReview: {
-      hu: "Vázlat, jóváhagyásra vár",
+      hu: "Piszkozat, jóváhagyásra vár",
       en: "Draft, awaiting review",
     },
     reviewChecksData: {
@@ -93,7 +93,7 @@ export const programUiTranslations = {
       en: "Change from baseline",
     },
     cohortChanged: {
-      hu: "A résztvevői kör változott: az eltérés összetételváltozást is tükrözhet.",
+      hu: "A két mérésben nem ugyanazok vettek részt. A pontszámok eltérését ez is magyarázhatja.",
       en: "The participant cohort changed; differences may also reflect composition changes.",
     },
     descriptiveDifference: {

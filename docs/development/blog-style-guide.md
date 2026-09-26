@@ -95,8 +95,8 @@ Magyar kkv- és csapatvezetők, HR-esek, valamint önmegismerés iránt
 
 - A cél a visszakereshetőség, nem az ív. Beszédes H2-k.
 - Ne jelentsd be, mit fogsz csinálni. Kezdd a legerősebb állítással.
-- Párhuzamos elemeknél a lista indokolt, a lenti hosszkorlát nem
-  érvényes.
+- Párhuzamos elemeket felsorolásban is bemutathatsz, ha így könnyebb
+  visszakeresni őket.
 - Minden absztrakt leírás mellé egy fél mondat konkrétum arról, hol
   bukkan fel a gyakorlatban.
 - Zárás: a korlátok őszinte megnevezése, majd egy továbbvezető link.

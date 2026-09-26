@@ -136,7 +136,8 @@ describe("TeamInsights", () => {
     const text = document.body.textContent ?? "";
     expect(/empát|empat/i.test(text)).toBe(false);
     // A kártya a mért facetekhez igazodó szókincset használja.
-    expect(text).toContain("kompromisszum");
+    expect(text).toContain("türelemmel fordulhattok egymáshoz");
+    expect(text).toContain("engedhettek egy vitában");
   });
 
   it("az alacsony Barátságosság kártyája kétoldalú (hozadék ÉS ár)", () => {
@@ -144,8 +145,9 @@ describe("TeamInsights", () => {
 
     const text = document.body.textContent ?? "";
     expect(/empát|empat/i.test(text)).toBe(false);
-    // Nem hiányként keretez: ott a hozadék („őszinte") és az ára („Cserébe").
-    expect(text).toContain("Cserébe");
+    // A saját álláspont képviseletének előnye és nehézsége is szerepel.
+    expect(text).toContain("segíthet kimondani az ellenvetéseket");
+    expect(text).toContain("megnehezítheti a megegyezést");
   });
 });
 

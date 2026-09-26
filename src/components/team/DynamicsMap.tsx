@@ -61,8 +61,8 @@ const DIM_LABELS: Record<string, { hu: string; en: string }> = {
 const DIM_FRICTION_HINT: Record<string, { hu: string; en: string }> = {
   C: { hu: "Eltérő munkaszervezés és határidő-kezelés", en: "Different work organization and deadline approach" },
   A: { hu: "Eltérő kommunikációs stílus és konfliktuskezelés", en: "Different communication style and conflict approach" },
-  H: { hu: "Eltérő motivációs minták és bizalmi beállítódás", en: "Different motivational patterns and trust orientation" },
-  E: { hu: "Eltérő érzelmi igények és stresszválasz", en: "Different emotional needs and stress response" },
+  H: { hu: "Eltérő szempontok a méltányosság és az egyéni érdekek megítélésében", en: "Different motivational patterns and trust orientation" },
+  E: { hu: "Eltérő érzelmi érzékenység és reakció a feszültségre", en: "Different emotional needs and stress response" },
   X: { hu: "Eltérő energiaszint és a társas kapcsolatok iránti igény", en: "Different energy level and interaction needs" },
   O: { hu: "Eltérő hozzáállás az újdonsághoz és változáshoz", en: "Different attitude toward novelty and change" },
 };
@@ -428,7 +428,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
         {hasMeasuredEdges ? (
           <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
-              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} kapcsolat), a többi profilalapú becslés.`
+              ? `${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} kapcsolat a bizalmi kör válaszaiból származik. A többit a személyiségprofilokból becsüljük.`
               : `Some connections are MEASURED from a trust round (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} connections); the rest are profile-based estimates.`}
           </p>
         ) : (

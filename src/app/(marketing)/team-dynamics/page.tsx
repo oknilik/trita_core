@@ -18,7 +18,7 @@ const seoIntent = SEO_INTENTS.teamDynamics;
 const path = seoIntent.path;
 const title = "Csapatdiagnosztika és csapatfejlesztés – értsétek meg, hogyan működtök együtt | trita";
 const description =
-  "Csapatszerepek, bizalmi háló és pszichológiai biztonság egy tanácsadó által értelmezett csapatképben. Három lépés a közös munkáig, fejenkénti ár, gyakori kérdések.";
+  "Ismerjétek meg a csapatszerepeket, a bizalmi kapcsolatokat és a pszichológiai biztonságot a csapatotokban. Tanácsadó segít értelmezni az eredményeket.";
 
 export const metadata: Metadata = buildPageMetadata({
   path,

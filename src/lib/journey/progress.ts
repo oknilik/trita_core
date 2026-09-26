@@ -172,7 +172,7 @@ function computeOrgScopeProgress(context: JourneyContextSnapshot): JourneyScopeP
       {
         id: "org_teams_active",
         label: {
-          hu: "Aktív csapatstruktúra",
+          hu: "Csapatok létrehozva",
           en: "Active team structure",
         },
         done: org.teamCount > 0,
@@ -188,7 +188,7 @@ function computeOrgScopeProgress(context: JourneyContextSnapshot): JourneyScopeP
       {
         id: "org_campaign_active",
         label: {
-          hu: "Aktív szervezeti kampány",
+          hu: "Szervezeti mérés folyamatban",
           en: "Active organization campaign",
         },
         done: org.activeCampaignCount > 0,

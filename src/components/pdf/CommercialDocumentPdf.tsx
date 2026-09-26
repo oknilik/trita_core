@@ -461,7 +461,7 @@ function ProposalOverview({ snapshot }: { snapshot: CommercialDocumentSnapshot }
           </View>
           <View style={s.half}>
             <Text style={s.subhead}>Közös feldolgozás</Text>
-            <Bullet>{`${customer.leaderDebriefMinutes} perces vezetői eredményfeldolgozás`}</Bullet>
+            <Bullet>{`${customer.leaderDebriefMinutes} perces eredménymegbeszélés a vezetővel`}</Bullet>
             <Bullet>{workshopSummary(quote, customer)}</Bullet>
             <Bullet>{`${remeasurementLabel(quote)} · ${quote.input.retainerMonths} hónap kísérés`}</Bullet>
           </View>
@@ -470,7 +470,7 @@ function ProposalOverview({ snapshot }: { snapshot: CommercialDocumentSnapshot }
           <View style={s.processStep}>
             <Text style={s.processNumber}>1</Text>
             <Text style={s.processTitle}>Felmérjük</Text>
-            <Text style={s.processText}>Láthatóvá tesszük az egyéni és közös működési mintákat.</Text>
+            <Text style={s.processText}>Felmérjük a személyiségjellemzőket és a közös munka tapasztalatait.</Text>
           </View>
           <View style={s.processStep}>
             <Text style={s.processNumber}>2</Text>
@@ -480,7 +480,7 @@ function ProposalOverview({ snapshot }: { snapshot: CommercialDocumentSnapshot }
           <View style={s.processStep}>
             <Text style={s.processNumber}>3</Text>
             <Text style={s.processTitle}>Továbbvisszük</Text>
-            <Text style={s.processText}>Kijelöljük a fejlesztési célokat és azokat a lépéseket, amelyek eredményét később újra megmérhetjük.</Text>
+            <Text style={s.processText}>Közösen kiválasztjuk, min szeretnétek változtatni, és hogyan követjük majd az eredményét.</Text>
           </View>
         </View>
         <Text style={s.note}>

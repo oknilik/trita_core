@@ -50,9 +50,9 @@ export function PatternDirectory() {
       </h2>
       <p className="mt-2 max-w-2xl text-body leading-relaxed" style={{ color: T.muted }}>
         A mintázatok négy szempont kombinációjából állnak össze:{" "}
-        {AXIS_META.map((axis) => axis.name.toLowerCase()).join(", ")}. Minden
-        működésnek van előnye és ára – nincs jó vagy rossz minta, csak olyan,
-        ami illeszkedik a feladathoz, és olyan, ami nem.
+        {AXIS_META.map((axis) => axis.name.toLowerCase()).join(", ")}. Az alábbi
+        leírások segítenek megbeszélni, mit tapasztaltok a közös munkában.
+        Hogy mi jelent előnyt vagy nehézséget, az a feladattól is függ.
       </p>
       <p
         className="mt-3 max-w-2xl text-caption leading-relaxed"
@@ -88,7 +88,7 @@ export function PatternDirectory() {
                 <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
                     <dt className="text-micro font-semibold uppercase tracking-widest" style={{ color: T.heading }}>
-                      Erősségek
+                      Lehetséges erősségek
                     </dt>
                     <dd className="mt-1 text-caption leading-relaxed" style={{ color: T.muted }}>
                       {pattern.strengths.join(" · ")}
@@ -96,7 +96,7 @@ export function PatternDirectory() {
                   </div>
                   <div>
                     <dt className="text-micro font-semibold uppercase tracking-widest" style={{ color: T.heading }}>
-                      Kockázatok
+                      Lehetséges nehézségek
                     </dt>
                     <dd className="mt-1 text-caption leading-relaxed" style={{ color: T.muted }}>
                       {pattern.risks.join(" · ")}
@@ -105,7 +105,7 @@ export function PatternDirectory() {
                 </dl>
 
                 <p className="mt-4 text-caption leading-relaxed" style={{ color: T.muted }}>
-                  <strong style={{ color: T.heading }}>Hol jelenik meg:</strong>{" "}
+                  <strong style={{ color: T.heading }}>Ilyen területeken lehet ismerős:</strong>{" "}
                   {pattern.contexts}
                 </p>
               </div>

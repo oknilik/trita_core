@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { hexLetter } from "@/lib/hexaco";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 import { AlertIcon, CheckIcon } from "@/components/ui/icons";
@@ -32,18 +33,18 @@ interface ComparisonTabProps {
 // ─── Insight texts for gaps ──────────────────────────────────────────────────
 
 const GAP_INSIGHTS: Record<string, { hu: string; en: string }> = {
-  H_higher: { hu: "Mások őszintébbnek és alázatosabbnak látnak, mint amilyennek te látod magad.", en: "Others see you as more honest and humble than you feel yourself." },
-  H_lower: { hu: "Az értékrended erősebb lehet, mint amennyire azt kifelé kommunikálod.", en: "Your value system may be stronger than what you communicate outwardly." },
-  E_higher: { hu: "Mások érzékenyebbnek látnak, mint ahogyan te érzed magad. Ez stresszes helyzetben válhat láthatóvá.", en: "Others see you as more sensitive than you feel. This may become visible under stress." },
+  H_higher: { hu: "A visszajelzők válaszai alapján fontosabbnak látszik számodra az egyenes beszéd és a méltányosság, mint a saját válaszaidból.", en: "Others see you as more honest and humble than you feel yourself." },
+  H_lower: { hu: "A saját válaszaidban hangsúlyosabb az egyenes beszéd és a méltányosság, mint mások visszajelzésében. Kérj konkrét példát arra, milyen helyzetekre gondoltak.", en: "Your value system may be stronger than what you communicate outwardly." },
+  E_higher: { hu: "Mások érzékenyebbnek látnak, mint ahogyan te jellemezted magad. Érdemes megbeszélni, milyen helyzetekben tapasztalták ezt.", en: "Others see you as more sensitive than you feel. This may become visible under stress." },
   E_lower: { hu: "Mások higgadtabbnak látnak, mint amilyennek te érzed magad.", en: "You appear more stable outwardly than you feel internally." },
   X_higher: { hu: "Mások energikusabbnak és társaságkedvelőbbnek látnak.", en: "Others see you as more energetic and sociable." },
-  X_lower: { hu: "Kifelé visszafogottabbnak tűnsz, mint amennyire belül energikus vagy.", en: "You appear more reserved outwardly than you feel inside." },
-  A_higher: { hu: "Mások barátságosabbnak értékelnek, mint ahogy magad látod. Lehet, hogy a belső feszültséged kevésbé látszik kifelé.", en: "Others rate you as more agreeable than you see yourself. Your internal tension may be less visible." },
-  A_lower: { hu: "Mások a megnyilvánulásaidat határozottabbnak érzékelhetik, mint amilyennek te szánod őket.", en: "Your directness comes across more strongly than you realize." },
+  X_lower: { hu: "Mások visszafogottabbnak látnak, mint ahogyan te jellemezted magad. Lehet, hogy más helyzetekre gondoltatok a kitöltéskor.", en: "You appear more reserved outwardly than you feel inside." },
+  A_higher: { hu: "Mások türelmesebbnek és megbocsátóbbnak látnak, mint ahogyan te jellemezted magad.", en: "Others rate you as more agreeable than you see yourself. Your internal tension may be less visible." },
+  A_lower: { hu: "Mások kevésbé türelmesnek vagy engedékenynek láthatnak, mint amilyennek te tartod magad. Kérj példát arra, hogyan élték meg a köztetek lévő nézeteltéréseket.", en: "Your directness comes across more strongly than you realize." },
   C_higher: { hu: "Mások szervezettebbnek és megbízhatóbbnak látnak.", en: "Others see you as more organized and reliable." },
-  C_lower: { hu: "Mások kevésbé látják, hogyan szervezed a munkádat. Segíthet, ha többet mondasz el a módszereidről.", en: "Your internal structure is less visible – you could communicate more about your methods." },
+  C_lower: { hu: "Mások kevésbé szervezettnek látnak, mint ahogyan te jellemezted magad. Beszéljétek meg, milyen munkára vagy határidőre gondoltatok a kitöltéskor.", en: "Your internal structure is less visible – you could communicate more about your methods." },
   O_higher: { hu: "Mások nyitottabbnak látnak az új ötletekre és tapasztalatokra.", en: "Others see you as more open to new ideas and experiences." },
-  O_lower: { hu: "Mások kevésbé érzékelik a kíváncsiságodat, mint amennyire te megéled.", en: "Your inner curiosity is less obvious to others." },
+  O_lower: { hu: "Mások kevésbé nyitottnak látnak az új ötletekre, mint ahogyan te jellemezted magad. Keressetek közös példát arra, mikor próbáltatok ki új megoldást.", en: "Your inner curiosity is less obvious to others." },
 };
 
 // ─── Summary generation ──────────────────────────────────────────────────────
@@ -352,7 +353,7 @@ export function ComparisonTab({
           {t("comparison.noDataTitle", locale)}
         </h3>
         <p className="mx-auto max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
-          {t("comparison.noDataBody", locale)}
+          {tf("comparison.noDataBody", locale, { min: MIN_RATERS_FOR_ANONYMOUS_AGGREGATE })}
         </p>
         <p className="mx-auto mt-2 max-w-[380px] text-xs leading-relaxed text-[var(--color-ink-warm)]">
           {locale === "hu"

@@ -93,7 +93,7 @@ export function DealLinksPanel({
           </select>
         )}
         <p className="mt-1 text-xs text-muted">
-          A hozzáférés aktiválásakor a rendszer e hozzárendelés alapján azonosítja az ügyet.
+          A szervezeti hozzáférés aktiválásakor ennek az ügynek az állapota frissül.
         </p>
       </div>
 
@@ -187,7 +187,7 @@ export function DealLinksPanel({
               onChange={(event) => setNoteDraft(event.target.value)}
               rows={4}
               maxLength={4000}
-              placeholder="Döntéshozó, motiváció, kontextus – csak admin látja."
+              placeholder="Ki dönt, mit szeretne elérni, mit kell még tudnunk? Csak az admin látja."
               aria-label="Háttérjegyzet"
               className="w-full rounded-lg border border-sand bg-cream px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
             />
@@ -213,7 +213,7 @@ export function DealLinksPanel({
           </p>
         ) : (
           <p className="mt-1 text-xs text-muted">
-            Döntéshozó, motiváció, kontextus – ide érdemes felírni.
+            Írd fel, ki dönt az ügyben, mit szeretne elérni, és mit kell még tudnunk.
           </p>
         )}
       </div>

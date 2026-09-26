@@ -22,7 +22,7 @@ export function OrgSubscriptionBanner({
     ? (isHu ? "Nincs aktív szervezeti előfizetés" : "No active organization subscription")
     : isFrozen
     ? (isHu ? "A szervezeti hozzáférés fel van függesztve" : "This organization is frozen")
-    : (isHu ? "Lejárt előfizetés: korlátozott mód" : "Expired subscription: restricted mode");
+    : (isHu ? "Lejárt a hozzáférés: egyes funkciók nem érhetők el" : "Expired subscription: restricted mode");
   const description = isNone
     ? (isHu
       ? "A szervezeti oldalakat továbbra is megnézheted. Új műveletekhez és szerkesztéshez aktív előfizetés szükséges."

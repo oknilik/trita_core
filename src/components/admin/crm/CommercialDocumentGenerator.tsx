@@ -271,12 +271,12 @@ export function CommercialDocumentGenerator({
               disabled={quoteStatus !== "ACCEPTED"}
               onClick={() => void generate("ORDER_FORM")}
             >
-              Egyedi Megrendelőlap generálása
+              Egyedi Megrendelőlap készítése
             </Button>
           </div>
           {quoteStatus !== "ACCEPTED" && (
             <p className="mt-2 text-xs text-muted">
-              A megrendelőlap az ajánlat elfogadása után generálható.
+              A megrendelőlapot az ajánlat elfogadása után készítheted el.
             </p>
           )}
           {error && (
@@ -289,7 +289,7 @@ export function CommercialDocumentGenerator({
         <DashboardPanel className="p-5">
           <SectionEyebrow>elkészült dokumentumok</SectionEyebrow>
           {documents.length === 0 ? (
-            <p className="mt-3 text-sm text-muted">Még nincs generált dokumentum.</p>
+            <p className="mt-3 text-sm text-muted">Még nem készült dokumentum.</p>
           ) : (
             <div className="mt-3 flex flex-col gap-3">
               {documents.map((document) => (

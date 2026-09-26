@@ -26,7 +26,7 @@ const LABELS = {
     index: "Csapatindex",
     respondents: "válasz",
     scale: "1–5-ös skálán",
-    weakest: "leggyengébb",
+    weakest: "legalacsonyabb átlag",
     bands: { low: "alacsony", mid: "közepes", high: "magas" },
     threshold: `Az index legalább ${PSYCH_SAFETY_MIN_RESPONSES} válasz beérkezése után jelenik meg.`,
     caption:

@@ -260,7 +260,7 @@ export function NavBar({
     : signedInExperienceHints.showOrgExpansionPrompt
       ? {
           body: locale === "hu"
-            ? "Meghívást kaptál egy szervezetbe. Csatlakozz, ha a személyes felmérés mellett a csapatod közös munkáját is szeretnéd megismerni."
+            ? "Meghívást kaptál egy szervezetbe. A meghívást megnyitva csatlakozhatsz a csapatod felméréséhez."
             : "You have a new organization invite. Join to extend your self insights to team and org levels.",
           ctaLabel: locale === "hu" ? "Meghívás megnyitása" : "Open invite",
           ctaHref: signedInHomeHref,
@@ -268,7 +268,7 @@ export function NavBar({
       : signedInExperienceHints.showTeamCreationBanner && !isConsultingLed()
         ? {
             body: locale === "hu"
-              ? "A csapatos használatot választottad. Hozd létre az első csapatodat, hogy a személyes eredményekből közös csapatkép készülhessen."
+              ? "A csapatos használatot választottad. Hozd létre az első csapatodat, hogy közösen is elindulhassatok a felméréssel."
               : "You selected a team-focused path. Create your first team to build shared insights from self results.",
             ctaLabel: locale === "hu" ? "Csapat létrehozása" : "Create a team",
             ctaHref: "/onboarding?intent=team",

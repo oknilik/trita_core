@@ -53,8 +53,8 @@ export const profileTranslations = {
     sectionAboutSub: { hu: "Ezeket az adatokat a profilod és az eredményeid személyre szabásához használjuk.", en: "We use this data to personalize your profile and results." },
     sectionLanguage: { hu: "Megjelenés és nyelv", en: "Appearance & language" },
     sectionLanguageSub: { hu: "Ezen a nyelven jelenik meg az oldal és az eredményed.", en: "Your pages and results will appear in this language." },
-    saveNoChanges: { hu: "Nincs mentetlen változás", en: "No unsaved changes" },
-    saveUnsaved: { hu: "Módosításaid nincsenek mentve", en: "You have unsaved changes" },
+    saveNoChanges: { hu: "Minden módosítást mentettél", en: "No unsaved changes" },
+    saveUnsaved: { hu: "Még nem mentetted a módosításaidat", en: "You have unsaved changes" },
     saveSaved: { hu: "Mentve", en: "Saved" },
     saveButton: { hu: "Mentés", en: "Save" },
     sectionAccount: { hu: "Fiók és hozzáférés", en: "Account & access" },
@@ -71,7 +71,7 @@ export const profileTranslations = {
     modalCancel: { hu: "Mégse", en: "Cancel" },
     demographicsTitle: { hu: "Személyes adatok", en: "Personal details" },
     demographicsBody: {
-      hu: "Ezek az adatok a pontosabb eredményekhez és összehasonlításokhoz kellenek. Bármikor módosíthatod őket.",
+      hu: "Ezeket az adatokat az eredményeid értelmezéséhez és összehasonlításához használjuk. Bármikor módosíthatod őket.",
       en: "These details make your results and comparisons more accurate. You can update them any time.",
     },
     demographicsSaveSuccess: {

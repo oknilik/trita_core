@@ -41,7 +41,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
         </p>
       </div>
       {report.status === "PUBLISHED" ? <TeamReportPdfButton report={report} isHu={isHu} /> :
-        <span className="rounded-full bg-state-warning-bg px-3 py-1.5 text-xs font-medium text-state-warning-fg">{isHu ? "A vázlat előnézete" : "Draft preview"}</span>}
+        <span className="rounded-full bg-state-warning-bg px-3 py-1.5 text-xs font-medium text-state-warning-fg">{isHu ? "A piszkozat előnézete" : "Draft preview"}</span>}
     </header>
     <ProgramComparison program={agg?.program} isHu={isHu} />
     <ProgramTrustCoverage program={agg?.program} isHu={isHu} />

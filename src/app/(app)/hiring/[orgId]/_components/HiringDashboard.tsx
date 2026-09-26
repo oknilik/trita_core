@@ -462,7 +462,7 @@ export function HiringDashboard({
             <p className="mt-2 text-xs text-ink-body">
               {locale === "en"
                 ? "Set up candidate details and send an invite link in under a minute."
-                : "Add meg a jelölt adatait, és egy percen belül küldhető az egyedi meghívólink."}
+                : "Add meg a jelölt adatait, majd küldd el neki a személyre szóló meghívólinket."}
             </p>
           </div>
           <div className="p-5 sm:p-6">

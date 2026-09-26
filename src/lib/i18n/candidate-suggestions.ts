@@ -5,7 +5,7 @@ export const candidateSuggestionTranslations = {
       hu: "Megfigyelések a közös munkához",
       en: "Observations for working together",
     },
-    journey: { hu: "A személyestől a közösig", en: "From personal to shared" },
+    journey: { hu: "Az egyéni profiltól a közös munkáig", en: "From personal to shared" },
     selfStep: { hu: "Önértékelés", en: "Self-assessment" },
     roleStep: {
       hu: "Csapatszerepek",
@@ -18,15 +18,15 @@ export const candidateSuggestionTranslations = {
       en: "Consultant text suggestions",
     },
     notice: {
-      hu: "Szerkeszthető felvetések, nem alkalmassági ítéletek. Beillesztés után mentsd és hagyd jóvá a visszajelzést. Az újragenerálás a jegyzeteidet nem írja felül.",
+      hu: "Ezeket a felvetéseket a profilból állítjuk össze; szerkeszd őket a beszélgetés tapasztalatai alapján. Alkalmassági minősítésre nem használhatók. Beillesztés után mentsd és hagyd jóvá a visszajelzést. Az újragenerálás a jegyzeteidet nem írja felül.",
       en: "Editable hypotheses, not suitability judgments. Save and review the feedback after insertion. Regeneration never overwrites your notes.",
     },
     profile: {
-      hu: "A jelölt jellemző munkamódjai",
+      hu: "A jelölt lehetséges munkastílusa",
       en: "Candidate working preferences",
     },
     connection: {
-      hu: "Kapcsolódások a csapathoz",
+      hu: "Hasonlóságok a csapatprofilhoz",
       en: "Connections with the team",
     },
     difference: { hu: "Eltérő nézőpontok", en: "Different perspectives" },
@@ -59,19 +59,19 @@ export const candidateSuggestionTranslations = {
       en: "Candidate role questionnaire: completed; no separate completion timestamp is recorded.",
     },
     hypothesis: {
-      hu: "A személyes profil alapján ellenőrizendő felvetés:",
+      hu: "A profil alapján felmerülő kérdés, amelyet érdemes megbeszélni:",
       en: "A hypothesis to explore from the personal profile:",
     },
     balanced: {
-      hu: "A profil alapján nem emelünk ki markáns pólust. Konkrét munkahelyi példákkal érdemes feltárni, mikor melyik működés jelenik meg.",
+      hu: "A profilban nincs egyértelműen kiemelhető szélső érték. Beszéljetek át konkrét munkahelyi példákat: melyik helyzetben mi segítette a jelölt munkáját?",
       en: "No pronounced pole is highlighted. Explore concrete work examples to understand which preferences appear in different situations.",
     },
     close: {
-      hu: "{dimensions}: a jelölt és a csapatátlag pontértékei közeliek. Ez nem bizonyít azonos működést vagy jó illeszkedést; beszéljetek át közös munkapéldákat.",
+      hu: "Ezekben a dimenziókban közel van a jelölt pontszáma a csapatátlaghoz: {dimensions}. Ettől még eltérhet, hogyan dolgoznak. Konkrét munkahelyi példákon beszéljétek át, miben hasonlítanak, és mire lenne szükségük az együttműködéshez.",
       en: "{dimensions}: candidate and team-mean scores are close. This does not establish identical behavior or good fit; discuss concrete shared work situations.",
     },
     noClose: {
-      hu: "Nem emelünk ki közeli pontértékeket. Ez önmagában nem jelent együttműködési nehézséget.",
+      hu: "Egyik dimenzióban sem emelünk ki a csapatátlaghoz közeli pontszámot. Ez önmagában nem jelent együttműködési nehézséget.",
       en: "No close scores are highlighted. This alone does not imply collaboration difficulties.",
     },
     gap: {
@@ -79,7 +79,7 @@ export const candidateSuggestionTranslations = {
       en: "{dimension}: candidate {candidate}, team mean {team}, team SD {sd}. This larger descriptive difference may warrant discussing different work preferences; it is not a performance difference.",
     },
     noGap: {
-      hu: "Nem emelünk ki a konzervatív megjelenítési küszöböt meghaladó eltérést. Ez nem bizonyít azonosságot.",
+      hu: "Egyik eltérés sem haladja meg a kiemeléshez használt küszöböt. Ebből még nem következik, hogy a jelölt és a csapat tagjai ugyanúgy dolgoznak.",
       en: "No difference exceeds the conservative display threshold. This does not establish equivalence.",
     },
     noSpread: {
@@ -91,7 +91,7 @@ export const candidateSuggestionTranslations = {
       en: "Display rule: the gap exceeds both 1.96 × individual short-form SEM and one team SD. This is a conservative editorial rule, not a significance test. A team mean does not describe every member.",
     },
     roleOwn: {
-      hu: "A jelölt szerepkérdőíve alapján előtérbe kerülő preferenciák: {roles}. Ezek nem igazolt képességek vagy teljesítményeredmények.",
+      hu: "A szerepkérdőív válaszaiban ezek a szerepek a leghangsúlyosabbak: {roles}. Azt jelzik, milyen feladatokat vállal szívesen a jelölt; képességet vagy teljesítményt nem igazolnak.",
       en: "Preferences highlighted by the candidate role questionnaire: {roles}. These do not establish ability or performance.",
     },
     noRole: {
@@ -111,7 +111,7 @@ export const candidateSuggestionTranslations = {
       en: "Not represented among the team's frozen primary and secondary roles: {roles}. Explore whether this contribution is needed; this is not a proven deficit.",
     },
     question: {
-      hu: "Milyen konkrét helyzetben segített, és mikor nehezítette az együttműködésedet a(z) {dimension} kapcsán leírt működés? Mit kérnél a csapattól az első hónapban?",
+      hu: "A profilban leírt jellemző: {dimension}. Mondj egy példát arra, amikor segítette a közös munkát, és egyet arra, amikor nehézséget okozott. Mit kérnél a csapattól az első hónapban?",
       en: "When has the preference described for {dimension} helped or complicated collaboration? What support would you ask from the team in your first month?",
     },
     roleQuestion: {
@@ -119,7 +119,7 @@ export const candidateSuggestionTranslations = {
       en: "When have you voluntarily taken these roles? Give an example of the outcome and another of handing the responsibility to someone else.",
     },
     genericQuestion: {
-      hu: "Mesélj egy közös feladatról, ahol eltérő munkamódokat kellett összehangolnod. Milyen elvárásokat és visszajelzési rendet egyeztetnél az első hónapban?",
+      hu: "Mesélj egy közös feladatról, amelyben másként dolgoztatok a társaiddal. Hogyan hangoltátok össze a munkát? Az első hónapban miben szeretnél megállapodni, és miről kérnél visszajelzést?",
       en: "Describe a task where you had to reconcile different working preferences. Which expectations and feedback routines would you agree on in your first month?",
     },
   },

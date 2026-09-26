@@ -191,7 +191,7 @@ export function CareerFakeDoor({
         >
           <span>Modul: {t("fakeDoor.eyebrow", locale)}</span>
           <span>Állapot: terv</span>
-          <span>Döntés: mérés alatt</span>
+          <span>Az érdeklődést mérjük</span>
         </div>
       </section>
 

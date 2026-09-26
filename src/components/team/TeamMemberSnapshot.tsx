@@ -112,14 +112,14 @@ export function TeamMemberSnapshot({
     ? {
         title: completionPct === 100 ? "A csapat készen áll" : "A közös kép épül",
         body: completionPct === 100
-          ? "Minden személyiségprofil elkészült. A riportból megismerhetitek a csapatszerepeket és a közös működésetek mintázatait."
+          ? "Minden személyiségprofil elkészült. A jóváhagyott riportban együtt nézhetitek majd át az elvégzett mérések eredményeit."
           : `${completedCount} csapattárs befejezte a kitöltést, ${inProgressCount} még dolgozik rajta, ${waitingCount} pedig még nem kezdte el.`,
         profile: "Személyiségprofil",
         roles: "Csapatszerepek",
         trust: "Bizalmi háló",
         noRound: "Nincs kör",
         roleTitle: "Csapatszerepek",
-        roleCopy: "Ki milyen szerepben segíti a közös munkát, és mely szerepekben tudjátok helyettesíteni egymást.",
+        roleCopy: "Mely szerepek jelennek meg a tagok eredményeiben, és mit érdemes megbeszélnetek a feladatok elosztásáról.",
         patternTitle: "Működési mintázat",
         patternCopy: "A napi működés mért mintázata a publikált riportból.",
         trustTitle: "Bizalmi háló",

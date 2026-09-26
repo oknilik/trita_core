@@ -189,9 +189,9 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         )}
       </Panel>
 
-      {/* ── Akvizíciós tölcsér ─────────────────────────────────────── */}
+      {/* ── A látogatástól a megkeresésig ─────────────────────────────────────── */}
       <Panel
-        title="Akvizíciós tölcsér"
+        title="A látogatástól a megkeresésig"
         description="Bal oldalon a rögzített eseményekből, jobb oldalon az adatbázisból számolt érték látható. A kettő eltérése mutatja, mennyi adat hiányzik az eseménymérésből."
       >
         <div className="space-y-3">
@@ -255,7 +255,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         />
         <AdminTableSection
           title="Hivatkozó források"
-          description="Csak a hivatkozó host; teljes URL soha."
+          description="Csak a hivatkozó webhely neve látszik, a teljes cím nem."
           rows={referrers.map((row) => ({ label: row.label, value: row.value }))}
         />
       </div>
@@ -277,7 +277,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       {/* ── Nyers események (hibakeresés) ──────────────────────────── */}
       <Panel
         title="Legutóbbi események"
-        description="Hibakereséshez: megérkezik-e egyáltalán, amit vársz."
+        description="Itt ellenőrizheted, hogy megérkeznek-e a várt események."
       >
         {recent.length === 0 ? (
           <EmptyHint>Nincs rögzített esemény.</EmptyHint>
@@ -330,16 +330,17 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         </h2>
         <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-ink-body">
           <li>
-            · Nincs süti és nincs semmilyen eszköz-oldali tárolás. A látogató-azonosító napi
-            rotáló pszeudonim (IP + böngésző hash), az IP-t nem tároljuk.
+            · Nem helyezünk el sütit vagy más azonosítót az eszközön. A látogatót naponta
+            változó álnév azonosítja, amely az IP-cím és a böngészőadatok kivonatából készül.
+            Magát az IP-címet nem tároljuk.
           </li>
           <li>
             · A GPC / Do Not Track jelzést tiszteletben tartjuk – az így jelző látogatóktól
             semmit nem mérünk.
           </li>
           <li>
-            · Esemény-tulajdonságban nincs e-mail, név, szabad szöveg, kérdőív-válasz, pontszám
-            vagy meghívó-token; a katalógus zárt sémákkal dolgozik.
+            · Az események adatai között nincs e-mail-cím, név, szabad szöveg, kérdőívre adott
+            válasz, pontszám vagy meghívóhoz tartozó token. Csak az előre meghatározott mezőket fogadjuk el.
           </li>
           <li>
             · Megőrzés: {ANALYTICS_RETENTION_MONTHS} hónap, utána automatikus törlés. Jelenleg{" "}

@@ -51,7 +51,7 @@ function actionOutcomeMetric(
   if (outcome.target.kind === "role_gap") {
     const state = (value: number) =>
       value === 1
-        ? isHu ? "hézag" : "gap"
+        ? isHu ? "hiányzó szerep" : "gap"
         : isHu ? "lefedett" : "covered";
     return `${state(outcome.metric.previous)} → ${state(outcome.metric.current)}`;
   }
@@ -65,7 +65,7 @@ function actionOutcomeGate(
 ): string {
   if (outcome.gate === "unavailable") return isHu ? "nincs adat" : "no data";
   if (outcome.gate === "categorical") {
-    return isHu ? "kategória szerinti állapot" : "categorical state";
+    return isHu ? "a kategória változása" : "categorical state";
   }
   if (outcome.gate === "descriptive") {
     return isHu ? "még nincs meghatározott mérési küszöb" : "no calibrated gate yet";
@@ -83,7 +83,7 @@ function actionOutcomeDirection(
     improved: isHu ? "kedvező irány" : "favourable direction",
     worsened: isHu ? "kedvezőtlen irány" : "unfavourable direction",
     unchanged: isHu ? "változatlan" : "unchanged",
-    no_clear_change: isHu ? "nem igazolható elmozdulás" : "no defensible movement",
+    no_clear_change: isHu ? "nem látszik a mérési küszöböt meghaladó változás" : "no defensible movement",
     context_only: isHu ? "csak az összetétel értelmezését segíti" : "composition context only",
     unavailable: isHu ? "nem mérhető" : "not measurable",
   } as const;
@@ -157,13 +157,13 @@ export function TeamReportComparison({
           role="status"
         >
           {isHu
-            ? `Stabil mag: ${comparison.composition.common} közös kitöltő · új ebben a körben: ${comparison.composition.joined} · kimaradt: ${comparison.composition.left}. A személyiségprofil változását csak a mindkét körben részt vevő tagok adatai alapján ellenőrizzük.`
+            ? `Mindkét körben részt vett: ${comparison.composition.common} kitöltő · új ebben a körben: ${comparison.composition.joined} · kimaradt: ${comparison.composition.left}. A személyiségprofil változását csak a mindkét körben részt vevő tagok adatai alapján ellenőrizzük.`
             : `Stable core: ${comparison.composition.common} common contributors · new this round: ${comparison.composition.joined} · absent: ${comparison.composition.left}. Profile control uses common members only.`}
         </div>
       )}
 
       <h3 className="mt-5 font-fraunces text-lg text-ink">
-        {isHu ? "A közös munka alakításával változtatható területek" : "Mutable, intervention-sensitive layers"}
+        {isHu ? "A közös munkáról szóló mérések változásai" : "Mutable, intervention-sensitive layers"}
       </h3>
       <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
         <DashboardPanel className="p-4">
@@ -172,7 +172,7 @@ export function TeamReportComparison({
           </p>
           {comparison.psychSafetyDelta === null ? (
             <p className="mt-2 text-xs text-muted">
-              {isHu ? "Nincs két összevethető pulzusmérés." : "Two comparable pulses are not available."}
+              {isHu ? "Nincs két összevethető felmérés a pszichológiai biztonságról." : "Two comparable pulses are not available."}
             </p>
           ) : (
             <>
@@ -191,11 +191,11 @@ export function TeamReportComparison({
                         {psychItemLabel(item.id, isHu)}
                         {item.weakness === "resolved"
                           ? isHu
-                            ? " · gyenge területből kilépett"
+                            ? " · már nem az alsó küszöb alatt van"
                             : " · no longer a weak area"
                           : item.weakness === "emerged"
                             ? isHu
-                              ? " · új gyenge terület"
+                              ? " · az alsó küszöb alá került"
                               : " · new weak area"
                             : ""}
                       </span>
@@ -291,14 +291,14 @@ export function TeamReportComparison({
               </p>
               {compositionComparable && comparison.roleCoverage.resolvedGaps.length > 0 ? (
                 <p className="text-state-success-fg">
-                  {isHu ? "Már lefedett" : "Now covered"}: {comparison.roleCoverage.resolvedGaps
+                  {isHu ? "Most már megjelenő szerep" : "Now covered"}: {comparison.roleCoverage.resolvedGaps
                     .map((code) => roleLabel(code, isHu))
                     .join(", ")}
                 </p>
               ) : null}
               {compositionComparable && comparison.roleCoverage.newGaps.length > 0 ? (
                 <p className="text-state-warning-fg">
-                  {isHu ? "Új hézag" : "New gap"}: {comparison.roleCoverage.newGaps
+                  {isHu ? "Most hiányzó szerep" : "New gap"}: {comparison.roleCoverage.newGaps
                     .map((code) => roleLabel(code, isHu))
                     .join(", ")}
                 </p>
@@ -367,7 +367,7 @@ export function TeamReportComparison({
             <table className="min-w-full border-collapse text-left text-xs">
               <thead className="bg-cream text-micro uppercase tracking-widest text-muted">
                 <tr>
-                  <th className="px-3 py-2 font-semibold">{isHu ? "Akció" : "Action"}</th>
+                  <th className="px-3 py-2 font-semibold">{isHu ? "Vállalt lépés" : "Action"}</th>
                   <th className="px-3 py-2 font-semibold">{isHu ? "Célmutató" : "Target"}</th>
                   <th className="px-3 py-2 font-semibold">{isHu ? "Kimenet" : "Outcome"}</th>
                   <th className="px-3 py-2 font-semibold">{isHu ? "Mérési küszöb" : "Measurement gate"}</th>
@@ -411,7 +411,7 @@ export function TeamReportComparison({
       ) : null}
 
       <h3 className="mt-5 font-fraunces text-lg text-ink">
-        {isHu ? "Mérési kontrollok" : "Measurement controls"}
+        {isHu ? "A személyiségadatok ellenőrzése" : "Measurement controls"}
       </h3>
       <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
         <DashboardPanel className="p-4">
@@ -426,7 +426,7 @@ export function TeamReportComparison({
         </DashboardPanel>
         <DashboardPanel className="p-4">
           <p className="text-micro uppercase tracking-widest text-muted">
-            {isHu ? "Stabil mag profilkontrollja" : "Stable-core profile control"}
+            {isHu ? "A mindkét körben részt vevő tagok profilja" : "Stable-core profile control"}
           </p>
           {!compositionComparable ? (
             <p className="mt-2 text-xs text-muted">
@@ -454,7 +454,7 @@ export function TeamReportComparison({
           ) : (
             <p className="mt-2 text-xs text-ink-body">
               {isHu
-                ? "A profil stabil: nincs a mérési hibát meghaladó eltérés."
+                ? "A személyiségpontszámok között nincs a mérési hibát meghaladó eltérés."
                 : "Stable: no profile difference exceeds measurement error."}
             </p>
           )}

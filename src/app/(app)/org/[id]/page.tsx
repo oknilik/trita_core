@@ -176,7 +176,7 @@ export default async function OrgDetailPage({
             />
           </div>
           <p className="mt-4 text-xs text-muted">
-            {isHu ? "Utolsó aktivitás:" : "Last activity:"}{" "}
+            {isHu ? "Legutóbbi esemény:" : "Last activity:"}{" "}
             {latestActivity
               ? latestActivity.toLocaleDateString(dateLocale)
               : isHu

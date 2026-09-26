@@ -455,7 +455,7 @@ export default function ProfilePage() {
           {locale === "hu" ? "Tanulmányok és szakmai háttér" : "Education and professional background"}
         </h2>
         <p className="mb-5 mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
-          {locale === "hu" ? "Ezekkel pontosabban tudjuk személyre szabni a későbbi eredményeidet." : "These details help us tailor your future results more precisely."}
+          {locale === "hu" ? "Ezeket az adatokat a későbbi eredményeid értelmezéséhez használjuk." : "These details help us tailor your future results more precisely."}
         </p>
         <div className="grid gap-4 md:grid-cols-3">
           <PickerTrigger

@@ -90,7 +90,7 @@ it("shows measured axes and coverage while keeping exact values in native disclo
     referenceStart: "2026-08-19", referenceEnd: "2026-09-16" }, composition: null, sameRespondents: null, comparison: null }} />);
   expect(screen.getAllByRole("img")).toHaveLength(5);
   expect(screen.getAllByText((_, element) => element?.tagName === "SPAN" && element.textContent === "Értékelhető válasz: 3/3")).toHaveLength(4);
-  expect(screen.getByText("Nincs erős eltolódás egyik pólus felé sem.")).toBeVisible();
+  expect(screen.getByText("Egyik működésmód sem emelkedik ki egyértelműen.")).toBeVisible();
   const summary = screen.getAllByText("Pontos értékek és a mérés háttere")[0];
   const disclosure = summary.closest("details")!;
   expect(disclosure.open).toBe(false);

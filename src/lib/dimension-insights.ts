@@ -34,15 +34,15 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
   // nem dicsér, és a hozadék mellett az árát is kimondja — így a hero nem
   // mond ellent a lentebbi facet-bontásnak (Szorongás/Félelem).
   E: {
-    hu: "Többnyire hamar megérzed a helyzetek érzelmi töltetét, amely tartósan meg is terhelhet",
+    hu: "Többnyire hamar megérzed a feszültséget, és az érzelmileg nehéz helyzetek tartósan is megterhelhetnek",
     en: "You tend to pick up a situation's emotional charge early, and carry a lot of it with you",
   },
   X: {
-    hu: "Jellemzően energiát és lendületet viszel a közös munkába",
+    hu: "Jellemzően szívesen kezdeményezel a közös munkában",
     en: "You typically bring energy and inspiration to your interactions",
   },
   A: {
-    hu: "Többnyire rugalmasan és türelmesen kezeled a helyzeteket",
+    hu: "Többnyire türelmesen keresed a megegyezést",
     en: "You tend to handle situations with flexibility and patience",
   },
   C: {
@@ -67,7 +67,7 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
  */
 export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
   H: {
-    hu: "a verseny és az önérvényesítés természetesebb tereped",
+    hu: "könnyebben képviseled a saját érdekeidet, versenyhelyzetben is",
     en: "status and positioning come more naturally to you",
   },
   E: {
@@ -105,7 +105,7 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
  * ugyanaz a fordulat („hiteles… / hiteles…").
  */
 export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = {
-  H: { hu: "nyílt működés, kiszámíthatóság, bizalomépítés", en: "open dealing, predictability, trust-building" },
+  H: { hu: "egyenes beszéd, tisztességes eljárás", en: "open dealing, predictability, trust-building" },
   // A E-sor a valencia-kapu (score-valence.strengthSlotEligible) miatt
   // NEM kerül erősség-bulletbe. Aligned marad, mert a térkép dim-kód
   // szerinti — a korábbi „érzelmi mélység, törődő jelenlét" erény-keretezés
@@ -114,7 +114,7 @@ export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = 
   X: { hu: "lendület, társas magabiztosság", en: "momentum, social confidence" },
   A: { hu: "megbocsátás, higgadtság, kompromisszumkészség", en: "forgiveness, composure, willingness to compromise" },
   C: { hu: "szervezettség, kitartás, pontosság", en: "organized, persistent, precise" },
-  O: { hu: "felfedező szemlélet, komplex gondolkodás", en: "explorer mindset, complex thinking" },
+  O: { hu: "kíváncsiság, új ötletek és összefüggések keresése", en: "explorer mindset, complex thinking" },
 };
 
 /**
@@ -126,9 +126,9 @@ export const DIMENSION_WATCH_DESCS: Record<string, Record<Locale, string>> = {
   // Szintén nem érhető el (deficitSlotEligible kizárja) — kétoldalúra írva:
   // nyomás alatti higgadtság ÉS a jelzések elkerülésének kockázata.
   E: { hu: "nyomás alatt higgadt, mások érzelmi jelzéseit ritkábban veszi észre", en: "steady under pressure, less likely to register others' emotional signals" },
-  X: { hu: "háttérben marad, ritkábban lép színre", en: "stays in the background, steps forward less often" },
+  X: { hu: "szívesebben marad a háttérben", en: "stays in the background, steps forward less often" },
   A: { hu: "gyorsabban éleződő viták, kevesebb kompromisszum", en: "debates sharpen quickly, fewer compromises" },
-  C: { hu: "lazább struktúra, több rögtönzés a munkában", en: "looser structure, more improvised workflow" },
+  C: { hu: "rugalmas munkaszervezés, több rögtönzés", en: "looser structure, more improvised workflow" },
   O: { hu: "az ismert utakat választja, ritkábban kísérletezik", en: "chooses familiar paths, experiments less" },
 };
 

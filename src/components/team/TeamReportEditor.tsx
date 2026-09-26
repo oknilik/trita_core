@@ -22,7 +22,7 @@ import {
 } from "@/lib/team-action-target";
 
 // Tanácsadói riport-szerkesztő. Csak ORG_CONSULTANT látja (a team page
-// szerver-oldalon kapuz). Vázlat → mentés → előnézet → publikálás; a
+// szerver-oldalon kapuz). Piszkozat → mentés → előnézet → publikálás; a
 // publikált riport nem szerkeszthető, új riportot kell nyitni.
 // Az előnézet menti a narratívát, újraépíti az aggregátumokat, és pontosan
 // azt mutatja, amit a vezetők publikálás után látni fognak.
@@ -67,7 +67,7 @@ const TIMEFRAMES = ["30", "60", "90"] as const;
 
 const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
   DRAFT_EXISTS: {
-    hu: "Már van nyitott vázlat – előbb publikáld vagy fejezd be.",
+    hu: "Már van nyitott piszkozat. Előbb fejezd be és tedd közzé, vagy töröld.",
     en: "There is already an open draft – publish or finish it first.",
   },
   NOT_LATEST: {
@@ -331,7 +331,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
       !window.confirm(
         isCurrentDraft
           ? isHu
-            ? "Véglegesen törlöd ezt a vázlatot? A művelet nem vonható vissza."
+            ? "Véglegesen törlöd ezt a piszkozatot? A művelet nem vonható vissza."
             : "Permanently delete this draft? This cannot be undone."
           : isHu
             ? "Véglegesen törlöd ezt a korábbi riportot? A művelet nem vonható vissza."
@@ -375,7 +375,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
     if (
       !window.confirm(
         isHu
-          ? "Visszavonod a riportot? A szervezet tagjai számára eltűnik, és vázlatként újra szerkeszthető lesz."
+          ? "Visszavonod a riportot? A szervezet tagjai számára eltűnik, és piszkozatként újra szerkeszthető lesz."
           : "Unpublish this report? It will disappear for organization members and become an editable draft again.",
       )
     ) {
@@ -505,7 +505,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
           </SectionEyebrow>
           <h3 className="mt-1 font-fraunces text-xl text-ink">
             {draft
-              ? isHu ? "Riportvázlat szerkesztése" : "Edit report draft"
+              ? isHu ? "Riportpiszkozat szerkesztése" : "Edit report draft"
               : isHu ? "Új riport" : "New report"}
           </h3>
         </div>
@@ -521,7 +521,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
         <div>
           <p className="mb-4 text-sm text-ink-body">
             {isHu
-              ? "Hozz létre egy riportvázlatot. A rendszer rögzíti az összesített adatokat; te hozzáadhatod a szöveges értékelést és az interjúk tanulságait."
+              ? "Hozz létre egy riportpiszkozatot. A rendszer rögzíti a mérés összesített adatait, te pedig hozzáírhatod az értékelésedet és az interjúk tanulságait."
               : "Open a report draft: the system captures the aggregate snapshot, and you add the narrative assessment and interview insights."}
           </p>
           {!campaignId && (
@@ -537,7 +537,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
             onClick={createDraft}
             className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
           >
-            {isHu ? "Riportvázlat létrehozása" : "Create report draft"}
+            {isHu ? "Riportpiszkozat létrehozása" : "Create report draft"}
           </button>
         </div>
       ) : (
@@ -551,7 +551,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2.5">
               <p className="text-xs text-bronze-700">
                 {isHu
-                  ? "A riport kapcsolati adatalapja most csak becslés – nincs mért bizalmi kör."
+                  ? "A kapcsolati elemzés most csak a személyiségprofilokból készült becslésre épül. Bizalmi körből még nincs mért adat."
                   : "The report's relationship data basis is estimate-only – no measured trust round yet."}
               </p>
               <Link
@@ -778,7 +778,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
                   <input
                     type="url"
                     value={item.evidenceUrl ?? ""}
-                    placeholder={isHu ? "Bizonyíték linkje (https://…)" : "Evidence link (https://…)"}
+                    placeholder={isHu ? "Az eredményt bemutató link (https://…)" : "Evidence link (https://…)"}
                     onChange={(e) => setActionItems((items) => items.map((it, i) =>
                       i === index ? { ...it, evidenceUrl: e.target.value } : it,
                     ))}
@@ -811,7 +811,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
                   </span>
                 ) : translation ? (
                   <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-warning-fg ring-1 ring-state-warning-border">
-                    {isHu ? "vázlat – jóváhagyásra vár" : "draft – awaiting approval"}
+                    {isHu ? "piszkozat – jóváhagyásra vár" : "draft – awaiting approval"}
                   </span>
                 ) : (
                   <span className="rounded-full bg-sand px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-muted">
@@ -834,7 +834,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
             </div>
             <p className="text-xs text-muted">
               {isHu
-                ? "A gépi fordítást nézd át és szükség szerint javítsd – a felhasználó CSAK a jóváhagyott fordítást látja, amikor angolul nyitja meg a riportot. Jóváhagyás nélkül angol lekérésnél is a magyar eredeti jelenik meg."
+                ? "Nézd át és szükség szerint javítsd a gépi fordítást. Az angol nézetben csak a jóváhagyásod után jelenik meg; addig ott is a magyar eredeti olvasható."
                 : "Review and adjust the machine translation – users only ever see the APPROVED translation when opening the report in English. Without approval, the Hungarian original is shown even for English requests."}
             </p>
 
@@ -913,7 +913,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
                     onClick={() => saveTranslation(false)}
                     className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
                   >
-                    {isHu ? "Mentés vázlatként" : "Save as draft"}
+                    {isHu ? "Mentés piszkozatként" : "Save as draft"}
                   </button>
                   <button
                     type="button"
@@ -961,7 +961,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
               onClick={() => draft && deleteReport(draft)}
               className="ml-auto inline-flex min-h-[44px] items-center rounded-lg border border-state-error-border bg-surface-card px-4 text-sm font-semibold text-state-error-fg transition hover:bg-state-error-bg disabled:opacity-50"
             >
-              {isHu ? "Vázlat törlése" : "Delete draft"}
+              {isHu ? "Piszkozat törlése" : "Delete draft"}
             </button>
           </div>
         </div>
@@ -986,7 +986,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
             title={
               draft
                 ? isHu
-                  ? "Előbb publikáld vagy fejezd be a nyitott vázlatot."
+                  ? "Előbb fejezd be és tedd közzé a nyitott piszkozatot, vagy töröld."
                   : "Publish or finish the open draft first."
                 : undefined
             }

@@ -58,7 +58,7 @@ export function TeamRoleRoundCard({
       <div className="flex items-center justify-between gap-3">
         <div>
           <SectionEyebrow tone="muted">
-            {isHu ? "csapat szerep teszt" : "team role assessment"}
+            {isHu ? "csapatszerep-kérdőív" : "team role assessment"}
           </SectionEyebrow>
           <h3 className="mt-1 font-fraunces text-heading text-ink">
             {isHu ? "Csapatszerep-kör" : "Team role round"}

@@ -12,7 +12,7 @@ export const fakeDoorTranslations = {
     // ── Hero (T6) ─────────────────────────────────────────────────────
     badge: { hu: "Készülő funkció", en: "In development" },
     badgeNote: {
-      hu: "Ez a funkció még nem létezik – azt mérjük, érdemes-e megépíteni.",
+      hu: "Ez a funkció még nem létezik – azt mérjük, érdemes-e elkészíteni.",
       en: "This feature doesn't exist yet – we're measuring whether it's worth building.",
     },
     eyebrow: { hu: "Karrieriránytű", en: "Career compass" },
@@ -36,8 +36,8 @@ export const fakeDoorTranslations = {
 
     // ── „Wow" blokk (T9) ──────────────────────────────────────────────
     wow: {
-      hu: "Ugyanaz az ember lehet kiváló termékfejlesztő, közepes projektvezető és gyenge értékesítő. Nem azért, mert az egyikhez kevésbé tehetséges – hanem mert a három szerep teljesen mást követel tőle.",
-      en: "The same person can be an excellent product developer, a mediocre project lead and a weak salesperson. Not because they're less talented at one – but because the three roles demand completely different things of them.",
+      hu: "Aki termékfejlesztőként jól érzi magát, projektvezetőként vagy értékesítőként egészen más nehézségekkel találkozhat. Ezek a szerepek más feladatokat és elvárásokat jelentenek. Érdemes azt is végiggondolni, melyik áll közel a személyiségéhez.",
+      en: "Someone who enjoys product development may encounter very different challenges as a project lead or salesperson. These roles involve different tasks and expectations. It is also worth considering which feels closer to their personality.",
     },
 
     // ── Kártyák (T10) ─────────────────────────────────────────────────
@@ -69,8 +69,8 @@ export const fakeDoorTranslations = {
     trustItem2: { hu: "munkahelyi illeszkedés-kutatások", en: "workplace fit research" },
     trustItem3: { hu: "csapatszerep-modellek", en: "team role models" },
     trustItem4: {
-      hu: "saját mintánk 189 kitöltő adatán validálva",
-      en: "validated on our own sample of 189 respondents",
+      hu: "az egyes javaslatoknál jeleznénk, mennyire megalapozottak",
+      en: "each suggestion would indicate how well it is supported",
     },
 
     // ── Ár (T11) ──────────────────────────────────────────────────────
@@ -83,15 +83,15 @@ export const fakeDoorTranslations = {
     // NINCS pénzvisszafizetési ígéret: a funkció nem létezik, fizetési
     // folyamat sincs — egy visszatérítés-ígéret valótlan állítás lenne.
     priceNoCard: {
-      hu: "Most nem fizetsz, és bankkártya-adatot sem kérünk. Ha megépítjük, újra döntesz.",
+      hu: "Most nem fizetsz, és bankkártyaadatokat sem kérünk. Ha elkészül, újra eldöntheted, kéred-e.",
       en: "You're not paying now, and we don't collect card details. If we build it, you decide again.",
     },
 
     // ── Döntés ───────────────────────────────────────────────────────
     askTitle: { hu: "Megvennéd ezt ennyiért?", en: "Would you buy this at that price?" },
     askNote: {
-      hu: "A válaszod dönti el, megépül-e. A „nem” ugyanolyan hasznos, mint az „igen”.",
-      en: "Your answer decides whether it gets built. A “no” is just as useful as a “yes”.",
+      hu: "A válaszok segítenek eldönteni, elkészítsük-e. A „nem” ugyanolyan hasznos, mint az „igen”.",
+      en: "Your answers help us decide whether to build it. A “no” is just as useful as a “yes”.",
     },
     yes: { hu: "Igen, megvenném", en: "Yes, I'd buy it" },
     no: { hu: "Nem venném meg", en: "No, I wouldn't" },
@@ -121,7 +121,7 @@ export const fakeDoorTranslations = {
     // Ár-csúszka: a „drága" önmagában nem mond semmit arról, MENNYI lenne jó.
     priceAskTitle: { hu: "Mennyit fizetnél érte szívesen?", en: "What would you happily pay for it?" },
     priceAskNote: {
-      hu: "Húzd oda, ahol már megérné neked. A nulla is válasz: azt jelenti, ezért a funkcióért nem fizetnél.",
+      hu: "A csúszkán állítsd be azt az összeget, amennyit fizetnél érte. A nulla is válasz: azt jelenti, ezért a funkcióért nem fizetnél.",
       en: "Drag it to where it would be worth it to you. Zero is an answer too: it means you wouldn't pay for this feature.",
     },
     priceZero: { hu: "Ezért nem fizetnék", en: "I wouldn't pay for this" },
@@ -129,9 +129,9 @@ export const fakeDoorTranslations = {
     // ── Közös ────────────────────────────────────────────────────────
     submit: { hu: "Elküldöm", en: "Send it" },
     skip: { hu: "Kihagyom", en: "Skip this" },
-    thanksTitle: { hu: "Köszönjük – ez ugyanolyan hasznos.", en: "Thank you – that's just as useful." },
+    thanksTitle: { hu: "Köszönjük a visszajelzésedet.", en: "Thank you – that's just as useful." },
     thanksNote: {
-      hu: "Nem ígérünk határidőt: ha nem lesz elég érdeklődés, ez a modul nem épül meg.",
+      hu: "Határidőt még nem tudunk mondani. Ha kevesen érdeklődnek iránta, nem készítjük el ezt a funkciót.",
       en: "We're not promising a date: if there isn't enough interest, this module won't be built.",
     },
     thanksEmail: {

@@ -14,33 +14,33 @@ export const modeCopy: Record<SiteMode, Record<Locale, {
 }>> = {
   self: {
     hu: {
-      eyebrow: 'TRITAN Karrierprofil',
-      heading: 'Fedezd fel, milyen szerepben',
-      headingEm: 'tudsz igazán kibontakozni.',
+      eyebrow: 'trita személyiségprofil',
+      heading: 'Ismerd meg jobban,',
+      headingEm: 'mire építhetsz.',
       headingEmPosition: 'end',
-      sub: 'Tudományosan validált személyiségprofil, amely konkrét karrierirányokat és fejlesztési utat mutat – nem általánosságokat.',
+      sub: 'Hat szempontból ismerheted meg a személyiségedet. A riport segít végiggondolni az erősségeidet és a hozzád közel álló csapatszerepeket.',
       cta: 'Ingyenes teszt indítása',
       ctaSecondary: 'Van már fiókom',
       trust: ['⏱ ~10 perc', '🔬 Tudományos', '🆓 Ingyenes indulás'],
-      statsLabel: 'Egyéni karrierprofil',
+      statsLabel: 'Egyéni személyiségprofil',
     },
     en: {
-      eyebrow: 'TRITAN Career Profile',
-      heading: 'Discover the career',
-      headingEm: "you're made for.",
+      eyebrow: 'trita personality profile',
+      heading: 'Get to know',
+      headingEm: "your strengths.",
       headingEmPosition: 'end',
-      sub: 'A scientifically validated personality profile that shows concrete career directions and a development path – not generalities.',
+      sub: 'Explore six dimensions of your personality. Your report helps you reflect on your strengths and the team roles that may suit you.',
       cta: 'Start free test',
       ctaSecondary: 'I already have an account',
       trust: ['⏱ ~10 min', '🔬 Scientific', '🆓 Free start'],
-      statsLabel: 'Individual career profile',
+      statsLabel: 'Individual personality profile',
     },
   },
   team: {
     hu: {
       eyebrow: 'Csapatintelligencia platform',
-      heading: 'Lásd tisztábban a',
-      headingEm: 'csapatod működését.',
+      heading: 'Ismerd meg jobban a',
+      headingEm: 'csapatod együttműködését.',
       headingEmPosition: 'end',
       sub: 'A trita segít megérteni, hogyan dolgoztok együtt, mi támogatja a közös munkát, és hol alakulhatnak ki feszültségek.',
       cta: 'Beszéljünk a csapatodról',
@@ -68,8 +68,8 @@ export const modeTabCopy: Record<SiteMode, Record<Locale, {
   icon: string
 }>> = {
   self: {
-    hu: { label: 'Egyéneknek', sub: 'Karrierprofilod és fejlődésed', icon: '👤' },
-    en: { label: 'For individuals', sub: 'Your career profile and growth', icon: '👤' },
+    hu: { label: 'Egyéneknek', sub: 'Személyiségprofilod és erősségeid', icon: '👤' },
+    en: { label: 'For individuals', sub: 'Your personality profile and strengths', icon: '👤' },
   },
   team: {
     hu: { label: 'Csapatoknak', sub: 'Csapatdinamika és HR-döntések', icon: '👥' },

@@ -6,9 +6,9 @@ export const MIN_EVALUATION_SCREEN_MS = 3000;
 
 const PHASE_MESSAGES: Record<Locale, readonly [string, string, string]> = {
   hu: [
-    "Megnézzük, hogyan kapcsolódsz másokhoz…",
-    "Összegezzük, mi jellemzi a döntéseidet és a munkastílusodat…",
-    "Megfogalmazzuk, mire érdemes építened…",
+    "Összesítjük a válaszaidat…",
+    "Kiszámítjuk a hat dimenzió pontszámát…",
+    "Összeállítjuk a pontszámaidhoz tartozó magyarázatokat…",
   ],
   en: [
     "Looking at how you connect with others…",

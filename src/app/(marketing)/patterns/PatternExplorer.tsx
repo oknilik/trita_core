@@ -65,7 +65,7 @@ function AxisSlider({
             className="rounded-full px-2 py-0.5 font-mono text-micro uppercase tracking-widest"
             style={{ backgroundColor: T.card, color: T.muted }}
           >
-            Kiegyensúlyozott
+            Középső tartomány
           </span>
         )}
       </div>
@@ -167,7 +167,7 @@ function PatternCard({
               className="mb-2 text-label uppercase"
               style={{ color: "var(--color-sage)" }}
             >
-              erősségek
+              lehetséges erősségek
             </p>
             <ul className="space-y-1">
               {pattern.strengths.map((s) => (
@@ -186,7 +186,7 @@ function PatternCard({
               className="mb-2 text-label uppercase"
               style={{ color: "var(--color-eval-mid-fg)" }}
             >
-              vakfoltok
+              lehetséges nehézségek
             </p>
             <ul className="space-y-1">
               {pattern.risks.map((r) => (
@@ -202,11 +202,11 @@ function PatternCard({
         {/* People + Contexts */}
         <div className="mt-4 space-y-2">
           <p className="text-xs" style={{ color: T.text }}>
-            <span className="font-semibold" style={{ color: T.heading }}>Kik érzik jól magukat:</span>{" "}
+            <span className="font-semibold" style={{ color: T.heading }}>Kikhez állhat közel:</span>{" "}
             {pattern.people}
           </p>
           <p className="text-xs" style={{ color: T.text }}>
-            <span className="font-semibold" style={{ color: T.heading }}>Ahol megjelenik:</span>{" "}
+            <span className="font-semibold" style={{ color: T.heading }}>Ilyen területeken lehet ismerős:</span>{" "}
             {pattern.contexts}
           </p>
         </div>
@@ -241,13 +241,13 @@ function HybridCard({
           className="mb-3 inline-block rounded-full px-2.5 py-0.5 font-mono text-micro uppercase tracking-wider"
           style={{ backgroundColor: "rgba(110,110,128,0.08)", color: "var(--color-muted)" }}
         >
-          A helyzettől függő működés
+          Több közeli minta
         </span>
         <h2 className="font-fraunces text-2xl" style={{ color: T.heading }}>
           Két mintázat határán
         </h2>
         <p className="mt-1 text-sm" style={{ color: T.muted }}>
-          A csúszkák a középső tartományban állnak. Ebben a helyzetben több mintázat is jellemezheti a csapat működését.
+          Több csúszka is a középső tartományban áll, így a beállított értékekhez több minta is közel esik.
           Kattints valamelyikre a részletes leíráshoz.
         </p>
 
@@ -289,25 +289,25 @@ function HybridCard({
 const QUADRANTS = [
   {
     label: "Energikus + Összetartó",
-    desc: "Nagy lendület, erős összetartás",
+    desc: "Kezdeményezőkedv, törekvés a megegyezésre",
     codes: ["1111", "1110", "1101", "1100"],
     accent: "var(--color-action-primary-bg)",
   },
   {
     label: "Energikus + Versengő",
-    desc: "Nagy lendület, önálló egyéniségek",
+    desc: "Kezdeményezőkedv, határozott egyéni célok",
     codes: ["1011", "1010", "1001", "1000"],
     accent: "#8b3a2a",
   },
   {
     label: "Visszafogott + Összetartó",
-    desc: "Visszafogottabb fellépés, erős összetartás",
+    desc: "Visszafogottabb fellépés, törekvés a megegyezésre",
     codes: ["0111", "0110", "0101", "0100"],
     accent: "var(--color-sage)",
   },
   {
     label: "Visszafogott + Versengő",
-    desc: "Önálló szakértők, visszafogottabb fellépés",
+    desc: "Önállóság, visszafogottabb fellépés",
     codes: ["0011", "0010", "0001", "0000"],
     accent: "#3d4f6b",
   },
@@ -414,19 +414,19 @@ function AlternativeSection({
       </div>
       {axis && secondHigh !== null && (
         <p className="mt-2 text-xs leading-relaxed" style={{ color: T.muted }}>
-          A fő különbség a{" "}
+          A különbség itt van: {" "}
           <span className="font-semibold" style={{ color: T.text }}>
             {axis.name}
-          </span>{" "}
-          tengelyen van – ha a csapat inkább{" "}
+          </span>
+          . A „
           <span className="font-semibold" style={{ color: T.text }}>
             {secondHigh ? axis.high : axis.low}
-          </span>{" "}
-          irányba mozdulna, közelebb kerülne a{" "}
+          </span>
+          ” felirat felé mozgatva a csúszkát ezt a mintát közelíted: {" "}
           <span className="font-semibold" style={{ color: T.text }}>
             {second.alias}
-          </span>{" "}
-          mintázathoz.
+          </span>
+          .
         </p>
       )}
     </div>
@@ -559,9 +559,9 @@ export function PatternExplorer() {
                 tipp
               </span>
               A narancssárga sáv jelzi a{" "}
-              <span style={{ color: T.text, fontWeight: 600 }}>kiegyensúlyozott zónát</span>{" "}
-              (35–65%). Ha legalább két csúszka ebben a tartományban áll, több mintázat is
-              jellemezheti a csapatot, a helyzettől függően.
+              <span style={{ color: T.text, fontWeight: 600 }}>középső tartományt</span>{" "}
+              (35–65%). Ha több csúszka ebben a tartományban áll, több közeli mintát is
+              érdemes megnézni. A középső érték nem jelent jobb eredményt.
             </div>
           </div>
 
@@ -647,7 +647,7 @@ export function PatternExplorer() {
             className="mt-2 font-fraunces text-2xl leading-snug"
             style={{ color: T.heading }}
           >
-            Kíváncsi vagy, hol akad el ténylegesen a csapatod?
+            Szeretnéd jobban megismerni a csapatodat?
           </h2>
 
           {!isSignedIn && (
@@ -668,10 +668,10 @@ export function PatternExplorer() {
                 (e.currentTarget.style.backgroundColor = T.accent)
               }
             >
-              Ingyenes próba
+              Megnézem a pilotprogramot
             </a>
             <p className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
-              Az első felmérés ingyenes. Bankkártyaadatokat nem kérünk.
+              A következő oldalon megtalálod a pilotprogram árát és a részvétel feltételeit.
             </p>
             </>
           )}

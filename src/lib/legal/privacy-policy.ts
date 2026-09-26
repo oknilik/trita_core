@@ -55,7 +55,7 @@ const NAIH_LINE_EN = `${SUPERVISORY_AUTHORITY.nameEn} · ${SUPERVISORY_AUTHORITY
 
 const HU: PolicyDocument = {
   title: "Adatvédelmi tájékoztató",
-  lead: "Ez a tájékoztató azt írja le, milyen személyes adatokat kezelünk, miért, milyen jogalapon, meddig, kivel osztjuk meg – és mit tehetsz, ha nem értesz egyet valamivel. Röviden: a felmérési eredményed a tiéd, egyéni válaszaid soha nem jelennek meg csapatszintű nézetben, és a profilodat bármikor törölheted.",
+  lead: "Itt elolvashatod, milyen személyes adatokat kezelünk, miért van rájuk szükségünk, és milyen jogalapon használjuk őket. Azt is leírjuk, meddig őrizzük az adatokat, ki fér hozzájuk, és hogyan élhetsz a jogaiddal. A felmérési eredményed a tiéd: egyéni válaszaid soha nem jelennek meg csapatszintű nézetben, a profilodat pedig bármikor törölheted.",
   lastUpdated: "Utoljára frissítve: 2026. augusztus 25.",
   effectiveFrom: "Hatályos: 2026. augusztus 25-től",
   tocLabel: "Tartalom",
@@ -106,7 +106,7 @@ const HU: PolicyDocument = {
             {
               term: "Szervezeti megrendelés – a munkáltatód az adatkezelő, mi adatfeldolgozók vagyunk",
               description:
-                "Ha a felmérésen a munkáltatód vagy egy megbízó szervezet felkérésére veszel részt (csapatfelmérés, 360°-os kampány, jelölti folyamat), az adatkezelés céljáról az a szervezet dönt – mi az ő megbízásából, adatfeldolgozói szerződés alapján járunk el. Ilyenkor elsősorban a szervezet saját adatkezelési tájékoztatója irányadó, és a törlési vagy hozzáférési kérésedet a szervezet felé is jelezheted. Ha hozzánk fordulsz, továbbítjuk a megrendelőnek.",
+                "Ha a munkáltatód vagy egy megbízó szervezet kér fel a részvételre, az adatkezelés céljáról az a szervezet dönt. Ez vonatkozik a csapatfelmérésre, a 360°-os kampányra és a jelölti folyamatra is. Mi a szervezet megbízásából, adatfeldolgozói szerződés alapján járunk el. Ilyenkor elsősorban a szervezet saját adatkezelési tájékoztatója irányadó. A törlési vagy hozzáférési kéréseddel hozzájuk is fordulhatsz; ha nekünk írsz, továbbítjuk a kérésedet a megrendelőnek.",
             },
             {
               term: "Más személyről adott visszajelzés – vegyes adatkezelői szerepek",
@@ -273,7 +273,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "A pontszámokat és az illeszkedési mutatókat algoritmus számolja ki – ez profilalkotásnak minősül. Ugyanakkor nem hozunk a GDPR 22. cikke szerinti, kizárólag automatizált, rád nézve joghatással járó vagy hasonlóan jelentős döntést.",
+          text: "A pontszámokat és az illeszkedési mutatókat algoritmus számolja ki. Ez profilalkotásnak minősül. Nem hozunk azonban a GDPR 22. cikke szerinti, kizárólag automatizált döntést, amely rád nézve joghatással vagy hasonlóan jelentős következménnyel járna.",
         },
         {
           kind: "ul",
@@ -292,7 +292,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "Személyes adatot nem adunk el és nem adunk át reklámcélra. Az alábbi adatfeldolgozók a szolgáltatás működtetéséhez szükséges mértékben férnek hozzá, szerződéses kötelezettség mellett.",
+          text: "Személyes adatot nem adunk el és nem adunk át reklámcélra. Az alábbi adatfeldolgozók csak annyi adathoz férnek hozzá, amennyi a szolgáltatás működtetéséhez szükséges. Kötelezettségeiket szerződés rögzíti.",
         },
         {
           kind: "table",
@@ -428,9 +428,9 @@ const HU: PolicyDocument = {
           items: [
             "Titkosított átvitel (HTTPS/TLS) minden kérésnél, és titkosított tárolás az adatbázis szintjén.",
             "Jelszót nem tárolunk: a hitelesítést erre szakosodott szolgáltató (Clerk) végzi, kétlépcsős azonosítás lehetőségével.",
-            "Szerepkör-alapú hozzáférés-szabályozás: a csapat- és szervezeti adatokhoz csak a jogosult szerepkörök férnek hozzá, és minden lekérés jogosultság-ellenőrzésen megy át.",
+            "A csapat- és szervezeti adatokhoz a felhasználó szerepköre alapján adunk hozzáférést. Minden lekérésnél ellenőrizzük, hogy jogosult-e az adatok megtekintésére.",
             "A megosztási és visszajelzési linkek egyedi, lejáró tokent használnak, amely bármikor visszavonható.",
-            "Belső hozzáférés szükségesség alapján, naplózva; a fejlesztéshez és teszteléshez nem éles adatot használunk.",
+            "Munkatársaink csak a feladatukhoz szükséges adatokhoz férnek hozzá, a hozzáféréseket naplózzuk. A fejlesztéshez és teszteléshez nem éles adatot használunk.",
           ],
         },
         {

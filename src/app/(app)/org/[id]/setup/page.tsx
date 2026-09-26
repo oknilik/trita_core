@@ -47,7 +47,7 @@ export default async function OrgSetupPage({
             </h1>
             <p className="mt-2 text-sm text-ink-body">
               {isHu
-                ? "A szervezet beállítása az újraaktiválás után folytatható."
+                ? "A hozzáférés megújítása után folytathatod a szervezet beállítását."
                 : "Organization activation steps can continue after subscription reactivation."}
             </p>
           </div>

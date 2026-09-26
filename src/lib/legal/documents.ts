@@ -73,7 +73,7 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
     },
     shortTitle: { hu: "B2B feltételek", en: "B2B terms" },
     description: {
-      hu: "A Team Scan és a kapcsolódó felmérési, riport-, workshop- és tanácsadási szolgáltatások szerződéses kerete.",
+      hu: "A Team Scan, a kapcsolódó felmérések, riportok, workshopok és tanácsadás szerződéses feltételei.",
       en: "Contractual framework for Team Scan and related assessment, reporting, workshop and advisory services. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
@@ -109,7 +109,7 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
       en: "Article 28 GDPR data-processing framework for organisational services, including schedules and a subprocessors list. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
-      hu: "A B2B-szerződés elválaszthatatlan része. Adatfeldolgozási eltérésben elsőbbséget élvez a B2B Feltételekkel szemben.",
+      hu: "A B2B-szerződés elválaszthatatlan része. Ha adatfeldolgozási kérdésben eltér a B2B Feltételektől, ez a megállapodás az irányadó.",
       en: "An integral part of the B2B agreement. It takes precedence over the B2B Terms for data-processing conflicts.",
     },
     highlights: {
@@ -117,7 +117,7 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
         "Dokumentált utasítások, titoktartás, szerepkör-alapú hozzáférés és GDPR 32. cikk szerinti biztonság.",
         "Érintetti kérelmek, incidensek, DPIA és hatósági együttműködés támogatása.",
         "Alfeldolgozói értesítési és kifogási folyamat, valamint nemzetközi adattovábbítási garanciák.",
-        "A megszűnés utáni visszaadás/törlés és a technikai-szervezési intézkedések mellékletei.",
+        "Mellékletek az adatok visszaadásáról vagy törléséről a szerződés megszűnése után, valamint a technikai és szervezési intézkedésekről.",
       ],
       en: [
         "Documented instructions, confidentiality, role-based access and Article 32 GDPR security.",

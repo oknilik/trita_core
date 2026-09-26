@@ -24,13 +24,13 @@ export const notificationTranslations = {
     },
     resultReady: {
       title: { hu: "Az eredményed elkészült", en: "Your results are ready" },
-      body: { hu: "A személyiségteszted kiértékelése megtekinthető.", en: "Your personality assessment results are now available." },
+      body: { hu: "Most már megnézheted a személyiségteszted eredményét.", en: "Your personality assessment results are now available." },
     },
     // Páros összehasonlítás: a meghívó értesül, amikor a partner elfogadta.
     compareAccepted: {
       title: { hu: "Elfogadták az összehasonlítást", en: "Your comparison was accepted" },
       body: {
-        hu: "{name} elfogadta a páros összehasonlítást – nézzétek meg, hogyan működnétek együtt.",
+        hu: "{name} elfogadta a páros összehasonlítást. Nézzétek meg, mi segítheti az együttműködéseteket.",
         en: "{name} accepted the pair comparison – see how the two of you would work together.",
       },
     },
@@ -39,7 +39,7 @@ export const notificationTranslations = {
     reflectionPrompt: {
       title: { hu: "Egy hét telt el. Mire ismertél rá magadban?", en: "A week has passed – what did you notice?" },
       body: {
-        hu: "Ebben a dimenzióban kaptad a legmagasabb pontszámot: {dimLabelHu}. Figyeld meg, hogyan jelennek meg az ehhez kapcsolódó tulajdonságaid a hétköznapjaidban. A páros összehasonlítással azt is megnézheted, hogyan egészíthetitek ki egymást valakivel.",
+        hu: "Ebben a dimenzióban kaptad a legmagasabb pontszámot: {dimLabelHu}. Mikor segítettek az ehhez kapcsolódó tulajdonságaid az elmúlt héten? A páros összehasonlítással azt is megnézheted, mi segítheti a közös munkát valakivel.",
         en: "Your highest-scoring dimension: {dimLabelEn}. Observe it deliberately in one situation this week – and if you're curious how you'd work with someone, try the pair comparison.",
       },
     },
@@ -53,7 +53,7 @@ export const notificationTranslations = {
     },
     campaignLaunched: {
       title: { hu: "Mérés elindítva", en: "Measurement launched" },
-      body: { hu: "Elindult a kampány: „{campaignName}”.", en: "The \"{campaignName}\" campaign is now active." },
+      body: { hu: "Elindult a mérés: „{campaignName}”.", en: "The \"{campaignName}\" campaign is now active." },
     },
     stepOpened: {
       title: { hu: "Új mérés vár rád", en: "A new measurement is ready for you" },
@@ -84,9 +84,9 @@ export const notificationTranslations = {
       },
     },
     observerInviteDeclined: {
-      title: { hu: "Külső meghívód elutasítva", en: "Your external invite was declined" },
+      title: { hu: "Nem hagyták jóvá a meghívásodat", en: "Your external invite was declined" },
       body: {
-        hu: "A vezetőd nem hagyta jóvá az értékelő-meghívódat erre a címre: {targetLabel}. Kérdés esetén egyeztess vele.",
+        hu: "A vezetőd nem hagyta jóvá, hogy visszajelzést kérj erről a címről: {targetLabel}. Egyeztess vele, ha kérdésed van.",
         en: "Your observer invite to {targetLabel} was not approved by your manager. Please check with them if needed.",
       },
     },
@@ -106,7 +106,7 @@ export const notificationTranslations = {
     },
     campaignClosed: {
       title: { hu: "Mérés lezárva", en: "Measurement closed" },
-      body: { hu: "Lezárult a kampány: „{campaignName}”.", en: "The \"{campaignName}\" campaign has closed." },
+      body: { hu: "Lezárult a mérés: „{campaignName}”.", en: "The \"{campaignName}\" campaign has closed." },
     },
     teamReportPublished: {
       title: { hu: "A csapatkép elkészült", en: "Team picture ready" },
@@ -149,13 +149,13 @@ export const notificationTranslations = {
     },
     campaignMilestone: {
       title: { hu: "A mérés újabb szakaszhoz ért", en: "Measurement milestone" },
-      body: { hu: "Elérte a {percent}%-os kitöltöttséget a kampány: „{campaignName}”.", en: "Campaign \"{campaignName}\" reached {percent}% completion." },
+      body: { hu: "A résztvevők {percent}%-a már minden feladatát kitöltötte ebben a mérésben: „{campaignName}”.", en: "Campaign \"{campaignName}\" reached {percent}% completion." },
     },
     // CRM (admin-only felület, de a kulcskészlet HU+EN a hub-konvenció szerint)
     crmNextActionDue: {
       title: { hu: "Esedékes következő lépés", en: "Next action due" },
       body: {
-        hu: "„{deal}” – a kitűzött következő lépés esedékes ({date}). Nézz rá a CRM-ben.",
+        hu: "Elérkezett a következő lépés időpontja: {date}. Ügylet: „{deal}”. A részleteket a CRM-ben találod.",
         en: "\"{deal}\" – the scheduled next action is due ({date}). Review it in the CRM.",
       },
     },

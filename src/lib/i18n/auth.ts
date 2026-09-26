@@ -128,7 +128,7 @@ export const authTranslations = {
         en: "We couldn't create your account just now. Please try again.",
       },
       verificationGeneric: {
-        hu: "Nem sikerült ellenőrizni a kódot. Ellenőrizd, majd próbáld újra.",
+        hu: "Nem sikerült ellenőrizni a kódot. Nézd meg, jól írtad-e be, majd próbáld újra.",
         en: "We couldn't verify the code. Check it and try again.",
       },
       resendGeneric: {
@@ -147,7 +147,7 @@ export const authTranslations = {
   },
   onboarding: {
     claimTitle: {
-      hu: "Az eredményed készen áll",
+      hu: "Elkészült az eredményed",
       en: "Your result is ready",
     },
     claimSubtitle: {
@@ -159,15 +159,15 @@ export const authTranslations = {
       en: "Save your profile",
     },
     claimBlockHint: {
-      hu: "Csak azt add meg, ami az induláshoz szükséges",
+      hu: "Néhány adat, és folytathatod",
       en: "Only what is needed to get started",
     },
     claimNameHint: {
-      hu: "Most csak a nevedet kérjük, hogy személyesen köszönthessünk",
+      hu: "Add meg, hogyan szólíthatunk",
       en: "For now, we only need your name so we can welcome you personally",
     },
     claimOptionalHint: {
-      hu: "A további háttéradatokat később, opcionálisan adhatod meg a profilodban.",
+      hu: "Ha szeretnéd, később további adatokat is megadhatsz a profilodban.",
       en: "You can add further background details later, optionally, from your profile.",
     },
     claimSubmit: {
@@ -420,11 +420,11 @@ export const authTranslations = {
       en: "Saving...",
     },
     usernameError: {
-      hu: "A névnek 2-20 karakter hosszúnak kell lennie",
+      hu: "A neved 2–20 karakterből állhat",
       en: "Name must be 2-20 characters long",
     },
     birthYearError: {
-      hu: "Az életkornak 16-100 év közé kell esnie",
+      hu: "Ellenőrizd a születési évedet: az életkorodnak 16 és 100 év közé kell esnie",
       en: "Age must be between 16-100 years",
     },
     genderRequired: {
@@ -440,7 +440,7 @@ export const authTranslations = {
       en: "Accept the Privacy Policy to continue",
     },
     validationError: {
-      hu: "Kérlek, javítsd a következő hibákat:",
+      hu: "Ellenőrizd a következő adatokat:",
       en: "Please correct the following errors:",
     },
     usernameHint: {

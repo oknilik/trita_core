@@ -55,7 +55,7 @@ function subscriptionLabel(sub: OrgRow["subscription"]): {
     const until = sub.trialEndsAt
       ? new Date(sub.trialEndsAt).toLocaleDateString("hu-HU")
       : "–";
-    return { text: `trial · érvényesség vége: ${until}`, tone: "trial" };
+    return { text: `próbaidőszak · érvényesség vége: ${until}`, tone: "trial" };
   }
   return { text: sub.status, tone: "off" };
 }

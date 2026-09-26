@@ -20,7 +20,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 const CARD = "rounded-[22px] border border-sand bg-surface-card p-5 shadow-sm md:p-6";
 
 const MEASUREMENT_LABELS: Record<DossierMeasurementKey, { hu: string; en: string }> = {
-  self: { hu: "Önfelmérés", en: "Self-assessment" },
+  self: { hu: "Önértékelés", en: "Self-assessment" },
   observer: { hu: "Mások visszajelzései", en: "Observer feedback" },
   teamRoleSelf: { hu: "Csapatszerep – önkép", en: "Team role – self" },
   teamRolePeer: { hu: "Csapatszerep – a csapattársak szerint", en: "Team role – peer" },
@@ -30,7 +30,7 @@ const MEASUREMENT_LABELS: Record<DossierMeasurementKey, { hu: string; en: string
 
 const FEEDBACK_KIND_LABELS: Record<string, { hu: string; en: string }> = {
   appreciation: { hu: "Elismerés", en: "Appreciation" },
-  feedforward: { hu: "Feedforward", en: "Feedforward" },
+  feedforward: { hu: "Fejlesztő javaslat", en: "Feedforward" },
 };
 
 const EDGE_STYLES: Record<DossierEdgeType, string> = {
@@ -42,7 +42,7 @@ const EDGE_STYLES: Record<DossierEdgeType, string> = {
 const EDGE_LABELS: Record<DossierEdgeType, { hu: string; en: string }> = {
   aligned: { hu: "hasonló", en: "aligned" },
   complementary: { hu: "kiegészítő", en: "complementary" },
-  friction: { hu: "súrlódás", en: "friction" },
+  friction: { hu: "lehetséges súrlódás", en: "friction" },
 };
 
 // Szerep-címke a nyers enum helyett (UX-audit #21b) — az OrgMembersTab
@@ -194,8 +194,8 @@ export function MemberDossierView({
               <thead>
                 <tr className="text-micro uppercase tracking-wide text-muted">
                   <th className="py-1.5 text-left font-medium">{isHu ? "Dimenzió" : "Dimension"}</th>
-                  <th className="py-1.5 text-right font-medium">{isHu ? "Ön" : "Self"}</th>
-                  <th className="py-1.5 text-right font-medium">{isHu ? "Külső" : "External"}</th>
+                  <th className="py-1.5 text-right font-medium">{isHu ? "Önértékelés" : "Self"}</th>
+                  <th className="py-1.5 text-right font-medium">{isHu ? "Mások szerint" : "External"}</th>
                   <th className="py-1.5 text-right font-medium">Δ</th>
                 </tr>
               </thead>
@@ -350,7 +350,7 @@ export function MemberDossierView({
       {/* ═══ 3. KAPCSOLATI BEÁGYAZOTTSÁG ═══ */}
       <section className={CARD}>
         <SectionEyebrow variant="clean" tone="org">
-          {isHu ? "kapcsolati beágyazottság" : "relational embeddedness"}
+          {isHu ? "kapcsolatok a csapatban" : "relational embeddedness"}
         </SectionEyebrow>
 
         {embeddedness.length === 0 ? (
@@ -376,14 +376,14 @@ export function MemberDossierView({
                     ) : null}
                     {t.isIsolated ? (
                       <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-state-warning-fg">
-                        {isHu ? "beágyazatlan" : "isolated"}
+                        {isHu ? "nincs erős bizalmi kapcsolata" : "isolated"}
                       </span>
                     ) : null}
                   </div>
                   <span className="text-micro text-muted">
                     {t.inboundMean !== null
                       ? isHu
-                        ? `mások feléd érzett bizalma: ${t.inboundMean}/100 (${t.inboundCount} értékelő, mért)`
+                        ? `A tag iránt jelzett bizalom: ${t.inboundMean}/100 (${t.inboundCount} értékelő, mért)`
                         : `inbound trust: ${t.inboundMean}/100 (${t.inboundCount} raters, measured)`
                       : isHu
                         ? `bizalmi képhez legalább ${TRUST_MIN_RATERS} értékelő kell (jelenleg: ${t.inboundCount})`
@@ -469,7 +469,7 @@ export function MemberDossierView({
 
       <p className="text-micro text-muted">
         {isHu
-          ? `Dossié generálva: ${fmtDate(dossier.generatedAt, isHu)} · csak tanácsadó látja.`
+          ? `Dosszié készült: ${fmtDate(dossier.generatedAt, isHu)} · csak tanácsadó látja.`
           : `Dossier generated: ${fmtDate(dossier.generatedAt, isHu)} · visible to consultants only.`}
       </p>
     </div>

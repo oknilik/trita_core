@@ -143,6 +143,8 @@ munkáját is elolvassák. A közös végső körben ezeket vizsgáljuk:
 - A tanácsból kiderül-e, mit próbálhat ki az olvasó?
 - A kész riport a felületen és PDF-ben is kényelmesen olvasható-e?
 
-Ez szerkesztői pilot. A teljes alkalmazás második stílusköre és a
-célközönséggel végzett olvasói próba külön folytatás; a három minta ezekhez
-ad közös viszonyítási pontot.
+Az elfogadott minták alapján a teljes magyar szövegkészlet újabb szerkesztői
+kört kapott. A lefedettséget és az ellenőrzést az
+[átfogó stíluskör változásnaplója](changelog/2026-09-26-magyar-stilus-teljes-kiterjesztese.md)
+rögzíti. A három minta továbbra is közös viszonyítási pont az új tartalmakhoz.
+A célközönséggel végzett olvasói próba külön következő lépés.

@@ -146,7 +146,7 @@ export function resolveTeamOverviewFocus(input: {
       kind: "feedback",
       eyebrow: hu ? "Következő teendőd" : "Your next task",
       title: hu
-        ? `Adj visszajelzést ${feedbackRequest.inviterName} számára`
+        ? `Visszajelzést kér tőled: ${feedbackRequest.inviterName}`
         : `Give feedback to ${feedbackRequest.inviterName}`,
       description:
         feedbackRequest.answered > 0
@@ -175,7 +175,7 @@ export function resolveTeamOverviewFocus(input: {
     return {
       kind: "observer",
       eyebrow: hu ? "Következő teendőd" : "Your next task",
-      title: hu ? "Zárd le a külső visszajelzési köröd" : "Complete your external feedback round",
+      title: hu ? "Gyűjtsd össze a szükséges visszajelzéseket" : "Complete your external feedback round",
       description: hu
         ? `${observerGathering.campaignName}: ${observerGathering.received}/${observerGathering.min} visszajelzés érkezett, ${observerGathering.sent} meghívó ment ki.`
         : `${observerGathering.campaignName}: ${observerGathering.received}/${observerGathering.min} responses received, ${observerGathering.sent} invites sent.`,

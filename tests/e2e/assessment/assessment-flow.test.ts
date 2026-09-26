@@ -103,21 +103,25 @@ test.beforeEach(async ({ page }) => {
   }, DRAFT_KEY);
 });
 
-test("self assessment happy path reaches results gate", async ({ page }) => {
-  await startAssessment(page);
+for (const locale of ["hu", "en"] as const) {
+  test(`self assessment happy path reaches results gate (${locale})`, async ({ page, context, baseURL }) => {
+    await page.evaluate((value) => window.localStorage.setItem("trita_locale", value), locale);
+    if (baseURL) await context.addCookies([{ name: "trita_locale", value: locale, url: baseURL }]);
+    await startAssessment(page);
 
-  // Minden kérdés megválaszolva az utolsó kivételével → az UI az utolsó
-  // (60.) kérdésre áll; az 50%-os milestone már "látottnak" számít.
-  await setDraft(page, { answeredCount: TOTAL_QUESTIONS - 1, revision: 50 });
-  await expectCurrentQuestion(page, TOTAL_QUESTIONS);
+    // Minden kérdés megválaszolva az utolsó kivételével → az UI az utolsó
+    // (60.) kérdésre áll; az 50%-os milestone már "látottnak" számít.
+    await setDraft(page, { answeredCount: TOTAL_QUESTIONS - 1, revision: 50 });
+    await expectCurrentQuestion(page, TOTAL_QUESTIONS);
 
-  // Az utolsó válasz auto-advance mellett a kiértékelésre és a vendég
-  // eredmény-kapura visz (guest mód: /try/complete).
-  await page.getByRole("radio", { name: /^4 - / }).click();
-  await page.waitForURL("**/try/complete", { timeout: 20_000 });
+    // Az utolsó válasz auto-advance mellett a kiértékelésre és a vendég
+    // eredmény-kapura visz (guest mód: /try/complete).
+    await page.getByRole("radio", { name: /^4 - / }).click();
+    await page.waitForURL("**/try/complete", { timeout: 20_000 });
 
-  await expect(page.getByRole("heading", { name: /you're done|kész vagy/i })).toBeVisible();
-});
+    await expect(page.getByRole("heading", { name: locale === "hu" ? /kész vagy/i : /you're done/i })).toBeVisible();
+  });
+}
 
 test("draft interruption resumes correctly then reaches results gate", async ({ page }) => {
   await startAssessment(page);

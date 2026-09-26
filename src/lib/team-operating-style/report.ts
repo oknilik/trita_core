@@ -17,8 +17,8 @@ const ReflectionSchema = z.object({
 export type ReviewedReflection = z.infer<typeof ReflectionSchema>;
 export const SECTION_TITLES: Record<string, Localized> = {
   operatingStyle: { hu: "Hogyan működtök együtt?", en: "How do you work together?" },
-  composition: { hu: "Milyen az összetételetek?", en: "What is your team's composition?" },
-  reflections: { hu: "Hol találkozik a működés és az összetétel?", en: "Where do practice and composition meet?" },
+  composition: { hu: "Mit mutatnak a személyiségprofilok?", en: "What is your team's composition?" },
+  reflections: { hu: "A közös szokásaitok és a személyiségprofil együtt", en: "Where do practice and composition meet?" },
 };
 
 /** Experimental report contract, not yet wired into production report/UI/PDF. */

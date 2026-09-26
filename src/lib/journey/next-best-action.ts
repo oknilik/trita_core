@@ -139,7 +139,7 @@ function resolveCtaIdsWithLocale(
         secondary: null,
         explanation: txt(
           locale,
-          "Az utad az első kérdőív kitöltésével indul.",
+          "Töltsd ki az első kérdőívet, hogy megismerhesd a személyes eredményedet.",
           "Your journey starts once your first self assessment is completed.",
         ),
       };
@@ -160,7 +160,7 @@ function resolveCtaIdsWithLocale(
           secondary: "INVITE_OBSERVERS",
           explanation: txt(
             locale,
-            "A saját profilod elkészült, és van függő csatlakozási meghívásod. Elsőként érdemes ezt elfogadni.",
+            "Elkészült a profilod, és csatlakozási meghívót is kaptál. Nyisd meg, ha szeretnél csatlakozni.",
             "Your self profile is complete and you have a pending membership invite. Accepting it is the clearest next step.",
           ),
         };
@@ -203,7 +203,7 @@ function resolveCtaIdsWithLocale(
           secondary: "CREATE_TEAM",
           explanation: txt(
             locale,
-            "A visszajelzési kör fut. Ha csapatban gondolkodsz, közben előkészítheted az első csapatot is.",
+            "Még várjuk a visszajelzéseket. Ha a csapatoddal is használnád a tritát, közben létrehozhatod az első csapatot.",
             "Observer feedback is in progress. With team intent, you can also prepare your first team.",
           ),
         };
@@ -224,7 +224,7 @@ function resolveCtaIdsWithLocale(
           secondary: "REVIEW_SELF_RESULTS",
           explanation: txt(
             locale,
-            "Van csatlakozási meghívásod, így a következő lépés ennek elfogadása.",
+            "Csatlakozási meghívót kaptál. Nyisd meg, és nézd át a részleteket.",
             "You have a pending membership invite, so accepting it is the next best action.",
           ),
         };
@@ -235,7 +235,7 @@ function resolveCtaIdsWithLocale(
           secondary: "JOIN_TEAM",
           explanation: txt(
             locale,
-            "A csapatos használat megkezdéséhez hozd létre a csapatodat.",
+            "Hozd létre a csapatodat, hogy együtt is használhassátok a tritát.",
             "You have relevant team context, so building your team layer is the best next step.",
           ),
         };
@@ -275,7 +275,7 @@ function resolveCtaIdsWithLocale(
         secondary: "LAUNCH_ORG_CAMPAIGN",
         explanation: txt(
           locale,
-          "A csapatnézet már használható: nézd át az eredményeket, és léphetsz szervezeti szintre.",
+          "Nézd át a csapat eredményeit. Ha több csapattal is dolgozol, a szervezeti nézetben együtt követheted őket.",
           "Your team layer is ready. Review insights now and step up to org-level work.",
         ),
       };
@@ -297,7 +297,7 @@ function resolveCtaIdsWithLocale(
           secondary: "LAUNCH_ORG_CAMPAIGN",
           explanation: txt(
             locale,
-            "A szervezeti eredményhez még kevés a kész kitöltés, növelni kell az aktív részvételt.",
+            "A szervezeti eredményhez még kevés a kész kitöltés. Kérd meg a résztvevőket, hogy fejezzék be a felmérést.",
             "You need more completed assessments to unlock robust org-level insights.",
           ),
         };
@@ -308,7 +308,7 @@ function resolveCtaIdsWithLocale(
           secondary: "VIEW_ORG_INSIGHTS",
           explanation: txt(
             locale,
-            "A szervezeti folyamat részben kész: egy aktív visszajelzési körrel lesz teljes a működési kép.",
+            "A szervezetben már vannak eredmények. Indíts visszajelzési kört, hogy mások nézőpontját is megismerjétek.",
             "The org flow is partially ready. Launching an active feedback round completes the picture.",
           ),
         };
@@ -328,7 +328,7 @@ function resolveCtaIdsWithLocale(
         secondary: "LAUNCH_ORG_CAMPAIGN",
         explanation: txt(
           locale,
-          "A szervezeti nézet készen áll – innen már az eredmények alapján tudtok lépni.",
+          "Elkészültek a szervezeti eredmények. Nézzétek át őket, és beszéljétek meg, mi legyen a következő lépés.",
           "Your org cockpit is ready. Next, run actions based on the insights.",
         ),
       };
@@ -369,7 +369,7 @@ export function resolveNextBestAction(
             : resolved.secondary,
         explanation: txt(
           safeLocale,
-          "A személyes eredményed elkészült. Kérj kollégai visszajelzést, vagy mélyítsd el az eredményeidet – csapatelemzéshez a lap alján tudsz érdeklődni.",
+          "Elkészült a személyes eredményed. Olvasd el a magyarázatokat, vagy kérj visszajelzést a kollégáidtól. A csapatelemzésről az oldal alján érdeklődhetsz.",
           "Your self insight is ready. Collect observer feedback or deepen your results – for team analysis, express interest at the bottom of the page.",
         ),
       };

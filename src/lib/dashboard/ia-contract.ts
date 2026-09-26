@@ -191,7 +191,7 @@ function localizeBlockingDetail(
         return txt(locale, `${m?.[1] ?? "?"} csatlakozási meghívó elfogadásra vár.`, d);
       }
       if (d.includes("not set up")) {
-        return txt(locale, "A csapatmunkaterület még nincs beállítva.", d);
+        return txt(locale, "Még nincs létrehozva a csapatod.", d);
       }
       return undefined;
     case "MIN_TEAM_SIZE_NOT_MET": {
@@ -251,14 +251,14 @@ export function createSelfDashboardIA(input: SelfDashboardIAInput): DashboardIAV
       id: `${reason.code}-${index}`,
       severity: "medium" as const,
       title: localizeBlockingCode(locale, reason.code),
-      description: localizeBlockingDetail(locale, reason) ?? txt(locale, "Továbblépéshez szükséges feltétel.", "A condition must be met to progress."),
+      description: localizeBlockingDetail(locale, reason) ?? txt(locale, "Ezt még el kell intézned a folytatáshoz.", "A condition must be met to progress."),
     })) ?? [];
 
   return {
     scope: "self",
     journeyStage: currentStage,
     heroSummary: {
-      eyebrow: txt(locale, "Saját iránytű", "Self cockpit"),
+      eyebrow: txt(locale, "Személyes áttekintés", "Self cockpit"),
       title: displayName,
       summary: txt(
         locale,
@@ -473,7 +473,7 @@ export function createOrgDashboardIA(input: OrgDashboardIAInput): DashboardIAVie
       },
       {
         id: "org-teams",
-        label: txt(input.locale, "Csapatkészültség", "Team readiness"),
+        label: txt(input.locale, "A csapatok haladása", "Team readiness"),
         value: `${teamReadinessPct}%`,
         sub: txt(
           input.locale,
@@ -513,7 +513,7 @@ export function createOrgDashboardIA(input: OrgDashboardIAInput): DashboardIAVie
               "Először ezeket a pontokat zárd le, utána jöhet a következő lépés.",
               "Close these items first, then continue with the next step.",
             )
-          : txt(input.locale, "Nincs nyitott kritikus jelzés.", "No open critical warning."),
+          : txt(input.locale, "Nincs sürgős teendő.", "No open critical warning."),
       items: input.riskItems,
     },
     recommendedAction: input.recommendedAction,

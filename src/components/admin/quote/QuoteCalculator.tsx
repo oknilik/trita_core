@@ -53,8 +53,8 @@ const huf = (value: number) =>
 const WARNING_TEXT: Record<QuoteWarning, string> = {
   BELOW_TARGET_HOURLY:
     "Az egy munkaórára jutó díj alacsonyabb a kitűzött célnál. Ellenőrizd, hogy az ajánlat fedezi-e a ráfordított idődet.",
-  DISCOUNT_OVER_CAP: "A kedvezmény meghaladja a keretet – ez külön döntés.",
-  DISCOUNT_WITHOUT_REASON: "Indoklás nélküli kedvezmény: később nem lesz mire hivatkozni.",
+  DISCOUNT_OVER_CAP: "A kedvezmény meghaladja a megadott keretet. Ellenőrizd, hogy ezt az összeget szeretnéd-e adni.",
+  DISCOUNT_WITHOUT_REASON: "Írd le, miért adod a kedvezményt, hogy később is visszakereshető legyen.",
   NO_FOLLOW_UP:
     "Az ajánlat nem tartalmaz újramérést. A változás követéséhez válaszd a Csapatprogramot, vagy adj hozzá egy további mérési kört.",
 };
@@ -167,7 +167,7 @@ export function QuoteCalculator({
     if (!parsed.success) {
       const fields = [...new Set(parsed.error.issues.map((issue) => issue.path.join(".")))];
       setQuoteError(
-        `A mentéshez érvényes (egész számú) bemenet kell – ellenőrizd: ${fields.join(", ")}`,
+        `A mentéshez egész számokat adj meg. Ellenőrizd ezeket a mezőket: ${fields.join(", ")}`,
       );
       return;
     }
@@ -478,15 +478,15 @@ export function QuoteCalculator({
             </button>
           </div>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
-            A csapatalapdíjak, a létszámdíjak, a workshopnap és a pilotkedvezmény
-            PUBLIKUSAK: az /pricing kalkulátor, a főoldal és a /team-dynamics ár-horgonya, a /pilot
-            ténysáv ezekből mutat számot. Mentés után a publikus oldalak azonnal frissülnek.
-            Az időbecslés, a célóradíj és a kedvezménykeret belső.
+            A csapatalapdíjak, a fejenkénti díjak, a workshopnap és a pilotkedvezmény
+            a nyilvános árakat is meghatározzák. Ezeket használja az Árazás, a Csapatoknak
+            és a Pilotprogram oldal. Mentés után a nyilvános oldalak frissülnek.
+            Az időbecslést, a célóradíjat és a kedvezménykeretet csak itt látod.
           </p>
           {!saved && (
             <p className="mt-2 rounded-lg border border-bronze-edge bg-bronze-soft/40 p-3 text-xs leading-relaxed text-ink-body">
-              Még a beépített alapértelmezett díjkártya él (nincs mentett, vagy a mentett
-              korábbi árazási modellhez tartozik). Ellenőrizd, és mentsd el.
+              Most a beépített díjakat használjuk, mert még nincs mentett díjkártya,
+              vagy a korábbi más árazási modellhez tartozik. Ellenőrizd a díjakat, majd mentsd el őket.
             </p>
           )}
 
@@ -494,7 +494,7 @@ export function QuoteCalculator({
             <div className="mt-4 flex flex-col gap-4">
               <div>
                 <p className="font-mono text-xs uppercase tracking-widest text-muted">
-                  Publikus árlétra (nettó Ft)
+                  Nyilvános csomagárak (nettó Ft)
                 </p>
                 <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-2">
                   {QUOTE_TIERS.map((tier) => (
@@ -774,7 +774,7 @@ export function QuoteCalculator({
         {/* A DÖNTŐ szám: nem a végösszeg, hanem ami a munkán marad. */}
         <section className="rounded-2xl border border-sand bg-cream p-6">
           <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            Effektív óradíj
+            Egy munkaórára jutó díj
           </p>
           <p
             className={`font-fraunces text-3xl tabular-nums ${
@@ -784,7 +784,7 @@ export function QuoteCalculator({
             {result.effectiveHourlyRate == null ? "–" : huf(result.effectiveHourlyRate)}
           </p>
           <p className="mt-1 text-xs text-muted">
-            {result.estimatedHours} becsült óra · cél {huf(rate.targetHourlyRate)} · padló{" "}
+            {result.estimatedHours} becsült óra · cél {huf(rate.targetHourlyRate)} · alsó határ{" "}
             {huf(result.floorPrice)}
           </p>
         </section>

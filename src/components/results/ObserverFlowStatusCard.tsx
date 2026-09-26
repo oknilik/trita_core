@@ -128,7 +128,7 @@ export function ObserverFlowStatusCard({
         )}
         <p className="mt-2 text-xs text-muted">
           {isHu
-            ? `Az összevetés ${flow.minForReveal} beérkezett visszajelzésnél nyílik meg – így egyik kollégád válasza sem visszakereshető.`
+            ? `Az összevetés legalább ${flow.minForReveal} beérkezett visszajelzés után jelenik meg. Az egyéni válaszok helyett csak az összesített átlagot mutatjuk.`
             : `The comparison opens at ${flow.minForReveal} received responses – so no single colleague's answer can be traced back.`}
         </p>
       </section>

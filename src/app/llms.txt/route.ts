@@ -42,10 +42,10 @@ export function GET(): Response {
   const huPosts = blogActive ? getAllPosts("hu") : [];
   const enPosts = blogActive ? getAllPosts("en") : [];
   const patternLine = isPortfolioSurfaceActive("patternExplorer")
-    ? line("/patterns", "16 értelmezési csapatminta", "Négy tengely lehetséges olvasatai erősségekkel és kockázatokkal; értelmezési nyelv, nem validált tipológia vagy diagnózis.", baseUrl)
+    ? line("/patterns", "16 értelmezési csapatminta", "Négy személyiségalapú szempont kombinációi, lehetséges erősségekkel és nehézségekkel. A minták az értelmezést segítik; nem igazolt csapattípusok vagy diagnózisok.", baseUrl)
     : null;
   const blogLine = blogActive
-    ? line("/blog", "Blog", "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.", baseUrl)
+    ? line("/blog", "Blog", "Cikkek a személyiségről, a közös munkáról és a csapatvezetésről.", baseUrl)
     : null;
   const optionalMainLines = [patternLine, blogLine].filter(Boolean).join("\n");
   const blogSections = blogActive
@@ -65,10 +65,10 @@ ${enPosts
   const body = `# ${ORGANIZATION_NAME}
 
 > Személyiség- és csapatintelligencia platform magyar csapatoknak. Önértékelő
-> személyiségfelmérés hat dimenzió mentén (TSFI kérdőív), 360°-os ismerősi/
-> kollégai visszajelzés és csapatszintű diagnosztika – tanácsadói
+> személyiségfelmérés hat dimenzió mentén (TSFI kérdőív), az ismerősöktől és kollégáktól kért
+> 360°-os visszajelzés és csapatszintű diagnosztika – tanácsadói
 > értelmezéssel. Az egyéni felmérés ingyenes; a csapat- és szervezeti
-> programok tanácsadói együttműködés keretében futnak, egyedi ajánlattal.
+> programokat tanácsadó kíséri, a részvételhez egyedi ajánlatot adunk.
 
 > English: trita is a personality and team intelligence platform for Hungarian
 > teams – a six-dimension personality self-assessment, 360° observer feedback
@@ -76,12 +76,12 @@ ${enPosts
 
 ## Amit érdemes tudni rólunk
 
-- Mérőeszköz: TSFI kérdőív (60 item rövid forma, kb. 10 perc), hat
+- Mérőeszköz: TSFI kérdőív (60 tételes rövid változat, kb. 10 perc), hat
   személyiségdimenzió mentén: Becsületesség-Alázat (H), Emocionalitás (E),
   Extraverzió (X), Barátságosság (A), Lelkiismeretesség (C), Nyitottság (O).
-- Módszertan (a felületen NEM így kommunikáljuk, itt a pontosság kedvéért):
+- A módszertan szakirodalmi háttere:
   a hat dimenzió a szakirodalomban HEXACO néven ismert hatfaktoros modellt
-  követi (Ashton & Lee, 2007); az itemek az IPIP (International Personality
+  követi (Ashton & Lee, 2007); a kérdőív tételei az IPIP (International Personality
   Item Pool) közkincs készletéből származnak – kereskedelmi használatra is
   szabadon, engedélydíj nélkül.
 - Minden becsült (nem mért) adat forrás- és megbízhatóság-jelöléssel jelenik
@@ -91,11 +91,11 @@ ${enPosts
 
 ## Fő oldalak
 
-${line("/", "Főoldal", "Ingyenes egyéni személyiségprofil: fő mintázatok, erősségek és természetes csapatszerepek hat személyiségdimenzió mentén; átvezetés a tanácsadóval kísért csapatprogramhoz.", baseUrl)}
+${line("/", "Főoldal", "Ingyenes egyéni személyiségprofil hat dimenzió mentén, lehetséges erősségekkel és becsült csapatszerepekkel. Bemutatja a tanácsadóval kísért csapatprogramot is.", baseUrl)}
 ${line("/try", "Ingyenes személyiségteszt", "60 kérdéses személyiségteszt regisztráció nélkül, kb. 10 perc, azonnali visszajelzés hat dimenzió mentén.", baseUrl)}
 ${line("/team-dynamics", "Csapatoknak – csapatdiagnosztika és csapatfejlesztés", "Csapatszerepek, bizalmi háló és pszichológiai biztonság tanácsadó által értelmezett csapatképben; hogyan indul a közös munka három lépésben, mi ingyenes, gyakori kérdések.", baseUrl)}
-${line("/about", "Rólunk", "A trita mögött tanácsadói műhely áll. A mérésből tanácsadó vezette közös értelmezés és visszamérhető változtatás lesz; embereket nem rangsorolunk.", baseUrl)}
-${line("/pricing", "Árak", "Fejenkénti ár két szinten (Csapatkép, Csapatprogram), minden méréssel; létszám-kalkulátor, mit tartalmaz az ár, pilot-partneri ár.", baseUrl)}
+${line("/about", "Rólunk", "Bemutatkozik a trita: a csapattal közösen beszéljük át a felmérési eredményeket, és segítünk kiválasztani, min érdemes változtatni. A felmérés nem rangsorolja az embereket.", baseUrl)}
+${line("/pricing", "Árak", "A Csapatkép és a Csapatprogram tartalma és díja, csapatonkénti alapdíjjal és résztvevőnkénti díjjal. Árkalkulátor, pilotkedvezmény. Mindkét csomag minden mérést tartalmaz.", baseUrl)}
 ${line("/pilot", "Pilotprogram", "Az első partnercsapatoknak szóló bevezető program feltételei.", baseUrl)}
 ${optionalMainLines}
 ${line("/contact", "Kapcsolat", "Kapcsolatfelvétel; egy munkanapon belüli válasz.", baseUrl)}

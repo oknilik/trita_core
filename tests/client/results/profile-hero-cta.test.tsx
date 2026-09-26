@@ -87,7 +87,7 @@ describe("ProfileHero – elsődleges CTA a sötét herón", () => {
 
     expect(screen.queryByRole("heading", { name: "Teszt Anna" })).toBeNull();
     expect(screen.getByText("A te karakterábrád")).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: /absztrakt típus-ábra/ })).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /absztrakt típusábra/ })).toBeInTheDocument();
     expect(screen.getByText(/A nagy forma.*szem.*létrafokok/)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Profil megjelenítése" })).toHaveAttribute(
       "aria-pressed",

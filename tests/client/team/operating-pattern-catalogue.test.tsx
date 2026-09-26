@@ -17,7 +17,7 @@ describe("operating catalogue and layered report", () => {
     render(<OperatingPatternExplorer />);
     const catalogue = screen.getByText("Felfedezem a 16 mintát").closest("details")!;
     expect(catalogue).not.toHaveAttribute("open");
-    expect(screen.getByRole("heading", { name: "Miben segíthet a megismert csapatmintázat?" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Mit kezdhettek az eredményekkel?" })).toBeVisible();
     expect(screen.getByText("Nincs egyetlen ideális csapatminta.")).toBeVisible();
     await userEvent.click(screen.getByRole("button", { name: "A minták érdekelnek" }));
     expect(catalogue).toHaveAttribute("open");

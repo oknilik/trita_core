@@ -40,7 +40,7 @@ describe("HelpWidget", () => {
     fireEvent.click(screen.getByRole("button", { name: "Segítség megnyitása" }));
     fireEvent.click(screen.getByRole("button", { name: "Mi a trita, és kinek segíthet?" }));
 
-    expect(screen.getByText(/Egyénileg ingyenesen kitöltheted/)).toBeInTheDocument();
+    expect(screen.getByText(/A személyiségfelmérést ingyenesen kitöltheted/)).toBeInTheDocument();
   });
 
   it("az ingyenes egyéni felmérés aktuális ígéretét jeleníti meg", () => {

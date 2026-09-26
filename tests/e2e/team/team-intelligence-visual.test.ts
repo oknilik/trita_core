@@ -293,7 +293,7 @@ test.describe("Team intelligence structural snapshots", () => {
 
     // Gyűjtés-fókuszú layout (IntelligenceTabView, !hasSufficientIntelligenceData ág).
     const lowDataSection = page.locator("section").filter({
-      has: page.getByRole("heading", { name: "Még nincs elég adat a csapatintelligenciához" }),
+      has: page.getByRole("heading", { name: "Még nincs elég adat a csapatelemzéshez" }),
     });
     await expect(lowDataSection).toBeVisible({ timeout: 15_000 });
 

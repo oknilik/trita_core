@@ -17,7 +17,7 @@ import {
 const seoIntent = SEO_INTENTS.home;
 const title = "Magyar személyiségteszt – értsd meg, hogyan működsz | trita";
 const description =
-  "Ingyenes magyar személyiségteszt 60 kérdéssel és azonnali eredménnyel. Ismerd meg a rád jellemző mintázatokat, az erősségeidet és a lehetséges csapatszerepeidet.";
+  "Ingyenes magyar személyiségteszt 60 kérdéssel és azonnali eredménnyel. Ismerd meg jobban az erősségeidet és a hozzád közel álló csapatszerepeket.";
 
 export const metadata: Metadata = buildPageMetadata({
   path: "/",
@@ -25,7 +25,7 @@ export const metadata: Metadata = buildPageMetadata({
   description,
   ogTitle: "trita – személyiség- és csapatintelligencia",
   ogDescription:
-    "Személyiségfelmérés és csapatdiagnosztika az együttműködés megértéséhez, a fejlődéshez és a közös döntésekhez.",
+    "Ismerd meg a személyiségprofilodat, vagy mérjétek fel a csapatotokat, és beszéljétek át az eredményeket tanácsadó segítségével.",
 });
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey

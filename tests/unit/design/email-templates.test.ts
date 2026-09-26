@@ -267,6 +267,17 @@ test("egyetlen kanonikus aláírás, egyetlen dokumentált kivétellel", async (
   }
 });
 
+test("a személyes visszaigazolás a megadott teljes nevet őrzi meg mindkét levélváltozatban", async () => {
+  const samples = await samplesPromise;
+  for (const id of PERSONAL_SIGN_OFF_TEMPLATES) {
+    const sample = samples.find((item) => item.id === id && item.locale === "hu");
+    assert.ok(sample, `${id}: hiányzó magyar minta`);
+    // Magyar névsorrendnél az első szó rendszerint a családnév.
+    assert.ok(sample.html.includes("Tóth Anna"), `${id}: csonkolt név a HTML-ben`);
+    assert.ok(sample.text.includes("Tóth Anna"), `${id}: csonkolt név a szöveges levélben`);
+  }
+});
+
 // ─── 8. Leiratkozás ──────────────────────────────────────────────────────────
 
 test("minden életciklus-levél láblécében ott a leiratkozó-link", async () => {

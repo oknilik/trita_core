@@ -26,7 +26,7 @@ export default function AboutPage() {
           path: "/about",
           title: "Rólunk – a trita mögött álló műhely",
           description:
-            "A trita tanácsadó vezette csapatdiagnosztikai folyamatban kapcsolja össze a mérést, az emberi értelmezést és a változás követését.",
+            "A trita felméri a csapatot, majd tanácsadó segítségével közösen beszélitek át az eredményeket, és követitek, mi változott a későbbi felmérésig.",
           about: ["Csapatdiagnosztika", "Személyiségfelmérés", "Csapatintelligencia"],
           breadcrumb: [
             { name: "Főoldal", path: "/" },

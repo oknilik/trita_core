@@ -14,7 +14,7 @@ describe("client report reading flow", () => {
     render(<TeamReportView report={makeReaderReport(true)} isHu />);
     const main = screen.getByRole("tabpanel");
     expect(within(main).getAllByRole("heading", { level: 2 }).slice(0, 4).map((el) => el.textContent)).toEqual([
-      "Nincs erős eltolódás egyik pólus felé sem.", "Mit mutatnak a személyiségprofilok?", "Mit érdemes közelebbről megnézni?", "04 / A szokásaitok és a személyiségprofil együtt",
+      "Egyik működésmód sem emelkedik ki egyértelműen.", "Mit mutatnak a személyiségprofilok?", "Mit érdemes közelebbről megnézni?", "04 / A szokásaitok és a személyiségprofil együtt",
     ]);
     expect(within(main).getAllByRole("img", { name: /A pont az átlagot jelöli/ })).toHaveLength(4);
     expect(within(main).getByRole("img", { name: "Vegyes csapatkép – különböző absztrakt karakterek" })).toBeVisible();

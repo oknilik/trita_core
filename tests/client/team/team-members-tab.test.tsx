@@ -79,7 +79,7 @@ describe("TeamMembersTab member directory", () => {
     expect(screen.getByRole("button", { name: /Tag hozzáadása/ })).toBeInTheDocument();
     expect(screen.getByRole("combobox")).toHaveValue("member");
     expect(screen.getByRole("button", { name: "Eltávolítás" })).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Dossié" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Dosszié" })).not.toBeInTheDocument();
     expect(screen.queryByText("Kitöltve")).not.toBeInTheDocument();
     expect(screen.queryByText(/2026/)).not.toBeInTheDocument();
   });
@@ -100,7 +100,7 @@ describe("TeamMembersTab member directory", () => {
       />,
     );
 
-    const dossierLinks = screen.getAllByRole("link", { name: "Dossié" });
+    const dossierLinks = screen.getAllByRole("link", { name: "Dosszié" });
     expect(dossierLinks).toHaveLength(2);
     expect(dossierLinks[0]).toHaveAttribute(
       "href",

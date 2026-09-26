@@ -68,7 +68,7 @@ export function TeamActionTracker({
   return (
     <section aria-labelledby="action-tracking-title">
       <div className="mb-3">
-        <SectionEyebrow>{isHu ? "heti vezetői fókusz" : "weekly leadership focus"}</SectionEyebrow>
+        <SectionEyebrow>{isHu ? "heti vezetői áttekintés" : "weekly leadership focus"}</SectionEyebrow>
         <h2 id="action-tracking-title" className="mt-1 font-fraunces text-xl text-ink">
           {isHu ? "A vállalt lépések követése" : "Action tracking"}
         </h2>
@@ -81,7 +81,7 @@ export function TeamActionTracker({
         {(summary.blocked > 0 || summary.overdue > 0) && (
           <p className="mt-3 rounded-xl border border-state-warning-border bg-state-warning-bg px-3 py-2 text-xs font-medium text-state-warning-fg">
             {isHu
-              ? `${summary.blocked} elakadt és ${summary.overdue} lejárt határidejű lépésben van szükség vezetői döntésre.`
+              ? `Vezetőként tekintsd át az elakadásokat és a határidőket. Elakadt lépés: ${summary.blocked}. Lejárt határidejű lépés: ${summary.overdue}.`
               : `${summary.blocked} blocked and ${summary.overdue} overdue actions need a leadership decision.`}
           </p>
         )}
@@ -92,7 +92,7 @@ export function TeamActionTracker({
               <div className="flex flex-wrap items-start justify-between gap-2">
                 <div>
                   <p className="text-sm font-semibold text-ink">{item.title}</p>
-                  <p className="mt-0.5 text-xs text-muted">{item.timeframe} {isHu ? "napos fókusz" : "day focus"}</p>
+                  <p className="mt-0.5 text-xs text-muted">{isHu ? `Tervezett időtáv: ${item.timeframe} nap` : `${item.timeframe} day focus`}</p>
                   {item.targetMetric ? (
                     <p className="mt-1 text-micro text-[var(--color-accent-primary-strong)]">
                       {isHu ? "Célmutató" : "Target"}: {teamActionTargetLabel(

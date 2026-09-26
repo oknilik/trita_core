@@ -184,9 +184,9 @@ export const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; m
 // generikus, de értelmes szerep-illeszkedési szöveg üres szekció helyett.
 const DEFAULT_ROLE_FIT: Record<Locale, { strong: string; medium: string; watchOut: string }> = {
   hu: {
-    strong: "Kiegyensúlyozott profiloddal sokféle szerepben megállhatod a helyed, különösen az általános, koordináló és összekötő munkakörökben, ahol az alkalmazkodóképesség és a stabilitás érték.",
-    medium: "Az egyetlen erős vonásra épülő, szakosodott szerepek is működhetnek; ezeknél inkább a motivációd és a tapasztalatod dönt, nem a személyiségprofilod.",
-    watchOut: "A nagyon nagy nyomással, tartós elszigeteltséggel vagy folyamatos szerepléssel járó közegek kevésbé építenek a kiegyensúlyozottságodra. Ezekhez tudatos felkészülésre lehet szükséged.",
+    strong: "A pontszámaid alapján nem emelkedik ki egyetlen munkastílus sem. A koordinálást és egyeztetést igénylő szerepeket is érdemes megismerned, majd a saját tapasztalataid alapján mérlegelned.",
+    medium: "Ha egy szakosodott szerep érdekel, nézd meg, milyen tudást és gyakorlatot kíván. A személyiségpontszámaidból önmagukban nem derül ki, mennyire illene hozzád.",
+    watchOut: "A tartós nyomás, az elszigetelt munka vagy a gyakori szereplés más-más felkészülést igényelhet. Idézz fel ilyen helyzeteket: melyikben érezted jól magad, és melyik fárasztott el?",
   },
   en: {
     strong: "With a balanced profile you can thrive in many roles: generalist, coordinating, and bridge positions where flexibility and stability are the value.",

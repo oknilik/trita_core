@@ -195,7 +195,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
       <View wrap={false} style={{ gap: 5 }}>
         <Text style={{ ...caption, color: colors.bronze }}>{isHu ? "CSAPATKÉP" : "TEAM PICTURE"}</Text>
         <Text style={{ ...heading, fontSize: type.chapter }}>{report.title || (isHu ? "Értsétek meg. Alakítsátok együtt." : "Understand it. Shape it together.")}</Text>
-        <Text style={caption}>{agg ? (isHu ? `${agg.memberCount} fős csapat` : `${agg.memberCount} team members`) : ""}{report.status === "DRAFT" ? (isHu ? " · A vázlat előnézete" : " · Draft preview") : ""}</Text>
+        <Text style={caption}>{agg ? (isHu ? `${agg.memberCount} fős csapat` : `${agg.memberCount} team members`) : ""}{report.status === "DRAFT" ? (isHu ? " · A piszkozat előnézete" : " · Draft preview") : ""}</Text>
       </View>
       <Chapter title={operating.title}>
         <View wrap={false} style={{ padding: 18, backgroundColor: colors.sageDark, borderRadius: 12, gap: 9 }}>
@@ -286,7 +286,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
       </Chapter>}
     </ReportPage>}
 
-    {(op || comp) && <ReportPage report={report} isHu={isHu} bookmark={isHu ? "Mérési háttér" : "Measurement background"}>
+    {(op || comp) && <ReportPage compact report={report} isHu={isHu} bookmark={isHu ? "Mérési háttér" : "Measurement background"}>
       <Text style={{ ...heading, fontSize: type.chapter }}>{isHu ? "A mérés részletei" : "The data and its sources."}</Text>
       {op && <Chapter title={isHu ? "Csapatműködés" : "Operating style"}>
         <Notes notes={operating.notes} />
@@ -312,7 +312,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
       {(psych || trust) && <View wrap={false} style={{ flexDirection: "row", gap: 20 }}>
         {psych && <View style={{ flex: 1 }}><Chapter keepTogether title={isHu ? "Pszichológiai biztonság" : "Psychological safety"}>
         <Text style={body}>{psych.index}/100 · {psych.count} {isHu ? "névtelen válasz" : "anonymous responses"} · {psych.campaignName}</Text>
-        <Text style={caption}>{isHu ? "Mért, anonim csapatszintű eredmény; a magasabb érték nagyobb biztonságot jelez" : "Measured, anonymous team-level result; higher values indicate greater safety"} · {date(psych.measuredAt, isHu)}</Text>
+        <Text style={caption}>{isHu ? "Névtelen válaszokból készült csapatszintű eredmény; a magasabb érték erősebb biztonságérzetet jelez" : "Measured, anonymous team-level result; higher values indicate greater safety"} · {date(psych.measuredAt, isHu)}</Text>
         {Object.entries(psych.itemMeans).map(([id, mean]) => <Text key={id} style={body}>{getPsychSafetyItem(id)?.area[locale] || id}: {num(mean, isHu)}/5</Text>)}
       </Chapter></View>}
         {trust && <View style={{ flex: 1 }}><Chapter keepTogether title={isHu ? "Bizalmi háló" : "Trust network"}>
@@ -335,7 +335,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
         <Text style={body}>{isHu ? "Értékelhető csapattársi visszajelzés" : "Usable peer feedback"}: {agg.peerRoles.ratedCount}/{agg.peerRoles.memberCount} · {isHu ? "Eltérő önkép és csapatkép" : "Different self and peer views"}: {agg.peerRoles.mismatchCount}/{agg.peerRoles.comparedCount}</Text>
       </Chapter>}
       {!!agg.pressure?.concentrations.length && <Chapter keepTogether title={isHu ? "Csapat nyomás alatt" : "Team under pressure"}>
-        <Text style={caption}>{isHu ? "Személyiségből becsült, közös értelmezésre szánt hipotézisek." : "Personality-based hypotheses for discussion."}</Text>
+        <Text style={caption}>{isHu ? "A személyiségprofilokból készült felvetések. Saját tapasztalataitokkal vessétek össze őket." : "Personality-based hypotheses for discussion."}</Text>
         {agg.pressure.concentrations.map((c) => { const content = c.pole === "polarized" ? TEAM_PRESSURE_POLARIZED_TEXT : isHexacoCode(c.dim) ? TEAM_PRESSURE_CONTENT[c.dim]?.[c.pole] : null; return content ? <Text key={`${c.dim}-${c.pole}`} style={body}>{isHexacoCode(c.dim) ? HEXACO_DIMENSIONS[c.dim][locale] : c.dim}: {content[locale]} ({c.count}/{c.assessedCount})</Text> : null; })}
       </Chapter>}
       <Text style={caption}>{isHu ? `Összesített adatok rögzítve: ${date(agg.generatedAt, isHu)} · ${agg.completedCount}/${agg.memberCount} személyiségfelmérés. Egyéni válaszokat nem tartalmaz.` : `Frozen aggregates: ${date(agg.generatedAt, isHu)} · ${agg.completedCount}/${agg.memberCount} personality assessments. No individual responses included.`}</Text>

@@ -1,3 +1,5 @@
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
+
 export const resultsTranslations = {
   dashboard: {
     metadataTitle: { hu: "Profilom | trita", en: "My profile | trita" },
@@ -9,7 +11,7 @@ export const resultsTranslations = {
     latestEvaluation: { hu: "Legutóbbi kiértékelés", en: "Latest evaluation" },
     guidedTag: { hu: "A te utad", en: "Your journey" },
     nextStepTitle: { hu: "Következő lépés", en: "Next step" },
-    guidedPraise: { hu: "Nem vagy egyedül, lépésről lépésre vezetünk.", en: "You are not alone. We will guide you step by step." },
+    guidedPraise: { hu: "Itt látod, hol tartasz, és mivel folytathatod.", en: "You are not alone. We will guide you step by step." },
     journeyProgress: { hu: "Haladás", en: "Progress" },
     journeyStepSelf: { hu: "Saját eredmény", en: "Self result" },
     journeyStepInvite: { hu: "Meghívások", en: "Invitations" },
@@ -17,7 +19,7 @@ export const resultsTranslations = {
     journeyStepFeedback: { hu: "Visszajelzésed", en: "Your feedback" },
     nextStepInviteTitle: { hu: "Hogyan látnak mások?", en: "See how others see you" },
     nextStepInviteBodyPre:       { hu: "Hívd meg kollégáidat, barátaidat – legalább ", en: "Invite your colleagues and friends – at least " },
-    nextStepInviteBodyHighlight: { hu: "2 visszajelzés", en: "2 responses" },
+    nextStepInviteBodyHighlight: { hu: `${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} visszajelzés`, en: `${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} responses` },
     nextStepInviteBodyPost:      { hu: " kell az összehasonlításhoz.", en: " are needed for the comparison." },
     nextStepInviteNote: {
       hu: "Legalább ennyi válasz szükséges ahhoz, hogy az átlaguk alapján összehasonlítást készítsünk.",
@@ -25,7 +27,7 @@ export const resultsTranslations = {
     },
     nextStepInviteCta: { hu: "Meghívó küldése", en: "Send invite" },
     nextStepWaitTitle: { hu: "Várjuk a visszajelzéseket", en: "Waiting for feedback" },
-    nextStepWaitBody: { hu: "{received}/2 visszajelzés érkezett · {pending} függőben", en: "{received}/2 responses received · {pending} pending" },
+    nextStepWaitBody: { hu: `{received}/${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} visszajelzés érkezett · {pending} függőben`, en: `{received}/${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} responses received · {pending} pending` },
     nextStepManageInvitesCta: { hu: "Meghívók kezelése", en: "Manage invites" },
     nextStepCompareTitle: { hu: "Nézd meg a különbségeket", en: "See the differences" },
     nextStepCompareBody: { hu: "Hasonlítsd össze, hogyan látod magad és hogyan látnak mások.", en: "Compare how you see yourself with how others see you." },
@@ -34,7 +36,7 @@ export const resultsTranslations = {
     nextStepFeedbackBody: { hu: "Pár kérdés arról, mennyire értesz egyet az eredménnyel.", en: "A few quick questions about how well the results match you." },
     nextStepFeedbackCta: { hu: "Visszajelzés megadása", en: "Give feedback" },
     nextStepDoneTitle: { hu: "Készen is vagy!", en: "You're all set!" },
-    nextStepDoneBody: { hu: "Reméljük, hogy az eredmények és a visszajelzések hasznos felismeréseket hoztak!", en: "We hope the results and feedback brought you useful insights!" },
+    nextStepDoneBody: { hu: "Köszönjük, hogy végigmentél az eredményeken és megosztottad a véleményedet!", en: "We hope the results and feedback brought you useful insights!" },
     nextStepDoneCta: { hu: "Vissza az eredményekhez", en: "Back to results" },
     nextStepSurveyTitle: { hu: "Segíts nekünk!", en: "Help us improve" },
     nextStepSurveyBody: { hu: "Töltsd ki a rövid visszajelző kérdőívünket – pár kérdés, nagy segítség.", en: "Fill in our short feedback survey – a few questions, a big help." },
@@ -44,13 +46,13 @@ export const resultsTranslations = {
     nextStepDraftTitle: { hu: "Folytasd a tesztet", en: "Continue the test" },
     nextStepDraftBody: { hu: "Már elindítottad a kitöltést – folytasd ott, ahol abbahagytad.", en: "You've already started the test – continue where you left off." },
     profileOverview: { hu: "A személyiségprofilod áttekintése", en: "Personality profile overview" },
-    overviewLikert: { hu: "Gyors vizuális összkép a fő személyiségdimenzióidról.", en: "A quick visual snapshot of your main personality dimensions." },
+    overviewLikert: { hu: "A hat személyiségdimenzió pontszámai egy ábrán.", en: "A quick visual snapshot of your main personality dimensions." },
     radarLegendSelf: { hu: "Saját", en: "Self" },
     radarLegendObservers: { hu: "Mások", en: "Others" },
     spectrumHigh: { hu: "Magas", en: "High" },
     spectrumLow: { hu: "Alacsony", en: "Low" },
     detailedTitle: { hu: "Részletes kiértékelés", en: "Detailed results" },
-    detailedBody: { hu: "A skálaértékek és rövid jellemzésed.", en: "Scale values and short interpretation." },
+    detailedBody: { hu: "A pontszámaid és a hozzájuk tartozó magyarázatok.", en: "Scale values and short interpretation." },
     // (results.altruismTitle / altruismBody törölve 2026-08-11 — árva kulcsok
     //  fogyasztó nélkül; az élő szövegek a `content.altruism*` névtérben élnek.)
     dimensionHint: { hu: "Kattints a részletekért", en: "Tap for details" },
@@ -290,8 +292,8 @@ export const resultsTranslations = {
       en: "Feedback is anonymous, and we show only aggregated averages.",
     },
     compareHint: {
-      hu: "Az összehasonlításhoz legalább 2 visszajelzés kell. ({count}/2 megérkezett.)",
-      en: "For the comparison, you'll need at least 2 responses. ({count}/2 received.)",
+      hu: `Az összehasonlításhoz legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} visszajelzés kell. ({count}/${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} megérkezett.)`,
+      en: `For the comparison, you'll need at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} responses. ({count}/${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} received.)`,
     },
     noInvitations: { hu: "Még nincs meghívód", en: "No invitations yet" },
     createPrompt: { hu: "Hozz létre egyet a fenti űrlappal", en: "Create one with the form above" },
@@ -311,8 +313,8 @@ export const resultsTranslations = {
     title: { hu: "Mások rólad", en: "Others about you" },
     body: { hu: "Összehasonlítjuk az önértékelésedet {count} visszajelző értékelésének átlagával.", en: "Comparison of your self-rating and the average from the people you invited ({count} people)." },
     similar: { hu: "hasonló", en: "similar" },
-    diffHigher: { hu: "+{diff} pont (mások magasabbra értékelnek)", en: "+{diff} pts (others rate you higher)" },
-    diffLower: { hu: "{diff} pont (mások alacsonyabbra értékelnek)", en: "{diff} pts (others rate you lower)" },
+    diffHigher: { hu: "+{diff} pont (mások magasabb pontszámot adtak)", en: "+{diff} pts (others rate you higher)" },
+    diffLower: { hu: "{diff} pont (mások alacsonyabb pontszámot adtak)", en: "{diff} pts (others rate you lower)" },
     pointsUnitShort: { hu: "pont", en: "pts" },
     pointsUnit: { hu: "pont", en: "points" },
     self: { hu: "Te", en: "You" },
@@ -323,7 +325,7 @@ export const resultsTranslations = {
     confidenceLabel: { hu: "A visszajelzők átlagos bizonyossága", en: "Avg. confidence" },
     observersLabel: { hu: "Értékelők", en: "Raters" },
     insightHigher: { hu: "Mások értékelése alapján magasabb a pontszámod ebben a dimenzióban, mint az önértékelésed alapján.", en: "Others rate you higher in this dimension than you rate yourself." },
-    insightLower: { hu: "Te magasabbra értékeled magad ebben a dimenzióban, mint ahogy mások látnak téged.", en: "You rate yourself higher in this dimension than others rate you." },
+    insightLower: { hu: "Ebben a dimenzióban a saját pontszámod magasabb, mint a másoktól kapott értékelések átlaga.", en: "You rate yourself higher in this dimension than others rate you." },
     facetMapTitle: { hu: "Alskálák összehasonlítása", en: "Sub-scale comparison" },
     facetMapSubtitle: { hu: "Önértékelésed és mások értékelésének átlaga alskálánként, dimenziók szerint csoportosítva. Az eltérést úgy számítjuk ki, hogy mások értékelésének átlagából kivonjuk a te pontszámodat.", en: "Your self-rating and the outside average on each sub-scale, grouped by dimension. Difference is (others' average) − (you)." },
     // Mérési-hiba SZÁM nem kerül a felületre (2026-08-11 termékdöntés) — a
@@ -331,16 +333,16 @@ export const resultsTranslations = {
     facetMapAllMatch: { hu: "Minden összehasonlítható alskálán a mérési hibán belül marad az eltérés, nincs kiugró különbség.", en: "Every covered sub-scale agrees within the measurement error – no notable gaps." },
     facetMethodNote: { hu: "Az alskála pontszáma kevés kérdésből számolt becslés, ezért a mérési hibája nagyobb, mint a fő dimenzióké. A mérési hibán belüli eltérést egyezésként jelöljük, és csak azok az alskálák jelennek meg, amelyekről mindkét oldalon van elegendő adat.", en: "Sub-scale scores are estimates based on only a few questions, so their measurement error is larger than for the main dimensions. Differences within the measurement error are marked as a match, and only sub-scales covered on both sides are shown." },
     heatmapMatch: { hu: "Közel azonos", en: "Close match" },
-    heatmapObsHigher: { hu: "Mások magasabbra értékelnek", en: "Others rate higher" },
-    heatmapSelfHigher: { hu: "Te értékeled magasabbra", en: "You rate higher" },
+    heatmapObsHigher: { hu: "Mások magasabb pontszámot adtak", en: "Others rate higher" },
+    heatmapSelfHigher: { hu: "A saját pontszámod magasabb", en: "You rate higher" },
     deltaDirectionMatch: { hu: "Közel azonos értékelés", en: "Ratings are close" },
-    deltaDirectionHigher: { hu: "Mások itt magasabbra értékelnek, mint te.", en: "Others rate this higher than you do." },
-    deltaDirectionLower: { hu: "Te itt magasabbra értékeled magad, mint az értékelők.", en: "You rate yourself higher here than others do." },
+    deltaDirectionHigher: { hu: "Ebben az alskálában a rólad adott értékelések átlaga magasabb a saját pontszámodnál.", en: "Others rate this higher than you do." },
+    deltaDirectionLower: { hu: "Ebben az alskálában a saját pontszámod magasabb, mint a másoktól kapott átlag.", en: "You rate yourself higher here than others do." },
     showAll: { hu: "Összes megjelenítése", en: "Show all" },
     showLess: { hu: "Csak a legnagyobb eltérések megjelenítése", en: "Show only largest gaps" },
     anonGateTitle: { hu: "Az összehasonlítás hamarosan elérhető", en: "Comparison almost ready" },
-    anonGateBody: { hu: "A névtelenség védelme érdekében legalább 2 visszajelzés szükséges az eredmények megjelenítéséhez.", en: "To protect privacy, comparisons are shown only after at least 2 responses." },
-    anonGateProgress: { hu: "{count} / 2 visszajelzés megérkezett.", en: "{count} / 2 responses received." },
+    anonGateBody: { hu: `A névtelenség védelme érdekében legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} visszajelzés szükséges az eredmények megjelenítéséhez.`, en: `To protect privacy, comparisons are shown only after at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} responses.` },
+    anonGateProgress: { hu: `{count} / ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} visszajelzés megérkezett.`, en: `{count} / ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} responses received.` },
     anonGateCta: { hu: "Meghívók kezelése", en: "Manage invitations" },
     nextActionTitle: { hu: "Mi legyen a következő lépés?", en: "What next?" },
     nextActionBody: { hu: "Ha szeretnéd, kérhetsz még visszajelzést, vagy kitöltheted a rövid visszajelző kérdőívet.", en: "If you'd like, you can request more feedback or fill out the short feedback survey." },
@@ -348,14 +350,14 @@ export const resultsTranslations = {
     nextActionInvite: { hu: "Kérek még visszajelzést", en: "Request more feedback" },
     nextActionSurvey: { hu: "Kitöltöm a kérdőívet", en: "Fill out the survey" },
     noDataTitle: { hu: "Összehasonlítás", en: "Comparison" },
-    noDataBody: { hu: "Legalább 2 külső visszajelzés szükséges az összehasonlításhoz. Küldj meghívókat a Meghívók lapon.", en: "At least 2 observer responses are needed for comparison. Send invitations on the Invitations tab." },
+    noDataBody: { hu: "Legalább {min} külső visszajelzés szükséges az összehasonlításhoz. Az alábbi űrlappal kérhetsz visszajelzést.", en: "At least {min} observer responses are needed for comparison. You can request feedback using the form below." },
     headerEyebrow: { hu: "Önkép és visszajelzés", en: "Self vs. Feedback" },
     headerTitle: { hu: "Hogyan látnak mások?", en: "How do others see you?" },
     headerBody: { hu: "Az önértékelésed összehasonlítása a visszajelzésekkel – dimenzióról dimenzióra.", en: "Comparing your self-assessment with feedback – dimension by dimension." },
     observerBadge: { hu: "{count} visszajelzés alapján", en: "{count} observer responses" },
     overviewGoodMatch: { hu: "Összességében jó egyezés", en: "Overall good match" },
     overviewMixed: { hu: "Eltérő nézőpontok", en: "Mixed picture – worth exploring" },
-    overviewGoodMatchBody: { hu: "Az önképed és a külső visszajelzések a legtöbb dimenzióban közel állnak egymáshoz. Ez arra utal, hogy az önképed és a külső benyomások több ponton összhangban vannak.", en: "Your self-image and observer feedback are close in most dimensions. This is rare and valuable – it means you see yourself realistically." },
+    overviewGoodMatchBody: { hu: "Az önképed és mások visszajelzése a legtöbb dimenzióban közel áll egymáshoz. Idézz fel néhány közös helyzetet: miben ismersz magadra, és mit érdemes még megbeszélnetek?", en: "Your self-image and observer feedback are close in most dimensions. This is rare and valuable – it means you see yourself realistically." },
     overviewMixedBody: { hu: "Néhány dimenzióban más pontszámot adtál magadnak, mint azok, akik visszajeleztek rólad. A különbségeket könnyebb megérteni, ha közösen felidéztek néhány konkrét helyzetet.", en: "There are significant differences in some dimensions. This isn't a problem – it's an opportunity for deeper self-awareness." },
     matchingDims: { hu: "egyező dimenzió", en: "matching dims" },
     differingDims: { hu: "eltérő dimenzió", en: "differing dims" },
@@ -379,10 +381,10 @@ export const resultsTranslations = {
     noBlindSpotBody: { hu: "Ezekben a dimenziókban az önképed és mások visszajelzése közel áll egymáshoz.", en: "In these dimensions your self-image and others' feedback are nearly identical – you see yourself realistically." },
     summaryEyebrow: { hu: "Összefoglaló", en: "Summary" },
     summaryTitle: { hu: "Amit érdemes megjegyezni", en: "Worth noting" },
-    summaryMatchMany: { hu: "{count} dimenzióban az önképed és mások visszajelzése szinte azonos.", en: "In {count} dimensions your self-image and others' feedback are nearly identical – you see yourself realistically." },
-    summaryDiffStronger: { hu: "{name}: mások magasabbra értékelnek ({gap} pont eltérés).", en: "{name}: others rate you higher (a {gap}-point gap)." },
-    summaryDiffWeaker: { hu: "{name}: mások alacsonyabbra értékelnek ({gap} pont eltérés).", en: "{name}: others rate you lower (a {gap}-point gap)." },
-    summaryPerfectMatch: { hu: "Az önképed szinte teljesen egyezik mások értékelésével.", en: "Rare and valuable: your self-image almost perfectly matches others' assessment." },
+    summaryMatchMany: { hu: "{count} dimenzióban közel áll egymáshoz a saját pontszámod és a másoktól kapott átlag.", en: "In {count} dimensions your self-image and others' feedback are nearly identical – you see yourself realistically." },
+    summaryDiffStronger: { hu: "{name}: mások magasabb pontszámot adtak ({gap} pont eltérés).", en: "{name}: others rate you higher (a {gap}-point gap)." },
+    summaryDiffWeaker: { hu: "{name}: mások alacsonyabb pontszámot adtak ({gap} pont eltérés).", en: "{name}: others rate you lower (a {gap}-point gap)." },
+    summaryPerfectMatch: { hu: "A saját pontszámaid és a másoktól kapott átlagok minden dimenzióban közel állnak egymáshoz.", en: "Rare and valuable: your self-image almost perfectly matches others' assessment." },
   },
   results: {
     tabSummary: { hu: "Összkép", en: "At a glance" },
@@ -398,7 +400,7 @@ export const resultsTranslations = {
     summaryWork: { hu: "Munkahelyen ez számít", en: "What matters at work" },
     summaryGrowth: { hu: "Amit érdemes kipróbálnod", en: "Where you can grow most" },
     summaryBalancedAttention: {
-      hu: "Nincs olyan fő dimenziód, amely önmagában erős figyelmeztető jel lenne. A helyzetek közötti egyensúly a fontosabb kérdés.",
+      hu: "A pontszámaid között nincs olyan szélső érték, amelyet itt külön kiemelnénk. A részletes leírásoknál gondold végig, mely helyzetekben érzed jól magad, és mi okoz nehézséget.",
       en: "None of your main dimensions is a strong warning sign on its own. The balance between situations matters more.",
     },
     summaryDimensionsEyebrow: { hu: "Hat dimenzió", en: "Six dimensions" },
@@ -429,14 +431,14 @@ export const resultsTranslations = {
     summaryComparisonTitle: { hu: "Külső nézőpont", en: "Outside perspective" },
     summaryComparisonReadyBody: { hu: "Nézd meg, hogyan látnak mások, és hol tér el az önképed.", en: "See how others perceive you and where it differs from your self-view." },
     summaryComparisonStartBody: { hu: "Kérj visszajelzést, hogy később összevethesd az önképed mások nézőpontjával.", en: "Ask for feedback so you can compare your self-view with other perspectives later." },
-    interactionEntryEyebrow: { hu: "Közös működés", en: "Shared dynamics" },
+    interactionEntryEyebrow: { hu: "Együttműködés", en: "Shared dynamics" },
     interactionEntrySomeone: { hu: "Valaki más", en: "Someone else" },
     interactionEntryNewTitle: {
-      hu: "Mi történik, amikor két profil találkozik?",
+      hu: "Mire utal a két profil az együttműködésetekről?",
       en: "What happens when two profiles meet?",
     },
     interactionEntryNewBody: {
-      hu: "Nézd meg, mi megy magától, hol lehet súrlódás, és mit érdemes előre megbeszélni.",
+      hu: "Nézd meg, mi segítheti a közös munkát, mi okozhat vitát, és mit érdemes előre megbeszélnetek.",
       en: "See what comes naturally, where friction may appear, and what is worth discussing in advance.",
     },
     interactionEntryNewPrimary: { hu: "Összehasonlítom a profilomat valakiével", en: "Compare with someone" },
@@ -468,7 +470,7 @@ export const resultsTranslations = {
     summaryClarityThanks: { hu: "Köszönjük! A visszajelzésed segít érthetőbbé tenni az összefoglalót.", en: "Thank you – this will inform the next refinement." },
     summaryClarityError: { hu: "Most nem sikerült menteni. Próbáld újra.", en: "We couldn't save that just now. Please try again." },
     detailsExtensionsTitle: { hu: "Másik nézőpont", en: "Another way to explore" },
-    detailsExtensionsBody: { hu: "Nézd meg, milyen szakmai irányok illeszkedhetnek a természetes működésedhez.", en: "See which professional directions may fit the way you naturally operate." },
+    detailsExtensionsBody: { hu: "Nézd meg, milyen szakmai irányok állhatnak közel a munkastílusodhoz.", en: "See which professional directions may fit the way you naturally operate." },
     reportChaptersLabel: { hu: "A részletes riport fejezetei", en: "Detailed report chapters" },
     reportChaptersEyebrow: { hu: "Részletes riport", en: "Detailed report" },
     reportChapterNext: { hu: "Következő fejezet", en: "Next chapter" },
@@ -511,8 +513,8 @@ export const resultsTranslations = {
     heroGlyphOpenA11y: { hu: "Karakterábra megjelenítése", en: "Show character visual" },
     heroGlyphBackA11y: { hu: "Profil megjelenítése", en: "Show profile" },
     dimSectionEyebrow: { hu: "Dimenziók", en: "Dimensions" },
-    dimSectionTitle: { hu: "Így működsz a fő dimenziók mentén", en: "How you work across key dimensions" },
-    dimSectionDesc: { hu: "A dimenziók nem skatulyák, minősítések vagy percentilisek. A 0–100-as skálán kirajzolódó mintázatok azt mutatják meg, mi mozgat, mi ad stabilitást, és hol jöhet feszültség.", en: "Dimensions aren't boxes, grades or percentiles. Patterns on the 0–100 scale show what drives you, what keeps you steady, and where tension may arise." },
+    dimSectionTitle: { hu: "Mit jelentenek a pontszámaid?", en: "How you work across key dimensions" },
+    dimSectionDesc: { hu: "A hat dimenzió azt foglalja össze, hogyan jellemezted magad a kitöltéskor. Mindegyiknél egy 0–100 közötti pontszámot látsz. Ez a saját skálaértéked: a magasabb szám nem jelent jobb eredményt, és nem a többi kitöltőhöz viszonyított helyedet mutatja.", en: "Dimensions aren't boxes, grades or percentiles. Patterns on the 0–100 scale show what drives you, what keeps you steady, and where tension may arise." },
     scoreOutOfHundred: { hu: "{value} / 100", en: "{value} / 100" },
     facetLabel: { hu: "alskála részletesen", en: "facets in detail" },
     facetUnlock: { hu: "Plus feloldása – €9", en: "Unlock Plus – €9" },
@@ -534,29 +536,29 @@ export const resultsTranslations = {
     teamRoleTitle: { hu: "Milyen szerepeket tölthetsz be a csapatban?", en: "How you show up in teams" },
     teamRoleSourceMeasured: { hu: "Kitöltött kérdőív", en: "Completed questionnaire" },
     teamRoleSourceEstimate: { hu: "Becslés a személyiségprofilból", en: "Estimated from personality profile" },
-    teamRolePersonalityHarmony: { hu: "A csapatszerep-kérdőív eredménye összhangban van a személyiségprofiloddal: az általad betöltött szerepek illenek a munkastílusodhoz.", en: "Your measured team-role picture is in harmony with your personality profile – the roles you play fit how you operate." },
-    teamRolePersonalityDiverge: { hu: "A csapatszerep-kérdőív eredménye eltér attól, amit a személyiségprofilod alapján becsülnénk ({roles}). Gyakran a környezet vagy a csapat igényei miatt vállalsz más szerepet. Érdemes lehet ezt átbeszélni a vezetőddel vagy a tanácsadóddal.", en: "Your measured role picture differs from what your personality profile would predict ({roles}) – that's not a flaw: the environment or team needs often call out a different role. Worth discussing with your lead or consultant." },
+    teamRolePersonalityHarmony: { hu: "A csapatszerep-kérdőív és a személyiségprofilodból számolt becslés hasonló szerepeket emel ki.", en: "Your measured team-role picture is in harmony with your personality profile – the roles you play fit how you operate." },
+    teamRolePersonalityDiverge: { hu: "A csapatszerep-kérdőív más szerepeket emel ki, mint a személyiségprofilodból számolt becslés ({roles}). A vállalt feladataid és a csapat igényei is befolyásolhatják, milyen szerepet töltesz be. Érdemes erről beszélgetned a vezetőddel vagy a tanácsadóddal.", en: "Your measured role picture differs from what your personality profile would predict ({roles}) – that's not a flaw: the environment or team needs often call out a different role. Worth discussing with your lead or consultant." },
     teamRolePeerTitle: { hu: "A csapatod így lát", en: "How your team sees you" },
     teamRolePeerCount: { hu: "{n} visszajelzés", en: "{n} responses" },
     teamRolePeerThreshold: { hu: "Eddig {n} csapattársi visszajelzés érkezett – a csapatkép legalább {min} értékelőtől áll össze, addig nem jelenik meg.", en: "{n} peer responses so far – the team view forms from at least {min} raters and stays hidden until then." },
-    teamRolePeerHarmony: { hu: "Az önképed és a csapatképed egybevág – a csapattársaid ugyanazokat a szerepeket látják benned, amiket te is magadban.", en: "Your self-image and the team view align – your teammates see the same roles in you that you see in yourself." },
+    teamRolePeerHarmony: { hu: "Az önértékelésed és a csapattársaid visszajelzése ugyanazokat a szerepeket emeli ki.", en: "Your self-image and the team view align – your teammates see the same roles in you that you see in yourself." },
     teamRolePeerFrictionTitle: { hu: "Eltérés az önképed és a csapatod véleménye között", en: "Self-image vs. team view gap" },
     teamRolePeerSelfOnly: { hu: "Te látod magadban, a csapat kevésbé: {roles}.", en: "You see it in yourself, the team less so: {roles}." },
     teamRolePeerPeerOnly: { hu: "A csapat látja benned, te kevésbé: {roles}.", en: "The team sees it in you, you less so: {roles}." },
-    teamRolePeerFrictionHint: { hu: "Az eltérés nem hiba, hanem beszélgetésindító – a közös átbeszélésen érdemes megnézni, miért kevésbé látható az egyik szerep, vagy mi hívja elő a másikat.", en: "The gap isn't a flaw but a conversation starter – worth exploring in the debrief what hides one role or calls out the other." },
+    teamRolePeerFrictionHint: { hu: "Beszéljétek meg az eltérést néhány közös helyzet alapján. Mikor vállaltad az adott szerepet, és ebből mit láttak a többiek?", en: "The gap isn't a flaw but a conversation starter – worth exploring in the debrief what hides one role or calls out the other." },
     teamRolePrimary: { hu: "Elsődleges", en: "Primary" },
     teamRoleSecondary: { hu: "Másodlagos", en: "Secondary" },
     teamRoleTertiary: { hu: "Harmadlagos", en: "Tertiary" },
     upsellEyebrow: { hu: "Plus", en: "Plus" },
     upsellTitle: { hu: "Nézz a fő dimenziók mögé.", en: "Look behind the key dimensions." },
-    upsellDesc: { hu: "Menj mélyebbre: alskálák, vakfoltok, illeszkedő szerepkörök – értsd meg, mi mozgat valójában.", en: "Go deeper: subscales, blind spots, fitting roles – understand what really drives you." },
+    upsellDesc: { hu: "Nézd meg az alskálákat, vesd össze az önképedet mások visszajelzésével, és ismerj meg néhány lehetséges szerepkört.", en: "Go deeper: subscales, blind spots, fitting roles – understand what really drives you." },
     upsellBuy: { hu: "Megveszem", en: "Buy now" },
     upsellOnetime: { hu: "egyszeri vásárlás", en: "one-time purchase" },
     upsellFeature1: { hu: "25 alskála", en: "25 subscales" },
     upsellFeature2: { hu: "Korlátlan számú visszajelző", en: "Unlimited observers" },
     upsellFeature3: { hu: "Vakfoltelemzés", en: "Blind spot analysis" },
     upsellFeature4: { hu: "Működésed és szereped a csapatban", en: "How you work and contribute in a team" },
-    lockPlus: { hu: "Mi áll a dimenziók mögött? · Milyen szerepet veszel fel a csapatban? · Hol fejlődhetsz a leggyorsabban?", en: "What's behind your dimensions? · Which role do you take on in a team? · Where can you grow fastest?" },
+    lockPlus: { hu: "Mit jelentenek az alskálák? · Milyen szerepet vállalhatsz a csapatban? · Mit érdemes kipróbálnod?", en: "What's behind your dimensions? · Which role do you take on in a team? · Where can you grow fastest?" },
     lockReflect: { hu: "Hogyan látnak mások? · Mik a vakfoltjaid? · Külső visszajelzések elemzése", en: "How do others see you? · What are your blind spots? · Observer feedback analysis" },
     lockPreviewText: { hu: "Mi áll a dimenziók mögött? · Milyen szerepet veszel fel a csapatban? · Külső visszajelzés · Vakfoltelemzés", en: "What's behind your dimensions? · Which role do you take on in a team? · Observer feedback · Blind spot analysis" },
     heroAssessment: { hu: "Teszt:", en: "Assessment:" },
@@ -568,7 +570,7 @@ export const resultsTranslations = {
       en: "Curious what this looks like at team level?",
     },
     teamInterestBody: {
-      hu: "Mintázatok, szerepek, együttműködési dinamika – a teljes csapatról, tanácsadói kísérettel. Jelezd, és felvesszük veled a kapcsolatot.",
+      hu: "Nézd meg együtt a csapattagok profilját, lehetséges szerepeit és az együttműködést érintő különbségeket, tanácsadó segítségével. Jelezd az érdeklődésedet, és felvesszük veled a kapcsolatot.",
       en: "Patterns, roles, collaboration dynamics – for your whole team, with consultant guidance. Let us know and we'll reach out.",
     },
     teamInterestCta: { hu: "Érdekel a csapatelemzés", en: "I'm interested in team analysis" },
@@ -607,7 +609,7 @@ export const resultsTranslations = {
       en: "Get to know your work style",
     },
     nextStepTestBody: {
-      hu: "Egy rövid, körülbelül tízperces teszt után letisztult képet kapsz arról, mi visz előre, mi ad stabilitást, és mire érdemes figyelned. Nem címkéz, hanem rávilágít a jellemző működésedre.",
+      hu: "Töltsd ki a körülbelül tízperces kérdőívet, és nézd meg, mire utalnak a válaszaid a munkastílusodról. A pontszámokhoz magyarázatot és kipróbálható javaslatokat is kapsz.",
       en: "A short assessment of about 10 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you – it sheds light.",
     },
     uniqueProfile: { hu: "Egyedi profil", en: "Unique profile" },
@@ -645,12 +647,12 @@ export const resultsTranslations = {
     },
     shareQuickNatural: { hu: "A legjellegzetesebb vonás", en: "Most distinctive signal" },
     shareQuickNaturalText: {
-      hu: "{label}: {score}/100 – ez a pólus rajzolódik ki a legkarakteresebben a profilban.",
+      hu: "{label}: {score}/100 – ez a vonás emelkedik ki leginkább a profilból.",
       en: "{label}: {score}/100 – this is the profile's most distinctly expressed pole.",
     },
     shareQuickNuance: { hu: "Egy másik jellegzetes vonás", en: "Another distinctive signal" },
     shareQuickNuanceText: {
-      hu: "{label}: {score}/100 – egy másik markáns működési pólus, nem minősítés vagy hiányosság.",
+      hu: "{label}: {score}/100 – ez a vonás is jellemző a profilra. A pontszám magas vagy alacsony volta önmagában nem előny vagy hátrány.",
       en: "{label}: {score}/100 – another pronounced operating pole, not a rating or deficiency.",
     },
     shareQuickUse: { hu: "Így érdemes használni", en: "How to use this" },
@@ -672,7 +674,7 @@ export const resultsTranslations = {
     },
     shareChapterEnvironment: { hu: "Milyen környezet illhet hozzád?", en: "Ideal environment" },
     shareChapterEnvironmentBody: {
-      hu: "Azok a környezeti jellemzők, amelyek várhatóan támogatják ezt a profilt.",
+      hu: "Milyen munkakörülmények állhatnak közel a profil tulajdonosához?",
       en: "Environmental poles that are likely to support this profile.",
     },
     shareChapterRoleFit: { hu: "Szerepilleszkedés", en: "Role fit" },
@@ -746,7 +748,7 @@ export const resultsTranslations = {
       en: "How would you work together?",
     },
     interactionIntro: {
-      hu: "Válaszd ki, kivel vagy milyen karakterrel szeretnéd megnézni a közös működéseteket.",
+      hu: "Válassz egy személyt vagy egy karaktert, és nézd meg, mire utal a két profil az együttműködésetekről.",
       en: "Choose who – or what kind of character – you'd like to explore your shared dynamic with.",
     },
     interactionPickDominant: { hu: "A legkifejezettebb vonása", en: "Their most pronounced trait" },
@@ -764,7 +766,7 @@ export const resultsTranslations = {
       en: "The same pattern",
     },
     interactionSameBody: {
-      hu: "A hasonlóság segíthet abban, hogy gyorsan megértsétek egymást: kevés magyarázatra van szükségetek, és hasonlóan értelmezhetitek a helyzeteket. Ugyanakkor ugyanazok a szempontok kerülhetik el mindkettőtök figyelmét. Fontos döntéseknél ezért érdemes kikérnetek egy tőletek eltérően gondolkodó ember véleményét is.",
+      hu: "A hasonló pontszámok arra utalhatnak, hogy több helyzetet hasonlóan éltek meg. Ugyanakkor ugyanazok a szempontok kerülhetik el mindkettőtök figyelmét. Fontos döntéseknél érdemes kikérnetek egy tőletek eltérően gondolkodó ember véleményét is.",
       en: "Similarity can bring quick understanding: little explaining is needed and you may read situations alike. The blind spots can also be shared, though – what you miss, they may miss too. With a pairing like this it's worth deliberately inviting a third, differently wired perspective into important decisions.",
     },
     interactionRelationQuestion: {
@@ -777,11 +779,11 @@ export const resultsTranslations = {
       en: "They lead or mentor me",
     },
     interactionRelationPeerHint: {
-      hu: "A dinamika két egyenrangú fél között – nincs tartós döntési fölény egyik oldalon sem.",
+      hu: "Két egyenrangú fél együttműködése: egyikőtöknek sincs tartósan nagyobb döntési joga.",
       en: "The dynamic between two equal sides – neither holds lasting decision power over the other.",
     },
     interactionRelationLeaderHint: {
-      hu: "Ilyenkor egy külön blokk is megjelenik arról, milyen az ő iránymutatása mellett működni.",
+      hu: "Külön javaslatokat is kapsz ahhoz, hogyan dolgozhatsz vele, ha ő vezet vagy mentorál.",
       en: "This also adds a block on what it may be like to work with their guidance.",
     },
     interactionLeaderToggle: {
@@ -793,9 +795,9 @@ export const resultsTranslations = {
     // a szókincset használja.
     interactionPairOther: { hu: "A másik profil", en: "The other profile" },
     interactionPairYou: { hu: "Te", en: "You" },
-    interactionEasy: { hu: "Ami magától megy", en: "What comes easily" },
+    interactionEasy: { hu: "Ami segítheti a közös munkát", en: "What comes easily" },
     interactionFriction: {
-      hu: "Ahol súrlódás várható",
+      hu: "Ami nézeteltérést okozhat",
       en: "Where friction is likely",
     },
     interactionDiscuss: {
@@ -803,7 +805,7 @@ export const resultsTranslations = {
       en: "What to agree on up front",
     },
     interactionLeaderTitle: {
-      hu: "Milyen az ő iránymutatása mellett működni",
+      hu: "Ha ő vezet vagy mentorál téged",
       en: "What it may be like to work with their guidance",
     },
     // A karakter-út tartalmi határa, a tartalom ELŐTT kimondva — a konkrét két
@@ -814,12 +816,12 @@ export const resultsTranslations = {
       en: "This character is built on {dims} – so a real profile can show you more, and different things, even when it carries the same type name.",
     },
     interactionSparse: {
-      hu: "Kettőtök között nincs elég markáns eltérés ahhoz, hogy megalapozott dinamikát írjunk le – ez arra utalhat, hogy sok helyzetben hasonlóan működnétek.",
+      hu: "A két profil között nincs elég nagy eltérés ahhoz, hogy külön javaslatokat adjunk. A hasonló pontszámok mellett is lehetnek különbségek abban, hogyan viselkedtek egy adott helyzetben.",
       en: "There isn't enough of a contrast between you two to state a grounded dynamic – which is good news in itself: in most situations you'd operate similarly.",
     },
     // Hitelességi jegyzet: enélkül a „típus-szintű becslés" üres udvariasság.
     interactionSourceNote: {
-      hu: "Típusszintű becslés: a te valós pontszámaidat egy olyan mintaprofillal vetjük össze, amelynek csak a két legmagasabb pontszámú dimenzióját ismerjük – a másik négyről nem állítunk semmit. Ez hipotézis, nem jóslat; a valódi páros működés megismeréséhez két teljes profil összehasonlítása szükséges.",
+      hu: "A te pontszámaidat egy mintaprofillal vetjük össze, amelynek csak a két legmagasabb pontszámú dimenzióját ismerjük. A másik négy dimenziót itt nem értelmezzük. A leírás feltételezéseket ad a közös gondolkodáshoz. Két kitöltött profil összehasonlítása több információra épülne.",
       en: "Type-level estimate: your real scores are compared against a type prototype for which only the two highest-scoring dimensions are known – we claim nothing about the other four. A hypothesis, not a prediction; real measurement lives in the team view.",
     },
     // ── Valódi páros összehasonlítás (B1) ────────────────────────────
@@ -840,7 +842,7 @@ export const resultsTranslations = {
     // meg, MI az adott út, nem azt, melyik ad többet.
     compareChooserRealTitle: { hu: "Valódi személlyel", en: "With a real person" },
     compareChooserRealBody: {
-      hu: "Két kitöltött profil · a ti tényleges dinamikátok",
+      hu: "Két kitöltött profil összehasonlítása",
       en: "Two completed profiles · your actual dynamic",
     },
     compareChooserTypeTitle: {
@@ -869,7 +871,7 @@ export const resultsTranslations = {
       en: "Invite someone for a shared picture",
     },
     compareConnectionsEmptyBody: {
-      hu: "Ha ő is kitölti a saját tesztjét, mindketten a valódi profiljaitok dinamikáját látjátok.",
+      hu: "Ha ő is kitölti a tesztet, a két önértékelés alapján kaptok javaslatokat az együttműködésetekhez.",
       en: "Once they complete their own assessment, you both see the dynamic of your real profiles.",
     },
     compareInvitePromptTitle: {
@@ -973,7 +975,7 @@ export const resultsTranslations = {
     comparePairEyebrow: { hu: "Két valódi profil", en: "Two real profiles" },
     comparePairHeading: { hu: "Te és {name}", en: "You and {name}" },
     comparePairIntro: {
-      hu: "Így találkozik a működésetek a közös helyzetekben.",
+      hu: "Mire utal a két profil a közös helyzetekben?",
       en: "How your ways of working meet in shared situations.",
     },
     comparePairRealProfiles: {
@@ -1008,7 +1010,7 @@ export const resultsTranslations = {
       en: "Your profiles differ on a single pronounced point, so this picture is short. A character simulation can run longer – but a character is a sharpened, hypothetical case; this one is about the two of you.",
     },
     comparePairSourceNote: {
-      hu: "Két kitöltött és megosztott önértékelés összevetése – pontosabb, mint a típusbecslés, de továbbra is önbeszámolón alapul. Hipotézis, nem ítélet: beszélgetésindítónak készült.",
+      hu: "Két kitöltött és megosztott önértékelést vetünk össze. Ez több információt ad a típusbecslésnél, de továbbra is a saját válaszaitokra épül. Beszéljétek meg, a leírtakból mit tapasztaltok a közös munkában.",
       en: "A comparison of two real, shared self-assessments – more precise than a type estimate, yet still based on self-report. A hypothesis, not a verdict: built to start a conversation.",
     },
     // ── Hat dimenziós összevetés-sáv (2026-08-18) ────────────────────
@@ -1036,7 +1038,7 @@ export const resultsTranslations = {
       en: "“With them” = {name}",
     },
     pairBandNote: {
-      hu: "A „magasabb” azt jelenti, hogy a különbség meghaladja a mérés pontosságát; a „hasonló” azt, hogy azon belül marad. Ez irány, nem rangsor: egyik érték sem jobb a másiknál. Pontszámokat szándékosan nem mutatunk – a másik profiljának számai nem hagyják el a szervert.",
+      hu: "A „magasabb” jelölést akkor használjuk, ha a különbség meghaladja a mérési hibából számolt küszöböt. A „hasonló” azt jelenti, hogy azon belül marad. Egyik érték sem jobb a másiknál. A másik személy pontos pontszámait nem mutatjuk meg neked.",
       en: "“Higher” means the difference exceeds the precision of the measurement; “similar” means it stays within it. This is direction, not ranking: neither value is better than the other. We deliberately show no scores – the other person's numbers never leave the server.",
     },
     // ── Facet-attribúció: „hol fut az eltérés" ───────────────────────
@@ -1054,19 +1056,19 @@ export const resultsTranslations = {
     },
     // ── Facet-nüansz: „azonos címke, más működés" ────────────────────
     pairNuanceTitle: {
-      hu: "Azonos címke, más működés",
+      hu: "Hasonló összpontszám, eltérő részletek",
       en: "Same label, different engine",
     },
     pairNuanceSelf: {
-      hu: "A dimenzió összpontszámában hasonló eredményt értetek el, de ez az alskála nálad hangsúlyosabb – azonos címke mögött eltérő működés lehet.",
+      hu: "A dimenzió összpontszáma hasonló, ezen az alskálán viszont a te értéked magasabb. Érdemes ennek a részletnek a jelentését is megbeszélnetek.",
       en: "At dimension level you sit close together, but this facet weighs more with you – the same label can hide a different way of working.",
     },
     pairNuanceOther: {
-      hu: "A dimenzió összpontszámában hasonló eredményt értetek el, de ez az alskála nála hangsúlyosabb – azonos címke mögött eltérő működés lehet.",
+      hu: "A dimenzió összpontszáma hasonló, ezen az alskálán viszont az ő értéke magasabb. Érdemes ennek a részletnek a jelentését is megbeszélnetek.",
       en: "At dimension level you sit close together, but this facet weighs more with them – the same label can hide a different way of working.",
     },
     pairNuanceNote: {
-      hu: "Ez a legbizonytalanabb réteg: egy alskálát a rövid kérdőív 2–3 állítással mér, ezért csak a kifejezetten nagy eltérést jelezzük, dimenziónként legfeljebb egyet. Beszélgetésindítónak hasznos, önálló következtetésre kevésbé alkalmas.",
+      hu: "Az alskálák becslése bizonytalanabb: a rövid kérdőívben egy-egy alskálához csak 2–3 állítás tartozik. Ezért csak a kifejezetten nagy eltéréseket jelezzük, dimenziónként legfeljebb egyet. Ezeket érdemes konkrét helyzetekkel összevetni, mielőtt következtetést vontok le belőlük.",
       en: "This is the least certain layer: the short questionnaire measures a facet with 2–3 items, so we only flag clearly large differences, and at most one per dimension. Good as a conversation starter, weak as a measurement.",
     },
     // A rés-alapú sor gyengébb bizonyítékon áll, mint a kétoldali pólusos —
@@ -1169,7 +1171,7 @@ export const resultsTranslations = {
     // és csak 60 pont alatti tétel kerülhet be. A korábbi „a legalacsonyabbra
     // értékelted magad" ezt elhallgatta.
     growthIntro: {
-      hu: "A fejlődési fókuszba bevonható területek közül ezeket értékelted a legalacsonyabbra; a stabilitást jelző skálákat itt nem vesszük figyelembe. Ezek nem hibák, hanem lehetséges fejlődési irányok. Válassz egyet, és figyeld tudatosan egy hétig.",
+      hu: "Ezek az alskálák kapták a legalacsonyabb pontszámot azok közül, amelyekhez gyakorlási javaslatot adunk. A stabilitást jelző skálákat itt nem vesszük figyelembe. Válassz egy olyan javaslatot, amely kapcsolódik ahhoz, amin változtatni szeretnél, és próbáld ki egy hétig.",
       en: "Among the questionnaire's growth-eligible areas, these are the ones you rated lowest – stability-indicating scales excluded. Not flaws, but your fastest growth opportunities. Pick one and consciously observe it for a week.",
     },
     // Háromlépcsős fejlődési ív címkéi — a PDF-fel (pdf.growth*) egyező szövegek.
@@ -1190,7 +1192,7 @@ export const resultsTranslations = {
     },
     sectionIndustryFit: { hu: "Iparági illeszkedés", en: "Industry fit" },
     industryFitIntro: {
-      hu: "Válassz iparágat vagy szakmakört – megmutatjuk, a profilod alapján mely szerepek illenek hozzád leginkább az adott területen.",
+      hu: "Válassz iparágat vagy szakmakört, és nézd meg, mely szerepek állhatnak közel a munkastílusodhoz.",
       en: "Pick an industry or field – we'll show which roles fit your profile best in that area.",
     },
     industryFitEmpty: {
@@ -1229,9 +1231,9 @@ export const resultsTranslations = {
     industryFitMissingTitle: { hu: "Nem találod a szakmádat?", en: "Can't find your profession?" },
     industryFitMissingPlaceholder: { hu: "pl. állatorvos, pilóta, séf…", en: "e.g. veterinarian, pilot, chef…" },
     industryFitMissingSend: { hu: "Beküldöm", en: "Send" },
-    industryFitMissingThanks: { hu: "Köszönjük – ezzel bővítjük a katalógust.", en: "Thanks – we'll use it to grow the catalog." },
+    industryFitMissingThanks: { hu: "Köszönjük! A javaslatodat figyelembe vesszük a katalógus bővítésekor.", en: "Thanks – we'll use it to grow the catalog." },
     // Karrier-motor v2 — klaszteres eredmény-nézet
-    cfTitle: { hu: "Ezek az irányok illenek hozzád", en: "These directions fit you" },
+    cfTitle: { hu: "Ezeket az irányokat érdemes megismerned", en: "These directions fit you" },
     cfEmpty: {
       hu: "Nincs elég adat az illeszkedés kiszámításához – töltsd ki a kérdőívet, és térj vissza ide.",
       en: "Not enough data to compute fit – complete the questionnaire and come back.",
@@ -1261,19 +1263,19 @@ export const resultsTranslations = {
       hu: "Az érdeklődésprofilod kiegyenlített: minden terület nagyjából egyformán vonz. Ilyenkor az érdeklődés kevésbé segít a találatok rangsorolásában, ezért kisebb súllyal számít.",
       en: "Your interest profile is flat: everything appeals about equally. Interests are then a weaker signal, so they count less here.",
     },
-    cfSectionAtLevel: { hu: "Most elérhető – a végzettségi szintednek megfelelő", en: "Available now – matching your education level" },
+    cfSectionAtLevel: { hu: "A végzettségi szintedhez közeli lehetőségek", en: "Available now – matching your education level" },
     cfSectionAtLevelHint: {
-      hu: "Ezekhez megvan a szükséges végzettségi szinted. Ahol a szakirányod is illik, azt külön jelöljük – a szint önmagában nem képesít minden munkára.",
+      hu: "A végzettséged szintje eléri az ezekhez megadott szintet. Külön jelezzük, ha a szakirányod is illik hozzájuk. Jelentkezés előtt nézd meg az adott munkakör pontos követelményeit.",
       en: "Your education LEVEL covers these. Where your field of study also fits, we mark it – level alone doesn't qualify you for everything.",
     },
     cfSectionTraining: { hu: "Tanulással, átképzéssel elérhető", en: "Reachable with study or retraining" },
     cfSectionTrainingHint: {
-      hu: "Ezekhez a személyiségprofilod illik, de a belépéshez még képzés vagy diploma kell.",
+      hu: "A profilod alapján ezek az irányok is szóba jöhetnek, de a megadott belépési szinthez további képzés vagy diploma kellhet.",
       en: "Your profile fits these, but entry still needs training or a degree.",
     },
     cfSectionBelow: { hu: "Alacsonyabb végzettséggel is elérhető", en: "Below your education level" },
     cfSectionBelowHint: {
-      hu: "Ezekhez a munkakörökhöz a jelenlegi végzettségednél alacsonyabb szintű is elegendő. Akkor lehetnek érdekesek, ha pályaváltást tervezel.",
+      hu: "Ezekhez a munkakörökhöz a jelenleginél alacsonyabb szintű végzettség is elegendő lehet. Akkor is érdemes megismerned őket, ha pályaváltást tervezel.",
       en: "Open to you, but with a lower entry bar than your education – relevant if you're deliberately changing tack.",
     },
     cfSectionShow: { hu: "Megnézem", en: "Show" },
@@ -1303,11 +1305,11 @@ export const resultsTranslations = {
       en: "diverges from your interest code ({value}%)",
     },
     cfPersonalityTension: {
-      hu: "a személyiségeddel kevésbé harmonizál",
+      hu: "a személyiségprofilodtól távolabb áll",
       en: "less in harmony with your personality",
     },
     cfStrategyInterestLed: {
-      hu: "A listát az érdeklődésed és a munkakörnyezeti preferenciáid alapján állítjuk össze – ezek mutatják leginkább, mely munkák tarthatják fenn hosszabb távon az érdeklődésedet. Ezen belül a személyiségprofilod alapján rendezzük a találatokat aszerint, melyik igényli tőled a legkevesebb alkalmazkodást.",
+      hu: "A listát az érdeklődésed és a munkakörnyezeti igényeid alapján állítjuk össze. A találatokat ezután a személyiségprofilodhoz való közelségük szerint rendezzük. A sorrend abban segít, mely lehetőségeket érdemes először megismerned.",
       en: "Your interests and work-setting preferences select the list – they predict best what you'll stay with. Within that, your personality profile sets the order: where you'd have to work against yourself the least.",
     },
     cfStrategyComposite: {
@@ -1340,18 +1342,18 @@ export const resultsTranslations = {
       hu: "A bejelölt területeid nem szerepelnek a legjobb találatok között: a kitöltött érdeklődési kérdőíved más irányba mutat. A bejelölés kiemel egy területet, de nem írja felül a mért eredményt.",
       en: "Your picked fields aren't among the top matches: your COMPLETED interest inventory points elsewhere. A pick highlights, it doesn't override the measurement.",
     },
-    cfClusterFirst: { hu: "A legjobban illeszkedő csoportod", en: "Your strongest group" },
+    cfClusterFirst: { hu: "A profilodhoz legközelebb álló csoport", en: "Your strongest group" },
     cfClusterNth: { hu: "{n}. csoport", en: "Group {n}" },
     cfClusterTie: {
       hu: "{count} irány – a különbség a mérési hibán belül, tehát nincs sorrend",
       en: "{count} directions – the difference is within measurement error, so there is no ranking",
     },
     cfClusterMore: {
-      hu: "További {count} ugyanilyen erős irány",
+      hu: "További {count} hasonló eredményű irány",
       en: "{count} more equally strong directions",
     },
     cfClusterOrder: {
-      hu: "A csoporton belül nincs sorrend – előbb azok jönnek, amikhez a végzettséged már elég.",
+      hu: "A csoporton belüli különbség a mérési hibán belül marad. Előbb azokat mutatjuk, amelyek megadott végzettségi szintjét már eléred.",
       en: "There is no ranking inside a group – the ones your education already covers come first.",
     },
     cfWhy: { hu: "Hogyan számoltuk ki?", en: "Why this score?" },
@@ -1366,11 +1368,11 @@ export const resultsTranslations = {
     cfPositionOver: { hu: "cél fölött", en: "above target" },
     cfPositionUnder: { hu: "cél alatt", en: "below target" },
     cfHFloorNote: {
-      hu: "Ebben a szerepben jellemző a saját érdekek határozott képviselete. A magas becsületesség-alázatot itt nem tekintjük hátránynak – hosszabb távon bizalmi előnyt jelenthet, még ha az indulás lassabb is.",
+      hu: "Ehhez a szerephez a modell a saját érdekek határozott képviseletét társítja. A magas Becsületesség-Alázat-pontszámot ugyanakkor nem számítjuk hátránynak az illeszkedés becslésében.",
       en: "Assertive self-promotion is typical in this role. High honesty-humility is NEVER counted against you here – it is a long-term trust advantage, even if the start is slower.",
     },
     cfAboveTargetNote: {
-      hu: "Egy vagy több vonásod a szerepre jellemző tartomány fölött van. Ez nem hiba: általában azt jelenti, hogy a szerep nem használja ki teljesen a működésednek ezt az oldalát.",
+      hu: "Egy vagy több pontszámod meghaladja a szerephez megadott tartományt. Gondold végig, jelentkezett-e már ebből nehézséged hasonló munkában. A magasabb érték önmagában nem jelent problémát.",
       en: "One or more traits sit ABOVE the role's typical range. That isn't a flaw: it usually means part of your strength stays unused.",
     },
     cfInterestMatch: { hu: "érdeklődés {value}%", en: "interests {value}%" },
@@ -1406,12 +1408,12 @@ export const resultsTranslations = {
     cfGapDegree: { hu: "diploma kell hozzá", en: "needs a degree" },
     cfGapLicence: { hu: "diploma + szakvizsga kell hozzá", en: "needs a degree + licence" },
     cfCatalogNote: {
-      hu: "{count} foglalkozásra számoltuk (katalógus-verzió: {version}). Forrás: O*NET 30.3 Database (U.S. Department of Labor/ETA, CC BY 4.0) adataiból származtatva, magyar megnevezések és leírások: ESCO (Európai Bizottság), FEOR-08 besorolás: KSH.",
-      en: "Computed across {count} occupations (catalog version {version}). Derived from the O*NET 30.3 Database (U.S. Department of Labor/ETA, CC BY 4.0); Hungarian labels and descriptions from ESCO (European Commission); FEOR-08 codes from KSH.",
+      hu: "{count} foglalkozásra számoltuk (katalógus-verzió: {version}). Forrás: O*NET 30.3 Database (U.S. Department of Labor/ETA, CC BY 4.0) adataiból származtatva, magyar megnevezések: ESCO (Európai Bizottság) és kézi ellenőrzés; leírások: O*NET és ESCO alapján, magyar szerkesztéssel; FEOR-08 besorolás: KSH.",
+      en: "Computed across {count} occupations (catalog version {version}). Derived from the O*NET 30.3 Database (U.S. Department of Labor/ETA, CC BY 4.0); Hungarian labels from ESCO (European Commission) with manual review; descriptions adapted into Hungarian from O*NET and ESCO; FEOR-08 codes from KSH.",
     },
     cfCurrentRoleTitle: { hu: "Mi a mostani munkád?", en: "What do you do now?" },
     cfCurrentRoleBody: {
-      hu: "A válasz nem kötelező, és nem befolyásolja a rangsorodat. Azért kérdezzük, hogy ellenőrizni tudjuk a modellt: ha jól mér, a jelenlegi szerepednek jellemzően előkelőbb helyre kell kerülnie a saját listádon.",
+      hu: "A válasz nem kötelező, és nem befolyásolja a rangsorodat. Az összesített válaszokból azt vizsgáljuk, hogyan viszonyulnak a javaslatok ahhoz, amivel a kitöltők ténylegesen foglalkoznak.",
       en: "Optional, and it does NOT affect your ranking. We ask so we can check the model: if it measures anything real, your current role should sit systematically higher in your own list.",
     },
     cfCurrentRolePlaceholder: { hu: "Kezdj el gépelni – pl. ápoló, fejlesztő…", en: "Start typing – e.g. nurse, developer…" },
@@ -1433,7 +1435,7 @@ export const resultsTranslations = {
     cfRetry: { hu: "Újrapróbálom", en: "Try again" },
     cfGrowthTitle: { hu: "Mit érdemes fejleszteni ezekhez az irányokhoz", en: "What to develop for these directions" },
     cfGrowthIntro: {
-      hu: "A számodra legjobban illeszkedő csoportok szerepeiben ezek az eltérések fordulnak elő a leggyakrabban. Az eltérés iránya is számít, mert más fejlesztési lépést kíván, ha a tipikus tartomány alatt vagy fölött helyezkedsz el.",
+      hu: "A kiemelt csoportok szerepeinél ezek a pontszámaid térnek el leggyakrabban a megadott tartománytól. Más gyakorlat segíthet, ha az értéked a tartomány alatt, és más, ha fölötte van.",
       en: "These gaps come up most often in your top groups – with their direction, because being below or above the typical range calls for different things.",
     },
     cfGrowthNoneTitle: {
@@ -1441,7 +1443,7 @@ export const resultsTranslations = {
       en: "No significant gaps in your top directions",
     },
     cfGrowthNoneBody: {
-      hu: "A számodra legjobban illeszkedő csoport szerepeiben minden mért vonásod a tipikus tartományon belül van. Ilyenkor nem a fejlesztés a következő lépés, hanem a kép pontosítása: külső visszajelzés vagy a kitöltött érdeklődési kérdőív csökkentheti a bizonytalanságot.",
+      hu: "A kiemelt csoport szerepeinél minden pontszámod a megadott tartományon belül van. Ez alapján nem emelünk ki külön gyakorlási területet. Az érdeklődési kérdőívvel vagy mások visszajelzésével tovább pontosíthatod az összehasonlítást.",
       en: "In your strongest group, every measured trait falls inside the typical range. The next step isn't development but sharpening the picture: outside feedback or the measured interest inventory narrows the uncertainty.",
     },
     cfGapUnder: { hu: "a tipikus sáv alatt", en: "below the typical range" },
@@ -1468,11 +1470,11 @@ export const resultsTranslations = {
       en: "What kind of work fits your profile?",
     },
     ctaCareerBody: {
-      hu: "Néhány kérdés, és megnézzük, milyen irányok illeszkednek a személyiségprofilodhoz – szereptípusok és környezetek, nem kész válaszok.",
+      hu: "Válaszolj néhány kérdésre, és nézd meg, milyen szakmai irányok és munkakörülmények állhatnak közel a profilodhoz.",
       en: "A few questions and we look at which directions fit your personality profile – role types and settings, not ready-made answers.",
     },
-    ctaCareerButton: { hu: "Irány az iránytű", en: "Open the compass" },
-    ctaInteractionEyebrow: { hu: "Kétszemélyes dinamika", en: "One-on-one dynamics" },
+    ctaCareerButton: { hu: "Megnézem a lehetőségeket", en: "Open the compass" },
+    ctaInteractionEyebrow: { hu: "Páros összehasonlítás", en: "One-on-one dynamics" },
     ctaInteractionTitle: {
       hu: "Hogyan működnétek együtt?",
       en: "How would you work together?",
@@ -1481,10 +1483,10 @@ export const resultsTranslations = {
       hu: "Válassz egy másik profilt, és nézd meg, hol működnétek könnyen együtt, hol alakulhatna ki súrlódás, és mi segíthet ezekben a helyzetekben.",
       en: "Pick another profile and we'll look at where you'd click, where you'd grate – and what helps fastest.",
     },
-    ctaInteractionButton: { hu: "Dinamika megnézése", en: "See the dynamics" },
+    ctaInteractionButton: { hu: "Összehasonlítás megnyitása", en: "See the dynamics" },
     ccIntroTitle: { hu: "Merre tovább? Nézzük meg együtt.", en: "Where next? Let's look at it together." },
     ccIntroLead: {
-      hu: "A személyiségprofilod és néhány rövid kérdés alapján a rendszer megbecsüli, mely szakmai irányok illeszkedhetnek a természetes működésedhez. Ez nem jóslat és nem minősítés, hanem kiindulópont a gondolkodáshoz.",
+      hu: "A személyiségprofilod és néhány további válaszod alapján szakmai irányokat javaslunk. A leírások segítenek végiggondolni, melyik érdekel, és mit szeretnél megtudni róla.",
       en: "Using your personality profile and a few short questions, the system attempts to map which career directions align with how you naturally operate. Not a prediction and not a verdict – a starting point for thinking.",
     },
     ccIntroHowLabel: { hu: "Hogyan áll össze", en: "How it comes together" },
@@ -1503,9 +1505,9 @@ export const resultsTranslations = {
       hu: "Szerepenkénti illeszkedés, megbízhatósági sávval, indoklással és fejlődési tervvel.",
       en: "Role-level fit with a confidence band, reasoning and a development plan.",
     },
-    ccIntroCaveatTitle: { hu: "Ez nem kőbe vésett", en: "This isn't set in stone" },
+    ccIntroCaveatTitle: { hu: "Hogyan használd az eredményt?", en: "This isn't set in stone" },
     ccIntroCaveat1: {
-      hu: "Becslés, nem ítélet – az illeszkedés irányt mutat, nem az alkalmasságodat vagy a tehetséged felső határát méri.",
+      hu: "Az illeszkedés becslés: azt mutatja, mennyire áll közel a profilod a szerephez megadott jellemzőkhöz. Ebből önmagában nem derül ki, mennyire lennél sikeres az adott munkában.",
       en: "An estimate, not a verdict – fit points in a direction; it doesn't measure suitability or a talent ceiling.",
     },
     ccIntroCaveat2: {
@@ -1530,7 +1532,7 @@ export const resultsTranslations = {
     },
     ccIntroMetaQuestions: { hu: "{count} rövid kérdés", en: "{count} short questions" },
     ccIntroMetaTime: { hu: "körülbelül 2 perc", en: "about 2 minutes" },
-    ccIntroMetaSaved: { hu: "a válaszaid mentődnek", en: "your answers are saved" },
+    ccIntroMetaSaved: { hu: "mentjük a válaszaidat", en: "your answers are saved" },
     ccIntroMetaNoWrong: { hu: "nincs jó vagy rossz válasz", en: "no right or wrong answers" },
     ccStepStatus: { hu: "Mi jellemez most leginkább?", en: "What describes you best right now?" },
     ccStatusStudying: { hu: "Tanulok", en: "I'm studying" },
@@ -1563,11 +1565,11 @@ export const resultsTranslations = {
     ccStepInterests: { hu: "Mi érdekel? Válassz legfeljebb hármat.", en: "What interests you? Pick up to three." },
     ccInterestsOpen: { hu: "Nyitott vagyok bármire", en: "I'm open to anything" },
     ccStepVeto: {
-      hu: "Mivel NEM szeretnél foglalkozni? (kihagyható)",
+      hu: "Mivel nem szeretnél foglalkozni? (kihagyható)",
       en: "What would you NOT want to do? (optional)",
     },
     ccWhyVeto: {
-      hu: "Amit itt bejelölsz, azt biztosan nem ajánljuk – az ilyen szerepek teljesen kimaradnak a listából. Legfeljebb 5-öt jelölj, hogy maradjon mozgástér.",
+      hu: "A bejelölt tevékenységekhez kapcsolódó szerepeket kihagyjuk a listából. Legfeljebb 5-öt választhatsz.",
       en: "Anything you mark here is a hard no – such roles are removed from the list entirely. Pick at most 5 so there's still room to explore.",
     },
     ccVetoChildren: { hu: "Gyerekekkel való foglalkozás", en: "Working with children" },
@@ -1598,7 +1600,7 @@ export const resultsTranslations = {
       en: "Want to take the interest inventory?",
     },
     ccWhyRiasec: {
-      hu: "Ez rendezi át a listát: kitöltés után elsősorban a mért érdeklődésed alapján válogatjuk a szakmákat, a személyiségprofilod pedig a sorrendet finomítja. Ha kihagyod, a személyiségedből becsüljük az érdeklődésedet, ami gyengébb jel.",
+      hu: "Kitöltés után elsősorban az érdeklődési kérdőív eredménye alapján válogatjuk a szakmákat; a személyiségprofilod a sorrendet finomítja. Ha kihagyod, az érdeklődésedet a személyiségprofilodból becsüljük, ami bizonytalanabb támpont.",
       en: "This reshapes the list: once completed, your INTERESTS select the occupations and personality only sets the order. If you skip it, we estimate interests from personality – a weaker signal.",
     },
     ccRiasecStart: { hu: "Kitöltöm most", en: "Take it now" },
@@ -1609,23 +1611,23 @@ export const resultsTranslations = {
     ccBack: { hu: "Vissza", en: "Back" },
     ccNext: { hu: "Tovább", en: "Next" },
     ccFinish: { hu: "Mutasd az eredményt", en: "Show my results" },
-    ccResultTitle: { hu: "A válaszaid alapján ezek illenek hozzád", en: "Based on your answers, these fit you" },
+    ccResultTitle: { hu: "A válaszaid alapján ezek az irányok jöhetnek szóba", en: "Based on your answers, these fit you" },
     ccResultCurrent: { hu: "A mostani területeden", en: "In your current field" },
     ccEduBoostBadge: { hu: "végzettségedhez illik", en: "matches your education" },
-    ccDevelopTitle: { hu: "Ha ezekkel akarsz foglalkozni, ezt érdemes fejleszteni:", en: "If you want to pursue these, focus on developing:" },
+    ccDevelopTitle: { hu: "Ha ezek az irányok érdekelnek, ezt érdemes gyakorolnod:", en: "If you want to pursue these, focus on developing:" },
     ccEditAnswers: { hu: "Válaszok módosítása", en: "Edit answers" },
     ccSaving: { hu: "Mentés…", en: "Saving…" },
     ccStepOf: { hu: "{current}/{total}. kérdés", en: "Question {current}/{total}" },
     ccWhyStatus: {
-      hu: "Ez dönti el, hogy a mostani területedre vagy új irányokra fókuszáljunk.",
+      hu: "Ez alapján döntjük el, hogy a mostani területeden belül vagy új területeken keressünk lehetőségeket.",
       en: "This decides whether we focus on your current field or new directions.",
     },
     ccWhyEdu: {
-      hu: "A végzettséged nem szűkít semmit – csak jelezzük, hol alacsonyabb a belépési küszöb.",
+      hu: "A végzettséged alapján nem zárunk ki találatokat. Azt jelezzük, mely szerepek megadott képzettségi szintjét éred már el.",
       en: "Your education doesn't limit anything – we only flag where the entry barrier is lower.",
     },
     ccWhyEduField: {
-      hu: "Ezzel tudjuk megmondani, hol illik a SZAKIRÁNYOD is – nem csak a szinted. Diploma önmagában nem képesít másik szakma gyakorlására.",
+      hu: "Ebből látjuk, hogy a végzettséged szakirányát is az adott szerephez társítja-e a katalógus. Az azonos szintű diploma önmagában nem jogosít fel egy másik szakma gyakorlására.",
       en: "This lets us say where your FIELD fits too – not just your level. A degree alone doesn't qualify you for another profession.",
     },
     ccWhyAge: {
@@ -1633,18 +1635,18 @@ export const resultsTranslations = {
       en: "Used only to frame suggestions; it doesn't affect any score.",
     },
     ccWhyCurrent: {
-      hu: "Így külön megmutatjuk, milyen irányaid vannak a mostani területeden belül is.",
+      hu: "Így a mostani területeden belüli lehetőségeket is külön megmutatjuk.",
       en: "So we can also show your options within your current field.",
     },
     ccWhyInterests: {
-      hu: "Amit bejelölsz, az SZŰRŐ: csak ezekről a területekről mutatunk irányokat (az eredménynél kikapcsolhatod). Üresen hagyva minden területről a legjobbakat hozzuk.",
+      hu: "A bejelöléseid alapján szűrjük a találatokat; az eredménynél ezt kikapcsolhatod. Ha nem választasz, minden területről mutatunk lehetőségeket.",
       en: "Your picks act as a FILTER: we only show directions from these fields (you can switch it off at the results). Leave empty to see the best from every field.",
     },
     ccWhyPrefs: {
-      hu: "A motivációd nem a személyiséged – ezek csak a sorrendet árnyalják.",
+      hu: "Ezek a válaszok a találatok sorrendjét finomítják. A személyiségpontszámaidat nem változtatják meg.",
       en: "Motivation isn't personality – these only refine the ordering.",
     },
-    ccTopMatch: { hu: "A legerősebb irányod", en: "Your strongest direction" },
+    ccTopMatch: { hu: "A hozzád legközelebb álló irány", en: "Your strongest direction" },
     ccStepEnv: { hu: "Milyen közegben dolgoznál szívesen?", en: "What kind of environment suits you?" },
     ccWhyEnv: {
       hu: "A munkakörnyezet (tempó, keretek, helyszín) legalább annyit számít a mindennapokban, mint a feladat maga.",
@@ -1658,7 +1660,7 @@ export const resultsTranslations = {
     ccEnvSettingHigh: { hu: "Terep, mozgás, emberek közt", en: "In the field, on the move" },
     ccStepLead: { hu: "Vonz a vezetői szerep?", en: "Does leading others appeal to you?" },
     ccWhyLead: {
-      hu: "Ha vezetnél, a rangsor a vezetői komponenseket (kezdeményezés, nyomásállóság, együttműködés) is súlyozza.",
+      hu: "Ha a vezetői szerepet választod, a rangsorban nagyobb súlyt kap a kezdeményezés, a nyomás alatti viselkedés és az együttműködés becslése.",
       en: "If you want to lead, the ranking also weighs leadership components (initiative, composure, cooperation).",
     },
     ccLeadYes: { hu: "Igen, vezetnék", en: "Yes, I'd lead" },
@@ -1682,7 +1684,7 @@ export const resultsTranslations = {
     },
     ccFacetBadge: { hu: "alskálákkal pontosítva", en: "facet-refined" },
     ccFacetBadgeHint: {
-      hu: "Ennél a szerepnél nem a dimenzióátlag, hanem a szerepet ténylegesen előre jelző alskálák számítanak.",
+      hu: "Ennél a szerepnél a dimenzióátlag helyett a hozzá rendelt alskálák pontszámait vesszük figyelembe.",
       en: "For this role, the facets that actually predict it are scored – not the dimension average.",
     },
     ccObserverBadge: { hu: "külső képpel megerősítve", en: "observer-backed" },
@@ -1704,7 +1706,7 @@ export const resultsTranslations = {
       en: "Career compass: what work would suit you?",
     },
     careerPlusLead: {
-      hu: "A személyiségprofilod már megvan. Ez a modul onnan indulna: megmutatná, milyen JELLEGŰ munka illik hozzád, milyen konkrét szerepek jönnek ebből szóba, és mit érdemes kipróbálnod. Még nem létezik – most azt mérjük, érdemes-e megépíteni.",
+      hu: "A személyiségprofilod alapján szakmai irányokat és kipróbálható lépéseket javasolnánk. A funkció még nem készült el: most arra vagyunk kíváncsiak, használnád-e.",
       en: "You already have your personality profile. This module would start from there: what KIND of work fits you, which concrete roles follow from it, and what's worth trying next. It doesn't exist yet – we're measuring whether it's worth building.",
     },
     careerPlusWhatTitle: { hu: "Mit tudna", en: "What it would do" },
@@ -1731,7 +1733,7 @@ export const resultsTranslations = {
     },
     careerPlusAskTitle: { hu: "Érdekelne ez téged?", en: "Would this interest you?" },
     careerPlusAskNote: {
-      hu: "Egy kattintás, és tovább is léphetsz. A válaszok döntik el, megépül-e – a „nem” ugyanolyan hasznos válasz, mint az „igen”.",
+      hu: "Egy kattintás, és tovább is léphetsz. A válaszok segítenek eldönteni, elkészítjük-e. A „nem” ugyanolyan hasznos válasz, mint az „igen”.",
       en: "One click and you can move on. The answers decide whether it gets built – a “no” is just as useful as a “yes”.",
     },
     careerPlusYes: { hu: "Érdekelne ennyiért", en: "I'd be interested at that price" },
@@ -1745,7 +1747,7 @@ export const resultsTranslations = {
       en: "Thanks – that's an important answer too.",
     },
     careerPlusThanksNote: {
-      hu: "Nem ígérünk határidőt: ha nem lesz elég érdeklődés, ez a réteg nem épül meg.",
+      hu: "A megvalósításnak még nincs határideje. Az érdeklődés alapján döntünk arról, elkészítjük-e.",
       en: "We're not promising a date: if there isn't enough interest, this layer won't be built.",
     },
     careerPlusChangeAnswer: { hu: "Meggondoltam magam", en: "I changed my mind" },
@@ -1757,7 +1759,7 @@ export const resultsTranslations = {
       en: "What work would suit you?",
     },
     careerPlusCtaBody: {
-      hu: "Karrier-iránytű készül a profilodra: illeszkedő területek, konkrét szerepek és kipróbálható lépések. Nézd meg, mit tudna – és mondd meg, érdekel-e.",
+      hu: "Egy karrier-iránytűt tervezünk, amely a profilodhoz közeli területeket, szerepeket és kipróbálható lépéseket mutatna. Nézd meg a tervet, és mondd el, érdekelne-e.",
       en: "A career compass is in the works for your profile: fitting areas, concrete roles and steps you can try. See what it would do – and tell us if it interests you.",
     },
     careerPlusCtaButton: { hu: "Megnézem, mit tudna", en: "See what it would do" },
@@ -1783,7 +1785,7 @@ export const resultsTranslations = {
     ccRiasecScale5: { hu: "Nagyon szívesen", en: "Very much" },
     ccStepTags: { hu: "Mi érdekel igazán?", en: "What genuinely interests you?" },
     ccWhyTags: {
-      hu: "Válassz legfeljebb 4 területet – az érdeklődésed a személyiségednél is közvetlenebbül jelzi, mi való neked.",
+      hu: "Válassz legfeljebb 4 területet. Ezzel közvetlenül jelezheted, mi érdekel, és pontosíthatod a személyiségprofilból számolt becslést.",
       en: "Pick up to 4 – your interests signal fit even more directly than personality.",
     },
     ccTagsCount: { hu: "{count} / 4 kiválasztva (át is ugorhatod)", en: "{count} / 4 selected (you can skip this)" },
@@ -1804,7 +1806,7 @@ export const resultsTranslations = {
     ccCompareTitle: { hu: "Két irány egymás mellett", en: "Two directions side by side" },
     ccCompareClear: { hu: "Bezárás", en: "Close" },
     ccCompareNote: {
-      hu: "A sávok azt mutatják, az adott komponens mennyire támogatja nálad a szerepet (0–100).",
+      hu: "A sávok azt mutatják, az egyes szempontok alapján mekkora illeszkedést becsülünk az adott szerephez (0–100).",
       en: "Bars show how strongly each component supports the role for you (0–100).",
     },
     ccPlan30Eyebrow: { hu: "Rövid terv 30 napra", en: "30-day mini plan" },
@@ -1812,8 +1814,8 @@ export const resultsTranslations = {
       hu: "A hozzád leginkább illő irányok többségében ez a terület igényelhet több figyelmet: {dim}. Ezzel érdemes kezdeni:",
       en: "Across your top directions, {dim} is the bottleneck – start here:",
     },
-    ccPlan30Behavior: { hu: "Viselkedés", en: "Behavior" },
-    ccPlan30Reflection: { hu: "Reflexió", en: "Reflection" },
+    ccPlan30Behavior: { hu: "Próbáld ki", en: "Behavior" },
+    ccPlan30Reflection: { hu: "Gondold végig", en: "Reflection" },
     ccPlan30Challenge: { hu: "30 napos kihívás", en: "30-day challenge" },
     ccLeaderEyebrow: { hu: "Tipikus vezetési közeg", en: "Typical leadership context" },
     ccLeaderTitle: {
@@ -1852,16 +1854,16 @@ export const resultsTranslations = {
     ccTierConditional: { hu: "Feltételes – felkészüléssel", en: "Conditional – with preparation" },
     ccDevPlanTitle: { hu: "Fejlődési terv ezekhez az irányokhoz", en: "Development plan for these directions" },
     ccDevPlanIntro: {
-      hu: "A fenti irányok közös figyelendő területei – ha erre indulsz, itt térül meg leggyorsabban a tudatos gyakorlás.",
+      hu: "Ezek a területek több javasolt szerepnél is figyelmet igényelhetnek. Válaszd azt a gyakorlatot, amely a saját tapasztalataidhoz is kapcsolódik.",
       en: "The shared watch areas of the directions above – if you head this way, deliberate practice pays off fastest here.",
     },
     ccObserverRefine: {
-      hu: "Pontosítsd külső visszajelzéssel – az önkép és a külső kép átlaga megbízhatóbb illeszkedést ad.",
+      hu: "Mások visszajelzését is bevonhatod az összehasonlításba. Ilyenkor az önértékelésed és a külső értékelések átlagából számolunk.",
       en: "Refine with outside feedback – averaging self-image and outside view gives a more reliable fit.",
     },
     ccObserverRefineCta: { hu: "Visszajelzés kérése", en: "Request feedback" },
     industryFitNote: {
-      hu: "Indikatív jelzés az önértékelésed alapján – nem pályaválasztási tanácsadás. Az illeszkedés a szerep tipikus munkastílus-igényeit veti össze a profiloddal; a tapasztalat, tudás és motiváció legalább ilyen fontos.",
+      hu: "Az illeszkedés a szerephez megadott munkastílust veti össze az önértékeléseddel. Használd kiindulópontként a tájékozódáshoz: a tapasztalatodat, tudásodat és motivációdat is mérlegeld egy pályaválasztási döntésnél.",
       en: "An indicative signal based on your self-assessment – not career advice. Fit compares a role's typical working-style demands with your profile; experience, skills and motivation matter at least as much.",
     },
   },
@@ -1876,7 +1878,7 @@ export const resultsTranslations = {
     deepenDivider: { hu: "Pontosítsd a képet", en: "Deepen your profile" },
     unlock: { hu: "Feloldom", en: "Unlock" },
     sendInvitations: { hu: "Visszajelzési meghívók küldése", en: "Send feedback invitations" },
-    sendInvitationsDesc: { hu: "Kérd meg 2-3 kollégádat, hogy adjanak visszajelzést rólad", en: "Ask 2-3 colleagues to give feedback about you" },
+    sendInvitationsDesc: { hu: `Kérj visszajelzést legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} kollégától vagy ismerőstől.`, en: `Ask at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} colleagues or friends to give feedback about you.` },
     afterPlus: { hu: "Plus feloldása után érhető el", en: "Available after unlocking Plus" },
     sendInvitationCta: { hu: "Meghívó küldése", en: "Send invitation" },
     availableAfterPlus: { hu: "Elérhető Plus után", en: "Available after Plus" },
@@ -1909,7 +1911,7 @@ export const resultsTranslations = {
     accPersonal: { hu: "Mit mond ez rólad?", en: "What this means for you" },
     accWorkplace: { hu: "Munkahelyi helyzetekben", en: "In workplace situations" },
     accFacetDetail: { hu: "Részletes bontás", en: "Detailed breakdown" },
-    howYouWorkSub: { hu: "Milyen környezetben működsz jól – és hol jöhetnek súrlódások", en: "Where you thrive – and where friction may arise" },
+    howYouWorkSub: { hu: "Milyen körülmények állhatnak közel hozzád, és mi okozhat nehézséget?", en: "Where you thrive – and where friction may arise" },
     profileSummary: { hu: "Profilösszefoglaló", en: "Profile summary" },
     // A `content.roleFitStrong` a shared-labels.ts-ben él (publikus hero is).
     roleFitMaybe: { hu: "Működhet, ha…", en: "May work with preparation" },
@@ -2027,7 +2029,7 @@ export const resultsTranslations = {
     teamRoleTeaserEstimate: { hu: "becslés", en: "estimate" },
     teamRoleTeaserTitle: { hu: "Valószínű csapatszerepeid", en: "Your likely team roles" },
     teamRoleTeaserDesc: {
-      hu: "Személyiségprofilod alapján várhatóan ezek a csapatszerepek illenek hozzád leginkább. A pontos méréshez töltsd ki a csapatszerep-kérdőívet.",
+      hu: "Ezeket a csapatszerepeket a személyiségprofilod alapján becsüljük. A csapatszerep-kérdőívvel közvetlenül a csapatban jellemző viselkedésedről adhatsz önértékelést.",
       en: "Based on your personality profile, these team roles fit you best. Complete the team-role questionnaire for an exact measurement.",
     },
     teamRoleTeaserPrimary: { hu: "Elsődleges", en: "Primary" },
@@ -2045,10 +2047,10 @@ export const resultsTranslations = {
     detailEyebrow: { hu: "dimenziók", en: "dimensions" },
     detailTitle: { hu: "A 6 dimenzió részletesen", en: "6 dimensions in detail" },
     // ObserverComparison
-    observerInviteTitle: { hu: "Kérj visszajelzést 2–5 embertől", en: "Invite 2–5 people as observers" },
+    observerInviteTitle: { hu: `Kérj visszajelzést ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE}–5 embertől`, en: `Invite ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE}–5 people as observers` },
     observerInviteBody: {
-      hu: "Az összehasonlítás csak akkor jelenik meg, ha legalább 2 külső visszajelzés beérkezett.",
-      en: "The comparison appears once at least 2 completed observer assessments have been received.",
+      hu: `Az összehasonlítás csak akkor jelenik meg, ha legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} külső visszajelzés beérkezett.`,
+      en: `The comparison appears once at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} completed observer assessments have been received.`,
     },
     observerManageInvites: { hu: "Meghívók kezelése", en: "Manage invitations" },
     observerCountBasis: { hu: "{count} külső visszajelzés átlaga alapján", en: "Based on {count} observer assessments" },
@@ -2056,8 +2058,8 @@ export const resultsTranslations = {
       hu: "Jó egyezés – az önképed és a külső visszajelzések közel állnak egymáshoz.",
       en: "Good alignment – your self-image and observer feedback are closely matched.",
     },
-    observerSelfHigher: { hu: "Te magasabbra értékeled magadat, mint ahogyan mások értékelnek téged.", en: "You rate yourself higher than observers do." },
-    observerObsHigher: { hu: "Mások magasabbra értékelnek téged, mint te saját magadat.", en: "Observers rate you higher than you rate yourself." },
+    observerSelfHigher: { hu: "A saját pontszámod magasabb, mint a másoktól kapott értékelések átlaga.", en: "You rate yourself higher than observers do." },
+    observerObsHigher: { hu: "A másoktól kapott értékelések átlaga magasabb a saját pontszámodnál.", en: "Observers rate you higher than you rate yourself." },
     // CareerFit
     careerFitLabel: { hu: "Illeszkedés", en: "Fit" },
   },
@@ -2070,7 +2072,7 @@ export const resultsTranslations = {
     statReceived: { hu: "beérkezett", en: "received" },
     statPending: { hu: "függőben", en: "pending" },
     statSent: { hu: "meghívó elküldve", en: "invitations sent" },
-    infoNeeded: { hu: "Az összehasonlításhoz legalább 2 visszajelzés kell. A visszajelzések név nélkül jelennek meg – csak összesített átlagokat mutatunk.", en: "You need at least 2 responses for comparison. Feedback is anonymous – we only show aggregated averages." },
+    infoNeeded: { hu: `Az összehasonlításhoz legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} visszajelzés kell. A visszajelzések név nélkül jelennek meg – csak összesített átlagokat mutatunk.`, en: `You need at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} responses for comparison. Feedback is anonymous – we only show aggregated averages.` },
     infoNeededN: { hu: "Az összehasonlításhoz legalább {min} visszajelzés kell. A visszajelzések név nélkül jelennek meg – csak összesített átlagokat mutatunk.", en: "You need at least {min} responses for comparison. Feedback is anonymous – we only show aggregated averages." },
     infoReady: { hu: "visszajelzés beérkezett – az összehasonlítás elérhető az Összehasonlítás fülön.", en: "responses received – comparison available on the Compare tab." },
     formTitle: { hu: "Új meghívó létrehozása", en: "Create new invitation" },
@@ -2166,7 +2168,7 @@ export const resultsTranslations = {
     summaryInTeam: { hu: "Csapatban", en: "In a team" },
     summaryTeamLine: { hu: "Elsődleges csapatszereped jellemzően: {role}", en: "Your primary team role tends to be: {role}" },
     summaryFootnote: {
-      hu: "Ez az oldal a riport rövidített változata. A részleteket, az alskálákat és a szerepkörökhöz való illeszkedést a következő oldalakon találod. Az állítások önjellemzésen alapuló hipotézisek.",
+      hu: "Ez az oldal a riport rövid összefoglalója. A következő oldalakon részletesen is megnézheted a dimenziókat, az alskálákat és a javasolt szerepköröket. Olvasás közben vesd össze a leírásokat a saját tapasztalataiddal: mindegyik az önértékelésedből indul ki.",
       en: "This page is the condensed report – details, subscales, and role fit follow on the next pages. Statements are hypotheses based on self-report.",
     },
     pressureDisclaimer: {
@@ -2226,28 +2228,28 @@ export const resultsTranslations = {
       en: "Standout: {topNames}.",
     },
     facetGrowth: {
-      hu: " Az alacsonyabb {bottomName} nem hiányosság, inkább lehetséges fejlődési irányt jelez.",
+      hu: " Az alacsonyabb {bottomName} jelentését a hozzá tartozó magyarázatnál nézheted meg.",
       en: " Lower {bottomName} isn't a weakness – it signals where there's room for growth.",
     },
     facetSoWhat: { hu: "A gyakorlatban:", en: "In practice:" },
     whatDoesThisMeanOverall: { hu: "Mit jelent ez összességében?", en: "What does this mean overall?" },
     facetBalanced: {
-      hu: "Kiegyensúlyozott profil – nincs szélsőségesen magas vagy alacsony dimenzió. Ez nagyobb rugalmassággal és kevésbé kiugró működési mintákkal járhat.",
+      hu: "Egyik dimenzió pontszáma sem kifejezetten magas vagy alacsony. A részletes leírások és az alskálák segíthetnek megérteni a köztük lévő különbségeket.",
       en: "Balanced profile – no extremely high or low dimensions. This means flexibility, but fewer natural 'superpowers'.",
     },
     facetHighAndLow: {
       // HU: a hívó névelővel adja át a neveket (withHuArticle; {lowNames} nagybetűs).
-      hu: "Profilod erőssége {highNames} területén koncentrálódik. {lowNames} alacsonyabb szintje nem probléma – inkább azt jelzi, hol érdemes tudatosabban működnöd.",
+      hu: "A legmagasabb pontszámaid: {highNames}. Alacsonyabb értéket kaptál itt: {lowNames}. Nézd meg a hozzájuk tartozó magyarázatokat, és gondold végig, mely helyzetekben ismersz magadra.",
       en: "Your profile's strength is concentrated in {highNames}. Lower {lowNames} isn't a problem – it signals where to operate more consciously.",
     },
     facetHighOnly: {
       // HU: a hívó névelővel adja át a {highNames}-t (withHuArticle).
-      hu: "Karakteres profil – {highNames} markánsan kirajzolódik, és nincs kifejezetten alacsony dimenzió.",
+      hu: "A profilban {highNames} pontszáma magas. Egyik dimenziód sem kapott kifejezetten alacsony pontszámot.",
       en: "Strong, distinctive profile – {highNames} stands out, with no critically low dimensions.",
     },
     facetLowOnly: {
       // HU: a hívó nagybetűs névelővel adja át a {lowNames}-t (withHuArticle).
-      hu: "{lowNames} alacsonyabb szintje tudatos figyelmet érdemel – ezek a területek fejlődési lehetőséget rejtenek.",
+      hu: "Alacsonyabb pontszámaid: {lowNames}. A hozzájuk tartozó magyarázatoknál nézd meg, milyen helyzetekben lehet ez előnyös, és mikor okozhat nehézséget.",
       en: "Lower {lowNames} deserves conscious attention – these areas hold growth potential.",
     },
     // ── PdfHeader ──────────────────────────────────────────────────────────
@@ -2311,7 +2313,7 @@ export const resultsTranslations = {
     appendixEyebrow: { hu: "Melléklet", en: "Appendix" },
     appendixObserverTitle: { hu: "Külső nézőpont", en: "Outside view" },
     appendixObserverNote: {
-      hu: "Itt mások rólad kitöltött kérdőíveinek átlagát vetjük össze a saját válaszaiddal. Ezek mért adatok, két nézőpontból.",
+      hu: "Itt a mások által rólad kitöltött kérdőívek átlagát vetjük össze a saját pontszámaiddal. Így két nézőpontból nézheted meg ugyanazokat a dimenziókat.",
       en: "Measured data: the aggregated average of your observers' answers, compared with your self-image.",
     },
     appendixCareerTitle: { hu: "Karrier-iránytű", en: "Career compass" },

@@ -48,7 +48,7 @@ const TOPICS: HelpTopic[] = [
           en: "What exactly is trita, and who can it help?",
         },
         answer: {
-          hu: "A trita segít jobban megérteni, hogyan működsz te, és hogyan működtök együtt egy csapatban. Egyénileg ingyenesen kitöltheted a személyiségfelmérést, és ismerősöktől is kérhetsz visszajelzést. Csapatként tanácsadóval beszélhetitek át az eredményeket és a következő lépéseket.",
+          hu: "A tritával jobban megismerheted a saját szokásaidat és azt, hogyan dolgoztok együtt a csapatodban. A személyiségfelmérést ingyenesen kitöltheted, majd ismerősöktől is kérhetsz visszajelzést. Csapatprogramban tanácsadóval beszélhetitek át az eredményeket és a következő lépéseket.",
           en: "trita helps you understand yourself and how your team works together. As an individual, you can take the free personality assessment and ask people you know for feedback. As a team, you discuss the results and next steps with a consultant.",
         },
         audiences: ["public"],
@@ -180,7 +180,7 @@ const TOPICS: HelpTopic[] = [
           en: "How should I answer?",
         },
         answer: {
-          hu: "Nincsenek jó vagy rossz válaszok. Az első benyomásod alapján, őszintén válaszolj – ne azt jelöld, aminek látszani szeretnél, hanem ami valóban jellemző rád. Így lesz a kép pontos és használható.",
+          hu: "Nincsenek jó vagy rossz válaszok. Gondolj arra, hogyan viselkedsz általában, és az első benyomásod alapján válaszolj. Akkor is azt jelöld, ami jellemző rád, ha valamelyik válasz előnyösebbnek tűnik.",
           en: "There are no right or wrong answers. Answer honestly based on your first impression – mark what is actually true of you, not what you would like to appear. That is what makes the picture accurate and useful.",
         },
         audiences: SIGNED_IN,
@@ -206,7 +206,7 @@ const TOPICS: HelpTopic[] = [
           label: { hu: "Eredményeim megnyitása", en: "Open my results" },
         },
         steps: [
-          { hu: "Kezdd az Összképpel: itt látod a legerősebb mintázatokat.", en: "Start with Overview to see your strongest patterns." },
+          { hu: "Kezdd az Összképpel: itt találod az eredményed rövid összefoglalóját.", en: "Start with Overview to see your strongest patterns." },
           { hu: "A Részletek nézetben dimenziónként olvashatod az értelmezést.", en: "Use Details to read the interpretation dimension by dimension." },
           { hu: "A Külső kép megmutatja, miben egyezik az önértékelésed mások benyomásával, és miben tér el tőle.", en: "Outside view shows where other people's impressions align with or differ from yours." },
         ],
@@ -235,7 +235,7 @@ const TOPICS: HelpTopic[] = [
           en: "What does the comparison show?",
         },
         answer: {
-          hu: "Az összehasonlítás az önértékelésedet veti össze az ismerőseid visszajelzésével: hol egyezik az önképed a külső képpel, és hol térnek el. Az eltérések segíthetnek új szempontból megérteni a viselkedésedet.",
+          hu: "Itt egymás mellett látod a saját pontszámaidat és az ismerőseid válaszainak átlagát. Megnézheted, mely tulajdonságaidat látjátok hasonlóan, és hol térnek el a benyomásaitok. Az eltérésekről érdemes konkrét helyzeteket felidézve beszélgetni.",
           en: "The comparison contrasts your self-assessment with your peers' feedback: where your self-image matches how others see you, and where they differ. The gaps are often the most interesting insights.",
         },
         link: {
@@ -282,7 +282,7 @@ const TOPICS: HelpTopic[] = [
           en: "Whom should I ask?",
         },
         answer: {
-          hu: "Olyan embereket, akik különböző helyzetekből ismernek: kollégákat, barátokat, családtagokat. Minél változatosabb a kör, annál árnyaltabb a külső kép – egy-egy visszajelzés önmagában csak egy nézőpont.",
+          hu: "Olyan embereket kérj meg, akik jól ismernek, lehetőleg többféle helyzetből: például kollégát, barátot vagy családtagot. Más-más oldaladat láthatják; minden visszajelzés egy nézőpontot ad a sajátod mellé.",
           en: "People who know you from different contexts: a colleague, a friend, a family member. The more varied the circle, the more nuanced the external picture – a single response is just one perspective.",
         },
         audiences: SIGNED_IN,
@@ -346,7 +346,7 @@ const TOPICS: HelpTopic[] = [
           en: "Why can't I see team results immediately?",
         },
         answer: {
-          hu: "Előbb megvárjuk a válaszokat, majd a tanácsadó átnézi, mit mutatnak együtt. Így az eredmények mellé magyarázatot is kaptok: mire támaszkodhattok, és hol érdemes óvatosabban következtetni. Ezután osztjuk meg veletek a csapatriportot.",
+          hu: "A válaszok beérkezése után a tanácsadó áttekinti az összes eredményt. A riportban elmagyarázza, mit mutatnak az adatok, és mely kérdéseket érdemes közösen megbeszélnetek. Ezután osztja meg veletek a csapatriportot.",
           en: "We first collect the responses, then the consultant reviews what they show together. You receive explanations alongside the results: what you can rely on and where conclusions need more care. We then share the team report with you.",
         },
         audiences: MANAGING,

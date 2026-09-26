@@ -28,7 +28,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     name: { hu: "Realistic – Megvalósító", en: "Realistic – Doer" },
     tagline: { hu: "Kézzelfogható dolgokkal dolgozni", en: "Working with tangible things" },
     description: {
-      hu: "A Megvalósító típus szereti a gyakorlati, kézzelfogható munkát: építeni, szerelni, működtetni. Gépek, szerszámok, növények, járművek – az számít, aminek látható eredménye van. Kevésbé vonzza a hosszas egyeztetés és a papírmunka.",
+      hu: "A Megvalósító területhez a gyakorlati feladatok tartoznak: építés, szerelés, gépek kezelése vagy munka a szabadban. Ha ez érdekel, valószínűleg szívesen dolgozol olyan feladaton, amelynek kézzelfogható eredménye van.",
       en: "The Doer type enjoys practical, hands-on work: building, fixing, operating. Machines, tools, plants, vehicles – what matters is a visible result. Long meetings and paperwork appeal less.",
     },
     activities: {
@@ -47,7 +47,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     name: { hu: "Investigative – Elemző", en: "Investigative – Thinker" },
     tagline: { hu: "Megérteni, hogyan működnek a dolgok", en: "Understanding how things work" },
     description: {
-      hu: "Az Elemző típus kérdez, vizsgál, összefüggéseket keres. Adatok, kísérletek, elméletek – a motivációja a megértés, nem feltétlenül a gyors eredmény. Önálló, elmélyült munkában a legerősebb.",
+      hu: "Az Elemző területhez a kutatás, az adatok vizsgálata és az összefüggések keresése tartozik. Ha ez érdekel, valószínűleg szívesen jársz utána egy kérdésnek, és időt szánsz arra, hogy megértsd, hogyan működik valami.",
       en: "The Thinker type asks, investigates, looks for patterns. Data, experiments, theories – the drive is understanding, not necessarily quick results. Strongest in independent, deep work.",
     },
     activities: {
@@ -66,7 +66,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     name: { hu: "Artistic – Alkotó", en: "Artistic – Creator" },
     tagline: { hu: "Létrehozni valamit, ami előtte nem volt", en: "Creating something new" },
     description: {
-      hu: "Az Alkotó típus önkifejezésre és eredetiségre vágyik: írás, design, zene, vizuális világok. Rugalmas kereteket szeret, a szigorú szabályrendszerek fárasztják. Akkor van elemében, ha a saját ízlése formálhatja a végeredményt.",
+      hu: "Az Alkotó területhez az írás, a tervezés, a zene és más művészeti tevékenységek tartoznak. Ha ez érdekel, vonzhatnak azok a feladatok, amelyekben saját ötleteidet és ízlésedet is megmutathatod.",
       en: "The Creator type seeks self-expression and originality: writing, design, music, visual worlds. Prefers loose structure; rigid rule systems drain them. In their element when their taste shapes the outcome.",
     },
     activities: {
@@ -85,7 +85,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     name: { hu: "Social – Segítő", en: "Social – Helper" },
     tagline: { hu: "Emberekkel, emberekért dolgozni", en: "Working with and for people" },
     description: {
-      hu: "A Segítő típus akkor van elemében, ha másokon segíthet: tanít, gondoz, fejleszt, meghallgat. Az emberi kapcsolat számára nem a munka mellékterméke, hanem a lényege. A tisztán tárgy- vagy adatközpontú munka kevésbé tölti fel.",
+      hu: "A Segítő területhez a tanítás, a gondozás, a tanácsadás és a közösségi munka tartozik. Ha ez érdekel, valószínűleg szívesen foglalkozol emberekkel, hallgatod meg őket, és segíted a tanulásukat vagy a mindennapjaikat.",
       en: "The Helper type thrives on helping others: teaching, caring, developing, listening. Human connection isn't a by-product of the work – it's the point. Purely object- or data-centred work is less fulfilling.",
     },
     activities: {
@@ -104,7 +104,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     name: { hu: "Enterprising – Meggyőző", en: "Enterprising – Persuader" },
     tagline: { hu: "Meggyőzni másokat, vezetni és célokat elérni", en: "Persuading, leading, achieving" },
     description: {
-      hu: "A Meggyőző típus határozottan törekszik a céljai elérésére: elad, tárgyal, szervez, vezet. Energiát ad neki a verseny és a látható eredmény. Szeret dönteni és felelősséget vállalni – a hosszú, magányos elemzés kevésbé az ő terepe.",
+      hu: "A Meggyőző területhez az értékesítés, a tárgyalás, a szervezés és a vezetés tartozik. Ha ez érdekel, vonzhatnak azok a feladatok, amelyekben másokat nyersz meg egy ügynek, döntéseket hozol vagy közös célokért szervezed a munkát.",
       en: "The Persuader type chases goals: selling, negotiating, organizing, leading. Competition and visible wins energize them. They like deciding and owning outcomes – long solitary analysis is less their turf.",
     },
     activities: {
@@ -123,7 +123,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     name: { hu: "Conventional – Rendszerező", en: "Conventional – Organizer" },
     tagline: { hu: "Rendet tenni és rendben tartani", en: "Creating and keeping order" },
     description: {
-      hu: "A Rendszerező típus a pontosságban és a világosan meghatározott folyamatokban erős: nyilvántartások, számok, szabályok, határidők. Ő az, akinél nem vész el semmi. A kiszámíthatatlan, folyton változó közeg fárasztja.",
+      hu: "A Rendszerező területhez a nyilvántartások, a számok, a szabályok és a munkafolyamatok követése tartozik. Ha ez érdekel, valószínűleg szívesen foglalkozol olyan feladatokkal, amelyekben fontos a rend, a pontosság és az egyértelmű teendők.",
       en: "The Organizer type excels at precision and well-defined processes: records, numbers, rules, deadlines. Nothing gets lost on their watch. Unpredictable, ever-shifting settings wear them out.",
     },
     activities: {

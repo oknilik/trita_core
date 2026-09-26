@@ -507,8 +507,8 @@ export function DealDetail({
         title={closeOutcome === "WON" ? "Ügy megnyerve" : "Ügy lezárása"}
         description={
           closeOutcome === "WON"
-            ? "Az ügy lekerül a napi teendők közül. A tanulság rögzítése opcionális."
-            : "Mi volt a döntő ok? A rövid tanulság később segít jobb döntéseket hozni."
+            ? "Az ügy lekerül a napi teendők közül. Ha szeretnéd, feljegyezheted, mit tanultál belőle."
+            : "Miért zárult eredmény nélkül az ügy? Jegyezd fel, hogy később visszanézhesd."
         }
       >
         <div className="flex flex-col gap-3">

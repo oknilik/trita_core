@@ -143,9 +143,9 @@ export default async function ManagerCockpitPage() {
     };
   } else {
     nextStep = {
-      title: isHu ? "Minden rendben" : "All good",
+      title: isHu ? "Nincs kiemelt teendő" : "All good",
       description: isHu
-        ? "A csapataid jó állapotban vannak. Tekintsd át az eredményeket vagy indíts visszajelzési kört."
+        ? "A kitöltések alapján most nincs kiemelt teendő. Nézd át a csapatok eredményeit, vagy indíts új visszajelzési kört."
         : "Your teams are in good shape. Review results or start a feedback round.",
       primary: {
         label: isHu ? "Csapatkép megtekintése" : "View team profile",
@@ -176,7 +176,7 @@ export default async function ManagerCockpitPage() {
         summary={
           isSingleTeam
             ? (isHu
-                ? `${withHuArticle(data.teams[0].teamName, { capitalize: true })} csapatod ${data.teams[0].completionPct}%-on áll.`
+                ? `${withHuArticle(data.teams[0].teamName, { capitalize: true })} csapatban a tagok ${data.teams[0].completionPct}%-a végzett a kitöltéssel.`
                 : `Your ${data.teams[0].teamName} team is at ${data.teams[0].completionPct}% completion.`)
             : (isHu
                 ? `${teamCount} csapatodat kezeled, összesen ${data.totalMembers} taggal.`
@@ -354,9 +354,9 @@ export default async function ManagerCockpitPage() {
             />
             <DashboardMetricCard
               accent="var(--color-state-warning-solid)"
-              title={isHu ? "Potenciális súrlódás" : "Potential friction"}
+              title={isHu ? "Lehetséges súrlódás" : "Potential friction"}
               value={String(data.teams[0]?.frictionCount ?? 0)}
-              sub={isHu ? "Tudatos kommunikáció szükséges" : "Conscious communication needed"}
+              sub={isHu ? "Érdemes megbeszélni az eltérő munkastílusokat" : "Conscious communication needed"}
             />
           </div>
           <div className="mt-3 flex flex-wrap items-center justify-between gap-2">

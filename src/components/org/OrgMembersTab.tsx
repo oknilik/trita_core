@@ -177,7 +177,7 @@ export function OrgMembersTab({
                         href={`${dossierBaseHref}/${member.userId}`}
                         className="inline-flex min-h-9 items-center rounded-lg border border-sand bg-surface-card px-3 text-note font-semibold text-ink-body transition hover:border-[var(--color-layer-org-accent)]/30 hover:text-ink"
                       >
-                        {isHu ? "Dossié" : "Dossier"}
+                        {isHu ? "Dosszié" : "Dossier"}
                       </Link>
                     ) : null}
                     {isAdmin && member.userId !== profileId ? (

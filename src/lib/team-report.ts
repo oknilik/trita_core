@@ -803,10 +803,10 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   const strengths = bullets([
     ...topDims.map((dim) => getStrengthInsight(dim)),
     profileHomogeneitySignal
-      ? "A hasonló munkastílusok gyors összecsiszolódást tehetnek lehetővé, és kevesebb egyeztetést igényelhetnek."
+      ? "A hasonló munkastílusok megkönnyíthetik az egyeztetést. Keressetek példát arra, mikor értettétek meg gyorsan egymást egy közös feladatban."
       : "",
     highTrustSignal
-      ? "A mért bizalmi kör alapján sok az erős, kölcsönös bizalmi kapcsolat – ezek biztos alapot adhatnak az együttműködéshez."
+      ? "A bizalmi kör válaszaiban sok erős, kölcsönös kapcsolat látszik. Beszéljétek át, mi segít fenntartani ezeket a mindennapi munkában."
       : "",
   ]);
 
@@ -814,10 +814,10 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     getWatchAreaInsight(bottomDim),
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     frictionShare >= 0.4
-      ? `A felmért kapcsolatok jelentős részénél nagy a munkastílusbeli különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} – tisztázott normák nélkül ez visszatérő feszültség forrásává válhat.`
+      ? `A kapcsolati elemzés sok párnál jelez lehetséges súrlódást${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""}. Beszéljétek át konkrét helyzeteken, mi nehezíti meg a közös munkát, és hogyan tudnátok változtatni rajta.`
       : "",
     profileHomogeneitySignal
-      ? "A hasonló profilok közös vakfoltokat hordozhatnak – egy külső nézőpont segíthet észrevenni azt, ami a csapaton belül rejtve marad."
+      ? "A hasonló profilok mellett könnyebben maradhatnak ki ugyanazok a szempontok. Kérjetek visszajelzést olyan embertől is, aki más szemszögből látja a munkátokat."
       : "",
     gapRoleNames
       ? `Ezek a szerepek sem elsődleges, sem másodlagos szerepként nem jelennek meg az eredményekben: ${gapRoleNames}. Tisztázzátok, ki vállalja a hozzájuk tartozó feladatokat.`
@@ -826,10 +826,10 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       ? `A pszichológiai biztonság felmérésében (${ps.index}/100, ${ps.count} névtelen válasz) ezek a területek kapták a legalacsonyabb átlagot: ${psWeakAreas.join(", ")}. Keressetek konkrét helyzeteket, amelyek segítenek megérteni a válaszokat. A pontszám önmagában nem mutatja meg az okokat.`
       : "",
     ps && ps.spread >= 20
-      ? "A pszichológiai biztonság megélése erősen eltér a csapaton belül – az átlag mögött nagyon különböző egyéni tapasztalatok állnak."
+      ? "A pszichológiai biztonság kérdőívére adott válaszok erősen eltérnek. Az átlag ezért nem írja le mindenki tapasztalatát; hagyjatok helyet a különböző véleményeknek is."
       : "",
     agg.pressure && agg.pressure.concentrations.length > 0
-      ? `Nyomás alatt jelentkező közös mintázat: ${agg.pressure.concentrations
+      ? `A profilok alapján ezeket érdemes figyelnetek terhelés alatt: ${agg.pressure.concentrations
           .map(
             (c) =>
               `${PREFILL_DIM_LABELS[c.dim] ?? c.dim} (${
@@ -840,7 +840,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
                     : "alacsony pólus"
               }, ${c.count}/${c.assessedCount} tag)`,
           )
-          .join(", ")} – az egyéni túlterhelődések nyomás alatt összeadódhatnak (részletek a „Csapat nyomás alatt” fejezetben).`
+          .join(", ")}. A pontszámokból készült becslést saját tapasztalatokkal vessétek össze a „Csapat nyomás alatt” fejezetben.`
       : "",
   ]);
 
@@ -852,10 +852,10 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       ? `A hiányzó szerepekhez (${gapRoleNames}) tartozó feladatokra jelöljetek ki felelőst, vagy kérjetek külső segítséget.`
       : "",
     measuredMissing
-      ? "Mért bizalmi kör (360°) indítása – a jelenlegi kapcsolati kép a profilokból számolt becslés, amelyet az új mérés megerősíthet vagy árnyalhat."
+      ? "Indítsatok bizalmi kört (360°). A jelenlegi kapcsolati kép a személyiségprofilokból készült becslés; a kérdőívből azt ismerhetitek meg, hogyan élitek meg a közös munkát."
       : "",
     profileHomogeneitySignal
-      ? "Külső visszajelzés tudatos bevonása – például másik csapattól, ügyféltől vagy mentortól – a közös vakfoltok ellensúlyozására."
+      ? "Kérjetek visszajelzést egy másik csapattól, ügyféltől vagy mentortól. Mit vesznek észre a munkátokban, amiről ti ritkán beszéltek?"
       : "",
     ...(ps && psWeakAreas.length > 0
       ? ps.weakItemIds.map(
@@ -866,7 +866,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     // Több-csapatos futó pulse mellett NEM javaslunk új pulse-indítást –
     // a mérés fut, csak csapat-szintre nem bontható (psychSafetyMultiTeam).
     !ps && !agg.psychSafetyMultiTeam
-      ? "Pszichológiai biztonsági pulzusmérés indítása: a névtelen, körülbelül kétperces kérdőív segít megérteni, mennyire merik a tagok elmondani a véleményüket."
+      ? "Indítsatok rövid felmérést a pszichológiai biztonságról. A névtelen, körülbelül kétperces kérdőív segít megérteni, mennyire meritek elmondani a véleményeteket a csapatban."
       : "",
   ]);
 

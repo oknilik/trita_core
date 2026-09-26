@@ -32,39 +32,39 @@ export type TeamRoleCode = keyof typeof TEAM_ROLES;
  */
 export const TEAM_ROLE_WHY: Record<TeamRoleCode, { hu: string; en: string }> = {
   OG: {
-    hu: "Mert az újító, rendhagyó gondolkodás hajt, és nem ragadsz le a bevett keretekben.",
+    hu: "A profilod alapján közel állhat hozzád az új megközelítések keresése, és kevésbé ragaszkodhatsz a megszokott munkamenethez.",
     en: "Because inventive, unconventional thinking drives you, and set frames don't hold you.",
   },
   KE: {
-    hu: "Mert szívesen teremtesz kapcsolatokat, és nyitott vagy az új lehetőségekre.",
+    hu: "A profilod alapján szívesen kezdeményezhetsz beszélgetéseket, és érdekelhetnek az új lehetőségek.",
     en: "Because extraversion and openness make you a natural door-opener to people and opportunities.",
   },
   KO: {
-    hu: "Fontos neked, hogy bevond a többieket, és a közös munka az elveiddel is összhangban legyen.",
+    hu: "A profilod alapján fontos lehet neked a türelmes, méltányos egyeztetés és a közös munka megszervezése.",
     en: "Because aligning people and principles matters to you at the same time.",
   },
   HA: {
-    hu: "Mert lendületesen, egyenesen kommunikálsz, és nyomás alatt is előreviszed a munkát.",
+    hu: "A profilod alapján határozottan kezdeményezhetsz, és nyomás alatt is könnyebben maradhatsz tárgyilagos.",
     en: "Because momentum and a direct, pressure-proof pushing style go together in you.",
   },
   ER: {
-    hu: "Mert az alapos, kritikus mérlegelés erősebb nálad, mint a rivaldafény igénye.",
+    hu: "A profilod alapján közel állhat hozzád az alapos mérlegelés és a lehetőségek önálló átgondolása.",
     en: "Because thorough, critical weighing is stronger in you than the need for the spotlight.",
   },
   CS: {
-    hu: "Mert a barátságosság és a másokra hangolódás a profilod erős vonása.",
+    hu: "A profilod alapján türelemmel fordulhatsz a többiekhez, és szívesen kereshetsz közösen elfogadható megoldást.",
     en: "Because agreeableness and attunement to others are strong threads in your profile.",
   },
   MV: {
-    hu: "Mert a profilodra jellemző, hogy megbízhatóan és következetesen viszed végig a feladatokat.",
+    hu: "A profilod alapján fontos lehet neked a gondos munkaszervezés és a vállalt feladatok követése.",
     en: "Because dependable, consistent execution is the core of your profile.",
   },
   MI: {
-    hu: "Mert pontosan dolgozol, és könnyen észreveszed a hibákat.",
+    hu: "A profilod alapján sok figyelmet fordíthatsz a részletekre, és foglalkoztathat, mi maradt még ellenőrizetlenül.",
     en: "Because precision and sensitivity to errors move together in you.",
   },
   SZ: {
-    hu: "Mert jobban vonz a tudásod elmélyítése, mint a nyilvános szereplés.",
+    hu: "A profilod alapján szívesen mélyülhetsz el egy témában, és kevésbé keresheted a társas szereplést.",
     en: "Because deep, focused expertise-building draws you more than a broad stage.",
   },
 };

@@ -35,7 +35,7 @@ describe("OnboardingClient – claim aktiválás", () => {
     const user = userEvent.setup();
     render(<OnboardingClient variant="claim" onComplete={completeMock} />);
 
-    expect(screen.getByRole("heading", { name: "Az eredményed készen áll" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Elkészült az eredményed" })).toBeInTheDocument();
     expect(screen.queryByLabelText("Születési év")).not.toBeInTheDocument();
     expect(screen.queryByText("Nem")).not.toBeInTheDocument();
     expect(screen.queryByText("Ország")).not.toBeInTheDocument();

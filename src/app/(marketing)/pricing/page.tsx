@@ -62,7 +62,7 @@ export default async function PricingPage() {
               {
                 name: "Egyéni személyiségfelmérés",
                 description:
-                  "Személyiségfelmérés hat dimenzió mentén, dimenziószintű riporttal, munkastílus- és csapatszerep-elemzéssel. Ingyenes.",
+                  "Ingyenes személyiségfelmérés hat dimenzió mentén, részletes riporttal, a munkastílus bemutatásával és becsült csapatszerepekkel.",
               },
               {
                 name: "Csapatkép",

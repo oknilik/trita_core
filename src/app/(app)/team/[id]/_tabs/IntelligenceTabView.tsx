@@ -58,7 +58,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
             {t("teamComp.tabIntelligence", locale)}
           </p>
           <h1 className="mt-1 font-fraunces text-title leading-tight text-ink md:text-display">
-            {isHu ? "Még nincs elég adat a csapatintelligenciához" : "Not enough data yet for team intelligence"}
+            {isHu ? "Még nincs elég adat a csapatelemzéshez" : "Not enough data yet for team intelligence"}
           </h1>
           <p className="mt-2 max-w-3xl text-caption leading-relaxed text-ink-body">
             {isHu
@@ -71,7 +71,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
             </span>
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-              {isHu ? "Hiányzik a stabil nézethez" : "Still needed for stable view"}:{" "}
+              {isHu ? "Még szükséges a csapatképhez" : "Still needed for stable view"}:{" "}
               <span className="font-semibold text-ink">{missingForStableIntelligence}</span>
             </span>
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
@@ -165,7 +165,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         </h1>
         <p className="mt-2 max-w-3xl text-caption leading-relaxed text-ink-body">
           {isHu
-            ? "Összefoglaló nézet arról, ki mit hoz a csapatba, hol vannak hiányok, és mi a következő legjobb lépés."
+            ? "Itt láthatod a csapat eredményeinek összefoglalóját: mely szerepek jelennek meg, mihez hiányzik még adat, és miről érdemes közösen beszélni."
             : "Executive summary of who brings what to the team, where the gaps are, and what the next best action is."}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">

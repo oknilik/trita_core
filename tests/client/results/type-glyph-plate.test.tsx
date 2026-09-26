@@ -48,7 +48,7 @@ describe("TypeGlyphPlate", () => {
   it("az ábrának szöveges leírása van (nem puszta dekoráció)", () => {
     render(<TypeGlyphPlate dimensions={DIMENSIONS} locale="hu" defaultOpen />);
 
-    const glyphs = screen.getAllByRole("img", { name: /absztrakt típus-ábra/ });
+    const glyphs = screen.getAllByRole("img", { name: /absztrakt típusábra/ });
     expect(glyphs.length).toBeGreaterThan(0);
     expect(glyphs[0]).toHaveAccessibleName(/szem alapforma \(O\) létrafokok motívummal \(C\)/);
   });

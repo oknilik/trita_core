@@ -34,7 +34,8 @@ A folytatáshoz használható szabályok és a magyar nyelvi források a
 
 A karrierhez tartozó TypeScript-szövegek és a parkolt felületek rövid feliratai
 is szerepeltek az átnézésben. A jelenleg nem elérhető karrierfelület nagy
-foglalkozási JSON-katalógusa nem kapott tételes szerkesztést. A felhasználók
+foglalkozási JSON-katalógusa az első körben még nem kapott tételes szerkesztést;
+a harmadik kör erre is kiterjedt. A felhasználók
 által megadott neveket és üzeneteket nem írtuk át. Az adatbázisban tárolt
 szabad szövegekhez, például a mentett tanácsadói narratívákhoz és szerkesztett
 hírlevélszámokhoz nem készült tartalommigráció.
@@ -80,9 +81,11 @@ változatlanok. Az alábbi megfogalmazások a következő kérdőív-adaptáció
 
 További tartalmi kérdések külön döntést igényelnek:
 
-- A személyiségteszt rövid leírása „validált személyiségteszt (IPIP-itemek)”
-  megfogalmazást használ. A magyar tételkészlet validáltsága szakmai állítás;
-  a nyelvi lektorálás nem igazolta és nem módosította.
+- Az első körben jelzett „validált személyiségteszt (IPIP-itemek)” állítást
+  a harmadik körben semleges leírás váltotta fel: „Önértékelő
+  személyiségfelmérés hat dimenzió mentén.” A szerkesztés nem igazol
+  validáltságot. A karrierfunkció 189 kitöltőre hivatkozó, itt nem
+  alátámasztott validálási ígérete is kikerült a magyar és angol szövegből.
 - A platformfeltételek 18 éves alsó korhatárt írnak, az adatkezelési
   tájékoztató 16 éves korhatárt említ. Ezt nem lehet pusztán nyelvi
   szerkesztéssel eldönteni. A mostani javítás a korhatárokat és a többi jogi
@@ -137,3 +140,51 @@ későbbi stílusköréhez. A kérdőívtételekre, a mentett tanácsadói szöv
 A részletes módosítások és a megismételt ellenőrzések eredménye a
 [második kör változásnaplójában](changelog/2026-09-26-magyar-stilusmintak.md)
 található.
+
+
+## Harmadik kör: a minták stílusa a teljes szövegkészletben
+
+Az elfogadott minták után ismét végigolvastuk a magyar cikkeket, az összes
+riportváltozat szövegforrásait, a felületi üzeneteket és a levélsablonokat.
+Az önmagukban már jól működő feliratok megmaradtak. A szerkesztés a teljes
+bekezdésekre és az összeálló szövegek gondolatmenetére is kiterjedt.
+
+- A blogokon kevesebb az ismétlődő tanulság és az elvont körülírás. A
+  gyakorlati szakaszok az olvasó döntéseiből és teendőiből indulnak ki.
+- A személyes riport a saját tapasztalatokra visszavezethető helyzeteket ír
+  le. A pontszámkülönbséget nem minősíti automatikusan jobb vagy rosszabb
+  eredménynek.
+- A csapatriport külön jelzi a közvetlen mérésből és a személyiségprofilból
+  származó következtetéseket. A gyakorlati tanácsokból kiderül, mit tud a
+  csapat vagy a vezető kipróbálni.
+- A felületek, a súgó és a levelek rövidebben, közvetlenebbül magyarázzák el
+  a következő lépést. A pilotjelentkezés visszaigazolása a pilotoldalhoz
+  igazodva egy munkanapon belüli választ jelez magyarul és angolul is.
+- A jogi és kereskedelmi dokumentumok körülményes mondatai is egyszerűbbek
+  lettek. A szerződési számadatok, feltételek és dokumentumverziók megmaradtak.
+
+A második szerkesztői olvasás az eredeti jelentést, a magyar vonzatokat, a
+megszólítást és az ismétléseket ellenőrizte. A források gépi összevetése
+külön vizsgálta a változókat, a kérdőívtételeket és a kódszerkezetet.
+A részletes lefedettség és a végső ellenőrzések a
+[harmadik kör változásnaplójában](changelog/2026-09-26-magyar-stilus-teljes-kiterjesztese.md)
+találhatók.
+
+### A karrierkatalógus besorolási kérdései
+
+A 477 foglalkozási leírás szerkesztése közben talált kód- és néveltérések
+külön [katalógusjegyzékbe](hungarian-career-catalogue-review-2026-09-26.md)
+kerültek. A leírások az azonos SOC-kódú eredeti forrást követik; a szakmai
+besorolás és a rögzített foglalkozásnevek változtatása külön adatellenőrzés.
+
+### Meglévő technikai észrevételek
+
+- A blog megosztógombjának `ShareRow` komponense a szerveren üres, a
+  böngészőben az aktuális URL-t teszi a `mailto` link törzsébe. Ez a
+  változatlan komponens fejlesztői módban hidratálási figyelmeztetést ad;
+  kattintáskor a meglévő eseménykezelő kitölti a linket. A szövegkör
+  nem módosítja ezt a működést.
+- A `package.json` örökölt `pregen:outputs` és `audit:outputs` parancsai
+  már nem létező scriptfájlokra mutatnak. A személyes riport jelenlegi
+  determinisztikus generátorának szövegeit átnéztük; nincs mögöttük
+  külön, kihagyott személyes AI-prompt.

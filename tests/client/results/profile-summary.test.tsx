@@ -46,7 +46,7 @@ describe("ProfileSummary", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Az eredményed röviden" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Mi történik, amikor két profil találkozik?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Mire utal a két profil az együttműködésetekről?" })).toBeInTheDocument();
     expect(screen.queryAllByRole("meter")).toHaveLength(0);
     expect(document.body.textContent).not.toContain("82%");
     expect(screen.getByRole("button", { name: /Külső nézőpont/ })).toBeInTheDocument();

@@ -176,7 +176,7 @@ export function QuickLogForm({
               onChange={(event) => setBody(event.target.value)}
               rows={3}
               maxLength={4000}
-              placeholder="Hosszabb jegyzet, megállapodások, kontextus…"
+              placeholder="Részletes jegyzet, megállapodások, fontos körülmények…"
               data-testid="quick-log-body"
               className="w-full rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
             />
@@ -218,7 +218,7 @@ export function QuickLogForm({
             </div>
             <p className="mt-1.5 text-xs text-muted">
               {clearNextActionWhenEmpty
-                ? "Dátum nélkül az elintézett lépés törlődik – jobb, ha rögtön kitűzöd a következőt."
+                ? "Ha nem adsz meg új dátumot, az elintézett teendőt töröljük. A következőt később is megadhatod."
                 : "Dátum nélkül az ügy következő teendője nem változik."}
             </p>
           </div>

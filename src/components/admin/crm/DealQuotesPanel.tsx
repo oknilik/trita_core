@@ -230,7 +230,7 @@ export function DealQuotesPanel({
                         {(quote.effectiveHourlyRate != null || quote.discountPct > 0) && (
                           <span className="self-center px-1 text-xs text-muted">
                             {quote.effectiveHourlyRate != null
-                              ? `Effektív óradíj: ${huf(quote.effectiveHourlyRate)}`
+                              ? `Egy munkaórára jutó díj: ${huf(quote.effectiveHourlyRate)}`
                               : ""}
                             {quote.effectiveHourlyRate != null && quote.discountPct > 0 ? " · " : ""}
                             {quote.discountPct > 0 ? `Kedvezmény: ${quote.discountPct}%` : ""}

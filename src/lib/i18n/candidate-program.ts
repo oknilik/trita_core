@@ -22,7 +22,7 @@ export const candidateProgramTranslations = {
       en: "Insufficient valid data for the chart.",
     },
     addTeam: { hu: "Csapat hozzáadása", en: "Add team" },
-    removeTeam: { hu: "Referencia eltávolítása", en: "Remove reference" },
+    removeTeam: { hu: "Csapatriport eltávolítása", en: "Remove reference" },
     connection: { hu: "Kapcsolódás", en: "Connection" },
     difference: { hu: "Megbeszélendő", en: "To discuss" },
     prompt: { hu: "Beszélgetésindító", en: "Conversation starter" },
@@ -41,11 +41,11 @@ export const candidateProgramTranslations = {
     },
     selectedTeam: { hu: "Kiválasztott csapat", en: "Selected team" },
     sourceNote: {
-      hu: "Rögzített, publikált csapatriportok alapján. A csapatátlag nem ideális profil és nem alkalmassági mérce.",
+      hu: "Az összevetéshez a publikált csapatriportokban rögzített adatokat használjuk. A csapatátlag egyetlen tagot sem ír le pontosan, és nem mutatja meg, milyen lenne az ideális jelölt.",
       en: "Based on pinned, published team reports. The team average is neither an ideal profile nor a suitability benchmark.",
     },
     sourceChanged: {
-      hu: "A forrás módosult vagy visszavonták. Új megosztás előtt távolítsd el ezt a referenciát, és válassz érvényes riportot.",
+      hu: "A csapatriport módosult vagy visszavonták. Mielőtt újra megosztod az összevetést, távolítsd el ezt a riportot, és válassz helyette érvényeset.",
       en: "The source changed or was withdrawn. Remove this reference and select a valid report before sharing again.",
     },
     emptyObservation: {
@@ -102,7 +102,7 @@ export const candidateProgramTranslations = {
       en: "Your answers have been received.",
     },
     next: {
-      hu: "A következő lépés a tanácsadói feldolgozás és a visszajelzés. A meghívó tanácsadóval tudsz egyeztetni a folytatásról.",
+      hu: "A tanácsadó most átnézi az eredményeidet, és elkészíti a visszajelzést. A folytatásról azzal a tanácsadóval egyeztethetsz, aki meghívott a felmérésre.",
       en: "The next step is consultant review and feedback. Contact your inviting consultant about what comes next.",
     },
     unavailable: {
@@ -113,9 +113,9 @@ export const candidateProgramTranslations = {
       hu: "Opcionális csapatszerep-önjellemzés",
       en: "Optional team-role self-assessment",
     },
-    focus: { hu: "Interjúfókusz", en: "Interview focus" },
+    focus: { hu: "Az interjú témái", en: "Interview focus" },
     baseline: { hu: "Rögzített csapatriport", en: "Pinned team report" },
-    noBaseline: { hu: "Csapatreferencia nélkül", en: "Without team reference" },
+    noBaseline: { hu: "Csapatriport nélkül", en: "Without team reference" },
     pilot: {
       hu: "Jelölti program engedélyezése",
       en: "Enable candidate programs",
@@ -124,7 +124,7 @@ export const candidateProgramTranslations = {
       hu: "A jelölti program még nincs engedélyezve ebben a szervezetben. A platform adminja tudja bekapcsolni.",
       en: "Candidate programs are not enabled for this organization. A platform administrator can enable them.",
     },
-    draft: { hu: "Riportvázlat", en: "Report draft" },
+    draft: { hu: "Riportpiszkozat", en: "Report draft" },
     reviewed: { hu: "Jóváhagyva", en: "Reviewed" },
     candidateSummary: {
       hu: "Jelöltnek szánt visszajelzés",
@@ -135,7 +135,7 @@ export const candidateProgramTranslations = {
       en: "Feedback for the leader",
     },
     notes: { hu: "Belső tanácsadói jegyzet", en: "Internal consultant notes" },
-    save: { hu: "Vázlat mentése", en: "Save draft" },
+    save: { hu: "Piszkozat mentése", en: "Save draft" },
     review: { hu: "Jóváhagyás", en: "Review" },
     shareCandidate: {
       hu: "Jelölti kivonat megosztása",
@@ -154,11 +154,11 @@ export const candidateProgramTranslations = {
       en: "The language of character illustrations",
     },
     artworkGuideIntro: {
-      hu: "A karakterábra az önjellemzés vizuális összefoglalója. A név és a forma beszélgetést segít: nem diagnózis, alkalmassági minősítés vagy állandó személyiségtípus.",
+      hu: "A karakterábra az önjellemzést foglalja össze képekben. A neve és a formája segít beszélgetni az eredményről. Nem ad diagnózist vagy alkalmassági minősítést, és nem sorol állandó személyiségtípusba.",
       en: "A character illustration is a visual summary of self-report. Its name and shape support conversation; they are not a diagnosis, suitability rating or fixed personality type.",
     },
     artworkGuideShape: {
-      hu: "A nagy bronz forma a legmagasabb pontértékű dimenzióhoz, a vékony belső motívum a másodikhoz kapcsolódik. Ha az értékek közeliek, a sorrend bizonytalan; ilyenkor a név is rövidebb, jelző nélküli lehet.",
+      hu: "A nagy bronz forma a legmagasabb pontszámú dimenziót jelöli, a vékony belső motívum a másodikat. Ha a pontszámok közel vannak egymáshoz, a sorrend bizonytalan. Ilyenkor az ábra neve is rövidebb, jelző nélküli lehet.",
       en: "The large bronze shape corresponds to the highest-scoring dimension, and the thin inner motif to the second. When scores are close, their order is uncertain; the name may therefore be shortened, without an adjective.",
     },
     artworkGuidePrivacy: {
@@ -166,7 +166,7 @@ export const candidateProgramTranslations = {
       en: "Shared candidate and leader illustrations use a uniform fill weight that does not encode a score. Dimension values and the full radar remain in the consultant workspace.",
     },
     artworkGuideExamples: {
-      hu: "A hat alapforma · illusztratív példák",
+      hu: "A hat alapforma · szemléltető példák",
       en: "The six base shapes · illustrative examples",
     },
     personalityArtwork: {
@@ -174,7 +174,7 @@ export const candidateProgramTranslations = {
       en: "Personality illustration",
     },
     artworkNote: {
-      hu: "Önjellemzésből származó illusztráció, nem alkalmassági minősítés.",
+      hu: "Az ábra az önjellemzést szemlélteti. Alkalmasságot nem minősít.",
       en: "An illustration based on self-report, not a suitability rating.",
     },
     leaderRecipient: { hu: "Kijelölt vezető", en: "Designated leader" },
@@ -197,7 +197,7 @@ export const candidateProgramTranslations = {
       en: "The action failed. Check that both summaries are complete, the optional step is closed, and the report has not changed in another window.",
     },
     reportNote: {
-      hu: "Önjellemzésből származó leíró skálaértékek. A magasabb érték nem általánosan jobb; az ábra nem alkalmassági pontszám.",
+      hu: "A pontszámok az önjellemzést foglalják össze. A magasabb érték nem általánosan jobb, és a pontszámokból önmagukban nem következik alkalmasság.",
       en: "Descriptive self-report scale values. Higher is not generally better; this chart is not a suitability score.",
     },
     self: { hu: "Önjellemzés", en: "Self-report" },

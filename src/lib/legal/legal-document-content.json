@@ -147,7 +147,7 @@
       },
       {
         "kind": "p",
-        "text": "6.3. A Felhasználó tudomásul veszi, hogy az önjellemzés pillanatnyi állapot, kitöltési körülmény és válaszadási őszinteség függvénye. A Szolgáltató nem garantál egyedi élethelyzetre vonatkozó pontosságot vagy meghatározott eredményt."
+        "text": "6.3. A Felhasználó tudomásul veszi, hogy az önjellemzést befolyásolja a pillanatnyi állapota, a kitöltés körülményei és az, hogy mennyire őszintén válaszol. A Szolgáltató nem garantál egyedi élethelyzetre vonatkozó pontosságot vagy meghatározott eredményt."
       },
       {
         "kind": "heading",
@@ -233,7 +233,7 @@
       },
       {
         "kind": "p",
-        "text": "11.3. Biztonsági vagy jogsértési kockázat esetén a Szolgáltató azonnali módosítást vagy ideiglenes korlátozást alkalmazhat, az ok és várható időtartam utólagos közlésével, amennyiben ez nem veszélyezteti a védekezést."
+        "text": "11.3. Biztonsági vagy jogsértési kockázat esetén a Szolgáltató azonnal módosíthatja vagy ideiglenesen korlátozhatja a szolgáltatást. Az okot és a várható időtartamot utólag közli, amennyiben ez nem veszélyezteti a védekezést."
       },
       {
         "kind": "heading",
@@ -287,7 +287,7 @@
       },
       {
         "kind": "p",
-        "text": "14.3. A felek elsődlegesen békés rendezésre törekednek. A Felhasználó bírósághoz fordulási jogát ez nem érinti."
+        "text": "14.3. A felek elsősorban békésen igyekeznek rendezni a vitát. A Felhasználó bírósághoz fordulási jogát ez nem érinti."
       },
       {
         "kind": "heading",
@@ -426,7 +426,7 @@
           [
             "Mérföldkő",
             "Irányadó tartalom",
-            "Teljesítési jel"
+            "Mi jelzi a teljesítést?"
           ],
           [
             "Előkészítés",
@@ -457,7 +457,7 @@
       },
       {
         "kind": "p",
-        "text": "5.2. A TEAM_SCAN_LICENSE vagy REMEASUREMENT_CYCLE teljesítési egység akkor minősül teljesítettnek, ha az adott Team Scan v1 kampány lezárt és az ahhoz rendelt riport publikált. A riport újrapublikálása nem hoz létre új egységet; több csapat külön egység."
+        "text": "5.2. A TEAM_SCAN_LICENSE vagy REMEASUREMENT_CYCLE teljesítési egység akkor minősül teljesítettnek, ha az adott Team Scan v1 kampányt lezárták, és a hozzá tartozó riportot közzétették. A riport ismételt közzététele nem hoz létre új egységet. Minden csapat külön egységnek számít."
       },
       {
         "kind": "p",
@@ -665,7 +665,7 @@
       },
       {
         "kind": "p",
-        "text": "15.1. Egyik fél sem felel az észszerű ellenőrzési körén kívüli, elháríthatatlan esemény miatti késedelemért. Az érintett fél haladéktalanul értesít, enyhíti a hatást, és 30 napot meghaladó fennakadásnál bármelyik fél megszüntetheti az érintett, még nem teljesített részt."
+        "text": "15.1. Egyik fél sem felel az észszerű ellenőrzési körén kívüli, elháríthatatlan esemény miatti késedelemért. Az érintett fél haladéktalanul értesíti a másik felet, és enyhíti az esemény hatását. Ha a fennakadás meghaladja a 30 napot, bármelyik fél megszüntetheti a szolgáltatás érintett, még nem teljesített részét."
       },
       {
         "kind": "p",
@@ -932,7 +932,7 @@
       },
       {
         "kind": "p",
-        "text": "13.2. A választást az Adatkezelő a megszűnéstől számított 30 napon belül közli. Ennek hiányában az Adatfeldolgozó az adatokat legkésőbb a megszűnéstől számított 90 napon belül törli. A biztonsági mentésekből a rendes rotáció szerint, legfeljebb további 30 napon belül kerülnek ki."
+        "text": "13.2. Az Adatkezelő a megszűnéstől számított 30 napon belül közli, hogy az adatok visszaadását vagy törlését választja. Ha nem nyilatkozik, az Adatfeldolgozó legkésőbb a megszűnéstől számított 90 napon belül törli az adatokat. A biztonsági mentésekből a szokásos frissítési rend szerint, legfeljebb további 30 napon belül kerülnek ki."
       },
       {
         "kind": "p",

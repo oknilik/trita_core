@@ -236,7 +236,7 @@ export function TeamIntelligence({
                     <p className="text-caption font-semibold text-ink">{member.name}</p>
                     <p className="text-note text-muted">
                       {hasMeasuredRoles
-                        ? isHu ? "Csapatszerep profil" : "Team-role profile"
+                        ? isHu ? "Csapatszerepprofil" : "Team-role profile"
                         : isHu ? "Becsült csapatszerepprofil" : "Estimated team-role profile"}
                     </p>
                   </div>
@@ -284,7 +284,7 @@ export function TeamIntelligence({
           {membersWithData.length === 0 ? (
             <div className="rounded-xl border border-dashed border-sand bg-cream/45 p-4 text-xs text-ink-body">
               {isHu
-                ? "Még nincs elég kitöltött felmérés az erőforrás-térképhez."
+                ? "A csapatprofil megjelenítéséhez még további kitöltések szükségesek."
                 : "No completed assessment data yet for the resource map."}
             </div>
           ) : null}
@@ -353,7 +353,7 @@ export function TeamIntelligence({
                   {isHu ? "Kiegészítő" : "Complementary"}: {dynamicsCounts.complementary}
                 </span>
                 <span className="rounded-full border border-state-warning-border bg-state-warning-bg px-2 py-0.5 text-note text-bronze-700">
-                  {isHu ? "Potenciális súrlódás" : "Potential friction"}: {dynamicsCounts.friction}
+                  {isHu ? "Lehetséges súrlódás" : "Potential friction"}: {dynamicsCounts.friction}
                 </span>
               </div>
               <p className="mt-2 text-note text-ink-body/60">
@@ -368,7 +368,7 @@ export function TeamIntelligence({
                       ? "A kapcsolati kép mért bizalmi körből (360°) származik."
                       : "The relationship picture comes from a measured trust round (360°)."
                     : isHu
-                      ? `A kapcsolatok egy része mért bizalmi körből származik (${measuredEdgeCount}/${edges.length}), a többi személyiségprofil-eltérésből becsült.`
+                      ? `${measuredEdgeCount}/${edges.length} kapcsolatot a bizalmi kör válaszaiból mutatunk meg. A többit a személyiségprofilok közötti különbségekből becsüljük.`
                       : `Some connections come from a measured trust round (${measuredEdgeCount}/${edges.length}); the rest are estimated from personality-profile gaps.`}
               </p>
               <div className="mt-3">
@@ -389,7 +389,7 @@ export function TeamIntelligence({
             {isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
           </p>
           <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
-            {isHu ? "deep-dive tulajdonos" : "deep-dive owner"}
+            {isHu ? "részletes elemzés" : "deep-dive owner"}
           </span>
         </div>
         <p className="text-xs leading-relaxed text-ink-body">
