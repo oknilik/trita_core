@@ -241,13 +241,13 @@ function HybridCard({
           className="mb-3 inline-block rounded-full px-2.5 py-0.5 font-mono text-micro uppercase tracking-wider"
           style={{ backgroundColor: "rgba(110,110,128,0.08)", color: "var(--color-muted)" }}
         >
-          Kontextusfüggő működés
+          A helyzettől függő működés
         </span>
         <h2 className="font-fraunces text-2xl" style={{ color: T.heading }}>
           Két mintázat határán
         </h2>
         <p className="mt-1 text-sm" style={{ color: T.muted }}>
-          A csúszkák kiegyensúlyozott állásban vannak – a csapat működése a kontextustól függ.
+          A csúszkák a középső tartományban állnak. Ebben a helyzetben több mintázat is jellemezheti a csapat működését.
           Kattints valamelyikre a részletes leíráshoz.
         </p>
 
@@ -289,25 +289,25 @@ function HybridCard({
 const QUADRANTS = [
   {
     label: "Energikus + Összetartó",
-    desc: "Magas hajtóerő, erős kohézió",
+    desc: "Nagy lendület, erős összetartás",
     codes: ["1111", "1110", "1101", "1100"],
     accent: "var(--color-action-primary-bg)",
   },
   {
     label: "Energikus + Versengő",
-    desc: "Magas hajtóerő, önálló egyéniségek",
+    desc: "Nagy lendület, önálló egyéniségek",
     codes: ["1011", "1010", "1001", "1000"],
     accent: "#8b3a2a",
   },
   {
     label: "Visszafogott + Összetartó",
-    desc: "Csendes energia, erős csapatkötés",
+    desc: "Visszafogottabb fellépés, erős összetartás",
     codes: ["0111", "0110", "0101", "0100"],
     accent: "var(--color-sage)",
   },
   {
     label: "Visszafogott + Versengő",
-    desc: "Önálló szakértők, alacsony energia",
+    desc: "Önálló szakértők, visszafogottabb fellépés",
     codes: ["0011", "0010", "0001", "0000"],
     accent: "#3d4f6b",
   },
@@ -399,7 +399,7 @@ function AlternativeSection({
         className="mb-2 text-label uppercase"
         style={{ color: T.muted }}
       >
-        közeli alternatív mintázat
+        hasonló mintázat
       </p>
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -497,20 +497,20 @@ export function PatternExplorer() {
           className="text-label uppercase"
           style={{ color: T.accent }}
         >
-          csapatminta felfedező
+          csapatmintázatok felfedezése
         </p>
         <h1
           className="mt-1 font-fraunces text-3xl leading-tight md:text-4xl"
           style={{ color: T.heading }}
         >
-          16 értelmezési minta – hogyan olvasható a csapat?
+          16 mintázat a csapatműködés megértéséhez
         </h1>
         <p
           className="mt-3 max-w-2xl text-base leading-relaxed"
           style={{ color: T.muted }}
         >
-          Húzd a csúszkákat, és nézd meg, hogyan fordítja le a négy tengelyt
-          közös vezetői nyelvre a modell. Ez szemléltető eszköz, nem csapatdiagnózis.
+          Húzd a csúszkákat, és nézd meg, milyen mintázat rajzolódik ki a négy szempontból.
+          Az eszköz a modell megértését segíti, a csapat tényleges felmérését nem helyettesíti.
         </p>
       </section>
 
@@ -560,8 +560,8 @@ export function PatternExplorer() {
               </span>
               A narancssárga sáv jelzi a{" "}
               <span style={{ color: T.text, fontWeight: 600 }}>kiegyensúlyozott zónát</span>{" "}
-              (35–65%). Ha 2+ tengely ott áll, a csapat működése kontextusfüggő – nem egyetlen
-              domináns minta jellemzi.
+              (35–65%). Ha legalább két csúszka ebben a tartományban áll, több mintázat is
+              jellemezheti a csapatot, a helyzettől függően.
             </div>
           </div>
 
@@ -605,7 +605,7 @@ export function PatternExplorer() {
               style={{ color: "var(--color-muted)", borderColor: T.border }}
             >
               {TEAM_PATTERN_EVIDENCE_STATUS.framing.hu} A működés idővel és
-              kontextusonként is változhat.
+              helyzetenként is változhat.
             </p>
 
             {/* Show all toggle */}
@@ -614,7 +614,7 @@ export function PatternExplorer() {
               className="mt-1 inline-flex min-h-[44px] items-center self-start text-xs font-semibold underline-offset-2 hover:underline"
               style={{ color: T.muted }}
             >
-              {showAll ? "Elrejtem az összes mintázatot" : "Mutasd az összes 16 mintázatot"}
+              {showAll ? "Elrejtem az összes mintázatot" : "Megnézem mind a 16 mintázatot"}
             </button>
           </div>
         </div>
@@ -641,7 +641,7 @@ export function PatternExplorer() {
             className="text-label uppercase"
             style={{ color: T.accent }}
           >
-            mért csapatdiagnosztika
+            csapatdiagnosztika
           </p>
           <h2
             className="mt-2 font-fraunces text-2xl leading-snug"
@@ -653,9 +653,9 @@ export function PatternExplorer() {
           {!isSignedIn && (
             <>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
-              A Team Scan nem a fenti címkét adja el eredményként: önértékelést,
-              bizalmi hálót és pszichológiai biztonságot mér, majd közös vezetői
-              lépéssé fordítja az evidenciát.
+              A csapatfelmérés az önértékelést, a bizalmi kapcsolatokat és a pszichológiai
+              biztonságot vizsgálja. Az eredmények alapján közösen választjuk ki,
+              min érdemes változtatnotok.
             </p>
             <a
               href="/pilot"
@@ -671,7 +671,7 @@ export function PatternExplorer() {
               Ingyenes próba
             </a>
             <p className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
-              Nincs kártyaadathoz kötés. Az első felmérés ingyenes.
+              Az első felmérés ingyenes. Bankkártyaadatokat nem kérünk.
             </p>
             </>
           )}
@@ -679,9 +679,9 @@ export function PatternExplorer() {
           {isSignedIn && (
             <>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
-              Ez az interaktív eszköz csak egy értelmezési nyelvet mutat. A Team Scan
-              döntési alapja a mért bizalmi háló, a pszichológiai biztonság és a
-              forrásjelölt csapatkép – nem önmagában a 16-as címke.
+              Az interaktív eszköz az értelmezést segítő mintázatokat mutatja be. A csapatfelmérés
+              a bizalmi kapcsolatokról és a pszichológiai biztonságról gyűjtött adatokra
+              támaszkodik. A csapatképen mindenütt jelezzük, miből származik az eredmény.
             </p>
             <a
               href="/advisory"

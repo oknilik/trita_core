@@ -12,10 +12,10 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/about",
   title: "Rólunk – a trita mögött álló csapat | trita",
   description:
-    "A trita sok év csapatokkal töltött munkából és vezetésből nőtt ki. Megmutatjuk, kik vagyunk, milyen elvek mentén dolgozunk, és miért építjük a platformot.",
+    "A tritát a csapatokkal végzett munka és a csapatvezetés sokéves tapasztalatából építjük. Ismerd meg a munkánkat és a közös munkában követett elveinket.",
   ogTitle: "Rólunk – a trita mögött álló csapat",
   ogDescription:
-    "Csapatokkal töltött évekből született műhely: mérés, emberi értelmezés és visszamérés egy folyamatban.",
+    "Csapatokkal szerzett tapasztalatokra építünk: felmérjük a működéseteket, együtt értelmezzük az eredményeket, és követjük a változást.",
 });
 
 export default function AboutPage() {

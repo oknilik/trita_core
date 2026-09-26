@@ -17,7 +17,7 @@ const CONTACT_VALIDATION_COPY: Record<
   hu: {
     nameRequired: "Adj meg egy legalább 2 karakteres nevet.",
     nameLong: "A név legfeljebb 100 karakter lehet.",
-    email: "Adj meg egy érvényes email címet.",
+    email: "Adj meg egy érvényes e-mail-címet.",
     companyLong: "A cégnév legfeljebb 120 karakter lehet.",
     messageRequired: "Az üzenet legalább 20 karakter legyen.",
     messageLong: "Az üzenet legfeljebb 4000 karakter lehet.",

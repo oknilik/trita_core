@@ -83,10 +83,10 @@ describe("CompareInviteCard", () => {
     render(<CompareInviteCard invites={[pendingInvite]} />);
 
     expect(
-      screen.getByText(/A kiküldött linkre vár/),
+      screen.getByText(/Még várjuk a meghívásod elfogadását/),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText("Még nincs aktív linked vagy elfogadott párod."),
+      screen.queryByText("Még nincs aktív meghívólinked vagy elfogadott meghívásod."),
     ).not.toBeInTheDocument();
     // A függő lista ott van — az ellentmondás így nem tud előjönni.
     expect(
@@ -103,7 +103,7 @@ describe("CompareInviteCard", () => {
 
     expect(fetchSpy).not.toHaveBeenCalled();
     expect(
-      screen.getByText("Mindkettőtöknél megszűnik. Biztos?"),
+      screen.getByText("A közös elemzés ezután egyikőtök számára sem lesz elérhető. Biztosan visszavonod?"),
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Mégsem" }));

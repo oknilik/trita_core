@@ -8,7 +8,7 @@ import { formatQuoteNo } from "@/lib/crm/guards";
 import { QuoteCalculator } from "@/components/admin/quote/QuoteCalculator";
 import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 
-// Ajánlat-kalkulátor — BELSŐ eszköz.
+// Ajánlatkalkulátor — BELSŐ eszköz.
 //
 // Az ár a publikus árlétrából jön (Csapatkép / Csapatprogram, fejenként —
 // ugyanaz, amit a vevő az /pricing oldalon lát), a díjtételek itt
@@ -27,7 +27,7 @@ import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHea
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Ajánlat-kalkulátor | trita admin",
+  title: "Ajánlatkalkulátor | trita admin",
   robots: { index: false, follow: false },
 };
 
@@ -94,8 +94,8 @@ export default async function QuoteCalculatorPage({
         href={deal ? `/admin/crm/${deal.id}` : "/admin"}
         backLabel={deal ? `Vissza az ügyhöz: ${deal.title}` : "Vissza az adminhoz"}
         eyebrow="belső eszköz"
-        title="Ajánlat-kalkulátor"
-        description="Szint × létszám a publikus árlétrából, plusz a szint tartalmán felüli tételek. A díjtételek mentése a publikus oldalak árait is frissíti. A vevőnek szánt összefoglaló a jobb alsó dobozban áll össze – belső számok (óradíj, padló, kedvezmény-keret) nincsenek benne."
+        title="Ajánlatkalkulátor"
+        description="Válassz csomagot, add meg a létszámot és a további szolgáltatásokat. A díjtételek mentése a nyilvános oldalak árait is frissíti. Az ügyfélnek szánt összefoglaló a jobb alsó mezőben jelenik meg, a belső számítások nélkül."
       />
 
       <QuoteCalculator

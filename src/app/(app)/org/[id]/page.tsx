@@ -152,7 +152,7 @@ export default async function OrgDetailPage({
         <OrgSubscriptionBanner state="frozen" locale={locale} />
         <DashboardPanel className="p-6">
           <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            {isHu ? "Szervezeti összegző" : "Organization summary"}
+            {isHu ? "Szervezeti összesítő" : "Organization summary"}
           </p>
           <h1 className="mt-2 font-fraunces text-3xl text-ink">{org.name}</h1>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -172,7 +172,7 @@ export default async function OrgDetailPage({
               accent="#74877d"
               title={isHu ? "Aktív mérés" : "Active measurements"}
               value={String(activeCampaignCount)}
-              sub={isHu ? "Futó observer körök" : "Running observer rounds"}
+              sub={isHu ? "Aktív visszajelzési körök" : "Running observer rounds"}
             />
           </div>
           <p className="mt-4 text-xs text-muted">
@@ -409,7 +409,7 @@ export default async function OrgDetailPage({
         summary={
           isConsultantView
             ? isHu
-              ? "Mérések indítása és kísérése, csapatképek validálása – minden csapat egy helyen."
+              ? "Indíts méréseket, kövesd a haladást, és hagyd jóvá a csapatriportokat. Minden csapatot egy helyen találsz."
               : "Launch and guide measurements, validate team pictures – every team in one place."
             : isHu
               ? "A csapataid és a publikált csapatképek egy helyen."

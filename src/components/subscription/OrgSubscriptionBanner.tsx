@@ -17,22 +17,22 @@ export function OrgSubscriptionBanner({
   const isNone = state === "none";
   const isFrozen = state === "frozen";
 
-  const eyebrow = isHu ? "Előfizetés állapot" : "Subscription state";
+  const eyebrow = isHu ? "Előfizetés állapota" : "Subscription state";
   const title = isNone
     ? (isHu ? "Nincs aktív szervezeti előfizetés" : "No active organization subscription")
     : isFrozen
-    ? (isHu ? "A szervezet fiókja fagyasztva van" : "This organization is frozen")
+    ? (isHu ? "A szervezeti hozzáférés fel van függesztve" : "This organization is frozen")
     : (isHu ? "Lejárt előfizetés: korlátozott mód" : "Expired subscription: restricted mode");
   const description = isNone
     ? (isHu
-      ? "A szervezeti oldalak olvashatók maradnak, de új akciók és szerkesztések előfizetés nélkül nem érhetők el."
+      ? "A szervezeti oldalakat továbbra is megnézheted. Új műveletekhez és szerkesztéshez aktív előfizetés szükséges."
       : "Organization pages remain readable, but create/manage actions are unavailable without an active subscription.")
     : isFrozen
     ? (isHu
-      ? "Csak minimális összegző adatok érhetők el. Részletes insightok ideiglenesen nem böngészhetők."
+      ? "Jelenleg csak a főbb összesített adatok érhetők el. A részletes eredményeket átmenetileg nem tudod megnézni."
       : "Only minimal summary data is available. Detailed insights are temporarily hidden.")
     : (isHu
-      ? "A meglévő adatok olvashatók, de új akciók és szerkesztések le vannak tiltva a reaktiválásig."
+      ? "A meglévő adatokat megnézheted. Új műveleteket és szerkesztést a hozzáférés megújítása után végezhetsz."
       : "Existing data remains readable, but new actions and edits are disabled until reactivation.");
 
   return (
@@ -95,7 +95,7 @@ export function OrgSubscriptionBanner({
               : "bg-layer-org-bright hover:bg-layer-org-accent",
           )}
         >
-          {isHu ? (isNone ? "Előfizetés aktiválása" : "Reaktiválás") : (isNone ? "Activate subscription" : "Reactivate")}
+          {isHu ? (isNone ? "Előfizetés aktiválása" : "Hozzáférés megújítása") : (isNone ? "Activate subscription" : "Reactivate")}
         </Link>
       </div>
     </section>

@@ -401,7 +401,7 @@ export default async function TeamDetailPage({
         <OrgSubscriptionBanner state="frozen" locale={locale} />
         <DashboardPanel className="p-6">
           <p className="font-mono text-xs uppercase tracking-widest text-muted">
-            {isHu ? "Csapat összegző" : "Team summary"}
+            {isHu ? "Csapatösszesítő" : "Team summary"}
           </p>
           <h1 className="mt-2 font-fraunces text-3xl text-ink">{team.name}</h1>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -413,7 +413,7 @@ export default async function TeamDetailPage({
             />
             <DashboardMetricCard
               accent="var(--color-layer-team-bright)"
-              title={isHu ? "Függő meghívók" : "Pending invites"}
+              title={isHu ? "Függőben lévő meghívók" : "Pending invites"}
               value={String(pendingInviteCount)}
               sub={isHu ? "Még el nem fogadott meghívások" : "Invites waiting for acceptance"}
             />

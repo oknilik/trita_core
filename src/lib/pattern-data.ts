@@ -13,7 +13,7 @@ export const TEAM_PATTERN_EVIDENCE_STATUS = {
   validatedTypology: false,
   calibrationUnit: "team",
   framing: {
-    hu: "A 16 minta értelmezési nyelv, nem validált csapattipológia. A címke az önértékelésen alapuló csapattengelyeket foglalja össze; a bizalmi háló és a pszichológiai biztonság ettől külön, közvetlenül mért adatforrás.",
+    hu: "A 16 minta segít értelmezni a csapat jellemzőit; tudományosan igazolt csapattípusokat nem határoz meg. Az elnevezés az önértékelésből számolt csapatjellemzőket foglalja össze. A bizalmi hálót és a pszichológiai biztonságot ettől függetlenül, közvetlenül mérjük.",
     en: "The 16 patterns are an interpretive language, not a validated team typology. The label summarizes self-assessment-based team axes; the measured trust network and psychological safety are separate evidence.",
   },
 } as const;
@@ -63,7 +63,7 @@ export const AXIS_META: AxisMeta[] = [
     lowDetail:
       "Rugalmas, improvizáló működés, kevés formális folyamattal. A csapat a helyzethez igazítja a döntéseit.",
     highDetail:
-      "Tervezett, dokumentált, szervezett. A csapat előre meghatározott keretek között dolgozik.",
+      "A csapat előre meghatározott keretek között, szervezetten dolgozik, a munkáját megtervezi és dokumentálja.",
     midDetail:
       "Részben szervezett, részben improvizáló működés. Vannak keretek, de nem mindenre – a csapat gyakorlatiasan ötvözi a két megközelítést.",
   },
@@ -77,7 +77,7 @@ export const AXIS_META: AxisMeta[] = [
     highDetail:
       "Kíváncsi, kísérletező, nyitott az ismeretlenre. A csapat szeret új utakat járni.",
     midDetail:
-      "Szelektíven nyitott – bizonyos területeken kísérletezik, máshol ragaszkodik a bevált megoldásokhoz.",
+      "A csapat bizonyos területeken szívesen kísérletezik, máshol ragaszkodik a bevált megoldásokhoz.",
   },
 ];
 
@@ -114,7 +114,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     name: "Innovációs Motor",
     alias: "Innovátor Gépezet",
     description:
-      "Gyorsan mozgó, jól szervezett csapat, amely szeret új utakat keresni és közben egymásra számít.",
+      "Lendületes, jól szervezett csapat, amely szeret új utakat keresni és közben egymásra számít.",
     strengths: ["Az ötletek gyors megvalósítása", "Erős belső kohézió", "Nyitottság a változásra", "Nagy lendület"],
     risks: ["A kimerülés veszélye", "Széttartó figyelem", "Csoportgondolkodás", "Túl merev folyamatok"],
     people: "Újító, társas és szervezett emberek, akik szeretnek csapatban alkotni.",
@@ -157,10 +157,10 @@ export const PATTERNS: Record<string, PatternContent> = {
     color: "light-dark(#c9915e, #c9915e)",
   },
   "1011": {
-    name: "Teljesítményhajtott Innovátorok",
+    name: "Teljesítményre Törekvő Innovátorok",
     alias: "Versenygép",
     description:
-      "Nagy intenzitású, teljesítményközpontú csapat, amely szervezett keretek között versenyez és újít.",
+      "Nagy tempóban dolgozó, teljesítményközpontú csapat, amely szervezett keretek között versenyez és újít.",
     strengths: ["Erős egyéni teljesítmény", "Erős belső motiváció", "Az újítások gyors megvalósítása", "Gyors reagálás a piaci változásokra"],
     risks: ["Az együttműködés háttérbe szorulhat", "Nagy terhelés", "Nyertes–vesztes dinamika", "Az egyéni célok megelőzhetik a csapatcélokat"],
     people: "Ambiciózus, versengő, újító egyéniségek, akik a világos kereteket is értékelik.",
@@ -182,7 +182,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     name: "Nagy Energiájú Kreatív Minta",
     alias: "Kreatív Káosz",
     description:
-      "Lendületes, ösztönösen reagáló csapat, amelyben mindenki a saját ötletét hajtja, a közös energia mégis előreviszi a munkát.",
+      "Lendületes, ösztönösen reagáló csapat, amelyben mindenki a saját ötletét igyekszik megvalósítani, a közös energia mégis előreviszi a munkát.",
     strengths: ["Nagy kreatív energia", "Bátor ötletek", "Gyors alkalmazkodás", "Vonzó lehet a kreatív tehetségek számára"],
     risks: ["Nehéz fontossági sorrendet kialakítani", "Kaotikus végrehajtás", "Az egyéni ambíciók előtérbe kerülhetnek", "A döntések gyakran változhatnak"],
     people: "Energikus, versengő, szokatlan megoldásokat kereső emberek.",
@@ -193,7 +193,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     name: "Autonóm Operatív Háló",
     alias: "Farkasfalka",
     description:
-      "Erős egyéniségek laza szövetségben, akik a saját területükön építenek.",
+      "Erős egyéniségek laza szövetsége: a tagok önállóan dolgoznak a saját területükön.",
     strengths: ["Gyors alkalmazkodás", "Erős egyéni felelősségvállalás", "Önszerveződés", "A bizonytalanság rugalmas kezelése"],
     risks: ["Gyenge csapatidentitás", "Kevés tudásmegosztás", "Alacsony lojalitás", "Nehéz az új tagok beillesztése"],
     people: "Önálló, gyakorlatias, versengő emberek.",
@@ -249,7 +249,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     name: "Stratégiai Szakértői Csapat",
     alias: "Sakktábla",
     description:
-      "Elemző, stratégiai gondolkodású csapat, amelyben mindenki csendben, de intenzíven építi a saját szakterületét.",
+      "Elemző, stratégiai gondolkodású csapat, amelyben mindenki csendben, de elmélyülten dolgozik a saját szakterületén.",
     strengths: ["Nagy szakmai mélység", "Stratégiai gondolkodás", "Adatokra épülő döntések", "Szakterületi újítás"],
     risks: ["Elszigetelt szakterületek", "Rejtett rivalizálás", "Nehéz közös döntést hozni", "Kívülről távolságtartónak tűnhet"],
     people: "Elemző szemléletű, versenyszellemű, elmélyült szakértők.",
@@ -262,7 +262,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     description:
       "Precíz, feladatközpontú csapat, amelyben mindenki a saját szakterületére összpontosít.",
     strengths: ["Erős műszaki és szakmai felkészültség", "Hatékonyság", "Egyértelmű felelősségek", "Megbízható eredmények"],
-    risks: ["Kevés érzelmi kapcsolódás", "A kimerülés veszélye", "Az újítás nehezen kap teret", "A tagok inkább egyénileg járulnak hozzá"],
+    risks: ["Kevés érzelmi kapcsolódás", "A kimerülés veszélye", "Az újítás nehezen kap teret", "A tagok inkább külön-külön végzik a munkájukat"],
     people: "Precíz, önálló, műszaki beállítottságú szakemberek.",
     contexts: "Szoftverfejlesztés, audit, pénzügy, DevOps, mérnöki irodák",
     color: "light-dark(#556b8a, #748baa)",
@@ -275,7 +275,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     strengths: ["Erős egyéni kreativitás", "Mély gondolkodás", "A bizonytalanság rugalmas kezelése", "Vonzó lehet az önállóságot keresők számára"],
     risks: ["Gyenge csapatidentitás", "Kevés összehangolás", "Elszigetelődés", "Nehéz közös irányt találni"],
     people: "Önálló, kíváncsi, a megszokott megoldásokat megkérdőjelező gondolkodók.",
-    contexts: "Kutatás, korai újítás, művészet, filozófia, független fejlesztés",
+    contexts: "Kutatás, új megoldások kezdeti kidolgozása, művészet, filozófia, független fejlesztés",
     color: "light-dark(#4a6b7a, #6790a3)",
   },
   "0000": {

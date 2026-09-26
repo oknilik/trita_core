@@ -298,7 +298,7 @@ test.describe("Team intelligence structural snapshots", () => {
     await expect(lowDataSection).toBeVisible({ timeout: 15_000 });
 
     // Kitöltöttség-chip: 5 tagból 2-nek van önértékelése (admin + Low One).
-    await expect(lowDataSection.getByText(/Kitöltött assessmentek/)).toBeVisible();
+    await expect(lowDataSection.getByText(/Kitöltött önértékelések/)).toBeVisible();
     await expect(lowDataSection.getByText("2/5")).toBeVisible();
     await expect(
       lowDataSection.getByRole("link", { name: "Tagok és kitöltések kezelése" }),
@@ -335,11 +335,11 @@ test.describe("Team intelligence structural snapshots", () => {
 
     // Deep-dive CTA szekció – a részletes elemzés a Csapatszerepek fülön él.
     const deepDiveSection = page.locator("section").filter({
-      has: page.locator("p").filter({ hasText: /^Részletes csapatszerep elemzés$/ }),
+      has: page.locator("p").filter({ hasText: /^Részletes csapatszerep-elemzés$/ }),
     });
     await expect(deepDiveSection).toBeVisible();
     await expect(
-      deepDiveSection.getByRole("link", { name: "Részletes csapatszerep elemzés" }),
+      deepDiveSection.getByRole("link", { name: "Részletes csapatszerep-elemzés" }),
     ).toBeVisible();
   });
 });

@@ -359,7 +359,7 @@ export function HiringDashboard({
             )}
             {!canInviteNew && (
               <span className="inline-flex items-center text-note text-[var(--color-text-on-inverse-muted)]">
-                {isHu ? "Nincs elérhető credit új meghívóhoz." : "No credits available for new invites."}
+                {isHu ? "Nincs felhasználható kredit új meghívóhoz." : "No credits available for new invites."}
               </span>
             )}
           </>

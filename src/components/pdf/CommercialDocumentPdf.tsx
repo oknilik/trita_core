@@ -309,7 +309,7 @@ function workshopSummary(
     return `${quote.legacyScope.workshopDays} nap · ${customer.workshopHoursPerDay} óra/nap · ${mode}`;
   }
   const parts: string[] = [];
-  if (quote.input.tier === "prog") parts.push("félnapos értelmező workshop");
+  if (quote.input.tier === "prog") parts.push("félnapos műhelymunka az eredmények értelmezéséhez");
   else parts.push("90 perces online közös értelmezés");
   if (quote.input.extraWorkshopDays > 0) {
     parts.push(`${quote.input.extraWorkshopDays} további egész nap · ${customer.workshopHoursPerDay} óra/nap`);
@@ -480,11 +480,11 @@ function ProposalOverview({ snapshot }: { snapshot: CommercialDocumentSnapshot }
           <View style={s.processStep}>
             <Text style={s.processNumber}>3</Text>
             <Text style={s.processTitle}>Továbbvisszük</Text>
-            <Text style={s.processText}>Konkrét fókuszokat és visszamérhető következő lépéseket rögzítünk.</Text>
+            <Text style={s.processText}>Kijelöljük a fejlesztési célokat és azokat a lépéseket, amelyek eredményét később újra megmérhetjük.</Text>
           </View>
         </View>
         <Text style={s.note}>
-          Bevont csapat: {customer.teams.map((team) => `${team.name} (${team.headcount} fő)`).join(", ")}.
+          Részt vevő csapatok: {customer.teams.map((team) => `${team.name} (${team.headcount} fő)`).join(", ")}.
         </Text>
       </View>
     </>

@@ -21,7 +21,7 @@ describe("ProfileSummary", () => {
     const insights = buildProfileSummaryInsights(DIMENSIONS, undefined, "hu");
     expect(insights.map((item) => item.label)).toEqual([
       "Ami természetesen megy",
-      "Ami több figyelmet kérhet",
+      "Amire érdemes odafigyelned",
       "Ahol a legtöbbet fejlődhetsz",
     ]);
     expect(insights[0].text).toBe("Erős értékrend.");
@@ -45,7 +45,7 @@ describe("ProfileSummary", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Ezt érdemes elvinned az eredményedből." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Ezt érdemes tudnod az eredményedről." })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Mi történik, amikor két profil találkozik?" })).toBeInTheDocument();
     expect(screen.queryAllByRole("meter")).toHaveLength(0);
     expect(document.body.textContent).not.toContain("82%");

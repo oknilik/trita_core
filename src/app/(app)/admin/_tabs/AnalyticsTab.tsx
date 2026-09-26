@@ -127,7 +127,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
           </p>
           <p className="mt-2 text-xs text-muted">
             A beállítás napján a látogató-álnevek megváltoznak, ezért az aznapi
-            egyedi látogató szám felfelé torzul. Részletek:
+            egyedi látogatók száma felfelé torzul. Részletek:
             docs/development/launch-checklist.md
           </p>
         </div>
@@ -155,7 +155,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         <AdminStatCard
           title="Napi egyedi látogató (össz.)"
           value={traffic.totalVisitors}
-          subtitle="A látogató-azonosító naponta rotál – ez a napi értékek összege, nem havi egyedi ember."
+          subtitle="A látogatói azonosító naponta változik. A szám a napi értékek összege, ezért ugyanaz a látogató több napon is beleszámíthat."
         />
         <AdminStatCard
           title="Oldalletöltés"
@@ -166,7 +166,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
 
       <Panel
         title="Forgalom időben"
-        description="Eseményből számolt érték – ad-blocker és nyomkövetés-tiltás miatt alulmér."
+        description="Az érték a rögzített eseményekből készül. A reklámblokkolók és a nyomkövetés tiltása miatt egyes látogatások kimaradhatnak."
       >
         {traffic.hasData ? (
           <AdminTrendChart
@@ -192,7 +192,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       {/* ── Akvizíciós tölcsér ─────────────────────────────────────── */}
       <Panel
         title="Akvizíciós tölcsér"
-        description="Bal oldalon az eseményből számolt (lossy), jobb oldalon a DB-ből számolt (pontos) érték. Ahol mindkettő van, az eltérés a mérési veszteség."
+        description="Bal oldalon a rögzített eseményekből, jobb oldalon az adatbázisból számolt érték látható. A kettő eltérése mutatja, mennyi adat hiányzik az eseménymérésből."
       >
         <div className="space-y-3">
           {funnel.map((step) => {
@@ -242,7 +242,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
             ]}
           />
         ) : (
-          <EmptyHint>Még nincs kérdés-szintű adat.</EmptyHint>
+          <EmptyHint>Még nincs kérdésszintű adat.</EmptyHint>
         )}
       </Panel>
 
@@ -269,7 +269,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       )}
 
       <AdminTableSection
-        title="Esemény-volumen"
+        title="Események száma"
         description="Melyik esemény hányszor keletkezett az időszakban."
         rows={volume.map((row) => ({ label: row.label, value: row.value }))}
       />

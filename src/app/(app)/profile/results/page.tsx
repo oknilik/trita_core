@@ -706,7 +706,7 @@ export default async function ProfileResultsPage({
             <div>
               <p className="text-sm font-semibold text-ink">
                 {locale === "hu"
-                  ? "A mérésed már készen van – ezt az eredményt látod itt."
+                  ? "Már kitöltötted a felmérést. Itt az eredményedet látod."
                   : "Your assessment is already complete – this is that result."}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-ink-body">
@@ -720,7 +720,7 @@ export default async function ProfileResultsPage({
                 href="/assessment?confirmed=true"
                 className={`${getButtonClassName({ variant: "primary", size: "sm" })} w-full justify-center whitespace-nowrap md:w-auto`}
               >
-                {locale === "hu" ? "Újratöltés indítása" : "Start retake"}
+                {locale === "hu" ? "Új kitöltés indítása" : "Start retake"}
               </Link>
               <Link
                 href="/profile/results"

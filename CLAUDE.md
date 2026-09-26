@@ -243,6 +243,8 @@ Aktuális állapot (2026-08-23):
 - `docs/development/ui-token-map.md` + `ui-contribution-guide.md` — design
 - `docs/development/blog-style-guide.md` — blog írásszabály (hang, hivatkozás,
   szerkezet, tiltólista, MDX-kötöttségek)
+- `docs/development/hungarian-style-guide.md` — a felület, a riportok, a PDF-ek
+  és a levelek közös magyar nyelvi irányelvei
 - `docs/audits/` — egyszeri auditok (team-intelligence audit itt)
 - Üzleti kontextus (gyökér iCloud doksik): tanácsadói hibrid modell,
   founding customer program

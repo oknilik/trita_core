@@ -31,11 +31,11 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "The team culture is defined by fairness and honesty – low internal politics, high mutual trust. A strong foundation for trust-based collaboration.",
     },
     mid: {
-      hu: "Kiegyensúlyozott etikai érzék – a csapat helyzetfüggően alkalmaz rugalmasságot, miközben alapvetően megbízható.",
+      hu: "Kiegyensúlyozott etikai szemlélet: a csapat a helyzethez igazodik, miközben alapvetően megbízhatóan működik.",
       en: "Balanced ethical sense – the team applies pragmatic flexibility while remaining fundamentally trustworthy.",
     },
     low: {
-      hu: "Alacsony csapatátlag ezen a dimenzión önérdek-vezérelt dinamikákat jelezhet. Érdemes az elvárásokat és normákat explicitté tenni.",
+      hu: "Az alacsony csapatátlag ebben a dimenzióban arra utalhat, hogy az egyéni érdekek erősebben érvényesülnek. Érdemes egyértelműen megfogalmazni az elvárásokat és a közös szabályokat.",
       en: "A low team average on this dimension may signal self-interest-driven dynamics. Making expectations and norms explicit is advisable.",
     },
   },
@@ -50,7 +50,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
   // keretezést találja itt.
   E: {
     high: {
-      hu: "Érzelmileg érzékeny csapat – a feszültséget korán érzik meg, ugyanakkor tartós nyomás alatt gyorsabban fáradnak. Segít a kiszámítható tempó és a rendszeres, rövid visszajelzési pont.",
+      hu: "Érzelmileg érzékeny csapat – a feszültséget korán érzik meg, ugyanakkor tartós nyomás alatt gyorsabban fáradnak. Segíthet a kiszámítható tempó és a rendszeres, rövid visszajelzés.",
       en: "Emotionally sensitive team – they register tension early, but tire faster under sustained pressure. A predictable tempo and regular short feedback points help.",
     },
     mid: {
@@ -58,7 +58,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Mixed emotional intensity – the team generally handles pressure while relational signals still get picked up.",
     },
     low: {
-      hu: "Stressztűrő, tárgyszerű döntéshozatal. Cserébe a feszültség sokáig láthatatlan maradhat: érdemes explicit visszajelző kört tartani, mert magától nem kerül szóba.",
+      hu: "Stressztűrő, tárgyszerű döntéshozatal. Cserébe a feszültség sokáig láthatatlan maradhat: érdemes külön rákérdezni egy visszajelzési körben, mert magától nem feltétlenül kerül szóba.",
       en: "Stress-tolerant, matter-of-fact decision-making. In exchange, tension can stay invisible for a long time: an explicit check-in round helps, since it won't come up on its own.",
     },
   },
@@ -68,7 +68,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Energetic, communicative team – builds relationships quickly and performs well on tasks requiring collaboration and teamwork.",
     },
     mid: {
-      hu: "Kiegyensúlyozott szociális dinamika – erős egyéni fókusz és csapatmunka egyszerre van jelen.",
+      hu: "A társas aktivitás kiegyensúlyozott: az elmélyült egyéni munka és a csapatmunka egyaránt jellemző.",
       en: "Balanced social dynamics – strong individual focus and teamwork coexist effectively.",
     },
     low: {
@@ -87,7 +87,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Patient, low-conflict team – lenient with each other's mistakes and quick to compromise. In exchange, disagreement rarely reaches the table: intentionally building a direct feedback culture is worthwhile.",
     },
     mid: {
-      hu: "Egészséges assertivitás és engedékenység aránya – a csapat képes az egyenes vitára és a kompromisszumra is.",
+      hu: "A határozott önérvényesítés és az engedékenység egyensúlya jellemző: a csapat képes nyíltan vitázni és kompromisszumot kötni is.",
       en: "Healthy balance of assertiveness and accommodation – the team can handle both straight debate and compromise.",
     },
     low: {
@@ -105,7 +105,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Good balance between organization and flexibility – the team is reliable while remaining adaptable.",
     },
     low: {
-      hu: "Rugalmas, kreatív munkavégzési stílus. Strukturális keretek, prioritizálási eszközök és folyamatkövetés erősítése javasolt.",
+      hu: "Rugalmas, kreatív munkavégzési stílus. Érdemes egyértelmű kereteket adni a munkának, közös fontossági sorrendet kialakítani és követni a haladást.",
       en: "Flexible, creative working style. Strengthening structural frameworks, prioritization tools, and process tracking is recommended.",
     },
   },
@@ -115,11 +115,11 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Innovative, curious team – embraces experimentation and new approaches. Performs well in dynamic, creative tasks.",
     },
     mid: {
-      hu: "Kiegyensúlyozott kreativitás és pragmatizmus – az újítások és a bevált megoldások között rugalmasan navigál.",
+      hu: "Az alkotókedv és a gyakorlatias szemlélet egyensúlya jellemző: a csapat rugalmasan választ az új ötletek és a bevált megoldások között.",
       en: "Balanced creativity and pragmatism – navigates flexibly between innovation and proven solutions.",
     },
     low: {
-      hu: "Gyakorlatias, stabil csapat – értékeli a bevált folyamatokat és a kiszámíthatóságot. Változásmenedzsment igényelhet külön figyelmet.",
+      hu: "Gyakorlatias, stabil csapat – értékeli a bevált folyamatokat és a kiszámíthatóságot. A változások kezelése külön figyelmet igényelhet.",
       en: "Practical, stable team – values proven processes and predictability. Change management may require extra attention.",
     },
   },

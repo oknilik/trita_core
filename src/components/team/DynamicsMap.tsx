@@ -63,16 +63,16 @@ const DIM_FRICTION_HINT: Record<string, { hu: string; en: string }> = {
   A: { hu: "Eltérő kommunikációs stílus és konfliktuskezelés", en: "Different communication style and conflict approach" },
   H: { hu: "Eltérő motivációs minták és bizalmi beállítódás", en: "Different motivational patterns and trust orientation" },
   E: { hu: "Eltérő érzelmi igények és stresszválasz", en: "Different emotional needs and stress response" },
-  X: { hu: "Eltérő energia-szint és interakciós igény", en: "Different energy level and interaction needs" },
+  X: { hu: "Eltérő energiaszint és a társas kapcsolatok iránti igény", en: "Different energy level and interaction needs" },
   O: { hu: "Eltérő hozzáállás az újdonsághoz és változáshoz", en: "Different attitude toward novelty and change" },
 };
 
 const DIM_ALIGNED_HINT: Record<string, { hu: string; en: string }> = {
   C: { hu: "Hasonló munkastílus és szervezettség", en: "Similar work style and organization" },
   A: { hu: "Hasonló kommunikációs megközelítés", en: "Similar communication approach" },
-  H: { hu: "Hasonló értékrend és átláthatóság-igény", en: "Similar values and transparency needs" },
-  E: { hu: "Hasonló érzelmi hőfok", en: "Similar emotional temperature" },
-  X: { hu: "Hasonló szociális energia", en: "Similar social energy" },
+  H: { hu: "Hasonló értékrend és az átláthatóság iránti igény", en: "Similar values and transparency needs" },
+  E: { hu: "Hasonló érzelmi érzékenység", en: "Similar emotional temperature" },
+  X: { hu: "Hasonló társas aktivitás", en: "Similar social energy" },
   O: { hu: "Hasonló nyitottság az újra", en: "Similar openness to new ideas" },
 };
 
@@ -428,13 +428,13 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
         {hasMeasuredEdges ? (
           <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
-              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`
+              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} kapcsolat), a többi profilalapú becslés.`
               : `Some connections are MEASURED from a trust round (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} connections); the rest are profile-based estimates.`}
           </p>
         ) : (
           <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
-              ? "A kapcsolat-jelzések profil-alapú becslések – bizalmi kör indításával mért adatra cserélhetők."
+              ? "A kapcsolatok jellemzése a személyiségprofilokból készült becslés. Bizalmi kör indításával mért adatokkal váltható fel."
               : "Connection markers are profile-based estimates – run a trust round to replace them with measured data."}
           </p>
         )}

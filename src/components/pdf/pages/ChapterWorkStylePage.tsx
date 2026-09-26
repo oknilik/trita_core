@@ -19,7 +19,10 @@ import type { ProfileReportViewModel } from "@/lib/profile-report-view-model";
 // félüres oldal, és nem is préselődik minden egyetlen lapra (P1/12).
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel }) {
+export function ChapterWorkStylePage({ model, onPageNumber }: {
+  model: ProfileReportViewModel;
+  onPageNumber?: (pageNumber: number) => void;
+}) {
   const { locale, identity, workstyle } = model;
   const chapter = model.chapters[2];
   const planLabel = model.plan === "plus" ? "Plus" : "Start";
@@ -36,6 +39,7 @@ export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel 
 
       <View style={s.body}>
         <PdfChapterHeader
+          onPageNumber={onPageNumber}
           number={chapter.number}
           question={chapter.question}
           title={chapter.title}

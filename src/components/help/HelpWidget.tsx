@@ -351,11 +351,11 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                   {askState === "sent" ? (
                     <div className="flex flex-col items-center gap-3 py-8 text-center" role="status">
                       <span className="flex h-11 w-11 items-center justify-center rounded-full bg-sage text-lg font-bold text-[var(--color-action-primary-fg)]">✓</span>
-                      <p className="max-w-xs text-sm leading-relaxed text-ink-body">{isHu ? "Kérdésed megérkezett – egy munkanapon belül válaszolunk emailben." : "Your question has been received – we'll reply by email within one business day."}</p>
+                      <p className="max-w-xs text-sm leading-relaxed text-ink-body">{isHu ? "Kérdésed megérkezett – egy munkanapon belül válaszolunk e-mailben." : "Your question has been received – we'll reply by email within one business day."}</p>
                     </div>
                   ) : (
                     <>
-                      <p className="mb-3 text-xs leading-relaxed text-muted">{isHu ? "Írd meg, miben kérsz segítséget, és emailben válaszolunk. Az üzenetet a fiókodhoz kapcsoljuk; a szövegét nem használjuk használati statisztikákhoz." : "Tell us what you need help with and we will reply by email. Your message is linked to your account; its text is not used for usage statistics."}</p>
+                      <p className="mb-3 text-xs leading-relaxed text-muted">{isHu ? "Írd meg, miben kérsz segítséget, és e-mailben válaszolunk. Az üzenetet a fiókodhoz kapcsoljuk. A szövegét nem használjuk fel a használati statisztikákban." : "Tell us what you need help with and we will reply by email. Your message is linked to your account; its text is not used for usage statistics."}</p>
                       <label htmlFor="help-question" className="mb-1.5 block text-xs font-medium text-ink">{isHu ? "Kérdésed" : "Your question"}</label>
                       <textarea id="help-question" value={askMessage} onChange={(event) => { setAskMessage(event.target.value); if (askState === "error") setAskState("idle"); }} rows={5} placeholder={isHu ? "Miben segíthetünk?" : "How can we help?"} className="w-full rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-3 py-2.5 text-base text-ink-body outline-none transition focus:border-sage focus:ring-2 focus:ring-sage/15 md:text-sm" />
                       {askState === "error" && <p className="mt-2 text-xs text-state-error-fg" role="alert">{isHu ? "A küldés nem sikerült – próbáld újra." : "Sending failed – please try again."}</p>}

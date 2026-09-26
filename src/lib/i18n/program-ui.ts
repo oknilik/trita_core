@@ -13,11 +13,11 @@ export const programUiTranslations = {
       en: "Measurement name",
     },
     publishedBaseline: {
-      hu: "Kiinduló, publikált mérés",
+      hu: "Közzétett kiinduló mérés",
       en: "Published baseline",
     },
     noBaseline: {
-      hu: "Nincs kompatibilis publikált Team Scan",
+      hu: "Nincs megfelelő, közzétett Team Scan-mérés",
       en: "No compatible published Team Scan",
     },
     rosterHelp: {
@@ -45,11 +45,11 @@ export const programUiTranslations = {
       en: "Open baseline measurement",
     },
     observersCollected: {
-      hu: "Observer válaszok összegyűltek",
+      hu: "Minden szükséges visszajelzés beérkezett",
       en: "Observer responses collected",
     },
     observerCounts: {
-      hu: "Observer meghívók / válaszok",
+      hu: "Visszajelzőknek küldött meghívók / beérkezett válaszok",
       en: "Observer invitations / responses",
     },
     reportStatus: {
@@ -97,7 +97,7 @@ export const programUiTranslations = {
       en: "The participant cohort changed; differences may also reflect composition changes.",
     },
     descriptiveDifference: {
-      hu: "Leíró különbségek; önmagukban nem bizonyítanak fejlődést vagy statisztikai jelentőséget.",
+      hu: "Az eltérések a két mérés eredményeit írják le. Önmagukban nem bizonyítanak fejlődést vagy statisztikailag szignifikáns változást.",
       en: "Descriptive differences; they do not by themselves establish improvement or statistical significance.",
     },
   },

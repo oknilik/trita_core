@@ -43,12 +43,12 @@ export function TeamWorkshopFacilitatorView({ report, isHu }: { report: Serializ
             <p className="mt-2 text-xs leading-relaxed text-ink-body">{[...strengths.slice(0, 1), ...risks.slice(0, 1)].join(" · ") || "–"}</p>
           </DashboardPanel>
           <DashboardPanel className="p-4">
-            <p className="text-xs font-semibold text-ink">{isHu ? "Kötelező kimenet" : "Required output"}</p>
-            <p className="mt-2 text-xs leading-relaxed text-ink-body">{isHu ? "Minden vállaláshoz felelős, határidő és első státusz; az elakadás definícióját is mondjátok ki." : "Every commitment gets an owner, due date and initial status; agree what counts as blocked."}</p>
+            <p className="text-xs font-semibold text-ink">{isHu ? "Amit a végén rögzíteni kell" : "Required output"}</p>
+            <p className="mt-2 text-xs leading-relaxed text-ink-body">{isHu ? "Minden vállaláshoz jelöljetek ki felelőst és határidőt, és rögzítsétek, hol tart most. Abban is állapodjatok meg, mit tekintetek elakadásnak." : "Every commitment gets an owner, due date and initial status; agree what counts as blocked."}</p>
           </DashboardPanel>
         </div>
         <p className="mt-4 rounded-xl bg-sage/5 px-3 py-2 text-xs leading-relaxed text-ink-body">
-          {isHu ? "Facilitátori guardrail: a becsült jeleket hipotézisként, a mért jeleket forrással nevezd meg; egyéni adatot ne vezess vissza a csapat elé." : "Facilitator guardrail: frame estimated signals as hypotheses and name the source of measured signals; never expose individual data to the group."}
+          {isHu ? "A beszélgetés vezetőjeként a becsült eredményeket felvetésként mutasd be, a mért eredményeknél pedig nevezd meg a forrást. A csapat előtt ne kapcsold az összesített adatokat egyes tagokhoz." : "Facilitator guardrail: frame estimated signals as hypotheses and name the source of measured signals; never expose individual data to the group."}
         </p>
       </div>
     </details>

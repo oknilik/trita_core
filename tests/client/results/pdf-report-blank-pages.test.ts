@@ -12,6 +12,8 @@ import {
 } from "../../../scripts/pdf-report-render";
 import { TeamReportDocument } from "@/components/pdf/TeamReportPdf";
 import type { SerializedTeamReport } from "@/lib/team-report";
+import { TritaReportDocument } from "@/components/pdf/TritaPdf";
+import { chrome } from "@/components/pdf/styles";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // „Üresen lebegő lap" — éles riport-visszajelzés, 2026-08-18.
@@ -51,6 +53,95 @@ describe("riport-PDF tördelés", () => {
     },
     60_000,
   );
+});
+
+// Inspect the actual renderer layout, not source styles: a flex block can
+// report a small height while painting its text over the following card.
+interface RenderedPdfNode {
+  type: string;
+  value?: string;
+  box?: { top: number; height: number };
+  props?: { fixed?: boolean; bookmark?: { title?: string } };
+  children?: RenderedPdfNode[];
+  lines?: { box: { y: number; height: number } }[];
+}
+
+function renderedText(node: RenderedPdfNode): string {
+  return node.value ?? node.children?.map(renderedText).join("") ?? "";
+}
+
+function findClippedText(layout: RenderedPdfNode): string[] {
+  const failures: string[] = [];
+  for (const [pageIndex, page] of (layout.children ?? []).entries()) {
+    const pageBottom = (page.box?.height ?? 0) - chrome.footerHeight;
+    const walk = (node: RenderedPdfNode, parent: RenderedPdfNode, parentTop: number) => {
+      if (node.props?.fixed) return; // Deliberate page header/footer placement.
+      const box = node.box;
+      const top = parentTop + (box?.top ?? 0);
+      if (node.type === "TEXT" && box && node.lines?.length) {
+        // Yoga may collapse a text box to zero while textkit still paints every
+        // line. Measure those actual lines rather than trusting box.height.
+        const firstLineTop = Math.min(...node.lines.map((line) => line.box.y));
+        const textHeight = Math.max(...node.lines.map((line) => line.box.y + line.box.height)) - firstLineTop;
+        const label = `page ${pageIndex + 1}: ${renderedText(node).slice(0, 80)}`;
+        if (textHeight > box.height + 0.5) failures.push(`${label} overflows its text box`);
+        if (top < chrome.headerHeight + 10 - 0.5 || top + textHeight > pageBottom + 0.5) {
+          failures.push(`${label} escapes the page body`);
+        }
+        if (parent.box && (box.top < -0.5 || box.top + textHeight > parent.box.height + 0.5)) {
+          failures.push(`${label} escapes its containing block`);
+        }
+      }
+      // Nested TEXT nodes are inline runs, not separately positioned boxes.
+      if (node.type !== "TEXT") {
+        for (const child of node.children ?? []) walk(child, node, top);
+      }
+    };
+    for (const child of page.children ?? []) walk(child, page, 0);
+  }
+  return failures;
+}
+
+describe("a személyes PDF hosszú szövegek mellett", () => {
+  const ids = ["plus-hu-many-high", "plus-hu-many-low", "plus-hu-long-copy"];
+  const scenarios = buildPdfScenarios().filter((s) => ids.includes(s.id));
+
+  it.each(scenarios.map((s) => [s.id, s] as const))("%s – nincs túlfolyás, a tartalomjegyzék a valós kezdőlapra mutat", async (_id, scenario) => {
+    registerPdfFonts();
+    let layout: RenderedPdfNode | undefined;
+    const document = TritaReportDocument({ data: scenario.input });
+    const buffer = await renderToBuffer(React.cloneElement(document, {
+      onRender: (result: unknown) => {
+        // react-pdf exposes the completed, paginated layout on render.
+        layout = (result as { _INTERNAL__LAYOUT__DATA_: RenderedPdfNode })._INTERNAL__LAYOUT__DATA_;
+      },
+    }));
+    expect(layout?.children?.length).toBeGreaterThan(0);
+    const pages = layout!.children!;
+    const start = pages.findIndex((page) => page.props?.bookmark?.title?.startsWith("03 ·"));
+    expect(start).toBeGreaterThan(0);
+    const nextChapter = pages.findIndex((page, index) => index > start && page.props?.bookmark);
+    const chapter = { type: "DOCUMENT", children: pages.slice(start, nextChapter < 0 ? undefined : nextChapter) };
+    expect(renderedText(chapter)).toContain("Munkastílus és fejlődés");
+    expect(renderedText(chapter)).toContain("Kontextus");
+    expect(findClippedText(chapter)).toEqual([]);
+    expect(findBlankPages(buffer)).toEqual([]);
+
+    const descendants = (node: RenderedPdfNode): RenderedPdfNode[] =>
+      [node, ...(node.children ?? []).flatMap(descendants)];
+    for (const number of ["01", "02", "03"]) {
+      const actualPage = pages.findIndex((page) => page.props?.bookmark?.title?.startsWith(`${number} ·`));
+      expect(actualPage).toBeGreaterThan(0);
+      const title = pages[actualPage].props!.bookmark!.title!.slice(5);
+      const tocRow = descendants(pages[1]).find((node) =>
+        node.type === "VIEW" && node.children?.length === 3 &&
+        renderedText(node.children[0]) === number && renderedText(node.children[1]) === title,
+      );
+      expect(tocRow, `Missing TOC row for ${title}`).toBeDefined();
+      // Page index already excludes the unnumbered cover, matching the footer.
+      expect(renderedText(tocRow!.children![2]), `Wrong TOC page for ${title}`).toBe(String(actualPage));
+    }
+  }, 60_000);
 });
 
 const TEAM_REPORT_FIXTURE = {

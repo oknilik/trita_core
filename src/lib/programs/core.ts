@@ -229,7 +229,7 @@ export const PROGRAM_DESCRIPTIONS = {
     en: "Personality, observer feedback, operating style, psychological safety and a consultant-reviewed report.",
   },
   FOLLOW_UP: {
-    hu: "Csapatműködés és pszichológiai biztonság újramérése, összehasonlítva egy korábbi Team Scannel. Nem kér új személyiségtesztet vagy observert.",
+    hu: "A csapatműködés és a pszichológiai biztonság újbóli felmérése, összehasonlítva egy korábbi Team Scan eredményével. Új személyiségteszt és külső visszajelzés nélkül.",
     en: "Remeasure operating style and psychological safety against a previous Team Scan, without repeating personality or observer assessments.",
   },
 };

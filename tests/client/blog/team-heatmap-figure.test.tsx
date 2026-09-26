@@ -20,12 +20,12 @@ describe("TeamReportFigure", () => {
       { code: "C", label: "Lelkiismeretesség", average: 69, spread: 8 },
     ]);
 
-    expect(screen.getByText("Aggregált csapatprofil")).toBeInTheDocument();
+    expect(screen.getByText("Összesített csapatprofil")).toBeInTheDocument();
     expect(screen.getByText("Becsületesség-Alázat")).toBeInTheDocument();
     expect(screen.getByText("Lelkiismeretesség")).toBeInTheDocument();
     expect(screen.getAllByText(/Csapatátlag:/)).toHaveLength(2);
     expect(screen.getByText(/egyéni eredmények nélkül/)).toBeInTheDocument();
-    expect(screen.getByText(/más csapattag egyéni értéke nem látható/)).toBeInTheDocument();
+    expect(screen.getByText(/Más csapattag egyéni eredménye nem látható/)).toBeInTheDocument();
   });
 
   it("nem jelenít meg személyneveket", () => {
@@ -47,8 +47,8 @@ describe("TeamReportFigure variánsok", () => {
     // A történet képaláírása valós, módosított csapatadatra hivatkozik –
     // ez az állítás sérülne, ha a referenciacikk ugyanazt mutatná.
     expect(caseText).not.toEqual(refText);
-    expect(refText).toContain("nem valós csapat adata");
-    expect(caseText).not.toContain("nem valós csapat adata");
+    expect(refText).toContain("kitalált adatokkal");
+    expect(caseText).not.toContain("kitalált adatokkal");
   });
 
   it("a referencia-variáns egy szűk és egy széles sávot állít szembe", () => {

@@ -243,7 +243,7 @@ describe("AssessmentClient integration behavior", () => {
     expect(container.querySelector("[data-assessment-intro-art] svg")).not.toBeNull();
     expect(screen.queryByText("Strategic Innovator")).not.toBeInTheDocument();
     expect(t("assessment.introInfoGuest", "hu")).toBe(
-      "Bármikor félbeszakíthatod – a haladásod ebben a böngészőben mentésre kerül, itt folytathatod. Másik eszközön vagy a böngészési adatok törlése után nem lesz elérhető, regisztráció után az eredményed a fiókodba kerül.",
+      "Bármikor szünetet tarthatsz. A válaszaidat ebben a böngészőben mentjük, így itt később folytathatod a kitöltést. Másik eszközön vagy a böngészési adatok törlése után nem éred el őket. Regisztráció után az eredményed a fiókodba kerül.",
     );
   });
 

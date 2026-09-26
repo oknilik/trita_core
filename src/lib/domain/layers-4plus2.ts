@@ -96,7 +96,7 @@ export const PRODUCT_LAYERS_4_PLUS_2: readonly ProductLayerConfig[] = [
     type: "core",
     label: { hu: "Személyiség", en: "Personality" },
     description: {
-      hu: "Pszichometriai alapréteg: a személyes működési mintázat.",
+      hu: "A személyiségfelmérés megmutatja a rád jellemző viselkedési mintázatokat.",
       en: "Psychometric base layer: your personal operating pattern.",
     },
     order: 1,
@@ -114,7 +114,7 @@ export const PRODUCT_LAYERS_4_PLUS_2: readonly ProductLayerConfig[] = [
     type: "core",
     label: { hu: "Csapatszerep", en: "Team role" },
     description: {
-      hu: "Csapatszerep-szint: hogyan járulsz hozzá a csapat működéséhez.",
+      hu: "Azt mutatja meg, hogyan járulsz hozzá a csapat munkájához.",
       en: "Team-role layer: how you contribute to team execution.",
     },
     order: 2,
@@ -132,7 +132,7 @@ export const PRODUCT_LAYERS_4_PLUS_2: readonly ProductLayerConfig[] = [
     type: "core",
     label: { hu: "Erősségprofil", en: "Strength profile" },
     description: {
-      hu: "A kiemelkedő működési dimenziók és fejlesztési fókuszok.",
+      hu: "Az erősségeidet és a fejlődési lehetőségeidet foglalja össze.",
       en: "Dominant dimensions and development focus areas.",
     },
     order: 3,
@@ -150,7 +150,7 @@ export const PRODUCT_LAYERS_4_PLUS_2: readonly ProductLayerConfig[] = [
     type: "core",
     label: { hu: "Pszichológiai biztonság", en: "Psychological safety" },
     description: {
-      hu: "Bizalom és visszajelzési biztonság a team/org működésben.",
+      hu: "Azt vizsgálja, mennyire érzitek biztonságosnak a csapatban a kérdezést, a visszajelzést és a hibák felvállalását.",
       en: "Trust and feedback safety across team/org collaboration.",
     },
     order: 4,
@@ -171,7 +171,7 @@ export const PRODUCT_LAYERS_4_PLUS_2: readonly ProductLayerConfig[] = [
     type: "plus",
     label: { hu: "Értékek", en: "Values" },
     description: {
-      hu: "A döntési és együttműködési értékpreferenciák mélyítő rétege.",
+      hu: "Azokat az értékeket tárja fel, amelyek a döntéseidet és az együttműködésedet alakítják.",
       en: "Deepening layer for decision and collaboration values.",
     },
     order: 5,
@@ -189,7 +189,7 @@ export const PRODUCT_LAYERS_4_PLUS_2: readonly ProductLayerConfig[] = [
     type: "plus",
     label: { hu: "Konfliktuskezelés", en: "Conflict management" },
     description: {
-      hu: "A feszültségek kezelésének és feloldásának fejlett rétege.",
+      hu: "A feszültségek kezelését és a konfliktusok megoldását vizsgálja.",
       en: "Advanced layer for handling and resolving tensions.",
     },
     order: 6,

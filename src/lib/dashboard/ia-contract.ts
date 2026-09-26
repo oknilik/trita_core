@@ -157,9 +157,9 @@ function txt(locale: DashboardLocale, hu: string, en: string): string {
 const BLOCKING_CODE_LABELS: Record<string, { hu: string; en: string }> = {
   SELF_ASSESSMENT_MISSING: { hu: "Önértékelés hiányzik", en: "Self assessment missing" },
   SELF_ASSESSMENT_INCOMPLETE: { hu: "Önértékelés félbemaradt", en: "Self assessment incomplete" },
-  OBSERVER_RESPONSES_PENDING: { hu: "Observer válaszok függőben", en: "Observer responses pending" },
+  OBSERVER_RESPONSES_PENDING: { hu: "Visszajelzésekre várunk", en: "Observer responses pending" },
   TEAM_MEMBERSHIP_MISSING: { hu: "Csapattagság hiányzik", en: "Team membership missing" },
-  MIN_TEAM_SIZE_NOT_MET: { hu: "Minimum csapatméret nem teljesül", en: "Minimum team size not met" },
+  MIN_TEAM_SIZE_NOT_MET: { hu: "Még nincs elég csapattag", en: "Minimum team size not met" },
   TEAM_MEMBER_INVITES_PENDING: { hu: "Csapatmeghívók függőben", en: "Team invites pending" },
   TEAM_MEMBER_ASSESSMENTS_PENDING: { hu: "Csapattagok kitöltései folyamatban", en: "Team member assessments in progress" },
   ORG_TEAM_MISSING: { hu: "Szervezeti csapat hiányzik", en: "Org team missing" },
@@ -183,7 +183,7 @@ function localizeBlockingDetail(
     case "OBSERVER_RESPONSES_PENDING": {
       const m = d.match(/^(\d+)/);
       const count = m ? m[1] : "?";
-      return txt(locale, `${count} observer meghívás még függőben.`, d);
+      return txt(locale, `${count} visszajelzési meghívó még megválaszolatlan.`, d);
     }
     case "TEAM_MEMBERSHIP_MISSING":
       if (d.includes("waiting for acceptance")) {
@@ -205,7 +205,7 @@ function localizeBlockingDetail(
     case "TEAM_MEMBER_ASSESSMENTS_PENDING":
     case "ORG_MEMBER_ASSESSMENTS_PENDING": {
       const m = d.match(/^(\d+)\/(\d+)/);
-      return txt(locale, `${m?.[1] ?? "?"}/${m?.[2] ?? "?"} kész az insighthoz.`, d);
+      return txt(locale, `${m?.[1] ?? "?"}/${m?.[2] ?? "?"} kitöltés készült el az elemzéshez.`, d);
     }
     default:
       return reason.detail;
@@ -262,11 +262,11 @@ export function createSelfDashboardIA(input: SelfDashboardIAInput): DashboardIAV
       title: displayName,
       summary: txt(
         locale,
-        "A saját képed készen áll. Innen mélyítheted observer visszajelzéssel, és ha szeretnéd, csapat- vagy szervezeti nézetbe is továbbviheted.",
+        "Elkészült a személyes profilod. Mások visszajelzésével is kiegészítheted, és ha szeretnéd, a csapatoddal vagy a szervezeteddel is használhatod a tritát.",
         "Your self insight is ready. You can deepen it with observer feedback, and optionally expand to team or org views.",
       ),
       chips: [
-        `${completionSummary.self.completedObservers} ${txt(locale, "observer kész", "observer done")}`,
+        `${completionSummary.self.completedObservers} ${txt(locale, "visszajelzés érkezett", "observer done")}`,
         `${completionSummary.self.pendingInvites} ${txt(locale, "függő meghívás", "pending invite")}`,
         txt(
           locale,
@@ -288,7 +288,7 @@ export function createSelfDashboardIA(input: SelfDashboardIAInput): DashboardIAV
       },
       {
         id: "observer-status",
-        label: txt(locale, "Observer kör", "Observer round"),
+        label: txt(locale, "Visszajelzési kör", "Observer round"),
         value: String(completionSummary.self.completedObservers),
         sub: txt(
           locale,
@@ -298,7 +298,7 @@ export function createSelfDashboardIA(input: SelfDashboardIAInput): DashboardIAV
       },
       {
         id: "team-readiness",
-        label: txt(locale, "Team készültség", "Team readiness"),
+        label: txt(locale, "A csapat kitöltései", "Team readiness"),
         value: `${teamCompletion}%`,
         sub: txt(
           locale,
@@ -312,12 +312,12 @@ export function createSelfDashboardIA(input: SelfDashboardIAInput): DashboardIAV
       title: txt(locale, "Figyelmet igényel", "Needs attention"),
       summary:
         riskItems.length > 0
-          ? txt(locale, "Van néhány blokk, amit érdemes lezárni.", "There are blockers to resolve.")
-          : txt(locale, "Nincs kritikus blokk a következő lépéshez.", "No critical blocker for your next step."),
+          ? txt(locale, "Van még néhány teendő a továbblépés előtt.", "There are blockers to resolve.")
+          : txt(locale, "Nincs akadálya a következő lépésnek.", "No critical blocker for your next step."),
       items: riskItems,
     },
     recommendedAction: {
-      title: txt(locale, "Következő legjobb lépés", "Next best action"),
+      title: txt(locale, "Javasolt következő lépés", "Next best action"),
       description: nextBestAction.explanation,
       primary: nextBestAction.primary,
       secondary: nextBestAction.secondary ?? null,
@@ -345,7 +345,7 @@ export function createTeamDashboardIA(input: TeamDashboardIAInput): DashboardIAV
         input.completedCount === input.memberCount && input.memberCount > 0
           ? txt(
               input.locale,
-              "Mindenki kitöltötte az önértékelést – a csapatkép él.",
+              "Mindenki kitöltötte az önértékelést. Elérhető a csapat összesített eredménye.",
               "Everyone has completed the assessment – the team picture is live.",
             )
           : txt(
@@ -402,8 +402,8 @@ export function createTeamDashboardIA(input: TeamDashboardIAInput): DashboardIAV
       title: txt(input.locale, "Figyelmet igényel", "Needs attention"),
       summary:
         input.waitingCount > 0
-          ? txt(input.locale, "A hiányzó kitöltések lassítják a csapatképet.", "Missing assessments slow down team insight.")
-          : txt(input.locale, "A fő akadályok lezárva.", "Main blockers are closed."),
+          ? txt(input.locale, "A teljesebb csapatképhez még kitöltésekre várunk.", "Missing assessments slow down team insight.")
+          : txt(input.locale, "Nincs akadálya a továbblépésnek.", "Main blockers are closed."),
       items:
         input.waitingCount > 0
           ? [
@@ -437,12 +437,12 @@ export function createOrgDashboardIA(input: OrgDashboardIAInput): DashboardIAVie
     input.pendingAttentionCount > 0
       ? txt(
           input.locale,
-          `${input.teamsReadyCount}/${input.teamCount} csapatkép kész. Most ${input.pendingAttentionCount} nyitott teendő igényel figyelmet. Következő lépés: zárd a nyitott pontokat, majd indítsd a javasolt akciót.`,
+          `${input.teamsReadyCount}/${input.teamCount} csapatkép kész. Most ${input.pendingAttentionCount} nyitott teendő igényel figyelmet. Először ezeket rendezd, majd folytasd a javasolt lépéssel.`,
           `${input.teamsReadyCount}/${input.teamCount} team insights are ready. Right now ${input.pendingAttentionCount} open tasks need attention. Next step: close the open items, then run the suggested action.`,
         )
       : txt(
           input.locale,
-          `${input.teamsReadyCount}/${input.teamCount} csapatkép kész, a szervezeti állapot stabil. Következő lépés: haladj tovább a javasolt következő akcióval.`,
+          `${input.teamsReadyCount}/${input.teamCount} csapatkép elkészült. Folytasd a javasolt következő lépéssel.`,
           `${input.teamsReadyCount}/${input.teamCount} team insights are ready and the org state is stable. Next step: continue with the suggested action.`,
         );
 

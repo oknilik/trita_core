@@ -4,7 +4,7 @@ export const candidateProgramTranslations = {
     teamsTab: { hu: "Csapatok összevetése", en: "Team comparisons" },
     feedbackTab: { hu: "Visszajelzés", en: "Feedback" },
     visualSubtitle: {
-      hu: "Egy profil. Több csapatnézőpont.",
+      hu: "Egy személyiségprofil, több csapattal összevetve.",
       en: "One profile. Multiple team perspectives.",
     },
     editFeedback: { hu: "Visszajelzés szerkesztése", en: "Edit feedback" },
@@ -57,7 +57,7 @@ export const candidateProgramTranslations = {
       en: "Edit consultant observations",
     },
     annotationNotice: {
-      hu: "A megállapításokat a tanácsadó írja. Mentésük új riportjóváhagyást igényel; a megosztott kivonatokba automatikusan nem kerülnek át.",
+      hu: "A megállapításokat a tanácsadó írja. Mentés után a riportot újra jóvá kell hagyni. A változások nem kerülnek át automatikusan a megosztott kivonatokba.",
       en: "Observations are written by the consultant. Saving requires a new report review; they are not automatically included in shared summaries.",
     },
     unsaved: {
@@ -150,7 +150,7 @@ export const candidateProgramTranslations = {
       en: "What does this illustration mean? ↗",
     },
     artworkGuideTitle: {
-      hu: "A karakterábrák nyelve",
+      hu: "Hogyan olvasd a karakterábrákat?",
       en: "The language of character illustrations",
     },
     artworkGuideIntro: {
@@ -162,7 +162,7 @@ export const candidateProgramTranslations = {
       en: "The large bronze shape corresponds to the highest-scoring dimension, and the thin inner motif to the second. When scores are close, their order is uncertain; the name may therefore be shortened, without an adjective.",
     },
     artworkGuidePrivacy: {
-      hu: "A megosztott jelölti és vezetői képen a kitöltés erőssége egységes: abból nem olvasható ki pontszám. A dimenzióértékek és a teljes radar a tanácsadói munkatérben maradnak.",
+      hu: "A jelölttel és a vezetővel megosztott ábrák színezése egységes, így abból nem olvasható ki pontszám. A dimenziók értékeit és a teljes radarábrát csak a tanácsadói munkatérben lehet megtekinteni.",
       en: "Shared candidate and leader illustrations use a uniform fill weight that does not encode a score. Dimension values and the full radar remain in the consultant workspace.",
     },
     artworkGuideExamples: {
@@ -203,7 +203,7 @@ export const candidateProgramTranslations = {
     self: { hu: "Önjellemzés", en: "Self-report" },
     team: { hu: "Rögzített csapatátlag", en: "Pinned team average" },
     deliveryFailed: {
-      hu: "A meghívó elkészült, de az emailt nem sikerült elküldeni. A link másolható, a küldés újrapróbálható.",
+      hu: "A meghívó elkészült, de az e-mailt nem sikerült elküldeni. Kimásolhatod a linket, vagy újra megpróbálhatod a küldést.",
       en: "The invitation was created, but the email could not be sent. Copy the link or retry delivery.",
     },
     notice: {
@@ -216,7 +216,7 @@ export const candidateProgramTranslations = {
       en: "The report can be prepared after the self-assessment is submitted.",
     },
     paused: {
-      hu: "A haladásod mentve. Ugyanezzel a meghívóval később folytathatod.",
+      hu: "Az eddigi válaszaidat elmentettük. Ugyanezzel a meghívóval később folytathatod.",
       en: "Your progress is saved. Use the same invitation to continue later.",
     },
   },

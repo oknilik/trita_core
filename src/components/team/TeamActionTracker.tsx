@@ -49,7 +49,7 @@ export function TeamActionTracker({
         }),
       });
       if (!response.ok) throw new Error("SAVE_FAILED");
-      setMessage(isHu ? "A követési állapot mentve." : "Tracking status saved.");
+      setMessage(isHu ? "A lépések állapotát elmentettük." : "Tracking status saved.");
       router.refresh();
     } catch {
       setMessage(isHu ? "A mentés nem sikerült. Próbáld újra." : "Saving failed. Try again.");
@@ -70,7 +70,7 @@ export function TeamActionTracker({
       <div className="mb-3">
         <SectionEyebrow>{isHu ? "heti vezetői fókusz" : "weekly leadership focus"}</SectionEyebrow>
         <h2 id="action-tracking-title" className="mt-1 font-fraunces text-xl text-ink">
-          {isHu ? "Akciókövetés" : "Action tracking"}
+          {isHu ? "A vállalt lépések követése" : "Action tracking"}
         </h2>
       </div>
       <DashboardPanel className="p-5">
@@ -81,7 +81,7 @@ export function TeamActionTracker({
         {(summary.blocked > 0 || summary.overdue > 0) && (
           <p className="mt-3 rounded-xl border border-state-warning-border bg-state-warning-bg px-3 py-2 text-xs font-medium text-state-warning-fg">
             {isHu
-              ? `${summary.blocked} elakadt és ${summary.overdue} lejárt akció kér vezetői döntést.`
+              ? `${summary.blocked} elakadt és ${summary.overdue} lejárt határidejű lépésben van szükség vezetői döntésre.`
               : `${summary.blocked} blocked and ${summary.overdue} overdue actions need a leadership decision.`}
           </p>
         )}

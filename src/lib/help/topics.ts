@@ -44,7 +44,7 @@ const TOPICS: HelpTopic[] = [
       {
         id: "what-is-trita",
         question: {
-          hu: "Mi is az a trita és kinek tud segíteni?",
+          hu: "Mi a trita, és kinek segíthet?",
           en: "What exactly is trita, and who can it help?",
         },
         answer: {
@@ -208,7 +208,7 @@ const TOPICS: HelpTopic[] = [
         steps: [
           { hu: "Kezdd az Összképpel: itt látod a legerősebb mintázatokat.", en: "Start with Overview to see your strongest patterns." },
           { hu: "A Részletek nézetben dimenziónként olvashatod az értelmezést.", en: "Use Details to read the interpretation dimension by dimension." },
-          { hu: "A Külső kép megmutatja, hol egyezik vagy tér el mások benyomása.", en: "Outside view shows where other people's impressions align with or differ from yours." },
+          { hu: "A Külső kép megmutatja, miben egyezik az önértékelésed mások benyomásával, és miben tér el tőle.", en: "Outside view shows where other people's impressions align with or differ from yours." },
         ],
         keywords: { hu: "értelmezés dimenzió összkép részletek profil", en: "interpret dimensions overview details profile" },
         related: ["comparison", "who-sees-results"],
@@ -235,7 +235,7 @@ const TOPICS: HelpTopic[] = [
           en: "What does the comparison show?",
         },
         answer: {
-          hu: "Az összehasonlítás az önértékelésedet veti össze az ismerőseid visszajelzésével: hol egyezik az önképed a külső képpel, és hol térnek el. Az eltérések gyakran a legérdekesebb önismereti tanulságok.",
+          hu: "Az összehasonlítás az önértékelésedet veti össze az ismerőseid visszajelzésével: hol egyezik az önképed a külső képpel, és hol térnek el. Az eltérések segíthetnek új szempontból megérteni a viselkedésedet.",
           en: "The comparison contrasts your self-assessment with your peers' feedback: where your self-image matches how others see you, and where they differ. The gaps are often the most interesting insights.",
         },
         link: {
@@ -268,7 +268,7 @@ const TOPICS: HelpTopic[] = [
         },
         steps: [
           { hu: "Nyisd meg az Eredményeim oldal Külső kép fülét.", en: "Open the Outside view tab on My Results." },
-          { hu: "A Meghívások résznél adj meg emailcímet, vagy készíts megosztható linket.", en: "In Invitations, enter an email address or create a shareable link." },
+          { hu: "A Meghívások résznél adj meg e-mail-címet, vagy készíts megosztható linket.", en: "In Invitations, enter an email address or create a shareable link." },
           { hu: "A beérkezett visszajelzések állapotát ugyanitt követheted.", en: "Track incoming feedback in the same place." },
         ],
         keywords: { hu: "meghívás meghívó link email külső kép", en: "invite invitation link email outside view" },
@@ -282,7 +282,7 @@ const TOPICS: HelpTopic[] = [
           en: "Whom should I ask?",
         },
         answer: {
-          hu: "Olyanokat, akik különböző közegből ismernek: kolléga, barát, családtag. Minél változatosabb a kör, annál árnyaltabb a külső kép – egy-egy visszajelzés önmagában csak egy nézőpont.",
+          hu: "Olyan embereket, akik különböző helyzetekből ismernek: kollégákat, barátokat, családtagokat. Minél változatosabb a kör, annál árnyaltabb a külső kép – egy-egy visszajelzés önmagában csak egy nézőpont.",
           en: "People who know you from different contexts: a colleague, a friend, a family member. The more varied the circle, the more nuanced the external picture – a single response is just one perspective.",
         },
         audiences: SIGNED_IN,
@@ -375,8 +375,8 @@ const TOPICS: HelpTopic[] = [
           en: "How do I invite members?",
         },
         answer: {
-          hu: "A csapatoldal Tagok fülén tudsz meghívó linket készíteni. A meghívott a link megnyitásával regisztrál és automatikusan a csapathoz kerül.",
-          en: "On the team page's Members tab you can create an invite link. Invitees register by opening the link and are added to the team automatically.",
+          hu: "A csapatoldal Tagok fülén tudsz meghívólinket készíteni. A meghívott a linket megnyitva regisztrálhat, majd megerősítheti a csatlakozását a csapathoz.",
+          en: "On the team page's Members tab you can create an invite link. Invitees can open the link, register, and then confirm that they want to join the team.",
         },
         audiences: MANAGING,
       },

@@ -8,7 +8,7 @@ export const sharedLabelTranslations = {
   results: {
     // UX-B12: a szomszédos „Csapatszerep-hajlamok" szekcióval ütközött a
     // „szerep" — ez itt munkakör-típusok illeszkedése, nem csapatszerep.
-    roleFitEyebrow: { hu: "Munkakör-illeszkedés", en: "Work-role fit" },
+    roleFitEyebrow: { hu: "Munkaköri illeszkedés", en: "Work-role fit" },
   },
   content: {
     roleFitStrong: { hu: "Jól illeszkedsz ide", en: "You fit well here" },

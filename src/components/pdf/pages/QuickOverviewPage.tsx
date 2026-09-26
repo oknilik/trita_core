@@ -3,7 +3,8 @@ import { s, colors, type } from "../styles";
 import { PdfFooter } from "../components/PdfFooter";
 import { PdfMiniHeader } from "../components/PdfCard";
 import { t } from "@/lib/i18n";
-import type { ProfileReportViewModel, ReportChapterId } from "@/lib/profile-report-view-model";
+import type { ChapterPageNumbers } from "../chapter-page-numbers";
+import type { ProfileReportViewModel } from "@/lib/profile-report-view-model";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // „Gyors összkép" — a riport első TARTALMI oldala (1 / N).
@@ -21,10 +22,10 @@ import type { ProfileReportViewModel, ReportChapterId } from "@/lib/profile-repo
 interface Props {
   model: ProfileReportViewModel;
   /** Fejezetenkénti kezdő oldalszám a tartalomjegyzékhez (borító nélkül). */
-  chapterStartPages: Record<ReportChapterId, number>;
+  chapterPages: ChapterPageNumbers;
 }
 
-export function QuickOverviewPage({ model, chapterStartPages }: Props) {
+export function QuickOverviewPage({ model, chapterPages }: Props) {
   const { locale, identity, quickOverview, chapters, appendices } = model;
   const planLabel = model.plan === "plus" ? "Plus" : "Start";
 
@@ -182,9 +183,13 @@ export function QuickOverviewPage({ model, chapterStartPages }: Props) {
               <Text style={{ flex: 1, fontSize: type.body, color: colors.ink }}>
                 {chapter.title}
               </Text>
-              <Text style={{ fontSize: type.caption, color: colors.ink300 }}>
-                {chapterStartPages[chapter.id]}
-              </Text>
+              {/* Text.render runs again after pagination, when all chapter
+                  callbacks have recorded their real page numbers. The fixed
+                  width keeps that update from changing the TOC layout. */}
+              <Text
+                style={{ width: 24, textAlign: "right", fontSize: type.caption, color: colors.ink300 }}
+                render={() => chapterPages.read(chapter.id)?.toString() ?? "–"}
+              />
             </View>
           ))}
           {appendices.length > 0 ? (

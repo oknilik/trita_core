@@ -22,7 +22,7 @@ export const candidateSuggestionTranslations = {
       en: "Editable hypotheses, not suitability judgments. Save and review the feedback after insertion. Regeneration never overwrites your notes.",
     },
     profile: {
-      hu: "A jelölt működési képe",
+      hu: "A jelölt jellemző munkamódjai",
       en: "Candidate working preferences",
     },
     connection: {
@@ -75,7 +75,7 @@ export const candidateSuggestionTranslations = {
       en: "No close scores are highlighted. This alone does not imply collaboration difficulties.",
     },
     gap: {
-      hu: "{dimension}: jelölt {candidate}, csapatátlag {team}, csapatszórás {sd}. A nagyobb leíró eltérés eltérő munkamódok megbeszélését indokolhat; nem teljesítménykülönbség.",
+      hu: "{dimension}: a jelölt pontszáma {candidate}, a csapatátlag {team}, a csapaton belüli szórás {sd}. A nagyobb eltérés miatt érdemes átbeszélni a különböző munkamódokat. Ez az adat nem teljesítménykülönbséget jelez.",
       en: "{dimension}: candidate {candidate}, team mean {team}, team SD {sd}. This larger descriptive difference may warrant discussing different work preferences; it is not a performance difference.",
     },
     noGap: {
@@ -83,11 +83,11 @@ export const candidateSuggestionTranslations = {
       en: "No difference exceeds the conservative display threshold. This does not establish equivalence.",
     },
     noSpread: {
-      hu: "A rögzített csapatriportból hiányzik a teljes dimenziónkénti szórás; ezért nem generálunk eltérésállítást pusztán az átlagból.",
+      hu: "A rögzített csapatriportban nem minden dimenzióhoz tartozik szórásadat. Pusztán az átlagok alapján ezért nem fogalmazunk meg állítást az eltérésekről.",
       en: "The frozen team report lacks complete dimension spreads, so no difference claims are generated from means alone.",
     },
     method: {
-      hu: "Megjelenítési szabály: a különbség meghaladja az egyéni rövid forma 1,96 × SEM hibasávját és a csapat egy szórását. Ez óvatos szerkesztési szabály, nem szignifikanciateszt. A csapatátlag nem ír le minden tagot.",
+      hu: "Akkor emelünk ki eltérést, ha a különbség a rövid kérdőív egyéni mérési hibasávját (1,96 × SEM) és a csapaton belüli szórást is meghaladja. Ez óvatos szerkesztési szabály, nem statisztikai szignifikanciateszt. A csapatátlag nem jellemzi külön-külön az összes tagot.",
       en: "Display rule: the gap exceeds both 1.96 × individual short-form SEM and one team SD. This is a conservative editorial rule, not a significance test. A team mean does not describe every member.",
     },
     roleOwn: {
@@ -95,11 +95,11 @@ export const candidateSuggestionTranslations = {
       en: "Preferences highlighted by the candidate role questionnaire: {roles}. These do not establish ability or performance.",
     },
     noRole: {
-      hu: "Nincs érvényes, kitöltött jelölti szerepkérdőív. A személyiségből nem helyettesítjük becsléssel.",
+      hu: "Nincs érvényes, kitöltött jelölti szerepkérdőív. A hiányzó eredményt nem pótoljuk a személyiségprofilból készült becsléssel.",
       en: "No valid completed candidate role questionnaire is available. Personality estimates are not substituted.",
     },
     mixedRoles: {
-      hu: "A csapat szerepadata hiányos, becsült vagy vegyes forrású; ebből nem állítunk szerephiányt vagy lefedettséget.",
+      hu: "A csapat szerepadatai hiányosak, becslésből származnak, vagy mért és becsült eredményeket is tartalmaznak. Ezekből nem állapítjuk meg, mely szerepek vannak jelen vagy hiányoznak.",
       en: "Team role evidence is missing, estimated or mixed; no role gaps or coverage are inferred from it.",
     },
     overlap: {
@@ -107,7 +107,7 @@ export const candidateSuggestionTranslations = {
       en: "Also represented in the team's frozen questionnaire evidence: {roles}. Clarify how responsibilities would be shared.",
     },
     complement: {
-      hu: "A csapat rögzített elsődleges és másodlagos szerepei között nem jelenik meg: {roles}. Vizsgáljátok meg, van-e igény erre a hozzájárulásra; ez nem bizonyított hiány.",
+      hu: "A csapat rögzített elsődleges és másodlagos szerepei között nem jelenik meg: {roles}. Beszéljétek át, szükség van-e ezekre a szerepekre a közös munkában. Az eredmény önmagában nem bizonyít hiányt.",
       en: "Not represented among the team's frozen primary and secondary roles: {roles}. Explore whether this contribution is needed; this is not a proven deficit.",
     },
     question: {

@@ -797,7 +797,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   // közt épül, a kapcsolat nélküli (disconnected) mért pár pedig kimarad.
   let summary = generateTeamSummary(avgs);
   if (agg.dynamics && dynamicsTotal > 0) {
-    summary += ` A ${dynamicsTotal} felmért kapcsolatból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} egymást kiegészítő, ${agg.dynamics.frictionCount} esetében pedig súrlódás alakulhat ki.`;
+    summary += ` Összesen ${dynamicsTotal} felmért kapcsolatból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} egymást kiegészítő, ${agg.dynamics.frictionCount} esetében pedig súrlódás alakulhat ki.`;
   }
 
   const strengths = bullets([
@@ -820,7 +820,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       ? "A hasonló profilok közös vakfoltokat hordozhatnak – egy külső nézőpont segíthet észrevenni azt, ami a csapaton belül rejtve marad."
       : "",
     gapRoleNames
-      ? `Lefedetlen csapatszerepek: ${gapRoleNames} – ezeket senki sem viszi elsődlegesen, és kijelölt helyettes sincs.`
+      ? `Hiányzó csapatszerepek: ${gapRoleNames}. Ezeket senki sem tölti be elsődlegesen, és kijelölt helyettes sincs.`
       : "",
     ps && psWeakAreas.length > 0
       ? `A pszichológiai biztonsági pulzusmérés (${ps.index}/100, ${ps.count} névtelen válasz) leggyengébb területei: ${psWeakAreas.join(", ")} – ezeken a területeken a tagok nem feltétlenül mondják ki őszintén a véleményüket, ami a többi mérés eredményét is torzíthatja.`
@@ -829,7 +829,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       ? "A pszichológiai biztonság megélése erősen eltér a csapaton belül – az átlag mögött nagyon különböző egyéni tapasztalatok állnak."
       : "",
     agg.pressure && agg.pressure.concentrations.length > 0
-      ? `Nyomás alatti kollektív minta: ${agg.pressure.concentrations
+      ? `Nyomás alatt jelentkező közös mintázat: ${agg.pressure.concentrations
           .map(
             (c) =>
               `${PREFILL_DIM_LABELS[c.dim] ?? c.dim} (${
@@ -840,7 +840,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
                     : "alacsony pólus"
               }, ${c.count}/${c.assessedCount} tag)`,
           )
-          .join(", ")} – az egyéni túlterhelődések nyomás alatt összeadódhatnak (részletek a „Csapat nyomás alatt" fejezetben).`
+          .join(", ")} – az egyéni túlterhelődések nyomás alatt összeadódhatnak (részletek a „Csapat nyomás alatt” fejezetben).`
       : "",
   ]);
 
@@ -866,12 +866,12 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     // Több-csapatos futó pulse mellett NEM javaslunk új pulse-indítást –
     // a mérés fut, csak csapat-szintre nem bontható (psychSafetyMultiTeam).
     !ps && !agg.psychSafetyMultiTeam
-      ? "Pszichológiai biztonsági pulzusmérés indítása – névtelen, körülbelül kétperces mérés; enélkül a csapatkép csak a kimondott véleményekre épül, a visszatartott véleményekre viszont nem."
+      ? "Pszichológiai biztonsági pulzusmérés indítása: a névtelen, körülbelül kétperces kérdőív segít megérteni, mennyire merik a tagok elmondani a véleményüket."
       : "",
   ]);
 
   const leadershipGuide = bullets([
-    `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} – az ehhez illő feladatoknál jellemzően kevesebb vezetői ráhatás is elég.`,
+    `Építs a csapat erősségeire ezeken a területeken: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")}. Az ezekhez illő feladatoknál jellemzően kevesebb vezetői irányítás is elég.`,
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     getWatchAreaInsight(bottomDim),
     // Vezetői csapda-kártyák: a gyenge pulse-területek mögött tipikus

@@ -19,6 +19,8 @@ interface PdfChapterHeaderProps {
   description?: string;
   /** Melléklet-fejlécen a sorszám helyett szöveges jelölő fut. */
   numberIsLabel?: boolean;
+  /** Receives the real page number during react-pdf pagination. */
+  onPageNumber?: (pageNumber: number) => void;
 }
 
 export function PdfChapterHeader({
@@ -27,11 +29,16 @@ export function PdfChapterHeader({
   title,
   description,
   numberIsLabel = false,
+  onPageNumber,
 }: PdfChapterHeaderProps) {
   return (
     <View wrap={false}>
       <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
         <Text
+          render={({ pageNumber }) => {
+            onPageNumber?.(pageNumber);
+            return number;
+          }}
           style={{
             fontFamily: "Fraunces",
             fontSize: numberIsLabel ? type.caption : type.chapterNumber,

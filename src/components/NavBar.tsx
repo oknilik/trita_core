@@ -260,7 +260,7 @@ export function NavBar({
     : signedInExperienceHints.showOrgExpansionPrompt
       ? {
           body: locale === "hu"
-            ? "Új szervezeti meghívásod érkezett. Csatlakozz, ha szeretnéd kiterjeszteni a saját insightodat csapat- és org-szintre."
+            ? "Meghívást kaptál egy szervezetbe. Csatlakozz, ha a személyes felmérés mellett a csapatod közös munkáját is szeretnéd megismerni."
             : "You have a new organization invite. Join to extend your self insights to team and org levels.",
           ctaLabel: locale === "hu" ? "Meghívás megnyitása" : "Open invite",
           ctaHref: signedInHomeHref,
@@ -268,7 +268,7 @@ export function NavBar({
       : signedInExperienceHints.showTeamCreationBanner && !isConsultingLed()
         ? {
             body: locale === "hu"
-              ? "Team fókuszt választottál. Hozd létre az első csapatodat, és építs közös képet a self eredményekből."
+              ? "A csapatos használatot választottad. Hozd létre az első csapatodat, hogy a személyes eredményekből közös csapatkép készülhessen."
               : "You selected a team-focused path. Create your first team to build shared insights from self results.",
             ctaLabel: locale === "hu" ? "Csapat létrehozása" : "Create a team",
             ctaHref: "/onboarding?intent=team",
@@ -276,9 +276,9 @@ export function NavBar({
         : signedInExperienceHints.showAssessmentContinuation
           ? {
               body: locale === "hu"
-                ? "Félbehagytad a self assessmentet. Folytasd onnan, ahol abbahagytad."
+                ? "Még nem fejezted be az önértékelést. Folytasd ott, ahol abbahagytad."
                 : "Your self assessment is in progress. Continue where you left off.",
-              ctaLabel: locale === "hu" ? "Assessment folytatása" : "Continue assessment",
+              ctaLabel: locale === "hu" ? "Önértékelés folytatása" : "Continue assessment",
               ctaHref: "/assessment",
             }
           : null;

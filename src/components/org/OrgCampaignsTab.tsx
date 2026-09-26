@@ -142,7 +142,7 @@ export function OrgCampaignsTab({
         <section>
           <Card spacing="lg" className="md:p-8">
             <SectionEyebrow className="mb-1">
-              {isHu ? "Mérés akciók" : "Measurement actions"}
+              {isHu ? "Mérési műveletek" : "Measurement actions"}
             </SectionEyebrow>
             <SectionHeading>{actionGateCopy.title}</SectionHeading>
             <p className="mt-2 text-sm text-ink-body">{actionGateCopy.description}</p>

@@ -36,7 +36,7 @@ export const TEAM_ROLE_WHY: Record<TeamRoleCode, { hu: string; en: string }> = {
     en: "Because inventive, unconventional thinking drives you, and set frames don't hold you.",
   },
   KE: {
-    hu: "Mert az extraverzió és a nyitottság nálad természetes kapunyitás mások és új lehetőségek felé.",
+    hu: "Mert szívesen teremtesz kapcsolatokat, és nyitott vagy az új lehetőségekre.",
     en: "Because extraversion and openness make you a natural door-opener to people and opportunities.",
   },
   KO: {
@@ -44,7 +44,7 @@ export const TEAM_ROLE_WHY: Record<TeamRoleCode, { hu: string; en: string }> = {
     en: "Because aligning people and principles matters to you at the same time.",
   },
   HA: {
-    hu: "Mert a lendület és a közvetlen, nyomás alatt is toló stílus nálad együtt jár.",
+    hu: "Mert lendületesen, egyenesen kommunikálsz, és nyomás alatt is előreviszed a munkát.",
     en: "Because momentum and a direct, pressure-proof pushing style go together in you.",
   },
   ER: {
@@ -56,15 +56,15 @@ export const TEAM_ROLE_WHY: Record<TeamRoleCode, { hu: string; en: string }> = {
     en: "Because agreeableness and attunement to others are strong threads in your profile.",
   },
   MV: {
-    hu: "Mert a megbízható, következetes végrehajtás a profilod magja.",
+    hu: "Mert a profilodra jellemző, hogy megbízhatóan és következetesen viszed végig a feladatokat.",
     en: "Because dependable, consistent execution is the core of your profile.",
   },
   MI: {
-    hu: "Mert a precizitás és a hibákra való érzékenység együtt mozog nálad.",
+    hu: "Mert pontosan dolgozol, és könnyen észreveszed a hibákat.",
     en: "Because precision and sensitivity to errors move together in you.",
   },
   SZ: {
-    hu: "Mert a mély, fókuszált tudásépítés vonz jobban, mint a széles színpad.",
+    hu: "Mert jobban vonz a tudásod elmélyítése, mint a nyilvános szereplés.",
     en: "Because deep, focused expertise-building draws you more than a broad stage.",
   },
 };

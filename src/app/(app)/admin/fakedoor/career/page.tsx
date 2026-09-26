@@ -76,7 +76,7 @@ function Table({ children }: { children: React.ReactNode }) {
             <th className="pb-2 pr-3 text-right">Válasz</th>
             <th className="pb-2 pr-3 text-right">Válaszarány</th>
             <th className="pb-2 pr-3 text-right">Igen</th>
-            <th className="pb-2 pr-3 text-right">Igen-arány</th>
+            <th className="pb-2 pr-3 text-right">Igen válaszok aránya</th>
             <th className="pb-2 pr-3 text-right">E-mail</th>
             <th className="pb-2 text-right">E-mail/igen</th>
           </tr>
@@ -133,8 +133,8 @@ export default async function CareerFakeDoorReportPage() {
         <EditorialBackHeader
           href="/admin?tab=feedback"
           backLabel="Vissza az adminhoz"
-          eyebrow="kereslet-mérés"
-          title="Karrier-iránytű – fake door"
+          eyebrow="érdeklődés felmérése"
+          title="Karrieriránytű – érdeklődés felmérése"
           description="A funkció nem létezik. Ezek a számok azt mérik, érdemes-e megépíteni. A kimondott szándék nem fizetés: a tényleges vásárlási arány jellemzően ennél jóval alacsonyabb, ezért a számok irányt mutatnak, nem bevételt."
         />
         <div className="mt-3 flex gap-4 text-sm">

@@ -208,13 +208,13 @@ describe("PairInteractionView", () => {
     ).toBeInTheDocument();
   });
 
-  it("kimondja, ha a pár egyetlen markáns ponton tér el", () => {
+  it("kimondja, ha a pár egyetlen ponton tér el számottevően", () => {
     renderView(singleAtomSim);
 
     // A karakter-prototípus maximálisan pólusos, egy valódi ember nem —
     // enélkül a rövid kép hibának látszik a karakter-úthoz képest.
     expect(
-      screen.getByText(/egyetlen markáns ponton tér el/),
+      screen.getByText(/egyetlen ponton tér el számottevően/),
     ).toBeInTheDocument();
   });
 
@@ -226,7 +226,7 @@ describe("PairInteractionView", () => {
     expect(easy).toHaveAttribute("aria-expanded", "true");
     // Rövid képre szánt magyarázat itt nem jelenik meg.
     expect(
-      screen.queryByText(/egyetlen markáns ponton tér el/),
+      screen.queryByText(/egyetlen ponton tér el számottevően/),
     ).not.toBeInTheDocument();
   });
 

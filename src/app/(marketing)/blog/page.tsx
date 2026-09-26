@@ -9,7 +9,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/blog",
   title: "Blog – csapatdinamika, személyiség, tudatos HR | trita",
   description:
-    "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről: hogyan olvasd a csapatod működését, mit mérnek a személyiségdimenziók, és mikor téved az önértékelés.",
+    "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről: hogyan értsd meg a csapatod működését, mit mérnek a személyiségdimenziók, és hogyan egészíthetik ki mások az önértékelésedet.",
   ogTitle: "trita blog – csapatdinamika és személyiség",
   ogDescription:
     "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.",

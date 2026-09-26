@@ -97,7 +97,7 @@ export function teamActionTargetLabel(
   locale: "hu" | "en",
 ): string {
   if (target.kind === "psych_safety_index") {
-    return locale === "hu" ? "Pszichológiai biztonság index" : "Psychological safety index";
+    return locale === "hu" ? "Pszichológiai biztonsági index" : "Psychological safety index";
   }
   if (target.kind === "psych_safety_item") {
     const item = PSYCH_SAFETY_ITEMS.find((candidate) => candidate.id === target.itemId);
@@ -107,10 +107,10 @@ export function teamActionTargetLabel(
     return locale === "hu" ? "Bizalmi háló lefedettsége" : "Trust-network coverage";
   }
   if (target.kind === "trust_isolated_count") {
-    return locale === "hu" ? "Beágyazatlan tagok száma" : "Number of isolated members";
+    return locale === "hu" ? "Erős bizalmi kapcsolat nélküli tagok száma" : "Number of isolated members";
   }
   return locale === "hu"
-    ? `Szerephézag: ${TEAM_ROLES[target.roleCode].hu}`
+    ? `Hiányzó szerep: ${TEAM_ROLES[target.roleCode].hu}`
     : `Role gap: ${TEAM_ROLES[target.roleCode].en}`;
 }
 

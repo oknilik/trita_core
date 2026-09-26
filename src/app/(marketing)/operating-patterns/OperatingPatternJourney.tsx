@@ -2,9 +2,9 @@ import Image from "next/image";
 import type { Locale } from "@/lib/i18n";
 
 const steps = [
-  { title: { hu: "Feltérképezzük", en: "Map it" }, text: { hu: "Először is megvizsgáljuk, hogy az elmúlt időszakban milyen működés volt rátok jellemző.", en: "First, we explore how your team has been working together recently." }, result: { hu: "Egy kép a jelenlegi működésetekről", en: "A picture of how you work today" }, tone: "bg-sage-soft text-sage-dark" },
-  { title: { hu: "Megbeszéljük", en: "Discuss it" }, text: { hu: "Mit gondoltok a kapott mintáról? Valóban titeket ír le? Komfortos nektek ez a működés? Mi lenne az, amin érdemes változtatnotok?", en: "What do you think of the resulting pattern? Does it really describe your team? Are you comfortable working this way? What would be worth changing?" }, result: { hu: "Közösen értelmezett tapasztalatok", en: "Experiences understood together" }, tone: "bg-bronze-soft text-bronze-dark" },
-  { title: { hu: "Kipróbáljátok", en: "Try it" }, text: { hu: "Kiválasztunk egy konkrét pontot, amiben változást szeretnétek, és megállapodtok abban, hogyan módosítotok rajta a napi munka során.", en: "Together, we choose a specific area you would like to change, and you agree how to adjust it in your daily work." }, result: { hu: "Egy vállalható közös lépés", en: "One manageable step together" }, tone: "bg-[var(--color-layer-org-soft)] text-[var(--color-layer-org-accent)]" },
+  { title: { hu: "Feltérképezzük", en: "Map it" }, text: { hu: "Megnézzük, hogyan dolgoztatok együtt az elmúlt időszakban.", en: "First, we explore how your team has been working together recently." }, result: { hu: "Egy kép a jelenlegi működésetekről", en: "A picture of how you work today" }, tone: "bg-sage-soft text-sage-dark" },
+  { title: { hu: "Megbeszéljük", en: "Discuss it" }, text: { hu: "Mennyire ismertek magatokra a leírásban? Mi működik jól így, és min szeretnétek változtatni?", en: "What do you think of the resulting pattern? Does it really describe your team? Are you comfortable working this way? What would be worth changing?" }, result: { hu: "Közösen értelmezett tapasztalatok", en: "Experiences understood together" }, tone: "bg-bronze-soft text-bronze-dark" },
+  { title: { hu: "Kipróbáljátok", en: "Try it" }, text: { hu: "Kiválasztunk egy területet, amelyen változtatni szeretnétek. Ezután megállapodtok, mit próbáltok ki a napi munkában.", en: "Together, we choose a specific area you would like to change, and you agree how to adjust it in your daily work." }, result: { hu: "Egy megvalósítható közös lépés", en: "One manageable step together" }, tone: "bg-[var(--color-layer-org-soft)] text-[var(--color-layer-org-accent)]" },
   { title: { hu: "Visszanézzük", en: "Look back" }, text: { hu: "Mi változott meg a gyakorlatban? Megtartjuk, ami valóban előrevitte a csapatot. Ami nem, azon tovább gondolkodunk.", en: "What has changed in practice? We keep what truly helped the team move forward. Where it did not, we keep exploring." }, result: { hu: "Megnézzük, sikerült-e változtatni", en: "We check whether the change happened" }, tone: "bg-[var(--color-layer-team-soft)] text-[var(--color-layer-team-accent)]" },
 ];
 
@@ -14,8 +14,8 @@ export function OperatingPatternJourney({ locale, onExplore }: { locale: Locale;
     <div className="grid items-center gap-8 pb-10 md:grid-cols-[1.2fr_1fr]">
       <div>
         <p className="text-xs font-semibold uppercase tracking-widest text-sage">{hu ? "Csapatmintázatok" : "Team patterns"}</p>
-        <h1 className="mt-4 font-fraunces text-4xl leading-tight tracking-tight sm:text-5xl">{hu ? "A közös munkánk mintázatai" : "Patterns of our shared work"}</h1>
-        <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-body">{hu ? "Mi segít benneteket a munkában, és min lenne érdemes változtatni? A személyiségképetek mellett a tényleges napi működésetek feltérképezése remek kiindulópont a beszélgetéshez." : "What helps you in your work, and what would be worth changing? Alongside your personality picture, mapping how you actually work day to day is a great starting point for that conversation."}</p>
+        <h1 className="mt-4 font-fraunces text-4xl leading-tight tracking-tight sm:text-5xl">{hu ? "Az együttműködésetek mintázatai" : "Patterns of our shared work"}</h1>
+        <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-body">{hu ? "Mi segít benneteket a munkában, és min lenne érdemes változtatni? A személyiségképetek mellett a napi együttműködésetek feltérképezése is segít megtalálni, miről érdemes beszélnetek." : "What helps you in your work, and what would be worth changing? Alongside your personality picture, mapping how you actually work day to day is a great starting point for that conversation."}</p>
         <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
           <a href="#operating-process" className="inline-flex min-h-11 items-center gap-3 rounded-xl bg-sage px-5 py-3 text-sm font-medium text-[var(--color-action-primary-fg)] hover:bg-sage-dark">{hu ? "Így dolgozunk vele" : "How we use it"}<span aria-hidden="true">↓</span></a>
           <button type="button" onClick={onExplore} className="min-h-11 py-3 text-sm font-medium text-sage-dark underline underline-offset-4">{hu ? "A minták érdekelnek" : "Explore the patterns"}</button>
@@ -48,10 +48,10 @@ export function OperatingPatternJourney({ locale, onExplore }: { locale: Locale;
         {[
           [hu ? "Ezt nézzük meg" : "What we explore", hu ? "Hol születnek a döntések, és mely helyzetekben akad el a munka?" : "Where are decisions made, and when does work get stuck?"],
           [hu ? "Ezt beszéljük meg" : "What we discuss", hu ? "Mihez kell központi jóváhagyás, és miben dönthettek önállóan?" : "What needs central approval, and what can you decide independently?"],
-          [hu ? "Ezt próbálhatjátok ki" : "What you could try", hu ? "Két hétig három gyakori ügytípusban előre tisztázott döntési jogokkal dolgoztok." : "For two weeks, work with decision rights agreed in advance for three common kinds of issue."],
+          [hu ? "Ezt próbálhatjátok ki" : "What you could try", hu ? "Három gyakori ügyben előre megbeszélitek, ki dönthet, majd két hétig kipróbáljátok ezt a felosztást." : "For two weeks, work with decision rights agreed in advance for three common kinds of issue."],
         ].map(([title, text]) => <div key={title} className="border-t border-current/20 pt-4"><h3 className="text-xs font-semibold text-[var(--color-text-on-inverse-muted)]">{title}</h3><p className="mt-2 text-sm leading-relaxed">{text}</p></div>)}
       </div>
-      <p className="mt-6 border-t border-current/20 pt-4 text-sm leading-relaxed"><span className="mr-3 text-[var(--color-text-on-inverse-muted)]">{hu ? "Utána visszanézitek:" : "Then you look back:"}</span><strong className="font-semibold">{hu ? "Kevesebb lett a várakozás? Egyértelműbb, ki dönthet?" : "Was there less waiting? Is it clearer who can decide?"}</strong></p>
+      <p className="mt-6 border-t border-current/20 pt-4 text-sm leading-relaxed"><span className="mr-3 text-[var(--color-text-on-inverse-muted)]">{hu ? "Utána megnézitek:" : "Then you look back:"}</span><strong className="font-semibold">{hu ? "Kevesebb lett a várakozás? Egyértelműbb, ki dönthet?" : "Was there less waiting? Is it clearer who can decide?"}</strong></p>
     </section>
     <section aria-labelledby="operating-information-example-title" className="mb-12 rounded-2xl bg-[var(--color-layer-team-soft)] p-6 text-ink sm:p-8">
       <div className="flex items-start justify-between gap-5">
@@ -70,7 +70,7 @@ export function OperatingPatternJourney({ locale, onExplore }: { locale: Locale;
           [hu ? "Ezt próbálhatjátok ki" : "What you could try", hu ? "Két hétig minden közös egyeztetés végén röviden rögzítitek: miben állapodtatok meg, ki mit vállal, és mi maradt nyitott kérdés." : "For two weeks, briefly record at the end of each team discussion what you agreed, who will do what, and which questions remain open."],
         ].map(([title, text]) => <div key={title} className="border-t border-bronze/25 pt-4"><h3 className="text-xs font-semibold text-bronze-dark">{title}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{text}</p></div>)}
       </div>
-      <p className="mt-6 border-t border-bronze/25 pt-4 text-sm leading-relaxed"><span className="mr-3 text-bronze-dark">{hu ? "Utána visszanézitek:" : "Then you look back:"}</span><strong className="font-semibold">{hu ? "Kevesebb lett a félreértés? Könnyebb volt folytatni egymás munkáját?" : "Were there fewer misunderstandings? Was it easier to pick up each other's work?"}</strong></p>
+      <p className="mt-6 border-t border-bronze/25 pt-4 text-sm leading-relaxed"><span className="mr-3 text-bronze-dark">{hu ? "Utána megnézitek:" : "Then you look back:"}</span><strong className="font-semibold">{hu ? "Kevesebb lett a félreértés? Könnyebb volt folytatni egymás munkáját?" : "Were there fewer misunderstandings? Was it easier to pick up each other's work?"}</strong></p>
     </section>
   </>;
 }

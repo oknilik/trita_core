@@ -53,11 +53,11 @@ export function OrgCandidatesTab({
             {isHu ? "jelöltek" : "candidates"}
           </SectionEyebrow>
           <h2 className="mt-1 font-fraunces text-xl text-ink">
-            {isHu ? "Jelölt-felmérések" : "Candidate assessments"}
+            {isHu ? "Jelöltfelmérések" : "Candidate assessments"}
           </h2>
           <p className="mt-1 text-xs text-ink-body">
             {isHu
-              ? "Személyiség-felmérés (opcionális csapatszerep-kérdőívvel) a szervezeten kívüli jelölteknek – tanácsadó által jóváhagyott visszajelzéssel."
+              ? "Személyiségfelmérés (opcionális csapatszerep-kérdőívvel) a szervezeten kívüli jelölteknek – tanácsadó által jóváhagyott visszajelzéssel."
               : "Personality assessment (with optional team-role questionnaire) for external candidates – with consultant-reviewed feedback."}
           </p>
         </div>
@@ -131,7 +131,7 @@ export function OrgCandidatesTab({
         className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
       >
         {isHu
-          ? `Jelölt-felület megnyitása (${candidates.length})`
+          ? `Jelölti felület megnyitása (${candidates.length})`
           : `Open candidate workspace (${candidates.length})`}
         <ChevronRightIcon className="h-3.5 w-3.5" />
       </Link>

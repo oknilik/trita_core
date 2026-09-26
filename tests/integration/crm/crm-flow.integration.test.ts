@@ -102,7 +102,7 @@ test("CRM flow", async (t) => {
     const inquiry = await createTestInquiry();
     const deal = await createDealFromInquiry(inquiry.id);
 
-    assert.equal(deal.title, "Acme Kft. – Demó igény");
+    assert.equal(deal.title, "Acme Kft. – Bemutató kérése");
     assert.equal(deal.contactName, "Kiss Anna");
     assert.equal(deal.contactEmail, inquiry.email.toLowerCase());
     assert.equal(deal.company, "Acme Kft.");
@@ -292,7 +292,7 @@ test("CRM flow", async (t) => {
     assert.ok(dealAfterAccept.closedAt);
     assert.equal(dealAfterAccept.nextActionAt, null);
     const wonActivity = (await systemActivities(deal.id)).find((a) =>
-      a.summary.includes("deal megnyerve"),
+      a.summary.includes("ügylet megnyerve"),
     );
     assert.ok(wonActivity);
 
@@ -359,7 +359,7 @@ test("CRM flow", async (t) => {
     assert.ok(won.closedAt);
     assert.equal(won.nextActionAt, null);
     const activateActivity = (await systemActivities(deal.id)).find((a) =>
-      a.summary.includes("Org-hozzáférés aktiválva (12 hónap)"),
+      a.summary.includes("Szervezeti hozzáférés aktiválva (12 hónap)"),
     );
     assert.ok(activateActivity);
 

@@ -15,7 +15,7 @@ const TIERS = [
   },
   {
     key: "might" as const,
-    label: { hu: "Működhet, ha készülsz", en: "May work with preparation" },
+    label: { hu: "Működhet, ha felkészülsz", en: "May work with preparation" },
     color: colors.bronze,
     bg: colors.bronze100,
     labelColor: colors.bronzeDark,

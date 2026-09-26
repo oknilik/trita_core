@@ -41,7 +41,7 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
     },
     shortTitle: { hu: "Platformfeltételek", en: "Platform terms" },
     description: {
-      hu: "A trita.io ingyenes egyéni személyiségfelmérésének, eredményeinek és observer-visszajelzéseinek használati feltételei.",
+      hu: "A trita.io ingyenes egyéni személyiségfelmérésének, eredményeinek és az ismerősöktől kért visszajelzéseinek használati feltételei.",
       en: "Terms for the free individual assessment, results and observer feedback available on trita.io. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
@@ -77,14 +77,14 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
       en: "Contractual framework for Team Scan and related assessment, reporting, workshop and advisory services. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
-      hu: "Csak akkor válik a szerződés részévé, ha az egyedi ajánlat, megrendelőlap vagy szerződés kifejezetten hivatkozik rá. Nincs online checkout.",
+      hu: "Csak akkor válik a szerződés részévé, ha az egyedi ajánlat, megrendelőlap vagy szerződés kifejezetten hivatkozik rá. Online megrendelésre és fizetésre nincs lehetőség.",
       en: "It becomes part of a contract only when an individual offer, order form or agreement expressly incorporates it. There is no online checkout.",
     },
     highlights: {
       hu: [
-        "A konkrét scope-ot, díjat, időzítést és résztvevői kört mindig az Egyedi Dokumentum rögzíti.",
+        "A szolgáltatás pontos tartalmát, díját, időzítését és a résztvevők körét mindig az Egyedi Dokumentum rögzíti.",
         "A Team Scan v1 rögzített mérési körre és dokumentált anonimitási minimumokra épül.",
-        "A riportot tanácsadó validálja és publikálja; az egyéni válaszok nem jelennek meg csapatszinten.",
+        "A riportot tanácsadó ellenőrzi és teszi elérhetővé. Az egyéni válaszok nem jelennek meg csapatszinten.",
         "Adatfeldolgozási kérdésben a külön DPA az irányadó.",
       ],
       en: [

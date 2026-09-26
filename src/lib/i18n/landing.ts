@@ -19,7 +19,7 @@ export const landingTranslations = {
     selfPanelType: { hu: "Hídépítő", en: "Bridge-Builder" },
     // A mintaprofil kanonikus team-role-estimate rangsorának első szerepe.
     selfPanelRole: { hu: "Csapatsegítő", en: "Team Supporter" },
-    selfPanelInsight: { hu: "Emberek és álláspontok között teremtesz közös nevezőt – az elveid stabil alapot adnak hozzá.", en: "You create common ground between people and viewpoints – your principles give it a stable foundation." },
+    selfPanelInsight: { hu: "Segítesz közös nevezőre jutni azoknak, akik másként látják a dolgokat. Ebben az elveidre támaszkodsz.", en: "You create common ground between people and viewpoints – your principles give it a stable foundation." },
     // Dimenzió-sáv a valódi eredménynézet (DimensionStrip) mintájára – H E X A C O sorrend
     selfDim1: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
     selfDim2: { hu: "Emocionalitás", en: "Emotionality" },
@@ -30,26 +30,26 @@ export const landingTranslations = {
     selfStrLabel: { hu: "Erősségeid", en: "Your strengths" },
     // A kanonikus 9 szerepes riport profil-alapú, két legerősebb becsült szerepe.
     selfTeamRolesEyebrow: { hu: "Valószínű csapatszerepeid", en: "Your likely team roles" },
-    selfTeamRolesSource: { hu: "Profil alapján becsült", en: "Profile-based estimate" },
+    selfTeamRolesSource: { hu: "A profilból becsülve", en: "Profile-based estimate" },
     selfTeamRoleRank1: { hu: "Elsődleges", en: "Primary" },
     selfTeamRoleRank2: { hu: "Másodlagos", en: "Secondary" },
-    selfTeamRolesNote: { hu: "A pontos képhez külön csapatszerep-kérdőív tartozik.", en: "A separate team-role questionnaire provides the precise picture." },
+    selfTeamRolesNote: { hu: "A csapatszerepeidről külön kérdőívvel kaphatsz pontosabb képet.", en: "A separate team-role questionnaire provides the precise picture." },
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
     // Fókuszált főoldal (2026-09-03) — az egyéni belépő az elsődleges, a
     // csapatos út egyetlen statikus átvezetést kap a korábbi módváltó helyett.
     focusedEyebrow: { hu: "ÖNISMERET ÉS CSAPATMŰKÖDÉS", en: "SELF-AWARENESS AND TEAMWORK" },
     focusedHeroSub: {
-      hu: "Ismerd meg a fő mintázataidat, erősségeidet és azt, mit viszel egy csapatba.",
+      hu: "Ismerd meg a rád jellemző mintázatokat, az erősségeidet és azt, mivel járulhatsz hozzá a csapat munkájához.",
       en: "Discover your key patterns, strengths, and what you bring to a team.",
     },
     focusedHeroCta: { hu: "Elindítom az ingyenes tesztet", en: "Start the free assessment" },
     focusedTeamEyebrow: { hu: "Tanácsadóval kísért program", en: "Consultant-guided program" },
     focusedTeamTitle: { hu: "Csapatként folytatnátok?", en: "Ready to continue as a team?" },
     focusedTeamSub: {
-      hu: "Mélyebb csapatmegértés, közös nyelv és célzott fejlődés vezetői támogatással.",
+      hu: "Értsétek meg jobban, hogyan dolgoztok együtt, és válasszátok ki, min szeretnétek változtatni. Ebben a vezetőt is támogatjuk.",
       en: "Deeper team understanding, a shared language, and focused development with leadership support.",
     },
-    focusedTeamLayersLabel: { hu: "Mit mér a csapatprogram", en: "What the team program measures" },
+    focusedTeamLayersLabel: { hu: "Mit mérünk a csapatprogramban?", en: "What the team program measures" },
     focusedTeamProfilesTitle: { hu: "Egyéni személyiségprofilok", en: "Individual personality profiles" },
     // Elsődleges út: a /team-dynamics mélyoldal. A pilot a másodlagos CTA.
     focusedTeamCta: { hu: "A csapatdiagnosztika részletei", en: "Team diagnostics in detail" },
@@ -59,14 +59,14 @@ export const landingTranslations = {
     teamEyebrow: { hu: "Közös kép a csapatotokról", en: "A shared picture of your team" },
     teamHeadlineBefore: { hu: "Értsétek meg jobban a ", en: "Better understand your " },
     teamHeadlineEm: { hu: "csapatotok működését.", en: "team's dynamics." },
-    teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt – a csapatotok valódi dinamikáját. Így még azelőtt felismerhetitek a feszültségeket, hogy konfliktussá válnának, és azt is, mire építhettek együtt.", en: "trita reveals what was previously invisible – your team's true dynamics. This helps you recognize tensions before they turn into conflict, while also showing what you can build on together." },
+    teamSub: { hu: "A trita segít megérteni a csapatotok kapcsolatait és együttműködését. Könnyebben felismerhetitek a kialakuló feszültségeket, és azt is, mire építhettek együtt.", en: "trita reveals what was previously invisible – your team's true dynamics. This helps you recognize tensions before they turn into conflict, while also showing what you can build on together." },
     // 2026-09-08: a /team-dynamics az egyesített csapat-oldal — az
     // elsődleges út az egyeztetés, a másodlagos az árak; a pilot saját
     // szekciót és a záró CTA-ban másodlagos linket kap.
     teamCta: { hu: "Egyeztessünk", en: "Let's talk" },
     teamSecondaryCta: { hu: "Árak és kalkulátor", en: "Pricing and calculator" },
-    teamMicrocopy: { hu: "Személyes onboarding · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
-    teamMetaOnboarding: { hu: "Személyes onboarding", en: "Personal onboarding" },
+    teamMicrocopy: { hu: "Személyes segítség az induláshoz · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
+    teamMetaOnboarding: { hu: "Személyes segítség az induláshoz", en: "Personal onboarding" },
     teamMetaTiming: { hu: "Első csapatkép néhány napon belül", en: "First team picture within days" },
     // Ár-horgony a csapat-blokkon (2026-09-07): a szám a díjkártyából jön.
     teamPriceLead: { hu: "Csapatprogramok", en: "Team programs" },
@@ -82,7 +82,7 @@ export const landingTranslations = {
     teamPanelEyebrow: { hu: "jóváhagyott csapatkép", en: "reviewed team picture" },
     teamPanelTitle: { hu: "Értékesítés", en: "Sales" },
     teamPanelValidated: { hu: "Tanácsadó által jóváhagyva", en: "Reviewed by a consultant" },
-    teamPanelPublished: { hu: "Publikált", en: "Published" },
+    teamPanelPublished: { hu: "Közzétéve", en: "Published" },
     // A showcase seed ötfős csapata (scripts/seed-showcase-org.ts).
     teamPanelMembers: { hu: "5 tag", en: "5 members" },
     teamStatMembersLabel: { hu: "Tagok", en: "Members" },
@@ -99,8 +99,8 @@ export const landingTranslations = {
     teamPrivacyNote: { hu: "Csapatátlag – egyéni értékek nem jelennek meg.", en: "Team average – individual values are not shown." },
     teamStrengthLabel: { hu: "Erősség", en: "Strength" },
     teamStrengthText: { hu: "Erős közös lendület és összetartás.", en: "Strong shared momentum and cohesion." },
-    teamWatchLabel: { hu: "Figyelendő", en: "Watch" },
-    teamWatchText: { hu: "Az új nézőpont könnyen háttérbe kerülhet.", en: "A new perspective can easily be overlooked." },
+    teamWatchLabel: { hu: "Amire érdemes figyelni", en: "Watch" },
+    teamWatchText: { hu: "Az eltérő nézőpontok könnyen háttérbe kerülhetnek.", en: "A new perspective can easily be overlooked." },
     teamPatternLabel: { hu: "Csapatmintázat", en: "Team pattern" },
     teamPersonalitySummary: { hu: "Személyiség-összetétel", en: "Personality composition" },
     teamNarrativeLabel: { hu: "Tanácsadói értékelés", en: "Consultant assessment" },
@@ -111,17 +111,17 @@ export const landingTranslations = {
     howTeamTitleBefore: { hu: "Három lépésben kaptok ", en: "Three steps to your " },
     howTeamTitleEm: { hu: "csapatképet", en: "team picture" },
     howSelf1Title: { hu: "Kitöltöd", en: "Fill it out" },
-    howSelf1Desc: { hu: "Végigmész a kérdéseken ~10 perc alatt – készülni nem kell rá.", en: "Done in ~10 minutes. No preparation needed." },
+    howSelf1Desc: { hu: "A kérdőívet körülbelül 10 perc alatt kitöltheted. Készülnöd nem kell rá.", en: "Done in ~10 minutes. No preparation needed." },
     howSelf2Title: { hu: "Megkapod a profilodat", en: "Get your profile" },
     howSelf2Desc: { hu: "Azonnal látod a fő mintázataidat és az erősségeidet.", en: "See your key patterns and strengths right away." },
     howSelf3Title: { hu: "Megérted a saját működésedet", en: "Understand how you naturally operate" },
     howSelf3Desc: { hu: "A személyes képedből kirajzolódik, milyen mintázatok jellemeznek, miben lehetsz erős, és milyen szerepekben működsz természetesen egy csapatban.", en: "Your personal picture reveals the patterns that define you, where your strengths may lie, and which roles come naturally to you in a team." },
     howTeam1Title: { hu: "Tisztázzuk a célt és a keretet", en: "Clarify the goal and the scope" },
-    howTeam1Desc: { hu: "Egy rövid egyeztetésen: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül. Ezután minden csapattag személyes linket kap.", en: "In a short conversation: who takes part, what we measure, what you receive and what it costs. Then every team member gets a personal link." },
+    howTeam1Desc: { hu: "Egy rövid egyeztetésen megbeszéljük, kik vesznek részt, mit mérünk, mi készül el, és mennyibe kerül. Ezután minden csapattag személyes linket kap.", en: "In a short conversation: who takes part, what we measure, what you receive and what it costs. Then every team member gets a personal link." },
     howTeam2Title: { hu: "Kitöltés és tanácsadói ellenőrzés", en: "Completion and consultant review" },
-    howTeam2Desc: { hu: "A tagok szakaszosan, önállóan töltik ki a kérdőíveket. Az összevetett profilokból néhány napon belül csapatkép készül, amit publikálás előtt tanácsadó ellenőriz és értelmez.", en: "Members complete the questionnaires in stages, on their own. Within days the compared profiles become a team picture, which a consultant reviews and interprets before publishing." },
+    howTeam2Desc: { hu: "A tagok több részletben, önállóan töltik ki a kérdőíveket. Az eredmények összevetésével néhány napon belül csapatkép készül, amelyet közzététel előtt tanácsadó ellenőriz és értelmez.", en: "Members complete the questionnaires in stages, on their own. Within days the compared profiles become a team picture, which a consultant reviews and interprets before publishing." },
     howTeam3Title: { hu: "Közösen értelmezzük", en: "We interpret it together" },
-    howTeam3Desc: { hu: "Feszültségpontok, erősségek, fejlesztési irányok – egy közös alkalmon beszéljük át, mit kezdjetek velük. A Csapatprogramban fél év múlva visszamérjük, mi változott.", en: "Friction points, strengths, development directions – we discuss what to do with them in a joint session. In the Team Program we remeasure after six months what has changed." },
+    howTeam3Desc: { hu: "Egy közös alkalmon átbeszéljük az erősségeket és a feszültségeket, majd kiválasztjuk, min érdemes változtatni. A Csapatprogramban fél év múlva megismételjük a mérést, hogy lássátok a változást.", en: "Friction points, strengths, development directions – we discuss what to do with them in a joint session. In the Team Program we remeasure after six months what has changed." },
     // Features
     featuresTitleBefore: { hu: "Nemcsak képet kapsz magadról, hanem ", en: "You don't just get a picture of yourself – you also get " },
     teamFeaturesTitleBefore: { hu: "Nemcsak eredményt kaptok, hanem ", en: "You don't just get results – you get " },
@@ -137,10 +137,10 @@ export const landingTranslations = {
     selfFeat3Desc: { hu: "Látod, mire építhetsz, és hol érdemes tudatosan változtatnod.", en: "See what you can build on and where it may be worth making intentional changes." },
     teamFeat1Badge: { hu: "Dinamika", en: "Dynamics" },
     teamFeat1Title: { hu: "Mért bizalmi háló", en: "Measured trust network" },
-    teamFeat1Desc: { hu: "Az egymásról adott visszajelzésekből kirajzolódik, hol erős a bizalom, hol vannak gyengébb kapcsolódások, és hol kell még több visszajelzés a biztos képhez.", en: "Pairwise relationship data shows where trust is strong, where the network breaks, and where evidence is still limited." },
+    teamFeat1Desc: { hu: "Az egymásról adott visszajelzésekből kirajzolódik, hol erős a bizalom, hol gyengébbek a kapcsolatok, és hol van még szükség több visszajelzésre.", en: "Pairwise relationship data shows where trust is strong, where the network breaks, and where evidence is still limited." },
     teamFeat2Badge: { hu: "Biztonság", en: "Safety" },
     teamFeat2Title: { hu: "Pszichológiai biztonság", en: "Psychological Safety" },
-    teamFeat2Desc: { hu: "Névtelen pulzusmérés arról, mennyire biztonságos a csapatban hibázni, kérdezni vagy ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
+    teamFeat2Desc: { hu: "Rövid, névtelen felmérés arról, mennyire érzitek biztonságosnak, hogy hibázzatok, kérdezzetek vagy ellentmondjatok a csapatban.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
     teamFeat3Badge: { hu: "Csapatkép", en: "Team picture" },
     teamFeat3Title: { hu: "Közösen értelmezett csapatkép", en: "Jointly interpreted team picture" },
     teamFeat3Desc: { hu: "Egyéni profilok és közös csapatkép: erősségek, kockázatok és konkrét javaslatok.", en: "Executive summary: strengths, risks, recommendations." },
@@ -148,7 +148,7 @@ export const landingTranslations = {
     proofTitleBefore: { hu: "Mitől több ez egy ", en: "What makes this more than an " },
     proofTitleEm: { hu: "átlagos személyiségtesztnél?", en: "average personality test?" },
     proof1Title: { hu: "Tudományos alap", en: "Scientific foundation" },
-    proof1Desc: { hu: "Kutatásban használt és validált személyiségmodellekre épül – nem gyors típusbesorolásra.", en: "Built on validated personality models used in research – not quick type classifications." },
+    proof1Desc: { hu: "Pszichológiai kutatásokban vizsgált személyiségmodellre épül.", en: "Built on validated personality models used in research – not quick type classifications." },
     proof2Title: { hu: "Több mint egy címke", en: "More than a label" },
     proof2Desc: { hu: "Nem egyetlen típusba sorol, hanem megmutatja a rád jellemző mintázatokat és azt, hogyan jelenhetnek meg a csapatban.", en: "Rather than placing you in a single type, it shows your characteristic patterns and how they may appear in a team." },
     proof3Title: { hu: "Érthető és használható", en: "Clear and useful" },
@@ -159,31 +159,31 @@ export const landingTranslations = {
     proofTeamTitleBefore: { hu: "Miért több ez egy ", en: "Why is this different from an " },
     proofTeamTitleEm: { hu: "hagyományos csapatfelmérésnél?", en: "average team survey?" },
     proofTeam1Title: { hu: "A szerepeket és a kapcsolatokat is megmutatja", en: "Measures relationships too" },
-    proofTeam1Desc: { hu: "Az egyéni profilokból kirajzolódnak a természetes csapatszerepek, a bizalmi hálóból pedig az, hogyan kapcsolódtok egymáshoz. Így az is látszik, mire építhettek, és hol érdemes változtatni.", en: "Pairwise trust data sits next to survey averages: we see not only what the team thinks, but how it connects." },
+    proofTeam1Desc: { hu: "Az egyéni profilok támpontot adnak a valószínű csapatszerepekhez. A bizalmi háló azt mutatja meg, hogyan kapcsolódtok egymáshoz. Így az is látszik, mire építhettek, és hol érdemes változtatni.", en: "Pairwise trust data sits next to survey averages: we see not only what the team thinks, but how it connects." },
     proofTeam2Title: { hu: "A változást is követi", en: "Remeasures what can change" },
-    proofTeam2Desc: { hu: "Az akciók után újramérjük a bizalmat és a pszichológiai biztonságot, így láthatjátok, mi változott, és hol van még teendő. A személyiségprofil közben stabil viszonyítási pont marad.", en: "We remeasure psychological safety and the trust network after action; stable personality profiles are a control, not an improvement label." },
+    proofTeam2Desc: { hu: "A közösen választott változtatások után újramérjük a bizalmat és a pszichológiai biztonságot, így láthatjátok, mi változott, és hol van még teendő. A személyiségprofil közben stabil viszonyítási pont marad.", en: "We remeasure psychological safety and the trust network after action; stable personality profiles are a control, not an improvement label." },
     proofTeam3Title: { hu: "Tanácsadó segít értelmezni", en: "Consultant-reviewed" },
-    proofTeam3Desc: { hu: "A csapatképet publikálás előtt tanácsadó ellenőrzi és értelmezi. Ahol még nincs elég adat a biztos következtetéshez, azt egyértelműen jelezzük.", en: "The team picture isn't spit out by an algorithm: a consultant reviews and interprets it before publishing, and estimated data is always labeled." },
+    proofTeam3Desc: { hu: "A csapatképet közzététel előtt tanácsadó ellenőrzi és értelmezi. Ahol még nincs elég adat a biztos következtetéshez, azt egyértelműen jelezzük.", en: "The team picture isn't spit out by an algorithm: a consultant reviews and interprets it before publishing, and estimated data is always labeled." },
     // StatsBar
     // Egységes kitöltési idő (design-akciólista #4): a hero chip, a
     // StatsBar és a marketing copy ugyanazt az értéket használja.
     statMinValue: { hu: "~10", en: "~10" },
     statMinSuffix: { hu: " perc", en: " min" },
-    statMinLabel: { hu: "átlagos kitöltés", en: "average completion" },
-    statDimLabel: { hu: "személyiség dimenzió", en: "personality dimensions" },
+    statMinLabel: { hu: "átlagos kitöltési idő", en: "average completion" },
+    statDimLabel: { hu: "személyiségdimenzió", en: "personality dimensions" },
     statResultValue: { hu: "azonnali", en: "instant" },
     statResultLabel: { hu: "eredmény, várakozás nélkül", en: "result, no waiting" },
     statSelfValue: { hu: "önismerettől a csapatműködésig", en: "from self-awareness to teamwork" },
     statSelfLabel: { hu: "egy közös rendszerben", en: "in one connected system" },
     // StatsBar – team mód
     statTeamMinValue: { hu: "~30", en: "~30" },
-    statTeamMinLabel: { hu: "tagonkénti kitöltés", en: "per-member completion" },
+    statTeamMinLabel: { hu: "kitöltési idő fejenként", en: "per-member completion" },
     statTeamPictureValue: { hu: "néhány nap", en: "days" },
     statTeamPictureLabel: { hu: "a jóváhagyott csapatképig", en: "to a reviewed team picture" },
     // A korábbi „16 felismerhető csapatmintázat" stat kivezetve: a /patterns
     // felület parkolt, és a playbook szerint a minta „értelmezési nyelv, nem
     // validált csapattípus" – a stat a Scan v1 tényleges rétegeit mondja.
-    statTeamLayersLabel: { hu: "mérési réteg", en: "measurement layers" },
+    statTeamLayersLabel: { hu: "mérési terület", en: "measurement layers" },
     // A főoldal hero H1-e (2026-09-03 óta): a leggyorsabban érthető ígéret.
     ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban megérted, ", en: "In ~10 minutes, better understand " },
     ctaSelfHeadlineEm: { hu: "hogyan működsz.", en: "how you operate." },
@@ -196,10 +196,10 @@ export const landingTranslations = {
     ctaSelfMicrocopy: { hu: "Ingyenes · azonnali első eredmény", en: "Free · instant first result" },
     ctaTeamHeadlineBefore: { hu: "Lássátok tisztábban, hogyan ", en: "Ready for your first " },
     ctaTeamHeadlineEm: { hu: "működtök együtt.", en: "shared picture?" },
-    ctaTeamSub: { hu: "Egy rövid egyeztetésen tisztázzuk a célt és a keretet, aztán néhány napon belül elkészül az első csapatképetek, amelyet közösen értelmezünk. A pilotprogramban mindezt partneri áron, kiemelt figyelemmel.", en: "In a short conversation we clarify the goal and the scope, then your first team picture is ready within days and we interpret it together. In the pilot program all of this comes at the partner price, with extra attention." },
+    ctaTeamSub: { hu: "Egy rövid egyeztetésen tisztázzuk a célt és a keretet, aztán néhány napon belül elkészül az első csapatképetek, amelyet közösen értelmezünk. A pilotprogramban mindezt partneri áron, kiemelt figyelemmel kapjátok.", en: "In a short conversation we clarify the goal and the scope, then your first team picture is ready within days and we interpret it together. In the pilot program all of this comes at the partner price, with extra attention." },
     ctaTeamCta: { hu: "Egyeztessünk a csapatotokról", en: "Talk to us about your team" },
     ctaTeamPilot: { hu: "Vagy nézd meg a pilotprogramot", en: "Or explore the pilot program" },
-    ctaTeamMicrocopy: { hu: "Egy munkanapon belül válaszolunk · írásos ajánlat a csapatotok kereteire", en: "We reply within one business day · a written quote for your team setup" },
+    ctaTeamMicrocopy: { hu: "Egy munkanapon belül válaszolunk · a csapatotokra szabott írásos ajánlat", en: "We reply within one business day · a written quote for your team setup" },
   },
   pricing: {
     // SEO: a cím a keresett „csapatfejlesztés" szolgáltatás-megnevezéssel
@@ -212,7 +212,7 @@ export const landingTranslations = {
       en: "Pricing – team diagnostics and team program | trita",
     },
     metaDescription: {
-      hu: "Az egyéni személyiségfelmérés ingyenes; a csapatprogram csapatalapdíjjal és résztvevőnkénti díjjal, minden méréssel – létszámra és csapatszámra kalkulálva.",
+      hu: "Az egyéni személyiségfelmérés ingyenes. Számoljátok ki a csapatprogram díját a résztvevők és a csapatok száma alapján. Az ár minden mérést tartalmaz.",
       en: "The individual personality assessment is free; the team program has a base fee per team plus participant fees with every measurement included, calculated by headcount and team count.",
     },
     // /pricing (2026-09-08): önálló Árak oldal. A számok a díjkártyából
@@ -220,10 +220,10 @@ export const landingTranslations = {
     pageEyebrow: { hu: "Árazás", en: "Pricing" },
     // Szalagcím (2026-09-08): a létszám-elv a címben; a bevezető az egyéni
     // (ingyenes) és a csapatszintű (létszámhoz igazodó) réteget állítja szembe.
-    pageTitle: { hu: "Átlátható, a csapatok méretéhez igazodó ", en: "Transparent pricing that fits your " },
-    pageTitleEm: { hu: "árazási struktúra.", en: "team size." },
+    pageTitle: { hu: "A csapatotok méretéhez igazodó ", en: "Transparent pricing that fits your " },
+    pageTitleEm: { hu: "átlátható árak.", en: "team size." },
     pageLead: {
-      hu: "Az egyéni szint teljesen ingyenes. A csapatcsomagok ára csapatalapdíjból és résztvevőnkénti díjból áll. Az egy főre jutó átlagár a létszámhoz és a csapatok számához igazodik.",
+      hu: "Az egyéni felmérés és a hozzá tartozó funkciók ingyenesek. A csapatcsomagok ára csapatonkénti alapdíjból és résztvevőnkénti díjból áll. Az egy főre jutó átlagár a létszámhoz és a csapatok számához igazodik.",
       en: "The individual level is completely free. Team pricing combines a base fee per team and participant fees. The average per person depends on headcount and team count.",
     },
     pageCalculatorLink: { hu: "Kalkulátor", en: "Calculator" },
@@ -235,15 +235,15 @@ export const landingTranslations = {
     // Az angol felület euróban mutat (napi középárfolyam, fx.ts); a HU
     // változat itt csak a teljesség kedvéért — magyarul nem jelenik meg.
     fxNote: {
-      hu: "Az árak forintban rögzítettek és forintban számlázunk; az euró-összegek tájékoztató jellegűek, a {source} {date}-i napi középárfolyamán ({rate} Ft/€) váltva.",
+      hu: "Az árakat forintban határozzuk meg, és forintban számlázunk. Az euróban megadott összegek tájékoztató jellegűek. Az átváltáshoz használt napi középárfolyam: {rate} Ft/€; forrás: {source}; dátum: {date}.",
       en: "Prices are set and invoiced in Hungarian forint. Euro amounts are indicative, converted at the {source} daily mid rate of {rate} HUF/EUR on {date}.",
     },
     fxNoteFallback: {
-      hu: "Az árak forintban rögzítettek és forintban számlázunk; az euró-összegek tájékoztató jellegűek ({rate} Ft/€).",
+      hu: "Az árakat forintban határozzuk meg, és forintban számlázunk. Az euróban megadott összegek tájékoztató jellegűek ({rate} Ft/€).",
       en: "Prices are set and invoiced in Hungarian forint. Euro amounts are indicative, converted at an approximate rate of {rate} HUF/EUR.",
     },
     fxNoteShort: {
-      hu: "Az euró-összeg tájékoztató, napi középárfolyamon; forintban számlázunk.",
+      hu: "Az euróban megadott összeg napi középárfolyamon számolt, tájékoztató ár. Forintban számlázunk.",
       en: "Euro amount indicative, at the daily mid rate; invoiced in HUF.",
     },
     calculatorEyebrow: { hu: "Kalkulátor", en: "Calculator" },
@@ -261,26 +261,26 @@ export const landingTranslations = {
     // A kedvezmény mértékét a jelvény, a szabad helyeket a helyek-jelző
     // mondja — a bekezdés azt teszi hozzá, MIT tartalmaz ez az ár.
     pilotStripBody: {
-      hu: "Az ár a Csapatprogram teljes tartalmára vonatkozik: minden mérés, félnapos személyes workshop, újramérés hat hónap múlva. Cserébe visszajelzést kérünk a programról.",
+      hu: "Az ár a Csapatprogram minden elemét tartalmazza: az összes mérést, a félnapos személyes workshopot és a hat hónappal későbbi újramérést. Cserébe visszajelzést kérünk a programról.",
       en: "The price covers the full Team Program: every measurement, a half-day in-person workshop, a remeasurement six months later. In return we ask for feedback on the program.",
     },
     faqPriceEyebrow: { hu: "Az árról", en: "About the price" },
     faqTeamEyebrow: { hu: "Mielőtt belevágunk", en: "Before we begin" },
     endEyebrow: { hu: "Írásos ajánlat", en: "Written quote" },
-    endTitle: { hu: "Az egyeztetés után a kalkulált díjat írásos ajánlatban is megerősítjük.", en: "After the conversation we confirm the calculated fee in a written quote." },
+    endTitle: { hu: "Az egyeztetés után a kiszámolt díjat írásos ajánlatban is megerősítjük.", en: "After the conversation we confirm the calculated fee in a written quote." },
     // /team-dynamics ár-szekció: a horgony-kártya mellé
     anchorEyebrow: { hu: "Mennyibe kerül", en: "What it costs" },
     // Ugyanaz a cím és bevezető, mint az /pricing oldal fejlécében (2026-09-09).
-    anchorTitle: { hu: "Átlátható, a csapatok méretéhez igazodó árazási struktúra.", en: "Transparent pricing that fits your team size." },
+    anchorTitle: { hu: "A csapatotok méretéhez igazodó átlátható árak.", en: "Transparent pricing that fits your team size." },
     anchorBody: {
-      hu: "Az egyéni szint teljesen ingyenes. A csapatcsomagok ára csapatalapdíjból és résztvevőnkénti díjból áll. Az egy főre jutó átlagár a létszámhoz és a csapatok számához igazodik.",
+      hu: "Az egyéni felmérés és a hozzá tartozó funkciók ingyenesek. A csapatcsomagok ára csapatonkénti alapdíjból és résztvevőnkénti díjból áll. Az egy főre jutó átlagár a létszámhoz és a csapatok számához igazodik.",
       en: "The individual level is completely free. Team pricing combines a base fee per team and participant fees. The average per person depends on headcount and team count.",
     },
     anchorLink: { hu: "Árak és kalkulátor", en: "Pricing and calculator" },
     heroHeading: { hu: "Minden csapat más – ezért a közös munka is ", en: "Every team is different – so the way we work together " },
     heroHeadingEm: { hu: "hozzátok igazodik.", en: "is tailored to you." },
     heroSub: {
-      hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd átlátható keretet kaptok: kik vesznek részt, mit mérünk, mi készül el és mennyibe kerül.",
+      hu: "Egy rövid egyeztetésen tisztázzuk a célt, majd megbeszéljük, kik vesznek részt, mit mérünk, mi készül el, és mennyibe kerül.",
       en: "In a short conversation, we clarify the goal, then give you a transparent scope: who takes part, what we measure, what you receive, and what it costs.",
     },
     heroProcessCta: { hu: "Így dolgozunk együtt", en: "How we work together" },
@@ -307,7 +307,7 @@ export const landingTranslations = {
     offerCta: { hu: "Egyeztessünk", en: "Start a conversation" },
     // P3-2: az eyebrow alatti kísérőmondat — az oszlop eddig üresen lógott.
     offerAside: {
-      hu: "Az egyéni felmérés a kipróbálás, a csapatprogram a közös munka belépője.",
+      hu: "Az egyéni felméréssel kipróbálhatod a tritát. A csapatprogramban együtt dolgozunk a csapatotok működésén.",
       en: "The individual assessment is how you try it; the team program is how we work together.",
     },
     // P3-1: a jobb oldali csapat-kártya pipasorának párja — enélkül az
@@ -335,9 +335,9 @@ export const landingTranslations = {
     tier_kep_item2: { hu: "A csapatban betöltött szerepek felmérése", en: "A survey of the roles people take in the team" },
     tier_kep_item3: { hu: "A csapaton belüli bizalmi kapcsolatok feltérképezése: ki kihez fordul, kivel lehet nyíltan beszélni", en: "A map of trust inside the team: who turns to whom, and with whom people can speak openly" },
     tier_kep_item4: { hu: "Annak felmérése, mennyire biztonságos a csapatban kérdezni, hibát jelezni vagy más véleményt mondani", en: "A survey of how safe it feels in the team to ask questions, flag mistakes or disagree" },
-    tier_kep_item5: { hu: "Névtelen visszajelzés a résztvevő kollégáitól és ismerőseitől ugyanarról a személyiségfelmérésről", en: "Anonymous feedback from the participant's colleagues and acquaintances on the same personality assessment" },
+    tier_kep_item5: { hu: "A résztvevő személyiségéről adott, névtelenül összesített visszajelzés a kollégáitól és ismerőseitől", en: "Anonymous feedback from the participant's colleagues and acquaintances on the same personality assessment" },
     tier_kep_item6: { hu: "Tanácsadó által ellenőrzött összefoglaló a csapat eredményeiről, külön megbeszéléssel a vezető számára", en: "A consultant-reviewed summary of the team's results, with a separate conversation for the leader" },
-    tier_kep_item7: { hu: "Az eredmények közös átbeszélése a csapattal: 90 perc, online", en: "A joint discussion of the results with the team: 90 minutes, online" },
+    tier_kep_item7: { hu: "Az eredmények közös átbeszélése a csapattal, 90 perces online alkalmon", en: "A joint discussion of the results with the team: 90 minutes, online" },
     tier_prog_item1: {
       hu: "Félnapos személyes workshop minden csapatnak: megnevezzük a legfontosabb erősséget és feszültségpontot, és közösen kiválasztjuk az első lépést",
       en: "A half-day in-person workshop for every team: we name the key strength and point of tension, and together we choose the first step",
@@ -349,7 +349,7 @@ export const landingTranslations = {
     // alkalmát felsorolja: korábban a Csapatprogramból kimaradt a 90 perces
     // online megbeszélés és az újramérés, így kevesebbet ígért a tartalmánál.
     tier_kep_time: {
-      hu: "Kérdőívek: kb. 30 perc / fő. Csapatonként 90 perc online eredménymegbeszélés.",
+      hu: "Kérdőívek: kb. 30 perc / fő. Csapatonként 90 perc online megbeszélés az eredményekről.",
       en: "Questionnaires: about 30 min / person. Plus a 90-minute online results discussion per team.",
     },
     tier_prog_time: {
@@ -360,9 +360,9 @@ export const landingTranslations = {
     teamCountLabel: { hu: "Hány külön csapat vesz részt?", en: "How many separate teams take part?" },
     teamCountOption: { hu: "{count} csapat", en: "{count} team(s)" },
     teamCountNote: { hu: "Minden csapat alapdíja {fee} + ÁFA. A résztvevők díját ezen felül számoljuk.", en: "Each team has a base fee of {fee} + VAT. Participant fees are added separately." },
-    teamsLine: { hu: "A fejenkénti átlagár a csapatalapdíjat és a résztvevők díját is tartalmazza.", en: "The average price includes both team base fees and participant fees." },
+    teamsLine: { hu: "Az egy főre jutó átlagár a csapatonkénti alapdíjat és a résztvevők díját is tartalmazza.", en: "The average price includes both team base fees and participant fees." },
     headcountUnit: { hu: "fő", en: "people" },
-    headcountNote: { hu: "Az összlétszám első {band} résztvevőjének díja {base} / fő + ÁFA, a {next}. főtől {over} / fő + ÁFA. Ehhez csapatonként alapdíj társul.", en: "The first {band} participants across all teams cost {base} / person + VAT, then {over} / person + VAT from participant {next}. A base fee applies to each team." },
+    headcountNote: { hu: "Az első {band} résztvevő díja az összes csapatot együtt számolva {base} / fő + ÁFA, a {next}. főtől {over} / fő + ÁFA. Ehhez csapatonként alapdíj társul.", en: "The first {band} participants across all teams cost {base} / person + VAT, then {over} / person + VAT from participant {next}. A base fee applies to each team." },
     headcountOver: { hu: "{max}+", en: "{max}+" },
     customTitle: { hu: "Egyedi ajánlat", en: "Custom quote" },
     customBody: {
@@ -386,10 +386,10 @@ export const landingTranslations = {
     pilotOfferChip: { hu: "Pilot: −{pct}% a Csapatprogramra", en: "Pilot: −{pct}% on Team Program" },
     // A magyar „fő" egyes számban marad („Első 10 fő"); a többes „fők" helyett
     // a második soron „résztvevők" áll — angolul mindkettő „participants".
-    breakdownBase: { hu: "Csapatalapdíj · {band} csapat", en: "Team base fees · {band} team(s)" },
+    breakdownBase: { hu: "Csapatonkénti alapdíj · {band} csapat", en: "Team base fees · {band} team(s)" },
     breakdownOver: { hu: "További résztvevők", en: "Additional participants" },
     breakdownParticipants: { hu: "Résztvevők díja · első sáv", en: "Participant fees · first band" },
-    timeLabel: { hu: "Időigény a résztvevőktől", en: "Time needed from participants" },
+    timeLabel: { hu: "A részvétel időigénye", en: "Time needed from participants" },
     ctaNote: { hu: "Egy munkanapon belül válaszolunk. Az egyeztetés után írásos ajánlatot küldünk.", en: "We reply within one business day. After the conversation we send a written quote." },
     // A kedvezmény CSAK a Csapatprogramra érvényes: a Csapatkép mellett a
     // „fenti díjból" a rossz árra mutatna, ezért ott más mondat áll.
@@ -403,13 +403,13 @@ export const landingTranslations = {
     },
     belowMultiTeamTitle: { hu: "Több csapattal is részt vehettek", en: "Several teams can take part" },
     belowMultiTeamBody: {
-      hu: "Minden csapatra egyszer számolunk alapdíjat: saját elemzést, riportot és eredménymegbeszélést kap. {max} fő felett egyedi ajánlatot készítünk.",
+      hu: "Minden csapat után egyszer számolunk alapdíjat. Csapatonként külön elemzés és riport készül, az eredményeket pedig külön alkalmon beszéljük meg. {max} fő felett egyedi ajánlatot készítünk.",
       en: "Each team is charged one base fee for its own analysis, report and results discussion. Above {max} people we prepare a custom quote.",
     },
     belowWorkshopTitle: { hu: "További személyes workshop", en: "An additional in-person workshop" },
     belowWorkshopUnit: { hu: "/ alkalom", en: "/ session" },
     belowWorkshopBody: {
-      hu: "Ha hosszabb közös munkára van szükségetek, egész napos workshop is kérhető. Ez egy önálló alkalom teljes díja – a csomagban lévő félnapos workshopon felül –, és több csapat is részt vehet rajta. Az egyeztetésen közösen eldöntjük, melyik forma illik hozzátok.",
+      hu: "Ha hosszabb közös munkára van szükségetek, egész napos workshop is kérhető. Az ár egy önálló, egész napos alkalom teljes díja, amely a csomag félnapos workshopján felül kérhető. Ezen több csapat is részt vehet. Az egyeztetésen közösen eldöntjük, melyik forma illik hozzátok.",
       en: "If you need longer together, a full-day workshop can be booked. This is the full fee for a standalone session on top of the half-day workshop in the package, and several teams can take part in it. In the conversation we decide together which format fits you.",
     },
     belowDriversTitle: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
@@ -420,7 +420,7 @@ export const landingTranslations = {
     teamCta: { hu: "Beszéljünk a csapatotokról", en: "Let's talk about your team" },
     pilotEyebrow: { hu: "pilotprogram", en: "pilot program" },
     pilotSectionTitle: {
-      hu: "Csatlakozz korai partnereink közé.",
+      hu: "Csatlakozz az első partnereinkhez.",
       en: "Join our early partners.",
     },
     pilotTitle: { hu: "Pilotprogram – az első partnercsapatainknak", en: "Pilot program – for our first partner teams" },
@@ -431,14 +431,14 @@ export const landingTranslations = {
     pilotCta: { hu: "Részletek", en: "Details" },
     faqHeading: { hu: "Gyakori kérdések", en: "Frequently asked questions" },
     faqQ1: { hu: "Mennyibe kerül?", en: "How much does it cost?" },
-    faqA1: { hu: "Az egyéni felmérés ingyenes. Csapatként két csomag közül választhattok: a Csapatképben együtt értelmezzük a felmérések eredményeit, a Csapatprogramhoz személyes workshop és hat hónappal későbbi újramérés is tartozik. A díj a résztvevők és a csapatok számától függ. Az Árak oldalon a saját létszámotokkal számolhattok: az egy főre jutó átlagárat és a teljes díjat is látjátok, + ÁFA jelöléssel.", en: "The individual assessment is free. Teams can choose between two packages: Team Picture includes a session to discuss the assessment results together; Team Program also includes an in-person workshop and remeasurement six months later. The fee depends on headcount and team count. Enter your numbers on the pricing page to see both the average per person and the total, marked + VAT." },
+    faqA1: { hu: "Az egyéni felmérés ingyenes. Csapatként két csomag közül választhattok: a Csapatkép keretében együtt értelmezzük a felmérések eredményeit, a Csapatprogramhoz személyes workshop és hat hónappal későbbi újramérés is tartozik. A díj a résztvevők és a csapatok számától függ. Az Árazás oldalon a saját létszámotokkal számolhattok: az egy főre jutó átlagárat és a teljes díjat is látjátok, + ÁFA jelöléssel.", en: "The individual assessment is free. Teams can choose between two packages: Team Picture includes a session to discuss the assessment results together; Team Program also includes an in-person workshop and remeasurement six months later. The fee depends on headcount and team count. Enter your numbers on the pricing page to see both the average per person and the total, marked + VAT." },
     faqQ2: { hu: "Mit tartalmaz az ár?", en: "What does the price include?" },
-    faqA2: { hu: "A csomagban benne vannak a személyiség-, csapatszerep-, bizalmi és pszichológiai biztonság felmérések, az eredmények tanácsadói ellenőrzése, a riport és a közös értelmezés. A Csapatprogramhoz félnapos workshop és hat hónappal későbbi újramérés is tartozik. Ha további workshopot vagy folyamatos kísérést kértek, annak díját külön egyeztetjük; a kiszállás is külön tétel.", en: "The package includes personality, team role, trust and psychological safety assessments, a consultant's review, the report and a session to discuss the results together. Team Program also includes a half-day workshop and remeasurement six months later. Extra workshops and ongoing support are agreed separately; travel is also charged separately." },
+    faqA2: { hu: "A csomagban benne van a személyiség, a csapatszerepek, a bizalmi kapcsolatok és a pszichológiai biztonság felmérése, az eredmények tanácsadói ellenőrzése, a riport és a közös értelmezés. A Csapatprogramhoz félnapos workshop és hat hónappal későbbi újramérés is tartozik. Ha további workshopot vagy folyamatos kísérést kértek, annak díját külön egyeztetjük; a kiszállás is külön tétel.", en: "The package includes personality, team role, trust and psychological safety assessments, a consultant's review, the report and a session to discuss the results together. Team Program also includes a half-day workshop and remeasurement six months later. Extra workshops and ongoing support are agreed separately; travel is also charged separately." },
     faqQ3: { hu: "Hogyan indul az együttműködés?", en: "How does the engagement start?" },
     faqA3: { hu: "Írjatok nekünk, és egy rövid beszélgetésen átbeszéljük, mire van szükségetek. Ezután írásos ajánlatot küldünk. Ha szeretnétek belevágni, közösen egyeztetjük az időpontokat, és segítünk a csapatnak elindulni.", en: "Get in touch and we will have a short conversation about what your team needs. We then send a written quote. If you decide to go ahead, we agree on dates together and help your team get started." },
     faqQ4: { hu: "Mi ingyenes, és mi tartozik a programhoz?", en: "What's free and what's part of the program?" },
     faqA4: {
-      hu: "Minden egyéni funkció ingyenes: felmérés, riport, observer-visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói validálás és a közös értelmezés a fizetős csapatcsomagok részei.",
+      hu: "Minden egyéni funkció ingyenes: a felmérés, a riport és az ismerősöktől kért visszajelzés. A csapatszintű mérések – csapatkép, csapatszerep-térkép, pszichológiai biztonság –, a tanácsadói ellenőrzés és a közös értelmezés a fizetős csapatcsomagok részei.",
       en: "All individual features are free: assessment, report and observer feedback. Team-level measurements – team picture, team role map and psychological safety –, consultant validation and the joint debrief are part of the paid team packages.",
     },
     // P0-4: a bevezetés ezen a kérdésen áll vagy bukik — a pontos, védhető
@@ -452,7 +452,7 @@ export const landingTranslations = {
     // anonymity.ts: MIN_RATERS_FOR_ANONYMOUS_AGGREGATE = 3) — ha ezek
     // változnak, ezt a szöveget is frissíteni KELL.
     faqA5: {
-      hu: "Mindenki a saját eredményét látja, teljes részletességgel. A vezető és a céges adminisztrátor nem fér hozzá a tagok egyéni, dimenziónkénti eredményeihez – ők azt látják, ki töltötte ki a felmérést, valamint az összesített, csapatszintű riportot. Név szerinti egyéni profilokkal kizárólag a tanácsadó dolgozik a csapatkép ellenőrzésekor. A bizalmi és pszichológiai biztonság kérdésekre adott válaszok anonimok, és csak legalább három fő válaszából, összesítve jelennek meg.",
+      hu: "Mindenki a saját eredményét látja, teljes részletességgel. A vezető és a céges adminisztrátor nem fér hozzá a tagok egyéni, dimenziónkénti eredményeihez – ők azt látják, ki töltötte ki a felmérést, valamint az összesített, csapatszintű riportot. Név szerinti egyéni profilokkal kizárólag a tanácsadó dolgozik a csapatkép ellenőrzésekor. A bizalomról és a pszichológiai biztonságról szóló kérdésekre adott válaszok anonimok, és csak legalább három fő válaszából, összesítve jelennek meg.",
       en: "Everyone sees their own results in full detail. The leader and the company administrator cannot access members' individual, per-dimension results – they see who has completed the assessment and the aggregated, team-level report. Only the consultant works with named individual profiles when reviewing the team picture. Answers to the trust and psychological safety questions are anonymous and only appear aggregated from at least three people's responses.",
     },
     // Az időráfordítás az árazás Csapatprogram-csomagját követi;
@@ -470,18 +470,18 @@ export const landingTranslations = {
       en: "What if someone doesn't complete it?",
     },
     faqA7: {
-      hu: "A kitöltés önkéntes, és nincs merev részvételi küszöb: a csapatkép a meglévő kitöltésekből épül, a riport pedig minden elemnél jelzi, mi mért adat, mi becslés, és hol nincs még elég információ. A kollégiális szerep-visszajelzés csak legalább három értékelő után jelenik meg. A kitöltési időszakban figyeljük a részvételt, és segítünk, ha valaki elakad.",
+      hu: "A kitöltés önkéntes, és nincs merev részvételi küszöb: a csapatkép a meglévő kitöltésekből épül, a riport pedig minden elemnél jelzi, mi mért adat, mi becslés, és hol nincs még elég információ. A csapattársaktól kapott szerep-visszajelzés csak legalább három értékelő után jelenik meg. A kitöltési időszakban figyeljük a részvételt, és segítünk, ha valaki elakad.",
       en: "Participation is voluntary and there is no rigid threshold: the team picture builds on the responses we have, and the report labels every element as measured data, estimate, or not-enough-information. Peer role feedback only appears with at least three raters. During the response window we monitor participation and help if anyone gets stuck.",
     },
     faqQ9: { hu: "Mitől lesz drágább vagy olcsóbb?", en: "What makes it cost more or less?" },
     faqA9: { hu: "A létszámtól, a csomagtól és a csapatok számától. Minden csapat alapdíja Csapatképnél {kepTeam}, Csapatprogramnál {progTeam} + ÁFA. Ehhez résztvevőnkénti díj társul; az összlétszám {band}. fője felett {over} / fő + ÁFA. A kalkulátorban ezek együttes, fejenkénti átlagát látjátok.", en: "Headcount, package and team count determine the price. Each team's base fee is {kepTeam} for Team Picture or {progTeam} + VAT for Team Program. Participant fees are added, at {over} / person + VAT above {band} participants overall. The calculator shows the combined average per person." },
     faqQ10: { hu: "Van lehetőség több részletben fizetni?", en: "Can we pay in instalments?" },
     faqA10: {
-      hu: "Az elfogadott ajánlat alapján, átutalással; a program díja akár több részletben is fizethető. A díjak nettó összegek, ÁFA-val számlázzuk. Szerződést és megrendelőt írásban kaptok.",
+      hu: "Igen, a program díját több részletben is fizethetitek. A fizetés az elfogadott ajánlat alapján, átutalással történik. A feltüntetett díjak nettó összegek, amelyekre a számlázáskor áfa kerül. Szerződést és megrendelőt írásban kaptok.",
       en: "Based on the accepted quote, by bank transfer; the program fee can be paid in several instalments. Prices are net and invoiced with VAT. You receive the contract and order form in writing.",
     },
     faqQ11: { hu: "Több csapatra hogyan számoltok?", en: "How do you price several teams?" },
-    faqA11: { hu: "Minden csapatra egyszer számolunk alapdíjat, és minden résztvevőre egyszer létszámdíjat. A létszámsáv az összes résztvevőre együtt vonatkozik. Minden csapat saját riportot és eredménymegbeszélést kap, a Csapatprogramban workshopot is. {max} fő felett egyedi ajánlatot készítünk.", en: "Each team is charged one base fee and each participant is counted once. The headcount band applies across all teams combined. Each team gets its own report and debrief, plus a workshop in Team Program. Above {max} people we prepare a custom quote." },
+    faqA11: { hu: "Minden csapat után egyszer számolunk alapdíjat, és minden résztvevő után egyszer számolunk részvételi díjat. A létszámsáv az összes résztvevőre együtt vonatkozik. Minden csapat saját riportot kap, az eredményeiről pedig külön megbeszélést tartunk. A Csapatprogramban csapatonként workshopot is tartunk. {max} fő felett egyedi ajánlatot készítünk.", en: "Each team is charged one base fee and each participant is counted once. The headcount band applies across all teams combined. Each team gets its own report and debrief, plus a workshop in Team Program. Above {max} people we prepare a custom quote." },
     faqQ12: { hu: "Van kedvezmény?", en: "Is there a discount?" },
     faqA12: {
       hu: "A pilotprogram első {total} csapata partneri áron, {pct}% kedvezménnyel kapja a Csapatprogramot, cserébe visszajelzést kérünk. Ezen felül {band} fő felett minden további résztvevő alacsonyabb fejenkénti díjjal kerül a programba.",
@@ -492,8 +492,8 @@ export const landingTranslations = {
       en: "What methodology is it based on?",
     },
     faqA8: {
-      hu: "A személyiségfelmérés a pszichológiai kutatásban széles körben vizsgált hatfaktoros személyiségmodellre épül, az önértékelést pedig kollégai és ismerősi visszajelzés árnyalhatja. A csapatkép ezen felül két mért rétegre támaszkodik: a csapatszerep-kérdőívre és a pszichológiai biztonság névtelen mérésére — a riport mindig jelöli, mi mért adat és mi becslés.",
-      en: "The personality assessment builds on the six-factor personality model, widely studied in psychological research, and self-assessment can be complemented by feedback from colleagues and acquaintances. The team picture also draws on two measured layers: the team role questionnaire and an anonymous measure of psychological safety — the report always distinguishes measured data from estimates.",
+      hu: "A személyiségfelmérés a pszichológiai kutatásban széles körben vizsgált hatfaktoros személyiségmodellre épül, az önértékelést pedig kollégáktól és ismerősöktől kapott visszajelzés árnyalhatja. A csapatképhez a csapatszerepeket, a bizalmi kapcsolatokat és a pszichológiai biztonságot is felmérjük. A riport mindig jelöli, mi mért adat, és mi becslés.",
+      en: "The personality assessment builds on the six-factor personality model, widely studied in psychological research, and self-assessment can be complemented by feedback from colleagues and acquaintances. The team picture also draws on assessments of team roles, trust relationships, and psychological safety. The report always distinguishes measured data from estimates.",
     },
     bottomHeading: { hu: "Kezdjük egy beszélgetéssel.", en: "Let's start with a conversation." },
     bottomSub: { hu: "Mesélj a csapatodról – egy munkanapon belül válaszolunk.", en: "Tell us about your team – we reply within one business day." },
@@ -505,25 +505,25 @@ export const landingTranslations = {
     quickAskEyebrow: { hu: "kérdésed van?", en: "got a question?" },
     quickAskTitle: { hu: "Kérdezz bátran – egy mondat is elég.", en: "Just ask – one sentence is enough." },
     quickAskBody: {
-      hu: "Nem kell összeszedett brief. Írd le, mi jár a fejedben – a csapatod, egy helyzet, egy kétely –, és személyesen válaszolunk.",
+      hu: "Elég, ha röviden leírod, miben szeretnél segítséget kérni. Mesélhetsz a csapatodról, egy nehéz helyzetről vagy a kérdéseidről. Személyesen válaszolunk.",
       en: "No polished brief needed. Tell us what's on your mind – your team, a situation, a doubt – and you'll get a personal reply.",
     },
     quickAskName: { hu: "Neved", en: "Your name" },
-    quickAskEmail: { hu: "Email címed", en: "Your email" },
+    quickAskEmail: { hu: "E-mail-címed", en: "Your email" },
     quickAskPlaceholder: {
-      hu: "pl. 12 fős csapatunk van, két új vezetővel – mit tudnátok ezzel kezdeni?",
+      hu: "Pl. 12 fős csapatunk van, két új vezetővel. Hogyan tudnátok segíteni az együttműködésünket?",
       en: "e.g. we're a team of 12 with two new leads – what could you do with that?",
     },
     quickAskMinHint: { hu: "Írj még pár szót, hogy érdemben tudjunk válaszolni.", en: "Add a few more words so we can give a useful answer." },
     quickAskSend: { hu: "Elküldöm", en: "Send it" },
     quickAskSending: { hu: "Küldés…", en: "Sending…" },
-    quickAskSuccessTitle: { hu: "Megvan – köszönjük!", en: "Got it – thank you!" },
+    quickAskSuccessTitle: { hu: "Köszönjük az üzenetedet.", en: "Got it – thank you!" },
     quickAskSuccessBody: {
       hu: "Egy munkanapon belül személyesen válaszolunk a megadott címre. Addig is: az egyéni felmérést bármikor kipróbálhatod ingyen.",
       en: "You'll get a personal reply within one business day. Meanwhile, feel free to try the individual assessment for free.",
     },
     quickAskError: {
-      hu: "Nem sikerült elküldeni – próbáld újra, vagy írj az info@trita.io címre.",
+      hu: "Nem sikerült elküldeni az üzenetet. Próbáld újra, vagy írj az info@trita.io címre.",
       en: "Couldn't send – try again, or email info@trita.io.",
     },
   },
@@ -544,14 +544,14 @@ export const landingTranslations = {
     },
     // Rövid változat a lábléchez és az oldalsávhoz – ott nincs hely a fentire.
     compactTitle: { hu: "Cikkek és trita-hírlevél", en: "Articles and the trita newsletter" },
-    emailLabel: { hu: "Email cím", en: "Email address" },
+    emailLabel: { hu: "E-mail-cím", en: "Email address" },
     emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     submit: { hu: "Feliratkozom", en: "Subscribe" },
     submitting: { hu: "Küldés...", en: "Sending..." },
     // A hozzájárulás szövege – a beküldés GOMBJÁNÁL kell állnia, hogy a
     // hozzájárulás tájékozott legyen (nem elég az adatkezelési tájékoztatóban).
     consent: {
-      hu: "A feliratkozással hozzájárulsz az új cikkekről szóló értesítésekhez és az időszaki trita-hírlevélhez. A kézbesítést és az első linkkérést mérjük, megnyitást nem. Bármikor leiratkozhatsz.",
+      hu: "A feliratkozással hozzájárulsz, hogy értesítsünk az új cikkekről, és időnként trita-hírlevelet küldjünk. A kézbesítést és az első linkkérést mérjük, megnyitást nem. Bármikor leiratkozhatsz.",
       en: "By subscribing you agree to new-article notifications and the occasional trita newsletter. We measure delivery and the first link request, but not opens. You can unsubscribe any time.",
     },
     privacyLink: { hu: "Adatkezelés", en: "Privacy" },
@@ -559,7 +559,7 @@ export const landingTranslations = {
     // listán – a végpont sem teszi (ld. api/newsletter/subscribe/route.ts).
     successTitle: { hu: "Nézd meg a postafiókod", en: "Check your inbox" },
     successBody: {
-      hu: "Küldtünk egy megerősítő levelet. Amíg rá nem kattintasz, nem küldünk semmit.",
+      hu: "Küldtünk egy megerősítő levelet. A benne található linken megnyíló oldalon erősítheted meg a feliratkozásodat. Értesítőt és hírlevelet csak ezután küldünk.",
       en: "We sent you a confirmation email. Until you click it, we won't send anything.",
     },
     confirmActionTitle: {
@@ -567,7 +567,7 @@ export const landingTranslations = {
       en: "Confirm your subscription",
     },
     confirmActionBody: {
-      hu: "A feliratkozás csak az alábbi gomb megnyomásával válik aktívvá; a levélben lévő link puszta megnyitása nem elég.",
+      hu: "A feliratkozás megerősítéséhez nyomd meg az alábbi gombot. A levélben található link megnyitása önmagában még nem aktiválja a feliratkozást.",
       en: "Your subscription only becomes active after pressing the button below; merely opening the link in the email is not enough.",
     },
     confirmActionCta: { hu: "Igen, feliratkozom", en: "Yes, subscribe me" },
@@ -581,7 +581,7 @@ export const landingTranslations = {
     },
     unsubscribeActionCta: { hu: "Igen, leiratkozom", en: "Yes, unsubscribe" },
     errorInvalid: {
-      hu: "Ez az email cím nem tűnik érvényesnek.",
+      hu: "Ez az e-mail-cím nem tűnik érvényesnek.",
       en: "That email address doesn't look valid.",
     },
     errorRateLimited: {
@@ -589,23 +589,23 @@ export const landingTranslations = {
       en: "Too many attempts. Wait a minute and try again.",
     },
     errorGeneric: {
-      hu: "Nem sikerült a feliratkozás. Kérlek próbáld újra.",
+      hu: "Nem sikerült a feliratkozás. Kérlek, próbáld újra.",
       en: "Subscription failed. Please try again.",
     },
     // ── Megerősítő oldal (/newsletter/confirmed) ──
     confirmedTitle: { hu: "Kész, feliratkoztál", en: "You're subscribed" },
     confirmedBody: {
-      hu: "Szólunk, amint új cikk jelenik meg. Minden levél alján találsz egyetlen kattintásos leiratkozó linket.",
+      hu: "Szólunk, amint új cikk jelenik meg. Minden levél alján találsz leiratkozási linket.",
       en: "We'll write when a new article goes live. Every email has a one-click unsubscribe link at the bottom.",
     },
     confirmExpiredTitle: { hu: "A link lejárt", en: "This link has expired" },
     confirmExpiredBody: {
-      hu: "A megerősítő link 7 napig él. Iratkozz fel újra – küldünk egy friss levelet.",
+      hu: "A megerősítő link 7 napig érvényes. Iratkozz fel újra, és küldünk egy új levelet.",
       en: "Confirmation links live for 7 days. Subscribe again and we'll send a fresh one.",
     },
     confirmInvalidTitle: { hu: "Ezt a linket nem ismerjük", en: "We don't recognise this link" },
     confirmInvalidBody: {
-      hu: "Lehet, hogy a leveleződ megtörte a linket. Próbáld meg újra a feliratkozást.",
+      hu: "Lehet, hogy a link hiányos vagy megsérült a levélben. Próbáld meg újra a feliratkozást.",
       en: "Your email client may have broken the link. Try subscribing again.",
     },
     // ── Leiratkozó oldal (/newsletter/unsubscribed) ──
@@ -630,7 +630,7 @@ export const landingTranslations = {
     },
     heroTitleEm: { hu: "Vezetés.", en: "Leadership." },
     heroSub: {
-      hu: "Gyakorlati cikkek arról, hogyan tehető láthatóvá a csapatdinamika – hogyan lehet jobb döntéseket hozni és fejlődni együtt.",
+      hu: "Gyakorlati cikkek a csapatműködés megértéséről, a közös döntésekről és a fejlődés lehetőségeiről.",
       en: "Practical articles on how to make team dynamics visible – how to make better decisions and grow together.",
     },
     empty: { hu: "Hamarosan...", en: "Coming soon..." },
@@ -638,20 +638,20 @@ export const landingTranslations = {
     minRead: { hu: "perc olvasás", en: "min read" },
     readCta: { hu: "Olvasom", en: "Read" },
     backToBlog: { hu: "Vissza a blogra", en: "Back to blog" },
-    readNext: { hu: "Ezt olvasd tovább", en: "Read next" },
+    readNext: { hu: "További olvasnivaló", en: "Read next" },
     tryEyebrow: { hu: "Próbáld ki", en: "Try it" },
     tryTitle: {
       hu: "Nézd meg, milyen eredményt kapsz.",
       en: "See what your results look like.",
     },
     trySub: {
-      hu: "~10 perc, és használható képet kapsz arról, mit viszel a csapatba – ingyenesen.",
+      hu: "Körülbelül 10 perc alatt képet kapsz arról, mivel járulhatsz hozzá a csapat munkájához. A felmérés ingyenes.",
       en: "In ~10 minutes, get a useful picture of what you bring to a team – for free.",
     },
     tryCta: { hu: "Teszt indítása", en: "Start assessment" },
     returnEyebrow: { hu: "Saját felületed", en: "Your space" },
     returnTitle: {
-      hu: "Folytasd ott, ahol tartasz.",
+      hu: "Folytasd ott, ahol abbahagytad.",
       en: "Continue where you left off.",
     },
     returnSub: {
@@ -696,8 +696,8 @@ export const landingTranslations = {
       hu: "Az első {total} partnercsapatnak",
       en: "For our first {total} partner teams",
     },
-    heroTitle: { hu: "A kivételes dolgok akkor születnek, ", en: "Don’t just try it. " },
-    heroTitleEm: { hu: "amikor igazán figyelünk egymásra.", en: "Shape it with us." },
+    heroTitle: { hu: "Ismerjétek meg a csapatotokat, ", en: "Don’t just try it. " },
+    heroTitleEm: { hu: "és formáljátok velünk a programot.", en: "Shape it with us." },
     heroBody: {
       hu: "Pilotpartnerként a teljes Csapatprogramot kapjátok, félnapos személyes workshoppal és hat hónappal későbbi újraméréssel. Ti megosztjátok velünk a tapasztalataitokat, mi pedig ezekre építve fejlesztjük tovább a tritát.",
       en: "As a pilot partner, you receive the full Team Program, with a half-day in-person workshop and remeasurement six months later. You share your experience, and we use it to develop trita further.",
@@ -705,7 +705,7 @@ export const landingTranslations = {
     heroCta: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
     // Közös kapacitáskártya: a sáv a csatlakozott csapatok arányát mutatja.
     spotsA11y: {
-      hu: "A {total} partnercsapat-helyből {left} szabad",
+      hu: "A programban {total} csapat vehet részt, még {left} hely szabad",
       en: "{left} of {total} partner team spots are open",
     },
     spotsPanelTitle: { hu: "hely a pilotprogramban", en: "spots in the pilot program" },
@@ -717,7 +717,7 @@ export const landingTranslations = {
     spotsPanelTotal: { hu: "{total} hely összesen", en: "{total} spots in total" },
     spotsProgressLabel: { hu: "Csatlakozott csapatok", en: "Teams joined" },
     spotsProgressValue: {
-      hu: "{taken} csapat csatlakozott a {total} helyből",
+      hu: "A {total} helyből {taken} már foglalt",
       en: "{taken} of {total} team spots taken",
     },
     spotsPanelCta: { hu: "Részletek", en: "Details" },
@@ -744,7 +744,7 @@ export const landingTranslations = {
     // A nagy szám a SZABAD helyek száma (C-változat): ez a döntési tény.
     fact2Value: { hu: "{left}", en: "{left}" },
     fact2Unit: { hu: "/ {total}", en: "/ {total}" },
-    fact2Label: { hu: "szabad partnercsapat-hely", en: "open partner team spots" },
+    fact2Label: { hu: "szabad hely a csapatoknak", en: "open partner team spots" },
     // A 3. tény (2026-09-07): áthúzott listaár + partneri ár a díjkártyából.
     fact3Value: { hu: "{pilot}", en: "{pilot}" },
     fact3Unit: { hu: "/ fő + ÁFA", en: "/ person + VAT" },
@@ -773,7 +773,7 @@ export const landingTranslations = {
       hu: "Ti megosztjátok velünk a tapasztalataitokat, mi pedig figyelünk, kérdezünk és tanulunk belőlük.",
       en: "The team’s experience and trita’s method shape the program together.",
     },
-    partnerVisualEyebrow: { hu: "Partneri pilot", en: "Partner pilot" },
+    partnerVisualEyebrow: { hu: "Pilotprogram partnereinkkel", en: "Partner pilot" },
     partnerTeamBody: {
       hu: "Elmondjátok, mit tapasztaltok",
       en: "Real use and honest experience",
@@ -791,7 +791,7 @@ export const landingTranslations = {
     // Aside – "Miért most"
     asideEyebrow: { hu: "Kinek szól", en: "Who it is for" },
     asideTitle: {
-      hu: "Közös munka, nem még egy kérdőív.",
+      hu: "Csapatoknak, amelyek együtt szeretnének változtatni.",
       en: "A shared process, not just another survey.",
     },
     asideBody: {
@@ -832,7 +832,7 @@ export const landingTranslations = {
     // Kölcsönös vállalás
     exchangeEyebrow: { hu: "A közös munka alapja", en: "The basis of our work together" },
     exchangeTitle: {
-      hu: "Mi végigkísérünk benneteket. Ti időt és figyelmet szántok ránk.",
+      hu: "Végigkísérünk benneteket a programon, és számítunk a visszajelzéseitekre.",
       en: "What we give, and what we ask from you.",
     },
     exchangeGiveLabel: { hu: "Amit mi adunk", en: "What we provide" },
@@ -852,7 +852,7 @@ export const landingTranslations = {
       hu: "A program során elérhetők maradunk, és hat hónappal később újraméréssel nézzük meg, mi változott",
       en: "We stay in contact throughout the program and remeasure six months later to see what has changed",
     },
-    exchangeAskLabel: { hu: "Amit ti hoztok", en: "What we ask from you" },
+    exchangeAskLabel: { hu: "Amit tőletek kérünk", en: "What we ask from you" },
     exchangeAskTitle: {
       hu: "Időt, nyitottságot és őszinte visszajelzést",
       en: "Real use and honest feedback",
@@ -872,11 +872,11 @@ export const landingTranslations = {
 
     // Benefits section
     benefitsEyebrow: { hu: "Mit kapsz", en: "What you get" },
-    benefitsTitle: { hu: "Mérés, közös értelmezés és egy követhető következő lépés.", en: "Measurement, shared interpretation, and a next step you can follow." },
+    benefitsTitle: { hu: "Felmérjük a csapat működését, és együtt döntünk a következő lépésről.", en: "Measurement, shared interpretation, and a next step you can follow." },
     benefit1Title: { hu: "Egységes induló mérés", en: "A consistent baseline" },
     benefit1Desc: {
-      hu: "Minden csapat ugyanazzal a három alapréteggel indul: önértékeléssel, mért bizalmi hálóval és névtelen pszichológiai biztonság-felméréssel. Az observer-, peer- és csapatszerep-kör külön kiegészítő.",
-      en: "Every team starts with the same three core layers: self-assessment, a measured trust network, and an anonymous psychological safety survey. Observer, peer, and team-role rounds are separate add-ons.",
+      hu: "Minden csapat három alapvető felméréssel indul: önértékeléssel, a bizalmi kapcsolatok felmérésével és a pszichológiai biztonság névtelen mérésével. Ezeket az ismerősök és a csapattársak visszajelzései, valamint a csapatszerepek felmérése egészítik ki.",
+      en: "Every team starts with three core assessments: self-assessment, a measured trust network, and an anonymous psychological safety survey. Feedback from acquaintances and teammates, along with the team-role assessment, complements these.",
     },
     benefit2Title: {
       hu: "Félnapos személyes workshop",
@@ -886,12 +886,12 @@ export const landingTranslations = {
       hu: "A félnapos személyes workshopon együtt olvassuk a csapatképet. Megnevezzük a legfontosabb erősséget és feszültségpontot, majd kiválasztjuk, min érdemes először változtatni.",
       en: "In a half-day in-person workshop, we read the team picture together. We identify the most important strength and point of tension, then choose what to change first.",
     },
-    benefit5Title: { hu: "Visszamérési kör", en: "Follow-up measurement round" },
+    benefit5Title: { hu: "Ismételt felmérés", en: "Follow-up measurement round" },
     benefit5Desc: {
       hu: "Hat hónappal később újra megmérjük a változtatható mutatókat. Csak olyan elmozdulást nevezünk fejlődésnek, amelyet az adatok valóban alátámasztanak.",
       en: "Six months later, we measure the changeable outcomes again. We only call it progress when the data supports that conclusion.",
     },
-    benefit6Title: { hu: "Korai partner státusz", en: "Early partner status" },
+    benefit6Title: { hu: "Az első partnereknek járó feltételek", en: "Early partner status" },
     benefit6Desc: {
       hu: "Közvetlenül alakíthatjátok, hogyan fejlődjön a program. A pilotban kialakított egyedi feltételeket a későbbi együttműködésben is megőrizzük.",
       en: "You can directly shape how the program develops. We preserve the individual terms agreed during the pilot in our future work together.",
@@ -913,7 +913,7 @@ export const landingTranslations = {
       hu: "Elkészítjük a csapatképet, és félnapos személyes workshopon közösen értelmezzük. A riport egyértelműen jelzi, mi mért adat, mi becslés, és hol nincs még elég információ.",
       en: "We prepare the team picture and interpret it together in a half-day in-person workshop. The report clearly distinguishes measured data, estimates, and areas where there is not yet enough information.",
     },
-    step3Title: { hu: "Akció és visszamérés", en: "Action and follow-up" },
+    step3Title: { hu: "Változtatás és újramérés", en: "Action and follow-up" },
     step3Desc: {
       hu: "Kiválasztunk egy konkrét vezetői lépést, amelyet a mindennapi munkában is ki lehet próbálni. Hat hónappal később újraméréssel nézzük meg, hozott-e mérhető változást.",
       en: "We choose one concrete leadership action to try in day-to-day work. Six months later, we remeasure to check whether it produced measurable change.",
@@ -925,7 +925,7 @@ export const landingTranslations = {
     commitmentLabel: { hu: "Amit vállaltok", en: "Your commitment" },
     commitment1Title: { hu: "Aktív használat", en: "Active usage" },
     commitment1Desc: {
-      hu: "A csapat kitölti a felméréseket, a kijelölt vezető pedig kipróbálja a közösen választott akciót a mindennapi munkában.",
+      hu: "A csapat kitölti a felméréseket, a kijelölt vezető pedig kipróbálja a közösen választott változtatást a mindennapi munkában.",
       en: "The team completes the surveys, and the designated leader tries the jointly selected action in day-to-day work.",
     },
     commitment2Title: { hu: "Két visszajelző beszélgetés", en: "Two feedback conversations" },
@@ -935,7 +935,7 @@ export const landingTranslations = {
     },
     commitment3Title: { hu: "Tapasztalatmegosztás", en: "Sharing your experience" },
     commitment3Desc: {
-      hu: "Ha a program valódi értéket adott, engedélyt kérünk egy rövid, egyeztetett visszajelzés vagy anonimizált tapasztalat megosztására.",
+      hu: "Ha hasznosnak találtátok a programot, engedélyt kérünk egy rövid, egyeztetett visszajelzés vagy anonimizált tapasztalat megosztására.",
       en: "If the program delivered real value, we ask permission to share a short, agreed testimonial or anonymized account of your experience.",
     },
 
@@ -947,7 +947,7 @@ export const landingTranslations = {
     // „hatfaktoros személyiségmodell").
     founderEyebrow: { hu: "Ki kísér végig", en: "Who guides you" },
     founderTitle: {
-      hu: "Nem csak platformot kaptok, hanem közös munkát.",
+      hu: "Személyesen kísérünk végig a programon.",
       en: "You get more than a platform — you get shared work.",
     },
     founderBody: {
@@ -955,7 +955,7 @@ export const landingTranslations = {
       en: "In the pilot, trita's founder works with every team from start to finish: reviewing the team picture, leading the joint interpretation, and staying directly reachable throughout the program.",
     },
     founderMethod: {
-      hu: "A csapatkép több rétegből áll össze: hat dimenzió mentén mért személyiségprofilok, csapatszerepek és a pszichológiai biztonság névtelen mérése — és minden eleménél jelöljük, mi mért adat és mi becslés.",
+      hu: "A csapatképhez hat dimenzió mentén mérjük fel a személyiséget, feltérképezzük a csapatszerepeket, és névtelenül mérjük a pszichológiai biztonságot. Minden elemnél jelöljük, mi mért adat, és mi becslés.",
       en: "The team picture builds up from several layers: personality profiles measured across six dimensions, team roles, and an anonymous measure of psychological safety — and every element is labeled as measured data or estimate.",
     },
 
@@ -975,7 +975,7 @@ export const landingTranslations = {
       hu: "Az egyéni eredményeket csak a kitöltő és a tanácsadó látja – a vezető összesített csapatképet kap.",
       en: "Individual results are visible only to the person and the consultant – the leader receives an aggregated team picture.",
     },
-    privacyNoteLink: { hu: "Részletek az Adatkezelésben", en: "Details in the Privacy Policy" },
+    privacyNoteLink: { hu: "Részletek az adatkezelési tájékoztatóban", en: "Details in the Privacy Policy" },
     fitEyebrow: { hu: "Jó helyen jártok, ha", en: "A good fit if" },
     fitBody: {
       hu: "együtt dolgozó csapatként szeretnétek tisztábban látni a működéseteket, nyitottak vagytok a közös gondolkodásra, és készek vagytok egy közösen kiválasztott következő lépést megvalósítani.",
@@ -987,16 +987,16 @@ export const landingTranslations = {
     // Szabadhely-jelzés az űrlap fejlécében — a szám a pilot-config.ts-ből
     // jön, 0-nál a sor nem renderelődik.
     formSpotsNote: {
-      hu: "A {total} partnercsapat-helyből még {left} szabad.",
+      hu: "A programban {total} csapat vehet részt, még {left} hely szabad.",
       en: "{left} of the {total} partner team spots are still open.",
     },
     formSubheading: {
-      hu: "Két perc alatt kitölthető. Néhány mondat is elég ahhoz, hogy elinduljunk.",
+      hu: "Két perc alatt kitölthető. Néhány mondat is elég az első beszélgetéshez.",
       en: "It takes two minutes. One sentence about your team is enough.",
     },
     labelName: { hu: "Név", en: "Name" },
     placeholderName: { hu: "Teljes neved", en: "Full name" },
-    labelEmail: { hu: "Email", en: "Email" },
+    labelEmail: { hu: "E-mail", en: "Email" },
     placeholderEmail: { hu: "nev@ceg.hu", en: "name@company.com" },
     labelCompany: { hu: "Cég neve", en: "Company name" },
     placeholderCompany: { hu: "Pl. Innovate Kft.", en: "e.g. Innovate Ltd." },
@@ -1019,7 +1019,7 @@ export const landingTranslations = {
     // P1-3: a hero gombjával azonos szöveg — egyetlen elsődleges akció fut
     // az oldalon, és a „Meséljetek a csapatotokról" címmel sem redundáns.
     submitDefault: { hu: "Partnercsapatként jelentkezem", en: "Apply as a partner team" },
-    preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
+    preferEmail: { hu: "Inkább e-mailben írnál?", en: "Prefer email?" },
     errorMessage: {
       hu: "Nem sikerült elküldeni. Próbáld újra, vagy írj a hello@trita.io címre.",
       en: "We could not send your application. Try again, or email hello@trita.io.",
@@ -1028,7 +1028,7 @@ export const landingTranslations = {
     // Success state
     successTitle: { hu: "Köszönjük, hogy jelentkeztetek.", en: "Thank you for applying." },
     successBody: {
-      hu: "Egy munkanapon belül személyesen jelentkezünk a megadott email-címen.",
+      hu: "Egy munkanapon belül személyesen jelentkezünk a megadott e-mail-címen.",
       en: "We will contact you personally at the provided email address within one business day.",
     },
   },
@@ -1069,7 +1069,7 @@ export const landingTranslations = {
 
     storyEyebrow: { hu: "Honnan jövünk", en: "Where we come from" },
     storyTitle: {
-      hu: "A trita sok év csapatokkal töltött munkából nőtt ki.",
+      hu: "A tritát a csapatokkal végzett sokéves munkánk tapasztalataiból építjük.",
       en: "trita grew out of many years spent working with teams.",
     },
     storyBody: {
@@ -1082,19 +1082,19 @@ export const landingTranslations = {
       en: "A well-functioning team is not a matter of luck.",
     },
     statementLine2Before: {
-      hu: "Ahogy együtt dolgoztok, annak ",
+      hu: "Az együttműködéseteknek ",
       en: "The way you work together has a ",
     },
     statementLine2Accent: { hu: "mintázata van", en: "pattern" },
     statementLine2After: { hu: " –", en: " –" },
     statementLine3: {
-      hu: "és amit látni lehet, azon dolgozni is.",
+      hu: "és amit megértetek, azon változtatni is tudtok.",
       en: "and what can be seen can be worked on.",
     },
 
     ctaTitle: { hu: "Beszélgessünk a csapatodról.", en: "Let's talk about your team." },
     ctaBody: {
-      hu: "Fél óra, kötelezettség nélkül – elmondjuk, hogyan dolgoznánk veletek.",
+      hu: "Egy félórás beszélgetésen elmondjuk, hogyan dolgoznánk veletek. Az egyeztetés nem jár kötelezettséggel.",
       en: "Half an hour, no strings attached – we'll tell you how we would work with you.",
     },
     ctaPrimary: { hu: "Írj nekünk", en: "Write to us" },

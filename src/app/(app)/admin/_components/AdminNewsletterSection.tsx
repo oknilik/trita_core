@@ -56,8 +56,8 @@ export function AdminNewsletterSection({
       const recipients = (data.sent ?? []).reduce((sum, s) => sum + s.recipients, 0);
       setMessage(
         dryRun
-          ? `Próbafutás: ${recipients} címzettnek menne ki.`
-          : `A szolgáltató ${recipients} címzett levelét átvette${data.failed ? ` (${data.failed} hiba)` : ""}.`,
+          ? `Próbafutás: ${recipients} címzett kapná meg a levelet.`
+          : `A szolgáltató átvette a ${recipients} címzettnek szánt leveleket${data.failed ? ` (${data.failed} hiba)` : ""}.`,
       );
       if (dryRun) setPreviewedSlug(slug);
       else {
@@ -65,7 +65,7 @@ export function AdminNewsletterSection({
         setConfirming(false);
       }
     } catch {
-      setMessage("A küldés nem sikerült – nézd meg a szerver-naplót.");
+      setMessage("A küldés nem sikerült – nézd meg a szerver naplóját.");
     } finally {
       setBusy(false);
     }
@@ -86,7 +86,7 @@ export function AdminNewsletterSection({
 
       <p className="mt-3 text-micro text-muted">
         Szolgáltató által átvett: <strong className="text-ink-body">{stats.accepted}</strong>
-        {" · "}Mail-szerver által kézbesített: <strong className="text-ink-body">{stats.delivered}</strong>
+        {" · "}A címzett levelezőszervere által átvett: <strong className="text-ink-body">{stats.delivered}</strong>
         {" · "}Linkkérés / átvett:{" "}
         <strong className="text-ink-body">
           {stats.accepted > 0
@@ -94,7 +94,7 @@ export function AdminNewsletterSection({
             : "még nincs adat"}
         </strong>
         {stats.failed > 0 ? ` · ${stats.failed} újrapróbálható hiba` : ""}
-        {stats.unknown > 0 ? ` · ${stats.unknown} ellenőrizendő UNKNOWN` : ""}
+        {stats.unknown > 0 ? ` · ${stats.unknown} bizonytalan állapotú küldés (ellenőrizendő)` : ""}
         {" · "}
         Utolsó kiküldés:{" "}
         {stats.lastSentAt
@@ -135,7 +135,7 @@ export function AdminNewsletterSection({
 
       {confirming && previewedSlug === slug ? (
         <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-state-warning-border bg-state-warning-bg p-3">
-          <p className="text-caption text-ink-body">A próbafuttatott cikk értesítőjének kiküldése végleges.</p>
+          <p className="text-caption text-ink-body">A kiválasztott cikk értesítőjét elküldjük a próbafutásban jelzett címzetteknek. A kiküldést nem lehet visszavonni.</p>
           <Button size="sm" loading={busy} disabled={busy} onClick={() => void run(false)}>
             Igen, kiküldöm
           </Button>
@@ -150,14 +150,14 @@ export function AdminNewsletterSection({
       {engagement.length > 0 ? (
         <div className="mt-5 overflow-x-auto">
           <p className="mb-2 font-dm-mono text-micro font-semibold uppercase tracking-widest text-muted">
-            Kattintás küldésenként
+            Linkkérések küldésenként
           </p>
           <table className="w-full min-w-[420px] text-caption">
             <thead>
               <tr className="text-left text-micro uppercase tracking-wide text-muted">
                 <th className="pb-1 font-medium">Küldés</th>
-                <th className="pb-1 font-medium">Átvette</th>
-                <th className="pb-1 font-medium">Kézbesült</th>
+                <th className="pb-1 font-medium">Szolgáltató átvette</th>
+                <th className="pb-1 font-medium">Kézbesítve</th>
                 <th className="pb-1 font-medium">Linkkérés</th>
                 <th className="pb-1 font-medium">Arány</th>
               </tr>
@@ -179,16 +179,17 @@ export function AdminNewsletterSection({
             </tbody>
           </table>
           <p className="mt-2 text-micro leading-relaxed text-muted">
-            Nyitást nem mérünk. A linkkérés alacsony bizonyosságú jel: aki
-            olvasott, de nem kattintott, nem látszik; scanner vagy továbbított
-            levél viszont kiválthatja. CRM-döntésnél csak kontextusként használd.
+            Megnyitást nem mérünk. A linkkérésből nem tudjuk biztosan, hogy a címzett
+            elolvasta-e a levelet: automatikus biztonsági ellenőrzés vagy továbbított
+            levélből érkező kattintás is kiválthatja. Aki kattintás nélkül olvas,
+            nem látszik ebben az adatban. Ügyfélkapcsolati döntéshez csak kiegészítő információként használd.
           </p>
         </div>
       ) : null}
 
       <p className="mt-4 text-micro leading-relaxed text-muted">
-        A napi cron (06:00 UTC) magától kiküldi az elmúlt 14 napban megjelent
-        cikkeket. A kézi küldés ugyanazt a naplót használja: aki már megkapta
+        A napi automatikus küldés (06:00 UTC) értesít az elmúlt 14 napban
+        megjelent cikkekről. A kézi küldés ugyanazt a naplót használja: aki már megkapta
         a cikket, nem kapja meg újra.{" "}
         <a
           href="/api/admin/newsletter?format=csv"

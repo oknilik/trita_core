@@ -26,7 +26,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     emoji: "🔧",
     color: "#8B5CF6",
     name: { hu: "Realistic – Megvalósító", en: "Realistic – Doer" },
-    tagline: { hu: "Kézzel fogható dolgokkal dolgozni", en: "Working with tangible things" },
+    tagline: { hu: "Kézzelfogható dolgokkal dolgozni", en: "Working with tangible things" },
     description: {
       hu: "A Megvalósító típus szereti a gyakorlati, kézzelfogható munkát: építeni, szerelni, működtetni. Gépek, szerszámok, növények, járművek – az számít, aminek látható eredménye van. Kevésbé vonzza a hosszas egyeztetés és a papírmunka.",
       en: "The Doer type enjoys practical, hands-on work: building, fixing, operating. Machines, tools, plants, vehicles – what matters is a visible result. Long meetings and paperwork appeal less.",
@@ -51,7 +51,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
       en: "The Thinker type asks, investigates, looks for patterns. Data, experiments, theories – the drive is understanding, not necessarily quick results. Strongest in independent, deep work.",
     },
     activities: {
-      hu: ["kutatás, elemzés", "problémamegoldás", "adatokkal dolgozás", "kísérletezés"],
+      hu: ["kutatás, elemzés", "problémamegoldás", "adatokkal végzett munka", "kísérletezés"],
       en: ["research and analysis", "problem-solving", "working with data", "experimenting"],
     },
     exampleRoles: {
@@ -66,7 +66,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     name: { hu: "Artistic – Alkotó", en: "Artistic – Creator" },
     tagline: { hu: "Létrehozni valamit, ami előtte nem volt", en: "Creating something new" },
     description: {
-      hu: "Az Alkotó típus önkifejezésre és eredetiségre vágyik: írás, design, zene, vizuális világok. Rugalmas kereteket szeret, a szigorú szabályrendszerek fárasztják. Az az eleme, ahol a saját ízlése formálhatja a végeredményt.",
+      hu: "Az Alkotó típus önkifejezésre és eredetiségre vágyik: írás, design, zene, vizuális világok. Rugalmas kereteket szeret, a szigorú szabályrendszerek fárasztják. Akkor van elemében, ha a saját ízlése formálhatja a végeredményt.",
       en: "The Creator type seeks self-expression and originality: writing, design, music, visual worlds. Prefers loose structure; rigid rule systems drain them. In their element when their taste shapes the outcome.",
     },
     activities: {
@@ -93,7 +93,7 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
       en: ["teaching and coaching", "caregiving", "counseling", "community work"],
     },
     exampleRoles: {
-      hu: ["Tanár", "Ápoló", "HR partner", "Szociális munkás"],
+      hu: ["Tanár", "Ápoló", "HR-partner", "Szociális munkás"],
       en: ["Teacher", "Nurse", "HR partner", "Social worker"],
     },
   },
@@ -102,9 +102,9 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     emoji: "🚀",
     color: "#F59E0B",
     name: { hu: "Enterprising – Meggyőző", en: "Enterprising – Persuader" },
-    tagline: { hu: "Meggyőzni, vezetni, elérni", en: "Persuading, leading, achieving" },
+    tagline: { hu: "Meggyőzni másokat, vezetni és célokat elérni", en: "Persuading, leading, achieving" },
     description: {
-      hu: "A Meggyőző típus célokat hajt: elad, tárgyal, szervez, vezet. Energiát ad neki a verseny és a látható eredmény. Szeret dönteni és felelősséget vinni – a hosszú, magányos elemzés kevésbé az ő terepe.",
+      hu: "A Meggyőző típus határozottan törekszik a céljai elérésére: elad, tárgyal, szervez, vezet. Energiát ad neki a verseny és a látható eredmény. Szeret dönteni és felelősséget vállalni – a hosszú, magányos elemzés kevésbé az ő terepe.",
       en: "The Persuader type chases goals: selling, negotiating, organizing, leading. Competition and visible wins energize them. They like deciding and owning outcomes – long solitary analysis is less their turf.",
     },
     activities: {
@@ -123,15 +123,15 @@ export const RIASEC_CONTENT: RiasecLetterContent[] = [
     name: { hu: "Conventional – Rendszerező", en: "Conventional – Organizer" },
     tagline: { hu: "Rendet tenni és rendben tartani", en: "Creating and keeping order" },
     description: {
-      hu: "A Rendszerező típus a pontosságban és a jól definiált folyamatokban erős: nyilvántartások, számok, szabályok, határidők. Ő az, akinél nem vész el semmi. A kiszámíthatatlan, folyton változó közeg fárasztja.",
+      hu: "A Rendszerező típus a pontosságban és a világosan meghatározott folyamatokban erős: nyilvántartások, számok, szabályok, határidők. Ő az, akinél nem vész el semmi. A kiszámíthatatlan, folyton változó közeg fárasztja.",
       en: "The Organizer type excels at precision and well-defined processes: records, numbers, rules, deadlines. Nothing gets lost on their watch. Unpredictable, ever-shifting settings wear them out.",
     },
     activities: {
-      hu: ["nyilvántartás, adminisztráció", "pénzügyek, számok", "folyamatok követése", "minőség-ellenőrzés"],
+      hu: ["nyilvántartás, adminisztráció", "pénzügyek, számok", "folyamatok követése", "minőségellenőrzés"],
       en: ["record-keeping and admin", "finance and numbers", "following processes", "quality control"],
     },
     exampleRoles: {
-      hu: ["Könyvelő", "Minőségbiztosítás", "Adótanácsadó", "HR adminisztráció"],
+      hu: ["Könyvelő", "Minőségbiztosítás", "Adótanácsadó", "HR-adminisztráció"],
       en: ["Accountant", "Quality assurance", "Tax advisor", "HR administration"],
     },
   },

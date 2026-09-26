@@ -52,11 +52,11 @@ const huf = (value: number) =>
 
 const WARNING_TEXT: Record<QuoteWarning, string> = {
   BELOW_TARGET_HOURLY:
-    "Az effektív óradíj a cél alatt van. Ez az ajánlat a saját idődből fizet.",
+    "Az egy munkaórára jutó díj alacsonyabb a kitűzött célnál. Ellenőrizd, hogy az ajánlat fedezi-e a ráfordított idődet.",
   DISCOUNT_OVER_CAP: "A kedvezmény meghaladja a keretet – ez külön döntés.",
   DISCOUNT_WITHOUT_REASON: "Indoklás nélküli kedvezmény: később nem lesz mire hivatkozni.",
   NO_FOLLOW_UP:
-    "Nincs visszamérés. Egyszeri mérésből nem lesz üzlet – a Csapatprogram szint vagy legalább egy további mérési kör kell.",
+    "Az ajánlat nem tartalmaz újramérést. A változás követéséhez válaszd a Csapatprogramot, vagy adj hozzá egy további mérési kört.",
 };
 
 function NumberField({
@@ -161,7 +161,7 @@ export function QuoteCalculator({
 
   async function saveQuote() {
     if (!deal || quoteSaving) return;
-    // Kliens-oldali előszűrés a szerver zod-sémájával – pl. a fél workshop-nap
+    // Kliens-oldali előszűrés a szerver zod-sémájával – pl. a fél workshopnap
     // a sandboxban számolható, de menteni csak egész napokat lehet.
     const parsed = quoteInputSchema.safeParse(input);
     if (!parsed.success) {
@@ -270,7 +270,7 @@ export function QuoteCalculator({
     }
   }
 
-  // Ajánlat-szöveg: a vevőnek szánt összefoglaló. SZÁNDÉKOSAN nincs benne
+  // Ajánlatszöveg: a vevőnek szánt összefoglaló. SZÁNDÉKOSAN nincs benne
   // óradíj, fedezet és kedvezmény-százalék – azok belső számok. Mentés után
   // a sorszám (quoteNo) és az érvényesség is bekerül.
   const quoteText = useMemo(() => {
@@ -299,7 +299,7 @@ export function QuoteCalculator({
         ? `Havi kísérés: ${huf(rate.retainerMonthlyFee)} / hó, ${input.retainerMonths} hónap`
         : null,
       "",
-      validUntilDay ? `Az ajánlat érvényes: ${formatDay(dayInputToIso(validUntilDay))}-ig.` : null,
+      validUntilDay ? `Az ajánlat érvényességének vége: ${formatDay(dayInputToIso(validUntilDay))}` : null,
       "Minden mérés benne van – a mérések száma nem növeli az árat.",
       "A díjak nettó összegek. A számlázás átutalással történik.",
     ].filter((row): row is string => row !== null);
@@ -313,8 +313,8 @@ export function QuoteCalculator({
         <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">Program</h2>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
-            A publikus árlétra két szintje. Minden mérés benne van; a több mérés
-            több magyarázatot igényel, ami a workshop-időben jön vissza.
+            A két nyilvános csomag mindegyike tartalmazza az összes mérést.
+            Több mérés eredményének közös feldolgozásához több időre lehet szükség a workshopon.
           </p>
           <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
             {QUOTE_TIERS.map((tier) => (
@@ -366,7 +366,7 @@ export function QuoteCalculator({
           </p>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NumberField
-              label="További workshop-nap"
+              label="További workshopnap"
               value={input.extraWorkshopDays}
               onChange={(extraWorkshopDays) => patch({ extraWorkshopDays })}
               suffix="nap"
@@ -395,7 +395,7 @@ export function QuoteCalculator({
         <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">Kedvezmény</h2>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
-            Nevesített, lejáró kedvezmény – ad-hoc alku helyett. Keret:{" "}
+            Adj meg kedvezménytípust és érvényességi időt. Kedvezménykeret:{" "}
             {rate.maxDiscountPct}%.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -478,10 +478,10 @@ export function QuoteCalculator({
             </button>
           </div>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
-            A csapatalapdíjak, a létszámdíjak, a workshop-nap és a pilot-kedvezmény
+            A csapatalapdíjak, a létszámdíjak, a workshopnap és a pilotkedvezmény
             PUBLIKUSAK: az /pricing kalkulátor, a főoldal és a /team-dynamics ár-horgonya, a /pilot
             ténysáv ezekből mutat számot. Mentés után a publikus oldalak azonnal frissülnek.
-            Az óra-becslés, a cél-óradíj és a kedvezmény-keret belső.
+            Az időbecslés, a célóradíj és a kedvezménykeret belső.
           </p>
           {!saved && (
             <p className="mt-2 rounded-lg border border-bronze-edge bg-bronze-soft/40 p-3 text-xs leading-relaxed text-ink-body">
@@ -537,14 +537,14 @@ export function QuoteCalculator({
                   suffix="fő"
                 />
                 <NumberField
-                  label="Pilot-kedvezmény (publikus)"
+                  label="Pilotkedvezmény (publikus)"
                   value={rate.pilotDiscountPct}
                   step={5}
                   onChange={(pilotDiscountPct) => setRate({ ...rate, pilotDiscountPct })}
                   suffix="%"
                 />
                 <NumberField
-                  label="További workshop-nap (publikus)"
+                  label="További workshopnap (publikus)"
                   value={rate.extraWorkshopDayFee}
                   step={10_000}
                   onChange={(extraWorkshopDayFee) => setRate({ ...rate, extraWorkshopDayFee })}
@@ -565,21 +565,21 @@ export function QuoteCalculator({
                   suffix="Ft/hó"
                 />
                 <NumberField
-                  label="Kiszállás-nap"
+                  label="Kiszállási nap"
                   value={rate.travelDayFee}
                   step={5_000}
                   onChange={(travelDayFee) => setRate({ ...rate, travelDayFee })}
                   suffix="Ft"
                 />
                 <NumberField
-                  label="Cél-óradíj (belső)"
+                  label="Célóradíj (belső)"
                   value={rate.targetHourlyRate}
                   step={1_000}
                   onChange={(targetHourlyRate) => setRate({ ...rate, targetHourlyRate })}
                   suffix="Ft/h"
                 />
                 <NumberField
-                  label="Kedvezmény-keret (belső)"
+                  label="Kedvezménykeret (belső)"
                   value={rate.maxDiscountPct}
                   step={5}
                   onChange={(maxDiscountPct) => setRate({ ...rate, maxDiscountPct })}
@@ -589,21 +589,21 @@ export function QuoteCalculator({
 
               <div>
                 <p className="font-mono text-xs uppercase tracking-widest text-muted">
-                  Óra-becslés (a fedezet-számításhoz)
+                  Időbecslés (a fedezetszámításhoz)
                 </p>
                 <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                   {(
                     [
-                      ["setup", "Setup, kampány"],
+                      ["setup", "Előkészítés, mérés"],
                       ["perTeam", "Csapatonként"],
                       ["perTenHeads", "10 főnként"],
                       ["onlineDebrief", "Online értelmezés"],
                       ["halfDayWorkshop", "Félnapos workshop"],
                       ["followUp", "Utánkövető mérés"],
-                      ["perExtraWorkshopDay", "További workshop-nap"],
+                      ["perExtraWorkshopDay", "További workshopnap"],
                       ["perExtraWave", "További mérési kör"],
-                      ["perRetainerMonth", "Kísérés-hó"],
-                      ["perTravelDay", "Kiszállás-nap"],
+                      ["perRetainerMonth", "Havi kísérés"],
+                      ["perTravelDay", "Kiszállási nap"],
                     ] as const
                   ).map(([field, label]) => (
                     <NumberField
@@ -685,13 +685,13 @@ export function QuoteCalculator({
         {/* ── CRM-mentés (csak deal-kontextusban; nélküle sandbox) ── */}
         {deal && (
           <section className="rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
-            <SectionEyebrow>mentés a dealhez</SectionEyebrow>
+            <SectionEyebrow>mentés az ügyhöz</SectionEyebrow>
             <p className="mt-2 text-xs leading-relaxed text-ink-body">
               {draftMode && sourceQuote
                 ? `Piszkozat szerkesztése: ${sourceQuote.label} – a mentés a friss díjtételekkel újraszámolva frissíti.`
                 : sourceQuote
-                  ? `Másolat-alap: ${sourceQuote.label} – a mentés ÚJ piszkozatot hoz létre friss díjtételekkel.`
-                  : `Új piszkozat a dealhez: ${deal.title}.`}
+                  ? `Másolat alapja: ${sourceQuote.label} – a mentés ÚJ piszkozatot hoz létre friss díjtételekkel.`
+                  : `Új piszkozat az ügyhöz: ${deal.title}.`}
             </p>
 
             {savedQuote ? (
@@ -700,7 +700,7 @@ export function QuoteCalculator({
                   Mentve: {savedQuote.label}
                 </p>
                 <p className="mt-1 text-xs text-ink-body">
-                  A vevő-szöveg lentről másolható (sorszámmal, belső számok
+                  Az ügyfélnek szánt szöveg lent másolható (sorszámmal, belső számok
                   nélkül). Kiküldés után jelöld kiküldöttnek – onnantól az
                   ajánlat nem módosítható, csak másolható.
                 </p>
@@ -718,7 +718,7 @@ export function QuoteCalculator({
                     onClick={() => router.push(`/admin/crm/${deal.id}`)}
                     className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-4 text-sm font-semibold text-ink-body transition hover:bg-cream"
                   >
-                    Deal megnyitása
+                    Ügy megnyitása
                   </button>
                 </div>
               </div>
@@ -805,7 +805,7 @@ export function QuoteCalculator({
         <section className="rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <p className="font-mono text-xs uppercase tracking-widest text-muted">
-              Ajánlat-szöveg
+              Ajánlatszöveg
             </p>
             <button
               type="button"
@@ -819,7 +819,7 @@ export function QuoteCalculator({
               {copied ? "Másolva" : "Másolás"}
             </button>
           </div>
-          {/* Belső számok (óradíj, fedezet, kedvezmény-keret) SZÁNDÉKOSAN
+          {/* Belső számok (óradíj, fedezet, kedvezménykeret) SZÁNDÉKOSAN
               nincsenek benne – ez a szöveg a vevőnek megy. */}
           <textarea
             readOnly

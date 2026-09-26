@@ -45,7 +45,7 @@ describe("AdminNewsletterIssueSection", () => {
     const user = userEvent.setup();
     render(<AdminNewsletterIssueSection issues={[]} posts={POSTS} />);
 
-    await user.click(screen.getByRole("button", { name: "Új szám" }));
+    await user.click(screen.getByRole("button", { name: "Új hírlevél" }));
     await user.type(screen.getByLabelText("Tárgy"), "Augusztusi szám");
     await user.type(screen.getByLabelText("Bevezető"), "Ebben a számban három írás.");
 
@@ -53,7 +53,7 @@ describe("AdminNewsletterIssueSection", () => {
     await user.click(screen.getByRole("button", { name: "Mentés" }));
 
     // A szerkesztő nyitva marad, és a mentés NEM futtat szerver-refresht.
-    await screen.findByText(/Piszkozat mentve/);
+    await screen.findByText(/A piszkozatot mentettük/);
     expect(screen.getByLabelText("Tárgy")).toBeInTheDocument();
     expect(refreshMock).not.toHaveBeenCalled();
 
@@ -78,13 +78,13 @@ describe("AdminNewsletterIssueSection", () => {
     const user = userEvent.setup();
     render(<AdminNewsletterIssueSection issues={[]} posts={POSTS} />);
 
-    await user.click(screen.getByRole("button", { name: "Új szám" }));
+    await user.click(screen.getByRole("button", { name: "Új hírlevél" }));
     await user.type(screen.getByLabelText("Tárgy"), "Augusztusi szám");
     await user.type(screen.getByLabelText("Bevezető"), "Ebben a számban három írás.");
 
     respond({ ok: true, id: "issue-1" });
     await user.click(screen.getByRole("button", { name: "Mentés" }));
-    await screen.findByText(/Piszkozat mentve/);
+    await screen.findByText(/A piszkozatot mentettük/);
 
     await user.click(screen.getByRole("button", { name: "Bezárás" }));
     await waitFor(() => expect(refreshMock).toHaveBeenCalledTimes(1));

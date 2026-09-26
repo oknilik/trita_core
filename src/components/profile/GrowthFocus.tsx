@@ -33,31 +33,31 @@ interface GrowthFocusProps {
 // hint biztonsági háló, ha E-tétel mégis ide kerülne.
 const GROWTH_HINT: Record<string, Record<"hu" | "en", string>> = {
   H: {
-    hu: "Tudatos értékek mentén való döntéshozatal és átlátható kommunikáció.",
+    hu: "Hozz az értékrendeddel összhangban álló döntéseket, és kommunikálj átláthatóan.",
     en: "Value-aligned decision-making and transparent communication.",
   },
   E: {
-    hu: "A támogatás és elismerés kimondása – pl. hetente egy beszélgetés zárása kimondott visszajelzéssel.",
+    hu: "Mondd ki, miben támogatod a másikat, és mit értékelsz a munkájában. Például zárj így hetente egy beszélgetést.",
     en: "Expressing support and acknowledgement – e.g. closing one conversation a week with explicit appreciation.",
   },
   X: {
-    hu: "Társas jelenlét és láthatóság tudatos növelése.",
+    hu: "Vegyél részt aktívabban a közös beszélgetésekben, és mutasd meg a munkád eredményét.",
     en: "Consciously building social presence and visibility.",
   },
   A: {
-    hu: "Együttműködési és konfliktuskezelési készségek fejlesztése.",
+    hu: "Gyakorold az együttműködést és a nézeteltérések rendezését.",
     en: "Developing collaboration and conflict resolution skills.",
   },
   C: {
-    hu: "Szervezettség, tervezés és következetes végrehajtás fejlesztése.",
+    hu: "Tervezz tudatosabban, tarts rendet a feladataid között, és vidd végig, amit vállaltál.",
     en: "Building organization, planning, and consistent execution.",
   },
   O: {
-    hu: "Kíváncsiság, tanulási kedv és kreatív gondolkodás ösztönzése.",
+    hu: "Keress alkalmat a tanulásra, új nézőpontok megismerésére és kreatív megoldások kipróbálására.",
     en: "Encouraging curiosity, a learning mindset, and creative thinking.",
   },
   I: {
-    hu: "Mások iránt való figyelem és altruista viselkedés erősítése.",
+    hu: "Figyelj mások szükségleteire, és keress alkalmat arra, hogy segíts nekik.",
     en: "Strengthening attention to others and altruistic behavior.",
   },
 };

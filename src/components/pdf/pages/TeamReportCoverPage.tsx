@@ -123,7 +123,7 @@ export function TeamReportCoverPage({
           <Text style={c.subtitle}>{isHu ? "Közös működés, látható mintázatok" : "Shared work, visible patterns"}</Text>
           <Text style={c.body}>
             {isHu
-              ? "Aggregált csapatkép a közös erőforrásokról, kapcsolati dinamikáról és a következő fejlesztési lépésekről."
+              ? "Összesített csapatkép az erősségekről, az együttműködésről és a következő fejlesztési lépésekről."
               : "An aggregate team picture of shared strengths, relational dynamics, and the next development steps."}
           </Text>
         </View>

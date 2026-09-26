@@ -12,10 +12,10 @@ test("az eredménykészítő magyar nézete együtt mozgatja a progresszt és a 
 
   assert.equal(start.roundedProgress, 12);
   assert.match(start.phaseMessage, /kapcsolódsz/);
-  assert.match(middle.phaseMessage, /döntési és munkastílusod/);
+  assert.match(middle.phaseMessage, /döntéseidet és a munkastílusodat/);
   assert.match(finish.phaseMessage, /építened/);
   assert.equal(finish.roundedProgress, 88);
-  assert.equal(finish.status, "Mintázatok összekapcsolása");
+  assert.equal(finish.status, "Eredmények összegzése");
 });
 
 test("az angol nézet ugyanazokat a fázisokat lokalizált szöveggel adja", () => {

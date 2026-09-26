@@ -43,7 +43,7 @@ const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
     en: "Your straightforward, dependable style builds trust – lean on it in tough conversations and decisions.",
   },
   A: {
-    hu: "A rugalmasságod hidat épít az eltérő stílusok között – vállalj közvetítő szerepet, ahol feszül a helyzet.",
+    hu: "A rugalmasságod segíthet összehangolni a különböző munkastílusokat. Vállalj közvetítő szerepet, ha feszültség alakul ki.",
     en: "Your agreeableness bridges different styles – take a connecting role where things get tense.",
   },
   E: {
@@ -51,7 +51,7 @@ const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
     en: "You sense how others are doing – you often notice first when someone is stuck; speak up then.",
   },
   X: {
-    hu: "A lendületed viszi a csapatot – te tudod beindítani a közös munkát és tartani a tempót.",
+    hu: "A lendületeddel segíthetsz elindítani a közös munkát és tartani a tempót.",
     en: "Your energy drives the team – you can kick off shared work and keep up the pace.",
   },
   O: {
@@ -183,7 +183,7 @@ export function buildMemberReportViewModel(
   } else if (primaryRole && roleFit === "shared") {
     tips.push(
       loc === "hu"
-        ? `${withHuArticle(primaryRole.label, { capitalize: true })} szerepet többen is viszitek – osszátok meg a tudást és a terhet, támogassátok egymást.`
+        ? `${withHuArticle(primaryRole.label, { capitalize: true })} szerepet többen is betöltitek – osszátok meg a tudást és a terhet, támogassátok egymást.`
         : `Several of you carry the ${primaryRole.label} role – share the knowledge and the load, support each other.`,
     );
   }

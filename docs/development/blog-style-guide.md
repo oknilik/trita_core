@@ -1,6 +1,7 @@
 # Blog — írásszabály
 
 > Érvényes: 2026-09-01 óta. A `content/blog/*.mdx` cikkekre vonatkozik.
+> A közös magyar nyelvi alapelveket a [magyar stíluskalauz](hungarian-style-guide.md) rögzíti.
 > Ütközés esetén a `CLAUDE.md` termékszabályai előbbre valók (ld. lentebb).
 
 ## Kinek írunk
@@ -21,13 +22,15 @@ Magyar kkv- és csapatvezetők, HR-esek, valamint önmegismerés iránt
 
 ## Mondat és bekezdés
 
-- Átlagos mondathossz 15-20 szó. Minden bekezdésben legyen legalább egy
-  rövid, 8 szó alatti mondat.
-- Bekezdés maximum 4 mondat. Ha hosszabb lenne, vágd ketté.
-- Kerüld a gondolatjeles közbevetést. Amit közbevetnél, tedd külön
-  mondatba. Pontosvesszővel se fűzz össze két gondolatot.
-- Kerüld a „nem X, hanem Y" szerkezetet és a kettőspont utáni csattanót
-  („A válasz egyszerű: …").
+- A mondat hossza a gondolathoz igazodjon. A több állítást vagy sok
+  közbevetést tartalmazó mondatot bontsd fel, ha így könnyebb követni.
+- Egy bekezdés egy gondolatot fejtsen ki. Új témánál vagy az érvelés új
+  lépésénél kezdj új bekezdést. Ne írj elő kötelező szószámot vagy
+  mondatszámot, és ne tördeld mesterségesen a szöveget.
+- A közbevetések és az írásjelek a megértést segítsék. Ha az olvasónak
+  vissza kell keresnie az alanyt vagy a mondat elejét, fogalmazz egyszerűbben.
+- Az ellentétet akkor használd, ha pontosítja az állítást. Kerüld a
+  visszatérő „nem X, hanem Y" fordulatot és a mesterséges csattanókat.
 
 ## Alátámasztás
 
@@ -73,12 +76,14 @@ Magyar kkv- és csapatvezetők, HR-esek, valamint önmegismerés iránt
   Minden szakasz ugyanazt az állítást világítja meg más oldalról.
 - Nyiss jelenettel: konkrét szervezet, konkrét helyzet, konkrét emberek.
   Ne általánosítással.
-- Építs a cikk közepére egy ellentétpárt, ami rendezi az egészet.
-- Ismételd a kulcsmondatot 2-3 alkalommal, szó szerint.
-- A záró szakasznak vissza kell térnie a nyitó jelenethez. Nem
-  megoldásként, hanem másik megvilágításban. Ha nem tudsz visszatérni
-  hozzá, rossz jelenetet választottál.
-- Két-három H2, hogy az ív ne szakadjon szét.
+- A jelenetből derüljön ki a kérdés vagy nehézség, amelyet a cikk körüljár.
+  Ellentétpárt csak akkor építs be, ha a történetből következik.
+- A fő állítást az eset és az érvelés tegye világossá. Ne ismételj
+  szó szerint mondatokat pusztán a ritmus vagy a hangsúly kedvéért.
+- A zárás mutassa meg, mire jutottak a szereplők, és mi maradt nyitott.
+  Visszatérhet a nyitó jelenethez, ha ez segít érzékeltetni a változást.
+- Az alcímek a történet fordulópontjait kövessék. Annyit használj,
+  amennyi a gondolatmenet áttekintéséhez szükséges.
 
 ### Referenciacikk (fogalommagyarázó, módszertani)
 

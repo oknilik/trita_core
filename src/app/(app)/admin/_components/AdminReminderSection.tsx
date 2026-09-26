@@ -154,8 +154,8 @@ export function AdminReminderSection({ invitations }: Props) {
   if (invitations.length === 0) {
     return (
       <div className="mt-8 rounded-xl border border-sand/70 bg-surface-card p-6 md:p-8">
-        <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldés</h2>
-        <p className="mt-4 text-sm text-muted">Nincs 3+ napja kitöltetlen emailes meghívó.</p>
+        <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldése</h2>
+        <p className="mt-4 text-sm text-muted">Nincs legalább három napja megválaszolatlan e-mailes meghívó.</p>
       </div>
     );
   }
@@ -164,9 +164,9 @@ export function AdminReminderSection({ invitations }: Props) {
     <div className="mt-8 rounded-xl border border-sand/70 bg-surface-card p-6 md:p-8">
       <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
         <div>
-          <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldés</h2>
+          <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldése</h2>
           <p className="mt-1 text-sm text-muted">
-            3+ napja kitöltetlen emailes meghívók ({invitations.length} db · {activeCount} kiküldendő)
+            Legalább három napja megválaszolatlan e-mailes meghívók ({invitations.length} db · {activeCount} kiküldendő)
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

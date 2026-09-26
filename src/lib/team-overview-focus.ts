@@ -47,7 +47,7 @@ function measurementDescription(stepType: CampaignStepType, locale: Locale): str
       return hu ? "24 állítás a közös munkátokról; körülbelül 5 perc." : "24 statements about your shared work; about 5 minutes.";
     case "PSYCH_SAFETY":
       return hu
-        ? "8 rövid, névtelen állítás; körülbelül 2 perc."
+        ? "8 rövid állítás, névtelen válaszadás; körülbelül 2 perc."
         : "8 short, anonymous statements; about 2 minutes.";
     case "TRUST_360":
       return hu
@@ -59,11 +59,11 @@ function measurementDescription(stepType: CampaignStepType, locale: Locale): str
         : "Select the statements that best describe your teammates.";
     case "TEAM_ROLE":
       return hu
-        ? "Rövid kérdőív arról, milyen szerepeket viszel a csapatban."
+        ? "Rövid kérdőív arról, milyen szerepeket töltesz be a csapatban."
         : "A short questionnaire about the roles you play in the team.";
     case "PEER_FEEDBACK":
       return hu
-        ? "Adj rövid, jövőorientált visszajelzést a csapattársaidnak."
+        ? "Adj rövid visszajelzést a csapattársaidnak arról, mit érdemes folytatniuk vagy legközelebb kipróbálniuk."
         : "Give your teammates short, future-focused feedback.";
     case "SELF_ASSESSMENT":
     case "OBSERVER_360":

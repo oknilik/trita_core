@@ -42,7 +42,7 @@ export function resolveOrgOverviewFocus(input: {
     return {
       title: hu ? "Hozd létre az első csapatot" : "Create the first team",
       description: hu
-        ? "A szervezeti mérés és a vezetői riport aktív csapatstruktúrára épül."
+        ? "A szervezeti méréshez és a vezetői riporthoz először létre kell hozni a csapatokat."
         : "Organization measurements and leadership reports require an active team structure.",
       primary: { label: hu ? "Csapat létrehozása" : "Create team", href: teamsHref },
       secondary: canInviteMembers
@@ -53,7 +53,7 @@ export function resolveOrgOverviewFocus(input: {
 
   if (pendingInviteCount > 0) {
     return {
-      title: hu ? "Kövesd a függő meghívásokat" : "Follow up pending invitations",
+      title: hu ? "Tekintsd át a függőben lévő meghívásokat" : "Follow up pending invitations",
       description: hu
         ? `${pendingInviteCount} meghívás még elfogadásra vár. A résztvevők csatlakozása után indulhat stabilan a következő mérési kör.`
         : `${pendingInviteCount} invitation(s) are still pending. The next measurement can start reliably once participants join.`,
@@ -81,7 +81,7 @@ export function resolveOrgOverviewFocus(input: {
     return {
       title: hu ? "Indítsd el a következő mérési kört" : "Launch the next measurement round",
       description: hu
-        ? "A csapatstruktúra és a minimális részvétel rendelkezésre áll; most egy közös mérési kör ad következő szervezeti pillanatképet."
+        ? "A csapatok létrejöttek, és elegendő tag vett részt a felmérésben. Új közös mérési körrel friss képet kaphatsz a szervezetről."
         : "The team structure and minimum participation are ready; a shared measurement round can now create the next organization snapshot.",
       primary: {
         label: hu ? "Új mérés indítása" : "Start measurement",

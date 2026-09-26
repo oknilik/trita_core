@@ -68,15 +68,15 @@ export const tritanConfig: TestConfig = {
         hu: "Becsületesség-Alázat",
       },
       color: DIMENSION_COLORS.H.base,
-      description: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire kerüli valaki mások manipulálását, a szabályszegést, valamint az anyagi javak és a kiemelt társadalmi státusz hajszolását. Négy alskálája az Őszinteség (egyenes, nem manipulatív viszonyulás másokhoz), a Méltányosság (a csalás és a korrupció kerülése), a Mohóságkerülés (az anyagi javak és a státusz iránti közömbösség), valamint a Szerénység (nem tekinti magát kiváltságosnak vagy különlegesnek).",
+      description: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire kerüli valaki mások manipulálását, a szabályszegést, valamint az anyagi javak és a kiemelt társadalmi státusz hajszolását. Négy alskálája az Őszinteség (őszinte viselkedés, mások manipulálásának kerülése), a Méltányosság (a csalás és a korrupció kerülése), a Mohóságkerülés (az anyagi javak és a státusz iránti közömbösség), valamint a Szerénység (nem tekinti magát kiváltságosnak vagy különlegesnek).",
       descriptionByLocale: {
         en: "The Honesty-Humility (H) dimension reflects the extent to which a person avoids manipulating others for personal gain, feels little temptation to break rules, is uninterested in lavish wealth and luxury, and feels no special sense of entitlement. Its four facets are Sincerity (genuine, non-manipulative engagement with others), Fairness (avoidance of fraud and exploitation), Greed Avoidance (indifference to material wealth and social status), and Modesty (not viewing oneself as superior or deserving of special treatment).",
-        hu: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire kerüli valaki mások manipulálását, a szabályszegést, valamint az anyagi javak és a kiemelt társadalmi státusz hajszolását. Négy alskálája az Őszinteség (egyenes, nem manipulatív viszonyulás másokhoz), a Méltányosság (a csalás és a korrupció kerülése), a Mohóságkerülés (az anyagi javak és a státusz iránti közömbösség), valamint a Szerénység (nem tekinti magát kiváltságosnak vagy különlegesnek).",
+        hu: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire kerüli valaki mások manipulálását, a szabályszegést, valamint az anyagi javak és a kiemelt társadalmi státusz hajszolását. Négy alskálája az Őszinteség (őszinte viselkedés, mások manipulálásának kerülése), a Méltányosság (a csalás és a korrupció kerülése), a Mohóságkerülés (az anyagi javak és a státusz iránti közömbösség), valamint a Szerénység (nem tekinti magát kiváltságosnak vagy különlegesnek).",
       },
       insights: {
         low: "Az eredmény, az anyagi elismerés és a státusz erősen motivál. Érdekeid érvényesítésekor rugalmasan választasz eszközt, a szabályokat pedig inkább keretnek látod, mint korlátnak. Ez versengő közegben előny lehet, a bizalmi kapcsolatok viszont tudatosabb figyelmet igényelhetnek.",
-        mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között – többnyire méltányosan működsz, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
-        high: "A nyílt, közvetlen működést választod. Kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen taktikázol, így mások gyorsan tudják, hányadán állnak veled.",
+        mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között – többnyire méltányosan jársz el, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
+        high: "Nyíltan és egyenesen viselkedsz másokkal. Kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen taktikázol, így mások hamar megtudják, hányadán állnak veled.",
       },
       insightsByLocale: {
         en: {
@@ -86,8 +86,8 @@ export const tritanConfig: TestConfig = {
         },
         hu: {
           low: "Az eredmény, az anyagi elismerés és a státusz erősen motivál. Érdekeid érvényesítésekor rugalmasan választasz eszközt, a szabályokat pedig inkább keretnek látod, mint korlátnak. Ez versengő közegben előny lehet, a bizalmi kapcsolatok viszont tudatosabb figyelmet igényelhetnek.",
-          mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között – többnyire méltányosan működsz, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
-          high: "A nyílt, közvetlen működést választod. Kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen taktikázol, így mások gyorsan tudják, hányadán állnak veled.",
+          mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között – többnyire méltányosan jársz el, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
+          high: "Nyíltan és egyenesen viselkedsz másokkal. Kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen taktikázol, így mások hamar megtudják, hányadán állnak veled.",
         },
       },
       facets: [
@@ -113,7 +113,7 @@ export const tritanConfig: TestConfig = {
       insights: {
         low: "A fizikai veszélyek ritkán tántorítanak el, megterhelő helyzetekben is kevésbé aggódsz, és ritkán igényled mások érzelmi támogatását. Nyugalmadat ugyanakkor távolságtartásként is értelmezhetik.",
         mid: "Mérsékelt érzelmi intenzitás jellemez. Időnként keresed mások támogatását, és észleled a helyzetek érzelmi jelzéseit, de a kihívásokkal általában önállóan is megbirkózol.",
-        high: "Erős érzelmi kötődés és fogékonyság jellemez. Intenzíven élheted meg a félelmet és a megterhelő helyzeteket, ezért fontos számodra, hogy megoszthasd az érzéseidet a hozzád közel állókkal. Így sok jelzést már korán észlelhetsz, de nagyobb érzelmi terhet is vihetsz magaddal.",
+        high: "Erős érzelmi kötődés és fogékonyság jellemez. Intenzíven élheted meg a félelmet és a megterhelő helyzeteket, ezért fontos számodra, hogy megoszthasd az érzéseidet a hozzád közel állókkal. Így sok jelzést már korán észlelhetsz, de nagyobb érzelmi teher is nehezedhet rád.",
       },
       insightsByLocale: {
         en: {
@@ -124,7 +124,7 @@ export const tritanConfig: TestConfig = {
         hu: {
           low: "A fizikai veszélyek ritkán tántorítanak el, megterhelő helyzetekben is kevésbé aggódsz, és ritkán igényled mások érzelmi támogatását. Nyugalmadat ugyanakkor távolságtartásként is értelmezhetik.",
           mid: "Mérsékelt érzelmi intenzitás jellemez. Időnként keresed mások támogatását, és észleled a helyzetek érzelmi jelzéseit, de a kihívásokkal általában önállóan is megbirkózol.",
-          high: "Erős érzelmi kötődés és fogékonyság jellemez. Intenzíven élheted meg a félelmet és a megterhelő helyzeteket, ezért fontos számodra, hogy megoszthasd az érzéseidet a hozzád közel állókkal. Így sok jelzést már korán észlelhetsz, de nagyobb érzelmi terhet is vihetsz magaddal.",
+          high: "Erős érzelmi kötődés és fogékonyság jellemez. Intenzíven élheted meg a félelmet és a megterhelő helyzeteket, ezért fontos számodra, hogy megoszthasd az érzéseidet a hozzád közel állókkal. Így sok jelzést már korán észlelhetsz, de nagyobb érzelmi teher is nehezedhet rád.",
         },
       },
       facets: [
@@ -222,10 +222,10 @@ export const tritanConfig: TestConfig = {
         hu: "Lelkiismeretesség",
       },
       color: DIMENSION_COLORS.C.base,
-      description: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezetten és rendszeresen működik valaki a mindennapokban, milyen kitartóan és fegyelmezetten dolgozik a céljaiért, mennyire törekszik pontosságra, és milyen alaposan gondolja át a döntéseit. Négy alskálája a Szervezettség (a rendezett környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre fordított figyelem), valamint a Körültekintés (az impulzusok szabályozása és a döntések átgondolása).",
+      description: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezetten és módszeresen intézi valaki a mindennapi teendőit, milyen kitartóan és fegyelmezetten dolgozik a céljaiért, mennyire törekszik pontosságra, és milyen alaposan gondolja át a döntéseit. Négy alskálája a Szervezettség (a rendezett környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre fordított figyelem), valamint a Körültekintés (az impulzusok szabályozása és a döntések átgondolása).",
       descriptionByLocale: {
         en: "The Conscientiousness (C) dimension measures how organized and structured a person is, how persistently and disciplinedly they work toward goals, their drive for accuracy and thoroughness, and how carefully they deliberate before making decisions. Its four facets are Organization (preference for tidy surroundings and structured schedules), Diligence (strong work ethic and motivation to achieve), Perfectionism (thoroughness and attention to detail), and Prudence (impulse control and careful deliberation).",
-        hu: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezetten és rendszeresen működik valaki a mindennapokban, milyen kitartóan és fegyelmezetten dolgozik a céljaiért, mennyire törekszik pontosságra, és milyen alaposan gondolja át a döntéseit. Négy alskálája a Szervezettség (a rendezett környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre fordított figyelem), valamint a Körültekintés (az impulzusok szabályozása és a döntések átgondolása).",
+        hu: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezetten és módszeresen intézi valaki a mindennapi teendőit, milyen kitartóan és fegyelmezetten dolgozik a céljaiért, mennyire törekszik pontosságra, és milyen alaposan gondolja át a döntéseit. Négy alskálája a Szervezettség (a rendezett környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre fordított figyelem), valamint a Körültekintés (az impulzusok szabályozása és a döntések átgondolása).",
       },
       insights: {
         low: "Kevésbé igényled a rendet és a szoros kereteket. A részletekhez és a pontossághoz rugalmasabban viszonyulsz, döntéskor pedig gyakrabban támaszkodhatsz az első benyomásodra, mint hosszas mérlegelésre.",
@@ -303,7 +303,7 @@ export const tritanConfig: TestConfig = {
       },
       insights: {
         low: "Kevésbé jellemző rád az azonnali érzelmi bevonódás. Inkább megfontoltan döntesz arról, mikor és hogyan segíts, és tárgyilagosan közelítesz mások nehézségeihez.",
-        mid: "Helyzetfüggően hajlandó vagy segíteni másokon. Nem a pillanatnyi érzelem, hanem a helyzet mérlegelése vezérel.",
+        mid: "A helyzettől függően szívesen segítesz másokon. Nem a pillanatnyi érzelem, hanem a helyzet mérlegelése vezérel.",
         high: "Mélyen érint mások helyzete, és természetes késztetést érzel a segítésre. Az empátia és a cselekvés nálad összekapcsolódik.",
       },
       insightsByLocale: {
@@ -314,7 +314,7 @@ export const tritanConfig: TestConfig = {
         },
         hu: {
           low: "Kevésbé jellemző rád az azonnali érzelmi bevonódás. Inkább megfontoltan döntesz arról, mikor és hogyan segíts, és tárgyilagosan közelítesz mások nehézségeihez.",
-          mid: "Helyzetfüggően hajlandó vagy segíteni másokon. Nem a pillanatnyi érzelem, hanem a helyzet mérlegelése vezérel.",
+          mid: "A helyzettől függően szívesen segítesz másokon. Nem a pillanatnyi érzelem, hanem a helyzet mérlegelése vezérel.",
           high: "Mélyen érint mások helyzete, és természetes késztetést érzel a segítésre. Az empátia és a cselekvés nálad összekapcsolódik.",
         },
       },

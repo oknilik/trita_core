@@ -21,16 +21,16 @@ interface PsychSafetyFigureProps {
 
 const LABELS = {
   hu: {
-    title: "Pszichológiai biztonság pulse",
+    title: "A pszichológiai biztonság felmérése",
     subtitle: "Csapatindex és területek – egyéni válaszok nélkül",
     index: "Csapatindex",
     respondents: "válasz",
-    scale: "1–5 skálán",
+    scale: "1–5-ös skálán",
     weakest: "leggyengébb",
     bands: { low: "alacsony", mid: "közepes", high: "magas" },
-    threshold: `Az index csak ${PSYCH_SAFETY_MIN_RESPONSES} választól jelenik meg.`,
+    threshold: `Az index legalább ${PSYCH_SAFETY_MIN_RESPONSES} válasz beérkezése után jelenik meg.`,
     caption:
-      "A pszichológiai biztonság riport-szeletének egyszerűsített ábrája. A területcímkék és a sávhatárok a valódi mérésből valók, az értékeket illusztrációnak szántuk. Egyéni válasz sem a vezető, sem a csapat számára nem látható, és az index a küszöb alatt egyáltalán nem jelenik meg.",
+      "A riport pszichológiai biztonságról szóló részének egyszerűsített ábrája. A területek neve és a sávok határa megegyezik a felmérésben használtakkal, a pontszámok a szemléltetést szolgálják. Az egyéni válaszokat sem a vezető, sem a csapat nem látja. A szükséges válaszadói létszám alatt az index sem jelenik meg.",
   },
   en: {
     title: "Psychological safety pulse",

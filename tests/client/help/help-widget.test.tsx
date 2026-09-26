@@ -38,7 +38,7 @@ describe("HelpWidget", () => {
   it("a trita bemutatását magyarul a jóváhagyott szöveggel jeleníti meg", () => {
     render(<HelpWidget audience="public" />);
     fireEvent.click(screen.getByRole("button", { name: "Segítség megnyitása" }));
-    fireEvent.click(screen.getByRole("button", { name: "Mi is az a trita és kinek tud segíteni?" }));
+    fireEvent.click(screen.getByRole("button", { name: "Mi a trita, és kinek segíthet?" }));
 
     expect(screen.getByText(/Egyénileg ingyenesen kitöltheted/)).toBeInTheDocument();
   });
@@ -81,7 +81,7 @@ describe("HelpWidget", () => {
     fireEvent.click(screen.getByRole("button", { name: /Csapatoknak és cégeknek/ }));
     fireEvent.click(screen.getByRole("button", { name: "Mit kap egy csapat?" }));
 
-    expect(screen.getByText(/pszichológiai biztonság felmérések/)).toBeInTheDocument();
+    expect(screen.getByText(/pszichológiai biztonság felmérése/)).toBeInTheDocument();
     expect(screen.getByText(/félnapos workshop/)).toBeInTheDocument();
   });
 

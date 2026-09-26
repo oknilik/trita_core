@@ -102,8 +102,8 @@ const CRM_ERROR_TEXT: Record<string, string> = {
     "A csapatok száma vagy összlétszáma nem egyezik az ajánlattal.",
   QUOTE_SNAPSHOT_MISMATCH:
     "A régi ajánlat számítása eltér a jelenlegi modelltől. Készíts belőle új piszkozatot.",
-  ONLY_DRAFT_DELETABLE: "Csak piszkozat törölhető – kiment ajánlat nyom marad.",
-  NOT_EDITABLE: "Rendszer-bejegyzés nem módosítható és nem törölhető.",
+  ONLY_DRAFT_DELETABLE: "Csak piszkozat törölhető. Az elküldött ajánlatot megőrizzük.",
+  NOT_EDITABLE: "Rendszerbejegyzés nem módosítható és nem törölhető.",
   INQUIRY_ALREADY_LINKED: "Ez a megkeresés már egy ügyhöz kapcsolódik.",
   VALIDATION_ERROR: "Érvénytelen adat – ellenőrizd a mezőket.",
   UNAUTHORIZED: "Nincs jogosultság a művelethez.",

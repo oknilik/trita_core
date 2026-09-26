@@ -44,7 +44,7 @@ describe("Operating Style participant flow", () => {
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("Nem sikerült"));
     expect(screen.getAllByRole("radio", { checked: true })).toHaveLength(1);
     await userEvent.click(screen.getByRole("button", { name: "Befejezés" }));
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elkészült"));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Köszönjük, kitöltötted a csapatműködési kérdőívet."));
     expect(JSON.parse(fetchMock.mock.calls[1][1].body).answers).toEqual(answers);
     expect(refresh).toHaveBeenCalledTimes(1);
   });
@@ -56,7 +56,7 @@ describe("Operating Style participant flow", () => {
       expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", String(i + 1));
       await userEvent.click(screen.getByRole("button", { name: i === 23 ? "Befejezés" : "Következő" }));
     }
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elkészült"));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Köszönjük, kitöltötted a csapatműködési kérdőívet."));
     const body = JSON.parse(vi.mocked(fetch).mock.calls[0][1]!.body as string);
     expect(Object.keys(body.answers)).toHaveLength(24);
     expect(body.intent).toBe("submit");

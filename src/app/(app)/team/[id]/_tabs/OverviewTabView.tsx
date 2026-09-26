@@ -249,7 +249,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       </div>
                       <p className="mt-2 text-xs leading-relaxed text-ink-body">
                         {isHu
-                          ? "A tanácsadó által jóváhagyott, aggregált kép – egyéni eredmények nélkül, a publikálás pillanatában rögzítve."
+                          ? "A tanácsadó által jóváhagyott, összesített kép – egyéni eredmények nélkül, a publikálás pillanatában rögzítve."
                           : "Aggregate picture approved by your consultant – without individual results, frozen at publication."}
                       </p>
                       <Link
@@ -274,7 +274,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       </p>
                       <p className="mt-1 text-xs leading-relaxed text-ink-body">
                         {isHu
-                          ? "A tanácsadó véglegesítette a csapatképet – aggregált eredmények és értékelés."
+                          ? "A tanácsadó véglegesítette a csapatképet – az összesített eredmények és az értékelés már elérhetők."
                           : "Your consultant has finalized the team picture – aggregate results and assessment."}
                       </p>
                       <Link
@@ -301,7 +301,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   </p>
                   <p className="mt-1 text-xs leading-relaxed text-ink-body">
                     {isHu
-                      ? "A csapatszintű eredményeket a tanácsadó összesíti és jóváhagyja – a személyes beszélgetések tanulságaival együtt, aggregált formában lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
+                      ? "A csapatszintű eredményeket a tanácsadó összesíti és jóváhagyja – a személyes beszélgetések tanulságaival együtt, összesítve lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
                       : "Team-level results are aggregated and approved by your consultant – they become available in aggregate form, together with insights from the personal interviews. Until then you can track completion progress on this page."}
                   </p>
                 </div>

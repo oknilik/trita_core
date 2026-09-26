@@ -19,7 +19,7 @@ const LABELS: Record<JourneyResolverLocale, Record<JourneyActionId, string>> = {
     CONTINUE_SELF_ASSESSMENT: "Folytasd a kérdőívet",
     REVIEW_SELF_RESULTS: "Nézd át a személyes eredményed",
     INVITE_OBSERVERS: "Kérj visszajelzést kollégáktól",
-    MANAGE_OBSERVER_INVITES: "Kezeld a függő visszajelzés-kéréseket",
+    MANAGE_OBSERVER_INVITES: "Tekintsd át a még megválaszolatlan visszajelzéskéréseket",
     CREATE_TEAM: "Hozd létre az első csapatodat",
     JOIN_TEAM: "Csatlakozz egy meglévő csapathoz",
     INVITE_TEAM_MEMBERS: "Hívd meg a hiányzó csapattagokat",
@@ -149,7 +149,7 @@ function resolveCtaIdsWithLocale(
         secondary: null,
         explanation: txt(
           locale,
-          "A személyes eredmény feloldásához fejezd be a félbehagyott kitöltést.",
+          "Fejezd be a megkezdett kérdőívet, hogy megnézhesd az eredményedet.",
           "Finish your in-progress assessment to unlock your personal insights.",
         ),
       };
@@ -171,7 +171,7 @@ function resolveCtaIdsWithLocale(
           secondary: "INVITE_OBSERVERS",
           explanation: txt(
             locale,
-            "A személyes eredményed elkészült. Ha csapatfókusszal indultál, most érdemes létrehozni az első csapatot.",
+            "A személyes eredményed elkészült. Ha a csapatoddal szeretnéd használni a tritát, most létrehozhatod az első csapatot.",
             "Your self insight is ready. If you started with team intent, creating your first team is the right next step.",
           ),
         };
@@ -192,7 +192,7 @@ function resolveCtaIdsWithLocale(
           secondary: "JOIN_TEAM",
           explanation: txt(
             locale,
-            "A visszajelzési kör még fut, közben a függő csatlakozási meghívásodat is lezárhatod.",
+            "Még várjuk a visszajelzéseket. Közben elfogadhatod a csatlakozási meghívásodat.",
             "Observer feedback is still in progress; meanwhile, you can also complete your pending membership invite.",
           ),
         };
@@ -213,7 +213,7 @@ function resolveCtaIdsWithLocale(
         secondary: "REVIEW_SELF_RESULTS",
         explanation: txt(
           locale,
-          "A visszajelzési kör még nyitott. Most a saját köröd lezárása és az eredmények követése a fókusz.",
+          "Még várjuk a visszajelzéseket. Addig áttekintheted a meghívóid állapotát és az eddigi eredményeket.",
           "Observer feedback is still open. Focus on closing this round and reviewing your own insight quality.",
         ),
       };
@@ -235,7 +235,7 @@ function resolveCtaIdsWithLocale(
           secondary: "JOIN_TEAM",
           explanation: txt(
             locale,
-            "Van releváns csapatkontextus, ezért most a csapat felépítése a legjobb következő lépés.",
+            "A csapatos használat megkezdéséhez hozd létre a csapatodat.",
             "You have relevant team context, so building your team layer is the best next step.",
           ),
         };
@@ -245,7 +245,7 @@ function resolveCtaIdsWithLocale(
         secondary: "REVIEW_SELF_RESULTS",
         explanation: txt(
           locale,
-          "A személyes eredményed önmagában is teljes. Ha szeretnéd, innen kérhetsz visszajelzést, vagy léphetsz csapat irányba.",
+          "A személyes eredményed önmagában is teljes. Ha szeretnéd, innen kérhetsz visszajelzést, vagy bevonhatod a csapatodat is.",
           "The self journey is complete on its own. From here, you can optionally continue with observers or team context.",
         ),
       };
@@ -255,7 +255,7 @@ function resolveCtaIdsWithLocale(
         secondary: "VIEW_TEAM_INSIGHTS",
         explanation: txt(
           locale,
-          "A csapat-eredmény feloldásához először legyen meg a minimális aktív csapattagszám.",
+          "A csapateredményekhez még több aktív tagra van szükség. Hívd meg a csapattársaidat.",
           "To unlock team insights, first reach the minimum active team size.",
         ),
       };
@@ -265,7 +265,7 @@ function resolveCtaIdsWithLocale(
         secondary: "INVITE_TEAM_MEMBERS",
         explanation: txt(
           locale,
-          "A csapat részben kész: a hiányzó kitöltések lezárása után lesz stabil csapatkép.",
+          "Néhány csapattag már kitöltötte a felmérést. A további válaszok segítenek teljesebb képet kapni a csapatról.",
           "Your team is partially ready: close missing assessments to get a stable team picture.",
         ),
       };
@@ -286,7 +286,7 @@ function resolveCtaIdsWithLocale(
           secondary: "INVITE_ORG_MEMBERS",
           explanation: txt(
             locale,
-            "A szervezeti nézet alapja az aktív csapatstruktúra, ezt érdemes először felépíteni.",
+            "A szervezeti összesítéshez először hozd létre a csapatokat.",
             "Org insights are built on active teams, so set up your team structure first.",
           ),
         };
@@ -318,7 +318,7 @@ function resolveCtaIdsWithLocale(
         secondary: "INVITE_ORG_MEMBERS",
         explanation: txt(
           locale,
-          "A szervezeti nézet már részben él, további részvétellel tud stabil és reprezentatív maradni.",
+          "A szervezeti nézetben már vannak eredmények. Több kitöltéssel teljesebb képet kaphattok a szervezetről.",
           "Your org view is active. Keep participation high to maintain representative insight quality.",
         ),
       };
@@ -338,7 +338,7 @@ function resolveCtaIdsWithLocale(
         secondary: team.joined ? "VIEW_TEAM_INSIGHTS" : null,
         explanation: txt(
           locale,
-          "A jelenlegi állapothoz a legbiztonságosabb következő lépést ajánljuk.",
+          "Innen folytathatod a felmérést vagy az eredmények áttekintését.",
           "We recommend the safest next action for your current state.",
         ),
       };

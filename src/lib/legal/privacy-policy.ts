@@ -55,7 +55,7 @@ const NAIH_LINE_EN = `${SUPERVISORY_AUTHORITY.nameEn} · ${SUPERVISORY_AUTHORITY
 
 const HU: PolicyDocument = {
   title: "Adatvédelmi tájékoztató",
-  lead: "Ez a tájékoztató azt írja le, milyen személyes adatokat kezelünk, miért, milyen jogalapon, meddig, kivel osztjuk meg – és mit tehetsz, ha nem értesz egyet valamivel. Röviden: a felmérési eredményed a tiéd, egyéni válaszod soha nem jelenik meg csapatszintű nézetben, és a profilodat bármikor törölheted.",
+  lead: "Ez a tájékoztató azt írja le, milyen személyes adatokat kezelünk, miért, milyen jogalapon, meddig, kivel osztjuk meg – és mit tehetsz, ha nem értesz egyet valamivel. Röviden: a felmérési eredményed a tiéd, egyéni válaszaid soha nem jelennek meg csapatszintű nézetben, és a profilodat bármikor törölheted.",
   lastUpdated: "Utoljára frissítve: 2026. augusztus 25.",
   effectiveFrom: "Hatályos: 2026. augusztus 25-től",
   tocLabel: "Tartalom",
@@ -93,7 +93,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "Ez a legfontosabb megkülönböztetés a tájékoztatóban, mert eldönti, kihez fordulj a jogaiddal.",
+          text: "Ez a megkülönböztetés azért lényeges, mert ettől függ, kihez fordulhatsz a jogaid érvényesítéséért.",
         },
         {
           kind: "dl",
@@ -109,9 +109,9 @@ const HU: PolicyDocument = {
                 "Ha a felmérésen a munkáltatód vagy egy megbízó szervezet felkérésére veszel részt (csapatfelmérés, 360°-os kampány, jelölti folyamat), az adatkezelés céljáról az a szervezet dönt – mi az ő megbízásából, adatfeldolgozói szerződés alapján járunk el. Ilyenkor elsősorban a szervezet saját adatkezelési tájékoztatója irányadó, és a törlési vagy hozzáférési kérésedet a szervezet felé is jelezheted. Ha hozzánk fordulsz, továbbítjuk a megrendelőnek.",
             },
             {
-              term: "Megfigyelői (observer) visszajelzés – vegyes",
+              term: "Más személyről adott visszajelzés – vegyes adatkezelői szerepek",
               description:
-                "Ha valakinek a meghívására töltesz ki róla visszajelzést, a te válaszaidat a meghívó személy eredményéhez rendeljük. A megadott e-mail-címedet kizárólag a meghívó kézbesítéséhez használjuk.",
+                "Ha valakinek a meghívására visszajelzést adsz róla, a te válaszaidat a meghívó személy eredményéhez rendeljük. A megadott e-mail-címedet kizárólag a meghívó kézbesítéséhez használjuk.",
             },
           ],
         },
@@ -127,27 +127,27 @@ const HU: PolicyDocument = {
             {
               term: "Fiókadatok",
               description:
-                "E-mail-cím, felhasználónév, hitelesítési azonosítók (a Clerk szolgáltatáson keresztül), Google-fiók azonosító, ha Google-lel lépsz be. Jelszót mi magunk nem tárolunk.",
+                "E-mail-cím, felhasználónév, hitelesítési azonosítók (a Clerk szolgáltatáson keresztül), a Google-fiókod azonosítója, ha Google-lel lépsz be. Jelszót mi magunk nem tárolunk.",
             },
             {
               term: "Profil- és háttéradatok",
               description:
-                "Születési év, nem, végzettség, ország, jelenlegi státusz (munka/tanulás), munkarend, cégméret. Ezek megadása önkéntes; hiányukban a felmérés kitölthető, csak az összehasonlító értelmezés lesz szűkebb.",
+                "Születési év, nem, végzettség, ország, jelenlegi státusz (munka/tanulás), munkarend, cégméret. Ezek megadása önkéntes; hiányukban a felmérés kitölthető, az eredmények összehasonlítására viszont kevesebb lehetőség nyílik.",
             },
             {
               term: "Felmérési adatok",
               description:
-                "A kérdőívek itemenkénti válaszai, a belőlük számított dimenzió- és alskála-pontszámok, a csapatszerep- és érdeklődés-eredmények, a kitöltés időbélyegei és a félbehagyott kitöltés piszkozata.",
+                "A kérdőívek egyes tételeire adott válaszok, a belőlük számított dimenziók és alskálák pontszámai, a csapatszerepek és az érdeklődési körök felmérésének eredményei, a kitöltés időbélyegei és a félbehagyott kitöltés piszkozata.",
             },
             {
               term: "Visszajelzési adatok",
               description:
-                "Az ismerősi/kollégai (observer) értékelések, a meghívó és a meghívott közötti kapcsolat típusa, a válaszadó saját megbízhatóság-jelölése, valamint az eredmények után kitöltött elégedettségi kérdőív.",
+                "Az ismerősöktől és kollégáktól érkező értékelések, a meghívó és a meghívott közötti kapcsolat típusa, a válaszadó jelzése arról, mennyire biztos a válaszaiban, valamint az eredmények megtekintése után kitöltött elégedettségi kérdőív.",
             },
             {
               term: "Szervezeti adatok",
               description:
-                "Szervezeti és csapattagság, szerepkör (tag, vezető, adminisztrátor, tanácsadó), kampány-részvétel és -állapot.",
+                "Szervezeti és csapattagság, szerepkör (tag, vezető, adminisztrátor, tanácsadó), a kampányban való részvétel és annak állapota.",
             },
             {
               term: "Kapcsolatfelvételi adatok",
@@ -157,18 +157,18 @@ const HU: PolicyDocument = {
             {
               term: "Feliratkozási adatok",
               description:
-                "Ha feliratkozol a hírlevelünkre vagy az új blogbejegyzés-értesítőre: e-mail-cím, nyelv, választott témák, a feliratkozás forrása, a megerősítés és leiratkozás időpontja; továbbá a kiküldési kísérlet, a szolgáltatói átvétel, a mail-szerveri kézbesítés vagy hiba, valamint a levélbeli link első lekérésének időpontja. Az admin CRM-ben normalizált e-mail-egyezéssel jelezzük, ha egy érdeklődő feliratkozó is. A linkkérést automata levélszkenner vagy továbbított levél is kiválthatja, ezért nem tekintjük biztos emberi olvasásnak.",
+                "Ha feliratkozol a hírlevelünkre vagy az új blogbejegyzésekről szóló értesítőre, a következő adatokat kezeljük: e-mail-cím, nyelv, választott témák, a feliratkozás forrása, a megerősítés és a leiratkozás időpontja. Rögzítjük a kiküldési kísérlet, a szolgáltatói átvétel, a levelezőszerverre történő kézbesítés vagy a hiba, valamint a levélben szereplő link első lekérésének időpontját is. Az ügyfélkezelő rendszerben az egységes formára hozott e-mail-címek egyezése alapján jelezzük, ha egy érdeklődő feliratkozó is. A linket automatikus levélellenőrző rendszer vagy a továbbított levél címzettje is megnyithatja, ezért a lekérés önmagában nem bizonyítja, hogy a feliratkozó elolvasta a levelet.",
             },
             {
               term: "Technikai adatok",
               description:
-                "Nyelvi beállítás (süti), munkamenet-azonosítók, hibanaplók, valamint süti nélküli, összesített látogatottsági és teljesítmény-statisztikák.",
+                "Nyelvi beállítás (süti), munkamenet-azonosítók, hibanaplók, valamint süti nélküli, összesített látogatottsági és teljesítménystatisztikák.",
             },
           ],
         },
         {
           kind: "note",
-          text: "Amit NEM kezelünk: a GDPR 9. cikke szerinti különleges adatot (egészségügyi adat, vallási vagy politikai meggyőződés, szexuális irányultság, biometrikus adat) nem gyűjtünk. A személyiség-felmérés eredménye nem egészségügyi adat és nem diagnózis: viselkedési preferenciák önbevalláson alapuló mérése. Bankkártya- és fizetési adatot sem kezelünk – a számlázás a platformon kívül történik.",
+          text: "Milyen adatokat nem kezelünk? A GDPR 9. cikke szerinti különleges adatot (egészségügyi adat, vallási vagy politikai meggyőződés, szexuális irányultság, biometrikus adat) nem gyűjtünk. A személyiségfelmérés eredménye nem egészségügyi adat és nem diagnózis: viselkedési preferenciák önbevalláson alapuló mérése. Bankkártya- és fizetési adatot sem kezelünk – a számlázás a platformon kívül történik.",
         },
       ],
     },
@@ -190,12 +190,12 @@ const HU: PolicyDocument = {
               "Szerződés teljesítése – GDPR 6. cikk (1) b)",
             ],
             [
-              "A felmérés kiszolgálása, pontszámítás, eredmények megjelenítése",
+              "A felmérés biztosítása, pontszámítás, eredmények megjelenítése",
               "Felmérési és profiladatok",
               "Szerződés teljesítése – 6. cikk (1) b)",
             ],
             [
-              "Observer-meghívó kiküldése és a visszajelzés összevetése az önértékeléssel",
+              "Visszajelzési meghívó kiküldése és a visszajelzés összevetése az önértékeléssel",
               "Meghívott e-mail-címe, visszajelzési adatok",
               "Jogos érdek – 6. cikk (1) f): a felhasználó kifejezett kérésére küldünk meghívót; a címzett bármikor kérheti a törlést",
             ],
@@ -210,19 +210,19 @@ const HU: PolicyDocument = {
               "Szerződéskötést megelőző lépések / jogos érdek – 6. cikk (1) b) és f)",
             ],
             [
-              "Hírlevél és új blogbejegyzés-értesítő küldése",
+              "Hírlevél és az új blogbejegyzésekről szóló értesítő küldése",
               "Feliratkozási adatok",
               "Hozzájárulás – 6. cikk (1) a); kétlépcsős feliratkozás, bármikor visszavonható",
             ],
             [
-              "Hírlevél-kézbesíthetőség ellenőrzése, linkkérések mérése és feliratkozói kontextus megjelenítése a beérkező megkeresés mellett",
-              "Kiküldési/kézbesítési állapot, első linkkérés, normalizált e-mail-egyezés",
+              "A hírlevelek kézbesíthetőségének ellenőrzése, a linklekérések mérése és a feliratkozási adatok megjelenítése a beérkező megkeresés mellett",
+              "Kiküldési és kézbesítési állapot, az első linklekérés, az egységes formára hozott e-mail-címek egyezése",
               "Jogos érdek – 6. cikk (1) f): a feladói hírnév védelme, hibák feltárása és a tartalom hasznosságának megértése; nyitópixelt nem használunk, a jel bizonytalanságát feltüntetjük, az adatkezelés ellen tiltakozhatsz",
             ],
             [
-              "Szolgáltatás- és módszertan-fejlesztés összesített adatokon",
+              "A szolgáltatás és a módszertan fejlesztése összesített adatok alapján",
               "Felmérési adatok, anonimizálás után",
-              "Jogos érdek – 6. cikk (1) f); az anonimizált, aggregált eredmény már nem személyes adat",
+              "Jogos érdek – 6. cikk (1) f); az anonimizált, összesített eredmény már nem személyes adat",
             ],
             [
               "Üzemeltetés, biztonság, visszaélés-megelőzés, hibakeresés",
@@ -232,7 +232,7 @@ const HU: PolicyDocument = {
             [
               "A felület használatának mérése (mely oldalak, hol akad el a folyamat)",
               "Felületi események: megnyitott oldal, gombkattintás, a kitöltés hányadik kérdésénél tart",
-              "Jogos érdek – 6. cikk (1) f); saját, first-party mérés, külső szolgáltató nélkül",
+              "Jogos érdek – 6. cikk (1) f); saját rendszerünkben végzett mérés, külső szolgáltató nélkül",
             ],
             [
               "Számviteli kötelezettségek teljesítése",
@@ -249,14 +249,14 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "A csapatszintű mérések (csapattársi szerep-visszajelzés, bizalmi kör, pszichológiai biztonság pulzusmérés) csak akkor működnek, ha a válaszadó biztos lehet abban, hogy az egyedi válasza nem azonosítható. Ezért a következő szabályok technikailag is érvényesülnek, nem csak ígéretként:",
+          text: "A csapatszintű mérések (csapattársi szerep-visszajelzés, bizalmi kör, a pszichológiai biztonság felmérése) csak akkor működnek, ha a válaszadó biztos lehet abban, hogy az egyedi válasza nem azonosítható. Ezért a következő szabályok technikailag is érvényesülnek, nem csak ígéretként:",
         },
         {
           kind: "ul",
           items: [
             "Egyéni válasz soha nem jelenik meg csapat- vagy szervezeti nézetben – kizárólag összesített formában.",
             "Összesített eredmény is csak akkor jelenik meg, ha legalább 3 értékelő, illetve kitöltő válasza rendelkezésre áll. A küszöb alatt a felület nem mutat eredményt.",
-            "A pszichológiai biztonság pulzusválaszait eleve felhasználói azonosító nélkül rögzítjük – ezeket utólag sem tudjuk személyhez kötni.",
+            "A pszichológiai biztonság felmérésére adott válaszokat eleve felhasználói azonosító nélkül rögzítjük – ezeket utólag sem tudjuk személyhez kötni.",
             "Az összesített csapatképet a csapat vezetője, a szervezeti adminisztrátor és a szervezethez rendelt tanácsadó látja; te a rólad szóló, összesített visszajelzést látod.",
             "A bizalmi kör eredménye páronkénti, két irány átlagából képzett formában jelenik meg – az egyes irányított válaszok ott sem láthatók.",
           ],
@@ -273,14 +273,14 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "A pontszámokat és az illeszkedési mutatókat algoritmus számolja ki – ez profilalkotásnak minősül. Ugyanakkor a GDPR 22. cikke szerinti, KIZÁRÓLAG automatizált, rád nézve joghatással járó vagy hasonlóan jelentős döntést nem hozunk és nem hozunk létre.",
+          text: "A pontszámokat és az illeszkedési mutatókat algoritmus számolja ki – ez profilalkotásnak minősül. Ugyanakkor nem hozunk a GDPR 22. cikke szerinti, kizárólag automatizált, rád nézve joghatással járó vagy hasonlóan jelentős döntést.",
         },
         {
           kind: "ul",
           items: [
             "Az eredmény önmagában nem alkalmas felvételi, előléptetési vagy elbocsátási döntésre, és mi ilyet nem hozunk.",
-            "Jelölti folyamatban a döntést mindig a munkáltató hozza meg, emberi mérlegeléssel; a mi kimenetünk egy értelmezendő szempont, nem ítélet.",
-            "Minden becsült (nem közvetlenül mért) értéket a felületen forrás- és megbízhatóság-jelöléssel látunk el, hogy ne lehessen mért ténynek olvasni.",
+            "Jelölti folyamatban a döntést mindig a munkáltató hozza meg, emberi mérlegeléssel; az általunk nyújtott eredmény az értelmezést segítő szempont, nem ítélet.",
+            "Minden becsült (nem közvetlenül mért) érték mellett feltüntetjük a forrást és a megbízhatóságot, hogy a becslés egyértelműen megkülönböztethető legyen a mért eredménytől.",
             "Ha úgy érzed, egy rád vonatkozó eredményt hibásan értelmeztek, kérheted az emberi felülvizsgálatot és kifejtheted az álláspontodat.",
           ],
         },
@@ -310,7 +310,7 @@ const HU: PolicyDocument = {
             ],
             [
               "Vercel (vercel.com)",
-              "Alkalmazás-üzemeltetés, süti nélküli látogatottsági és teljesítmény-statisztika",
+              "Alkalmazás-üzemeltetés, süti nélküli látogatottsági és teljesítménystatisztika",
               "EU/USA – DPA és SCC alapján",
             ],
             [
@@ -353,7 +353,7 @@ const HU: PolicyDocument = {
               "A kitöltés befejezéséig, legfeljebb 90 napig.",
             ],
             [
-              "Observer-meghívó és -token",
+              "Visszajelzési meghívó és a hozzá tartozó token",
               "A meghívó kiküldésétől számított 30 nap (lejárat), illetve a visszavonásig.",
             ],
             [
@@ -366,10 +366,10 @@ const HU: PolicyDocument = {
             ],
             [
               "Hírlevél-feliratkozás",
-              "Az aktív feliratkozás a leiratkozásig él. A meg nem erősített sort a 7 napos token lejárata után automatikusan töröljük. Leiratkozott vagy visszapattant címet 12 hónapig őrzünk, majd automatikusan törlünk.",
+              "Az aktív feliratkozás a leiratkozásig él. A meg nem erősített feliratkozást a 7 napos token lejárata után automatikusan töröljük. A leiratkozók e-mail-címét és a kézbesítési hibát okozó címeket 12 hónapig őrizzük, majd automatikusan töröljük.",
             ],
             [
-              "Hírlevél-kiküldési, kézbesítési és linkkérés-adatok",
+              "A hírlevelek kiküldésének, kézbesítésének és a linkek lekérésének adatai",
               "A kiküldéstől számított 12 hónap, utána automatikus törlés.",
             ],
             [
@@ -398,7 +398,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "Kizárólag a működéshez szükséges sütiket használunk. Marketing- és nyomkövető sütit nem helyezünk el, és nem osztunk meg adatot hirdetési hálózatokkal – ezért nem is jelenítünk meg süti-elfogadó felugrót.",
+          text: "Kizárólag a működéshez szükséges sütiket használunk. Marketing- és nyomkövető sütit nem helyezünk el, és nem osztunk meg adatot hirdetési hálózatokkal – ezért nem is jelenítünk meg sütik elfogadását kérő felugró ablakot.",
         },
         {
           kind: "table",
@@ -411,11 +411,11 @@ const HU: PolicyDocument = {
         },
         {
           kind: "p",
-          text: "A látogatottság- és teljesítménymérés (Vercel Analytics, Speed Insights) sütit nem használ; az IP-címet rövid ideig, hasított (anonimizált) formában dolgozza fel az egyedi látogatók megkülönböztetéséhez, és nem tárolja személyes adatként. A kimenet összesített forgalmi statisztika és Core Web Vitals mutató.",
+          text: "A látogatottság- és teljesítménymérés (Vercel Analytics, Speed Insights) sütit nem használ; az IP-címet rövid ideig, kivonatolt (anonimizált) formában dolgozza fel az egyedi látogatók megkülönböztetéséhez, és nem tárolja személyes adatként. A kimenet összesített forgalmi statisztika és Core Web Vitals mutató.",
         },
         {
           kind: "p",
-          text: "A saját használat-mérésünk sem tesz le sütit, és semmilyen más azonosítót nem tárol az eszközödön: a látogató azonosítója NAPONTA ROTÁLÓ álnév, amit az IP-címből és a böngésző-azonosítóból számolt visszafejthetetlen kivonat ad – magát az IP-címet nem tároljuk, és másnap ugyanaz a látogató már más álnév alatt jelenik meg. Az események a mi szervereinkre érkeznek és a mi adatbázisunkban maradnak; nincs mögötte külső analitikai szolgáltató, és semmilyen adat nem megy ki reklámhálózathoz. Ha a böngésződ nyomkövetés-tiltást jelez (Global Privacy Control vagy Do Not Track), semmit nem mérünk. Esemény-tulajdonságban nincs név, e-mail-cím, szabad szöveg, kérdőív-válasz, pontszám vagy meghívó-token. Ezért nincs süti-elfogadó felugró sem.",
+          text: "A felület használatát mérő saját rendszerünk sem helyez el sütit, és semmilyen más azonosítót nem tárol az eszközödön. A látogatót naponta változó álnév azonosítja: ezt az IP-címből és a böngésző azonosítójából számított, visszafejthetetlen kivonat adja. Magát az IP-címet nem tároljuk, és másnap ugyanaz a látogató már más álnév alatt jelenik meg. Az események a saját szervereinkre érkeznek, és a saját adatbázisunkban maradnak. Ehhez nem veszünk igénybe külső analitikai szolgáltatót, és semmilyen adatot nem továbbítunk reklámhálózatnak. Ha a böngésződ nyomkövetési tiltást jelez (Global Privacy Control vagy Do Not Track), semmit nem mérünk. Az események adatai nem tartalmaznak nevet, e-mail-címet, szabad szöveget, kérdőívre adott választ, pontszámot vagy meghívóhoz tartozó tokent. Ezért nincs sütik elfogadását kérő felugró ablak sem.",
         },
       ],
     },
@@ -429,7 +429,7 @@ const HU: PolicyDocument = {
             "Titkosított átvitel (HTTPS/TLS) minden kérésnél, és titkosított tárolás az adatbázis szintjén.",
             "Jelszót nem tárolunk: a hitelesítést erre szakosodott szolgáltató (Clerk) végzi, kétlépcsős azonosítás lehetőségével.",
             "Szerepkör-alapú hozzáférés-szabályozás: a csapat- és szervezeti adatokhoz csak a jogosult szerepkörök férnek hozzá, és minden lekérés jogosultság-ellenőrzésen megy át.",
-            "A megosztó és megfigyelői linkek egyedi, lejáró tokent használnak, amely bármikor visszavonható.",
+            "A megosztási és visszajelzési linkek egyedi, lejáró tokent használnak, amely bármikor visszavonható.",
             "Belső hozzáférés szükségesség alapján, naplózva; a fejlesztéshez és teszteléshez nem éles adatot használunk.",
           ],
         },
@@ -468,7 +468,7 @@ const HU: PolicyDocument = {
             {
               term: "Adathordozhatóság",
               description:
-                "Kérheted, hogy a megadott és a mért adataidat géppel olvasható formátumban add ki, vagy – ha technikailag megvalósítható – továbbítsuk másik szolgáltatónak.",
+                "Kérheted, hogy a megadott és a mért adataidat géppel olvasható formátumban adjuk ki, vagy – ha technikailag megvalósítható – továbbítsuk másik szolgáltatónak.",
             },
             {
               term: "Tiltakozás",
@@ -509,7 +509,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "A szolgáltatás 16 éven felülieknek készült. 16 év alatti személy adatait tudatosan nem kezeljük; ha ilyet észlelünk, az adatot töröljük. Ha szülőként vagy gondviselőként úgy látod, hogy a gyermeked adatot adott meg nekünk, jelezd, és haladéktalanul törlünk.",
+          text: "A szolgáltatás 16 éven felülieknek készült. 16 év alatti személy adatait tudatosan nem kezeljük; ha ilyet észlelünk, az adatot töröljük. Ha szülőként vagy gondviselőként úgy látod, hogy a gyermeked adatot adott meg nekünk, jelezd, és haladéktalanul töröljük az adatokat.",
         },
       ],
     },
@@ -529,7 +529,7 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: `Adatvédelmi kérdésben, kérésben vagy panasszal írj a ${COMPANY.privacyEmail} címre, vagy postai úton a székhelyünkre: ${COMPANY.address}. Igyekszünk egy munkanapon belül visszajelezni.`,
+          text: `Adatvédelmi kérdéseddel, kéréseddel vagy panaszoddal írj a ${COMPANY.privacyEmail} címre, vagy postai úton a székhelyünkre: ${COMPANY.address}. Igyekszünk egy munkanapon belül visszajelezni.`,
         },
       ],
     },

@@ -49,13 +49,13 @@ function subscriptionLabel(sub: OrgRow["subscription"]): {
     const until = sub.currentPeriodEnd
       ? new Date(sub.currentPeriodEnd).toLocaleDateString("hu-HU")
       : "–";
-    return { text: `aktív · ${sub.planType ?? "?"} · ${until}-ig`, tone: "active" };
+    return { text: `aktív · ${sub.planType ?? "?"} · érvényesség vége: ${until}`, tone: "active" };
   }
   if (sub.status === "trialing") {
     const until = sub.trialEndsAt
       ? new Date(sub.trialEndsAt).toLocaleDateString("hu-HU")
       : "–";
-    return { text: `trial · ${until}-ig`, tone: "trial" };
+    return { text: `trial · érvényesség vége: ${until}`, tone: "trial" };
   }
   return { text: sub.status, tone: "off" };
 }
@@ -200,7 +200,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
               setQuery(v);
               setShowAll(false);
             }}
-            placeholder="Keresés névre vagy tanácsadó-emailre…"
+            placeholder="Keresés névre vagy tanácsadói e-mail-címre…"
             matched={filtered.length}
             total={orgs.length}
             limit={DEFAULT_VISIBLE}
@@ -427,7 +427,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                           className="h-4 w-4 accent-[var(--color-accent-primary)]"
                         />
                         <span>
-                          Karrier-iránytű elrejtése a tagoknak
+                          Karrieriránytű elrejtése a tagoknak
                           <span className="ml-1 text-muted">(fül + PDF-blokk)</span>
                         </span>
                         {org.hideCareerModule && (
