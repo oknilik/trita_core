@@ -322,7 +322,7 @@ export function ComparisonTab({
 
   const matchingCount = covered.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP).length;
   const differingCount = covered.length - matchingCount;
-  const avgGapPct = Math.round(
+  const avgGap = Math.round(
     covered.reduce((sum, d) => sum + Math.abs(d.self - d.observer), 0) / (covered.length || 1),
   );
   const isGoodMatch = differingCount <= 2;
@@ -457,7 +457,7 @@ export function ComparisonTab({
                 skálapontban értendő – a korábbi „%" suffix hamis mértékegység
                 volt (a kártya-szintű gap-ek is „pont"-ban jelennek meg). */}
             <p className="font-fraunces text-heading leading-none text-[var(--color-text-primary)]">
-              {avgGapPct} {t("comparison.pointsUnitShort", locale)}
+              {avgGap} {t("comparison.pointsUnit", locale)}
             </p>
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.avgGap", locale)}</p>
           </div>

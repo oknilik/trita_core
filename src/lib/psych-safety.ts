@@ -220,7 +220,7 @@ export const PSYCH_SAFETY_ACTIONS: Record<string, { hu: string; en: string }> = 
     en: "Create a regular, protected forum for sensitive topics – e.g. a monthly “what isn't working?” round that the leader opens with their own item. Hard topics surface when they have a designated place.",
   },
   PS2: {
-    hu: "Vezess be olyan hibamegbeszélést, amely a tanulságokra összpontosít: a „ki hibázott?” helyett azt kérdezzétek: „Mit tanultunk, és min változtatunk?” A vezető ossza meg elsőként a saját hibáját.",
+    hu: "Vezetőként kezdj egy saját hibáddal. A csapattal azt beszéljétek át, mi történt, mit tanultatok belőle, és min változtatnátok. A hibáztatás helyett arra figyeljetek, mit tudtok másképp csinálni a következő alkalommal.",
     en: "Introduce lesson-focused mistake reviews: replace “who failed?” with “what did we learn, what do we change?” – and have the leader share their own mistake first.",
   },
   PS3: {

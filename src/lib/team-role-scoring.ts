@@ -40,7 +40,7 @@ export const TEAM_ROLE_WHY: Record<TeamRoleCode, { hu: string; en: string }> = {
     en: "Because extraversion and openness make you a natural door-opener to people and opportunities.",
   },
   KO: {
-    hu: "Mert az emberek és az elvek összehangolása egyszerre fontos számodra.",
+    hu: "Fontos neked, hogy bevond a többieket, és a közös munka az elveiddel is összhangban legyen.",
     en: "Because aligning people and principles matters to you at the same time.",
   },
   HA: {

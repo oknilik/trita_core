@@ -22,7 +22,7 @@ export function presentTeamStyle(snapshot: TeamStyleSnapshot | null | undefined,
   else {
     const allMixed = AXES.every((axis) => op.axes[axis].pole === "mixed");
     const date = (v: string) => new Date(v).toLocaleDateString(locale === "hu" ? "hu-HU" : "en-GB", { timeZone: "UTC" });
-    operating.notes.push(`${t("tos.window", locale)}: ${date(op.referenceStart)} – ${date(op.referenceEnd)}`);
+    operating.notes.push(`${tr("period")}: ${date(op.referenceStart)} – ${date(op.referenceEnd)}`);
     if (op.pattern?.status === "tentative") operating.notes.push(tr("tentative"));
     if (op.patternUnavailableReason) operating.notes.push(tr(`reasons.${op.patternUnavailableReason}`));
     if (op.pattern?.alternativeCodes.length && !allMixed) operating.notes.push(`${tr("alternatives")}: ${op.pattern.alternativeCodes.map((c) => OPERATING_PATTERNS[c][locale]).join(", ")}`);

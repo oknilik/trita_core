@@ -38,8 +38,9 @@ export function generateTeamSummary(scores: Record<string, number>): string {
   const h = dimNames[highest[0]] ?? highest[0];
   const h2 = dimNames[secondHighest[0]] ?? secondHighest[0];
   const l = dimNames[lowest[0]] ?? lowest[0];
+  const number = (value: number) => value.toLocaleString("hu-HU", { maximumFractionDigits: 1 });
 
-  return `A csapatprofil két legmagasabb átlagú dimenziója ${withHuArticle(h)} (${highest[1]}%) és ${withHuArticle(h2)} (${secondHighest[1]}%). A legalacsonyabb csapatátlagot ${withHuArticle(l)} területén mértük (${lowest[1]}%) – érdemes megvizsgálni, hogy ez mennyire felel meg a csapat feladatainak.`;
+  return `Az önértékelésekben ${withHuArticle(h)} (${number(highest[1])}/100) és ${withHuArticle(h2)} (${number(secondHighest[1])}/100) kapta a legmagasabb csapatátlagot. A többi területhez képest ${withHuArticle(l)} kevésbé hangsúlyos (${number(lowest[1])}/100). Beszéljétek át, hogyan jelenik meg ez a mindennapi feladataitokban.`;
 }
 
 // ── Kulcs jellemzők actionable insight-ok ─────────────────
@@ -55,8 +56,8 @@ export function getStrengthInsight(dimension: string): string {
     E: "A csapat tagjai érzékenyen reagálhatnak a feszültségre, és tartós nyomás alatt hamarabb elfáradhatnak.",
     X: "A csapat társas helyzetekben gyorsan lendületbe jön – műhelymunkákon és prezentációknál ez különösen hasznos lehet.",
     A: "A csapat erősen törekszik az együttműködésre – ez összetett projekteknél csökkentheti az egyeztetési terhet.",
-    C: "A csapat fegyelmezetten viszi végig a feladatokat. Ez különösen hasznos lehet a határidőhöz kötött projektekben.",
-    O: "A csapat nyitott az újdonságokra. Szívesen próbálhat ki új megoldásokat rövid kísérletekben.",
+    C: "A feladatok gondos végigvitele a csapat egyik erőssége lehet. Erre különösen a határidőhöz kötött munkáknál érdemes építeni.",
+    O: "Az új megoldások keresése közel állhat hozzátok. Egy kisebb, jól körülhatárolt kísérletben érdemes kipróbálni az ötleteiteket.",
   };
   return insights[dimension] ?? "";
 }
@@ -65,7 +66,7 @@ export function getWatchAreaInsight(dimension: string): string {
   const insights: Record<string, string> = {
     H: "Figyelj a csapaton belüli méltányosságérzetre – érdemes rendszeres visszajelző kört tartani.",
     E: "A csapattagok érzékenyebben reagálhatnak egymás érzelmeire. Konfliktushelyzetben érdemes időt hagyni a megbeszélésre.",
-    X: "A csapat visszafogottabb – a megbeszéléseken tudatos bevonás és az egyeztetések egyértelmű indítása segíthet.",
+    X: "A társas kezdeményezés kevésbé hangsúlyos a csapatprofilban. A megbeszélések előtt hagyjatok időt az egyéni átgondolásra, hogy a csendesebb tagok is könnyebben hozzá tudjanak szólni.",
     A: "A közvetlen kommunikáció miatt a konfliktusok gyorsabban kiéleződhetnek. Egy előre kialakított vitakeret segíthet.",
     C: "A csapat rugalmas, de könnyen széttartóvá válhat – egyszerű közös keretekkel javítható a kiszámíthatóság.",
     O: "A gyakorlatias szemlélet mellett külső nézőpont adhat lendületet az újításnak, például műhelymunka vagy vendégelőadó bevonása.",
@@ -76,9 +77,9 @@ export function getWatchAreaInsight(dimension: string): string {
 export function getDiversityInsight(dimension: string): string {
   const insights: Record<string, string> = {
     H: "Eltérő igazságérzet – érdemes tudatosan tisztázni a csapat normáit.",
-    E: "Eltérő érzelmi ráhangolódás – érdemes személyre szabottan támogatnod a tagokat.",
+    E: "Másként élhetitek meg ugyanazt a feszültséget. Beszéljétek meg, kinek milyen segítségre van szüksége a sűrűbb időszakokban.",
     X: "A csapaton belül eltérnek az energiaszintek – a visszafogottabb és az energikusabb tagok igényeit is érdemes figyelembe venni a megbeszélések kialakításakor.",
-    A: "A csapaton belül eltérnek az együttműködési stílusok – páros munkában érdemes tudatosan különböző működésű tagokat összekapcsolni.",
+    A: "Eltérhet, ki hogyan viseli a nézeteltéréseket. Beszéljétek meg, hogyan tudtok úgy vitázni, hogy mindenki elmondhassa a véleményét.",
     C: "A csapaton belül eltér a tagok szervezettsége – a koordinációhoz néhány közös alapszabályra van szükség.",
     O: "Eltérő nyitottság új megközelítésekre – az innováció és a stabilitás igénye egyaránt jelen van.",
   };

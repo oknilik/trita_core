@@ -13,14 +13,17 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ComparisonTab } from "@/components/results/ComparisonTab";
 import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import { diffStandardError } from "@/lib/psychometrics";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 
+const localeState = vi.hoisted(() => ({ value: "hu" as "hu" | "en" }));
+afterEach(() => { localeState.value = "hu"; });
+
 vi.mock("@/components/LocaleProvider", () => ({
-  useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
+  useLocale: () => ({ locale: localeState.value, setLocale: vi.fn(), isChanging: false }),
 }));
 
 function dim(
@@ -70,6 +73,17 @@ function renderTab() {
 }
 
 describe("ComparisonTab – mérési-hiba kapu (DIFF_MIN_GAP)", () => {
+  it.each([["hu", "pont"], ["en", "points"]] as const)(
+    "%s – az átlagos pontkülönbség nem százalék",
+    (locale, unit) => {
+      localeState.value = locale;
+      renderTab();
+      // (10 + 16 + 25) / 6 = 8,5, egész pontra kerekítve 9.
+      expect(screen.getByText(`9 ${unit}`)).toBeInTheDocument();
+      expect(screen.queryByText("9%")).toBeNull();
+    },
+  );
+
   it("az új observer-fejléc mobilon egymás alá, asztalon két oszlopba rendeződik", () => {
     renderTab();
     expect(screen.getByTestId("observer-comparison-surface")).toBeInTheDocument();

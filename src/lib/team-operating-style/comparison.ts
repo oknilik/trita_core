@@ -39,8 +39,8 @@ const PAIRINGS: Record<OperatingAxis, CompositionAxis> = {
 const PROMPTS: Record<OperatingAxis, Record<"left" | "right", { support: Localized; tension: Localized }>> = {
   information: {
     left: {
-      support: { hu: "Miben segíti a közös nyilvántartás a különböző rendszerezettségi igényű tagokat?", en: "How do shared records help members with different needs for structure?" },
-      tension: { hu: "Mikor igényel több adminisztrációt a dokumentálás, mint amennyi támpontot ad?", en: "When does documentation require more administration than the guidance it provides?" },
+      support: { hu: "Segít a közös nyilvántartás abban, hogy mindenki megtalálja, amire szüksége van? Mondjatok egy példát, amikor jól működött.", en: "How do shared records help members with different needs for structure?" },
+      tension: { hu: "Van olyan adat vagy leírás, amelyet rendszeresen frissítetek, de senki sem használ? Mit lehetne egyszerűbben rögzíteni?", en: "When does documentation require more administration than the guidance it provides?" },
     },
     right: {
       support: { hu: "Mely helyzetekben segít a közvetlen beszélgetés gyorsabban megérteni a feladatot?", en: "When do direct conversations help people understand a task faster?" },
@@ -49,8 +49,8 @@ const PROMPTS: Record<OperatingAxis, Record<"left" | "right", { support: Localiz
   },
   coordination: {
     left: {
-      support: { hu: "Hogyan segítenek a kimondott felelősségek az eltérő együttműködési igényű tagoknak?", en: "How do explicit responsibilities help members with different collaboration preferences?" },
-      tension: { hu: "Van-e helyzet, amikor a rögzített feladathatárok megnehezítik az egymásnak nyújtott segítséget?", en: "Are there situations where fixed task boundaries make it harder to help one another?" },
+      support: { hu: "Ha előre tisztázzátok, ki miért felel, könnyebb egymásnak segíteni? Mikor tapasztaltátok ezt?", en: "How do explicit responsibilities help members with different collaboration preferences?" },
+      tension: { hu: "Előfordul, hogy valaki azért nem segít, mert egy feladatot más felelősségének tart? Ilyenkor hogyan tudnátok átadni vagy megosztani a munkát?", en: "Are there situations where fixed task boundaries make it harder to help one another?" },
     },
     right: {
       support: { hu: "Mely közösen megtanult rutinok teszik lehetővé, hogy kevés egyeztetéssel is együtt haladjatok?", en: "Which shared routines allow you to work together with little explicit coordination?" },
@@ -59,7 +59,7 @@ const PROMPTS: Record<OperatingAxis, Record<"left" | "right", { support: Localiz
   },
   decision: {
     left: {
-      support: { hu: "Mikor segíti a visszafogottabb és a kezdeményezőbb tagokat is, ha egyértelmű, ki hozza meg a végső döntést?", en: "When does a clear decision point help members with different levels of social energy?" },
+      support: { hu: "Mikor könnyíti meg a közös munkát, hogy tudjátok, ki hozza meg a végső döntést? A csendesebb és a kezdeményezőbb tagoknak is segít ez?", en: "When does a clear decision point help members with different levels of social energy?" },
       tension: { hu: "Hogyan jutnak el a kezdeményező és a csendesebb tagok javaslatai a végső döntéshozóhoz?", en: "How do suggestions from both proactive and quieter members reach the final decision-maker?" },
     },
     right: {
@@ -70,7 +70,7 @@ const PROMPTS: Record<OperatingAxis, Record<"left" | "right", { support: Localiz
   execution: {
     left: {
       support: { hu: "Mely feladatoknál ad a rögzített munkamenet támaszt a különböző újdonságigényű tagoknak?", en: "On which tasks does a fixed workflow support members with different appetites for novelty?" },
-      tension: { hu: "Hol fér bele egy új ötlet kipróbálása, és mikor szolgálja a feladatot a terv követése?", en: "Where is there room to try a new idea, and when does following the plan serve the task?" },
+      tension: { hu: "Hogyan döntitek el, hogy egy új ötlet miatt változtattok a terven, vagy előbb befejezitek, amit elkezdtetek?", en: "Where is there room to try a new idea, and when does following the plan serve the task?" },
     },
     right: {
       support: { hu: "Hogyan próbáltok ki új megoldásokat a tapasztalataitok alapján úgy, hogy az újdonságokra nyitottabb és a bevált megoldásokat kedvelő tagok is bekapcsolódhassanak?", en: "How do you turn new experiences into useful experiments across different levels of openness?" },
@@ -83,7 +83,7 @@ const PROMPTS: Record<OperatingAxis, Record<"left" | "right", { support: Localiz
 const PROFILE_SUPPORT: Record<OperatingAxis, Record<"left" | "right", Record<"high" | "low", Localized>>> = {
   information: {
     left: {
-      high: { hu: "Hogyan segíti a közös, visszakereshető nyilvántartás azokat a tagokat, akik a profiljuk alapján jobban igénylik a rendszerezett munkát?", en: "How do shared, retrievable records support the stronger tendency toward organization in the personality profile?" },
+      high: { hu: "A profil alapján fontos lehet nektek, hogy átlátható legyen a munka. Hogyan segít ebben a közös nyilvántartás? Hozzatok egy példát, amikor könnyen visszakerestetek benne valamit.", en: "How do shared, retrievable records support the stronger tendency toward organization in the personality profile?" },
       low: { hu: "Ad-e hasznos külső kapaszkodót a közös nyilvántartás ott, ahol a rendszerezettségi hajlam kevésbé hangsúlyos?", en: "Do shared records provide a useful external reference where the tendency toward organization is less pronounced?" },
     },
     right: {
@@ -93,7 +93,7 @@ const PROFILE_SUPPORT: Record<OperatingAxis, Record<"left" | "right", Record<"hi
   },
   coordination: {
     left: {
-      high: { hu: "A profil alapján a csapatban erősebb az együttműködési hajlam. Hogyan segítenek a világos felelősségi körök abban, hogy mindenki tudja, miben segíthet?", en: "Alongside a higher cooperative personality proxy, how do explicit responsibilities help turn willingness to help into concrete tasks?" },
+      high: { hu: "A profil alapján szívesen segíthettek egymásnak. Könnyebb ezt megtenni, ha előre tudjátok, ki miért felel? Mikor tapasztaltátok ezt legutóbb?", en: "Alongside a higher cooperative personality proxy, how do explicit responsibilities help turn willingness to help into concrete tasks?" },
       low: { hu: "A kevésbé hangsúlyos együttműködési hajlam mellett adnak-e közös alapot az egyértelmű feladat- és felelősséghatárok?", en: "Alongside a less pronounced cooperative personality proxy, do clear task boundaries provide common ground?" },
     },
     right: {
@@ -103,7 +103,7 @@ const PROFILE_SUPPORT: Record<OperatingAxis, Record<"left" | "right", Record<"hi
   },
   decision: {
     left: {
-      high: { hu: "A magasabb társas aktivitásból származó kezdeményezések hogyan jutnak el a központi döntéshozóhoz?", en: "How do initiatives associated with higher social activity reach the central decision-maker?" },
+      high: { hu: "Hogyan jutnak el a csapattagok ötletei ahhoz, aki a végső döntést hozza? Mikor könnyítette meg ezt valakinek a kezdeményezése?", en: "How do initiatives associated with higher social activity reach the central decision-maker?" },
       low: { hu: "A profil alapján visszafogottabb a csapat. Segíti-e a haladást, hogy egy ember hozza meg a végső döntést? Marad-e közben idő az egyéni mérlegelésre?", en: "With a quieter social profile, does a central decision point help progress while leaving time for individual reflection?" },
     },
     right: {
@@ -113,7 +113,7 @@ const PROFILE_SUPPORT: Record<OperatingAxis, Record<"left" | "right", Record<"hi
   },
   execution: {
     left: {
-      high: { hu: "A magasabb személyiségbeli nyitottság mellett hogyan segít a rögzített terv abban, hogy az ötletekből megvalósult eredmény legyen?", en: "Alongside higher personality openness, how does a fixed plan help turn ideas into completed work?" },
+      high: { hu: "A profil alapján szívesen próbálhattok ki új ötleteket. Mikor segít az előre egyeztetett terv abban, hogy el is készüljetek velük?", en: "Alongside higher personality openness, how does a fixed plan help turn ideas into completed work?" },
       low: { hu: "A profil alapján a csapat inkább a bevált megoldásokat kedveli. Mikor ad számára hasznos kiszámíthatóságot a terv követése?", en: "For a composition leaning toward established approaches, when does following a plan provide useful predictability?" },
     },
     right: {

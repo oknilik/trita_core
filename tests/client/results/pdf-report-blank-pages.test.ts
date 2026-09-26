@@ -8,11 +8,11 @@ import {
   findBlankPages,
   pageTextOperatorCounts,
   registerPdfFonts,
-  renderReportBuffer,
 } from "../../../scripts/pdf-report-render";
 import { TeamReportDocument } from "@/components/pdf/TeamReportPdf";
 import type { SerializedTeamReport } from "@/lib/team-report";
 import { TritaReportDocument } from "@/components/pdf/TritaPdf";
+import { t } from "@/lib/i18n";
 import { chrome } from "@/components/pdf/styles";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -31,25 +31,39 @@ import { chrome } from "@/components/pdf/styles";
 // A teljes, 12 forgatókönyves készlet: `pnpm report:pdf-snapshots`.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// A mellékleteket is felvonultató esetek — a lapok végén ezek torlódtak.
-const RENDERED_SCENARIO_IDS = [
-  "plus-hu-observer-aligned",
-  "plus-hu-mixed-full",
-  "plus-hu-with-supplementary-scale",
-];
-
+// A módszertani jegyzet átkerült az összképhez: minden forgatókönyvben
+// teljes egészében, pontosan egyszer jelenjen meg, biztonságos tördeléssel.
 describe("riport-PDF tördelés", () => {
-  const scenarios = buildPdfScenarios().filter((s) => RENDERED_SCENARIO_IDS.includes(s.id));
-
-  it("lefedi mindhárom renderelendő forgatókönyvet", () => {
-    expect(scenarios.map((s) => s.id).sort()).toEqual([...RENDERED_SCENARIO_IDS].sort());
-  });
+  const scenarios = buildPdfScenarios();
 
   it.each(scenarios.map((s) => [s.id, s] as const))(
-    "%s – nincs üres, lebegő lap",
+    "%s – nincs üres vagy levágott lap, a teljes olvasási útmutató az összképnél van",
     async (_id, scenario) => {
-      const buffer = await renderReportBuffer(scenario.input);
+      registerPdfFonts();
+      let layout: RenderedPdfNode | undefined;
+      const document = TritaReportDocument({ data: scenario.input });
+      const buffer = await renderToBuffer(React.cloneElement(document, {
+        onRender: (result: unknown) => {
+          layout = (result as { _INTERNAL__LAYOUT__DATA_: RenderedPdfNode })._INTERNAL__LAYOUT__DATA_;
+        },
+      }));
+      expect(layout).toBeDefined();
+      const pages = layout!.children!;
+      const overviewStart = pages.findIndex((page) => page.props?.bookmark?.title === t("pdf.quickOverviewTitle", scenario.input.locale));
+      const firstChapter = pages.findIndex((page) => page.props?.bookmark?.title?.startsWith("01 ·"));
+      expect(overviewStart).toBeGreaterThan(0);
+      expect(firstChapter).toBeGreaterThan(overviewStart);
+      const overviewText = pages.slice(overviewStart, firstChapter).map(renderedText).join("");
+      const methodBody = t("pdf.methodNoteBody", scenario.input.locale);
+      expect(overviewText).toContain(methodBody);
+      expect(renderedText(layout!).split(methodBody)).toHaveLength(2);
+      expect(findClippedText(layout!)).toEqual([]);
       expect(findBlankPages(buffer)).toEqual([]);
+      if (_id === "plus-hu-mixed-full" || _id === "plus-en-mixed-full") {
+        const expectedUnit = scenario.input.locale === "hu" ? "pont" : "points";
+        expect(renderedText(layout!)).toContain(`13 ${expectedUnit}`);
+        expect(renderedText(layout!)).not.toContain("13%");
+      }
     },
     60_000,
   );

@@ -22,9 +22,9 @@ describe("ProfileSummary", () => {
     expect(insights.map((item) => item.label)).toEqual([
       "Ami természetesen megy",
       "Amire érdemes odafigyelned",
-      "Ahol a legtöbbet fejlődhetsz",
+      "Amit érdemes kipróbálnod",
     ]);
-    expect(insights[0].text).toBe("Erős értékrend.");
+    expect(insights[0].text).toBe("Fontos neked az egyenes beszéd és a tisztességes eljárás. Mások így könnyebben tudhatják, mire számíthatnak tőled.");
     expect(insights[1].text).toBe("Egyenes vitahelyzetek.");
   });
 
@@ -45,7 +45,7 @@ describe("ProfileSummary", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Ezt érdemes tudnod az eredményedről." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Az eredményed röviden" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Mi történik, amikor két profil találkozik?" })).toBeInTheDocument();
     expect(screen.queryAllByRole("meter")).toHaveLength(0);
     expect(document.body.textContent).not.toContain("82%");

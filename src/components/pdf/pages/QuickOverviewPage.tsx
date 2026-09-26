@@ -1,7 +1,7 @@
 import { Page, View, Text } from "@react-pdf/renderer";
 import { s, colors, type } from "../styles";
 import { PdfFooter } from "../components/PdfFooter";
-import { PdfMiniHeader } from "../components/PdfCard";
+import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
 import { t } from "@/lib/i18n";
 import type { ChapterPageNumbers } from "../chapter-page-numbers";
 import type { ProfileReportViewModel } from "@/lib/profile-report-view-model";
@@ -205,6 +205,14 @@ export function QuickOverviewPage({ model, chapterPages }: Props) {
             </Text>
           ) : null}
         </View>
+
+        {/* Módszertani jegyzet: önjellemzés, tendencia nem címke */}
+        <PdfCard eyebrow={t("pdf.methodNoteTitle", locale)} tone="muted">
+          <Text style={{ ...s.caption, color: colors.ink500 }}>
+            {t("pdf.methodNoteBody", locale)}
+          </Text>
+        </PdfCard>
+
       </View>
 
       <PdfFooter locale={locale} />

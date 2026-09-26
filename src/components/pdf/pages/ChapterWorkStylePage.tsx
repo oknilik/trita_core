@@ -95,7 +95,7 @@ export function ChapterWorkStylePage({ model, onPageNumber }: {
                 marginBottom: growth ? 10 : 0,
               }}
             >
-              {growth ? t("results.growthIntro", locale) : workstyle.growthTip}
+              {growth ? t("pdf.growthPlanIntro", locale) : workstyle.growthTip}
             </Text>
             {growth
               ? (
@@ -134,13 +134,6 @@ export function ChapterWorkStylePage({ model, onPageNumber }: {
               : null}
           </PdfCard>
         ) : null}
-
-        {/* Módszertani jegyzet: önjellemzés, tendencia nem címke */}
-        <PdfCard eyebrow={t("pdf.methodNoteTitle", locale)} tone="muted">
-          <Text style={{ ...s.caption, color: colors.ink500 }}>
-            {t("pdf.methodNoteBody", locale)}
-          </Text>
-        </PdfCard>
 
         {model.plan === "start" ? (
           <PdfCard eyebrow="Plus · €9" title={t("pdf.wantToGoDeeper", locale)} tone="muted">

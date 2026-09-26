@@ -124,7 +124,7 @@ export function PdfComparisonOverview({
           <Text style={{ fontSize: 8, color: colors.ink300, marginTop: 1 }}>{t("pdf.different", locale)}</Text>
         </View>
         <View style={{ flex: 1, backgroundColor: colors.cream300, borderRadius: 4, padding: "4 0", alignItems: "center" }}>
-          <Text style={{ fontFamily: "Fraunces", fontSize: 15, color: colors.ink }}>{avgGap}%</Text>
+          <Text style={{ fontFamily: "Fraunces", fontSize: 15, color: colors.ink }}>{avgGap} {t("comparison.pointsUnit", locale)}</Text>
           <Text style={{ fontSize: 8, color: colors.ink300, marginTop: 1 }}>{t("pdf.avgGap", locale)}</Text>
         </View>
       </View>
@@ -248,13 +248,11 @@ export function PdfBlindspots({
             {getBlindspotLabel(bs.self, bs.observer, locale)}
           </Text>
           <Text style={{ fontFamily: "Fraunces", fontSize: 9.5, color: colors.ink }}>
-            {bs.name} – {bs.observer > bs.self
-              ? t("pdf.othersRateHigher", locale)
-              : t("pdf.othersRateLower", locale)}
+            {bs.name}
           </Text>
           <View style={{ flexDirection: "row", gap: 6, marginTop: 1 }}>
             <Text style={{ fontSize: 8, color: colors.ink300 }}>{t("pdf.selfAssessment", locale)}: {bs.self}</Text>
-            <Text style={{ fontSize: 8, color: colors.ink300 }}>Observer: {bs.observer}</Text>
+            <Text style={{ fontSize: 8, color: colors.ink300 }}>{t("pdf.others", locale)}: {bs.observer}</Text>
           </View>
         </View>
       ))}

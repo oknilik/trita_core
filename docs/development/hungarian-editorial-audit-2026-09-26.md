@@ -119,3 +119,21 @@ A futtatott ellenőrzések eredménye és a PDF-megjelenítési javítás a
 [változásnaplóban](changelog/2026-09-26-magyar-lektoralas.md) található.
 Az ellenőrző képek, PDF-ek és tesztnaplók helyi munkaanyagok; nem részei az
 alkalmazáscsomagnak.
+
+## Második kör: három teljes szöveg mintaként
+
+Az átfogó lektorálás után egy teljes személyes riporton, egy teljes céges
+riporton és az „Amikor a csapatriport beszélgetést indít” című blogcikken
+alakítottuk tovább a közvetlenebb hangot. A
+[szövegminták dokumentuma](hungarian-style-samples.md) rögzíti a pontos
+forrásokat és az újragenerálás módját. A riportminták szintetikus adatokból,
+az alkalmazás valódi megjelenítőivel készülnek.
+
+Ebben a körben a kiválasztott riportokhoz tartozó szövegforrások és a közös
+kísérőszövegek változnak. Ez a három minta ad alapot a többi tartalom
+későbbi stílusköréhez. A kérdőívtételekre, a mentett tanácsadói szövegekre
+és a korábbi PDF-ekre vonatkozó fenti határok továbbra is érvényesek.
+
+A részletes módosítások és a megismételt ellenőrzések eredménye a
+[második kör változásnaplójában](changelog/2026-09-26-magyar-stilusmintak.md)
+található.

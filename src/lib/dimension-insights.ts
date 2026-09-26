@@ -131,3 +131,17 @@ export const DIMENSION_WATCH_DESCS: Record<string, Record<Locale, string>> = {
   C: { hu: "lazább struktúra, több rögtönzés a munkában", en: "looser structure, more improvised workflow" },
   O: { hu: "az ismert utakat választja, ritkábban kísérletezik", en: "chooses familiar paths, experiments less" },
 };
+
+/**
+ * Rövid összképhez szerkesztett magyar változatok. A részletes dimenziószöveg
+ * külön fejezetben marad; a pilotban átdolgozott sávok itt kapnak rövid
+ * bevezetést. A többi sávnál a teljes értelmezés a változatlan tartalék.
+ */
+export const DIMENSION_SUMMARY_INSIGHTS_HU: Record<string, Partial<Record<"low" | "mid" | "high", string>>> = {
+  H: {
+    high: "Fontos neked az egyenes beszéd és a tisztességes eljárás. Mások így könnyebben tudhatják, mire számíthatnak tőled.",
+  },
+  O: {
+    low: "A bevált módszerek biztonságot adhatnak. Arra érdemes figyelned, mikor változik meg annyira a helyzet, hogy már új megoldásra van szükség.",
+  },
+};

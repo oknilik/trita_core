@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { HERO_RANGE_GATE_FACTOR, selectHeroInsightDims } from "@/lib/workstyle-content";
+import { HERO_RANGE_GATE_FACTOR, selectHeroInsightDims, buildHeroInsight } from "@/lib/workstyle-content";
 
 // Hero-mondat dimenzió-választása (motor-audit v6, M4c): a results-oldal
 // „leggyengébb" slotja korábban nyers `.sort`-tal a fordított E-t is
@@ -115,4 +115,25 @@ test("lapos, csupa-magas mezőny is flat: a 2 pontos lead nem „legerősebb”"
   assert.ok(pick);
   assert.equal(pick.flat, true);
   assert.equal(pick.weakest, null);
+});
+
+
+test("a felületi hero a profilból választ: kevert profil és lapos profil külön szöveget kap", () => {
+  const dimensions = [
+    { code: "H", label: "Becsületesség-Alázat", score: 86 },
+    { code: "E", label: "Emocionalitás", score: 52 },
+    { code: "X", label: "Extraverzió", score: 68 },
+    { code: "A", label: "Barátságosság", score: 48 },
+    { code: "C", label: "Lelkiismeretesség", score: 44 },
+    { code: "O", label: "Nyitottság", score: 30 },
+  ];
+  assert.equal(
+    buildHeroInsight(dimensions, SEM, "hu"),
+    "Jellemzően nyíltan és egyenesen viselkedsz. A bevált módszereket részesíted előnyben.",
+  );
+  assert.match(
+    buildHeroInsight(dimensions.map((dimension) => ({ ...dimension, score: 50 })), SEM, "hu"),
+    /Kiegyensúlyozott profil/,
+  );
+  assert.equal(buildHeroInsight([], SEM, "hu"), "");
 });

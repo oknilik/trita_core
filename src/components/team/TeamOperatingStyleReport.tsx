@@ -29,7 +29,7 @@ export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode
           {pattern && op?.pattern?.status === "tentative" && <p className="mt-4 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">{hu ? "A besorolás egyelőre tájékoztató jellegű. Egyes területeken egyik működésmód sem dominál, vagy a tagok tapasztalatai eltérnek. A részleteket és a lehetséges további mintázatokat alább találod." : "Tentative classification: some axes are near the midpoint or reflect different experiences. Read the axis results and alternatives below for the full picture."}</p>}
           {nearMiddle && <p className="mt-4 text-sm text-[var(--color-text-on-inverse-muted)]">{tr("nearMiddleHelp")}</p>}
           {!op && <p className="mt-4 text-sm text-[var(--color-text-on-inverse-muted)]">{tr("noOperating")}</p>}
-          <p className="mt-4 text-xs text-[var(--color-text-on-inverse-muted)]">{hu ? "Viselkedési beszámolók · Kísérleti mérés" : "Behavioral reports · Experimental measure"}</p>
+          <p className="mt-4 text-xs text-[var(--color-text-on-inverse-muted)]">{hu ? "A közös munkáról adott válaszaitok alapján · Kísérleti mérés" : "Behavioral reports · Experimental measure"}</p>
         </div>
         {op && <div className="flex min-w-0 flex-col items-center gap-3 text-center md:w-64 lg:w-72">
           <div className="w-full max-w-xs rounded-xl bg-[var(--color-text-on-inverse)] p-3">
@@ -58,7 +58,7 @@ export function TeamOperatingStyleReport({ snapshot, locale, legacyPattern, mode
       <p className="mt-4 text-xs leading-relaxed text-muted">{tr("experimental")}</p>
     </section>
     <TeamPersonalityLayers sourceLabel={personalitySource} composition={snapshot?.composition} averages={averages} spread={spread} count={personalityCount} locale={locale} legacyPattern={legacyPattern} />
-    <section className="py-7"><h2 className="font-fraunces text-2xl text-ink">{hu ? "04 / A két réteg együtt" : "04 / The two layers together"}</h2>
+    <section className="py-7"><h2 className="font-fraunces text-2xl text-ink">{hu ? "04 / A szokásaitok és a személyiségprofil együtt" : "04 / The two layers together"}</h2>
       <div className="mt-4 rounded-xl bg-sage-soft p-5"><p className="text-sm leading-relaxed text-ink-body">{tr("comparisonNote")}</p>{comparison.notes.slice(1).map((note) => <p key={note} className="mt-3 text-sm text-ink-body">{note}</p>)}</div>
       {comparison.prompts.length > 0 && <div className="mt-4 divide-y divide-sand">{comparison.prompts.map((prompt, index) => <details key={prompt.title} open={index === 0} className="py-1"><summary className="min-h-11 cursor-pointer py-3 text-sm font-semibold text-ink">{prompt.title}</summary><div className="grid gap-5 pb-4 sm:grid-cols-2"><div className="border-l-2 border-sage/40 pl-4"><h3 className="text-xs font-semibold text-sage-dark">{tr("support")}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{prompt.support}</p></div><div className="border-l-2 border-bronze/40 pl-4"><h3 className="text-xs font-semibold text-bronze-dark">{tr("tension")}</h3><p className="mt-2 text-sm leading-relaxed text-ink-body">{prompt.tension}</p></div><p className="text-xs text-muted sm:col-span-2">{prompt.context}</p></div></details>)}</div>}
     </section>
@@ -84,6 +84,6 @@ export function TeamStyleMeasurements({ snapshot, locale, legacyPattern }: Props
       </table></div>}
       {index === 0 && op && <details className="mt-3"><summary className="min-h-11 cursor-pointer py-3 text-sm font-medium text-sage-dark">{tr("frequencies")} · {tr("coverage")}</summary><dl className="space-y-3">{section.rows.map((row) => <div key={row.label}><dt className="text-sm font-semibold text-ink">{row.label}</dt><dd className="mt-1 text-sm leading-relaxed text-muted">{row.detail}</dd></div>)}</dl></details>}
     </section>)}
-    <p className="py-5 text-sm leading-relaxed text-muted">{locale === "hu" ? "Az átlag a csapatra jellemző irányt, a mintaszórás a tagok közötti eltérést jelzi. A két mérés különböző jellemzőket vizsgál, ezért a pontszámaikból nem számítunk közös illeszkedési százalékot." : "The mean shows the shared direction; sample SD describes differences between members. The layers measure different constructs; their scores do not form a joint compatibility percentage."}</p>
+    <p className="py-5 text-sm leading-relaxed text-muted">{locale === "hu" ? "Az átlag a csapat egészéről ad képet, a mintaszórás pedig azt jelzi, mennyire térnek el a tagok válaszai. A személyiségprofil és a működési kérdőív más kérdésekre válaszol, ezért eredményeikből nem számítunk közös illeszkedési százalékot." : "The mean shows the shared direction; sample SD describes differences between members. The layers measure different constructs; their scores do not form a joint compatibility percentage."}</p>
   </div>;
 }

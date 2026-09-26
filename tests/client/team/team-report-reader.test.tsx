@@ -14,7 +14,7 @@ describe("client report reading flow", () => {
     render(<TeamReportView report={makeReaderReport(true)} isHu />);
     const main = screen.getByRole("tabpanel");
     expect(within(main).getAllByRole("heading", { level: 2 }).slice(0, 4).map((el) => el.textContent)).toEqual([
-      "Nincs erős eltolódás egyik pólus felé sem.", "Miből épül fel a csapat?", "Milyen hajlamokból építkezhettek?", "04 / A két réteg együtt",
+      "Nincs erős eltolódás egyik pólus felé sem.", "Mit mutatnak a személyiségprofilok?", "Mit érdemes közelebbről megnézni?", "04 / A szokásaitok és a személyiségprofil együtt",
     ]);
     expect(within(main).getAllByRole("img", { name: /A pont az átlagot jelöli/ })).toHaveLength(4);
     expect(within(main).getByRole("img", { name: "Vegyes csapatkép – különböző absztrakt karakterek" })).toBeVisible();
@@ -28,7 +28,7 @@ describe("client report reading flow", () => {
     const data = screen.getByRole("tabpanel");
     expect(within(data).getAllByRole("table")).toHaveLength(2);
     expect(within(data).getByRole("row", { name: /Megvalósítás 52,1 16,1 4\/5/ })).toBeVisible();
-    expect(within(data).getByText(/nem validált csapattípus/)).toBeVisible();
+    expect(within(data).getByText(/nem tudományosan igazolt csapattípust jelöl/)).toBeVisible();
   });
 
   it("supports keyboard tabs and preserves unsaved actions across tab switches before saving", async () => {

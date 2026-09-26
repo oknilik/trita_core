@@ -76,7 +76,7 @@ export const tritanConfig: TestConfig = {
       insights: {
         low: "Az eredmény, az anyagi elismerés és a státusz erősen motivál. Érdekeid érvényesítésekor rugalmasan választasz eszközt, a szabályokat pedig inkább keretnek látod, mint korlátnak. Ez versengő közegben előny lehet, a bizalmi kapcsolatok viszont tudatosabb figyelmet igényelhetnek.",
         mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között – többnyire méltányosan jársz el, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
-        high: "Nyíltan és egyenesen viselkedsz másokkal. Kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen taktikázol, így mások hamar megtudják, hányadán állnak veled.",
+        high: "Általában nyíltan elmondod, mit gondolsz, és nem szívesen taktikázol másokkal. A rang és a vagyon kevésbé ösztönöz; fontosabb lehet neked, hogy tisztességesen járj el.",
       },
       insightsByLocale: {
         en: {
@@ -87,7 +87,7 @@ export const tritanConfig: TestConfig = {
         hu: {
           low: "Az eredmény, az anyagi elismerés és a státusz erősen motivál. Érdekeid érvényesítésekor rugalmasan választasz eszközt, a szabályokat pedig inkább keretnek látod, mint korlátnak. Ez versengő közegben előny lehet, a bizalmi kapcsolatok viszont tudatosabb figyelmet igényelhetnek.",
           mid: "A helyzettől függően egyensúlyozol az egyenes út és a saját érdekeid érvényesítése között – többnyire méltányosan jársz el, de tudsz taktikus is lenni, ha a helyzet úgy kívánja.",
-          high: "Nyíltan és egyenesen viselkedsz másokkal. Kevéssé motivál a státusz és az anyagi felhalmozás, és nem szívesen taktikázol, így mások hamar megtudják, hányadán állnak veled.",
+          high: "Általában nyíltan elmondod, mit gondolsz, és nem szívesen taktikázol másokkal. A rang és a vagyon kevésbé ösztönöz; fontosabb lehet neked, hogy tisztességesen járj el.",
         },
       },
       facets: [
@@ -112,7 +112,7 @@ export const tritanConfig: TestConfig = {
       },
       insights: {
         low: "A fizikai veszélyek ritkán tántorítanak el, megterhelő helyzetekben is kevésbé aggódsz, és ritkán igényled mások érzelmi támogatását. Nyugalmadat ugyanakkor távolságtartásként is értelmezhetik.",
-        mid: "Mérsékelt érzelmi intenzitás jellemez. Időnként keresed mások támogatását, és észleled a helyzetek érzelmi jelzéseit, de a kihívásokkal általában önállóan is megbirkózol.",
+        mid: "A nehéz helyzetek megérinthetnek, de általában önállóan is megbirkózol velük. Észreveszed az érzelmi jelzéseket, és időnként mások támogatását is keresed.",
         high: "Erős érzelmi kötődés és fogékonyság jellemez. Intenzíven élheted meg a félelmet és a megterhelő helyzeteket, ezért fontos számodra, hogy megoszthasd az érzéseidet a hozzád közel állókkal. Így sok jelzést már korán észlelhetsz, de nagyobb érzelmi teher is nehezedhet rád.",
       },
       insightsByLocale: {
@@ -123,7 +123,7 @@ export const tritanConfig: TestConfig = {
         },
         hu: {
           low: "A fizikai veszélyek ritkán tántorítanak el, megterhelő helyzetekben is kevésbé aggódsz, és ritkán igényled mások érzelmi támogatását. Nyugalmadat ugyanakkor távolságtartásként is értelmezhetik.",
-          mid: "Mérsékelt érzelmi intenzitás jellemez. Időnként keresed mások támogatását, és észleled a helyzetek érzelmi jelzéseit, de a kihívásokkal általában önállóan is megbirkózol.",
+          mid: "A nehéz helyzetek megérinthetnek, de általában önállóan is megbirkózol velük. Észreveszed az érzelmi jelzéseket, és időnként mások támogatását is keresed.",
           high: "Erős érzelmi kötődés és fogékonyság jellemez. Intenzíven élheted meg a félelmet és a megterhelő helyzeteket, ezért fontos számodra, hogy megoszthasd az érzéseidet a hozzád közel állókkal. Így sok jelzést már korán észlelhetsz, de nagyobb érzelmi teher is nehezedhet rád.",
         },
       },
@@ -149,7 +149,7 @@ export const tritanConfig: TestConfig = {
       },
       insights: {
         low: "Kényelmetlenül érezheted magad a figyelem középpontjában, és előfordulhat, hogy kevésbé népszerűnek látod magad. Szívesebben végzel önálló tevékenységeket, a lelkesedés és az optimizmus pedig ritkábban látszik rajtad.",
-        mid: "Társas helyzetekben általában magabiztosnak érzed magad, és tudsz vezető szerepet vállalni, miközben az egyéni tevékenységeket és a csendesebb pillanatokat is értékeled.",
+        mid: "Társaságban általában magabiztos vagy, és ha szükséges, az irányítást is átveszed. Közben azt is élvezed, ha egyedül foglalkozhatsz valamivel, vagy csendesebben telik a napod.",
         high: "Társas közegben magabiztosnak és energikusnak érzed magad. Élvezed a beszélgetéseket, az összejöveteleket és a csoporthelyzeteket, pozitívan gondolsz magadra, a mindennapokhoz pedig lelkesedéssel és optimizmussal állsz.",
       },
       insightsByLocale: {
@@ -160,7 +160,7 @@ export const tritanConfig: TestConfig = {
         },
         hu: {
           low: "Kényelmetlenül érezheted magad a figyelem középpontjában, és előfordulhat, hogy kevésbé népszerűnek látod magad. Szívesebben végzel önálló tevékenységeket, a lelkesedés és az optimizmus pedig ritkábban látszik rajtad.",
-          mid: "Társas helyzetekben általában magabiztosnak érzed magad, és tudsz vezető szerepet vállalni, miközben az egyéni tevékenységeket és a csendesebb pillanatokat is értékeled.",
+          mid: "Társaságban általában magabiztos vagy, és ha szükséges, az irányítást is átveszed. Közben azt is élvezed, ha egyedül foglalkozhatsz valamivel, vagy csendesebben telik a napod.",
           high: "Társas közegben magabiztosnak és energikusnak érzed magad. Élvezed a beszélgetéseket, az összejöveteleket és a csoporthelyzeteket, pozitívan gondolsz magadra, a mindennapokhoz pedig lelkesedéssel és optimizmussal állsz.",
         },
       },
@@ -192,7 +192,7 @@ export const tritanConfig: TestConfig = {
       // kétoldalú: a magasnál ott az ára, az alacsonynál ott a hozadéka.
       insights: {
         low: "Nehezen engedsz el egy sérelmet, kritikusan ítéled meg mások hibáit, kitartóan véded az álláspontodat, és provokáció hatására hamar elfogyhat a türelmed. Cserébe nem hagyod kimondatlanul a nézeteltéréseket: a visszajelzésed egyenes, a határaid pedig egyértelműek.",
-        mid: "Képes vagy megbocsátani és kompromisszumot kötni, miközben szükség esetén meg tudod védeni az álláspontodat is. Általában megőrzöd a nyugalmad, de komoly provokáció esetén ingerültté válhatsz.",
+        mid: "Tudsz engedni és megbocsátani, de ha valami fontos neked, kiállsz mellette. Vitában többnyire nyugodt maradsz, bár erős provokációra te is reagálhatsz ingerülten.",
         high: "Könnyen megbocsátasz azoknak, akik megbántottak, elnézően ítéled meg mások gyengéit, hajlandó vagy rugalmasan alkalmazkodni és kompromisszumot kötni, és ritkán veszíted el a türelmedet. Cserébe a saját sérelmed sokáig kimondatlan maradhat, és könnyen te leszel az, aki mindig enged.",
       },
       insightsByLocale: {
@@ -203,7 +203,7 @@ export const tritanConfig: TestConfig = {
         },
         hu: {
           low: "Nehezen engedsz el egy sérelmet, kritikusan ítéled meg mások hibáit, kitartóan véded az álláspontodat, és provokáció hatására hamar elfogyhat a türelmed. Cserébe nem hagyod kimondatlanul a nézeteltéréseket: a visszajelzésed egyenes, a határaid pedig egyértelműek.",
-          mid: "Képes vagy megbocsátani és kompromisszumot kötni, miközben szükség esetén meg tudod védeni az álláspontodat is. Általában megőrzöd a nyugalmad, de komoly provokáció esetén ingerültté válhatsz.",
+          mid: "Tudsz engedni és megbocsátani, de ha valami fontos neked, kiállsz mellette. Vitában többnyire nyugodt maradsz, bár erős provokációra te is reagálhatsz ingerülten.",
           high: "Könnyen megbocsátasz azoknak, akik megbántottak, elnézően ítéled meg mások gyengéit, hajlandó vagy rugalmasan alkalmazkodni és kompromisszumot kötni, és ritkán veszíted el a türelmedet. Cserébe a saját sérelmed sokáig kimondatlan maradhat, és könnyen te leszel az, aki mindig enged.",
         },
       },
@@ -229,7 +229,7 @@ export const tritanConfig: TestConfig = {
       },
       insights: {
         low: "Kevésbé igényled a rendet és a szoros kereteket. A részletekhez és a pontossághoz rugalmasabban viszonyulsz, döntéskor pedig gyakrabban támaszkodhatsz az első benyomásodra, mint hosszas mérlegelésre.",
-        mid: "Megbízhatóan hajtod végre a feladatokat, és általában rendszerezetten végzed a munkát, de nem hajszolod túl magad a tökéletesség érdekében. Rugalmasan alkalmazkodsz a változásokhoz anélkül, hogy elveszítenéd a fókuszodat.",
+        mid: "A munkádban általában rendet tartasz, és elvégzed, amit vállaltál. A részletekre is figyelsz, de nem törekszel mindenáron tökéletességre; ha változik a helyzet, tudsz alkalmazkodni.",
         high: "Gondosan szervezed az idődet és a környezetedet. Fegyelmezetten és kitartóan dolgozol a céljaidért, nagy figyelmet fordítasz a részletekre és a pontosságra, döntés előtt pedig körültekintően mérlegelsz.",
       },
       insightsByLocale: {
@@ -240,7 +240,7 @@ export const tritanConfig: TestConfig = {
         },
         hu: {
           low: "Kevésbé igényled a rendet és a szoros kereteket. A részletekhez és a pontossághoz rugalmasabban viszonyulsz, döntéskor pedig gyakrabban támaszkodhatsz az első benyomásodra, mint hosszas mérlegelésre.",
-          mid: "Megbízhatóan hajtod végre a feladatokat, és általában rendszerezetten végzed a munkát, de nem hajszolod túl magad a tökéletesség érdekében. Rugalmasan alkalmazkodsz a változásokhoz anélkül, hogy elveszítenéd a fókuszodat.",
+          mid: "A munkádban általában rendet tartasz, és elvégzed, amit vállaltál. A részletekre is figyelsz, de nem törekszel mindenáron tökéletességre; ha változik a helyzet, tudsz alkalmazkodni.",
           high: "Gondosan szervezed az idődet és a környezetedet. Fegyelmezetten és kitartóan dolgozol a céljaidért, nagy figyelmet fordítasz a részletekre és a pontosságra, döntés előtt pedig körültekintően mérlegelsz.",
         },
       },
@@ -265,7 +265,7 @@ export const tritanConfig: TestConfig = {
         hu: "A nyitottság (O) dimenzió az esztétikai fogékonyságot, az intellektuális kíváncsiságot, a kreativitást és a szokatlan ötletek iránti befogadókészséget méri. Négy alskálája az Esztétikai fogékonyság (elmélyülés a természet és a művészet szépségében), a Kíváncsiság (ismeretek és tapasztalatok aktív keresése), a Kreativitás (kísérletezés és eredeti megoldások keresése), valamint a Konvenciómentesség (nyitottság a szokatlan, akár radikális ötletekre).",
       },
       insights: {
-        low: "A műalkotások és a természeti élmények kevésbé ragadnak magukkal, az elméleti felfedezésnél pedig jobban vonzanak a kézzelfogható kérdések. Inkább a bevált megoldásokra építesz, mint a szokatlan vagy radikális ötletekre.",
+        low: "A műalkotások és a természeti élmények ritkábban ragadnak magukkal. Az elméleti kérdéseknél jobban érdekel, mi használható a gyakorlatban, és szívesebben támaszkodsz bevált megoldásokra, mint szokatlan ötletekre.",
         mid: "Nyitott vagy néhány új ötletre és kreatív élményre, miközben a gyakorlatias, bevált megközelítések is vonzanak. Kíváncsiságod és gyakorlatias szemléleted kiegyensúlyozza egymást.",
         high: "Szívesen elmélyülsz a természet és a művészet szépségében, aktívan keresed az új ismereteket és tapasztalatokat, és örömmel kísérletezel eredeti megközelítésekkel. A szokatlan, akár radikális ötletekre is nyitott vagy.",
       },
@@ -276,7 +276,7 @@ export const tritanConfig: TestConfig = {
           high: "You become absorbed in the beauty of art and nature, actively seek knowledge and new experiences, enjoy experimenting with original approaches, and are receptive to ideas that may seem strange or radical to others.",
         },
         hu: {
-          low: "A műalkotások és a természeti élmények kevésbé ragadnak magukkal, az elméleti felfedezésnél pedig jobban vonzanak a kézzelfogható kérdések. Inkább a bevált megoldásokra építesz, mint a szokatlan vagy radikális ötletekre.",
+          low: "A műalkotások és a természeti élmények ritkábban ragadnak magukkal. Az elméleti kérdéseknél jobban érdekel, mi használható a gyakorlatban, és szívesebben támaszkodsz bevált megoldásokra, mint szokatlan ötletekre.",
           mid: "Nyitott vagy néhány új ötletre és kreatív élményre, miközben a gyakorlatias, bevált megközelítések is vonzanak. Kíváncsiságod és gyakorlatias szemléleted kiegyensúlyozza egymást.",
           high: "Szívesen elmélyülsz a természet és a művészet szépségében, aktívan keresed az új ismereteket és tapasztalatokat, és örömmel kísérletezel eredeti megközelítésekkel. A szokatlan, akár radikális ötletekre is nyitott vagy.",
         },

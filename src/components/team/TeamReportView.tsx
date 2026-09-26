@@ -26,7 +26,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
     { label: isHu ? "Amit érdemes tisztázni" : "What needs attention", text: report.risks, tone: "amber" as const },
     { label: isHu ? "Ajánlások" : "Recommendations", text: report.recommendations, tone: "sage" as const },
     { label: isHu ? "Interjúk tanulságai" : "Interview insights", text: report.interviewFindings, tone: "bronze" as const },
-    { label: isHu ? "Vezetői iránytű" : "Leadership guide", text: report.leadershipGuide, tone: "sky" as const },
+    { label: isHu ? "Vezetőként így segíthetsz" : "Leadership guide", text: report.leadershipGuide, tone: "sky" as const },
   ].filter((section) => section.text?.trim());
   const date = report.publishedAt ? new Date(report.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB", { timeZone: "UTC" }) : null;
 
@@ -54,7 +54,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
             <ul className="mt-4 space-y-3">{signals.map((signal) => <li key={signal} className="rounded-xl border border-state-warning-border bg-state-warning-bg px-4 py-3 text-sm leading-relaxed text-state-warning-fg">{signal}</li>)}</ul>
           </section>}
           {narratives.length > 0 && <section className="border-t border-sand py-6">
-            <h2 className="font-fraunces text-xl text-ink">{isHu ? "Mit érdemes ebből továbbvinni?" : "What should you take forward?"}</h2>
+            <h2 className="font-fraunces text-xl text-ink">{isHu ? "A tanácsadó összefoglalója és javaslatai" : "What should you take forward?"}</h2>
             {!isHu && !hasApprovedEnTranslation(reportInput) && <p className="mt-3 text-sm text-state-warning-fg">The consultant&apos;s text is shown in the Hungarian original. English translation is awaiting approval.</p>}
             <div className="mt-5 space-y-5">{narratives.map((section) => <NarrativeRich key={section.label} {...section} card={false} />)}</div>
           </section>}
@@ -73,7 +73,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
         </div>
       </>}
       measurements={<div className="space-y-6">
-        <div><h2 className="font-fraunces text-2xl text-ink">{isHu ? "A számok és a forrásuk." : "The data and its sources."}</h2><p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">{isHu ? "Itt találjátok az átlagokat, a szórást, a lefedettséget és a további mérések részletes eredményeit." : "Explore means, spread, coverage and the detailed results of additional measurements here."}</p></div>
+        <div><h2 className="font-fraunces text-2xl text-ink">{isHu ? "A mérés részletei" : "The data and its sources."}</h2><p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">{isHu ? "Itt találjátok az átlagokat, a szórást, a lefedettséget és a további mérések részletes eredményeit." : "Explore means, spread, coverage and the detailed results of additional measurements here."}</p></div>
         <p className="text-xs text-muted">{personalitySourceLabel(agg?.program, isHu)}</p>
         <TeamStyleMeasurements snapshot={agg?.teamStyle} locale={locale} />
         <TeamReportMeasurements report={report} isHu={isHu} />

@@ -14,7 +14,8 @@ import {
 import { getDimensionTier } from "@/lib/dimension-utils";
 import { rankDimensionScores } from "@/lib/hexaco";
 import { deficitSlotEligible } from "@/lib/score-valence";
-import type { Locale } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n";
+import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 
 // A fordított dimenzió kódja a kanonikus valencia-kapuból (score-valence.ts)
 // — a korábbi helyi literál kivezetve; az örökség-importok kedvéért innen is
@@ -595,4 +596,21 @@ export function selectHeroInsightDims<T extends { code: string; score: number }>
     return { strongest, weakest: null, flat: true };
   }
   return { strongest, weakest, flat: false };
+}
+
+/** A felület és a riportminták ugyanazt a pontszámalapú bevezetést használják. */
+export function buildHeroInsight(
+  mainDimensions: ReadonlyArray<{ code: string; score: number; label: string }>,
+  dimSem: number,
+  locale: Locale,
+): string {
+  const pick = selectHeroInsightDims(mainDimensions, dimSem);
+  if (!pick) return "";
+  if (pick.flat) return t("results.heroBalancedInsight", locale);
+  const strength = DIMENSION_STRENGTH_VERBS[pick.strongest.code]?.[locale] ?? pick.strongest.label;
+  if (!pick.weakest) return `${strength}.`;
+  const weak = DIMENSION_WEAK_VERBS[pick.weakest.code]?.[locale] ?? pick.weakest.label.toLowerCase();
+  return locale === "hu"
+    ? `${strength}. ${weak.charAt(0).toLocaleUpperCase("hu")}${weak.slice(1)}.`
+    : `${strength} – ${weak}.`;
 }

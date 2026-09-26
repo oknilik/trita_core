@@ -115,19 +115,19 @@ test("prefill: rich aggregates produce every narrative field + action items", ()
   const prefill = buildDraftNarrativePrefill(richAggregates);
   assert.ok(prefill);
   // A szám ÉL-darabszám (felmért kapcsolat), nem tagpár — a copy őszinte.
-  assert.ok(prefill!.summary.includes("6 felmért kapcsolatból"));
+  assert.ok(prefill!.summary.includes("6 párt foglal össze"));
   assert.ok(!prefill!.summary.includes("tagpár"));
   assert.ok(prefill!.strengths.startsWith("• "));
   // friction 50% → norma-kockázat + ajánlás
   assert.ok(prefill!.risks.includes("munkastílusbeli különbség"));
-  assert.ok(prefill!.recommendations.includes("működési normák"));
+  assert.ok(prefill!.recommendations.includes("Egyezzetek meg néhány közös szabályban"));
   // szerep-hiány bekerül név szerint
   assert.ok(prefill!.risks.includes("Ötletgazda"));
   // mért kapcsolati adat hiányzik → bizalmi kör ajánlás + akció
   assert.ok(prefill!.recommendations.includes("bizalmi kör"));
   const titles = prefill!.actionItems.map((item) => item.title);
   assert.ok(titles.includes("A csapatkép közös átbeszélése"));
-  assert.ok(titles.includes("Működési normák rögzítése"));
+  assert.ok(titles.includes("Közös munkaszabályok kialakítása"));
   assert.ok(titles.includes("Szerepek tisztázása"));
   assert.ok(titles.includes("Mért bizalmi kör"));
   assert.ok(titles.includes("Utánkövetés és a riport frissítése"));

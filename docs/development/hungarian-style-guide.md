@@ -15,6 +15,25 @@ A személyes riportban egy emberhez szólunk. A csapat közös feladataiban
 indokolt a többes szám. Egy bekezdésen belül csak akkor váltsunk a kettő között,
 ha egyértelműen megnevezzük, kihez beszélünk.
 
+## Milyen legyen ezt olvasni?
+
+Az olvasó érezze, hogy valaki figyel rá, és érthetően beszél vele a saját
+helyzetéről. A mondatoknak legyen természetes ritmusuk: a rövid megállapítást
+követheti hosszabb magyarázat, ha az új információt ad. A közvetlenséghez
+megszokott szavakat és fordulatokat használjunk; szlengre, becézésre vagy
+állandó biztatásra nincs szükség.
+
+| Felület | Mit vár az olvasó? | Hogyan írjunk? |
+| --- | --- | --- |
+| Felület, rendszerüzenet | Értse, mi történt, és tudja, mit tehet. | Nevezzük meg a műveletet és a következő lépést. |
+| Személyes riport | Magára tudja vonatkoztatni az eredményt. | Kapcsoljuk a megállapítást felismerhető helyzethez, és hagyjunk teret a saját tapasztalatának. |
+| Csapatriport | Közösen tudjanak beszélni az eredményről. | Derüljön ki, mi származik mérésből, mit kell megbeszélni, és milyen lépést próbálhatnak ki. |
+| Meghívólevél | Tudja, ki és mire kéri. | Ezzel kezdjünk, majd mondjuk el, hogyan történik a kitöltés és a válaszok kezelése. |
+| Blog | Értse a helyzetet, és kíváncsi legyen a folytatásra. | A konkrét példák és a gondolatmenet vigyék előre a cikket. |
+
+Teljes, újragenerálható riportminták és szerkesztői példák:
+[magyar szövegminták](hungarian-style-samples.md).
+
 ## Magyar mondatokat írjunk
 
 - A mondatból derüljön ki, ki mit tesz, mit lát az olvasó, vagy mi a teendője.
@@ -30,6 +49,17 @@ ha egyértelműen megnevezzük, kihez beszélünk.
   pontosítsuk az alanyt vagy a tárgyat.
 - Ne írjunk elő merev mondathosszt, kötelező rövid mondatot vagy szándékos
   szó szerinti ismétlést. A bekezdésnek legyen követhető gondolatmenete.
+- Figyeljünk az elvont főnevek sűrűségére. A „működés”, „mintázat”,
+  „összhang” és „kapcsolódás” helyett sokszor megnevezhető a döntés,
+  megbeszélés vagy feladat, amelyről szó van. Csak a forrással alátámasztott
+  konkrétumot írjuk bele; új példát feltételes helyzetként vezessünk be.
+- Húzzuk ki azt a mondatot, amely csak az előzőt mondja újra. A szinonimák
+  váltogatásától még nem lesz új tartalom a bekezdésben.
+- Az „érdemes”, „segíthet”, „jellemzően” szavak ismétlését teljes
+  bekezdésben vizsgáljuk. A bizonytalanság maradjon világos, de ugyanazt a
+  fordulatot nem kell minden egymást követő mondat elejére odaírni.
+  Ha a megállapítások egyazon adatforrásból származnak, ezt a bekezdés
+  elején is jelezhetjük.
 
 ## Visszatérő kifejezések
 
@@ -70,6 +100,37 @@ alskálák neveit a közös névtárból vegyük át; ne nevezzük át őket st�
 - Az értelmező szöveg és a kérdőívtétel más szerepet tölt be. A mérési tétel
   tartalmi átírását külön, az adaptáció és a mérési összehasonlíthatóság
   vizsgálatával kezeljük.
+- Kerüljük az általános hízelgést és a bizonyítatlan rangsorolást: a
+  „ritka kombináció”, „kiemelkedő vezető” vagy „igazán itt teljesítesz”
+  önmagában nem következik a személyiségpontokból.
+- Ne döntsük el az olvasó helyett, hogy egy eltérés megnyugtató vagy
+  problémás. Mondjuk el, mit mutatnak az eredmények, majd adjunk kérdést
+  vagy megfigyelési szempontot a továbblépéshez.
+- Egy külön is megjelenő kártyán maradjon érthető az adat forrása és a
+  következtetés bizonytalansága. A rövidítés ne tüntesse el ezeket.
+
+## Teljes szövegek szerkesztése
+
+1. Olvassuk el az egész levelet, cikket vagy összeállított riportot.
+   A riportnál először azonosítsuk, mely pontszámok és válaszok választják ki
+   a megjelenő szövegrészeket.
+2. Az eredeti jelentést megtartva szerkesszük a bekezdéseket. Minden
+   szakasznak legyen saját feladata: értelmezés, példa, gyakorlati javaslat
+   vagy módszertani magyarázat.
+3. A kivonat röviden előre jelezheti a fő megállapítást. A részletes
+   fejezet adjon hozzá magyarázatot; az azonos gondolat többszöri
+   átfogalmazását húzzuk össze.
+4. Külön szerkesztő olvassa el a kész változatot. Jelölje a nehézkes
+   vonzatokat, a bizonytalan utalásokat, az ismétléseket és a jelentés
+   esetleges változását. Ezután egy közös körben egységesítsük a hangot.
+5. A riportot a valódi szövegforrásokból állítsuk össze, és nézzük meg a
+   webes, illetve PDF-es megjelenését. Az önmagában jó szövegrész a
+   szomszédos részekkel együtt is legyen követhető. Más pontszámokból
+   összeálló változatoknál is ellenőrizzük az érintett közös szövegeket.
+
+A minták szerkesztői viszonyítási pontok. A vizsgálatuk nem helyettesíti a
+célközönséggel végzett olvasói próbát: ott azt érdemes megkérdezni, mit
+értettek meg, melyik mondatnál álltak meg, és tudják-e, mi a következő lépés.
 
 ## Felületek és rendszerüzenetek
 

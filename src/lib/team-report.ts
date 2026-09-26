@@ -797,7 +797,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   // közt épül, a kapcsolat nélküli (disconnected) mért pár pedig kimarad.
   let summary = generateTeamSummary(avgs);
   if (agg.dynamics && dynamicsTotal > 0) {
-    summary += ` Összesen ${dynamicsTotal} felmért kapcsolatból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} egymást kiegészítő, ${agg.dynamics.frictionCount} esetében pedig súrlódás alakulhat ki.`;
+    summary += ` A kapcsolati elemzés ${dynamicsTotal} párt foglal össze: ${agg.dynamics.alignedCount} az összehangolt, ${agg.dynamics.complementaryCount} az egymást kiegészítő kategóriába került, ${agg.dynamics.frictionCount} esetében pedig súrlódás lehetősége merül fel.`;
   }
 
   const strengths = bullets([
@@ -820,10 +820,10 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       ? "A hasonló profilok közös vakfoltokat hordozhatnak – egy külső nézőpont segíthet észrevenni azt, ami a csapaton belül rejtve marad."
       : "",
     gapRoleNames
-      ? `Hiányzó csapatszerepek: ${gapRoleNames}. Ezeket senki sem tölti be elsődlegesen, és kijelölt helyettes sincs.`
+      ? `Ezek a szerepek sem elsődleges, sem másodlagos szerepként nem jelennek meg az eredményekben: ${gapRoleNames}. Tisztázzátok, ki vállalja a hozzájuk tartozó feladatokat.`
       : "",
     ps && psWeakAreas.length > 0
-      ? `A pszichológiai biztonsági pulzusmérés (${ps.index}/100, ${ps.count} névtelen válasz) leggyengébb területei: ${psWeakAreas.join(", ")} – ezeken a területeken a tagok nem feltétlenül mondják ki őszintén a véleményüket, ami a többi mérés eredményét is torzíthatja.`
+      ? `A pszichológiai biztonság felmérésében (${ps.index}/100, ${ps.count} névtelen válasz) ezek a területek kapták a legalacsonyabb átlagot: ${psWeakAreas.join(", ")}. Keressetek konkrét helyzeteket, amelyek segítenek megérteni a válaszokat. A pontszám önmagában nem mutatja meg az okokat.`
       : "",
     ps && ps.spread >= 20
       ? "A pszichológiai biztonság megélése erősen eltér a csapaton belül – az átlag mögött nagyon különböző egyéni tapasztalatok állnak."
@@ -846,10 +846,10 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
 
   const recommendations = bullets([
     frictionShare >= 0.4 || frictionDimLabels
-      ? `Közös működési normák rögzítése (döntéshozatal, a határidők kezelése, kommunikáció)${frictionDimLabels ? ` – elsősorban a következő területeken: ${frictionDimLabels}` : ""}.`
+      ? `Egyezzetek meg néhány közös szabályban: hogyan döntötök, hogyan jelzitek a csúszást, és hol osztjátok meg a fontos információkat.${frictionDimLabels ? ` Az eltérések megbeszéléséhez ezek a területek adhatnak kiindulópontot: ${frictionDimLabels}.` : ""}`
       : "",
     gapRoleNames
-      ? `A hiányzó szerepek (${gapRoleNames}) tudatos pótlása: felelős kijelölése a csapaton belül vagy külső támogatás bevonása.`
+      ? `A hiányzó szerepekhez (${gapRoleNames}) tartozó feladatokra jelöljetek ki felelőst, vagy kérjetek külső segítséget.`
       : "",
     measuredMissing
       ? "Mért bizalmi kör (360°) indítása – a jelenlegi kapcsolati kép a profilokból számolt becslés, amelyet az új mérés megerősíthet vagy árnyalhat."
@@ -871,15 +871,14 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   ]);
 
   const leadershipGuide = bullets([
-    `Építs a csapat erősségeire ezeken a területeken: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")}. Az ezekhez illő feladatoknál jellemzően kevesebb vezetői irányítás is elég.`,
-    ...spreadDims.map((dim) => getDiversityInsight(dim)),
-    getWatchAreaInsight(bottomDim),
+    `Vezetőként kérj példákat arra, mikor segítették a munkát a profilban kiemelkedő jellemzők: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")}. Ezekből induljatok ki, amikor kiválasztjátok a következő közös feladatot.`,
+    "Hagyj időt az eltérő tapasztalatok elmondására. Előbb értsétek meg, ki mit élt át; a megoldásról csak ezután döntsetek.",
     // Vezetői csapda-kártyák: a gyenge pulse-területek mögött tipikus
     // vezetői mintázat + ellenszer (keret: HBR 2026/07, saját adaptáció).
     ...(ps
       ? leaderTrapsForWeakItems(ps.weakItemIds)
           .slice(0, 2)
-          .map((trap) => `${trap.title.hu} – ${trap.antidote.hu}`)
+          .map((trap) => `Ezt is gondold át vezetőként: ${trap.title.hu.toLocaleLowerCase("hu-HU")}. ${trap.antidote.hu}`)
       : []),
   ]);
 
@@ -887,14 +886,14 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     {
       title: "A csapatkép közös átbeszélése",
       description:
-        "A riport közös értelmezése a csapattal: az erősségek megerősítése, a kockázatok nyílt megbeszélése és a kérdések tisztázása.",
+        "Olvassátok át együtt a riportot. Melyik megállapításra tudtok saját példát mondani, és melyik lepett meg? A beszélgetés végén válasszatok egy változtatást, amelyet kipróbáltok.",
       timeframe: "30",
     },
     ...(frictionShare >= 0.4 || frictionDimLabels
       ? [
           {
-            title: "Működési normák rögzítése",
-            description: `Rögzítsetek néhány közös szabályt a legnagyobb eltérést mutató területeken${frictionDimLabels ? ` (${frictionDimLabels})` : ""}: hogyan döntötök, hogyan kezelitek a határidőket, és melyik csatornán kommunikáltok.`,
+            title: "Közös munkaszabályok kialakítása",
+            description: `Vegyetek elő egy közelmúltbeli feladatot, amelyben nehéz volt összehangolni a munkát. Állapodjatok meg, legközelebb hogyan döntötök, kezelitek a határidőt és adjátok tovább az információt.${frictionDimLabels ? ` A riportban ezeknél a területeknél látszik eltérés: ${frictionDimLabels}.` : ""}`,
             timeframe: "30" as const,
           },
         ]
@@ -903,7 +902,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       ? [
           {
             title: "Szerepek tisztázása",
-            description: `Tervezzétek meg, hogyan feditek le a hiányzó szerepeket (${gapRoleNames}): jelöljetek ki belső felelőst, alakítsátok át a folyamatokat, vagy vonjatok be külső támogatást.`,
+            description: `Nézzétek meg, milyen feladatok tartoznak a hiányzó szerepekhez (${gapRoleNames}), és ki végzi most ezeket. Ez alapján osszátok el a teendőket, alakítsátok át a munkamenetet, vagy kérjetek külső segítséget.`,
             timeframe: "60" as const,
             ...(singleRoleGapTarget
               ? { targetMetric: singleRoleGapTarget }
@@ -916,7 +915,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
           {
             title: "Mért bizalmi kör",
             description:
-              "Bizalmi kör (360°) indítása a csapatban – a becsült kapcsolati elemek ellenőrzése mért adatokkal, hogy a következő riport pontosabb képet adhasson.",
+              "Indítsatok bizalmi kört (360°), hogy több kapcsolatot ismerjetek meg közvetlen visszajelzésekből. A következő riportban így több mért adat egészítheti ki a személyiségprofilokból készült becsléseket.",
             timeframe: "60" as const,
             targetMetric: { kind: "trust_coverage" as const },
           },
@@ -939,7 +938,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     {
       title: "Utánkövetés és a riport frissítése",
       description:
-        "A bevezetett normák és szerepek működésének áttekintése; új riport készítése a változás mérésére.",
+        "Térjetek vissza a vállalásokra: mit próbáltatok ki, mi könnyítette meg a munkát, és min kell még változtatni? A tapasztalatokat vessétek össze az új mérésből készülő riporttal.",
       timeframe: "90",
     },
   ];

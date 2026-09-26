@@ -28,12 +28,11 @@ import type { HexacoCode } from "@/lib/hexaco";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1 } from "@/lib/profile-content";
-import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 import { dimStandardError, facetStandardError } from "@/lib/psychometrics";
 import {
   buildWorkstyleContent,
   selectGrowthFocusItems,
-  selectHeroInsightDims,
+  buildHeroInsight,
 } from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
@@ -643,28 +642,7 @@ export default async function ProfileResultsPage({
   // meghívó-tab állapot-kártyát mutat, az összevetés küszöbhöz kötött.
   const observerFlow = await resolveObserverFlowStatus(profile.id);
 
-  // Hero insight — behavior-based sentence (not dimension names).
-  // A pár-választás közös szabályból (workstyle-content, motor-audit v6, M4c):
-  // kanonikus rangsor (rankDimensionScores) + a fordított E kimarad a
-  // „leggyengébb" slotból (az alacsony Emocionalitás stabilitás, nem
-  // gyengeség) + lapos profilnál (terjedelem < HERO_RANGE_GATE_FACTOR·SEM,
-  // indoklás a konstansnál) csak az erősség megy ki.
-  const heroInsight = (() => {
-    const pick = selectHeroInsightDims(mainDimensions, dimSem);
-    if (!pick) return "";
-    // Lapos profil (terjedelem-kapu, pick.flat): a „legerősebb" állítás is
-    // zaj-műtermék lenne, miközben a strip csupa-közepest, a PDF pedig
-    // „Kiegyensúlyozott profil"-t mond — a hero itt a kiegyensúlyozott-
-    // profil mondatot kapja az erősség-ige helyett.
-    if (pick.flat) return t("results.heroBalancedInsight", locale);
-    const s =
-      DIMENSION_STRENGTH_VERBS[pick.strongest.code]?.[locale] ?? pick.strongest.label;
-    if (!pick.weakest) return `${s}.`;
-    const w =
-      DIMENSION_WEAK_VERBS[pick.weakest.code]?.[locale] ??
-      pick.weakest.label.toLowerCase();
-    return `${s} – ${w}.`;
-  })();
+  const heroInsight = buildHeroInsight(mainDimensions, dimSem, locale);
 
   // A korábbi legacy strengths/watchAreas összefoglaló sorok kivezetve
   // (2026-08-11): a PDF-be mentek, de ott semmi nem renderelte őket – a

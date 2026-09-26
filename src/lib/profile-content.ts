@@ -51,7 +51,7 @@ export const CATEGORY_LABELS: Record<ProfileCategory, LocalizedText> = {
 
 export const RESOLUTION_NARRATIVES: Record<string, LocalizedText> = {
   ethicalLeader: {
-    hu: "Válaszaid alapján fontosak számodra az elveid, és az is, hogy a működésed összhangban legyen velük. Úgy tűnik, nem önmagában a rivaldafény vonz, hanem az, hogy hitelesen képviselhess valamit – olyan szerepekben teljesíthetsz igazán, ahol a hitelességnek valódi súlya van.",
+    hu: "Válaszaid alapján szívesen vállalsz szerepet a közös munkában, és fontos neked, hogy azt képviseld, amiben hiszel. Például egy megbeszélésen nemcsak a javaslatodat mondhatod el szívesen, hanem azt is, miért tartod tisztességesnek. Olyan feladatok állhatnak közel hozzád, ahol nyíltan kell állást foglalni és felelősséget vállalni.",
     en: "Your responses suggest a rarer pattern: your principles matter to you, and so does being seen living them. It's not the spotlight that seems to draw you, but being seen as authentic – you're likely to thrive in roles where credibility is the currency.",
   },
   principledConfronter: {
@@ -128,7 +128,7 @@ responsibleInnovator: {
 
 export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
   ethicalLeader: {
-    hu: "A hitelesség és a nyílt felelősségvállalás egyszerre fontos neked. Jellemzően olyan helyzetekben vagy erős, ahol értékek mentén kell irányt mutatni.",
+    hu: "Fontos neked, hogy a szavaid és a tetteid összhangban legyenek. Ezt akkor is szem előtt tarthatod, amikor közös döntésben vállalsz szerepet.",
     en: "Authenticity and visible responsibility both matter to you. You tend to be strongest in situations where direction must be set on clear values.",
   },
   principledConfronter: {
@@ -223,9 +223,9 @@ export const RISK_TEXTS: Record<string, LocalizedText> = {
 export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium: string; watchOut: string }>> = {
   ethicalLeader: {
     hu: {
-      strong: "Értékekre és kölcsönös bizalomra épülő közegek, ahol az átlátható döntéshozatal és a hitelesség valóban számít.",
-      medium: "Eltérő érdekeket összehangoló szervezetben is jól boldogulhatsz, ha egyértelműek számodra az etikai keretek.",
-      watchOut: "Nehéz lehet olyan közegben dolgozni, ahol az értékek csak a kommunikációban jelennek meg. Érdemes már az elején közös etikai döntési elveket rögzíteni.",
+      strong: "Olyan szerepek állhatnak közel hozzád, ahol világos elvek alapján dönthettek, és egymásnak is elmondjátok a döntéseitek okát.",
+      medium: "Eltérő érdekeket képviselő emberekkel is jól dolgozhatsz együtt, ha tisztázzátok, miben lehet engedni, és mihez ragaszkodtok.",
+      watchOut: "Feszültséget okozhat, ha mást mondanak arról, mi fontos, mint amit a döntésekben tapasztalsz. Ilyenkor érdemes egy konkrét példáról beszélni, és tisztázni, milyen elvek szerint döntötök.",
     },
     en: {
       strong: "Values-driven environments with high trust expectations, where transparent decisions and credibility matter.",
@@ -524,34 +524,34 @@ const ENV_ROW_VARIANTS: Record<EnvRowKey, Record<string, EnvRowVariant>> = {
   structure: {
     high: { level: "high", value: { hu: "Magas – egyértelmű keretek és folyamatok között dolgozol a legjobban", en: "High – you work best within clear frameworks and processes" } },
     low: { level: "low", value: { hu: "Alacsony – rugalmasan, nagy önállósággal dolgozol a legjobban", en: "Low – you work best flexibly and self-directed" } },
-    mid: { level: "mid", value: { hu: "Közepes – igényled a kereteket, de a bürokráciát nem", en: "Medium – you do well with structure, but not bureaucracy" } },
+    mid: { level: "mid", value: { hu: "Közepes – segítenek a világos keretek, ha marad mozgástered is", en: "Medium – you do well with structure, but not bureaucracy" } },
   },
   social: {
-    high: { level: "high", value: { hu: "Magas – csapatmunkában, sok kapcsolódással vagy a legjobb formádban", en: "High – you thrive on teamwork and frequent interaction" } },
+    high: { level: "high", value: { hu: "Magas – szívesen dolgozol másokkal, és gyakran egyeztetsz velük", en: "High – you thrive on teamwork and frequent interaction" } },
     low: { level: "low", value: { hu: "Alacsony – önálló munkában vagy kis csapatban dolgozol a legjobban", en: "Low – you work best independently or in a small team" } },
     lowMix: { level: "low", value: { hu: "Alacsony–közepes – az önálló és a kis csapatban végzett munka váltakozása illik hozzád", en: "Low to medium – a mix of independent and small-team work suits you" } },
   },
   change: {
     framed: { level: "mid", value: { hu: "Közepes – a fokozatos, világos keretek között zajló változás illik hozzád", en: "Medium – gradual change within clear boundaries suits you" } },
     high: { level: "high", value: { hu: "Magas – szívesen dolgozol változó, ismeretlen közegben", en: "High – you enjoy working in shifting, novel environments" } },
-    stable: { level: "low", value: { hu: "Alacsony–közepes – stabil, kiszámítható folyamatok között működsz jól", en: "Low to medium – you work well with stable, predictable processes" } },
+    stable: { level: "low", value: { hu: "Alacsony–közepes – a kiszámítható munkamenetet kedveled", en: "Low to medium – you work well with stable, predictable processes" } },
   },
   decision: {
     deliberate: { level: "mid", value: { hu: "Közepes – átgondoltan, szabályok mentén döntesz szívesen", en: "Medium – you prefer deliberate, rule-based decisions" } },
     fast: { level: "high", value: { hu: "Gyors – intuitívan, rugalmasan döntesz", en: "Fast – you decide intuitively and flexibly" } },
-    balanced: { level: "mid", value: { hu: "Közepes – átgondoltan döntesz, de nem húzod az időt", en: "Medium – you decide deliberately, without dragging it out" } },
+    balanced: { level: "mid", value: { hu: "Közepes – szeretsz időt hagyni a mérlegelésre, majd dönteni", en: "Medium – you decide deliberately, without dragging it out" } },
   },
   // A kultúra-értékek a többi sorral azonos „Szint-szó – leírás" szerkezetet
   // követik (a szint-szó a pólus-szókincs) — így a leírás-levágás és a bold
   // címke minden soron ugyanúgy működik.
   culture: {
-    high: { level: "high", value: { hu: "Értékvezérelt – etikailag következetes közegben vagy otthon", en: "Values-driven – an ethically consistent culture is where you're at home" } },
+    high: { level: "high", value: { hu: "Értékvezérelt – fontos neked, hogy a közös elveket a gyakorlatban is kövessétek", en: "Values-driven – an ethically consistent culture is where you're at home" } },
     low: { level: "low", value: { hu: "Gyakorlatias – teljesítményalapú, versengő kultúrában is jól működhetsz", en: "Pragmatic – a performance-based, competitive culture also works fine for you" } },
   },
   cycle: {
     long: { level: "high", value: { hu: "Hosszú – szeretsz elmélyülni, és alaposan végigviszed a munkát", en: "Long, deepening – you carry work through thoroughly" } },
     exploratory: { level: "low", value: { hu: "Rövid–közepes – szívesen fedezel fel új irányokat, a lezárás viszont több tudatosságot kíván", en: "Short to medium – you love exploring; closing takes more deliberate effort" } },
-    balanced: { level: "mid", value: { hu: "Közepes – elmélyülsz, de tartod a határidőket", en: "Medium – you go deep while keeping deadlines" } },
+    balanced: { level: "mid", value: { hu: "Közepes – szeretsz elmélyülni a munkában, közben a határidőre is figyelsz", en: "Medium – you go deep while keeping deadlines" } },
   },
   load: {
     protected: { level: "low", value: { hu: "Alacsony – kiszámítható terhelés és rendszeres visszajelzés mellett vagy a legjobb formádban", en: "Low – you're at your best with a predictable rhythm and regular feedback" } },
@@ -845,15 +845,15 @@ export const SOLO_DIM_SUMMARIES: Record<string, LocalizedText> = {
 export type PressureText = { stress: string; blindspot: string };
 
 export const PRESSURE_BLINDSPOT_PREFIX: LocalizedText = {
-  hu: "Vakfolt lehet:",
+  hu: "Amire érdemes figyelned:",
   en: "Possible blind spot:",
 };
 
 export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   H_high: {
     hu: {
-      stress: "Nyomás alatt még szigorúbban ragaszkodhatsz az elvekhez, és nehezebben köthetsz gyakorlati kompromisszumot.",
-      blindspot: "Mások rugalmasabb megoldásait elvtelenségként értelmezheted, pedig gyakran csak más a prioritásuk.",
+      stress: "Nyomás alatt még erősebben ragaszkodhatsz az elveidhez, és nehezebben engedhetsz egy vitában.",
+      blindspot: "Mások kompromisszumát elvtelenségnek láthatod, miközben lehet, hogy nekik más szempont fontosabb.",
     },
     en: {
       stress: "Under pressure you may hold to principles even more rigidly and find practical compromise harder.",
@@ -962,8 +962,8 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   },
   O_low: {
     hu: {
-      stress: "Nyomás alatt a bevált módszerekhez való ragaszkodás felerősödhet – akkor is, ha a helyzet újfajta választ kívánna.",
-      blindspot: "A „mindig így csináltuk” biztonsága miatt lassabban reagálhatsz a gyors változásokra.",
+      stress: "Nyomás alatt még inkább ragaszkodhatsz a bevált módszerhez, akkor is, ha az már nem segít megoldani a feladatot.",
+      blindspot: "Könnyen elkerülheti a figyelmedet, hogy a körülmények megváltoztak, és már máshogy érdemes dolgozni.",
     },
     en: {
       stress: "Under pressure reliance on proven methods can intensify – even when the situation calls for a new kind of answer.",
@@ -1072,7 +1072,7 @@ export function buildArchetypeStory(
 /** Kivel/milyen működés mellett erősödsz – a top-2 markáns dimenzióból. */
 export const COLLAB_CLICK: Record<string, LocalizedText> = {
   H_high: {
-    hu: "Azokkal dolgozol a legtermészetesebben, akik kimondják, amit gondolnak, és tartják, amit vállalnak. A nyílt együttműködésből gyorsan kölcsönös bizalom épülhet. Erősen taktikázó kollégák mellett viszont sok energiád mehet el a szándékaik megfejtésére.",
+    hu: "Könnyen megtalálhatod a hangot azokkal, akik nyíltan beszélnek, és betartják az ígéreteiket. Így kevesebbet kell találgatnod, mire számíthatsz tőlük, és könnyebben megbízhatsz bennük.",
     en: "You're in your element alongside people who say what they think and honour what they commit to – collaboration played with open cards quickly becomes mutual trust. Next to highly tactical operators, much of your energy goes into second-guessing motives.",
   },
   H_low: {
@@ -1116,7 +1116,7 @@ export const COLLAB_CLICK: Record<string, LocalizedText> = {
     en: "Collaboration ignites for you with curious people who like to think – a good debate is fuel for you, not conflict. More pragmatic partners add what ideas alone don't: the landing.",
   },
   O_low: {
-    hu: "A kiszámíthatóan, bevált módon dolgozó kollégákkal vagy a legjobb párban – közös nyelvetek a megbízhatóság. Az újító típusok mellett is jól működsz, ha te lehetsz az, aki a jó ötletet stabil gyakorlattá alakítja.",
+    hu: "Közel állhat hozzád, ha a kollégáid is bevált módszerekkel dolgoznak. Egy sok új ötlettel érkező társ mellett pedig abban segíthetsz, hogy közösen végiggondoljátok, mi válna be a mindennapi munkában.",
     en: "You pair best with colleagues who work predictably, in proven ways – reliability is your shared language. You also work well next to innovators, when you can be the one who turns a good idea into stable practice.",
   },
 };
@@ -1140,7 +1140,7 @@ export const COLLAB_FRICTION: Record<string, LocalizedText> = {
     en: "Your most common friction point is style: harmony-oriented colleagues can read your direct, fast feedback as sharp, while their circling can feel like stalling to you. It defuses a lot when the debate opens with: the critique is about the work, not the person.",
   },
   H_high: {
-    hu: "Súrlódás ott keletkezhet, ahol a taktikázás a megszokott: egy ilyen közegben az egyenességed sebezhetővé tehet, te pedig gyanakvóvá válhatsz azokkal szemben is, akik csupán rugalmasabban érvényesítik az érdekeiket. Segít különválasztani a kettőt: nem minden érdekérvényesítés manipuláció.",
+    hu: "Nehezen viselheted, ha valaki nem mondja ki, mit akar, és kerülő úton próbál érvényesülni. Ilyenkor könnyen gyanakvóvá válhatsz azzal szemben is, aki egyszerűen más érdeket képvisel. Mielőtt következtetnél a szándékára, kérdezz rá, mit szeretne elérni.",
     en: "Friction can arise where games are the norm: in tactical settings your fairness can look exploitable, and you may grow suspicious of people who simply navigate more flexibly. It helps to distinguish: not all self-advocacy is manipulation.",
   },
   H_low: {
@@ -1156,7 +1156,7 @@ export const COLLAB_FRICTION: Record<string, LocalizedText> = {
     en: "To more emotionally intense colleagues your calm can read as distance, while their reactions can look like overreaction to you. The dispute is rarely the content itself – more often the intensity gap; naming that helps.",
   },
   X_high: {
-    hu: "A csendesebb kollégákkal kialakuló súrlódás ritkán látványos: könnyen visszahúzódhatnak a beszélgetésben, ha minden gyorsan és szóban történik. Sokat segít, ha nem kell mindenkinek azonnal szóban reagálnia, és írásban is van lehetőség hozzászólni.",
+    hu: "Ha gyorsan követik egymást a hozzászólások, a csendesebb kollégák nehezebben kaphatnak szót. Hagyj időt a válaszra, és adj lehetőséget arra is, hogy valaki később, írásban ossza meg a gondolatait.",
     en: "Your friction next to quieter colleagues is rarely loud: they simply disengage when everything happens verbally and fast. Asynchronous space helps a lot – when input can come in writing, their best thinking arrives too.",
   },
   X_low: {
@@ -1176,7 +1176,7 @@ export const COLLAB_FRICTION: Record<string, LocalizedText> = {
 /** Pszichológiai biztonság + vezetői közeg – puha framinggel („sokat segíthet, ha…"). */
 export const COLLAB_NEEDS: Record<string, LocalizedText> = {
   H_high: {
-    hu: "Akkor hozod a legjobb formádat, ha a kimondott értékek és a napi gyakorlat összhangban vannak. Ha erősen törekszel a tisztességes, elvhű működésre, sokat segíthet, ha a vezetőd átláthatóan dönt, és a kényes ügyek nem informális alkukban dőlnek el.",
+    hu: "Segíthet a munkádban, ha a vezetőd elmondja, mi alapján döntött, és a kényes kérdéseket is meg lehet beszélni. Így könnyebben látod, hogy a napi döntések összhangban vannak-e a közösen vállalt elvekkel.",
     en: "You're at your best where stated values and daily practice match. For many with integrity this strong, it helps when their leader decides transparently and sensitive matters aren't settled in the corridor.",
   },
   H_low: {
@@ -1220,7 +1220,7 @@ export const COLLAB_NEEDS: Record<string, LocalizedText> = {
     en: "You thrive when there's something to learn and something to shape: frozen routines are slow burnout for you. For many with this profile it helps to have a protected experimental lane in the role – small, but real.",
   },
   O_low: {
-    hu: "A stabil alapok adnak biztonságot: akkor teljesítesz jól, ha a változást átgondoltan, nem hirtelen vezetik be. Sokat segíthet a fokozatosság, vagyis ha van időd begyakorolni az újat, mielőtt megérkezik a következő változás.",
+    hu: "Könnyebb lehet alkalmazkodnod a változáshoz, ha előre tudsz róla, és érted az okát. Segíthet, ha van időd begyakorolni az új munkamenetet, mielőtt újabb változás következik.",
     en: "Stable foundations are your safety: you perform when change is introduced deliberately, not abruptly. It helps when novelty arrives in steps – time to consolidate before the next wave.",
   },
 };
@@ -1313,9 +1313,9 @@ export const DIMENSION_GROWTH_TIPS: Record<string, Record<Locale, GrowthPlan>> =
   },
   O: {
     hu: {
-      behavior: "Próbálj ki havonta egy alacsony tétű feladatban egy módszert vagy eszközt, amihez nincs kész recepted.",
-      reflection: "Mikor hozott utoljára egy új megközelítés jobb eredményt nálad, mint a bevált út?",
-      challenge: "Egy hónapon belül vigyél végig egy kis feladatot új módszerrel – és írd fel, mit adott és mibe került.",
+      behavior: "Válassz ebben a hónapban egy kisebb feladatot, és próbálj ki hozzá egy számodra új módszert vagy eszközt. Olyat válassz, ahol belefér, ha elsőre nem sikerül.",
+      reflection: "Mikor jártál legutóbb jobban azzal, hogy máshogy oldottál meg egy feladatot, mint korábban?",
+      challenge: "A feladat végén írd le, jobb lett-e az eredmény az új módszerrel, és mennyi időt vagy erőfeszítést igényelt. Ez alapján döntsd el, használnád-e újra.",
     },
     en: {
       behavior: "Once a month, try a method or tool you have no ready recipe for, on a low-stakes task.",

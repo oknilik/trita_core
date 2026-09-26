@@ -19,6 +19,8 @@
 import { t, tf, type Locale } from "@/lib/i18n";
 import { ALTRUISM_CODE, HEXACO_ORDER, hexLetter, type HexacoCode } from "@/lib/hexaco";
 import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
+import { DIMENSION_SUMMARY_INSIGHTS_HU } from "@/lib/dimension-insights";
+import { getDimensionTier } from "@/lib/dimension-utils";
 import { buildArchetypeStory } from "@/lib/profile-content";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
@@ -281,9 +283,14 @@ export function buildProfileSummaryInsights(
     .filter((d) => deficitSlotEligible(d.code) && d.score < 40)
     .sort((a, b) => a.score - b.score)[0];
 
-  const mainText = strongest?.insight ?? plusContent?.howYouWorkParts.main ?? "";
+  const shortInsight = (dimension: ReportInputDimension | undefined): string | undefined =>
+    locale === "hu" && dimension
+      ? DIMENSION_SUMMARY_INSIGHTS_HU[dimension.code]?.[getDimensionTier(dimension.score)]
+      : undefined;
+  const mainText = shortInsight(strongest) ?? strongest?.insight ?? plusContent?.howYouWorkParts.main ?? "";
   const attentionText =
     plusContent?.howYouWorkParts.watch ??
+    shortInsight(attention) ??
     attention?.insight ??
     t("results.summaryBalancedAttention", locale);
   const growthText =

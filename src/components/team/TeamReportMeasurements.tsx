@@ -544,7 +544,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                   }
                   if (dynSource === "mixed") {
                     return isHu
-                      ? "A kapcsolati kép vegyes – mért és becsült jelzések egyaránt. Tudatos szereposztás, világos átadási pontok és a gyengébb kapcsolatok erősítése segíti, hogy az eltérések erősséggé forduljanak."
+                      ? "A kép részben a bizalmi körből, részben a személyiségprofilokból készült. Beszéljétek át, ki miért felel, és mikor adja át a munkát a többieknek. A gyengébb kapcsolatoknál egy közös feladat segíthet megérteni, mire van szükség a jobb együttműködéshez."
                       : "The relationship picture is mixed – both measured and estimated signals. Deliberate role division, clear hand-off points and strengthening the weaker relationships help turn differences into strengths.";
                   }
                   return isHu
@@ -669,7 +669,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                     </div>
                     <p className="mt-2 text-xs leading-relaxed text-ink-body">
                       {isHu
-                        ? "Több kapcsolatukról is van mérési adat, de egyik sem jelez erős bizalmat. Érdemes átbeszélni, mi nehezíti a kapcsolódásukat. Ez nem a teljesítményük értékelése."
+                        ? "A megmért kapcsolataik között nem látszik erős bizalmi kapcsolat. Beszéljétek meg velük, hogyan tudnának könnyebben bekapcsolódni a közös munkába. Ez nem a teljesítményük értékelése."
                         : "They have several measured connections but no strong trust edge – worth exploring what keeps them at the network's edge. Not a performance judgment."}
                     </p>
                   </div>
