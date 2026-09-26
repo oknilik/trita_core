@@ -1,5 +1,9 @@
 export const notificationTranslations = {
   notifications: {
+    lifecycle: {
+      title: { hu: "{titleHu}", en: "{titleEn}" },
+      body: { hu: "{bodyHu}", en: "{bodyEn}" },
+    },
     peerFeedbackRequested: {
       title: { hu: "Visszajelzést kérnek tőled", en: "Feedback requested from you" },
       body: { hu: "{name} visszajelzést kér tőled: „{topic}”. Pár percet vesz igénybe.", en: "{name} is asking for your feedback: \"{topic}\". It only takes a few minutes." },

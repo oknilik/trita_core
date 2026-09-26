@@ -1124,8 +1124,8 @@ export const resultsTranslations = {
       en: "What emails would you like from us?",
     },
     emailPrefsBody: {
-      hu: "Ez a kapcsoló a nem-tranzakcionális, életciklus-jellegű emaileket szabályozza (pl. a kitöltés utáni reflexiós érintés). A működéshez kötődő emaileket – meghívók, eredmény-értesítők – nem érinti.",
-      en: "This switch controls non-transactional, lifecycle emails (e.g. the post-assessment reflection touch). Operational emails – invites, result notifications – are unaffected.",
+      hu: "Ezzel a kapcsolóval engedélyezheted a kitöltési emlékeztetőket, a külső visszajelzést ajánló és a reflexiós leveleket. A működéshez kötődő emaileket – meghívók, eredmény-értesítők – nem érinti.",
+      en: "This switch controls assessment reminders, suggestions to ask for colleague feedback, and reflection emails. Operational emails – invites, result notifications – are unaffected.",
     },
     emailPrefsToggleLabel: {
       hu: "Életciklus-emailek engedélyezése",

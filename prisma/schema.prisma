@@ -110,7 +110,11 @@ model UserProfile {
   // Életciklus-emailek (reflexiós utókövetés és hasonló, nem-tranzakcionális
   // érintések) leiratkozás — a tranzakcionális emaileket (meghívók,
   // eredmény-értesítők) nem érinti. Kapcsoló: /email-preferences.
-  lifecycleEmailsOptOut Boolean @default(false)
+  lifecycleEmailsOptOut  Boolean                @default(false)
+  // Verification belongs to this exact primary address, not to the account.
+  verifiedEmail          String?
+  lifecycleOpportunities LifecycleOpportunity[]
+  lifecycleDeliveries    LifecycleDelivery[]
 
   assessmentResults       AssessmentResult[]
   assessmentDrafts        AssessmentDraft[]
@@ -171,6 +175,84 @@ model UserProfile {
 
   @@index([activeOrgId])
   @@index([activeTeamId])
+  @@index([createdAt, id])
+}
+
+model LifecycleOpportunity {
+  id           String              @id @default(cuid())
+  profileId    String
+  rule         String
+  goalKey      String
+  status       String              @default("OPEN") // OPEN | COMPLETED | DISMISSED | EXPIRED | INELIGIBLE
+  reason       String?
+  anchorAt     DateTime
+  dueAt        DateTime
+  expiresAt    DateTime
+  snoozedUntil DateTime?
+  completedAt  DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  ruleVersion  Int                 @default(1)
+  profile      UserProfile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  deliveries   LifecycleDelivery[]
+
+  @@unique([profileId, rule, goalKey])
+  @@index([status, dueAt])
+}
+
+// A durable outbox entry exists BEFORE contacting the provider. Terminal or
+// uncertain entries are never blindly reclaimed after a crashed worker.
+model LifecycleDelivery {
+  id               String                @id @default(cuid())
+  key              String                @unique
+  profileId        String
+  opportunityId    String?
+  rule             String
+  recipient        String
+  status           String                @default("CLAIMED")
+  claimedAt        DateTime              @default(now())
+  attemptedAt      DateTime?
+  acceptedAt       DateTime?
+  deliveredAt      DateTime?
+  providerEmailId  String?               @unique
+  attemptCount     Int                   @default(0)
+  errorCode        String?
+  templateVersion  Int                   @default(1)
+  payload          Json?
+  unsubscribeToken String?               @unique
+  actorId          String?
+  profile          UserProfile           @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  opportunity      LifecycleOpportunity? @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  @@index([recipient, claimedAt])
+  @@index([profileId, claimedAt])
+  @@index([status, claimedAt])
+}
+
+model EmailSuppression {
+  email     String   @id
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+// Webhooks may arrive before the send response has persisted the provider ID.
+model LifecycleEmailEvent {
+  id              String   @id // Svix event id
+  providerEmailId String
+  kind            String
+  createdAt       DateTime @default(now())
+
+  @@index([providerEmailId])
+  @@index([createdAt])
+}
+
+model LifecycleRun {
+  id         String    @id
+  startedAt  DateTime?
+  finishedAt DateTime?
+  leaseUntil DateTime?
+  cursor     String?
+  summary    Json?
 }
 
 model AssessmentDraft {
@@ -938,6 +1020,7 @@ model TrustObservation {
 // ── Notification Hub ────────────────────────────────────────────────────────
 
 enum NotificationType {
+  LIFECYCLE_NUDGE
   OBSERVER_COMPLETED
   OBSERVER_SUBMITTED
   RESULT_READY
