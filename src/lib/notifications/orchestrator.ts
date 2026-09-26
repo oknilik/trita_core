@@ -832,3 +832,17 @@ export async function handleCandidateCompleted(params: {
     })),
   );
 }
+
+/** One actionable follow-up, shared with the lifecycle email. */
+export async function handleLifecycleNudge(
+  userId: string, opportunityId: string,
+  copy: { hu: { title: string; body: string }; en: { title: string; body: string } },
+) {
+  await persistNotificationBatch([{
+    userId, type: "LIFECYCLE_NUDGE", category: "assessment", priority: "low",
+    sourceType: "lifecycle", sourceId: opportunityId,
+    dedupeKey: `lifecycle:${opportunityId}`,
+    link: `/profile/follow-up/${opportunityId}`,
+    vars: { titleHu: copy.hu.title, titleEn: copy.en.title, bodyHu: copy.hu.body, bodyEn: copy.en.body },
+  }]);
+}

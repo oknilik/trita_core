@@ -34,7 +34,8 @@ export type NotificationSourceType =
   | "compare_invite"
   | "crm_deal"
   | "crm_quote"
-  | "legal_campaign";
+  | "legal_campaign"
+  | "lifecycle";
 
 // ── Notification intent (orchestrator output → repository input) ────────────
 
@@ -61,6 +62,7 @@ export interface NotificationTypeMeta {
 }
 
 export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMeta> = {
+  LIFECYCLE_NUDGE: { titleKey: "notifications.lifecycle.title", bodyKey: "notifications.lifecycle.body", category: "assessment", defaultPriority: "low" },
   OBSERVER_COMPLETED:          { titleKey: "notifications.observerCompleted.title",          bodyKey: "notifications.observerCompleted.body",          category: "observer",    defaultPriority: "normal" },
   OBSERVER_SUBMITTED:          { titleKey: "notifications.observerSubmitted.title",          bodyKey: "notifications.observerSubmitted.body",          category: "observer",    defaultPriority: "low"    },
   RESULT_READY:                { titleKey: "notifications.resultReady.title",                bodyKey: "notifications.resultReady.body",                category: "assessment",  defaultPriority: "normal" },

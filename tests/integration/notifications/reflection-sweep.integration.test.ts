@@ -23,10 +23,11 @@ import {
 } from "@/lib/notifications/sweep";
 import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 
-// Az email-láb determinisztikusan a hiba-ágra megy (a kísérlet ténye a
-// SweepResult.errors-ból olvasható): a kulcs kiürítése CSAK ennek a
-// tesztfolyamatnak az env-jét érinti, .env fájlhoz nem nyúlunk.
-process.env.RESEND_API_KEY = "";
+// The provider is always mocked: rejected by default, accepted only inside
+// the locale test. Failures now persist in the separate lifecycle outbox.
+process.env.RESEND_API_KEY = "integration-no-network";
+// Keep the provider mocked after its singleton client has been initialised.
+globalThis.fetch = (async () => new Response(JSON.stringify({ name: "validation_error", message: "test rejection" }), { status: 422, headers: { "content-type": "application/json" } })) as typeof fetch;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const MINUTE_MS = 60 * 1000;
@@ -67,6 +68,7 @@ async function createUserWithSelfResult(
       clerkId:
         overrides.clerkId === undefined ? makeId("clerk") : overrides.clerkId,
       email: `${id}@test.trita.app`,
+      verifiedEmail: `${id}@test.trita.app`,
       username: `${prefix} ${id}`,
       locale: overrides.locale === undefined ? "hu" : overrides.locale,
       testType: "TRITAN",
@@ -276,7 +278,7 @@ test("D1 Reflection sweep", async (t) => {
           const to = Array.isArray(payload.to) ? payload.to[0] : payload.to;
           if (to && payload.subject) sent.push({ to, subject: payload.subject });
         }
-        return new Response(JSON.stringify({ id: "test" }), {
+        return new Response(JSON.stringify({ id: randomUUID() }), {
           status: 200,
           headers: { "content-type": "application/json" },
         });
@@ -318,8 +320,8 @@ test("D1 Reflection sweep", async (t) => {
     assert.equal((await reflectionNotificationsFor(mailed.id)).length, 1);
     assert.equal((await reflectionNotificationsFor(optedOut.id)).length, 1);
 
-    // Teszt-env: nincs RESEND_API_KEY → az email-kísérlet hibára fut, a
-    // kísérlet TÉNYE a hibalistából olvasható. Opt-out mellett kísérlet
+    // The mocked provider rejects the email. The attempted delivery is visible
+    // in the error list. Opt-out mellett kísérlet
     // sincs, így hiba-sor sem.
     assert.ok(
       result.errors.some((e) => e.startsWith(`reflection email ${mailed.id}`)),
@@ -331,8 +333,8 @@ test("D1 Reflection sweep", async (t) => {
     );
     assert.equal(result.emailsSent, 0);
 
-    // Az email-hiba nem dönti be az in-app értesítést, és a dedupe miatt
-    // következő körben sem ismétlődik (in-app rekordon ül).
+    // Email failure does not undo the in-app notification. The durable email
+    // dedupe prevents the next worker from replaying the same delivery.
     const again = await runNotificationSweep();
     assert.equal((await reflectionNotificationsFor(mailed.id)).length, 1);
     assert.ok(!again.errors.some((e) => e.includes(mailed.id)));

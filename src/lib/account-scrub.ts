@@ -48,6 +48,8 @@ export async function scrubProfileData(
     : { observerProfileId: profileId };
 
   await prisma.$transaction([
+    prisma.lifecycleDelivery.deleteMany({ where: email ? { OR: [{ profileId }, { recipient: { equals: email, mode: "insensitive" } }] } : { profileId } }),
+    prisma.lifecycleOpportunity.deleteMany({ where: { profileId } }),
     // A self-eredmények elárvulnak (userProfileId → null, anonim aggregátum), ÉS
     // a publikus megosztó-linkjük visszavonódik. A shareToken nélkül a
     // /share/[token] oldalnak nincs guardja a törölt userre (findUnique csak a
@@ -193,6 +195,7 @@ export async function scrubProfileData(
       data: {
         clerkId: null,
         email: null,
+        verifiedEmail: null,
         username: null,
         birthYear: null,
         gender: null,

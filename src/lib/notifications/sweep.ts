@@ -1,23 +1,10 @@
-/**
- * Notification sweep — placeholder for future scheduled notification jobs.
- *
- * TECHNICAL DEBT: Currently trial notifications use lazy check on org dashboard load
- * (orchestrator.checkTrialNotifications). This works but only triggers when an admin
- * visits the org page. A proper sweep would run on a schedule (e.g. daily cron).
- *
- * Future sweep tasks:
- * - Trial ending soon (3 days before trialEndsAt)
- * - Trial expired (trialEndsAt < now)
- * - Low candidate credits (below threshold)
- * - Email digest: daily/weekly summary of unread notifications
- * - Stale notification cleanup (dismiss notifications older than 90 days)
- */
+/** Daily trial, reflection, observer and CRM checks. Follow-up email delivery
+ * uses the shared lifecycle outbox; in-app notifications have their own dedupe. */
 
 import { prisma } from "@/lib/prisma";
 import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import { HEXACO_DIMENSIONS, rankDimensionScores, type HexacoCode } from "@/lib/hexaco";
-import { sendObserverInviteEmail, sendReflectionPromptEmail } from "@/lib/emails";
-import { normalizeLocale } from "@/lib/i18n";
+import { sendObserverReminder, sendReflectionFollowup } from "@/lib/lifecycle/legacy";
 import { OPEN_DEAL_STAGES, QUOTE_EXPIRING_WINDOW_DAYS } from "@/lib/crm/constants";
 import { formatQuoteNo, resolveCrmDueWindow } from "@/lib/crm/guards";
 import { expireQuote } from "@/lib/crm/quotes";
@@ -26,7 +13,7 @@ import {
   handleCrmNextActionDue,
   handleCrmQuoteExpiring,
 } from "./orchestrator";
-import { persistNotification } from "./repository";
+import { persistNotificationBatch } from "./repository";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 export interface CrmSweepStats {
@@ -122,83 +109,28 @@ export function selectReflectionCandidates(
 }
 
 async function runReflectionSweep(result: SweepResult): Promise<void> {
-  // Userenként a legfrissebb self-eredmény; az ablak-szűrés a kiválasztóban.
   const latest = await prisma.assessmentResult.findMany({
-    where: {
-      isSelfAssessment: true,
-      userProfile: { deleted: false, clerkId: { not: null } },
-    },
-    orderBy: { createdAt: "desc" },
-    distinct: ["userProfileId"],
+    where: { isSelfAssessment: true, userProfile: { deleted: false, clerkId: { not: null } } },
+    orderBy: { createdAt: "desc" }, distinct: ["userProfileId"],
     select: { userProfileId: true, createdAt: true, scores: true },
   });
-
-  const candidates = selectReflectionCandidates(latest);
-  if (candidates.length === 0) return;
-
-  // Csak az újakat számoljuk: a már-értesítettek kiszűrése előre (a
-  // persistNotification dedupe-ja verseny ellen továbbra is véd).
-  const [existing, profiles] = await Promise.all([
-    prisma.notification.findMany({
-      where: {
-        type: "REFLECTION_PROMPT",
-        userId: { in: candidates.map((c) => c.userId) },
-      },
-      select: { userId: true },
-    }),
-    prisma.userProfile.findMany({
-      where: { id: { in: candidates.map((c) => c.userId) } },
-      select: { id: true, email: true, locale: true, lifecycleEmailsOptOut: true },
-    }),
-  ]);
-  const alreadyNotified = new Set(existing.map((e) => e.userId));
-  const profileById = new Map(profiles.map((p) => [p.id, p]));
-
-  for (const candidate of candidates) {
-    if (alreadyNotified.has(candidate.userId)) continue;
+  for (const candidate of selectReflectionCandidates(latest)) {
     try {
-      await persistNotification({
-        userId: candidate.userId,
-        type: "REFLECTION_PROMPT",
-        category: "assessment",
-        priority: "low",
-        vars: {
-          // Per-locale feloldás renderer-módosítás nélkül: mindkét nyelvű
-          // címke vars-ként megy, és a HU body a {dimLabelHu}-t, az EN body
-          // a {dimLabelEn}-t hivatkozza — a tf() a néző nyelvén a megfelelőt
-          // interpolálja.
-          dimLabelHu: HEXACO_DIMENSIONS[candidate.topDim].hu,
-          dimLabelEn: HEXACO_DIMENSIONS[candidate.topDim].en,
-        },
-        link: "/interaction",
-        dedupeKey: `REFLECTION_PROMPT:${candidate.userId}`,
-      });
-      result.notificationsCreated++;
-    } catch (err) {
-      result.errors.push(
-        `reflection ${candidate.userId}: ${err instanceof Error ? err.message : String(err)}`,
-      );
-      continue;
-    }
-
-    // Email-láb (életciklus): csak opt-out nélkül, best-effort – az email-hiba
-    // nem érinti az in-app értesítést, és nem ismétlődik (a dedupe az in-app
-    // rekordon ül, ami ekkor már létrejött).
-    const profile = profileById.get(candidate.userId);
-    if (profile?.email && !profile.lifecycleEmailsOptOut) {
-      try {
-        const emailLocale = normalizeLocale(profile.locale);
-        await sendReflectionPromptEmail({
-          to: profile.email,
-          dimLabel: HEXACO_DIMENSIONS[candidate.topDim][emailLocale],
-          locale: emailLocale,
-        });
-        result.emailsSent++;
-      } catch (err) {
-        result.errors.push(
-          `reflection email ${candidate.userId}: ${err instanceof Error ? err.message : String(err)}`,
-        );
+      const key = `REFLECTION_PROMPT:${candidate.userId}`;
+      const existing = await prisma.notification.findUnique({ where: { dedupeKey_userId: { dedupeKey: key, userId: candidate.userId } } });
+      if (!existing) {
+        await persistNotificationBatch([{
+          userId: candidate.userId, type: "REFLECTION_PROMPT", category: "assessment", priority: "low",
+          vars: { dimLabelHu: HEXACO_DIMENSIONS[candidate.topDim].hu, dimLabelEn: HEXACO_DIMENSIONS[candidate.topDim].en },
+          link: "/interaction", dedupeKey: key,
+        }]);
+        result.notificationsCreated++;
       }
+      const sent = await sendReflectionFollowup(candidate.userId);
+      if (sent.ok) result.emailsSent++;
+      else if (sent.id) result.errors.push(`reflection email ${candidate.userId}: ${sent.reason}`);
+    } catch (err) {
+      result.errors.push(`reflection email ${candidate.userId}: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 }
@@ -278,38 +210,12 @@ async function runObserverReminderSweep(result: SweepResult): Promise<void> {
 
   const candidates = selectObserverReminderCandidates(pending, now);
   for (const inv of candidates) {
-    if (!inv.observerEmail) continue;
     try {
-      await sendObserverInviteEmail({
-        to: inv.observerEmail,
-        inviterName: inv.inviter.username ?? inv.inviter.email ?? "trita",
-        token: inv.token,
-        recipientName: inv.observerName ?? undefined,
-        locale: normalizeLocale(inv.inviter.locale),
-        isReminder: true,
-      });
+      const sent = await sendObserverReminder(inv.id);
+      if (sent.ok) result.emailsSent++;
+      else if (sent.id) result.errors.push(`observer reminder ${inv.id}: ${sent.reason}`);
     } catch (err) {
-      // Küldés-hiba: a számláló nem lép, a következő futás újrapróbálja.
-      result.errors.push(
-        `observer reminder ${inv.id}: ${err instanceof Error ? err.message : String(err)}`,
-      );
-      continue;
-    }
-    result.emailsSent++;
-    try {
-      await prisma.observerInvitation.update({
-        where: { id: inv.id },
-        data: { reminderCount: { increment: 1 }, lastReminderSentAt: new Date() },
-      });
-    } catch (err) {
-      // A levél már KIMENT – a számláló-hiba külön jelölést kap, mert a
-      // következő futás emiatt ismételhet (a max-plafon a rekordolt
-      // küldésekre garantált, a kézbesítettekre nem).
-      result.errors.push(
-        `observer reminder ${inv.id}: counter update failed (email already sent): ${
-          err instanceof Error ? err.message : String(err)
-        }`,
-      );
+      result.errors.push(`observer reminder ${inv.id}: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 }
@@ -431,7 +337,6 @@ async function runCrmSweep(result: SweepResult): Promise<void> {
  * Run all scheduled notification checks.
  *
  * Call this from a cron job / scheduled task.
- * Currently only handles trial checks.
  */
 export async function runNotificationSweep(): Promise<SweepResult> {
   const result: SweepResult = { orgsChecked: 0, notificationsCreated: 0, emailsSent: 0, errors: [] };
