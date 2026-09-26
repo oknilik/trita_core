@@ -444,7 +444,7 @@ export default function ProfilePage() {
           </Card>
 
           <div className="rounded-2xl bg-[var(--color-surface-soft-warm)] p-4 text-xs leading-relaxed text-[var(--color-accent-earth-strong)]">
-            <strong className="font-fraunces text-base font-medium">{locale === "hu" ? "Az adataid nálad maradnak." : "Your data stays yours."}</strong><br />
+            <strong className="font-fraunces text-base font-medium">{locale === "hu" ? "Te kezeled a profiladataidat." : "Your data stays yours."}</strong><br />
             {locale === "hu" ? "A profilod adatai bármikor módosíthatók vagy törölhetők." : "Your profile data can be edited or deleted at any time."}
           </div>
         </div>
@@ -512,7 +512,7 @@ export default function ProfilePage() {
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </Button>
       </section>
-      {saveState === "saved" ? <p role="status" className="text-note text-[var(--color-state-success-text)]">{locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}</p> : saveState === "error" ? <p role="alert" className="text-note text-[var(--color-state-error-text)]">{locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak; próbáld újra." : "Save failed. Your changes are preserved; please try again."}</p> : null}
+      {saveState === "saved" ? <p role="status" className="text-note text-[var(--color-state-success-text)]">{locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}</p> : saveState === "error" ? <p role="alert" className="text-note text-[var(--color-state-error-text)]">{locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak. Próbáld újra." : "Save failed. Your changes are preserved; please try again."}</p> : null}
 
         <Card
           id="account"

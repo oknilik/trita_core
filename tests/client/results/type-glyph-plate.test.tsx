@@ -39,8 +39,8 @@ describe("TypeGlyphPlate", () => {
 
     const explanation = screen.getByText(/A nagy forma a legmagasabb pontszámú dimenziód/);
     // Névelő a hu-grammar.ts-ből; a sablonban nincs „a(z)” műtermék
-    expect(explanation).toHaveTextContent("a Nyitottság: a szem");
-    expect(explanation).toHaveTextContent("a Lelkiismeretesség: a létrafokok");
+    expect(explanation).toHaveTextContent("a Nyitottság (a szem)");
+    expect(explanation).toHaveTextContent("a Lelkiismeretesség (a létrafokok)");
     expect(explanation.textContent).not.toContain("a(z)");
     expect(screen.getByRole("button", { expanded: true })).toBeInTheDocument();
   });
@@ -58,11 +58,11 @@ describe("TypeGlyphPlate", () => {
     render(<TypeGlyphPlate dimensions={DIMENSIONS} locale="hu" mode="heroTab" />);
 
     const tab = screen.getByRole("button", { expanded: false });
-    expect(tab).toHaveTextContent("Mit jelent a karakter-ábrám?");
+    expect(tab).toHaveTextContent("Mit jelent a karakterábrám?");
 
     await user.click(tab);
     expect(screen.getByRole("button", { expanded: true })).toHaveTextContent(
-      "Mit jelent a karakter-ábrám?",
+      "Mit jelent a karakterábrám?",
     );
     expect(screen.getByText(/A nagy forma a legmagasabb pontszámú dimenziód/)).toBeInTheDocument();
   });

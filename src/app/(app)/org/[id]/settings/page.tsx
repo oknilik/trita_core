@@ -22,7 +22,7 @@ import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHea
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Szervezet beállítások | trita", robots: { index: false } };
+  return { title: "Szervezeti beállítások | trita", robots: { index: false } };
 }
 
 export default async function OrgSettingsPage({
@@ -91,7 +91,7 @@ export default async function OrgSettingsPage({
           {isReadOnly ? (
             <p className="rounded-lg border border-sand bg-cream px-4 py-3 text-sm text-ink-body">
               {isHu
-                ? "Read-only módban a szervezet neve nem módosítható."
+                ? "Csak olvasási jogosultsággal a szervezet neve nem módosítható."
                 : "Organization name changes are disabled in read-only mode."}
             </p>
           ) : (
@@ -185,7 +185,7 @@ export default async function OrgSettingsPage({
           {isReadOnly ? (
             <p className="text-sm font-semibold text-text-error-strong">
               {isHu
-                ? "Read-only módban a szervezet státusza nem módosítható."
+                ? "Csak olvasási jogosultsággal a szervezet állapota nem módosítható."
                 : "Organization status changes are disabled in read-only mode."}
             </p>
           ) : org.status === "INACTIVE" ? (

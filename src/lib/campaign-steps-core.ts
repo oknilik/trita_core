@@ -52,7 +52,7 @@ export const CAMPAIGN_PRESETS: Record<
   SCAN_V1: {
     label: { hu: "trita Team Scan v1", en: "trita Team Scan v1" },
     description: {
-      hu: "Önértékelés, bizalmi háló és pszichológiai biztonság pulse.",
+      hu: "Önértékelés, bizalmi háló és a pszichológiai biztonság rövid felmérése.",
       en: "Self-assessment, trust network and psychological safety pulse.",
     },
     steps: ["SELF_ASSESSMENT", "TRUST_360", "PSYCH_SAFETY"],
@@ -94,10 +94,10 @@ export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: st
   SELF_ASSESSMENT: { hu: "Önértékelés", en: "Self-assessment" },
   OBSERVER_360: { hu: "Önértékelés + külső visszajelzés", en: "Self-assessment + external feedback" },
   TEAM_ROLE: { hu: "Csapatszerep-kérdőív", en: "Team role questionnaire" },
-  TEAM_ROLE_360: { hu: "Csapattársak szerep-visszajelzése", en: "Team role peer feedback" },
-  TRUST_360: { hu: "Bizalmi háló kör", en: "Trust network round" },
-  PSYCH_SAFETY: { hu: "Pszichológiai biztonság pulse", en: "Psychological safety pulse" },
-  PEER_FEEDBACK: { hu: "Elismerés-kör", en: "Recognition round" },
+  TEAM_ROLE_360: { hu: "Csapattársi visszajelzés a szerepekről", en: "Team role peer feedback" },
+  TRUST_360: { hu: "Bizalmi kapcsolatok felmérése", en: "Trust network round" },
+  PSYCH_SAFETY: { hu: "Pszichológiai biztonság felmérése", en: "Psychological safety pulse" },
+  PEER_FEEDBACK: { hu: "Elismerési kör", en: "Recognition round" },
 };
 
 /** Az adott lépés kitöltő-felülete (értesítés-link és banner-CTA). */

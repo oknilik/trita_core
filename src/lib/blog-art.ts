@@ -41,8 +41,8 @@ export function isBlogArtLineMode(value: unknown): value is BlogArtLineMode {
 }
 
 export const BLOG_ART_FAMILY_LABELS_HU: Record<BlogArtFamily, string> = {
-  collage: "Relációs kollázs",
-  constellation: "Konstelláció",
+  collage: "Kapcsolatokat ábrázoló kollázs",
+  constellation: "Pontok hálózata",
   modular: "Lágy Bauhaus",
   flow: "Élő vonal",
 };
@@ -50,7 +50,7 @@ export const BLOG_ART_FAMILY_LABELS_HU: Record<BlogArtFamily, string> = {
 export const BLOG_ART_LINE_MODE_LABELS_HU: Record<BlogArtLineMode, string> = {
   none: "Vonal nélkül",
   minimal: "Kevés vonal",
-  expressive: "Expresszív vonal",
+  expressive: "Kifejező vonalvezetés",
 };
 
 export const BLOG_ART_CONCEPT_LABELS_HU: Record<BlogArtConcept, string> = {

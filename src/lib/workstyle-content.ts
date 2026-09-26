@@ -102,15 +102,15 @@ export interface WorkstyleContent {
 // Minden TENSION_PAIRS contentKey-hez kell bejegyzés (guardrail-teszt őrzi).
 export const ROLE_TAGS: Record<string, Record<string, { strong: string[]; might: string[]; prep: string[] }>> = {
   hu: {
-    resilientLeader: { strong: ["Vezető", "Értékesítési vezető", "Kríziskoordinátor", "Változásmenedzsment"], might: ["Projektvezetés", "Ügyfélkapcsolat"], prep: ["Hosszan tartó önálló fókusz", "Elszigetelt munkakörök"] },
+    resilientLeader: { strong: ["Vezető", "Értékesítési vezető", "Kríziskoordinátor", "Változásmenedzsment"], might: ["Projektvezetés", "Ügyfélkapcsolat"], prep: ["Hosszan tartó, elmélyült munka", "Elszigetelt munkakörök"] },
     supportedVisibility: { strong: ["Ügyfélkapcsolat", "Tréning", "HR"], might: ["Prezentáció", "Facilitáció"], prep: ["Elszigetelt munka", "Nagy nyomás"] },
     structuredStability: { strong: ["Minőségbiztosítás", "Adminisztráció", "Megfelelőség"], might: ["Projektmenedzsment", "Tanácsadás"], prep: ["Induló vállalkozás", "Változékony környezet"] },
     safeExperimentation: { strong: ["Tervezői gondolkodás", "Prototípuskészítés", "Innováció"], might: ["Tanácsadás", "Stratégia"], prep: ["Szoros határidejű végrehajtás"] },
-    deepCollaboration: { strong: ["Kiscsapatos kutatás", "Mentorálás", "Páros munka"], might: ["Tanácsadás", "Szakértő"], prep: ["Vállalati kapcsolatépítés"] },
+    deepCollaboration: { strong: ["Kis csapatban végzett kutatás", "Mentorálás", "Páros munka"], might: ["Tanácsadás", "Szakértő"], prep: ["Vállalati kapcsolatépítés"] },
     solitaryInnovator: { strong: ["Kutató", "Elemző", "Rendszertervező"], might: ["Tanácsadás", "Tervezés"], prep: ["Csapatmunka", "Gyakori megbeszélések"] },
-    facilitatedInnovation: { strong: ["Műhelyvezetés", "Tervezői gondolkodás", "Változásmenedzsment"], might: ["Projektmenedzsment", "Oktatás"], prep: ["Felülről vezérelt döntéshozatal"] },
+    facilitatedInnovation: { strong: ["Műhelymunkák vezetése", "Tervezői gondolkodás", "Változásmenedzsment"], might: ["Projektmenedzsment", "Oktatás"], prep: ["Felülről vezérelt döntéshozatal"] },
     responsibleInnovator: { strong: ["Fenntarthatóság", "K+F", "Társadalmi innováció"], might: ["Stratégia", "Termékfejlesztés"], prep: ["Gyors kompromisszum"] },
-    ethicalLeader: { strong: ["Értékvezérelt vezetés", "Megfelelőség", "Közszféra", "Nonprofit"], might: ["Tanácsadás", "HR"], prep: ["Erős politikai játszmák"] },
+    ethicalLeader: { strong: ["Értékvezérelt vezetés", "Megfelelőség", "Közszféra", "Nonprofit"], might: ["Tanácsadás", "HR"], prep: ["Szervezeti hatalmi játszmák"] },
     principledConfronter: { strong: ["Audit", "Minőségbiztosítás", "Jog", "Szabályozás"], might: ["Vezetés", "Tárgyalás"], prep: ["Diplomáciai közvetítés"] },
     structuredCompetitor: { strong: ["Értékesítés", "Üzletfejlesztés", "Teljesítménymenedzsment"], might: ["Projektvezetés", "Operatív működés"], prep: ["Konszenzusos kultúra"] },
     structuredInnovator: { strong: ["Termékfejlesztés", "K+F-vezetés", "Rendszertervezés"], might: ["Stratégia", "Tanácsadás"], prep: ["Improvizációra épülő közeg"] },

@@ -51,7 +51,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
   const [assignSelection, setAssignSelection] = useState<Record<string, string>>({});
   const [busyKey, setBusyKey] = useState<string | null>(null);
 
-  // Lista-vezérlés: névre/emailre keresés + „utolsó 10" kapu + nyíló szerkesztő.
+  // Lista-vezérlés: névre/e-mailre keresés + „utolsó 10" kapu + nyíló szerkesztő.
   const [query, setQuery] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -107,7 +107,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
     } catch (err) {
       setError(
         err instanceof Error && err.message === "HAS_REAL_MEMBERSHIP"
-          ? "Ez a felhasználó valódi (admin/tag) tagsággal van az org-ban – tanácsadóként nem osztható ki."
+          ? "Ez a felhasználó már a szervezet tagja vagy adminisztrátora, ezért nem rendelhető hozzá tanácsadóként."
           : "A művelet nem sikerült.",
       );
     } finally {
@@ -155,11 +155,11 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
         <SectionEyebrow>
           tanácsadó meghívása
         </SectionEyebrow>
-        <h2 className="mt-1 font-fraunces text-xl text-ink">Onboardolás a tritára</h2>
+        <h2 className="mt-1 font-fraunces text-xl text-ink">Tanácsadó csatlakozása</h2>
         <p className="mt-1 max-w-2xl text-sm text-ink-body">
-          Add meg az emailt – ha a fiók már létezik, azonnal tanácsadó lesz; ha még
-          nincs, regisztrációkor automatikusan az lesz. A tanácsadó nem kényszerül
-          tesztre, és szervezetekhez innen tudod kiosztani.
+          Add meg az e-mail-címet. Ha már van fiókja, rögtön tanácsadói hozzáférést kap.
+          Ha még nincs, a regisztrációkor kapja meg a hozzáférést. Nem kell
+          kitöltenie a tesztet. Itt rendelheted hozzá a szervezetekhez.
         </p>
         <form onSubmit={handleInvite} className="mt-4 flex flex-col gap-3 sm:flex-row">
           <input
@@ -242,7 +242,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
               setQuery(v);
               setShowAll(false);
             }}
-            placeholder="Keresés névre, emailre vagy szervezetre…"
+            placeholder="Keresés névre, e-mailre vagy szervezetre…"
             matched={filtered.length}
             total={consultants.length}
             limit={DEFAULT_VISIBLE}

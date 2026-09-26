@@ -9,7 +9,7 @@ import {
   careerAppendixEnabled,
 } from "@/lib/profile-report-view-model";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
-import { TritaReportDocument, chapterStartPages } from "@/components/pdf/TritaPdf";
+import { TritaReportDocument } from "@/components/pdf/TritaPdf";
 import { chunkDimensions, DIMENSIONS_PER_PAGE } from "@/components/pdf/pages/ChapterDimensionsPage";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -182,27 +182,9 @@ test("a 02 fejezet oldalanként legfeljebb három részletes dimenziót hoz", ()
   }
 });
 
-test("a tartalomjegyzék oldalszámai a tényleges lapszerkezetet követik", () => {
-  for (const scenario of scenarios) {
-    const model = buildProfileReportViewModel(scenario.input);
-    const names = pageComponentNames(TritaReportDocument({ data: scenario.input }));
-    const starts = chapterStartPages(model);
-
-    // A borító számozáson kívül van: a tartalmi oldalszám = a lap 0-alapú
-    // dokumentum-indexe (a borító az index 0).
-    assert.equal(names[starts.overview], "ChapterOverviewPage", `${scenario.id}: 01 rossz oldalon`);
-    assert.equal(
-      names[starts.dimensions],
-      "ChapterDimensionsPage",
-      `${scenario.id}: 02 rossz oldalon`,
-    );
-    assert.equal(
-      names[starts.workstyle],
-      "ChapterWorkStylePage",
-      `${scenario.id}: 03 rossz oldalon`,
-    );
-  }
-});
+// A tartalomjegyzék valódi oldalszámait a renderelő regresszió ellenőrzi:
+// tests/client/results/pdf-report-blank-pages.test.ts. A React-elemek száma
+// nem azonos a folytatáslapokkal együtt számolt oldalszámmal.
 
 test("a Start riport nem szivárogtat Plus-tartalmat", () => {
   for (const scenario of scenarios.filter((s) => s.input.plan === "start")) {

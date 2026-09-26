@@ -112,14 +112,14 @@ export function TeamMemberSnapshot({
     ? {
         title: completionPct === 100 ? "A csapat készen áll" : "A közös kép épül",
         body: completionPct === 100
-          ? "Minden személyiségprofil elkészült. A riporttal megnyílnak a közös szerepek és működési minták."
-          : `${completedCount} csapattárs elkészült, ${inProgressCount} folyamatban van és ${waitingCount} még nem kezdte el.`,
+          ? "Minden személyiségprofil elkészült. A riportból megismerhetitek a csapatszerepeket és a közös működésetek mintázatait."
+          : `${completedCount} csapattárs befejezte a kitöltést, ${inProgressCount} még dolgozik rajta, ${waitingCount} pedig még nem kezdte el.`,
         profile: "Személyiségprofil",
         roles: "Csapatszerepek",
         trust: "Bizalmi háló",
         noRound: "Nincs kör",
         roleTitle: "Csapatszerepek",
-        roleCopy: "Milyen hozzájárulások tartják mozgásban a csapatot, és hol van tartalék.",
+        roleCopy: "Ki milyen szerepben segíti a közös munkát, és mely szerepekben tudjátok helyettesíteni egymást.",
         patternTitle: "Működési mintázat",
         patternCopy: "A napi működés mért mintázata a publikált riportból.",
         trustTitle: "Bizalmi háló",
@@ -129,7 +129,7 @@ export function TeamMemberSnapshot({
             ? `A mért kapcsolati kép lefedettsége ${trustCoverage}%.`
             : "A kapcsolati kép akkor épül fel, amikor elindul a bizalmi kör.",
         lockedTitle: "A riporttal nyílik meg",
-        lockedRoles: "A szerepegyensúly a jóváhagyott, aggregált csapatkép része.",
+        lockedRoles: "A szerepegyensúly a jóváhagyott, összesített csapatkép része.",
         lockedPattern: "A közös mintázat a riport publikálása után válik láthatóvá.",
         nextLabel: "Következő lépés",
         nextTask: "Van nyitott teendőd – a részleteket a fenti teendőkártyán találod.",

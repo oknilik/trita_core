@@ -39,7 +39,7 @@ const ROLE_GAP_HINTS: Record<string, { hu: string; en: string }> = {
   ER: { hu: "a döntések kritikus mérlegelése gyengülhet", en: "critical evaluation of decisions may weaken" },
   CS: { hu: "a feszültségoldás és a kohézió sérülhet", en: "tension defusing and cohesion may suffer" },
   MV: { hu: "az ötletek gyakorlati megvalósítása lassulhat", en: "turning ideas into practice may slow down" },
-  MI: { hu: "a minőségi lezárás és a határidők csúszhatnak", en: "quality closure and deadlines may slip" },
+  MI: { hu: "a feladatok gondos, határidőre történő befejezése nehezebbé válhat", en: "quality closure and deadlines may slip" },
   SZ: { hu: "a mély szakértői tudás hiányozhat", en: "deep specialist knowledge may be missing" },
 };
 
@@ -96,11 +96,11 @@ const DYNAMICS_SEGMENTS = [
     en: "Complementary",
     explain: {
       profile_estimate: {
-        hu: "eltérő, de összeférő stílusok – más-más helyzetben erősek, jó munkamegosztás-alap.",
+        hu: "eltérő, de egymáshoz illeszthető munkastílusok: más-más helyzetben lehetnek erősek, ami segítheti a feladatok megosztását.",
         en: "different but compatible styles – strong in different situations, a good basis for dividing work.",
       },
       trust_round: {
-        hu: "közepes mért bizalom – működő kapcsolat, amelynek van tere mélyülni.",
+        hu: "közepes mért bizalom: működő kapcsolat, amely tovább erősíthető.",
         en: "moderate measured trust – a working relationship with room to deepen.",
       },
       mixed: {
@@ -168,9 +168,9 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
         <section>
           <SectionHead
             no={secNo()}
-            label={isHu ? "Aggregált csapatprofil" : "Aggregate team profile"}
+            label={isHu ? "Összesített csapatprofil" : "Aggregate team profile"}
             subtitle={isHu
-              ? "A csapat együttes karaktere – átlagok és a belső sokféleség."
+              ? "A csapat személyiségprofilja: az átlagok és a tagok közötti különbségek."
               : "The team's collective character – averages and internal diversity."}
           />
           <DashboardPanel className="p-6">
@@ -238,7 +238,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
         <section>
           <SectionHead
             no={secNo()}
-            label={isHu ? "Szerep-lefedettség" : "Role coverage"}
+            label={isHu ? "Szereplefedettség" : "Role coverage"}
             subtitle={isHu
               ? "Mely szerepek vannak lefedve, és hol vannak valódi hiányok."
               : "Which roles are covered and where the true gaps are."}
@@ -323,7 +323,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
             {agg.roleGaps && agg.roleGaps.length > 0 && (
               <div className="mt-4 border-t border-sand pt-4">
                 <p className="mb-2 text-caption font-semibold text-ink">
-                  {isHu ? "Valódi hiányok – mit jelenthet" : "True gaps – what it may mean"}
+                  {isHu ? "Hiányzó szerepek – mit jelenthetnek?" : "True gaps – what it may mean"}
                 </p>
                 <ul className="flex flex-col gap-1">
                   {agg.roleGaps.map((role) => (
@@ -368,7 +368,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                     <>
                       {" "}
                       {isHu
-                        ? `Önkép–csapatkép összevetés ${agg.peerRoles.comparedCount} tagnál: ${agg.peerRoles.mismatchCount} eltéréssel – az eltérések a vezetői debrief kiemelt beszélgetőpontjai.`
+                        ? `Önkép–csapatkép összevetés ${agg.peerRoles.comparedCount} tagnál: ${agg.peerRoles.mismatchCount} tagnál eltérés látszik. Ezeket érdemes átbeszélni a vezetői eredményfeldolgozáson.`
                         : `Self-image vs. team view compared for ${agg.peerRoles.comparedCount} members: ${agg.peerRoles.mismatchCount} with differences – key talking points for the leadership debrief.`}
                     </>
                   )}
@@ -431,7 +431,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                   : `A measured trust picture of the team's ${dynamicsTotal} assessed relationships – how strong and mutual each working relationship is.`
                 : dynSource === "mixed"
                   ? isHu
-                    ? `A csapat ${dynamicsTotal} felmért kapcsolatának képe – részben mért bizalmi körből, részben profil-alapú munkastílus-összevetésből.`
+                    ? `A csapat ${dynamicsTotal} felmért kapcsolatának képe – részben mért bizalmi körből, részben profilalapú munkastílus-összevetésből.`
                     : `The picture of the team's ${dynamicsTotal} assessed relationships – partly from a measured trust round, partly from a profile-based working-style comparison.`
                   : isHu
                     ? `A csapat ${dynamicsTotal} felmért kapcsolatának munkastílus-összevetése – mennyire hasonlóan vagy eltérően dolgozik két ember.`
@@ -510,7 +510,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                   if (frictionShare >= 0.4) {
                     if (dynSource === "trust_round") {
                       return isHu
-                        ? "A párok jelentős részénél alacsony a mért bizalom. Érdemes a kapcsolatok minőségével közvetlenül foglalkozni – közös munka-alkalmak, világos elvárások és vezetői figyelem erősítik a hálót."
+                        ? "A párok jelentős részénél alacsony a mért bizalom. Érdemes a kapcsolatok minőségével közvetlenül foglalkozni – közös munkára szánt alkalmak, világos elvárások és vezetői figyelem erősítik a hálót."
                         : "A large share of pairs shows low measured trust. Work on relationship quality directly – shared working sessions, clear expectations and leadership attention strengthen the network.";
                     }
                     if (dynSource === "mixed") {
@@ -530,7 +530,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                     }
                     if (dynSource === "mixed") {
                       return isHu
-                        ? "A párok többsége összehangoltan működik – részben mért erős bizalom, részben hasonló munkastílus-becslés alapján. A vegyes adatforrásból profil-hasonlóságra (közös vakfoltra) nem következtetünk."
+                        ? "A párok többségénél összehangolt működésre utalnak az adatok: egy részüknél erős bizalmat mértünk, másoknál a profilból hasonló munkastílust becsültünk. A vegyes forrásokból nem következtetünk hasonló személyiségre vagy közös vakfoltokra."
                         : "Most pairs operate in an aligned way – partly from measured strong trust, partly from similar working-style estimates. From this mixed data source we do not infer profile similarity (shared blind spots).";
                     }
                     return isHu
@@ -564,7 +564,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                       .join(", ")}
                   </span>
                   {isHu
-                    ? " – ezekben a legnagyobb a csapaton belüli szórás, itt érdemes közös minimum-szabályokat rögzíteni."
+                    ? " – ezekben a legnagyobb a csapaton belüli szórás, itt érdemes közös alapszabályokat rögzíteni."
                     : " – these dimensions show the widest in-team spread; agree on shared minimum rules here."}
                 </p>
               )}
@@ -574,8 +574,8 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
               {agg.dynamics.source === "trust_round"
                 ? isHu ? "Mért bizalmi körön (360°) alapul." : "Based on a measured trust round (360°)."
                 : agg.dynamics.source === "mixed"
-                  ? isHu ? "Részben mért bizalmi kör, részben profil-alapú becslés." : "Partly a measured trust round, partly profile-based estimate."
-                  : isHu ? "Profil-alapú becslés – kapcsolatpáronkénti adatok nem jelennek meg." : "Profile-based estimate – pair-level data is not shown."}
+                  ? isHu ? "Részben mért bizalmi kör, részben profilalapú becslés." : "Partly a measured trust round, partly profile-based estimate."
+                  : isHu ? "Profilalapú becslés – kapcsolatpáronkénti adatok nem jelennek meg." : "Profile-based estimate – pair-level data is not shown."}
             </p>
           </DashboardPanel>
         </section>
@@ -591,14 +591,14 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
               no={secNo()}
               label={isHu ? "Kapcsolati háló – kiemelések" : "Relationship network – highlights"}
               subtitle={isHu
-                ? "Ki köti össze a csapatot, és ki nincs még beágyazva."
+                ? "Kik kötik össze a csapatot, és kiknek lehet szükségük több kapcsolódási lehetőségre?"
                 : "Who connects the team, and who isn't embedded yet."}
             />
             <DashboardPanel className="p-6">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm text-ink-body">
                   {isHu
-                    ? "Kik viszik a csapat kapcsolati szövetét – a tanácsadói debrief két kiemelt beszélgetőpontja."
+                    ? "A csapat összekötői és a kapcsolódásban támogatást igénylő tagok: két fontos téma a tanácsadói eredményfeldolgozáshoz."
                     : "Who carries the team's relational fabric – two key talking points for the consultant debrief."}
                 </p>
                 {agg.trustHighlights.source === "trust_round" ? (
@@ -640,7 +640,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                           ? "A legtöbb erős, kölcsönös bizalmi kapcsolattal – rájuk támaszkodik a csapat információáramlása és összetartása."
                           : "With the most strong, mutual trust connections – the team's information flow and cohesion rest on them."
                         : isHu
-                          ? "A legtöbb hasonló-profilú kapcsolattal (profil-alapú becslés) – mért bizalmi kör pontosítaná a képet."
+                          ? "A legtöbb hasonló személyiségprofilú kapcsolattal rendelkező tagok, a profilokból készült becslés alapján. Bizalmi körrel pontosítható a kép."
                           : "With the most similar-profile connections (profile-based estimate) – a measured trust round would sharpen this."}
                     </p>
                   </div>
@@ -651,8 +651,8 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                     <p className="text-caption font-semibold text-state-warning-fg">
                       {isHu
                         ? agg.trustHighlights.isolated.length > 1
-                          ? "Beágyazatlan tagok"
-                          : "Beágyazatlan tag"
+                          ? "Erős bizalmi kapcsolat nélküli tagok"
+                          : "Erős bizalmi kapcsolat nélküli tag"
                         : agg.trustHighlights.isolated.length > 1
                           ? "Not-yet-embedded members"
                           : "Not-yet-embedded member"}
@@ -669,7 +669,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                     </div>
                     <p className="mt-2 text-xs leading-relaxed text-ink-body">
                       {isHu
-                        ? "Több mért kapcsolatuk van, de egyetlen erős bizalmi él nélkül – érdemes megnézni, mi tartja őket a háló szélén. Nem teljesítmény-ítélet."
+                        ? "Több kapcsolatukról is van mérési adat, de egyik sem jelez erős bizalmat. Érdemes átbeszélni, mi nehezíti a kapcsolódásukat. Ez nem a teljesítményük értékelése."
                         : "They have several measured connections but no strong trust edge – worth exploring what keeps them at the network's edge. Not a performance judgment."}
                     </p>
                   </div>
@@ -687,7 +687,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                         agg.trustHighlights.coveragePct !== null
                           ? ` (${agg.trustHighlights.coveragePct}% lefedettség)`
                           : ""
-                      }. A kiemelés láthatósága a dinamika-térképpel azonos; egyéni válasz nem visszakereshető.`
+                      }. A kiemelés láthatósága a kapcsolati térképpel azonos; egyéni válasz nem visszakereshető.`
                     : `From a measured trust round${
                         agg.trustHighlights.possiblePairCount
                           ? `: ${agg.trustHighlights.measuredPairCount}/${agg.trustHighlights.possiblePairCount} possible pairs`
@@ -698,7 +698,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                           : ""
                       }. Visibility matches the dynamics map; individual answers cannot be traced back.`
                   : isHu
-                    ? "Profil-alapú becslés – bizalmi kör (360°) indításával mért adatra cserélhető, ami a beágyazatlan-tag felismerést is elérhetővé teszi."
+                    ? "A személyiségprofilokból készült becslés. Egy 360°-os bizalmi körrel mért adatokkal egészíthető ki a kép, és az is láthatóvá válhat, kiknek nincs erős bizalmi kapcsolatuk a csapatban."
                     : "Profile-based estimate – running a 360° trust round replaces it with measured data and also unlocks not-yet-embedded member detection."}
               </p>
             </DashboardPanel>
@@ -715,7 +715,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
             no={secNo()}
             label={isHu ? "Csapat nyomás alatt" : "Team under pressure"}
             subtitle={isHu
-              ? "Békeidőben erősség – terhelés alatt összeadódó kollektív minta lehet."
+              ? "A nyugodt helyzetben hasznos vonások terhelés alatt felerősíthetik egymás hatását."
               : "A strength in calm times – under load it can compound into a collective pattern."}
           />
           <DashboardPanel className="p-6">
@@ -762,7 +762,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
             </div>
             <p className="mt-4 text-micro text-muted">
               {isHu
-                ? "Önértékelésekből becsült kollektív minta – hipotézis, nem diagnózis. Kérdezd meg a vezetőt: ráismer-e; ha nem, az is adat. Egyéni értékek nem jelennek meg."
+                ? "Az önértékelésekből becsült közös mintázat: megbeszélendő felvetés, nem diagnózis. Kérdezd meg a vezetőt, ráismer-e a csapatára. Az is segíti az értelmezést, ha nem ismeri fel a leírt működést. Egyéni értékek nem jelennek meg."
                 : "A collective pattern estimated from self-assessments – a hypothesis, not a diagnosis. Ask the leader whether they recognize it; if not, that is data too. Individual values are not shown."}
             </p>
           </DashboardPanel>
@@ -788,10 +788,10 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
               <div>
                 <p className="text-sm font-semibold text-ink">
                   {agg.psychSafety.band === "high"
-                    ? isHu ? "Erős biztonság-élmény" : "Strong sense of safety"
+                    ? isHu ? "Erős biztonságérzet" : "Strong sense of safety"
                     : agg.psychSafety.band === "mid"
-                      ? isHu ? "Közepes biztonság-élmény" : "Moderate sense of safety"
-                      : isHu ? "Törékeny biztonság-élmény" : "Fragile sense of safety"}
+                      ? isHu ? "Közepes biztonságérzet" : "Moderate sense of safety"
+                      : isHu ? "Törékeny biztonságérzet" : "Fragile sense of safety"}
                 </p>
                 {/* A ±szóródás-szám nem jelenik meg (2026-08-11 termékdöntés)
                     – az aggregátumban a spread tovább él, csak a kijelzés
@@ -881,7 +881,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
                     <details className="mt-1 rounded-[12px] border border-sand bg-surface-card">
                       <summary className="cursor-pointer select-none px-4 py-2.5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze-dark">
                         {isHu
-                          ? `Vezetői akciókártyák (${traps.length})`
+                          ? `Javasolt vezetői lépések (${traps.length})`
                           : `Leader action cards (${traps.length})`}
                       </summary>
                       <div className="flex flex-col gap-3 px-4 pb-4">
@@ -917,7 +917,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
             ) : (
               <p className="mt-5 rounded-xl bg-sage/5 px-4 py-3 text-xs leading-relaxed text-ink-body">
                 {isHu
-                  ? "Nincs kirívóan gyenge terület – a biztonság-élmény kiegyensúlyozott. Érdemes rendszeres pulse-szal követni, hogy így is maradjon."
+                  ? "Nincs kirívóan gyenge terület: a biztonságérzet kiegyensúlyozott. Érdemes rendszeres pulzusméréssel követni az alakulását."
                   : "No conspicuously weak area – the sense of safety is balanced. Track it with a regular pulse to keep it that way."}
               </p>
             )}
@@ -963,7 +963,7 @@ export function TeamReportMeasurements({ report, isHu }: { report: SerializedTea
           </div>
           <p className="mt-2 text-micro text-muted">
             {isHu
-              ? "A riport a publikáláskor rögzített aggregált adatokon alapul; egyéni eredmények nem jelennek meg. A becsült elemek profil-alapú modellből származnak."
+              ? "A riport a közzétételkor rögzített összesített adatokon alapul; egyéni eredmények nem jelennek meg. A becsült elemek profilalapú modellből származnak."
               : "This report is based on aggregate data frozen at publication; individual results are not shown. Estimated elements come from a profile-based model."}
           </p>
         </DashboardPanel>

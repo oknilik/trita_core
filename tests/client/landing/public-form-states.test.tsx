@@ -1,6 +1,6 @@
 import { DEFAULT_RATE_CARD } from "@/lib/quote/rate-card";
 import { derivePublicLadder } from "@/lib/pricing/team-ladder";
-import { act, render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ContactForm } from "@/app/(marketing)/contact/ContactForm";
@@ -43,7 +43,7 @@ describe("public form state contracts", () => {
 
   it("a pilotoldal folytonos sávval jelzi a foglalt helyeket", () => {
     render(<PilotContent ladder={derivePublicLadder(DEFAULT_RATE_CARD)} />);
-    const capacity = screen.getByRole("link", { name: /Részletek:.*partnercsapat-helyből/ });
+    const capacity = screen.getByRole("link", { name: /Részletek:.*csapat vehet részt/ });
     expect(capacity).toHaveAttribute("href", "#jelentkezes");
     expect(screen.getByRole("progressbar", { name: "Csatlakozott csapatok" })).toBeInTheDocument();
   });

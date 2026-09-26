@@ -55,7 +55,7 @@ export default async function PricingPage() {
           buildServiceJsonLd({
             name: "Csapatdiagnosztika és csapatfejlesztő program",
             description:
-              "Tanácsadó-vezérelt csapatprogram személyiség-alapú csapatképpel, mért csapatszerep-térképpel és pszichológiai biztonság pulzusméréssel – egy főre jutó átlagárral, minden méréssel.",
+              "Tanácsadóval kísért csapatprogram személyiségfelméréssel, a csapatszerepek és a bizalmi kapcsolatok feltérképezésével, valamint a pszichológiai biztonság mérésével. Az ár minden mérést tartalmaz.",
             serviceType: "Szervezetfejlesztés és csapatdiagnosztika",
             catalogName: "trita csapatprogramok",
             offerings: [
@@ -67,13 +67,13 @@ export default async function PricingPage() {
               {
                 name: "Csapatkép",
                 description:
-                  "Minden mérés (személyiség, csapatszerep, bizalmi kör, pszichológiai biztonság, observer), validált csapatriport, vezetői visszajelzés, 90 perces online közös értelmezés.",
+                  "A személyiség, a csapatszerepek, a bizalom és a pszichológiai biztonság felmérése, ismerősi visszajelzések, tanácsadó által ellenőrzött csapatriport, vezetői megbeszélés és 90 perces közös online eredményértelmezés.",
                 price: referencePerHead(ladder, "kep"),
                 priceUnit: `fő, egy ${ladder.firstBandHeads} fős csapatnál számolt átlagár`,
               },
               {
                 name: "Csapatprogram",
-                description: "A Csapatkép félnapos értelmező workshoppal és utánkövető méréssel fél év múlva.",
+                description: "A Csapatkép minden eleme, félnapos személyes workshoppal és fél évvel későbbi újraméréssel.",
                 price: referencePerHead(ladder, "prog"),
                 priceUnit: `fő, egy ${ladder.firstBandHeads} fős csapatnál számolt átlagár`,
               },

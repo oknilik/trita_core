@@ -52,11 +52,11 @@ export function generateTeamSummary(scores: Record<string, number>): string {
 export function getStrengthInsight(dimension: string): string {
   const insights: Record<string, string> = {
     H: "A csapat jellemzően méltányosságra törekszik a döntésekben – építs erre a nehezebb egyeztetéseknél is.",
-    E: "Érzelmileg ráhangolódó csapat – a feszültséget korán érzik, és tartós nyomás alatt gyorsabban is fáradnak.",
+    E: "A csapat tagjai érzékenyen reagálhatnak a feszültségre, és tartós nyomás alatt hamarabb elfáradhatnak.",
     X: "A csapat társas helyzetekben gyorsan lendületbe jön – műhelymunkákon és prezentációknál ez különösen hasznos lehet.",
     A: "A csapat erősen törekszik az együttműködésre – ez összetett projekteknél csökkentheti az egyeztetési terhet.",
-    C: "Fegyelmezett végrehajtás – határidős projekteknél ez jellemzően erőforrás.",
-    O: "A csapat nyitott az újra – a rövid kísérleti szakaszok és az új megoldások kipróbálása természetes közeget jelenthetnek számára.",
+    C: "A csapat fegyelmezetten viszi végig a feladatokat. Ez különösen hasznos lehet a határidőhöz kötött projektekben.",
+    O: "A csapat nyitott az újdonságokra. Szívesen próbálhat ki új megoldásokat rövid kísérletekben.",
   };
   return insights[dimension] ?? "";
 }
@@ -64,7 +64,7 @@ export function getStrengthInsight(dimension: string): string {
 export function getWatchAreaInsight(dimension: string): string {
   const insights: Record<string, string> = {
     H: "Figyelj a csapaton belüli méltányosságérzetre – érdemes rendszeres visszajelző kört tartani.",
-    E: "Érzelmileg ráhangolódóbb dinamika – konfliktushelyzetben érdemes lassabb tempót tartani.",
+    E: "A csapattagok érzékenyebben reagálhatnak egymás érzelmeire. Konfliktushelyzetben érdemes időt hagyni a megbeszélésre.",
     X: "A csapat visszafogottabb – a megbeszéléseken tudatos bevonás és az egyeztetések egyértelmű indítása segíthet.",
     A: "A közvetlen kommunikáció miatt a konfliktusok gyorsabban kiéleződhetnek. Egy előre kialakított vitakeret segíthet.",
     C: "A csapat rugalmas, de könnyen széttartóvá válhat – egyszerű közös keretekkel javítható a kiszámíthatóság.",

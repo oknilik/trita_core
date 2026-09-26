@@ -33,9 +33,9 @@ export function getCapabilityGateCopy(params: {
   ) {
     return isHu
       ? {
-          title: "Ez az akció jelenleg nem érhető el",
+          title: "Ez a művelet jelenleg nem érhető el",
           description:
-            "A tartalom továbbra is megtekinthető, de a szerkesztési és indítási műveletek reaktiválásig tiltva vannak.",
+            "Az eredményeket továbbra is megnézheted. Szerkeszteni és új mérést indítani a hozzáférés megújítása után tudsz.",
           ctaLabel: "Előfizetés kezelése",
           ctaHref,
         }
@@ -53,7 +53,7 @@ export function getCapabilityGateCopy(params: {
       ? {
           title: "Magasabb jogosultság szükséges",
           description:
-            "A tartalom látható, de ehhez az akcióhoz manager vagy admin jogosultság kell.",
+            "A tartalmat megnézheted, de ehhez a művelethez vezetői vagy adminisztrátori jogosultság szükséges.",
           ctaLabel: "Részletek",
           ctaHref: "/dashboard",
         }
@@ -68,9 +68,9 @@ export function getCapabilityGateCopy(params: {
 
   return isHu
     ? {
-        title: "Akció nem elérhető",
+        title: "A művelet nem érhető el",
         description:
-          "Ez a művelet jelenleg nem végrehajtható ezzel a hozzáférési állapottal.",
+          "A jelenlegi hozzáféréseddel ezt a műveletet nem tudod elvégezni.",
         ctaLabel: "Előfizetés kezelése",
         ctaHref,
       }

@@ -40,7 +40,7 @@ export function ObserverFlowStatusCard({
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-ink-body">
               {isHu
-                ? `${flow.receivedCount} kollégád adott visszajelzést a csapat-folyamatban – az önképed és a külső kép összevetése elérhető.`
+                ? `${flow.receivedCount} kollégád adott visszajelzést a csapat felmérésében. Most már összehasonlíthatod az önértékelésedet a visszajelzéseikkel.`
                 : `${flow.receivedCount} colleagues gave feedback in the team process – your self-image vs. outside view comparison is available.`}
             </p>
             {onOpenComparison ? (
@@ -67,7 +67,7 @@ export function ObserverFlowStatusCard({
     return (
       <section className="rounded-2xl border border-sand bg-surface-card p-6 md:p-8">
         <SectionEyebrow>
-          {isHu ? "csapat-folyamat" : "team process"}
+          {isHu ? "csapatfelmérés" : "team process"}
         </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">
           {isHu ? "Külső visszajelzés – folyamatban" : "Outside feedback – in progress"}
@@ -75,10 +75,10 @@ export function ObserverFlowStatusCard({
         <p className="mt-1.5 text-sm leading-relaxed text-ink-body">
           {flow.activeCampaignName
             ? isHu
-              ? `${huArticle(flow.activeCampaignName) === "az" ? "Az" : "A"} „${flow.activeCampaignName}" mérés keretében kérhetsz külső visszajelzést: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek – ők egy publikus linken, belépés nélkül töltenek ki rólad.`
+              ? `${huArticle(flow.activeCampaignName) === "az" ? "Az" : "A"} „${flow.activeCampaignName}” felmérés keretében külső visszajelzést kérhetsz. Az alábbi űrlapon hívj meg kollégákat vagy külső partnereket. Ők a meghívólinken, belépés nélkül tölthetik ki a rólad szóló kérdőívet.`
               : `As part of the "${flow.activeCampaignName}" measurement you can request outside feedback: use the invite manager below to ask colleagues or external partners – they fill it in about you via a public link, no login needed.`
             : isHu
-              ? "A szervezeted mérésében te kéred fel az értékelőidet: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek."
+              ? "A szervezeted felmérésében te választod ki, kitől kérsz visszajelzést. Az alábbi űrlapon hívj meg kollégákat vagy külső partnereket."
               : "In your organization's measurement you choose your raters: use the invite manager below to ask colleagues or external partners."}
         </p>
         {/* Gyűjtő-narratíva (F3): kis küszöbnél nem absztrakt sáv, hanem
@@ -147,16 +147,16 @@ export function ObserverFlowStatusCard({
         </span>
         <div>
           <h2 className="font-fraunces text-xl text-ink">
-            {isHu ? "A külső visszajelzés a csapat-folyamat része" : "Outside feedback is part of the team process"}
+            {isHu ? "A külső visszajelzés a csapat felmérésének része" : "Outside feedback is part of the team process"}
           </h2>
           <p className="mt-1.5 text-sm leading-relaxed text-ink-body">
             {isHu
-              ? "Szervezeti tagként nem kell külön meghívnod senkit: a kollégai visszajelzést a szervezeted következő mérése gyűjti be. Amikor elindul, itt követheted a beérkezést, és a küszöb elérésekor itt nyílik meg az önkép–külső kép összevetésed."
+              ? "Szervezeti tagként nem kell külön meghívnod senkit: a kollégáid visszajelzéseit a szervezeted következő felmérésében gyűjtjük össze. Amikor elindul, itt követheted, hány válasz érkezett. Ha elegendő visszajelzés összegyűlt, összehasonlíthatod őket az önértékeléseddel."
               : "As an organization member you don't need to invite anyone yourself: colleague feedback is collected by your organization's next measurement campaign. Once it starts, you can follow it here, and your self-image vs. outside view comparison opens here when the threshold is reached."}
           </p>
           <p className="mt-2 text-xs text-muted">
             {isHu
-              ? "A saját eredményed ettől függetlenül teljes – a kitöltéssel a személyes utad kerek."
+              ? "A saját tesztedet már befejezted, az önértékelésed eredménye teljes."
               : "Your own result is complete regardless – finishing the assessment completes your personal journey."}
           </p>
         </div>
@@ -212,7 +212,7 @@ export function ObserverFlowStrip({
           <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
         </svg>
         {isHu
-          ? "Külső visszajelzés: a csapat-folyamatban nyílik meg"
+          ? "Külső visszajelzés: a csapat felmérésében lesz elérhető"
           : "Outside feedback: opens in the team process"}
       </button>
     );

@@ -85,7 +85,7 @@ describe("CrmTodayPanel", () => {
   it("üres állapot: tanító szöveg, nincs sor", () => {
     render(<CrmTodayPanel deals={[]} />);
     expect(screen.getByTestId("crm-today-empty")).toHaveTextContent(
-      "Minden esedékes lépés megvan mára.",
+      "Minden mai teendőt elvégeztél.",
     );
     expect(screen.queryByTestId("crm-today-row")).not.toBeInTheDocument();
   });

@@ -253,7 +253,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
       {/* Dashboard-sorrend (2026-07-28): a legfontosabb metrikák FELÜL,
           kiemelve — a gyorsműveletek és a teszt-CTA alattuk. */}
       <SectionEyebrow tone="muted" className="mb-3">
-        kulcs-metrikák
+        főbb mutatók
       </SectionEyebrow>
       <AdminMetricsGrid>
         <AdminStatCard
@@ -336,7 +336,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
             + Új szervezet
           </p>
           <p className="mt-1 text-xs leading-relaxed text-ink-body">
-            Ügyfél-org létrehozása és admin meghívása.
+            Ügyfélszervezet létrehozása és adminisztrátor meghívása.
           </p>
         </Link>
         <Link
@@ -362,7 +362,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
             Szervezetek kezelése
           </p>
           <p className="mt-1 text-xs leading-relaxed text-ink-body">
-            Hozzáférések, tanácsadó-kiosztás, kreditek.
+            Hozzáférések, tanácsadók hozzárendelése, felmérési keretek.
           </p>
         </Link>
       </div>
@@ -370,7 +370,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
         <div className="flex flex-col gap-3 rounded-2xl border border-sand bg-surface-card p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-body font-semibold text-ink">
-              A saját HEXACO-profilod még nincs kitöltve
+              Még nem töltötted ki a saját személyiségfelmérésedet
             </p>
             <p className="mt-1 text-xs leading-relaxed text-ink-body">
               Nem kötelező – de ha szeretnéd látni a saját mintázatodat, ~10 perc.

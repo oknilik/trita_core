@@ -23,7 +23,7 @@ export interface OrgInquiryRow {
 }
 
 const TOPIC_LABELS: Record<string, string> = {
-  demo: "Demó igény",
+  demo: "Bemutató kérése",
   pricing: "Árazás",
   support: "Terméktámogatás",
   partnership: "Partnerség",

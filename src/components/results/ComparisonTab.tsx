@@ -32,18 +32,18 @@ interface ComparisonTabProps {
 // ─── Insight texts for gaps ──────────────────────────────────────────────────
 
 const GAP_INSIGHTS: Record<string, { hu: string; en: string }> = {
-  H_higher: { hu: "Mások őszintébbnek és alázatosabbnak látnak, mint ahogyan magad érzed.", en: "Others see you as more honest and humble than you feel yourself." },
+  H_higher: { hu: "Mások őszintébbnek és alázatosabbnak látnak, mint amilyennek te látod magad.", en: "Others see you as more honest and humble than you feel yourself." },
   H_lower: { hu: "Az értékrended erősebb lehet, mint amennyire azt kifelé kommunikálod.", en: "Your value system may be stronger than what you communicate outwardly." },
   E_higher: { hu: "Mások érzékenyebbnek látnak, mint ahogyan te érzed magad. Ez stresszes helyzetben válhat láthatóvá.", en: "Others see you as more sensitive than you feel. This may become visible under stress." },
-  E_lower: { hu: "Stabilabbnak tűnsz kifelé, mint amennyire azt belülről érzed.", en: "You appear more stable outwardly than you feel internally." },
-  X_higher: { hu: "Mások energikusabbnak és társaságibbnak látnak.", en: "Others see you as more energetic and sociable." },
+  E_lower: { hu: "Mások higgadtabbnak látnak, mint amilyennek te érzed magad.", en: "You appear more stable outwardly than you feel internally." },
+  X_higher: { hu: "Mások energikusabbnak és társaságkedvelőbbnek látnak.", en: "Others see you as more energetic and sociable." },
   X_lower: { hu: "Kifelé visszafogottabbnak tűnsz, mint amennyire belül energikus vagy.", en: "You appear more reserved outwardly than you feel inside." },
   A_higher: { hu: "Mások barátságosabbnak értékelnek, mint ahogy magad látod. Lehet, hogy a belső feszültséged kevésbé látszik kifelé.", en: "Others rate you as more agreeable than you see yourself. Your internal tension may be less visible." },
-  A_lower: { hu: "Az egyenességed erősebben jön át kifelé, mint amennyire azt érzékeled.", en: "Your directness comes across more strongly than you realize." },
+  A_lower: { hu: "Mások a megnyilvánulásaidat határozottabbnak érzékelhetik, mint amilyennek te szánod őket.", en: "Your directness comes across more strongly than you realize." },
   C_higher: { hu: "Mások szervezettebbnek és megbízhatóbbnak látnak.", en: "Others see you as more organized and reliable." },
-  C_lower: { hu: "A belső rendszered kevésbé látszik kifelé – lehet, hogy többet is kommunikálhatnál a módszertanodból.", en: "Your internal structure is less visible – you could communicate more about your methods." },
+  C_lower: { hu: "Mások kevésbé látják, hogyan szervezed a munkádat. Segíthet, ha többet mondasz el a módszereidről.", en: "Your internal structure is less visible – you could communicate more about your methods." },
   O_higher: { hu: "Mások nyitottabbnak látnak az új ötletekre és tapasztalatokra.", en: "Others see you as more open to new ideas and experiences." },
-  O_lower: { hu: "A belső kíváncsiságod kevésbé nyilvánvaló kifelé.", en: "Your inner curiosity is less obvious to others." },
+  O_lower: { hu: "Mások kevésbé érzékelik a kíváncsiságodat, mint amennyire te megéled.", en: "Your inner curiosity is less obvious to others." },
 };
 
 // ─── Summary generation ──────────────────────────────────────────────────────
@@ -356,7 +356,7 @@ export function ComparisonTab({
         </p>
         <p className="mx-auto mt-2 max-w-[380px] text-xs leading-relaxed text-[var(--color-ink-warm)]">
           {locale === "hu"
-            ? "Következő lépés: kérj observer visszajelzést, vagy kapcsolódj csapathoz a közös kép felépítéséhez."
+            ? "Következő lépésként kérj visszajelzést másoktól, vagy csatlakozz egy csapathoz a közös eredmények megismeréséhez."
             : "Next step: request observer feedback or connect to a team to build a shared picture."}
         </p>
         <div className="mt-4 flex justify-center">
@@ -371,7 +371,7 @@ export function ComparisonTab({
             }
             className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
-            {locale === "hu" ? "Observer meghívása" : "Invite observers"}
+            {locale === "hu" ? "Visszajelzés kérése" : "Invite observers"}
           </button>
         </div>
       </div>

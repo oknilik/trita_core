@@ -13,7 +13,7 @@ const PRICING_VALIDATION_COPY: Record<
 > = {
   hu: {
     name: "Adj meg egy legalább 2 karakteres nevet.",
-    email: "Adj meg egy érvényes email címet.",
+    email: "Adj meg egy érvényes e-mail-címet.",
     message: "Az üzenet legalább 20 karakter legyen.",
     messageLong: "Az üzenet legfeljebb 4000 karakter lehet.",
   },

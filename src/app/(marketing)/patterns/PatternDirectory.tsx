@@ -46,10 +46,10 @@ export function PatternDirectory() {
         className="font-fraunces text-heading leading-tight"
         style={{ color: T.heading }}
       >
-        A 16 minta mint értelmezési nyelv
+        16 mintázat az együttműködés értelmezéséhez
       </h2>
       <p className="mt-2 max-w-2xl text-body leading-relaxed" style={{ color: T.muted }}>
-        A mintázatokat négy tengely metszete adja:{" "}
+        A mintázatok négy szempont kombinációjából állnak össze:{" "}
         {AXIS_META.map((axis) => axis.name.toLowerCase()).join(", ")}. Minden
         működésnek van előnye és ára – nincs jó vagy rossz minta, csak olyan,
         ami illeszkedik a feladathoz, és olyan, ami nem.

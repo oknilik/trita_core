@@ -225,7 +225,7 @@ export default async function CampaignDetailPage({
             { label: isHu ? "Mérések" : "Measurements", href: `/org/${orgId}?tab=campaigns` },
             { label: campaign.name },
           ],
-          eyebrow: isHu ? "Mérés összegző" : "Measurement summary",
+          eyebrow: isHu ? "A mérés összesítése" : "Measurement summary",
           title: campaign.name,
           subtitle: campaign.description,
         }}
@@ -608,11 +608,11 @@ export default async function CampaignDetailPage({
         {showStepSection && totalCount > 0 && (
           <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
             <SectionEyebrow className="mb-1">
-              {isHu ? "Mérés-lépések" : "Measurement steps"}
+              {isHu ? "A mérés lépései" : "Measurement steps"}
             </SectionEyebrow>
             <p className="mb-5 text-xs text-ink-body/70">
               {isHu
-                ? "A lépések tagonként, sorban nyílnak meg – aki végez az egyikkel, annak (értesítéssel) megnyílik a következő."
+                ? "A lépések minden tagnak sorban válnak elérhetővé. Aki végez az egyikkel, értesítést kap a következőről."
                 : "Steps open per member, in order – when someone finishes one, the next opens for them (with a notification)."}
             </p>
             <div className="flex flex-col gap-3">

@@ -60,7 +60,7 @@ const FIELDS: Array<{
   { key: "recommendations", hu: "Ajánlások", en: "Recommendations", rows: 3 },
   { key: "interviewFindings", hu: "Interjúk tanulságai", en: "Interview insights", rows: 4 },
   { key: "leadershipGuide", hu: "Hogyan vezesd ezt a csapatot", en: "How to lead this team", rows: 4 },
-  { key: "internalNotes", hu: "Belső jegyzet (nem publikálódik)", en: "Internal notes (never published)", rows: 3, internal: true },
+  { key: "internalNotes", hu: "Belső jegyzet (nem jelenik meg a közzétett riportban)", en: "Internal notes (never published)", rows: 3, internal: true },
 ];
 
 const TIMEFRAMES = ["30", "60", "90"] as const;
@@ -105,7 +105,7 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
   },
   REPORT_REVIEW_REQUIRED: { hu: "A riportot előbb tanácsadóként jóvá kell hagynod.", en: "Approve the consultant review before publishing." },
   REPORT_REVISION_CONFLICT: { hu: "A riport közben megváltozott. Frissítsd az oldalt és ellenőrizd az új változatot.", en: "The report changed. Reload and review the new revision." },
-  REPORT_OBSERVER_DATA_INSUFFICIENT: { hu: "Még nincs minden résztvevőnél három observer válasz.", en: "Three observer responses per participant are still required." },
+  REPORT_OBSERVER_DATA_INSUFFICIENT: { hu: "Még nem minden résztvevő kapott három visszajelzést másoktól.", en: "Three observer responses per participant are still required." },
   REPORT_CAMPAIGN_NOT_SCAN_V1: {
     hu: "Riport Team Scan v1 vagy Csapatkép és működés körből készíthető.",
     en: "Reports require a Team Scan v1 or Team profile and operating style cycle.",
@@ -115,11 +115,11 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     en: "The selected measurement cycle does not belong to this team.",
   },
   REPORT_CAMPAIGN_MISMATCH: {
-    hu: "A riport aggregátuma nem a kiválasztott mérési körből származik.",
+    hu: "A riport összesített adatai nem a kiválasztott mérési körből származnak.",
     en: "The report aggregate does not come from the selected measurement cycle.",
   },
   REPORT_AGGREGATES_REQUIRED: {
-    hu: "A riporthoz még nem áll rendelkezésre érvényes aggregált csapatkép.",
+    hu: "A riporthoz még nem áll rendelkezésre érvényes összesített csapatkép.",
     en: "A valid aggregate team view is not available for this report yet.",
   },
   REPORT_NARRATIVE_INCOMPLETE: {
@@ -127,7 +127,7 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     en: "A title, summary, and recommendations are required to publish.",
   },
   REPORT_TARGET_ACTION_REQUIRED: {
-    hu: "A publikáláshoz legalább egy mérhető célmutatóval rendelkező akció szükséges.",
+    hu: "A közzétételhez legalább egy olyan lépést rögzíteni kell, amelynek eredményét meghatározott mutatóval mérni lehet.",
     en: "At least one action with a measurable target is required to publish.",
   },
   REPORT_SELF_DATA_INSUFFICIENT: {
@@ -139,11 +139,11 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     en: "There is not enough measured trust data to publish the report.",
   },
   REPORT_PULSE_DATA_INSUFFICIENT: {
-    hu: "Az anonimitási minimumot elérő pulse-adat szükséges a publikáláshoz.",
+    hu: "A közzétételhez a pulzusmérésben el kell érni a névtelenséget védő minimális válaszszámot.",
     en: "Pulse data meeting the anonymity floor is required to publish.",
   },
   REPORT_PULSE_MULTI_TEAM_UNSCOPED: {
-    hu: "A régi többcsapatos pulse-válaszok nem bonthatók biztonságosan csapatra; ebből a körből riport nem publikálható.",
+    hu: "A korábbi, több csapatot érintő pulzusmérés válaszai nem bonthatók biztonságosan csapatokra. Ebből a körből ezért nem tehető közzé riport.",
     en: "Legacy multi-team pulse responses cannot be safely separated by team, so this cycle cannot be published.",
   },
 };
@@ -505,7 +505,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
           </SectionEyebrow>
           <h3 className="mt-1 font-fraunces text-xl text-ink">
             {draft
-              ? isHu ? "Riport-vázlat szerkesztése" : "Edit report draft"
+              ? isHu ? "Riportvázlat szerkesztése" : "Edit report draft"
               : isHu ? "Új riport" : "New report"}
           </h3>
         </div>
@@ -521,7 +521,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
         <div>
           <p className="mb-4 text-sm text-ink-body">
             {isHu
-              ? "Nyiss egy riport-vázlatot: a rendszer elkészíti az aggregátum-pillanatképet, te pedig hozzáadod a narratív értékelést és az interjúk tanulságait."
+              ? "Hozz létre egy riportvázlatot. A rendszer rögzíti az összesített adatokat; te hozzáadhatod a szöveges értékelést és az interjúk tanulságait."
               : "Open a report draft: the system captures the aggregate snapshot, and you add the narrative assessment and interview insights."}
           </p>
           {!campaignId && (
@@ -537,7 +537,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
             onClick={createDraft}
             className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
           >
-            {isHu ? "Riport-vázlat létrehozása" : "Create report draft"}
+            {isHu ? "Riportvázlat létrehozása" : "Create report draft"}
           </button>
         </div>
       ) : (
@@ -565,7 +565,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
           )}
           <p className="text-xs text-muted">
             {isHu
-              ? "A narratív mezők a csapatadatokból generált javaslattal indulnak – szerkeszd és egészítsd ki a tanácsadói értékeléssel."
+              ? "A szöveges mezőket a csapat adataiból készült javaslatokkal töltjük ki. Nézd át őket, és egészítsd ki a tanácsadói értékeléseddel."
               : "Narrative fields start with suggestions generated from team data – edit and extend them with your consultant assessment."}
           </p>
           {!draft.aggregates?.program && <label className="flex flex-col gap-2 text-sm text-ink">
@@ -613,7 +613,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
           <div className="flex flex-col gap-2 border-t border-sand pt-4">
             <div className="flex items-center justify-between">
               <span className="text-note font-medium text-ink-body">
-                {isHu ? "Akcióterv (30/60/90 nap)" : "Action plan (30/60/90 days)"}
+                {isHu ? "Cselekvési terv (30/60/90 nap)" : "Action plan (30/60/90 days)"}
               </span>
               <button
                 type="button"
@@ -631,7 +631,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
             {actionItems.length === 0 && (
               <p className="text-xs text-muted">
                 {isHu
-                  ? "Strukturált, átadható lépések a vezetőknek – cím, leírás, időtáv."
+                  ? "Rögzíts a vezetők számára világos lépéseket, címmel, leírással és időtávval."
                   : "Structured, hand-off-ready steps for managers – title, description, timeframe."}
               </p>
             )}
@@ -681,7 +681,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
                 </div>
                 <textarea
                   value={item.description}
-                  placeholder={isHu ? "Mit és hogyan – átadható részletességgel" : "What and how – hand-off-ready detail"}
+                  placeholder={isHu ? "Írd le pontosan, mit és hogyan kell elvégezni." : "What and how – hand-off-ready detail"}
                   rows={2}
                   onChange={(e) =>
                     setActionItems((items) =>
@@ -717,7 +717,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
                   />
                   <select
                     value={item.status ?? "not_started"}
-                    aria-label={isHu ? "Akció státusza" : "Action status"}
+                    aria-label={isHu ? "A lépés állapota" : "Action status"}
                     onChange={(e) =>
                       setActionItems((items) =>
                         items.map((it, i) => i === index ? {
@@ -787,7 +787,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, op
                   <input
                     type="text"
                     value={item.note ?? ""}
-                    placeholder={isHu ? "Bizonyíték vagy változás megjegyzése" : "Evidence or change note"}
+                    placeholder={isHu ? "Megjegyzés az eredményről vagy a változásról" : "Evidence or change note"}
                     onChange={(e) => setActionItems((items) => items.map((it, i) =>
                       i === index ? { ...it, note: e.target.value } : it,
                     ))}

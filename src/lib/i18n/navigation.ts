@@ -19,7 +19,7 @@ export const navigationTranslations = {
     // létrehozni és a teljes listát kezelni.
     allTeams: { hu: "Összes csapat", en: "All teams" },
     allTeamsDescription: {
-      hu: "Lista és új csapat a szervezet oldalán",
+      hu: "Csapatok listája és új csapat létrehozása a szervezet oldalán",
       en: "Full list and new team on the organization page",
     },
     hiring: { hu: "Jelöltek", en: "Candidates" },
@@ -30,10 +30,10 @@ export const navigationTranslations = {
     // bedrótozott magyar szövegek voltak — a legláthatóbb felületen, tehát
     // az EN-re váltott felhasználó a saját menüjében magyarul látott mindent.
     account: { hu: "Fiók", en: "Account" },
-    profileSettings: { hu: "Profil beállítások", en: "Profile settings" },
+    profileSettings: { hu: "Profilbeállítások", en: "Profile settings" },
     signOut: { hu: "Kijelentkezés", en: "Sign out" },
     language: { hu: "Nyelv", en: "Language" },
-    newClientOrg: { hu: "Új ügyfél-szervezet", en: "New client organization" },
+    newClientOrg: { hu: "Új ügyfélszervezet", en: "New client organization" },
   },
   theme: {
     label: { hu: "Megjelenés", en: "Appearance" },

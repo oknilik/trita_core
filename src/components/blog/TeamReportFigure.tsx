@@ -27,17 +27,17 @@ interface TeamReportFigureProps {
 
 const LABELS = {
   hu: {
-    title: "Aggregált csapatprofil",
-    subtitle: "Csapatátlag és belső sokféleség - egyéni eredmények nélkül",
+    title: "Összesített csapatprofil",
+    subtitle: "Csapatátlag és belső sokféleség – egyéni eredmények nélkül",
     average: "Csapatátlag",
     diversity: "Belső sokféleség",
     narrow: "szűk",
     moderate: "mérsékelt",
     wide: "széles",
     caption:
-      "A teljes csapatriport aggregált személyiségképet bemutató részének egyszerűsített ábrája. A közös nézet csak aggregált csapatadatot mutat; más csapattag egyéni értéke nem látható.",
+      "A teljes csapatriport összesített személyiségképének egyszerűsített ábrája. A közös nézet kizárólag összesített csapatadatot mutat. Más csapattag egyéni eredménye nem látható.",
     captionReference:
-      "Kitalált példa a riport aggregált szeletének olvasásához, nem valós csapat adata. Figyeld a sáv szélességét: a Barátságosság szűk sávja hasonló munkamódot jelez, a Lelkiismeretesség széles sávja többfélét. A közös nézet itt sem mutatja, ki hol áll.",
+      "Szemléltető példa, kitalált adatokkal. A Barátságosság szűk sávja hasonló, a Lelkiismeretesség széles sávja eltérő válaszokra utal a csapaton belül. A közös nézetből itt sem látszik, kinek mennyi a pontszáma.",
   },
   en: {
     title: "Aggregate team profile",

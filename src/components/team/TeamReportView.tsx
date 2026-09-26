@@ -41,7 +41,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
         </p>
       </div>
       {report.status === "PUBLISHED" ? <TeamReportPdfButton report={report} isHu={isHu} /> :
-        <span className="rounded-full bg-state-warning-bg px-3 py-1.5 text-xs font-medium text-state-warning-fg">{isHu ? "Vázlat-előnézet" : "Draft preview"}</span>}
+        <span className="rounded-full bg-state-warning-bg px-3 py-1.5 text-xs font-medium text-state-warning-fg">{isHu ? "A vázlat előnézete" : "Draft preview"}</span>}
     </header>
     <ProgramComparison program={agg?.program} isHu={isHu} />
     <ProgramTrustCoverage program={agg?.program} isHu={isHu} />
@@ -50,7 +50,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
         <div className="overflow-hidden rounded-2xl border border-sand bg-surface-card px-5 sm:px-8">
           <TeamOperatingStyleReport personalitySource={personalitySourceLabel(agg?.program, isHu)} snapshot={agg?.teamStyle} locale={locale} mode="overview" averages={agg?.dimensionAverages} spread={agg?.dimensionSpread} personalityCount={agg?.completedCount} />
           {signals.length > 0 && <section className="border-t border-sand py-6">
-            <h2 className="font-fraunces text-xl text-ink">{isHu ? "Ami most külön figyelmet kér" : "What needs attention now"}</h2>
+            <h2 className="font-fraunces text-xl text-ink">{isHu ? "Amire most külön érdemes figyelni" : "What needs attention now"}</h2>
             <ul className="mt-4 space-y-3">{signals.map((signal) => <li key={signal} className="rounded-xl border border-state-warning-border bg-state-warning-bg px-4 py-3 text-sm leading-relaxed text-state-warning-fg">{signal}</li>)}</ul>
           </section>}
           {narratives.length > 0 && <section className="border-t border-sand py-6">
@@ -61,11 +61,11 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
           <section className="border-t border-sand py-6">
             <h2 className="font-fraunces text-xl text-ink">{isHu ? "Mi legyen a következő lépés?" : "What is the next step?"}</h2>
             <div className="mt-4 rounded-xl bg-sage/10 p-5 sm:p-6">
-              <p className="text-xs font-semibold text-sage-dark">{next.kind === "recorded" ? isHu ? "Rögzített akció" : "Recorded action" : next.kind === "review" ? isHu ? "Javasolt visszatekintés" : "Suggested review" : isHu ? "Javasolt műhelylépés · még nem közös vállalás" : "Suggested workshop step · not yet a commitment"}</p>
+              <p className="text-xs font-semibold text-sage-dark">{next.kind === "recorded" ? isHu ? "Rögzített lépés" : "Recorded action" : next.kind === "review" ? isHu ? "Javasolt visszatekintés" : "Suggested review" : isHu ? "Javasolt műhelylépés · még nem közös vállalás" : "Suggested workshop step · not yet a commitment"}</p>
               <h3 className="mt-2 font-fraunces text-2xl leading-snug text-ink">{next.title}</h3>
               <p className="mt-3 max-w-3xl text-sm leading-relaxed text-ink-body">{next.description}</p>
               <dl className="mt-5 grid gap-4 border-t border-sage/20 pt-4 sm:grid-cols-2">
-                <div><dt className="text-xs text-muted">{isHu ? "Ki hozza össze?" : "Who brings it together?"}</dt><dd className="mt-1 text-sm text-ink">{next.owner}</dd></div>
+                <div><dt className="text-xs text-muted">{isHu ? "Ki fogja össze?" : "Who brings it together?"}</dt><dd className="mt-1 text-sm text-ink">{next.owner}</dd></div>
                 <div><dt className="text-xs text-muted">{isHu ? "Mikor?" : "When?"}</dt><dd className="mt-1 text-sm text-ink">{next.when}</dd></div>
               </dl>
             </div>
@@ -81,7 +81,7 @@ export function TeamReportView({ report: reportInput, isHu, canManageActions = f
       followUp={<div className="space-y-5">
         <div><h2 className="font-fraunces text-2xl text-ink">{isHu ? "Mit próbálunk ki, és mi vált be?" : "What will we try, and what worked?"}</h2><p className="mt-2 text-sm leading-relaxed text-muted">{isHu ? "A rögzített lépések, a felelősök és az ellenőrzési időpontok egy helyen." : "Recorded steps, owners and review dates in one place."}</p></div>
         {report.actionItems?.length ? <TeamActionTracker key={`${report.id}-${report.updatedAt}`} teamId={report.teamId} reportId={report.id} initialItems={report.actionItems} isHu={isHu} canManage={canManageActions && report.status === "PUBLISHED"} /> :
-          <div className="rounded-2xl border border-sand bg-surface-card p-6"><h3 className="font-fraunces text-xl text-ink">{isHu ? "Még nincs rögzített vállalás." : "No commitments recorded yet."}</h3><p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-body">{isHu ? "A közös értelmezés után a tanácsadó a riport akciótervében rögzítheti, mit próbáltok ki. Ezután itt követhetitek a felelőst, a határidőt és az állapotot." : "After the debrief, the consultant can record what you will try in the report's action plan. You can then track owners, due dates and status here."}</p></div>}
+          <div className="rounded-2xl border border-sand bg-surface-card p-6"><h3 className="font-fraunces text-xl text-ink">{isHu ? "Még nincs rögzített vállalás." : "No commitments recorded yet."}</h3><p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-body">{isHu ? "A közös értelmezés után a tanácsadó a riport cselekvési tervében rögzítheti, mit próbáltok ki. Ezután itt követhetitek a felelőst, a határidőt és az állapotot." : "After the debrief, the consultant can record what you will try in the report's action plan. You can then track owners, due dates and status here."}</p></div>}
         <div className="border-t border-sand pt-4"><p className="text-sm font-semibold text-ink">{isHu ? "A visszatekintés három kérdése" : "Three questions for your review"}</p><p className="mt-2 text-sm leading-relaxed text-muted">{isHu ? "Mi történt a gyakorlatban? Mi segített? Mit tartunk meg, módosítunk vagy engedünk el?" : "What happened in practice? What helped? What will we keep, change or stop?"}</p></div>
       </div>}
     />

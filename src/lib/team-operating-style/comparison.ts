@@ -59,7 +59,7 @@ const PROMPTS: Record<OperatingAxis, Record<"left" | "right", { support: Localiz
   },
   decision: {
     left: {
-      support: { hu: "Mikor ad hasznos irányt az egyértelmű döntési pont a különböző aktivitású tagoknak?", en: "When does a clear decision point help members with different levels of social energy?" },
+      support: { hu: "Mikor segíti a visszafogottabb és a kezdeményezőbb tagokat is, ha egyértelmű, ki hozza meg a végső döntést?", en: "When does a clear decision point help members with different levels of social energy?" },
       tension: { hu: "Hogyan jutnak el a kezdeményező és a csendesebb tagok javaslatai a végső döntéshozóhoz?", en: "How do suggestions from both proactive and quieter members reach the final decision-maker?" },
     },
     right: {
@@ -73,7 +73,7 @@ const PROMPTS: Record<OperatingAxis, Record<"left" | "right", { support: Localiz
       tension: { hu: "Hol fér bele egy új ötlet kipróbálása, és mikor szolgálja a feladatot a terv követése?", en: "Where is there room to try a new idea, and when does following the plan serve the task?" },
     },
     right: {
-      support: { hu: "Hogyan fordítjátok a változó tapasztalatokat hasznos kísérletekké a nyitottság különböző szintjei mellett?", en: "How do you turn new experiences into useful experiments across different levels of openness?" },
+      support: { hu: "Hogyan próbáltok ki új megoldásokat a tapasztalataitok alapján úgy, hogy az újdonságokra nyitottabb és a bevált megoldásokat kedvelő tagok is bekapcsolódhassanak?", en: "How do you turn new experiences into useful experiments across different levels of openness?" },
       tension: { hu: "Mennyi változás követhető még jól, és milyen állandó kapaszkodók segítik a kiszámíthatóságot igénylő tagokat?", en: "How much change remains manageable, and which stable reference points help members who need predictability?" },
     },
   },
@@ -83,7 +83,7 @@ const PROMPTS: Record<OperatingAxis, Record<"left" | "right", { support: Localiz
 const PROFILE_SUPPORT: Record<OperatingAxis, Record<"left" | "right", Record<"high" | "low", Localized>>> = {
   information: {
     left: {
-      high: { hu: "A személyiségprofilban erősebb rendszerezettségi hajlamot hogyan támogatja a közös, visszakereshető információ?", en: "How do shared, retrievable records support the stronger tendency toward organization in the personality profile?" },
+      high: { hu: "Hogyan segíti a közös, visszakereshető nyilvántartás azokat a tagokat, akik a profiljuk alapján jobban igénylik a rendszerezett munkát?", en: "How do shared, retrievable records support the stronger tendency toward organization in the personality profile?" },
       low: { hu: "Ad-e hasznos külső kapaszkodót a közös nyilvántartás ott, ahol a rendszerezettségi hajlam kevésbé hangsúlyos?", en: "Do shared records provide a useful external reference where the tendency toward organization is less pronounced?" },
     },
     right: {
@@ -93,32 +93,32 @@ const PROFILE_SUPPORT: Record<OperatingAxis, Record<"left" | "right", Record<"hi
   },
   coordination: {
     left: {
-      high: { hu: "Az erősebb együttműködési hajlam mellett hogyan segítik a kimondott felelősségek, hogy a segítőkészség konkrét feladattá váljon?", en: "Alongside a higher cooperative personality proxy, how do explicit responsibilities help turn willingness to help into concrete tasks?" },
+      high: { hu: "A profil alapján a csapatban erősebb az együttműködési hajlam. Hogyan segítenek a világos felelősségi körök abban, hogy mindenki tudja, miben segíthet?", en: "Alongside a higher cooperative personality proxy, how do explicit responsibilities help turn willingness to help into concrete tasks?" },
       low: { hu: "A kevésbé hangsúlyos együttműködési hajlam mellett adnak-e közös alapot az egyértelmű feladat- és felelősséghatárok?", en: "Alongside a less pronounced cooperative personality proxy, do clear task boundaries provide common ground?" },
     },
     right: {
       high: { hu: "Az erősebb együttműködési hajlam mellett valóban közösen megtanult rutinok tartják-e össze a kevés egyeztetéssel zajló munkát?", en: "Alongside a higher cooperative personality proxy, do genuinely shared routines support work with little explicit coordination?" },
-      low: { hu: "Mely közösen megtanult rutinok segítik az organikus koordinációt akkor is, ha az együttműködési hajlam kevésbé hangsúlyos?", en: "Which shared routines support organic coordination even when the cooperative personality proxy is less pronounced?" },
+      low: { hu: "Mely közös szokások segítenek összehangolni a munkát külön egyeztetés nélkül akkor is, ha a profil alapján az együttműködési hajlam kevésbé hangsúlyos?", en: "Which shared routines support organic coordination even when the cooperative personality proxy is less pronounced?" },
     },
   },
   decision: {
     left: {
       high: { hu: "A magasabb társas aktivitásból származó kezdeményezések hogyan jutnak el a központi döntéshozóhoz?", en: "How do initiatives associated with higher social activity reach the central decision-maker?" },
-      low: { hu: "A visszafogottabb társas profil mellett segíti-e a központi döntési pont a haladást, miközben marad idő az egyéni átgondolásra?", en: "With a quieter social profile, does a central decision point help progress while leaving time for individual reflection?" },
+      low: { hu: "A profil alapján visszafogottabb a csapat. Segíti-e a haladást, hogy egy ember hozza meg a végső döntést? Marad-e közben idő az egyéni mérlegelésre?", en: "With a quieter social profile, does a central decision point help progress while leaving time for individual reflection?" },
     },
     right: {
-      high: { hu: "A magasabb társas aktivitás hogyan fordul önálló döntési kezdeményezéssé a megosztott hatáskörökben?", en: "How does higher social activity translate into decision initiatives within distributed areas of authority?" },
+      high: { hu: "A profil alapján aktívabb társas működés jellemzi a csapatot. Hogyan segíti ez a tagokat abban, hogy a saját hatáskörükben önállóan kezdeményezzenek és döntsenek?", en: "How does higher social activity translate into decision initiatives within distributed areas of authority?" },
       low: { hu: "Milyen előkészítés teszi könnyebbé, hogy a visszafogottabb társas profilú csapat is éljen az elosztott döntési joggal?", en: "What preparation helps a team with a quieter social profile use distributed decision authority?" },
     },
   },
   execution: {
     left: {
       high: { hu: "A magasabb személyiségbeli nyitottság mellett hogyan segít a rögzített terv abban, hogy az ötletekből megvalósult eredmény legyen?", en: "Alongside higher personality openness, how does a fixed plan help turn ideas into completed work?" },
-      low: { hu: "A bevált megoldások felé hajló összetétel számára mikor ad hasznos kiszámíthatóságot a terv követése?", en: "For a composition leaning toward established approaches, when does following a plan provide useful predictability?" },
+      low: { hu: "A profil alapján a csapat inkább a bevált megoldásokat kedveli. Mikor ad számára hasznos kiszámíthatóságot a terv követése?", en: "For a composition leaning toward established approaches, when does following a plan provide useful predictability?" },
     },
     right: {
-      high: { hu: "A magasabb személyiségbeli nyitottságot hogyan támogatja a visszajelzésekre módosuló munkamenet? Mely kísérlet hozott kézzelfogható eredményt?", en: "How does a feedback-responsive workflow support higher personality openness? Which experiment produced a tangible result?" },
-      low: { hu: "A bevált megoldások felé hajló összetétel mellett milyen konkrét tapasztalat teszi elfogadhatóvá a munkamenet módosítását?", en: "Alongside a composition leaning toward established approaches, what concrete evidence makes a workflow change acceptable?" },
+      high: { hu: "A profil alapján a csapat nyitottabb az újdonságokra. Hogyan segíti ezt, ha a visszajelzések alapján módosítjátok a munkamenetet? Melyik kísérlet hozott kézzelfogható eredményt?", en: "How does a feedback-responsive workflow support higher personality openness? Which experiment produced a tangible result?" },
+      low: { hu: "A profil alapján a csapat inkább a bevált megoldásokat kedveli. Milyen konkrét tapasztalat segíti abban, hogy elfogadja a munkamenet módosítását?", en: "Alongside a composition leaning toward established approaches, what concrete evidence makes a workflow change acceptable?" },
     },
   },
 };

@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     }
     if (linkResult.code === "ALREADY_USED") {
       return NextResponse.json(
-        { error: "A meghívó már fel lett használva." },
+        { error: "Ezt a meghívót már felhasználták." },
         { status: 400 },
       );
     }

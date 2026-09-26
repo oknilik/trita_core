@@ -2,10 +2,10 @@ export const orgTranslations = {
   programTrust: {
     optional: { hu: "Opcionális", en: "Optional" },
     title: { hu: "Bizalmi háló mérése", en: "Measure trust network" },
-    description: { hu: "Opcionális kiegészítés. Külön lefedettséggel kerül a riportba; hiányos kitöltése nem akadályozza az alapriportot. A választás a kör létrehozása után nem módosítható.", en: "Optional addition with separate report coverage. Incomplete responses do not block the core report. This choice cannot be changed after creating the round." },
+    description: { hu: "Választható kiegészítő mérés. A riportban külön jelezzük, a csapat mekkora részét fedi le. Az alapriport akkor is elkészülhet, ha nem érkezik be minden válasz. A kör létrehozása után ez a beállítás nem módosítható.", en: "Optional addition with separate report coverage. Incomplete responses do not block the core report. This choice cannot be changed after creating the round." },
     coverage: { hu: "Bizalmi háló · mért párok: {measured}/{possible} · lefedettség: {coverage}%.", en: "Trust network · measured pairs: {measured}/{possible} · coverage: {coverage}%." },
     empty: { hu: "Nincs értékelhető hálóadat ebben a körben. Az alapriport ettől függetlenül elkészülhet.", en: "No usable network data in this round. The core report can still be prepared." },
-    note: { hu: "Kizárólag a jelen kör adatai; a részleges lefedettség nem a teljes csapat hálózata. Nincs automatikus összehasonlítás a korábbi körrel.", en: "Data from this round only; partial coverage does not represent the whole team network. No automatic comparison with previous rounds." },
+    note: { hu: "Csak ennek a körnek az adatait mutatjuk. Ha a lefedettség részleges, a kép nem jellemzi a teljes csapat kapcsolatait. A korábbi körrel nem készül automatikus összehasonlítás.", en: "Data from this round only; partial coverage does not represent the whole team network. No automatic comparison with previous rounds." },
   },
   advisory: {
     eyebrow: {
@@ -21,15 +21,15 @@ export const orgTranslations = {
       en: "See what the data doesn't tell you.",
     },
     subtitleAdvisory: {
-      hu: "A negyedéves tanácsadói konzultáción személyesen értelmezzük a csapataid mintázatait, és konkrét akcióterveket dolgozunk ki.",
+      hu: "A negyedéves tanácsadói konzultáción személyesen értelmezzük a csapataid mintázatait, és konkrét cselekvési terveket dolgozunk ki.",
       en: "In the quarterly advisory consultation we personally interpret your team patterns and develop concrete action plans.",
     },
     subtitleUpgrade: {
-      hu: "A személyiségmérési adatok mutatják a mintázatot. A tanácsadói konzultáción megértjük, miért – és megtervezzük, mit lépj.",
+      hu: "A személyiségmérés megmutatja a csapat jellemző mintázatait. A konzultáción közösen értelmezzük őket, és megtervezzük a következő lépéseket.",
       en: "The personality assessment data shows the pattern. The advisory consultation helps you understand why – and plan what to do next.",
     },
     teamsNow: {
-      hu: "A te csapataid most",
+      hu: "Így állnak most a csapataid",
       en: "Your teams right now",
     },
     members: {
@@ -41,11 +41,11 @@ export const orgTranslations = {
       en: "Details",
     },
     whatYouGet: {
-      hu: "Mit kapsz a tanácsadói konzultáción",
+      hu: "Mit kapsz a tanácsadói konzultáción?",
       en: "What you get in the advisory consultation",
     },
     whatYouGetSubtitle: {
-      hu: "A konzultáció szervezeti szintű – nem egy csapatról szól, hanem arról, hogyan működnek a csapataid együtt és külön-külön.",
+      hu: "A konzultáción azt tekintjük át, hogyan működnek a csapataid külön-külön és egymással együttműködve.",
       en: "The consultation is org-level – not about one team, but how your teams work together and individually.",
     },
     feature1Title: {
@@ -53,7 +53,7 @@ export const orgTranslations = {
       en: "Organisational heat map",
     },
     feature1Desc: {
-      hu: "Átnézzük az összes csapatod mintázatát együtt: hol van összhang a csapatok között, hol vannak szervezeti szintű feszültségek, és melyik csapat mintázata jelent kockázatot a stratégiátok szempontjából.",
+      hu: "Együtt tekintjük át az összes csapatod mintázatát: hol működnek jól együtt, hol jelentkezhet feszültség, és melyik működésmód nehezítheti a szervezeti célok elérését.",
       en: "We review all your team patterns together: where there is alignment, where there are org-level tensions, and which pattern poses a strategic risk.",
     },
     feature1ExampleTwo: {
@@ -65,7 +65,7 @@ export const orgTranslations = {
       en: "E.g.: the organisational impact and hidden risks of the \u201C{pattern}\u201D pattern.",
     },
     feature2Title: {
-      hu: "Cross-team feszültségek",
+      hu: "Csapatok közötti feszültségek",
       en: "Cross-team tensions",
     },
     feature2Desc: {
@@ -73,15 +73,15 @@ export const orgTranslations = {
       en: "We identify where team operating patterns clash – and where the difference is actually a strength. This is what the platform alone can't show.",
     },
     feature2Example: {
-      hu: "Például: miért kommunikál nehezen a sales és a product csapat, és mit léphetsz vezetőként.",
+      hu: "Például: mi nehezíti az értékesítési és a termékfejlesztési csapat közötti kommunikációt, és mit tehetsz vezetőként.",
       en: "E.g.: why the sales and product teams struggle to communicate, and what you can do as a leader.",
     },
     feature3Title: {
-      hu: "Szervezeti akcióterv",
+      hu: "Szervezeti cselekvési terv",
       en: "Organisational action plan",
     },
     feature3Desc: {
-      hu: "3-5 konkrét, végrehajtható lépés a következő negyedévre – nem csapatszintű tippek, hanem szervezeti döntések: kit hova rendelj, hol változtass folyamatot, hol avatkozz be személyesen.",
+      hu: "3–5 konkrét lépést tervezünk a következő negyedévre: hogyan oszd el a feladatokat a csapatok között, mely folyamatokon változtass, és hol van szükség személyes vezetői közreműködésre.",
       en: "3-5 concrete, executable steps for the next quarter – not team-level tips, but organisational decisions: who goes where, where to change process, where to intervene personally.",
     },
     feature3ExamplePrefix: {
@@ -89,23 +89,23 @@ export const orgTranslations = {
       en: "E.g.",
     },
     feature4Title: {
-      hu: "Írásos összefoglaló + csapat-riportok",
+      hu: "Írásos összefoglaló és csapatriportok",
       en: "Written summary + team reports",
     },
     feature4Desc: {
-      hu: "48 órán belül kapsz egy PDF-et: szervezeti hőtérkép vizualizáció, csapatonkénti 2-3 soros értékelés, a megbeszélt akciók listája felelőssel és határidővel, és a következő mérési pont javaslat.",
+      hu: "48 órán belül PDF-ben küldjük el a szervezeti hőtérképet, a csapatonkénti 2–3 soros értékelést és a megbeszélt teendőket, felelősökkel és határidőkkel. A következő mérés időpontjára is javaslatot teszünk.",
       en: "Within 48 hours you receive a PDF: org heat map visualisation, 2-3 sentence team-by-team evaluation, action list with owners and deadlines, and next measurement point recommendation.",
     },
     howItWorks: {
-      hu: "Hogyan működik a negyedéves konzultáció",
+      hu: "Hogyan zajlik a negyedéves konzultáció?",
       en: "How the quarterly consultation works",
     },
     step1Title: {
-      hu: "Előkészítés (aszinkron)",
+      hu: "Felkészülés a konzultációra",
       en: "Preparation (async)",
     },
     step1Body: {
-      hu: "Átnézzük a szervezeted összes csapatának mintázatát, a cross-team feszültségeket, és a változásokat az előző negyedévhez képest. Ebből készül a szervezeti hőtérkép, ami a konzultáció kiindulópontja.",
+      hu: "Áttekintjük a csapataid mintázatait, a közöttük jelentkező feszültségeket és az előző negyedév óta történt változásokat. Ebből készítjük el a szervezeti hőtérképet, amely a konzultáció kiindulópontja lesz.",
       en: "We review all your org's team patterns, cross-team tensions, and changes since the last quarter. This produces the org heat map that serves as the consultation's starting point.",
     },
     step2Title: {
@@ -113,7 +113,7 @@ export const orgTranslations = {
       en: "Consultation call (60–90 minutes)",
     },
     step2Body: {
-      hu: "Személyes videóhívás veled (vezető / HR). Szervezeti szintű mintázat-értelmezés, cross-team dinamikák, feszültségpontok okai, 3-5 konkrét akció a következő negyedévre. Ha van konkrét kérdésed – arra mélyen válaszolunk.",
+      hu: "Vezetőként vagy HR-munkatársként videóhíváson vehetsz részt a konzultáción. Együtt értelmezzük a szervezeti mintázatokat, a csapatok együttműködését és a feszültségek lehetséges okait. A következő negyedévre 3–5 konkrét lépést tervezünk, és a kérdéseidet is részletesen átbeszéljük.",
       en: "Personal video call with you (leader / HR). Org-level pattern interpretation, cross-team dynamics, root causes of tension points, 3-5 concrete actions for the next quarter. If you have a specific question – we go deep.",
     },
     step3Title: {
@@ -121,18 +121,18 @@ export const orgTranslations = {
       en: "Written summary (within 48 hours)",
     },
     step3Body: {
-      hu: "PDF dokumentum: szervezeti hőtérkép, csapatonkénti rövid értékelés, a megbeszélt akciók listája felelőssel és határidővel, következő mérési pont javaslat. Azonnal továbbítható a menedzsment meetingre.",
+      hu: "A PDF-ben megtalálod a szervezeti hőtérképet, a csapatok rövid értékelését és a megbeszélt teendőket, felelősökkel és határidőkkel. Javaslatot adunk a következő mérés időpontjára is. Az összefoglalót a vezetőségi megbeszélésen is felhasználhatod.",
       en: "PDF document: org heat map, short team-by-team evaluation, action list with owners and deadlines, next measurement point recommendation. Ready to share in your next management meeting.",
     },
     // Időtartam-állítás szándékosan nincs a címben: az ajánlat egyedi
     // („egyedi ajánlat szerint" ár), a korábbi 60 perc vs 2–3 óra
     // ellentmondást így oldjuk fel.
     deepDiveTitle: {
-      hu: "Csapat-mélymerülés műhely",
+      hu: "Műhelymunka a csapat alaposabb megismeréséhez",
       en: "Team deep-dive workshop",
     },
     deepDiveDesc: {
-      hu: "Ha egy konkrét csapat mélyebb elemzést igényel – személyre szabott műhely a csapatmenedzserrel.",
+      hu: "Ha egy csapat működését alaposabban szeretnéd megérteni, személyre szabott műhelymunkát tartunk a csapat vezetőjével.",
       en: "If a specific team needs deeper analysis – a personalised workshop with the team manager.",
     },
     deepDivePrice: { hu: "egyedi ajánlat szerint", en: "individually quoted" },
@@ -141,7 +141,7 @@ export const orgTranslations = {
       en: "custom programme",
     },
     ctaAdvisoryEyebrow: {
-      hu: "advisory csomag",
+      hu: "tanácsadói csomag",
       en: "advisory plan",
     },
     ctaCustomHeading: {
@@ -153,7 +153,7 @@ export const orgTranslations = {
       en: "Request your next quarterly consultation",
     },
     ctaCustomBody: {
-      hu: "Az egyedi programod keretében személyre szabott ütemtervet dolgozunk ki – kattints, és koordinálunk.",
+      hu: "Az egyedi programodhoz személyre szabott ütemtervet készítünk. Jelezd az igényed az alábbi gombbal, és egyeztetünk a részletekről.",
       en: "Within your custom programme we create a bespoke schedule – click and we'll coordinate.",
     },
     ctaAdvisoryBody: {
@@ -161,7 +161,7 @@ export const orgTranslations = {
       en: "Your programme includes org-level advisory consultations. Click and we'll confirm a time within 24 hours. Your team data is automatically available – no preparation needed.",
     },
     sending: {
-      hu: "Küldés...",
+      hu: "Küldés…",
       en: "Sending...",
     },
     requestConsultation: {
@@ -173,11 +173,11 @@ export const orgTranslations = {
       en: "We received your request!",
     },
     requestFollowUp: {
-      hu: "24 órán belül személyesen keresünk az időpont-egyeztetéssel.",
+      hu: "24 órán belül felvesszük veled a kapcsolatot az időpont egyeztetéséhez.",
       en: "We'll reach out within 24 hours to schedule a time.",
     },
     upgradeDesc: {
-      hu: "Negyedéves személyes tanácsadói konzultáció + teljes platform hozzáférés. A csapatod adataiból konkrét, végrehajtható akcióterveket készítünk együtt.",
+      hu: "Negyedéves személyes tanácsadói konzultáció és teljes hozzáférés a platformhoz. A csapatod adatai alapján közösen készítünk megvalósítható cselekvési tervet.",
       en: "Quarterly personal advisory consultation + full platform access. We build concrete, executable action plans from your team data together.",
     },
     upgradeFeature1: {
@@ -189,19 +189,19 @@ export const orgTranslations = {
       en: "Org heat map + written team-by-team evaluation (PDF)",
     },
     upgradeFeature3: {
-      hu: "Cross-team dinamikák és feszültségpontok elemzése",
+      hu: "A csapatok közötti együttműködés és feszültségek elemzése",
       en: "Cross-team dynamics and tension point analysis",
     },
     upgradeFeature4: {
-      hu: "3-5 konkrét szervezeti szintű akcióterv negyedévenként",
+      hu: "3–5 konkrét szervezeti cselekvési terv negyedévenként",
       en: "3-5 concrete org-level action plans per quarter",
     },
     upgradeFeature5: {
-      hu: "Teljes platform-hozzáférés (hőtérkép, csapatmintázat, feszültségpárok)",
+      hu: "Teljes hozzáférés a platformhoz (hőtérkép, csapatmintázat, feszültségpárok)",
       en: "Full platform access (heat map, team patterns, tension pairs)",
     },
     upgradeFeature6: {
-      hu: "Opcionális csapat-mélyelemzés (egyedi ajánlat szerint)",
+      hu: "A csapat részletes elemzése kérésre, egyedi ajánlat szerint",
       en: "Optional team deep-dive session (individually quoted)",
     },
     pricePerMonth: { hu: "Egyedi ajánlat – a program terjedelme szerint", en: "Individual quote – based on program scope" },
@@ -214,11 +214,11 @@ export const orgTranslations = {
       en: "Upgrade to Advisory",
     },
     testimonial: {
-      hu: "\u201EA konzultáción végre megértettem, miért van feszültség a sales és a product csapat között – és kaptam 3 konkrét lépést, amit azonnal elkezdtünk.\u201D",
+      hu: "\u201EA konzultáción végre megértettem, miért van feszültség az értékesítési és a termékfejlesztési csapat között – és kaptam 3 konkrét lépést, amit azonnal elkezdtünk.\u201D",
       en: "\u201CAt the consultation I finally understood why there was tension between the sales and product teams – and I got 3 concrete steps we started immediately.\u201D",
     },
     testimonialAuthor: {
-      hu: "– Egy jövőbeli founding customer",
+      hu: "– Egy leendő pilotpartner",
       en: "– A future founding customer",
     },
     faqTitle: {
@@ -238,7 +238,7 @@ export const orgTranslations = {
       en: "Is the consultation about the whole org or one team?",
     },
     faqA2: {
-      hu: "A negyedéves konzultáció szervezeti szintű: az összes csapat mintázatát áttekintjük, a cross-team dinamikákat, és szervezeti szintű akcióterveket készítünk. Ha egy konkrét csapat mélyebb elemzést igényel, ahhoz külön csapat-mélyelemzés kérhető (egyedi ajánlat szerint).",
+      hu: "A negyedéves konzultáción az egész szervezetet áttekintjük: a csapatok mintázatait, az együttműködésüket és a szükséges szervezeti lépéseket. Egy-egy csapat részletesebb elemzése külön is kérhető, egyedi ajánlat alapján.",
       en: "The quarterly consultation is org-level: we review all team patterns, cross-team dynamics, and create org-level action plans. If a specific team needs deeper analysis, a separate team deep-dive can be requested (individually quoted).",
     },
     faqQ3: {
@@ -246,7 +246,7 @@ export const orgTranslations = {
       en: "Who participates in the consultation?",
     },
     faqA3: {
-      hu: "Általában te (vezető, HR, vagy az ügyvezető) és a trita tanácsadó. A csapatmenedzsereket nem kell bevonni – ők a platformon kapják meg a saját csapatuk elemzéseit.",
+      hu: "Általában te veszel részt vezetőként, HR-munkatársként vagy ügyvezetőként, a Trita tanácsadójával együtt. A csapatvezetőknek nem szükséges jelen lenniük: a saját csapatuk elemzését a platformon érik el.",
       en: "Usually you (leader, HR, or CEO) and the trita advisor. Team managers don't need to join – they receive their team's insights directly through the platform.",
     },
     faqQ4: {
@@ -254,7 +254,7 @@ export const orgTranslations = {
       en: "What do I receive after the consultation?",
     },
     faqA4: {
-      hu: "48 órán belül egy írásos összefoglalót és akciótervet küldünk PDF-ben: szervezeti hőtérkép, csapatonkénti rövid értékelés, a megbeszélt akciók felelőssel és határidővel, és a következő mérési pont javaslat. Azonnal továbbítható a menedzsment meetingre.",
+      hu: "48 órán belül írásos összefoglalót és cselekvési tervet küldünk PDF-ben. Ez tartalmazza a szervezeti hőtérképet, a csapatok rövid értékelését, valamint a megbeszélt teendőket, felelősökkel és határidőkkel. Javaslatot adunk a következő mérés időpontjára is. Az anyagot a vezetőségi megbeszélésen is felhasználhatod.",
       en: "Within 48 hours we send a written summary and action plan PDF: org heat map, short team-by-team evaluation, action list with owners and deadlines, and next measurement point recommendation. Ready to share in your next management meeting.",
     },
     faqQ5: {
@@ -262,7 +262,7 @@ export const orgTranslations = {
       en: "How often is the consultation?",
     },
     faqA5: {
-      hu: "A programod terjedelmétől függ – jellemzően negyedévente egy szervezeti szintű alkalom. Ezen felül csapat-szintű mélyelemzés és extra alkalmak igény szerint egyeztethetők.",
+      hu: "A programod terjedelmétől függ – jellemzően negyedévente egy szervezeti szintű alkalom. Ezen felül csapatszintű mélyelemzés és extra alkalmak igény szerint egyeztethetők.",
       en: "It depends on your programme – typically one org-level session per quarter. Team-level deep dives and extra sessions can be arranged on request.",
     },
     faqQ6: {
@@ -275,7 +275,7 @@ export const orgTranslations = {
     },
   },
   admin: {
-    title: { hu: "Admin Dashboard", en: "Admin Dashboard" },
+    title: { hu: "Adminisztrátori áttekintés", en: "Admin Dashboard" },
     subtitle: {
       hu: "Rendszerstatisztikák és elemzések",
       en: "System statistics and analytics",
@@ -292,9 +292,9 @@ export const orgTranslations = {
     new30days: { hu: "Új (30 nap)", en: "New (30 days)" },
     byTestType: { hu: "Teszttípusonként", en: "By test type" },
     conversionRate: { hu: "Konverzió", en: "Conversion rate" },
-    avgAge: { hu: "Átlag életkor", en: "Avg age" },
+    avgAge: { hu: "Átlagéletkor", en: "Avg age" },
     medianAge: { hu: "Medián életkor", en: "Median age" },
-    ageRange: { hu: "Kor tartomány", en: "Age range" },
+    ageRange: { hu: "Életkori tartomány", en: "Age range" },
   },
 
   // ── Org detail page (/org/[id]) ──────────────────────────────────────────
@@ -304,7 +304,7 @@ export const orgTranslations = {
     // ── /org/suspended — inaktív szervezet zsákutca-oldala ───────────────
     suspended: {
       eyebrow: { hu: "inaktív", en: "inactive" },
-      title: { hu: "Szervezet inaktív", en: "Organization inactive" },
+      title: { hu: "A szervezet inaktív", en: "Organization inactive" },
       body1: {
         hu: "A szervezet, amelyhez tartozol, jelenleg inaktív.",
         en: "The organization you belong to is currently inactive.",
@@ -354,7 +354,7 @@ export const orgTranslations = {
     teamsEyebrow: { hu: "Csapatok áttekintése", en: "Teams overview" },
     teamCardMembers: { hu: "{count} tag", en: "{count} members" },
     teamCardOpen: { hu: "Megnyitás", en: "Open" },
-    teamCardNoTeams: { hu: "Még nincs csapat – hozz létre egyet a csapat oldalon.", en: "No teams yet – create one on the teams page." },
+    teamCardNoTeams: { hu: "Még nincs csapat. A Csapatok oldalon hozhatsz létre egyet.", en: "No teams yet – create one on the teams page." },
 
     ctaBandTitle: { hu: "Készen álltok a következő körre?", en: "Ready for the next round?" },
     ctaBandSub: { hu: "Indíts új visszajelzési kört vagy adj hozzá új csapatot.", en: "Start a new feedback round or add a new team." },
@@ -382,13 +382,13 @@ export const orgTranslations = {
       reactivateBtn: { hu: "Újraaktiválás", en: "Reactivate" },
       seatsEyebrow: { hu: "létszám", en: "seats" },
       seatsTitle: { hu: "Aktív helyek", en: "Active seats" },
-      includedSeats: { hu: "alap hely", en: "included seats" },
+      includedSeats: { hu: "alapcsomagban foglalt hely", en: "included seats" },
       extraSeatsInfo: { hu: "+{extra} extra hely", en: "+{extra} extra seat{plural}" },
       seatsAvailable: { hu: "{available} hely elérhető", en: "{available} seat{plural} available" },
       pendingInvites: { hu: "+{count} meghívás függőben", en: "+{count} invitation{plural} pending" },
       needMoreSeats: { hu: "Több hely kell?", en: "Need more seats?" },
       upgradeHint: { hu: "Az Org csomag 40 helyet tartalmaz – a feltételekről egyeztess a tanácsadóddal.", en: "The Org plan includes 40 seats – discuss terms with your consultant." },
-      upgradeLink: { hu: "Upgrade", en: "Upgrade" },
+      upgradeLink: { hu: "Csomagváltás", en: "Upgrade" },
       rolesEyebrow: { hu: "szerepkörök", en: "roles" },
       rolesTitle: { hu: "Tagok szerepkörei", en: "Member roles" },
       // CJ-CREDITS — jelöltkeret-blokk (consulting-led: a tanácsadó kezeli)
@@ -399,13 +399,13 @@ export const orgTranslations = {
         en: "{used} used · {total} granted in total",
       },
       creditsConsultantNote: {
-        hu: "A jelölt-felmérési kereteket a trita tanácsadód kezeli: a consulting-együttműködés részeként állítja be és tölti fel őket. Ha új keretre van szükségetek, vagy kérdésed van az egyenlegről, jelezd nekünk.",
+        hu: "A jelöltfelmérésekhez felhasználható keretet a Trita tanácsadója kezeli az együttműködésetek részeként. Ha további felmérésekre van szükségetek, vagy kérdésed van a keretről, jelezd nekünk.",
         en: "Candidate assessment credits are managed by your trita consultant – they are set up and topped up as part of the consulting engagement. If you need more credits or have a question about the balance, get in touch.",
       },
       creditsContactCta: { hu: "Kapcsolatfelvétel", en: "Contact us" },
       dangerEyebrow: { hu: "veszélyes zóna", en: "danger zone" },
       dangerTitle: { hu: "Veszélyes zóna", en: "Danger zone" },
-      dangerDescription: { hu: "A szervezet deaktiválása után tagjai nem tudnak bejelentkezni az org-hoz kötött felületekre.", en: "Deactivating the organization will block members from accessing org-scoped pages." },
+      dangerDescription: { hu: "A szervezet inaktiválása után a tagok nem férnek hozzá a szervezethez tartozó felületekhez.", en: "Deactivating the organization will block members from accessing org-scoped pages." },
       alreadyInactive: { hu: "A szervezet már inaktív.", en: "Organization is already inactive." },
     },
 
@@ -432,12 +432,12 @@ export const orgTranslations = {
       completed: { hu: "befejezett", en: "completed" },
       observerDone: { hu: "Külső visszajelzés kész", en: "Observer done" },
       receivedFeedback: { hu: "kapott visszajelzést", en: "received feedback" },
-      fullyComplete: { hu: "Teljes befejezés", en: "Fully complete" },
+      fullyComplete: { hu: "Minden lépés kész", en: "Fully complete" },
       bothDone: { hu: "mindkettő kész", en: "both done" },
 
       // Pszichológiai biztonság pulse (anonim aggregátum)
       psEyebrow: { hu: "Pszichológiai biztonság", en: "Psychological safety" },
-      psIndexTitle: { hu: "Biztonság-index", en: "Safety index" },
+      psIndexTitle: { hu: "Biztonságindex", en: "Safety index" },
       psCompleted: { hu: "kitöltötte", en: "completed" },
       psAnonNote: {
         hu: "A válaszok névtelenek: csak a csapatszintű összesítés látszik, egyéni válasz nem kereshető vissza. Az eredmény legalább 3 kitöltéstől jelenik meg.",
@@ -447,9 +447,9 @@ export const orgTranslations = {
         hu: "Az eredmény legalább {min} kitöltés után jelenik meg – így senki válasza nem beazonosítható. Emlékeztesd a csapatot, ha megakadt a kitöltés.",
         en: "Results appear after at least {min} responses – so nobody's answers can be identified. Remind the team if completion has stalled.",
       },
-      psBandHigh: { hu: "Erős biztonság-élmény", en: "Strong sense of safety" },
-      psBandMid: { hu: "Közepes biztonság-élmény", en: "Moderate sense of safety" },
-      psBandLow: { hu: "Törékeny biztonság-élmény", en: "Fragile sense of safety" },
+      psBandHigh: { hu: "Erős biztonságérzet", en: "Strong sense of safety" },
+      psBandMid: { hu: "Közepes biztonságérzet", en: "Moderate sense of safety" },
+      psBandLow: { hu: "Törékeny biztonságérzet", en: "Fragile sense of safety" },
       psResponses: { hu: "{count} válasz", en: "{count} responses" },
       // ±-jel nélkül (2026-08-11 termékdöntés: ± jelölés nem kerül a UI-ra).
       psSpread: { hu: "szóródás: {spread} pont", en: "spread: {spread} points" },
@@ -462,25 +462,25 @@ export const orgTranslations = {
       noParticipants: { hu: "Még nincs résztvevő.", en: "No participants yet." },
       participantDone: { hu: "Kész", en: "Done" },
       participantSelfDone: { hu: "Önértékelés kész", en: "Self done" },
-      participantNotStarted: { hu: "Nem kezdte", en: "Not started" },
+      participantNotStarted: { hu: "Még nem kezdte el", en: "Not started" },
       statusEyebrow: { hu: "státusz", en: "status" },
       managementTitle: { hu: "Mérés kezelése", en: "Measurement management" },
       activateDescription: { hu: "Az aktiválás után a résztvevők értesítést kapnak és megkezdhetik az értékeléseket.", en: "After activation, participants will be notified and can begin evaluations." },
       editDraftEyebrow: { hu: "piszkozat", en: "draft" },
-      editDraftTitle: { hu: "Mérések és célzás szerkesztése", en: "Edit measurements and targeting" },
+      editDraftTitle: { hu: "Mérések és részt vevő csapat szerkesztése", en: "Edit measurements and targeting" },
       editDraftHint: {
-        hu: "Amíg a mérés piszkozat, a lépések, a cél-csapat és az ütem szabadon módosítható. Aktiválás után az összetétel rögzül.",
+        hu: "Amíg a mérés vázlat, módosíthatod a lépéseket, a részt vevő csapatot és az ütemezést. Aktiválás után ezek már nem változtathatók.",
         en: "While the campaign is a draft, its measurement steps, target team and pacing can be changed freely. After activation the campaign composition is locked.",
       },
       editPresetDraftHint: {
-        hu: "A nevesített csomag mérési lépései rögzítettek; piszkozatként a cél-csapat és az ütem még módosítható.",
+        hu: "Az előre összeállított csomag mérési lépései rögzítettek. Amíg vázlatként szerepel, a részt vevő csapat és az ütemezés még módosítható.",
         en: "The named package has fixed measurement steps; its target team and pacing can still be changed while it is a draft.",
       },
-      editTypesLabel: { hu: "Mérések (sorrendjük kanonikus)", en: "Measurements (canonical order)" },
-      editTeamLabel: { hu: "Cél-csapat", en: "Target team" },
-      editNoTeam: { hu: "Nincs csapat-célzás (egyénileg kiválasztott résztvevők)", en: "No team targeting (individually selected participants)" },
+      editTypesLabel: { hu: "Mérések (rögzített sorrendben)", en: "Measurements (canonical order)" },
+      editTeamLabel: { hu: "Részt vevő csapat", en: "Target team" },
+      editNoTeam: { hu: "Egyénileg kiválasztott résztvevők, csapat kijelölése nélkül", en: "No team targeting (individually selected participants)" },
       editTeamNote: {
-        hu: "A csapat módosítása nem írja át a résztvevő-listát – a tagokat a Résztvevők blokkban add hozzá.",
+        hu: "A kiválasztott csapat módosításával a résztvevők névsora nem változik. Az új tagokat a Résztvevők résznél adhatod hozzá.",
         en: "Changing the team does not rewrite the participant list – add members in the Participants block.",
       },
       editSave: { hu: "Módosítások mentése", en: "Save changes" },
@@ -489,7 +489,7 @@ export const orgTranslations = {
       discardDraft: { hu: "Vázlat elvetése", en: "Discard draft" },
       discarding: { hu: "Elvetés…", en: "Discarding…" },
       discardConfirm: {
-        hu: "Biztosan elveted ezt a mérés-vázlatot? A vázlat és a hozzáadott résztvevő-lista véglegesen törlődik.",
+        hu: "Biztosan elveted a mérés vázlatát? A vázlat és a hozzáadott résztvevők listája véglegesen törlődik.",
         en: "Discard this measurement draft? The draft and its participant list will be permanently deleted.",
       },
       discardFailed: { hu: "Az elvetés nem sikerült – próbáld újra.", en: "Discard failed – try again." },
@@ -498,7 +498,7 @@ export const orgTranslations = {
       deleteCampaign: { hu: "Mérés törlése", en: "Delete measurement" },
       deleting: { hu: "Törlés…", en: "Deleting…" },
       deleteConfirm: {
-        hu: "Biztosan törlöd ezt a mérést? A kör MINDEN beadott értékelése (bizalmi, szerep-visszajelzés, elismerés, pulzusmérés) véglegesen törlődik, és a mérés a lezárt körök közt sem jelenik meg többé. A tagok saját eredményei (személyiség-teszt, szerep-kérdőív) megmaradnak.",
+        hu: "Biztosan törlöd ezt a mérést? A kör MINDEN beadott értékelése (bizalmi, szerep-visszajelzés, elismerés, pulzusmérés) véglegesen törlődik, és a mérés a lezárt körök közt sem jelenik meg többé. A tagok saját eredményei (személyiségteszt, szerepkérdőív) megmaradnak.",
         en: "Delete this measurement? ALL submitted ratings in this round (trust, role feedback, recognition, pulse) are permanently deleted, and the round will no longer appear among closed rounds. Members' own results (personality test, role questionnaire) are kept.",
       },
       deleteConfirmCta: { hu: "Végleges törlés", en: "Delete permanently" },
@@ -511,10 +511,10 @@ export const orgTranslations = {
         hu: "Csak vázlat vethető el – aktivált mérést lezárni lehet, törölni nem.",
         en: "Only drafts can be discarded – an activated measurement can be closed, not deleted.",
       },
-      peerFbStatsEyebrow: { hu: "kollégai visszajelzés kör", en: "peer feedback round" },
+      peerFbStatsEyebrow: { hu: "kollégák visszajelzései", en: "peer feedback round" },
       peerFbStatsTitle: { hu: "Részvétel", en: "Participation" },
       peerFbStatsBody: {
-        hu: "{givers} tag küldött be, összesen {items} javaslat; {covered} címzettnél van meg a legalább 3 beküldős küszöb.",
+        hu: "{givers} tag összesen {items} javaslatot küldött be. {covered} címzett kapott javaslatot legalább 3 csapattárstól.",
         en: "{givers} members submitted, {items} suggestions in total; {covered} recipients have reached the 3-sender threshold.",
       },
       peerFbStatsNote: {
@@ -522,7 +522,7 @@ export const orgTranslations = {
         en: "Content is not shown on the consultant surface – feedback is member-to-member communication; only participation is tracked here.",
       },
       editTeamRequired: {
-        hu: "A kiválasztott mérésekhez cél-csapat kell (a szerep-kör, a bizalmi kör és a pulzusmérés csapaton él).",
+        hu: "A kiválasztott mérésekhez jelölj ki egy csapatot. A csapatszerep-kör, a bizalmi kör és a pulzusmérés csapaton belül végezhető el.",
         en: "The selected measurements need a target team (role, trust and pulse rounds live on a team).",
       },
       closeDescription: { hu: "A lezárás végleges – az értékelések leállnak és az eredmények rögzülnek.", en: "Closing is permanent – evaluations stop and results are recorded." },
@@ -559,7 +559,7 @@ export const orgTranslations = {
 
 
 
-      readOnly: { hu: "A számlázás megtekintése csak admin számára szerkeszthető.", en: "Billing management requires admin access." },
+      readOnly: { hu: "A számlázási adatokat csak adminisztrátor kezelheti.", en: "Billing management requires admin access." },
 
 
     },
@@ -591,7 +591,7 @@ export const orgTranslations = {
       noMembers: { hu: "Még nincs tag.", en: "No members yet." },
       inviteEyebrow: { hu: "meghívás", en: "invite" },
       inviteTitle: { hu: "Tag hozzáadása", en: "Add a member" },
-      inviteDescription: { hu: "Add meg az emailcímet. Regisztrált felhasználó azonnal csatlakozik; új felhasználó meghívó-emailt kap, és regisztráció után lép be.", en: "Enter the email address. A registered user joins immediately; a new user gets an invite email and joins after signing up." },
+      inviteDescription: { hu: "Add meg a leendő tag e-mail-címét. Ha már regisztrált, azonnal csatlakozik. Az új felhasználók e-mailben kapnak meghívót, és regisztráció után csatlakozhatnak.", en: "Enter the email address. A registered user joins immediately; a new user gets an invite email and joins after signing up." },
       roleAdmin: { hu: "Admin", en: "Admin" },
       roleConsultant: { hu: "Tanácsadó", en: "Consultant" },
       roleManager: { hu: "Menedzser", en: "Manager" },
@@ -615,12 +615,12 @@ export const orgTranslations = {
       draftsDivider: { hu: "vázlatok", en: "drafts" },
       closedDivider: { hu: "lezárt körök", en: "closed rounds" },
       newCta: { hu: "Új mérés", en: "New measurement" },
-      newCtaDesc: { hu: "Szervezett 360° visszajelzési kör indítása a csapatban", en: "Launch a structured 360° feedback round for your team" },
+      newCtaDesc: { hu: "Szervezett 360°-os visszajelzési kör indítása a csapatban", en: "Launch a structured 360° feedback round for your team" },
       createLink: { hu: "Létrehozás", en: "Create" },
       newEyebrow: { hu: "új mérés", en: "new measurement" },
       createTitle: { hu: "Mérés létrehozása", en: "Create measurement" },
       nameLabel: { hu: "Mérés neve", en: "Measurement name" },
-      namePlaceholder: { hu: "pl. Q1 2026 értékelés", en: "e.g. Q1 2026 review" },
+      namePlaceholder: { hu: "pl. 2026. I. negyedévi értékelés", en: "e.g. Q1 2026 review" },
       descLabel: { hu: "Leírás (opcionális)", en: "Description (optional)" },
       descPlaceholder: { hu: "Rövid leírás a mérésről…", en: "Brief description…" },
       creating: { hu: "Létrehozás…", en: "Creating…" },
@@ -645,10 +645,10 @@ export const orgTranslations = {
       participantPlural: { hu: "résztvevő", en: "participants" },
       selfDone: { hu: "Önértékelés kész", en: "Self-assessment done" },
       observerDone: { hu: "Külső visszajelzés kész", en: "Observer done" },
-      fullyComplete: { hu: "Teljes befejezés", en: "Fully complete" },
+      fullyComplete: { hu: "Minden lépés kész", en: "Fully complete" },
       fullyDoneLabel: { hu: "teljes", en: "complete" },
       inProgress: { hu: "folyamatban", en: "in progress" },
-      notStarted: { hu: "nem kezdte", en: "not started" },
+      notStarted: { hu: "még nem kezdte el", en: "not started" },
       viewLink: { hu: "Mérés megnyitása", en: "Open measurement" },
       sending: { hu: "Küldés…", en: "Sending…" },
       remindButton: { hu: "Emlékeztető ({count})", en: "Remind ({count})" },
@@ -693,7 +693,7 @@ export const orgTranslations = {
       back: { hu: "Vissza", en: "Back" },
       step3Eyebrow: { hu: "2. lépés", en: "step 2" },
       step3Title: { hu: "Tagok meghívása", en: "Invite members" },
-      step3Subtitle: { hu: "Hívj meg tagokat az induláshoz (opcionális). Emailcímek, akik még nem regisztráltak, meghívót kapnak.", en: "Invite members to get started (optional). Unregistered emails will receive an invite." },
+      step3Subtitle: { hu: "Az induláshoz már most is meghívhatsz tagokat. Akik még nem regisztráltak, e-mailben kapnak meghívót.", en: "Invite members to get started (optional). Unregistered emails will receive an invite." },
       finish: { hu: "Befejezés", en: "Finish setup" },
       networkError: { hu: "Hálózati hiba.", en: "Network error." },
     },
@@ -703,23 +703,23 @@ export const orgTranslations = {
       // OrgCreateForm
       createOrgName: { hu: "Szervezet neve", en: "Organization name" },
       createPlaceholder: { hu: "pl. trita Kft.", en: "e.g. Acme Corp" },
-      createLoading: { hu: "Létrehozás...", en: "Creating..." },
+      createLoading: { hu: "Létrehozás…", en: "Creating..." },
       createButton: { hu: "Létrehozás", en: "Create" },
       alreadyInOrg: { hu: "Már tagja vagy egy szervezetnek.", en: "You already belong to an organization." },
       createGenericError: { hu: "Hiba történt. Próbáld újra.", en: "Something went wrong. Please try again." },
       createNetworkError: { hu: "Hálózati hiba. Próbáld újra.", en: "Network error. Please try again." },
 
       // OrgInviteForm
-      emailLabel: { hu: "Email cím", en: "Email address" },
+      emailLabel: { hu: "E-mail-cím", en: "Email address" },
       emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
       roleLabel: { hu: "Szerepkör", en: "Role" },
       roleMember: { hu: "Tag", en: "Member" },
       roleManager: { hu: "Menedzser", en: "Manager" },
-      inviteLoading: { hu: "Hozzáadás...", en: "Adding..." },
+      inviteLoading: { hu: "Hozzáadás…", en: "Adding..." },
       inviteButton: { hu: "Hozzáadás", en: "Add" },
       memberAdded: { hu: "Tag hozzáadva!", en: "Member added!" },
       inviteSent: { hu: "Meghívó elküldve – amint regisztrálnak, automatikusan csatlakoznak.", en: "Invite sent – they'll join automatically once they register." },
-      alreadyMember: { hu: "Ez az emailcím már tag.", en: "This email is already a member." },
+      alreadyMember: { hu: "Az e-mail-címhez tartozó felhasználó már tag.", en: "This email is already a member." },
       alreadyInOrgInvite: { hu: "Ez a felhasználó már tagja egy szervezetnek.", en: "This user already belongs to an organization." },
       selfInvite: { hu: "Saját magadat nem hívhatod meg.", en: "You cannot invite yourself." },
       inviteGenericError: { hu: "Hiba történt. Próbáld újra.", en: "Something went wrong. Please try again." },
@@ -729,9 +729,9 @@ export const orgTranslations = {
       // egyesével felvive a program legdrágább kézi munkaóráját jelentette.
       bulkToggleOn: { hu: "Több cím egyszerre", en: "Invite several at once" },
       bulkToggleOff: { hu: "Egy cím megadása", en: "Invite a single address" },
-      bulkLabel: { hu: "Email címek", en: "Email addresses" },
+      bulkLabel: { hu: "E-mail-címek", en: "Email addresses" },
       bulkPlaceholder: {
-        hu: "Illeszd be a címeket – soronként, vesszővel vagy a levelezőből másolva.\n\nanna@ceg.hu\nBela Kovacs <bela@ceg.hu>",
+        hu: "Illeszd be a címeket soronként, vesszővel elválasztva vagy a levelezőből másolva.\n\nanna@ceg.hu\nKovács Béla <bela@ceg.hu>",
         en: "Paste the addresses – one per line, comma-separated, or copied from your mail client.\n\nanna@company.com\nBella Smith <bella@company.com>",
       },
       bulkHint: {
@@ -740,14 +740,14 @@ export const orgTranslations = {
       },
       bulkParsed: { hu: "{count} cím felismerve", en: "{count} addresses recognized" },
       bulkInvalid: { hu: "{count} nem értelmezhető: {list}", en: "{count} could not be read: {list}" },
-      bulkSubmit: { hu: "{count} cím meghívása", en: "Invite {count} addresses" },
+      bulkSubmit: { hu: "{count} meghívó küldése", en: "Invite {count} addresses" },
       bulkProgress: { hu: "Küldés… {done}/{total}", en: "Sending… {done}/{total}" },
       bulkDone: { hu: "Kész – {total} cím feldolgozva.", en: "Done – {total} addresses processed." },
       // Az összegzés sorai. Csak a nem nulla tételek jelennek meg.
-      bulkAdded: { hu: "{count} azonnal tag lett (már volt fiókjuk)", en: "{count} joined immediately (they already had an account)" },
-      bulkInvited: { hu: "{count} meghívót kapott emailben", en: "{count} received an email invite" },
+      bulkAdded: { hu: "{count} felhasználó azonnal csatlakozott (már volt fiókja)", en: "{count} joined immediately (they already had an account)" },
+      bulkInvited: { hu: "{count} meghívót kapott e-mailben", en: "{count} received an email invite" },
       bulkNoEmail: {
-        hu: "{count} meghívó létrejött, de a levél NEM ment ki – küldj nekik linket kézzel",
+        hu: "{count} meghívó létrejött, de az e-mailt nem sikerült elküldeni. Küldd el a meghívólinkeket az érintetteknek.",
         en: "{count} invites created, but the email did NOT go out – send them a link manually",
       },
       bulkAlready: { hu: "{count} már tag volt", en: "{count} were already members" },
@@ -765,7 +765,7 @@ export const orgTranslations = {
       lastAdminError: { hu: "Nem módosítható – utolsó admin.", en: "Cannot change – last admin." },
       roleChangeError: { hu: "Hiba történt.", en: "Something went wrong." },
       roleNetworkError: { hu: "Hálózati hiba.", en: "Network error." },
-      teamPermissionsHint: { hu: "Csapat jogosultságok külön állíthatók.", en: "Team permissions set per team." },
+      teamPermissionsHint: { hu: "A csapaton belüli jogosultságok külön állíthatók.", en: "Team permissions set per team." },
     },
 
     // ── Action buttons ───────────────────────────────────────────────────
@@ -791,7 +791,7 @@ export const orgTranslations = {
 
       // RemindPendingButton
       reminderSent: { hu: "Emlékeztető elküldve", en: "Reminders sent" },
-      reminderSending: { hu: "Küldés...", en: "Sending..." },
+      reminderSending: { hu: "Küldés…", en: "Sending..." },
       reminderButton: { hu: "Emlékeztető küldése", en: "Send reminders" },
 
       // AddParticipantButton
@@ -817,14 +817,14 @@ export const orgTranslations = {
 
   // ── Org detail page: remaining hardcoded strings ────────────────────────
   orgRisk: {
-    pendingTitle: { hu: "Függő meghívások", en: "Pending invites" },
+    pendingTitle: { hu: "Függőben lévő meghívások", en: "Pending invites" },
     pendingDesc: { hu: "{count} meghívás még visszaigazolásra vár.", en: "{count} invites are still awaiting acceptance." },
     pendingCta: { hu: "Tagok kezelése", en: "Manage members" },
     noActiveTitle: { hu: "Nincs aktív kör", en: "No active round" },
-    noActiveDesc: { hu: "A szervezeti trendekhez érdemes aktív visszajelzési kört futtatni.", en: "Run an active feedback round to track org-level trends." },
+    noActiveDesc: { hu: "A szervezeti változások követéséhez érdemes visszajelzési kört indítani.", en: "Run an active feedback round to track org-level trends." },
     noActiveCta: { hu: "Kör indítása", en: "Start round" },
     recommendedTitle: { hu: "Ajánlott következő lépés", en: "Recommended next step" },
-    recommendedPendingDesc: { hu: "Zárd le a függő meghívásokat, hogy stabilabb legyen a szervezeti kép.", en: "Close pending invites to improve org-level signal quality." },
+    recommendedPendingDesc: { hu: "Tekintsd át a függőben lévő meghívásokat, hogy teljesebb képet kapj a szervezetről.", en: "Close pending invites to improve org-level signal quality." },
     recommendedPendingPrimary: { hu: "Tagok kezelése", en: "Manage members" },
     recommendedPendingSecondary: { hu: "Csapatok áttekintése", en: "Review teams" },
     recommendedCampaignDesc: { hu: "A következő szervezeti mérési ciklushoz indíts új mérést.", en: "Launch a new measurement for the next org insight cycle." },
@@ -841,11 +841,11 @@ export const orgTranslations = {
     orgCompletion: { hu: "Szervezeti kitöltés", en: "Org completion" },
     done: { hu: "kész", en: "done" },
     remaining: { hu: "hátra", en: "remaining" },
-    activeCampaignCompletion: { hu: "Aktív mérés kitöltés", en: "Active measurement completion" },
+    activeCampaignCompletion: { hu: "Az aktív mérés kitöltöttsége", en: "Active measurement completion" },
   },
   orgLayers: {
-    eyebrow: { hu: "4+2 rétegkészültség", en: "4+2 layer readiness" },
-    layersTitle: { hu: "Szervezeti mélyítő rétegek", en: "Org deepening layers" },
+    eyebrow: { hu: "A 4+2 mérési terület állapota", en: "4+2 layer readiness" },
+    layersTitle: { hu: "A szervezet részletesebb megismerése", en: "Org deepening layers" },
     statusCompleted: { hu: "Kész", en: "Completed" },
     statusInProgress: { hu: "Folyamatban", en: "In progress" },
     statusAvailable: { hu: "Elérhető", en: "Available" },
@@ -854,7 +854,7 @@ export const orgTranslations = {
 
   // ── Admin dashboard (/dashboard AdminDashboard.tsx) ─────────────────────
   dashboard: {
-    loading: { hu: "Betöltés...", en: "Loading..." },
+    loading: { hu: "Betöltés…", en: "Loading..." },
     loadError: { hu: "Nem sikerült betölteni az adatokat.", en: "Could not load data." },
     retry: { hu: "Újrapróbálom", en: "Retry" },
     missingAssessments: { hu: "Hiányzó kitöltések", en: "Missing assessments" },
@@ -867,11 +867,11 @@ export const orgTranslations = {
     activityCompleted: { hu: "kitöltötte a személyiségtesztet", en: "completed the assessment" },
     activityJoined: { hu: "csatlakozott", en: "joined" },
     bestNextStep: { hu: "Most ez a legfontosabb", en: "Most important now" },
-    reminderFallbackDesc: { hu: "Most a {teamName} csapat hiányzó tagjait kell emlékeztetni, hogy lezárható legyen a csapatkép.", en: "Right now, remind missing members in {teamName} so the team insight can be completed." },
+    reminderFallbackDesc: { hu: "Emlékeztesd a kitöltéssel még nem végzett tagokat, hogy elkészülhessen a csapatkép. Érintett csapat: {teamName}.", en: "Right now, remind missing members in {teamName} so the team insight can be completed." },
     reminderFallbackPrimary: { hu: "Tagok emlékeztetése", en: "Remind members" },
-    snapshotFallbackDesc: { hu: "A csapatkép már elérhető. Következő lépésként nyisd meg és egyeztesd a csapattal.", en: "Team insight is available. Next step: open it and align with the team." },
+    snapshotFallbackDesc: { hu: "A csapatkép már elérhető. Nyisd meg, és beszéljétek át az eredményeket a csapattal.", en: "Team insight is available. Next step: open it and align with the team." },
     snapshotFallbackPrimary: { hu: "Csapatkép megnyitása", en: "Open team insight" },
-    campaignFallbackDesc: { hu: "A következő kör már indítható. Következő lépésként indíts új visszajelzési kört.", en: "The next round can be launched now. Next step: start a new feedback round." },
+    campaignFallbackDesc: { hu: "Már indíthatsz új visszajelzési kört.", en: "The next round can be launched now. Next step: start a new feedback round." },
     campaignFallbackPrimary: { hu: "Kör indítása", en: "Start round" },
     recommendedNextStep: { hu: "Következő lépés", en: "Next step" },
     openOrgCockpit: { hu: "Szervezeti nézet", en: "Open organization view" },
@@ -888,7 +888,7 @@ export const orgTranslations = {
     inviteMembers: { hu: "Tagok meghívása", en: "Invite members" },
     activeMembersCount: { hu: "Jelenleg {count} aktív tag", en: "Currently {count} active members" },
     manageMembers: { hu: "Tagok kezelése", en: "Manage members" },
-    unlockTeamPattern: { hu: "Első csapatkép feloldása", en: "Unlock first team pattern" },
+    unlockTeamPattern: { hu: "Az első csapatkép elkészítése", en: "Unlock first team pattern" },
     completionCount: { hu: "{count}/3 kitöltés", en: "{count}/3 completed" },
     trackProgress: { hu: "Haladás követése", en: "Track progress" },
     updated: { hu: "Frissítve", en: "Updated" },
@@ -900,7 +900,7 @@ export const orgTranslations = {
     teamsLabel: { hu: "Csapat", en: "Teams" },
     doneLabel: { hu: "Kész", en: "Done" },
     orgCompletion: { hu: "Szervezeti kitöltés", en: "Org completion" },
-    teamPatternReadiness: { hu: "Csapatkép készültség", en: "Team pattern readiness" },
+    teamPatternReadiness: { hu: "A csapatkép készültsége", en: "Team pattern readiness" },
     onboardingEyebrow: { hu: "bevezetés", en: "onboarding" },
     firstTeamKickoff: { hu: "Első csapat indulása", en: "First team kickoff" },
     onboardingDesc: { hu: "Az első csapat már létrejött. Ezen a listán végighaladva gyorsan eljuttok az első értelmezhető csapatképig.", en: "Your first team is already created. Follow this checklist to quickly unlock the first meaningful team pattern." },
@@ -914,7 +914,7 @@ export const orgTranslations = {
     activeMembersTitle: { hu: "Aktív tagok", en: "Active members" },
     notStartedCount: { hu: "{count} fő még nem kezdte el", en: "{count} members have not started" },
     everyoneStarted: { hu: "Mindenki elindult", en: "Everyone has started" },
-    layerReadiness: { hu: "4+2 rétegkészültség", en: "4+2 layer readiness" },
+    layerReadiness: { hu: "A 4+2 mérési terület állapota", en: "4+2 layer readiness" },
     layerStatusCompleted: { hu: "Kész", en: "Completed" },
     layerStatusInProgress: { hu: "Folyamatban", en: "In progress" },
     layerStatusAvailable: { hu: "Elérhető", en: "Available" },
@@ -929,17 +929,17 @@ export const orgTranslations = {
     openTeamPattern: { hu: "Csapatkép megnyitása", en: "Open team pattern" },
     watchNow: { hu: "Most érdemes figyelni", en: "Watch now" },
     highLow: { hu: "Magas {top}, alacsony {low}", en: "Higher {top}, lower {low}" },
-    frictionDesc: { hu: "A szervezet kreatív lendülettel dolgozik, de az alacsony {low} ({pct}%) növelheti a belső zajt csapatközi helyzetekben.", en: "The organization works with strong creative momentum, but lower {low} ({pct}%) may increase friction in cross-team situations." },
+    frictionDesc: { hu: "A szervezetet kreatív lendület jellemzi. Alacsonyabb dimenzióérték: {low} ({pct}%). Ez több súrlódással járhat a csapatok együttműködésében.", en: "The organization works with strong creative momentum, but lower {low} ({pct}%) may increase friction in cross-team situations." },
     detailedAnalysis: { hu: "Részletes elemzés", en: "Detailed analysis" },
     needsAttention: { hu: "Figyelmet igényel", en: "Needs attention" },
     noOpenActions: { hu: "Nincs azonnali teendő.", en: "No immediate actions." },
     teamMovement: { hu: "Csapatmozgás", en: "Team movement" },
     teamStatus: { hu: "Csapatok állapota", en: "Team status" },
-    teamStatusDesc: { hu: "Melyik csapat hol tart most a közös képen", en: "See where each team currently stands in the shared journey" },
+    teamStatusDesc: { hu: "Itt láthatod, hol tartanak a csapatok a felmérésben.", en: "See where each team currently stands in the shared journey" },
     allTeams: { hu: "Minden csapat", en: "All teams" },
     teamMemberCount: { hu: "{count} tag", en: "{count} members" },
-    insightAlmostReady: { hu: "A csapatkép majdnem kész – {count} emlékeztető még szükséges a befejezéshez.", en: "Team pattern is almost ready – {count} reminder(s) are still needed to complete it." },
-    insightReady: { hu: "Csapatkép elérhető – minden tag teljesítette a kitöltést.", en: "Team pattern is available – every member has completed assessment." },
+    insightAlmostReady: { hu: "A csapatkép majdnem kész. Még {count} tagot érdemes emlékeztetni a kitöltésre.", en: "Team pattern is almost ready – {count} reminder(s) are still needed to complete it." },
+    insightReady: { hu: "A csapatkép elérhető: minden tag végzett a kitöltéssel.", en: "Team pattern is available – every member has completed assessment." },
     insightNeeded: { hu: "{count} kitöltés szükséges a csapatképhez.", en: "{count} completion(s) needed for team pattern." },
     patternReady: { hu: "Csapatkép kész", en: "Pattern ready" },
     patternBuilding: { hu: "Csapatkép épül", en: "Pattern building" },
@@ -1002,7 +1002,7 @@ export const orgTranslations = {
     introStepsLabel: { hu: "Így zajlik", en: "How it works" },
     introStep1Title: { hu: "Kérdőív kitöltése", en: "Fill in the questionnaire" },
     introStep1Sub: {
-      hu: "{count} állítás 1–5 skálán, kb. {minutes} perc.",
+      hu: "{count} állítás, 1–5-ös skálán értékelve. A kitöltés körülbelül {minutes} perc.",
       en: "{count} statements on a 1–5 scale, about {minutes} minutes.",
     },
     introStepTeamRoleTitle: { hu: "Rövid csapatszerep-kérdőív", en: "Short team-role questionnaire" },
@@ -1039,10 +1039,10 @@ export const orgTranslations = {
     autoAdvance: { hu: "Automatikus továbblépés", en: "Auto-advance" },
     back: { hu: "Vissza", en: "Back" },
     next: { hu: "Tovább", en: "Next" },
-    submitting: { hu: "Beküldés...", en: "Submitting..." },
+    submitting: { hu: "Beküldés…", en: "Submitting..." },
     submit: { hu: "Beküldés", en: "Submit" },
     scaleHint: {
-      hu: "Az 1–5 skálán: 1 = Egyáltalán nem értek egyet, 5 = Teljes mértékben egyetértek",
+      hu: "Az 1–5-ös skálán: 1 = Egyáltalán nem értek egyet, 5 = Teljes mértékben egyetértek",
       en: "On the 1–5 scale: 1 = Strongly disagree, 5 = Strongly agree",
     },
     answerAllError: {
@@ -1065,45 +1065,45 @@ export const orgTranslations = {
     },
     pageExpiredTitle: { hu: "A meghívó lejárt", en: "Invitation expired" },
     pageExpiredBody: {
-      hu: "Ez a meghívó link sajnos már nem érvényes. Kérj új linket a szervezőtől.",
+      hu: "Ez a meghívólink sajnos már nem érvényes. Kérj új linket a szervezőtől.",
       en: "This invitation link is no longer valid. Please request a new link from the organiser.",
     },
   },
 
   // ── Campaign Wizard ─────────────────────────────────────────────────────
   peerFb: {
-    title: { hu: "Elismerés-kör", en: "Recognition round" },
+    title: { hu: "Elismerési kör", en: "Recognition round" },
     introNamed: {
-      hu: "Adj minden csapattársadnak egy rövid, jövő-irányú visszajelzést – és ha van, egy elismerést. A visszajelzések nevesítettek: a címzett látja, kitől jöttek.",
+      hu: "Adj minden csapattársadnak egy rövid, előremutató visszajelzést – és ha van, egy elismerést. A visszajelzések nevesítettek: a címzett látja, kitől jöttek.",
       en: "Give each teammate a short, forward-looking piece of feedback – and, if you have one, an appreciation. Feedback is named: recipients see who it came from.",
     },
     introAnon: {
-      hu: "Adj minden csapattársadnak egy rövid, jövő-irányú visszajelzést. A javaslatok név nélkül, összesítve jutnak el a címzetthez (legalább 3 beküldőnél); az elismerések nevesítettek.",
+      hu: "Adj minden csapattársadnak egy rövid, előremutató visszajelzést. A javaslatok név nélkül, összesítve jutnak el a címzetthez (legalább 3 beküldőnél); az elismerések nevesítettek.",
       en: "Give each teammate a short, forward-looking piece of feedback. Suggestions reach recipients anonymously and aggregated (with at least 3 senders); appreciations are named.",
     },
     alreadyDone: { hu: "{count} csapattársnak már beküldted.", en: "Already submitted for {count} teammates." },
     appreciationLabel: { hu: "Elismerés", en: "Appreciation" },
-    appreciationPlaceholder: { hu: "Pl. „Köszönöm, hogy a demó előtt átnézted a prezimet.”", en: "E.g. \"Thanks for reviewing my deck before the demo.\"" },
+    appreciationPlaceholder: { hu: "Pl. „Köszönöm, hogy az ügyféltalálkozó előtt átnézted a bemutatómat.”", en: "E.g. \"Thanks for reviewing my deck before the demo.\"" },
     continueLabel: { hu: "Folytasd, mert…", en: "Keep doing, because…" },
     continuePlaceholder: { hu: "Egy konkrét viselkedés, ami működik – és miért.", en: "A specific behaviour that works – and why." },
-    tryLabel: { hu: "Jövőre próbáld…", en: "Next time, try…" },
-    tryPlaceholder: { hu: "Egy konkrét, jövő-irányú javaslat.", en: "One specific, forward-looking suggestion." },
+    tryLabel: { hu: "Legközelebb próbáld…", en: "Next time, try…" },
+    tryPlaceholder: { hu: "Egy konkrét javaslat, amelyet legközelebb kipróbálhat.", en: "One specific, forward-looking suggestion." },
     optional: { hu: "(opcionális)", en: "(optional)" },
     toneNudge: {
       hu: "Tipp: a visszajelzés akkor hasznosul, ha konkrét helyzetről és viselkedésről szól – a „mindig/soha” és a személyre irányuló ítélet jellemzően védekezést vált ki.",
       en: "Tip: feedback lands when it is about a specific situation and behaviour – \"always/never\" and person-level judgements typically trigger defensiveness.",
     },
     submit: { hu: "Beküldés", en: "Submit" },
-    fillAllHint: { hu: "Minden csapattársnál töltsd ki a két visszajelzés-mezőt.", en: "Fill in both feedback fields for every teammate." },
+    fillAllHint: { hu: "Minden csapattársnál töltsd ki a két visszajelzési mezőt.", en: "Fill in both feedback fields for every teammate." },
     submitError: { hu: "A beküldés nem sikerült – próbáld újra.", en: "Submitting failed – try again." },
     doneTitle: { hu: "Kész – köszönjük!", en: "Done – thank you!" },
     doneBody: {
       hu: "A visszajelzéseidet rögzítettük. Az elismerések azonnal megjelennek a címzetteknél; a javaslatok a kör szabályai szerint jutnak el hozzájuk.",
       en: "Your feedback has been recorded. Appreciations appear immediately; suggestions reach recipients according to the round's rules.",
     },
-    nonePendingTitle: { hu: "Nincs nyitott visszajelzés-köröd", en: "No open feedback round" },
+    nonePendingTitle: { hu: "Nincs nyitott visszajelzési köröd", en: "No open feedback round" },
     nonePendingBody: {
-      hu: "Most nincs olyan aktív mérésed, ahol az elismerés-kör lenne az aktuális lépés.",
+      hu: "Most nincs olyan aktív mérésed, ahol az elismerési kör lenne az aktuális lépés.",
       en: "You have no active campaign where the peer feedback round is your current step.",
     },
     backToDashboard: { hu: "Vissza a vezérlőre", en: "Back to dashboard" },
@@ -1112,7 +1112,7 @@ export const orgTranslations = {
     nextPerson: { hu: "Tovább", en: "Next" },
     prevPerson: { hu: "Vissza", en: "Back" },
     nextPersonHint: {
-      hu: "A továbblépéshez töltsd ki a két visszajelzés-mezőt.",
+      hu: "A továbblépéshez töltsd ki a két visszajelzési mezőt.",
       en: "Fill in both feedback fields to continue.",
     },
     personDoneBadge: { hu: "Kész", en: "Done" },
@@ -1132,13 +1132,13 @@ export const orgTranslations = {
     unknownError: { hu: "Ismeretlen hiba", en: "Unknown error" },
     detailsTitle: { hu: "Mérés adatai", en: "Measurement details" },
     nameLabel: { hu: "Mérés neve", en: "Measurement name" },
-    namePlaceholder: { hu: "pl. Q2 360° visszajelzés", en: "e.g. Q2 360° feedback" },
+    namePlaceholder: { hu: "pl. II. negyedévi 360°-os visszajelzés", en: "e.g. Q2 360° feedback" },
     descLabel: { hu: "Leírás", en: "Description" },
     optional: { hu: "(opcionális)", en: "(optional)" },
-    descPlaceholder: { hu: "Rövid leírás a mérésről...", en: "Brief description..." },
+    descPlaceholder: { hu: "Rövid leírás a mérésről…", en: "Brief description..." },
     next: { hu: "Tovább", en: "Next" },
     selectParticipants: { hu: "Résztvevők kiválasztása", en: "Select participants" },
-    deselectAll: { hu: "Mind törlése", en: "Deselect all" },
+    deselectAll: { hu: "Kijelölések törlése", en: "Deselect all" },
     selectAll: { hu: "Mindenki", en: "Select all" },
     noMembers: { hu: "Nincsenek tagok a szervezetben.", en: "No members in this organization." },
     back: { hu: "Vissza", en: "Back" },
@@ -1150,12 +1150,12 @@ export const orgTranslations = {
       hu: "A mérés piszkozatként jön létre. Az aktiválást a mérés oldalán végezheted el.",
       en: "Campaign is created in DRAFT status. You can activate it from the campaign page.",
     },
-    creating: { hu: "Létrehozás...", en: "Creating..." },
+    creating: { hu: "Létrehozás…", en: "Creating..." },
     createCampaign: { hu: "Mérés létrehozása", en: "Create measurement" },
     createAndActivate: { hu: "Létrehozás és aktiválás", en: "Create and activate" },
     activateNowLabel: { hu: "Aktiválás azonnal a létrehozás után.", en: "Activate immediately after creation." },
     activateNowHint: {
-      hu: "A résztvevők azonnal lépés-nyitó értesítést kapnak, és indul az első kérdőív. Csak akkor pipáld be, ha a névsor végleges – az aktiválás nem vonható vissza.",
+      hu: "A résztvevők azonnal értesítést kapnak, és kitölthetik az első kérdőívet. Csak akkor jelöld be, ha a névsor végleges: az aktiválás nem vonható vissza.",
       en: "Participants get their step-opening notification right away and the first questionnaire starts. Only check this if the roster is final – activation cannot be undone.",
     },
     activateNowNoParticipants: {
@@ -1180,7 +1180,7 @@ export const orgTranslations = {
     typeTitle: { hu: "Mit szeretnél mérni?", en: "What do you want to measure?" },
     packageRecommended: { hu: "Ajánlott", en: "Recommended" },
     scanV1Meta: {
-      hu: "Rögzített pilot-készlet · observer és peer kör nélkül",
+      hu: "Rögzített pilotcsomag · mások személyiségértékelése és csapattársi visszajelzési kör nélkül",
       en: "Fixed pilot set · without observer and peer rounds",
     },
     packageCustomName: { hu: "Egyedi mérési kör", en: "Custom measurement round" },
@@ -1190,61 +1190,61 @@ export const orgTranslations = {
     },
     typeSelfName: { hu: "Önértékelés", en: "Self-assessment" },
     typeSelfDesc: {
-      hu: "A tagok kitöltik a 60 állításos személyiség-kérdőívet, külső értékelők meghívása nélkül.",
+      hu: "A tagok kitöltik a 60 állításos személyiségkérdőívet, külső értékelők meghívása nélkül.",
       en: "Members complete the 60-item personality questionnaire without inviting external observers.",
     },
     typeSelfMeta: { hu: "60 állítás · ~10 perc / fő", en: "60 items · ~10 min per member" },
     typeSelfOut: {
-      hu: "Eredmény: körhöz címkézett self profil és csapatszintű dimenzió-kontroll",
+      hu: "Eredmény: a mérési körhöz tartozó önértékelési profil és a személyiségdimenziók csapatszintű áttekintése",
       en: "Output: round-labelled self profile and team-level dimension control",
     },
     typeObserverName: { hu: "Külső visszajelzés (360°)", en: "External feedback (360°)" },
     typeObserverDesc: {
-      hu: "A tagok kollégákat hívnak meg, akik kívülről jellemzik őket – az önkép és a külső kép összevethetővé válik.",
+      hu: "A tagok visszajelzést kérnek a kollégáiktól, így összevethetik a saját véleményüket azzal, ahogyan mások látják őket.",
       en: "Members invite colleagues who describe them from the outside – self-image and outside image become comparable.",
     },
-    typeObserverMeta: { hu: "~10 perc / megfigyelő · név szerinti meghívás", en: "~10 min per observer · named invitations" },
-    typeObserverOut: { hu: "Eredmény: önkép és külső kép összehasonlítása, mért kapcsolati adatok a riportban", en: "Output: self vs. outside comparison, measured relationship data in the report" },
+    typeObserverMeta: { hu: "~10 perc / visszajelző · név szerinti meghívás", en: "~10 min per observer · named invitations" },
+    typeObserverOut: { hu: "Eredmény: az önkép és mások visszajelzéseinek összehasonlítása, mért kapcsolati adatok a riportban", en: "Output: self vs. outside comparison, measured relationship data in the report" },
     typeRoleName: { hu: "Csapatszerep-kör", en: "Team role round" },
     typeRoleDesc: {
-      hu: "A csapat tagjai kitöltik a szerep-kérdőívet – a becsült szerepek helyett mért szerep-térkép készül.",
+      hu: "A csapat tagjai kitöltik a szerepkérdőívet – a becsült szerepek helyett mért szereptérkép készül.",
       en: "Team members fill out the role questionnaire – a measured role map replaces estimates.",
     },
     typeRoleMeta: { hu: "~4 perc / fő · egy csapatra indítható", en: "~4 min per member · launched for one team" },
-    typeRoleOut: { hu: "Eredmény: mért szerep-lefedettség a csapatoldalon és a riportban", en: "Output: measured role coverage on the team page and in the report" },
+    typeRoleOut: { hu: "Eredmény: mért szereplefedettség a csapatoldalon és a riportban", en: "Output: measured role coverage on the team page and in the report" },
     typeRole360Name: { hu: "Csapattársi szerep-visszajelzés", en: "Team role peer feedback" },
     typeRole360Desc: {
-      hu: "A tagok egymásról jelölik ki a legjellemzőbb viselkedéseket – az önkép mellé mért csapatkép kerül.",
+      hu: "A tagok kiválasztják az egymásra leginkább jellemző viselkedéseket. Az önkép így összevethető a csapattársak visszajelzéseivel.",
       en: "Members pick each other's most characteristic behaviours – a measured team view lands next to the self-image.",
     },
     typeRole360Meta: { hu: "~3-4 perc / értékelt fő · névtelen, összesített kép (min. 3 értékelő)", en: "~3-4 min per teammate · anonymous, aggregated view (min. 3 raters)" },
-    typeRole360Out: { hu: "Eredmény: önkép vs. csapatkép összevetés a csapatoldalon és a riportban", en: "Output: self-image vs. team view comparison on the team page and in the report" },
+    typeRole360Out: { hu: "Eredmény: az önkép és a csapattársak visszajelzéseinek összevetése a csapatoldalon és a riportban", en: "Output: self-image vs. team view comparison on the team page and in the report" },
     intervalLabel: { hu: "Kérdőívek üteme", en: "Questionnaire pacing" },
-    intervalHint: { hu: "A teljesített kérdőív után ennyivel később nyílik (és érkezik értesítés) a következő – így nem egyszerre zúdul a tagokra. Bármikor felülbírálható a „Küldés most\u201d gombbal.", en: "The next questionnaire opens (and notifies) this long after the previous one is completed – so members aren't flooded at once. You can override anytime with \u201cSend now\u201d." },
+    intervalHint: { hu: "Az előző kérdőív befejezése után ennyi idővel válik elérhetővé a következő. A tagok ekkor értesítést is kapnak róla. A „Küldés most” gombbal korábban is elérhetővé teheted.", en: "The next questionnaire opens (and notifies) this long after the previous one is completed – so members aren't flooded at once. You can override anytime with \u201cSend now\u201d." },
     intervalNone: { hu: "Egymás után", en: "Back-to-back" },
     interval12h: { hu: "12 óránként", en: "Every 12h" },
     interval24h: { hu: "Naponta egy (ajánlott)", en: "One per day (recommended)" },
     interval48h: { hu: "Kétnaponta", en: "Every 2 days" },
     allowExternalLabel: { hu: "Külső értékelők jóváhagyás nélkül.", en: "External observers without approval." },
-    allowExternalHint: { hu: "Ha bekapcsolod, a tagok szabadon hívhatnak meg szervezeten kívüli értékelőt. Kikapcsolva a külső meghívókat a menedzser / org admin / tanácsadó hagyja jóvá.", en: "If enabled, members can freely invite observers from outside the organization. If disabled, external invites need manager / org admin / consultant approval." },
+    allowExternalHint: { hu: "Ha bekapcsolod, a tagok jóváhagyás nélkül hívhatnak meg szervezeten kívüli értékelőket. Ha kikapcsolod, ezeket a meghívókat a vezetőnek, a szervezeti adminisztrátornak vagy a tanácsadónak kell jóváhagynia.", en: "If enabled, members can freely invite observers from outside the organization. If disabled, external invites need manager / org admin / consultant approval." },
     typeTrustName: { hu: "Bizalmi háló kör", en: "Trust network round" },
     typeTrustDesc: {
-      hu: "Rövid páronkénti kérdéssor az együttműködés tényleges működéséről – a dinamika-térkép becslései helyére mért kapcsolati adat kerül.",
+      hu: "Rövid kérdéssor a csapattársakkal való együttműködésről. A kapcsolati térképen a becsléseket mért adatok váltják fel.",
       en: "Short pairwise questions on how collaboration actually works – measured relationship data replaces the dynamics map estimates.",
     },
     typeTrustMeta: { hu: "5 kérdés / csapattárs · ~2-3 perc / fő", en: "5 questions per teammate · ~2-3 min per member" },
     typeTrustOut: {
-      hu: "Eredmény: mért kapcsolati kép a dinamika-térképen (páronként összevonva), összekötő és beágyazatlan tagok jelzése",
+      hu: "Eredmény: páronként összesített, mért adatok a kapcsolati térképen; a csapatot összekötő és az erős bizalmi kapcsolat nélküli tagok jelzése",
       en: "Output: measured relationship view on the dynamics map (combined per pair), highlighting connectors and unembedded members",
     },
-    typePeerFbName: { hu: "Elismerés-kör", en: "Recognition round" },
+    typePeerFbName: { hu: "Elismerési kör", en: "Recognition round" },
     typePeerFbDesc: {
-      hu: "A tagok strukturált lapon adnak egymásnak elismerést és egy jövő-irányú javaslatot – a kör zárja a mérés-sorozatot, amikor már felépült a bizalom.",
+      hu: "A tagok strukturált lapon adnak egymásnak elismerést és egy előremutató javaslatot – a kör zárja a méréssorozatot, amikor már felépült a bizalom.",
       en: "Members give each other structured appreciation and one forward-looking suggestion – this round closes the series, once trust has been built.",
     },
     typePeerFbMeta: { hu: "tagonként ~1-2 perc / csapattárs · a sor végén nyílik", en: "~1-2 min per teammate · opens at the end of the sequence" },
     typePeerFbOut: {
-      hu: "Kimenet: nevesített köszönetek + fejlesztő javaslatok (anonim-aggregált opcióval)",
+      hu: "Eredmény: névvel küldött köszönetek és fejlesztő javaslatok. A javaslatok név nélkül, összesítve is megjeleníthetők.",
       en: "Output: named kudos + development suggestions (with anonymous-aggregated option)",
     },
     freshLabel: { hu: "Újrafelvételi kör.", en: "Re-measurement round." },
@@ -1253,26 +1253,26 @@ export const orgTranslations = {
       en: "Previous results don't count in this round – every participant fills in the questionnaires again. Old results are kept; the round becomes the basis for later comparison.",
     },
     scanV1FreshLabel: {
-      hu: "Körhöz kötött self-adat.",
+      hu: "Az adott körben kitöltött önértékelés.",
       en: "Round-labelled self data.",
     },
     scanV1FreshHint: {
-      hu: "A Scan v1-ben minden résztvevő friss self-kérdőívet tölt ki. Ettől lesz a baseline, a visszamérés és a pilotkohorsz pontosan ugyanahhoz a körhöz köthető.",
+      hu: "A Scan v1 programban minden résztvevő újra kitölti az önértékelést. Így a kiinduló mérés és a későbbi mérések eredményei egyértelműen az adott körhöz és annak résztvevőihez köthetők.",
       en: "In Scan v1 every participant completes a fresh self-assessment. This keeps the baseline, follow-up and pilot cohort tied to the exact measurement round.",
     },
-    peerFbAnonLabel: { hu: "Anonim-aggregált javaslatok.", en: "Anonymous, aggregated suggestions." },
+    peerFbAnonLabel: { hu: "Név nélkül, összesítve megjelenő javaslatok.", en: "Anonymous, aggregated suggestions." },
     peerFbAnonHint: {
       hu: "A fejlesztő javaslatok a címzettnél név nélkül, összekeverve jelennek meg, és csak legalább 3 beküldőnél. Az elismerések mindig nevesítettek.",
       en: "Development suggestions appear to the recipient without names, shuffled, and only with at least 3 senders. Appreciations are always named.",
     },
-    typePsychName: { hu: "Pszichológiai biztonság pulzusmérése", en: "Psychological safety pulse" },
+    typePsychName: { hu: "Pszichológiai biztonság felmérése", en: "Psychological safety pulse" },
     typePsychDesc: {
-      hu: "Rövid, anonim csapat-kérdőív arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.",
+      hu: "Rövid, anonim csapatkérdőív arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.",
       en: "Short, anonymous team survey on how safe it feels to fail, ask, and disagree.",
     },
     typePsychMeta: { hu: "8 állítás · ~2 perc / fő · névtelen", en: "8 statements · ~2 min per member · anonymous" },
     typePsychOut: {
-      hu: "Eredmény: csapatszintű biztonság-index és állításonkénti kép – egyéni válaszok nélkül",
+      hu: "Eredmény: csapatszintű biztonságindex és állításonkénti kép – egyéni válaszok nélkül",
       en: "Output: team-level safety index and per-statement view – without individual answers",
     },
     typeComingSoon: { hu: "Hamarosan", en: "Coming soon" },
@@ -1280,7 +1280,7 @@ export const orgTranslations = {
       hu: "Több mérést is kiválaszthatsz – a tagoknak sorban nyílnak meg: amikor valaki végez az egyikkel, számára megnyílik a következő, és értesítést kap róla.",
       en: "You can select multiple measurements – they open for members one at a time: when someone finishes one, the next opens for them, with a notification.",
     },
-    seriesName: { hu: "Mérés-sorozat", en: "Measurement series" },
+    seriesName: { hu: "Méréssorozat", en: "Measurement series" },
 
     // Célzás (csapat-alapú)
     stepTargeting: { hu: "Résztvevők", en: "Participants" },
@@ -1289,16 +1289,16 @@ export const orgTranslations = {
     noTeams: { hu: "Nincs csapat a szervezetben – válassz tagokat egyénileg.", en: "No teams in this organization – pick members individually." },
     individualTitle: { hu: "Egyéni kiválasztás", en: "Individual selection" },
     roleTeamHint: {
-      hu: "A csapat-kötött mérések teljes csapat(ok)ra indulnak – több csapatot is kiválaszthatsz, mindenki a saját csapatában értékel.",
+      hu: "A csapathoz kötött mérésekben mindig a teljes csapat vesz részt. Több csapatot is kiválaszthatsz; mindenki a saját csapatában ad értékelést.",
       en: "Team-bound measurements run for whole teams – you can pick multiple teams; everyone rates within their own team.",
     },
-    targetTeamLabel: { hu: "cél-csapat(ok)", en: "target team(s)" },
+    targetTeamLabel: { hu: "részt vevő csapatok", en: "target team(s)" },
     typeSummaryLabel: { hu: "mérés típusa", en: "measurement type" },
     autoNameHint: { hu: "A nevet mi javasoltuk – átírhatod.", en: "We suggested the name – feel free to change it." },
 
     // Életciklus megerősítések
     activateConfirm: {
-      hu: "Aktiválod a mérést?\n\n• A résztvevők e-mail értesítést kapnak.\n• Aktív méréshez később is adhatsz résztvevőt.\n• A későbbi lezárás végleges – a mérés nem nyitható újra.",
+      hu: "Aktiválod a mérést?\n\n• A résztvevők e-mailes értesítést kapnak.\n• Aktív méréshez később is adhatsz résztvevőt.\n• A későbbi lezárás végleges – a mérés nem nyitható újra.",
       en: "Activate this campaign?\n\n• Participants will receive an email notification.\n• You can still add participants while active.\n• Closing later is final – the campaign cannot be reopened.",
     },
     closeConfirm: {
@@ -1338,7 +1338,7 @@ export const orgTranslations = {
       en: "Manage the full candidate flow in one place: invites, status, and results.",
     },
     snapshotLabel: { hu: "Élő pillanatkép", en: "Live snapshot" },
-    completionRate: { hu: "Lezárt arány", en: "Completion rate" },
+    completionRate: { hu: "Befejezett kitöltések aránya", en: "Completion rate" },
     candidatesTotal: { hu: "jelölt összesen", en: "candidates total" },
     completedLabel: { hu: "kitöltve", en: "completed" },
     inProgressLabel: { hu: "folyamatban", en: "in progress" },
@@ -1346,7 +1346,7 @@ export const orgTranslations = {
     inviteCandidate: { hu: "Jelölt meghívása", en: "Invite candidate" },
 
     // HiringDashboard — credit pool
-    creditEyebrow: { hu: "jelölt kreditek", en: "candidate credits" },
+    creditEyebrow: { hu: "jelöltkreditek", en: "candidate credits" },
     creditsAvailable: { hu: "kredit elérhető", en: "credits available" },
     creditsPurchased: { hu: "vásárolt", en: "purchased" },
     creditsUsed: { hu: "felhasznált", en: "used" },
@@ -1373,9 +1373,9 @@ export const orgTranslations = {
     candidateSuffix: { hu: "jelölt", en: "candidate" },
 
     // HiringDashboard — credit history
-    creditLogEyebrow: { hu: "kredit napló", en: "credit log" },
-    creditPurchase: { hu: "Kredit vásárlás", en: "Credit purchase" },
-    creditUsage: { hu: "Kredit felhasználás", en: "Credit usage" },
+    creditLogEyebrow: { hu: "kreditnapló", en: "credit log" },
+    creditPurchase: { hu: "Kreditvásárlás", en: "Credit purchase" },
+    creditUsage: { hu: "Kreditfelhasználás", en: "Credit usage" },
 
     // HiringDashboard — empty state
     noCandidatesTitle: { hu: "Még nincs jelölt", en: "No candidates yet" },
@@ -1385,7 +1385,7 @@ export const orgTranslations = {
     },
 
     // HiringPaywall — features
-    featureEmailTitle: { hu: "E-mail meghívó", en: "Email invitation" },
+    featureEmailTitle: { hu: "Meghívó e-mailben", en: "Email invitation" },
     featureEmailDesc: {
       hu: "Küldj személyre szabott meghívót a jelölteknek egyetlen kattintással.",
       en: "Send personalised invitations to candidates with a single click.",
@@ -1395,7 +1395,7 @@ export const orgTranslations = {
       hu: "Hasonlítsd össze a jelöltek személyiségprofilját a csapatod mintázatával.",
       en: "Compare candidate personality profiles against your team patterns.",
     },
-    featureRoleFitTitle: { hu: "Szerep-illeszkedés", en: "Role fit" },
+    featureRoleFitTitle: { hu: "Szerepilleszkedés", en: "Role fit" },
     featureRoleFitDesc: {
       hu: "Lásd, mennyire illik a jelölt a pozícióhoz a személyiségprofil alapján.",
       en: "See how well a candidate fits the role based on their personality profile.",
@@ -1409,7 +1409,7 @@ export const orgTranslations = {
       en: "Use trita personality assessments in your hiring process – invite candidates, compare their profiles, and make data-driven decisions.",
     },
     addonPricing: {
-      hu: "A jelölt-kreditek ára a program részeként, egyedi ajánlatban szerepel.",
+      hu: "A jelöltkreditek ára a program részeként, egyedi ajánlatban szerepel.",
       en: "Candidate credit pricing is part of your individual program quote.",
     },
     noSubPricing: {
@@ -1451,11 +1451,11 @@ export const orgTranslations = {
     noLowArea: { hu: "Nincs kritikusan alacsony terület", en: "No critically low area" },
     teamFitEyebrow: { hu: "hasonlóság a csapathoz", en: "team similarity" },
     teamComparisonNA: {
-      hu: "Csapat összehasonlítás nem elérhető",
+      hu: "A csapattal való összehasonlítás nem elérhető",
       en: "Team comparison not available",
     },
     notEnoughTeamData: {
-      hu: "Nincs elég csapat-adat az összehasonlításhoz – legalább {min} kitöltött önértékelés szükséges.",
+      hu: "Nincs elég csapatadat az összehasonlításhoz – legalább {min} kitöltött önértékelés szükséges.",
       en: "Not enough team data for a comparison – at least {min} completed self-assessments are needed.",
     },
     // A címke a csapatátlaghoz mért HASONLÓSÁG, nem alkalmasság — az eltérő
@@ -1490,7 +1490,7 @@ export const orgTranslations = {
     watchAreaBadge: { hu: "Figyelendő", en: "Watch area" },
     // Mért csapatszerep-blokk (forrás-jelöléssel)
     teamRolesEyebrow: { hu: "csapatszerepek", en: "team roles" },
-    teamRolesTitle: { hu: "Csapatszerep-kérdőív eredménye", en: "Team-role questionnaire result" },
+    teamRolesTitle: { hu: "Csapatszerepkérdőív eredménye", en: "Team-role questionnaire result" },
     measuredBadge: { hu: "Mért", en: "Measured" },
 
     subscriptionAdminRequired: {
@@ -1518,7 +1518,7 @@ export const orgTranslations = {
     teamInvite: {
       alreadyMember: { hu: "Ez a személy már tagja a csapatnak (vagy meghívó küldve).", en: "This person is already a member or has a pending invite." },
       error: { hu: "Hiba. Próbáld újra.", en: "Something went wrong." },
-      emailLabel: { hu: "Emailcím", en: "Email address" },
+      emailLabel: { hu: "E-mail-cím", en: "Email address" },
       emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
       adding: { hu: "Hozzáadás…", en: "Adding…" },
       add: { hu: "Hozzáadás", en: "Add member" },
@@ -1528,7 +1528,7 @@ export const orgTranslations = {
 
     // TeamInsights
     teamInsights: {
-      avgByDimension: { hu: "Csapatátlag dimenzióként", en: "Team average by dimension" },
+      avgByDimension: { hu: "Csapatátlag dimenziónként", en: "Team average by dimension" },
       // A korábbi „±: szórás…" jelmagyarázat a kivezetett ±-számot magyarázta;
       // az új sor azt mondja el, amit a blokk ténylegesen mutat.
       stdDevHint: { hu: "Csapatátlagok – egyéni értékek nem jelennek meg.", en: "Team averages – individual values are not shown." },
@@ -1536,7 +1536,7 @@ export const orgTranslations = {
       teamStrength: { hu: "Csapat erőssége", en: "Team strength" },
       growthArea: { hu: "Fejlesztési terület", en: "Growth area" },
       mostDiverse: { hu: "Legnagyobb sokszínűség", en: "Most diverse" },
-      diversityDesc: { hu: "A csapattagok eltérő megközelítéseket és perspektívákat hoznak erre a területre – ez gazdag vita- és kreatív potenciált jelent.", en: "Team members bring diverse approaches and perspectives to this area – this represents rich discussion and creative potential." },
+      diversityDesc: { hu: "A csapattagok eltérően közelítik meg ezt a területet. A különböző nézőpontok tartalmas vitákat és új ötleteket indíthatnak el.", en: "Team members bring diverse approaches and perspectives to this area – this represents rich discussion and creative potential." },
       analysisBasis: { hu: "Az elemzés {scored} kitöltött teszten alapul ({remaining} tag még nem töltötte ki).", en: "Analysis based on {scored} completed assessments ({remaining} members haven't completed yet)." },
     },
 
@@ -1554,16 +1554,16 @@ export const orgTranslations = {
 
     // CandidateInviteForm
     candidateInvite: {
-      emailLabel: { hu: "Email cím (opcionális)", en: "Email address (optional)" },
+      emailLabel: { hu: "E-mail-cím (opcionális)", en: "Email address (optional)" },
       emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
       nameLabel: { hu: "Jelölt neve", en: "Candidate name" },
       namePlaceholder: { hu: "Kovács Anna", en: "Jane Smith" },
       nameRequired: { hu: "A jelölt neve kötelező.", en: "Candidate name is required." },
       positionLabel: { hu: "Pozíció (opcionális)", en: "Position (optional)" },
-      positionPlaceholder: { hu: "pl. Frontend fejlesztő, CTO, Sales manager", en: "e.g. Frontend dev, CTO, Sales manager" },
+      positionPlaceholder: { hu: "pl. frontendfejlesztő, technológiai vezető, értékesítési vezető", en: "e.g. Frontend dev, CTO, Sales manager" },
       teamLabel: { hu: "Csapat (opcionális)", en: "Team (optional)" },
       noTeam: { hu: "– Nincs csapat –", en: "– No team –" },
-      emailLang: { hu: "Email nyelve", en: "Email language" },
+      emailLang: { hu: "Az e-mail nyelve", en: "Email language" },
       createError: { hu: "Hiba történt a meghívó létrehozása során.", en: "An error occurred while creating the invite." },
       genericError: { hu: "Hiba történt. Próbáld újra.", en: "An error occurred. Please try again." },
       creating: { hu: "Létrehozás…", en: "Creating…" },
@@ -1587,7 +1587,7 @@ export const orgTranslations = {
     candidateRevoke: {
       revoke: { hu: "Visszavon", en: "Revoke" },
       revokeTitle: { hu: "Meghívó visszavonása", en: "Revoke invite" },
-      revokeDescription: { hu: "A meghívólink érvénytelenné válik, a jelölt nem tudja majd kitölteni a felmérést. Ez a művelet nem visszavonható.", en: "The invite link will become invalid and the candidate will no longer be able to complete the assessment. This cannot be undone." },
+      revokeDescription: { hu: "A meghívólink érvénytelenné válik, a jelölt nem tudja majd kitölteni a felmérést. Ez a művelet nem vonható vissza.", en: "The invite link will become invalid and the candidate will no longer be able to complete the assessment. This cannot be undone." },
       cancel: { hu: "Mégse", en: "Cancel" },
       revoking: { hu: "Visszavonás…", en: "Revoking…" },
     },
@@ -1627,7 +1627,7 @@ export const orgTranslations = {
     // TeamOverviewTab — campaign banner
     activeBadge: { hu: "Aktív", en: "Active" },
     selfAssessmentLabel: { hu: "önértékelés", en: "self-assessment" },
-    observerLabel: { hu: "observer", en: "observer" },
+    observerLabel: { hu: "mások visszajelzései", en: "observer" },
     daysLabel: { hu: "nap", en: "days" },
     viewCampaign: { hu: "Mérés megnyitása", en: "Open measurement" },
 
@@ -1641,7 +1641,7 @@ export const orgTranslations = {
     startCampaign: { hu: "Mérés indítása", en: "Start a measurement" },
 
     // TeamOverviewTab — personality profile card
-    teamAvgSelfEyebrow: { hu: "csapat átlag · önkép", en: "team avg · self" },
+    teamAvgSelfEyebrow: { hu: "csapatátlag · önkép", en: "team avg · self" },
     tritanProfile: { hu: "Személyiségprofil", en: "Personality profile" },
     membersSelf: { hu: "fő · önértékelés", en: "members · self" },
     noAssessmentsProfile: {
@@ -1651,7 +1651,7 @@ export const orgTranslations = {
 
     // TeamOverviewTab — dynamics card
     teamDynamicsEyebrow: { hu: "csapatdinamika", en: "team dynamics" },
-    keyCharacteristics: { hu: "Kulcs jellemzők", en: "Key characteristics" },
+    keyCharacteristics: { hu: "Fő jellemzők", en: "Key characteristics" },
     notEnoughData: { hu: "Nincs elég adat az elemzéshez.", en: "Not enough data for analysis." },
     teamStrengthEyebrow: { hu: "csapat erőssége", en: "team strength" },
     growthAreaEyebrow: { hu: "fejlesztési terület", en: "growth area" },
@@ -1677,29 +1677,29 @@ export const orgTranslations = {
     },
     sampleLabel: { hu: "Minta", en: "Sample" },
     stabilityLabel: { hu: "Stabilitás", en: "Stability" },
-    patternClarityLabel: { hu: "Mintázat-tisztaság", en: "Pattern clarity" },
+    patternClarityLabel: { hu: "A mintázat egyértelműsége", en: "Pattern clarity" },
     confidenceLabel: { hu: "pontosság", en: "confidence" },
     strengthsEyebrow: { hu: "erősségek", en: "strengths" },
     blindSpotsEyebrow: { hu: "vakfoltok", en: "blind spots" },
     nextStepsEyebrow: { hu: "ajánlott következő lépések", en: "recommended next steps" },
     thisWeek: { hu: "Ezen a héten", en: "This week" },
-    thisMonth: { hu: "Ezen a hónapban", en: "This month" },
+    thisMonth: { hu: "Ebben a hónapban", en: "This month" },
     ongoing: { hu: "Rendszeresen", en: "Ongoing" },
     explorePattern: { hu: "Megnézem a csapatmintát", en: "Explore team pattern" },
     alternativePattern: { hu: "Közeli alternatív mintázat:", en: "Closest alternative pattern:" },
     memberAssessments: { hu: "tag értékelése alapján", en: "member assessments" },
     missingData: { hu: "hiányzó adat", en: "missing" },
     framingNote: {
-      hu: "Értelmezési nyelv a csapat jelenlegi, önértékelés-alapú tengelyeihez – nem validált tipológia, diagnózis vagy teljesítménycímke. A közvetlenül mért bizalmi háló és pszichológiai biztonság külön evidencia.",
+      hu: "A mintázat a csapat jelenlegi önértékelési eredményeinek megértését segíti. Nem validált tipológia, diagnózis vagy teljesítményértékelés. A bizalmi háló és a pszichológiai biztonság közvetlen mérése külön adatokkal egészíti ki ezt a képet.",
       en: "Interpretive language for the team's current self-assessment-based axes – not a validated typology, diagnosis, or performance label. The directly measured trust network and psychological safety are separate evidence.",
     },
 
     // TeamRoleSection
     estimatedRolesEyebrow: { hu: "csapatszerepek", en: "team roles" },
-    peerEyebrow: { hu: "önkép vs. csapatkép", en: "self-image vs. team view" },
+    peerEyebrow: { hu: "önkép és csapatkép", en: "self-image vs. team view" },
     peerTitle: { hu: "Így látja a csapat", en: "How the team sees it" },
     peerDesc: {
-      hu: "A csapattársi visszajelzés-kör összesített képe tagonként – az önkitöltés mellé mért csapatkép kerül. A pötty a csapatkép azon szerepét jelöli, amely az önképben nem szerepel.",
+      hu: "A csapattársi visszajelzési kör összesített képe tagonként – az önkitöltés mellé mért csapatkép kerül. A pötty a csapatkép azon szerepét jelöli, amely az önképben nem szerepel.",
       en: "The aggregated view from the peer feedback round, per member – a measured team view next to the self-report. The dot marks roles in the team view that don't appear in the self-image.",
     },
     // Az anonimitás-padló ({min} = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE) a
@@ -1707,12 +1707,12 @@ export const orgTranslations = {
     peerCoverage: { hu: "{above} / {total} tagnál áll össze a csapatkép (legalább {min} értékelő)", en: "team view available for {above} / {total} members (at least {min} raters)" },
     peerRaterCount: { hu: "{n} értékelő", en: "{n} raters" },
     peerBelowThreshold: {
-      hu: "Még kevesebb mint {min} csapattárs adott visszajelzést – az összesített kép a névtelenség védelmében csak a küszöb felett jelenik meg.",
+      hu: "Még kevesebb mint {min} csapattárs adott visszajelzést. A névtelenség védelmében az összesített kép csak a szükséges válaszszám elérésekor jelenik meg.",
       en: "Fewer than {min} teammates have responded so far – to protect anonymity, the aggregated view only appears above the threshold.",
     },
     peerSelfLabel: { hu: "Önkép (saját kitöltés)", en: "Self-image (own answers)" },
     peerTeamLabel: { hu: "Csapatkép (társak szerint)", en: "Team view (per teammates)" },
-    peerNoSelf: { hu: "Nincs saját kitöltés – az összevetéshez töltsd ki a szerep-kérdőívet.", en: "No self-report yet – fill in the role questionnaire to compare." },
+    peerNoSelf: { hu: "Nincs saját kitöltés – az összevetéshez töltsd ki a szerepkérdőívet.", en: "No self-report yet – fill in the role questionnaire to compare." },
     peerDiff: { hu: "Az önképben nem szerepel", en: "Not in the self-image" },
     peerFootnote: {
       hu: "A csapatkép névtelen: senki egyéni jelölése nem visszakereshető, és {min} értékelő alatt nem jelenik meg.",
@@ -1720,34 +1720,34 @@ export const orgTranslations = {
     },
     teamRoleTitle: { hu: "Csapatszerep-elemzés", en: "Team role analysis" },
     teamRoleDesc: {
-      hu: "Tagonkénti csapatszerep-profilok. A kitöltött csapatszerep-kérdőív mért adat; ahol még nincs kitöltés, a személyiségprofilból becslünk – a forrást minden tagnál külön jelöljük.",
+      hu: "A csapattagok szerepprofiljai. A kitöltött csapatszerep-kérdőív mért adat; ahol még nincs kitöltés, a személyiségprofilból becslünk – a forrást minden tagnál külön jelöljük.",
       en: "Per-member team-role profiles. A completed team-role questionnaire is measured data; where it is missing, we estimate from the personality profile – the source is badged for every member.",
     },
-    profileStatus: { hu: "Személyiségprofil státusz", en: "Personality profile status" },
+    profileStatus: { hu: "A személyiségprofil állapota", en: "Personality profile status" },
     profileStatusDesc: {
       hu: "{done} / {total} tagnak van személyiségprofilja – a csapatszerep-becslések erre épülnek",
       en: "{done} / {total} members have personality data – team-role estimates are derived from this",
     },
-    roleDistributionEyebrow: { hu: "szerepkör-eloszlás", en: "role distribution" },
+    roleDistributionEyebrow: { hu: "szerepek megoszlása", en: "role distribution" },
     roleCompositionTitle: { hu: "Csapatszerepek megoszlása", en: "Team role composition" },
     noRoleData: { hu: "Nincs elég adat a csapatszerep-eloszláshoz.", en: "Not enough data for role distribution." },
-    balanceAlertsEyebrow: { hu: "egyensúly-figyelmeztetések", en: "balance alerts" },
+    balanceAlertsEyebrow: { hu: "a szerepek egyensúlya", en: "balance alerts" },
     wellDiversified: {
-      hu: "A csapat jól diverzifikált – minden fő szerepkör képviselt.",
+      hu: "A csapatban minden fő szerepkör képviselt.",
       en: "The team is well-diversified – all key roles are represented.",
     },
     missingRoles: { hu: "Hiányzó szerepkörök", en: "Missing roles" },
     overrepresentedRoles: { hu: "Túlreprezentált szerepkörök", en: "Overrepresented roles" },
-    categoryAnalysisEyebrow: { hu: "kategória-elemzés", en: "category analysis" },
+    categoryAnalysisEyebrow: { hu: "szerepkategóriák elemzése", en: "category analysis" },
     categoryAnalysisDesc: {
-      hu: "A csapat tagjai hogyan oszlanak meg a három fő szerepkategória között.",
+      hu: "Így oszlanak meg a csapattagok a három fő szerepkategória között.",
       en: "How team members distribute across the three core role categories.",
     },
     actionOriented: { hu: "Cselekvő", en: "Action-oriented" },
     peopleOriented: { hu: "Kapcsolati", en: "People-oriented" },
     thoughtOriented: { hu: "Gondolkodó", en: "Thought-oriented" },
     individualRolesEyebrow: { hu: "egyéni szerepkörök", en: "individual roles" },
-    memberRoleProfiles: { hu: "Tagok szerep-profilja", en: "Member role profiles" },
+    memberRoleProfiles: { hu: "A tagok szerepprofilja", en: "Member role profiles" },
     thMember: { hu: "Tag", en: "Member" },
     thPrimary: { hu: "Elsődleges", en: "Primary" },
     thSecondary: { hu: "Másodlagos", en: "Secondary" },
@@ -1758,11 +1758,11 @@ export const orgTranslations = {
     sourceMeasuredBadge: { hu: "kitöltött", en: "measured" },
     sourceEstimateBadge: { hu: "becslés", en: "estimate" },
     roleSourceMixLine: {
-      hu: "{measured} valódi kitöltés · {estimated} profil-alapú becslés",
+      hu: "{measured} valódi kitöltés · {estimated} profilalapú becslés",
       en: "{measured} real fill-outs · {estimated} profile-based estimates",
     },
     sourceMixMeasured: { hu: "{n} mért kitöltésből", en: "{n} from measured fill-outs" },
-    sourceMixEstimated: { hu: "{n} profil-alapú becslésből", en: "{n} from profile-based estimates" },
+    sourceMixEstimated: { hu: "{n} profilalapú becslésből", en: "{n} from profile-based estimates" },
 
     // TeamMembersTab
     membersTabEyebrow: { hu: "tagok", en: "members" },
@@ -1777,20 +1777,20 @@ export const orgTranslations = {
     },
     addMember: { hu: "Tag hozzáadása", en: "Add a member" },
     addMemberDesc: {
-      hu: "Add meg a csapattag emailcímét. A felhasználónak regisztrálva kell lennie.",
+      hu: "Add meg a csapattag e-mail-címét. A felhasználónak regisztrálva kell lennie.",
       en: "Enter the member's email. They must already be registered on trita.",
     },
 
     // TeamMemberRoleEditor
     roleManagerLabel: { hu: "Menedzser", en: "Manager" },
     roleMemberLabel: { hu: "Tag", en: "Member" },
-    cannotChangeSelf: { hu: "Saját role nem módosítható.", en: "Cannot change own role." },
+    cannotChangeSelf: { hu: "A saját szerepkörödet nem módosíthatod.", en: "Cannot change own role." },
     somethingWentWrong: { hu: "Hiba történt.", en: "Something went wrong." },
     networkError: { hu: "Hálózati hiba.", en: "Network error." },
 
     // TeamProfileTab
     personalityProfileEyebrow: { hu: "személyiségprofil", en: "personality profile" },
-    teamHeatmapTitle: { hu: "Csapat személyiségprofil", en: "Team Personality Heatmap" },
+    teamHeatmapTitle: { hu: "A csapat személyiségprofilja", en: "Team Personality Heatmap" },
     heatmapDesc: {
       hu: "Minden oszlop egy személyiségdimenziót mutat – minél mélyebb a szín, annál magasabb a pontszám.",
       en: "Each column represents a personality dimension – deeper color means a higher score.",
@@ -1809,15 +1809,15 @@ export const orgTranslations = {
     // DynamicsMap
     noDynamicsTitle: { hu: "Még nincs kapcsolati adat", en: "No dynamics data yet" },
     noDynamicsDesc: {
-      hu: "Indíts szakmai visszajelzési kört a dinamika-térkép feltöltéséhez",
+      hu: "Indíts szakmai visszajelzési kört a kapcsolati térkép feltöltéséhez",
       en: "Run a peer feedback round to populate the dynamics map",
     },
     dynamicsHiddenHint: {
-      hu: "A kapcsolati dinamika nézet csak akkor jelenik meg, ha van observer vagy peer kapcsolat-adat.",
+      hu: "A kapcsolati nézet akkor jelenik meg, ha már érkezett másoktól visszajelzés a csapattagok kapcsolatairól.",
       en: "The dynamics view is available only when observer or peer relationship data exists.",
     },
     connectionsEyebrow: { hu: "kapcsolatok", en: "connections" },
-    edgeGood: { hu: "jó együttmű.", en: "good collab." },
+    edgeGood: { hu: "jó együttműködés", en: "good collab." },
     edgeTension: { hu: "feszültség", en: "tension" },
     edgeNeutral: { hu: "semleges", en: "neutral" },
     edgeAligned: { hu: "hasonló profil", en: "aligned" },
@@ -1827,7 +1827,7 @@ export const orgTranslations = {
     edgeFriction: { hu: "lehetséges súrlódás", en: "potential friction" },
     edgeComplementary: { hu: "kiegészítő", en: "complementary" },
     incomingConnections: { hu: "kapcsolat ebben a hálóban", en: "connections in this network" },
-    legendGood: { hu: "Jó együttmű.", en: "Good collab." },
+    legendGood: { hu: "Jó együttműködés", en: "Good collab." },
     legendNeutral: { hu: "Semleges", en: "Neutral" },
     legendTension: { hu: "Feszültség", en: "Tension" },
     legendAligned: { hu: "Hasonló profil", en: "Similar profile" },
@@ -1836,21 +1836,21 @@ export const orgTranslations = {
     legendAlignedNeutral: { hu: "Összehangolt", en: "Aligned" },
     legendComplementary: { hu: "Kiegészítő", en: "Complementary" },
     legendFriction: { hu: "Potenciális súrlódás", en: "Potential friction" },
-    hubPerson: { hu: "Hub személy", en: "Hub person" },
+    hubPerson: { hu: "Összekötő csapattag", en: "Hub person" },
     clickPerson: { hu: "Kattints egy személyre", en: "Click on a person" },
     clickPersonConnections: { hu: "a kapcsolatai megtekintéséhez", en: "to view their connections" },
     edgeOneSided: { hu: "egyoldalú visszajelzés", en: "one-sided feedback" },
     // Dimenzió-bontás elrejtve, ha a páros valamelyik tagjának nincs valódi
     // profil-adata — kitalált (50-es default) értékek ellen nem számolunk gap-et.
     breakdownNoProfile: {
-      hu: "Nincs profiladat a bontáshoz – a páros legalább egyik tagja még nem töltötte ki a személyiség-felmérést.",
+      hu: "Nincs profiladat a bontáshoz – a páros legalább egyik tagja még nem töltötte ki a személyiségfelmérést.",
       en: "No profile data for this breakdown – at least one member of the pair hasn't completed the personality assessment yet.",
     },
 
     // Dinamika-forrás állapotcímkék (mért/becsült él-arány szerint)
     dynamicsStateMeasured: { hu: "mért", en: "measured" },
     dynamicsStateMixed: { hu: "vegyes", en: "mixed" },
-    dynamicsStateEstimated: { hu: "profil-becslés", en: "profile estimate" },
+    dynamicsStateEstimated: { hu: "profilból becsült", en: "profile estimate" },
     dynamicsStateNone: { hu: "nincs adat", en: "no data" },
 
     // Térkép-minőség címkék (kitöltöttség szerint)
@@ -1891,7 +1891,7 @@ export const orgTranslations = {
     // TeamIntelligence — sub-tab labels
     subMap: { hu: "① Csapattérkép", en: "① Team Map" },
     subDynamics: { hu: "② Dinamika", en: "② Dynamics Map" },
-    subRoles: { hu: "③ Szerep illeszkedés", en: "③ Role Fit" },
+    subRoles: { hu: "③ Szerepilleszkedés", en: "③ Role Fit" },
     evidenceEyebrow: { hu: "adatminőség", en: "data quality" },
     evidenceSource: { hu: "Forrás", en: "Source" },
     evidenceQuality: { hu: "Minőség", en: "Quality" },
@@ -1912,7 +1912,7 @@ export const orgTranslations = {
       en: "How closely self-image matches how others see you",
     },
     feedbackCultureLead: {
-      hu: "{covered} tagnak van mért külső képe a {total} főből – az alábbi bontás csak rájuk vonatkozik.",
+      hu: "A szervezet {total} tagja közül {covered} kapott elegendő visszajelzést másoktól. Az alábbi bontás csak rájuk vonatkozik.",
       en: "{covered} of {total} members have a measured external view – the breakdown below covers only them.",
     },
     feedbackCultureAligned: { hu: "egybevágó önkép", en: "matching self-image" },
@@ -1926,7 +1926,7 @@ export const orgTranslations = {
       en: "On at least one dimension the difference exceeds measurement error. Not a fault – a cue that a conversation is worth having.",
     },
     feedbackCultureNote: {
-      hu: "Forrás: a szervezet kampányaiban gyűjtött külső visszajelzés (a személyes, kampányon kívüli visszajelzés nem szerepel benne). Tagonként legalább 3 értékelő kell hozzá, és csak összesített darabszám látszik – sem név, sem egyéni érték, sem dimenzió-bontás.",
+      hu: "Forrás: a szervezet kampányaiban másoktól gyűjtött visszajelzések (a személyes, kampányon kívüli visszajelzések nem szerepelnek benne). Tagonként legalább 3 értékelő kell hozzá, és csak összesített darabszám látszik – sem név, sem egyéni érték, sem dimenziónkénti bontás.",
       en: "Source: external feedback collected in this organisation's campaigns (personal, non-campaign feedback is excluded). At least 3 raters per member are required, and only aggregate counts are shown – no names, individual values, or dimension breakdown.",
     },
     evidenceQualityNone: { hu: "nincs", en: "none" },
@@ -1958,7 +1958,7 @@ export const orgTranslations = {
       eyebrow: { hu: "visszajelzés", en: "feedback" },
       title: { hu: "Fejlesztő visszajelzés", en: "Development feedback" },
       hint: {
-        hu: "Kérj visszajelzést a csapattársaidtól egy konkrét témában – te döntesz, ki és név nélkül válaszolhat-e. A válaszok csak neked jelennek meg.",
+        hu: "Kérj visszajelzést a csapattársaidtól egy konkrét témában. Te választod ki, ki válaszolhat, és hogy engedélyezed-e a név nélküli válaszokat. A visszajelzéseket csak te látod.",
         en: "Ask your teammates for feedback on a specific topic – you decide who can answer and whether anonymously. Responses are visible only to you.",
       },
       forMeLabel: { hu: "Rád váró kérések ({count})", en: "Requests waiting for you ({count})" },
@@ -1966,14 +1966,14 @@ export const orgTranslations = {
       respond: { hu: "Válaszolok", en: "Respond" },
       cancel: { hu: "Mégse", en: "Cancel" },
       continueLabel: { hu: "Folytasd, mert…", en: "Keep doing, because…" },
-      tryLabel: { hu: "Jövőre próbáld…", en: "Next time, try…" },
-      commentLabel: { hu: "Szabad megjegyzés", en: "Free comment" },
+      tryLabel: { hu: "Legközelebb próbáld…", en: "Next time, try…" },
+      commentLabel: { hu: "További megjegyzés", en: "Free comment" },
       optional: { hu: "(opcionális)", en: "(optional)" },
       respondAnonymously: { hu: "Név nélkül válaszolok", en: "Respond anonymously" },
       sendResponse: { hu: "Válasz küldése", en: "Send response" },
       respondError: { hu: "A válasz küldése nem sikerült – próbáld újra.", en: "Sending the response failed – try again." },
       newRequestTitle: { hu: "Kérek visszajelzést", en: "Request feedback" },
-      topicPlaceholder: { hu: "Miről kérsz visszajelzést? Pl. „Hasznosak a meetingjeim?”", en: "What do you want feedback on? E.g. \"Are my meetings useful?\"" },
+      topicPlaceholder: { hu: "Miről kérsz visszajelzést? Pl. „Hasznosak az általam vezetett megbeszélések?”", en: "What do you want feedback on? E.g. \"Are my meetings useful?\"" },
       allowAnonymous: { hu: "Név nélküli válaszokat is elfogadok", en: "I also accept anonymous responses" },
       create: { hu: "Kérés elküldése", en: "Send request" },
       createdOk: { hu: "Elküldve", en: "Sent" },
@@ -1984,7 +1984,7 @@ export const orgTranslations = {
       continueShort: { hu: "Folytasd", en: "Keep" },
       tryShort: { hu: "Próbáld", en: "Try" },
       anonymousResponder: { hu: "névtelen válaszadó", en: "anonymous responder" },
-      suggestionsLabel: { hu: "Mérés-körből kapott javaslataid", en: "Suggestions from measurement rounds" },
+      suggestionsLabel: { hu: "A mérési körökben kapott javaslataid", en: "Suggestions from measurement rounds" },
       pendingAnonymous: {
         hu: "{count} név nélküli javaslat vár még – legalább 3 beküldőnél jelenik meg, összesítve.",
         en: "{count} anonymous suggestions pending – shown aggregated once there are at least 3 senders.",
@@ -1999,7 +1999,7 @@ export const orgTranslations = {
       },
       pickMember: { hu: "Válassz csapattársat…", en: "Pick a teammate…" },
       badgeLabel: { hu: "Jelvény", en: "Badge" },
-      placeholder: { hu: "Pl. „Köszönöm, hogy a keddi demó előtt átnézted a prezimet – sokat dobott rajta.”", en: "E.g. \"Thanks for reviewing my deck before Tuesday's demo – it made a real difference.\"" },
+      placeholder: { hu: "Pl. „Köszönöm, hogy a keddi ügyféltalálkozó előtt átnézted a bemutatómat. Sokat segítettél vele.”", en: "E.g. \"Thanks for reviewing my deck before Tuesday's demo – it made a real difference.\"" },
       send: { hu: "Köszönet küldése", en: "Send kudos" },
       sentOk: { hu: "Elküldve", en: "Sent" },
       sendError: { hu: "A küldés nem sikerült – próbáld újra.", en: "Sending failed – try again." },
@@ -2013,7 +2013,7 @@ export const orgTranslations = {
         en: "The recipient is notified and can hide it from the team feed later, as can the sender. The personal kudos remains available.",
       },
       receivedLabel: { hu: "Kapott köszöneteid ({count})", en: "Kudos you received ({count})" },
-      empty: { hu: "Még nincs kapott köszöneted – lehet, hogy te küldesz elsőként?", en: "No kudos received yet – maybe you'll be the first to send one?" },
+      empty: { hu: "Még nem kaptál köszönetet. Ha szeretnéd, te is küldhetsz egyet valamelyik csapattársadnak.", en: "No kudos received yet – maybe you'll be the first to send one?" },
       receivedTab: { hu: "Neked érkezett", en: "Received" },
       teamTab: { hu: "Csapat elismerései", en: "Team recognition" },
       teamFeedLabel: { hu: "Csapatszintű köszönetek ({count})", en: "Team kudos ({count})" },
@@ -2026,7 +2026,7 @@ export const orgTranslations = {
     title: { hu: "Csapataim", en: "My Teams" },
     createNew: { hu: "Új csapat létrehozása", en: "Create a new team" },
     createNewDesc: {
-      hu: "Adj nevet a csapatnak, majd add hozzá a tagokat emailcím alapján.",
+      hu: "Adj nevet a csapatnak, majd add hozzá a tagokat e-mail-cím alapján.",
       en: "Give your team a name, then add members by their email address.",
     },
     teamsLabel: { hu: "Csapatok", en: "Teams" },
@@ -2053,7 +2053,7 @@ export const orgTranslations = {
     // stat strip labels
     statMembers: { hu: "Tagok", en: "Members" },
     statCompleted: { hu: "kitöltötte", en: "completed" },
-    statObserverCoverage: { hu: "Observer lefedettség", en: "Observer coverage" },
+    statObserverCoverage: { hu: "Mások visszajelzéseinek lefedettsége", en: "Observer coverage" },
     statNoCampaign: { hu: "nincs aktív mérés", en: "no active measurement" },
     statCampaignDaysActive: { hu: "{days} napja aktív", en: "Active for {days} days" },
     statStartCampaign: {
@@ -2071,7 +2071,7 @@ export const orgTranslations = {
     // ── Shared ──────────────────────────────────────────────────────────
     inviteEyebrow: { hu: "meghívó", en: "invite" },
     profileHint: {
-      hu: "Ezeket az adatokat bármikor módosíthatod a profil oldalon.",
+      hu: "Ezeket az adatokat bármikor módosíthatod a profiloldalon.",
       en: "You can edit these details anytime on your profile page.",
     },
     usernameLabel: { hu: "Megjelenítési név", en: "Display name" },
@@ -2081,12 +2081,12 @@ export const orgTranslations = {
     birthYearHint: { hu: "{min}–{max} között", en: "Between {min} and {max}" },
     genderLabel: { hu: "Nem", en: "Gender" },
     consentText: {
-      hu: "Hozzájárulok adataim kezeléséhez a",
+      hu: "Hozzájárulok adataim kezeléséhez az",
       en: "I consent to the processing of my data according to the",
     },
     privacyLabel: { hu: "Adatvédelmi tájékoztató", en: "Privacy Policy" },
     consentSuffix: { hu: "alapján.", en: "." },
-    submitting: { hu: "Csatlakozás...", en: "Joining..." },
+    submitting: { hu: "Csatlakozás…", en: "Joining..." },
     submitErrorGeneric: {
       hu: "Hiba történt, próbáld újra.",
       en: "Something went wrong. Please try again.",
@@ -2109,10 +2109,10 @@ export const orgTranslations = {
       en: "You already belong to an organization",
     },
     switchDescription: {
-      hu: "Jelenleg a {existingOrg} az aktív szervezeti kontextusod. Ha csatlakozol a {orgName} szervezethez, a korábbi tagságod megmarad, csak az aktív kontextus vált át.",
+      hu: "Jelenleg ennek a szervezetnek a felületét használod: {existingOrg}. Csatlakozás után ide váltasz: {orgName}. A korábbi tagságod megmarad.",
       en: "Your active org context is {existingOrg}. If you join {orgName}, your previous memberships remain intact and only your active context changes.",
     },
-    switchPrimaryLoading: { hu: "Váltás...", en: "Switching..." },
+    switchPrimaryLoading: { hu: "Váltás…", en: "Switching..." },
     switchPrimary: {
       hu: "Átváltás: {orgName}",
       en: "Switch to {orgName}",
@@ -2122,14 +2122,14 @@ export const orgTranslations = {
       en: "Stay in current organization",
     },
     readySameOrg: {
-      hu: "Csatlakozol a {teamName} csapathoz a meglévő szervezeti tagságoddal.",
+      hu: "A meglévő szervezeti tagságoddal ehhez a csapathoz csatlakozol: {teamName}.",
       en: "You are joining {teamName} with your existing organization membership.",
     },
     readyNewOrg: {
-      hu: "Csatlakozol a {orgName} szervezethez és a {teamName} csapathoz. A meglévő eredményeid megmaradnak.",
+      hu: "Szervezet, amelyhez csatlakozol: {orgName}. Csapat: {teamName}. A meglévő eredményeid megmaradnak.",
       en: "You are joining {orgName} and the {teamName} team. Your existing results stay with you.",
     },
-    joinLoading: { hu: "Csatlakozás...", en: "Joining..." },
+    joinLoading: { hu: "Csatlakozás…", en: "Joining..." },
     joinCta: { hu: "Csatlakozás", en: "Join" },
     step1Eyebrow: { hu: "01", en: "01" },
     step1Title: { hu: "Személyes adatok", en: "Basic profile" },
@@ -2145,13 +2145,13 @@ export const orgTranslations = {
     // ── /join/org/[inviteId] — org invite ───────────────────────────────
     orgTitle: { hu: "Csatlakozz a szervezethez", en: "Join organization" },
     profileEyebrow: { hu: "01", en: "01" },
-    profileTitle: { hu: "Néhány alap adat", en: "A few basic details" },
+    profileTitle: { hu: "Néhány alapadat", en: "A few basic details" },
     profileSub: {
       hu: "Ezek szükségesek a személyre szabott csapatképhez.",
       en: "These details are required for personalized team insight.",
     },
     readyText: {
-      hu: "Készen állsz csatlakozni a {orgName} szervezethez. A meglévő személyes eredményeid megmaradnak.",
+      hu: "Ehhez a szervezethez csatlakozol: {orgName}. A meglévő személyes eredményeid megmaradnak.",
       en: "You're ready to join {orgName}. Your existing personal results remain available.",
     },
   },
@@ -2173,13 +2173,13 @@ export const orgTranslations = {
     // A KÉSZ/VÁR és a bal oldali gyűrű a SZEMÉLYISÉG-PROFILRA vonatkozik
     // (önértékelés) — a többi mérés haladása a lenti mérés-bontásban él.
     snapshotDone: { hu: "Profil kész", en: "Profile done" },
-    snapshotWait: { hu: "Profil vár", en: "Profile pending" },
-    snapshotCompletionRate: { hu: "Személyiség-profil", en: "Personality profile" },
+    snapshotWait: { hu: "Kitöltésre vár", en: "Profile pending" },
+    snapshotCompletionRate: { hu: "Személyiségprofil", en: "Personality profile" },
     snapshotDoneInProgress: { hu: "{done} kész · {inProgress} folyamatban", en: "{done} done · {inProgress} in progress" },
 
     // Secondary progress
     secondaryFeedbackRound: { hu: "Visszajelzési kör", en: "Feedback round" },
-    secondaryPatternReadiness: { hu: "Csapatkép készültség", en: "Pattern readiness" },
+    secondaryPatternReadiness: { hu: "A csapatkép készültsége", en: "Pattern readiness" },
     secondaryObserverProgress: { hu: "{done} kész · {remaining} hátra", en: "{done} done · {remaining} remaining" },
     secondaryPatternAvailable: { hu: "A csapatkép elérhető", en: "Team pattern is available" },
     secondaryPatternProgress: { hu: "{done}/{target} kész", en: "{done}/{target} done" },
@@ -2187,21 +2187,21 @@ export const orgTranslations = {
     // Mérés-bontás (aktív kampány lépései a csapat-állapotképben)
     measurementBreakdownTitle: { hu: "Mérések állása", en: "Measurement progress" },
     measurementBreakdownHint: {
-      hu: "Mérésenkénti állás ebben a körben: „{name}”. A fenti kitöltési arány csak a személyiség-profilra vonatkozik.",
+      hu: "Mérésenkénti állás ebben a körben: „{name}”. A fenti kitöltési arány csak a személyiségprofilra vonatkozik.",
       en: "Per measurement in the \"{name}\" round – the completion rate above covers the personality profile only.",
     },
     measurementBreakdownDone: { hu: "{done}/{total} kész", en: "{done}/{total} done" },
 
     // Recommended action
     nextStep: { hu: "Következő lépés", en: "Next step" },
-    actionObserverActive: { hu: "A visszajelzési kör fut, kövesd és zárd le a hiányzó visszajelzéseket.", en: "The feedback round is active. Track and close remaining feedback." },
+    actionObserverActive: { hu: "A visszajelzési kör folyamatban van. Kövesd a válaszok beérkezését, és emlékeztesd azokat, akik még nem végeztek.", en: "The feedback round is active. Track and close remaining feedback." },
     actionPatternReady: { hu: "A csapatkép kész, most érdemes elindítani a visszajelzési kört.", en: "Team pattern is ready. Launch the feedback round now." },
-    actionCloseMissing: { hu: "Előbb zárjátok le a hiányzó kitöltéseket, utána indítsatok kört.", en: "Close missing assessments first, then launch the round." },
+    actionCloseMissing: { hu: "Előbb fejezzétek be a még hiányzó kitöltéseket, majd indítsatok új kört.", en: "Close missing assessments first, then launch the round." },
     actionManageRound: { hu: "Kör kezelése", en: "Manage round" },
     actionStartRound: { hu: "Kör indítása", en: "Start round" },
     actionViewPattern: { hu: "Csapatkép megnyitása", en: "Open team picture" },
     actionPatternAvailable: { hu: "A csapatkép már elérhető, nézd át a mintázatokat a következő döntés előtt.", en: "Team pattern is available. Review it before your next decision." },
-    actionNeedMore: { hu: "A csapatkép feloldásához még kitöltések szükségesek.", en: "More completed assessments are needed to unlock team pattern." },
+    actionNeedMore: { hu: "A csapatkép megjelenítéséhez további kitöltések szükségesek.", en: "More completed assessments are needed to unlock team pattern." },
     actionViewPatternAlt: { hu: "Csapatkép megnyitása", en: "Open team picture" },
     actionOpenMembers: { hu: "Tagok megnyitása", en: "Open members" },
 
@@ -2210,7 +2210,7 @@ export const orgTranslations = {
     summaryLabel: { hu: "ÖSSZEFOGLALÓ", en: "SUMMARY" },
     // A kártya a SZEMÉLYISÉG-PROFIL (önértékelés) kitöltöttségét mutatja —
     // a cím ezt kimondja, hogy ne tűnjön a teljes mérés-kör arányának.
-    completionRateTitle: { hu: "SZEMÉLYISÉG-PROFIL KITÖLTÖTTSÉG", en: "PERSONALITY PROFILE COMPLETION" },
+    completionRateTitle: { hu: "A SZEMÉLYISÉGFELMÉRÉS KITÖLTÖTTSÉGE", en: "PERSONALITY PROFILE COMPLETION" },
     completionRateSub: { hu: "{done} kész · {inProgress} folyamatban · {waiting} várakozik", en: "{done} done · {inProgress} in progress · {waiting} waiting" },
     teamPatternTitle: { hu: "CSAPATMINTÁZAT", en: "TEAM PATTERN" },
     teamPatternAvailable: { hu: "Elérhető", en: "Available" },
@@ -2221,24 +2221,24 @@ export const orgTranslations = {
     // Journey checklist section
     sectionJourney: { hu: "Bevezetési lépések", en: "Journey checklist" },
     journeyProgress: { hu: "haladás", en: "progress" },
-    journeyTitle: { hu: "Csapatút követése", en: "Track team journey" },
-    journeyDescription: { hu: "Ugyanarra a journey logikára építve látod, hol tart a csapat és mi hiányzik a következő szinthez.", en: "Built on the same journey logic, this shows where the team stands and what is missing for the next level." },
+    journeyTitle: { hu: "A csapat haladása", en: "Track team journey" },
+    journeyDescription: { hu: "Itt láthatod, hol tart a csapat a felmérésben, és mi szükséges a következő lépéshez.", en: "Built on the same journey logic, this shows where the team stands and what is missing for the next level." },
     journeyNextStep: { hu: "Következő lépés", en: "Next step" },
 
     // Checklist items
     checkCoreTeam: { hu: "Magcsapat kialakítása", en: "Core team in place" },
     checkCoreTeamDetail: { hu: "{count} tag aktív a csapatban", en: "{count} active members in the team" },
     checkCoreTeamCta: { hu: "Tagok kezelése", en: "Manage members" },
-    checkAssessments: { hu: "Kitöltések lezárása", en: "Assessments completed" },
+    checkAssessments: { hu: "A kitöltések befejezése", en: "Assessments completed" },
     checkAssessmentsDetail: { hu: "{done}/3 szükséges az első csapatképhez", en: "{done}/3 needed for first team pattern" },
     checkAssessmentsCta: { hu: "Hiányzók követése", en: "Track missing members" },
     checkFeedbackRound: { hu: "Visszajelzési kör", en: "Feedback round" },
-    checkFeedbackActive: { hu: "Aktív kör fut a csapaton.", en: "An active round is running." },
-    checkFeedbackNone: { hu: "Még nincs aktív observer kör.", en: "No active observer round yet." },
+    checkFeedbackActive: { hu: "A csapatban jelenleg aktív mérési kör zajlik.", en: "An active round is running." },
+    checkFeedbackNone: { hu: "Még nincs aktív visszajelzési kör.", en: "No active observer round yet." },
     checkFeedbackCta: { hu: "Kör indítása", en: "Start round" },
 
     // 4+2 layer section
-    sectionLayers: { hu: "4+2 rétegkészültség", en: "4+2 layer readiness" },
+    sectionLayers: { hu: "A 4+2 mérési terület állapota", en: "4+2 layer readiness" },
     layersLabel: { hu: "Csapatszintű rétegek", en: "Team-level layers" },
     layersDoneSuffix: { hu: "kész", en: "done" },
     statusCompleted: { hu: "Kész", en: "Completed" },
@@ -2279,10 +2279,10 @@ export const orgTranslations = {
     statusInProgress: { hu: "Folyamatban", en: "In progress" },
     statusAvailable: { hu: "Elérhető", en: "Available" },
     statusLocked: { hu: "Zárolt", en: "Locked" },
-    layerPlusNote: { hu: "A +2 réteg opcionális mélyítésként jelenik meg, amikor az alap self és team rétegek készen állnak.", en: "The +2 layers appear as optional deepening once the core self and team layers are ready." },
+    layerPlusNote: { hu: "A két kiegészítő mérés akkor válik elérhetővé, amikor az alapvető egyéni és csapatszintű mérések elkészültek.", en: "The +2 layers appear as optional deepening once the core self and team layers are ready." },
 
     // Step 1
-    step01: { hu: "Lépés 01", en: "Step 01" },
+    step01: { hu: "01. lépés", en: "Step 01" },
     step01Title: { hu: "Személyes adatok", en: "Personal details" },
     step01Subtitle: { hu: "Ezek szükségesek a személyre szabott csapatképhez.", en: "These details are required for personalized team insight." },
     displayName: { hu: "Megjelenítési név", en: "Display name" },
@@ -2307,7 +2307,7 @@ export const orgTranslations = {
     valConsentError: { hu: "Hiba történt, próbáld újra.", en: "Something went wrong. Please try again." },
 
     // Step 2
-    step02: { hu: "Lépés 02", en: "Step 02" },
+    step02: { hu: "02. lépés", en: "Step 02" },
     step02Title: { hu: "A céged", en: "Your company" },
     step02Subtitle: { hu: "Ezek az adatok segítenek személyre szabni a csapatképet.", en: "These details help us tailor the team insight." },
     roleLabel: { hu: "Mi a szerepköröd?", en: "What is your role?" },
@@ -2317,12 +2317,12 @@ export const orgTranslations = {
     industryLabel: { hu: "Iparág", en: "Industry" },
     teamSizeLabel: { hu: "Csapat mérete", en: "Team size" },
     backBtn: { hu: "Vissza", en: "Back" },
-    creatingBtn: { hu: "Létrehozás...", en: "Creating..." },
+    creatingBtn: { hu: "Létrehozás…", en: "Creating..." },
 
     // Step 3
-    step03: { hu: "Lépés 03", en: "Step 03" },
+    step03: { hu: "03. lépés", en: "Step 03" },
     step03Title: { hu: "Az első csapatod", en: "Your first team" },
-    step03Subtitle: { hu: "Adj nevet a csapatnak, majd oszd meg a meghívó linket a tagokkal.", en: "Name your team, then share the invite link with members." },
+    step03Subtitle: { hu: "Adj nevet a csapatnak, majd oszd meg a meghívólinket a tagokkal.", en: "Name your team, then share the invite link with members." },
     teamName: { hu: "Csapat neve", en: "Team name" },
     teamNamePlaceholder: { hu: "pl. Értékesítési csapat", en: "e.g. Sales Team" },
     createTeamBtn: { hu: "Csapat létrehozása", en: "Create team" },
@@ -2330,11 +2330,11 @@ export const orgTranslations = {
     defaultTeamName: { hu: "Első csapatom", en: "My first team" },
 
     // Invite link
-    inviteLinkLabel: { hu: "Meghívó link", en: "Invite link" },
+    inviteLinkLabel: { hu: "Meghívólink", en: "Invite link" },
     copiedBtn: { hu: "✓ Másolva!", en: "✓ Copied!" },
     copyBtn: { hu: "Másolás", en: "Copy" },
     inviteLinkDescription: { hu: "Küldd el ezt a linket a csapattagjaidnak. Regisztráció után automatikusan csatlakoznak a csapathoz és elkezdhetik a felmérést.", en: "Share this link with your teammates. After registration they will join the team automatically and can start the assessment." },
-    inviteQrAlt: { hu: "QR-kód a csapat-meghívó linkhez", en: "QR code for the team invite link" },
+    inviteQrAlt: { hu: "QR-kód a csapat-meghívólinkhez", en: "QR code for the team invite link" },
     inviteQrHint: {
       hu: "Ha egy teremben ültök: a csapattársad a telefonjával beolvasva egyből a csatlakozási oldalra jut.",
       en: "If you're in the same room: your teammate scans it with their phone and lands straight on the join page.",
@@ -2342,27 +2342,27 @@ export const orgTranslations = {
     goToDashboard: { hu: "Tovább a vezérlőre", en: "Go to dashboard" },
 
     // Step 4
-    step04: { hu: "Lépés 04", en: "Step 04" },
+    step04: { hu: "04. lépés", en: "Step 04" },
     step04Title: { hu: "Egy utolsó lépés", en: "One final step" },
     consentPrefix: { hu: "Hozzájárulok adataim kezeléséhez az", en: "I consent to the processing of my data according to the" },
     privacyPolicy: { hu: "Adatvédelmi tájékoztató", en: "Privacy Policy" },
     consentSuffix: { hu: "alapján.", en: "." },
-    savingBtn: { hu: "Mentés...", en: "Saving..." },
+    savingBtn: { hu: "Mentés…", en: "Saving..." },
     saveAndContinueBtn: { hu: "Beállítások mentése és tovább", en: "Save settings and continue" },
 
     // Footer
-    footerNote: { hu: "Bármikor módosíthatod ezeket a beállításokat a profil oldalon.", en: "You can update these settings anytime on your profile page." },
+    footerNote: { hu: "Bármikor módosíthatod ezeket a beállításokat a profiloldalon.", en: "You can update these settings anytime on your profile page." },
 
     // Country picker
     countryPickerTitle: { hu: "Ország", en: "Country" },
-    countryPickerSearch: { hu: "Keresés...", en: "Search..." },
+    countryPickerSearch: { hu: "Keresés…", en: "Search..." },
   },
 
   // ── Tag-dossié (/org/[id]/members/[userId]) ──────────────────────────
   memberDossier: {
     // Rater-minőség aggregátum — csak darabszám, raterenkénti flag soha.
     observerQualityNote: {
-      hu: "{n} külső értékelés alacsony differenciáltságú – az eltéréseket óvatosan érdemes olvasni.",
+      hu: "{n} értékelésben a válaszadó kevéssé különböztette meg az egyes jellemzőket. Az eltéréseket ezért érdemes óvatosan értelmezni.",
       en: "{n} external rating(s) show low differentiation – read the differences with caution.",
     },
   },

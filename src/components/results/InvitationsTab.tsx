@@ -484,7 +484,7 @@ export function InvitationsTab({
               {t("invitations.emptySub", locale)}
               <span className="mt-2 block text-note text-[var(--color-ink-warm)]">
                 {locale === "hu"
-                  ? "A következő lépésed: indíts observer kört, majd kapcsolódj csapathoz, hogy a személyes insightból közös csapatkép legyen."
+                  ? "Következő lépésként kérj visszajelzést másoktól. Ha egy csapathoz is csatlakozol, a közös eredményekből az együttműködésetekről is többet megtudhatsz."
                   : "Your next step: start an observer round, then connect to a team to turn self insight into a shared team picture."}
               </span>
             </>
@@ -496,7 +496,7 @@ export function InvitationsTab({
             >
               {isConsultingLed()
                 ? (locale === "hu" ? "Beszéljünk a csapatodról" : "Talk to us about your team")
-                : (locale === "hu" ? "Csapat út megnyitása" : "Open team path")}
+                : (locale === "hu" ? "Csapatlehetőségek megnyitása" : "Open team path")}
             </Link>
           }
         />

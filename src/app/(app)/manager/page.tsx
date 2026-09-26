@@ -44,7 +44,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: locale === "hu" ? "Csapatvezető cockpit | trita" : "Manager cockpit | trita",
+    title: locale === "hu" ? "Csapatvezetői áttekintés | trita" : "Manager cockpit | trita",
     robots: { index: false },
   };
 }
@@ -117,7 +117,7 @@ export default async function ManagerCockpitPage() {
   } else if (weakestTeam && weakestTeam.completionPct < 100) {
     const missing = weakestTeam.memberCount - weakestTeam.completedCount;
     nextStep = {
-      title: isHu ? "Kitöltések lezárása" : "Close pending assessments",
+      title: isHu ? "A kitöltések befejezése" : "Close pending assessments",
       description: isHu
         ? `${withHuArticle(weakestTeam.teamName, { capitalize: true })} csapatban ${missing} tag nem töltötte ki a személyiségtesztet.`
         : `${missing} members in ${weakestTeam.teamName} haven't completed the personality assessment.`,
@@ -132,9 +132,9 @@ export default async function ManagerCockpitPage() {
   } else if (teamWithCampaign) {
     const c = teamWithCampaign.activeCampaign!;
     nextStep = {
-      title: isHu ? "Feedback kör nyomon követése" : "Track feedback round",
+      title: isHu ? "A visszajelzési kör követése" : "Track feedback round",
       description: isHu
-        ? `${c.teamObserverDoneCount}/${c.teamParticipantCount} observer visszajelzés érkezett ${withHuArticle(teamWithCampaign.teamName)} csapatban.`
+        ? `${c.teamObserverDoneCount}/${c.teamParticipantCount} visszajelzés érkezett ${withHuArticle(teamWithCampaign.teamName)} csapatban.`
         : `${c.teamObserverDoneCount}/${c.teamParticipantCount} observer responses received in ${teamWithCampaign.teamName}.`,
       primary: {
         label: isHu ? "Kör megtekintése" : "View round",
@@ -165,7 +165,7 @@ export default async function ManagerCockpitPage() {
         variant="team"
         eyebrow={
           <SectionEyebrow tone="onDark">
-            {isHu ? "csapatvezető cockpit" : "manager cockpit"}
+            {isHu ? "csapatvezetői áttekintés" : "manager cockpit"}
           </SectionEyebrow>
         }
         title={
@@ -245,7 +245,7 @@ export default async function ManagerCockpitPage() {
           className="mb-4"
         />
         <JourneyNextStepCard
-          eyebrow={isHu ? "Csapatvezető teendő" : "Manager action"}
+          eyebrow={isHu ? "Csapatvezetői teendő" : "Manager action"}
           title={nextStep.title}
           description={nextStep.description}
           primary={nextStep.primary}
@@ -274,7 +274,7 @@ export default async function ManagerCockpitPage() {
                 <p className="mt-2 text-note text-ink-body">
                   {team.completedCount}/{team.memberCount} {isHu ? "tag kitöltötte" : "members completed"}
                   {team.pendingInviteCount > 0 && (
-                    <> · {team.pendingInviteCount} {isHu ? "függő meghívó" : "pending invites"}</>
+                    <> · {team.pendingInviteCount} {isHu ? "függőben lévő meghívó" : "pending invites"}</>
                   )}
                 </p>
               </DashboardPanel>
@@ -350,7 +350,7 @@ export default async function ManagerCockpitPage() {
               accent="var(--color-state-info-solid)"
               title={isHu ? "Kiegészítő" : "Complementary"}
               value={String(data.teams[0]?.complementaryCount ?? 0)}
-              sub={isHu ? "Eltérő de kezelhető profilok" : "Different but manageable profiles"}
+              sub={isHu ? "Eltérő, de összeegyeztethető profilok" : "Different but manageable profiles"}
             />
             <DashboardMetricCard
               accent="var(--color-state-warning-solid)"
@@ -365,17 +365,17 @@ export default async function ManagerCockpitPage() {
             <p className="text-micro text-muted">
               {(data.teams[0]?.measuredEdgeCount ?? 0) > 0
                 ? (isHu
-                    ? `ebből mért (bizalmi körből): ${data.teams[0]?.measuredEdgeCount ?? 0} · profil-becslés: ${data.teams[0]?.estimatedEdgeCount ?? 0}`
+                    ? `ebből mért (bizalmi körből): ${data.teams[0]?.measuredEdgeCount ?? 0} · profilból becsült: ${data.teams[0]?.estimatedEdgeCount ?? 0}`
                     : `measured (trust round): ${data.teams[0]?.measuredEdgeCount ?? 0} · profile estimate: ${data.teams[0]?.estimatedEdgeCount ?? 0}`)
                 : (isHu
-                    ? "profil-alapú becslés – még nincs mért bizalmi kör"
+                    ? "profilalapú becslés – még nincs mért bizalmi kör"
                     : "profile-based estimate – no measured trust round yet")}
             </p>
             <Link
               href={`/team/${data.teams[0].teamId}?tab=intelligence`}
               className="inline-flex items-center gap-1 text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
             >
-              {isHu ? "Részletes dinamika térkép" : "Detailed dynamics map"}
+              {isHu ? "Részletes kapcsolati térkép" : "Detailed dynamics map"}
               <ChevronRightIcon className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -394,7 +394,7 @@ export default async function ManagerCockpitPage() {
               const label = event.kind === "assessment_completed"
                 ? (isHu ? "kitöltötte a személyiségtesztet" : "completed personality assessment")
                 : event.kind === "observer_received"
-                  ? (isHu ? "observer visszajelzést kapott" : "received observer feedback")
+                  ? (isHu ? "visszajelzést kapott" : "received observer feedback")
                   : (isHu ? "csatlakozott" : "joined");
               const date = new Date(event.timestamp);
               const ago = formatTimeAgo(date, isHu);

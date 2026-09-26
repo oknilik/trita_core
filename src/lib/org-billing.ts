@@ -26,11 +26,11 @@ export interface OrgBillingProfile {
   country?: string;
   /** Kapcsolattartó neve */
   contactName?: string;
-  /** Kapcsolattartó email */
+  /** Kapcsolattartó e-mail-címe */
   contactEmail?: string;
   /** Kapcsolattartó telefon */
   contactPhone?: string;
-  /** Számlázási email (ha eltér a kapcsolattartóétól) */
+  /** Számlázási e-mail-cím (ha eltér a kapcsolattartóétól) */
   billingEmail?: string;
   /** Iparág */
   industry?: string;
@@ -46,15 +46,15 @@ export const ORG_BILLING_FIELDS: Array<{
 }> = [
   { key: "legalName", label: "Hivatalos cégnév", placeholder: "pl. Kovács Tanácsadó Kft." },
   { key: "taxId", label: "Adószám", placeholder: "12345678-2-42" },
-  { key: "euVatId", label: "EU adószám", placeholder: "HU12345678" },
+  { key: "euVatId", label: "Közösségi adószám", placeholder: "HU12345678" },
   { key: "zip", label: "Irányítószám", placeholder: "1051" },
   { key: "city", label: "Város", placeholder: "Budapest" },
   { key: "address", label: "Utca, házszám", placeholder: "Fő utca 1." },
   { key: "country", label: "Ország", placeholder: "Magyarország" },
   { key: "contactName", label: "Kapcsolattartó", placeholder: "Kovács Anna" },
-  { key: "contactEmail", label: "Kapcsolattartó email", type: "email", placeholder: "nev@ceg.hu" },
+  { key: "contactEmail", label: "Kapcsolattartó e-mail-címe", type: "email", placeholder: "nev@ceg.hu" },
   { key: "contactPhone", label: "Telefon", placeholder: "+36 30 123 4567" },
-  { key: "billingEmail", label: "Számlázási email", type: "email", placeholder: "szamla@ceg.hu" },
+  { key: "billingEmail", label: "Számlázási e-mail-cím", type: "email", placeholder: "szamla@ceg.hu" },
   { key: "industry", label: "Iparág", placeholder: "pl. IT, gyártás, pénzügy" },
   { key: "note", label: "Belső megjegyzés", type: "textarea", placeholder: "Fizetési feltételek, PO-szám, egyéb…" },
 ];

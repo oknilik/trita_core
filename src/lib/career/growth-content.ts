@@ -32,7 +32,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Az érdekeid képviselete",
         action:
-          "A szerénységed erő, de az érdemeidet valakinek ki kell mondania. Havonta egyszer foglald össze írásban, mit vittél véghez – tényszerűen, mentegetőzés nélkül.",
+          "A szerénységed érték, de érdemes másoknak is megmutatnod az eredményeidet. Havonta egyszer foglald össze írásban, mit vittél véghez – tényszerűen, mentegetőzés nélkül.",
       },
       en: {
         headline: "Speaking for your own interests",
@@ -46,7 +46,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Az érzelmi jelzések tudatosítása",
         action:
-          "Nehéz beszélgetés előtt figyeld meg, milyen érzelmi jelzéseket látsz a másikon, majd kérdezz vissza: „Jól érzem, hogy ez most frusztráló számodra?”.",
+          "Nehéz beszélgetés előtt figyeld meg, milyen érzelmi jelzéseket látsz a másikon, majd kérdezz vissza: „Jól érzem, hogy ez most frusztráló számodra?”",
       },
       en: {
         headline: "Tuning in to how others feel",
@@ -124,7 +124,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Következetesség és lezárás",
         action:
-          "Válassz egy visszatérő feladatot, és készíts hozzá kétperces ellenőrzőlistát. Egy hónapig minden alkalommal használd – a kialakított rendszer akkor is továbbvisz, amikor kevésbé érzed a lendületet.",
+          "Válassz egy visszatérő feladatot, és készíts hozzá két perc alatt átnézhető ellenőrzőlistát. Egy hónapig minden alkalommal használd. A lista akkor is segít végigvinni a munkát, amikor kevésbé vagy lendületben.",
       },
       en: {
         headline: "Consistency and finishing",
@@ -150,7 +150,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Kísérletezés és új nézőpontok",
         action:
-          "Havonta egyszer végezz el másképp egy bevált folyamatot, alacsony kockázattal. A cél nem feltétlenül a jobb megoldás, hanem az, hogy legyen összehasonlítási alapod.",
+          "Havonta egyszer próbálj ki más módszert egy megszokott feladatnál, ahol kevés kockázattal jár a változtatás. A cél nem feltétlenül a jobb megoldás, hanem az, hogy legyen összehasonlítási alapod.",
       },
       en: {
         headline: "Experimenting and new angles",

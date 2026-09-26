@@ -34,7 +34,7 @@ const PILOT_VALIDATION_COPY: Record<
 > = {
   hu: {
     name: "Adj meg egy 2–100 karakteres nevet.",
-    email: "Adj meg egy érvényes email címet.",
+    email: "Adj meg egy érvényes e-mail-címet.",
     company: "A cégnév 1–120 karakter lehet.",
     size: "A csapatméret legfeljebb 60 karakter lehet.",
     message: "A kérdés legfeljebb 4000 karakter lehet.",

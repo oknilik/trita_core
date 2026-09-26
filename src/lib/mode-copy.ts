@@ -42,7 +42,7 @@ export const modeCopy: Record<SiteMode, Record<Locale, {
       heading: 'Lásd tisztábban a',
       headingEm: 'csapatod működését.',
       headingEmPosition: 'end',
-      sub: 'A trita megmutatja, ami eddig láthatatlan volt – a csapatod valódi dinamikáját. Mielőtt a feszültség konfliktussá, a konfliktus pedig költséggé válik.',
+      sub: 'A trita segít megérteni, hogyan dolgoztok együtt, mi támogatja a közös munkát, és hol alakulhatnak ki feszültségek.',
       cta: 'Beszéljünk a csapatodról',
       ctaSecondary: 'Van már fiókom',
       trust: ['✓ Személyes bevezetés', '⚡ Néhány nap az első képig', '🔬 Tudományos'],
@@ -72,7 +72,7 @@ export const modeTabCopy: Record<SiteMode, Record<Locale, {
     en: { label: 'For individuals', sub: 'Your career profile and growth', icon: '👤' },
   },
   team: {
-    hu: { label: 'Csapatoknak', sub: 'Csapatdinamika és HR döntések', icon: '👥' },
+    hu: { label: 'Csapatoknak', sub: 'Csapatdinamika és HR-döntések', icon: '👥' },
     en: { label: 'For teams', sub: 'Team dynamics and HR decisions', icon: '👥' },
   },
 }

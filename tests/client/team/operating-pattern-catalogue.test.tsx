@@ -77,7 +77,7 @@ describe("operating catalogue and layered report", () => {
     snapshot.operating!.axes.execution.pole = "mixed";
     snapshot.operating!.axes.execution.flags = ["near_midpoint"];
     render(<TeamOperatingStyleReport snapshot={snapshot} locale="hu" mode="overview" />);
-    expect(screen.getByText(/Tájékozódó besorolás:/)).toBeVisible();
+    expect(screen.getByText(/A besorolás egyelőre tájékoztató jellegű/)).toBeVisible();
     expect(screen.getByText(/Lehetséges alternatívák: Navigátorok/)).toBeVisible();
     expect(screen.getByText(/nincs egyértelmű pólus ezen a tengelyen/)).toBeVisible();
     expect(screen.queryByText(OPERATING_CATALOGUE["0000"].description.hu)).not.toBeInTheDocument();

@@ -15,22 +15,22 @@ export const fakeDoorTranslations = {
       hu: "Ez a funkció még nem létezik – azt mérjük, érdemes-e megépíteni.",
       en: "This feature doesn't exist yet – we're measuring whether it's worth building.",
     },
-    eyebrow: { hu: "Karrier-iránytű", en: "Career compass" },
+    eyebrow: { hu: "Karrieriránytű", en: "Career compass" },
     heroTitle: {
-      hu: "Lehet, hogy nem veled van a baj. Csak rossz szerepben vagy.",
+      hu: "Milyen munkakörben éreznéd jól magad?",
       en: "Maybe nothing's wrong with you. You're just in the wrong role.",
     },
     heroLead: {
-      hu: "Már látjuk, hogyan működsz. Most azt mutatnánk meg, hol lennél ebben erős – és hol húzna le a szerep.",
+      hu: "A személyiségprofilod alapján megmutatnánk, milyen munkákban támaszkodhatnál az erősségeidre, és mely feladatok jelenthetnének nehézséget.",
       en: "We can already see how you work. Next we'd show where that makes you strong – and where the role would drag you down.",
     },
     /** T10: a fő pozicionálás a hero alá emelve, nem kártya-végi lábjegyzetbe. */
     heroPositioning: {
-      hu: "Nem jóslat, hanem kiindulópont.",
+      hu: "Támpontok a pályád tervezéséhez.",
       en: "A starting point, not a prediction.",
     },
     heroPersonal: {
-      hu: "A te mintázatod: {pattern}. Ebből indulna.",
+      hu: "A személyiségmintázatod: {pattern}. Ebből indulnának ki a javaslatok.",
       en: "Your pattern: {pattern}. That's where it would start.",
     },
 
@@ -44,20 +44,20 @@ export const fakeDoorTranslations = {
     whatTitle: { hu: "Mit kapnál", en: "What you'd get" },
     card1Lead: { hu: "Hol lennél a helyeden", en: "Where you'd be in your element" },
     card1Body: {
-      hu: "Munka-területek, ahol a mintázatod előny lehet – mindegyikhez néhány példa-szerep, és jelölve, mi elérhető most, és mihez kellene képzés.",
+      hu: "Olyan munkaterületek, ahol előnyt jelenthetnek az erősségeid. Mindegyikhez munkaköröket is ajánlanánk, és jeleznénk, melyekhez lehet szükséged további képzésre.",
       en: "Areas of work where your pattern could be an advantage – each with example roles, marked for what's reachable now and what would need training.",
     },
     card2Lead: { hu: "Miért éppen ott", en: "Why exactly there" },
     card2Body: {
-      hu: "Melyik vonásod húz arra, és hol feszülhet. Minden állítás mellé odatesszük, mennyire biztos.",
+      hu: "Megmutatnánk, mely tulajdonságaid segíthetnek az adott munkában, és mi okozhat nehézséget. Azt is jeleznénk, mennyire megalapozottak az egyes javaslatok.",
       en: "Which trait pulls you there, and where it might strain. Every claim comes with how certain it is.",
     },
     card3Lead: { hu: "Kis, kipróbálható lépések", en: "Small steps you can try" },
     card3Body: {
-      hu: "Nem kell azonnal váltanod: néhány alacsony kockázatú lépés, és álláshirdetés-kulcsszavak – mit keress, és mi legyen gyanús.",
+      hu: "Kisebb, kipróbálható lépéseket javasolnánk. Kulcsszavakat is adnánk az álláskereséshez, és segítenénk felismerni a hirdetésekben a neked kedvező feltételeket és az intő jeleket.",
       en: "No need to switch anything right away: a few low-risk steps, plus job-ad keywords – what to look for and what should raise a flag.",
     },
-    card4Lead: { hu: "Vihető összefoglaló", en: "A summary you can take along" },
+    card4Lead: { hu: "Letölthető összefoglaló", en: "A summary you can take along" },
     card4Body: {
       hu: "Egy letölthető oldal, amit elvihetsz egy beszélgetésre – vezetőhöz, mentorhoz vagy tanácsadóhoz.",
       en: "A downloadable page you can bring to a conversation – with a manager, mentor or advisor.",
@@ -76,7 +76,7 @@ export const fakeDoorTranslations = {
     // ── Ár (T11) ──────────────────────────────────────────────────────
     priceLabel: { hu: "Tervezett ár", en: "Planned price" },
     priceFraming: {
-      hu: "Egyszeri díj – nagyjából egy coaching óra ára.",
+      hu: "Egyszeri díj, nagyjából egy tanácsadói konzultáció ára.",
       en: "A one-off fee – about the price of a single coaching hour.",
     },
     // Kiemelt sor, nem szürke lábjegyzet: ez az oldal legfontosabb ígérete.
@@ -144,11 +144,11 @@ export const fakeDoorTranslations = {
 
     // ── Átvezető a riport aljáról ────────────────────────────────────
     ctaTitle: {
-      hu: "Lehet, hogy nem veled van a baj – csak rossz szerepben vagy.",
+      hu: "Milyen munkakörben éreznéd jól magad?",
       en: "Maybe nothing's wrong with you – you're just in the wrong role.",
     },
     ctaBody: {
-      hu: "Karrier-iránytű készül a profilodra. Nézd meg, mit tudna – és mondd meg, megvennéd-e.",
+      hu: "A személyiségprofilodra épülő karrieriránytűt tervezünk. Nézd meg, miben segítene, és jelezd, megvennéd-e.",
       en: "A career compass is in the works for your profile. See what it would do – and tell us if you'd buy it.",
     },
     ctaButton: { hu: "Megnézem, mit tudna", en: "See what it would do" },

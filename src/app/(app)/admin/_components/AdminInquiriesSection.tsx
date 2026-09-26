@@ -29,7 +29,7 @@ export interface InquiryRow {
 }
 
 const TOPIC_LABELS: Record<string, string> = {
-  demo: "Demó igény",
+  demo: "Bemutató kérése",
   pricing: "Árazás",
   support: "Terméktámogatás",
   partnership: "Partnerség",
@@ -87,10 +87,10 @@ export function AdminInquiriesSection({
           Beérkezett kérdések ({inquiries.length}{newCount > 0 ? ` · ${newCount} új` : ""})
         </h2>
         <p className="mt-1 text-xs text-ink-body">
-          A /contact űrlapról érkező megkeresések. Ha a beküldő email alapján
-          azonosítható, a user és a szervezete automatikusan hozzákötve – kézzel
-          is módosítható. A bekötött szervezet tanácsadója notifot kap az új
-          kérdésekről.
+          A Kapcsolat oldalról érkező megkeresések. Ha az e-mail-cím alapján
+          azonosítható a beküldő, a megkeresést automatikusan a fiókjához és a
+          szervezetéhez kapcsoljuk. Ezt kézzel is módosíthatod. A hozzárendelt
+          szervezet tanácsadója értesítést kap az új kérdésekről.
         </p>
 
         {error && (
@@ -146,7 +146,7 @@ export function AdminInquiriesSection({
                           disabled={busy}
                           onClick={() => void patch({ inquiryId: row.id, action: "unlink_user" })}
                           className="text-sage-dark/60 hover:text-sage-dark"
-                          title="User-link oldása"
+                          title="Felhasználó leválasztása"
                         >
                           ×
                         </button>
@@ -162,7 +162,7 @@ export function AdminInquiriesSection({
                           disabled={busy}
                           onClick={() => void patch({ inquiryId: row.id, action: "unlink_org" })}
                           className="text-sage-dark/60 hover:text-sage-dark"
-                          title="Org-link oldása"
+                          title="Szervezet leválasztása"
                         >
                           ×
                         </button>
@@ -178,7 +178,7 @@ export function AdminInquiriesSection({
                         }}
                         className="rounded-lg border border-sand bg-surface-card px-2 py-1 text-xs text-ink-body"
                       >
-                        <option value="">Org hozzákötése…</option>
+                        <option value="">Szervezet hozzárendelése…</option>
                         {orgs.map((o) => (
                           <option key={o.id} value={o.id}>{o.name}</option>
                         ))}

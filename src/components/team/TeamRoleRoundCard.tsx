@@ -61,7 +61,7 @@ export function TeamRoleRoundCard({
             {isHu ? "csapat szerep teszt" : "team role assessment"}
           </SectionEyebrow>
           <h3 className="mt-1 font-fraunces text-heading text-ink">
-            {isHu ? "Csapatszerep kör" : "Team role round"}
+            {isHu ? "Csapatszerep-kör" : "Team role round"}
           </h3>
         </div>
         <DashboardStatusChip
@@ -80,7 +80,7 @@ export function TeamRoleRoundCard({
 
       <p className="mt-2 text-xs leading-relaxed text-ink-body">
         {isHu
-          ? "A TeamRole csapatszerep teszt feltérképezi, ki milyen szerepben erős a csapatmunkában. A személyiségprofilból becslés már elérhető, de a valódi kérdőív pontosabb képet ad."
+          ? "A csapatszerep-kérdőív megmutatja, ki milyen szerepeket vállal szívesen a közös munkában. A személyiségprofilból már elérhető becslés; a kérdőív közvetlen válaszokkal pontosítja ezt a képet."
           : "The TeamRole team role test maps out everyone's strengths in teamwork. Profile-based estimates are available, but the actual questionnaire gives a more accurate picture."}
       </p>
 
@@ -141,7 +141,7 @@ export function TeamRoleRoundCard({
               ? "..."
               : isRoundActive
                 ? (isHu ? "Kör lezárása" : "Close round")
-                : (isHu ? "Csapatszerep kör indítása" : "Start team role round")}
+                : (isHu ? "Csapatszerep-kör indítása" : "Start team role round")}
           </button>
           {isRoundActive && !allDone && (
             <span className="text-note text-muted">

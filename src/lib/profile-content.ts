@@ -128,11 +128,11 @@ responsibleInnovator: {
 
 export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
   ethicalLeader: {
-    hu: "A hitelesség és a látható felelősségvállalás egyszerre fontos neked. Jellemzően olyan helyzetekben vagy erős, ahol értékek mentén kell irányt mutatni.",
+    hu: "A hitelesség és a nyílt felelősségvállalás egyszerre fontos neked. Jellemzően olyan helyzetekben vagy erős, ahol értékek mentén kell irányt mutatni.",
     en: "Authenticity and visible responsibility both matter to you. You tend to be strongest in situations where direction must be set on clear values.",
   },
   principledConfronter: {
-    hu: "Az egyenesség és a konfliktustűrés együtt jelenik meg a válaszaidban. Jellemzően akkor működsz jól, ha tiszta határokat és kimondható feszültségeket kell kezelni.",
+    hu: "Az egyenesség és a konfliktustűrés együtt jelenik meg a válaszaidban. Jellemzően olyan helyzetekben boldogulsz jól, ahol világos határokra és a feszültségek nyílt megbeszélésére van szükség.",
     en: "Directness and conflict tolerance show up together in your responses. You tend to work well where clear boundaries and explicit tensions must be handled.",
   },
   responsibleInnovator: {
@@ -140,11 +140,11 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
     en: "You are open to novelty, but you typically decide through an internal ethical compass. For you, innovation and responsibility are not opposites, but one operating principle.",
   },
   supportedVisibility: {
-    hu: "A társas jelenlét jellemzően motivál, ha van biztonságos keret körülötte. A látható szerepekben akkor teljesítesz jól, ha kapsz stabil visszajelzést.",
+    hu: "Az emberekkel végzett munka jellemzően motivál, ha biztonságban érzed magad. A szerepléssel járó feladatokban akkor teljesítesz jól, ha rendszeresen kapsz visszajelzést.",
     en: "Social visibility typically motivates you when it is supported by safety. You perform well in visible roles when feedback remains stable and constructive.",
   },
   structuredStability: {
-    hu: "A magas belső mérce és az érzelmi érzékenység együtt tudatos kereteket igényel. Rendezett közegben kiegyensúlyozottabban tudod tartani a magas színvonalat.",
+    hu: "Sokat vársz el magadtól, és érzékenyen reagálsz a terhelésre, ezért fontos, hogy tudatosan oszd be az energiádat. Rendezett közegben kiegyensúlyozottabban tudod tartani a magas színvonalat.",
     en: "High internal standards combined with sensitivity require intentional structure. In a well-structured environment, you can sustain high quality at a healthy pace.",
   },
   safeExperimentation: {
@@ -156,7 +156,7 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
     en: "Deep, trust-based collaboration gives you more than broad visibility. Your performance typically unfolds best in smaller, stable relationship networks.",
   },
   solitaryInnovator: {
-    hu: "Az ötleteidet elsősorban elmélyült, önálló munkában érleled. Erősséged a mély gondolkodás és az új perspektívák csendes felépítése.",
+    hu: "Az ötleteidet elsősorban elmélyült, önálló munkában érleled. Erősséged az alapos gondolkodás és az új nézőpontok önálló kialakítása.",
     en: "You mainly develop ideas through deep, independent work. Your strength is sustained thinking and building new perspectives quietly.",
   },
   facilitatedInnovation: {
@@ -164,7 +164,7 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
     en: "You bring novelty into systems while bringing people with you. Based on your responses, collaborative change-building is your natural operating mode.",
   },
   structuredCompetitor: {
-    hu: "A versenyt jellemzően célfegyelemmel és következetes kivitelezéssel kezeled. Olyan környezetben lehetsz erős, ahol a teljesítmény és a mérhetőség tisztán jelen van.",
+    hu: "Versenyhelyzetben jellemzően kitartasz a céljaid mellett, és következetesen végigviszed a feladataidat. Olyan környezetben teljesíthetsz jól, ahol világos és mérhető elvárások szerint dolgoztok.",
     en: "You typically approach competition with discipline and consistent execution. You're likely strongest in environments where performance and measurability are explicit.",
   },
   structuredInnovator: {
@@ -184,7 +184,7 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
     en: "You approach the unknown with curiosity and calm. Novelty unsettles many – you typically find it energizing while maintaining analytical focus.",
   },
   organizedLeader: {
-    hu: "Szeretsz emberekkel dolgozni, és végigvinni a feladatokat. A csapatot mozgásban tartod, és jellemzően van kéznél terv és határidő.",
+    hu: "Szeretsz emberekkel dolgozni, és végigvinni a feladatokat. A csapatot mozgásban tartod, és jellemzően tervet és határidőt is rendelsz a feladatokhoz.",
     en: "You work with people and you close things out. You keep the team moving while typically having a plan and a deadline at hand.",
   },
   harmoniousConnector: {
@@ -223,8 +223,8 @@ export const RISK_TEXTS: Record<string, LocalizedText> = {
 export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium: string; watchOut: string }>> = {
   ethicalLeader: {
     hu: {
-      strong: "Értékvezérelt, magas bizalmi elvárású közegek, ahol az átlátható döntéshozatal és a hitelesség valóban számít.",
-      medium: "Összetett érdekekkel működő szervezetben is jól boldogulhatsz, ha egyértelműek számodra az etikai keretek.",
+      strong: "Értékekre és kölcsönös bizalomra épülő közegek, ahol az átlátható döntéshozatal és a hitelesség valóban számít.",
+      medium: "Eltérő érdekeket összehangoló szervezetben is jól boldogulhatsz, ha egyértelműek számodra az etikai keretek.",
       watchOut: "Nehéz lehet olyan közegben dolgozni, ahol az értékek csak a kommunikációban jelennek meg. Érdemes már az elején közös etikai döntési elveket rögzíteni.",
     },
     en: {
@@ -236,8 +236,8 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   principledConfronter: {
     hu: {
       strong: "Tiszta szabályokat és egyenes kommunikációt igénylő helyzetek, ahol kényes kérdéseket is ki kell mondani.",
-      medium: "Mediáló vagy partneri szerepekben is erős lehetsz, ha világosak a döntési határok és felelősségek.",
-      watchOut: "Megterhelő lehet, ha a konfliktusok tabusítva maradnak, és a problémák csak a felszín alatt gyűlnek. Érdemes rendszeres, strukturált konfliktuskezelési teret kialakítani.",
+      medium: "Közvetítői vagy partneri szerepekben is erős lehetsz, ha világosak a döntési határok és felelősségek.",
+      watchOut: "Megterhelő lehet, ha a konfliktusok tabusítva maradnak, és a problémák csak a felszín alatt gyűlnek. Érdemes rendszeres alkalmat és közös szabályokat kialakítani a konfliktusok megbeszélésére.",
     },
     en: {
       strong: "Contexts that require rule clarity and direct communication, including difficult but necessary conversations.",
@@ -249,7 +249,7 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
     hu: {
       strong: "Innovációs közegek, ahol újdonság és felelősség egyszerre elvárás, nem egymás alternatívája.",
       medium: "Gyorsabb tempójú csapatban is működhetsz, ha előre rögzítitek az etikai kereteket.",
-      watchOut: "Nehéz lehet olyan tempójú közegben dolgozni, ahol az etikai kompromisszum csendes elvárás. Érdemes előre tisztázni a vörös vonalakat, és ezek mentén dönteni.",
+      watchOut: "Nehéz lehet olyan közegben dolgozni, ahol a gyors eredmény kedvéért hallgatólagosan elvárják az etikai kompromisszumot. Érdemes előre tisztázni, mely elvekből nem engedsz, és ehhez tartani magad a döntéseidben.",
     },
     en: {
       strong: "Innovation contexts where novelty and responsibility are expected together, not traded off against each other.",
@@ -259,9 +259,9 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   },
   supportedVisibility: {
     hu: {
-      strong: "Látható, emberekkel dolgozó szerepek, ahol van pszichológiai biztonság és rendszeres, építő visszajelzés.",
-      medium: "Nagyobb társas intenzitású közegben is jól teljesíthetsz, ha van regenerációs ritmusod, és világosak a szerephatárok.",
-      watchOut: "Megterhelő lehet a folyamatos társas intenzitás, ha nincs elég regenerációs tér. Érdemes előre beépíteni csendes blokkokat és fix visszajelzési pontokat.",
+      strong: "Sok emberi kapcsolattal és szerepléssel járó feladatok, ahol van pszichológiai biztonság és rendszeres, építő visszajelzés.",
+      medium: "Sok társas érintkezéssel járó munkában is jól teljesíthetsz, ha rendszeresen jut időd feltöltődni, és egyértelmű, mi tartozik a feladataid közé.",
+      watchOut: "A folyamatos társas érintkezés megterhelhet, ha nincs elég időd feltöltődni. Érdemes előre időt hagyni a zavartalan munkára és a rendszeres visszajelzésre.",
     },
     en: {
       strong: "Visible, people-facing roles with psychological safety and regular, constructive feedback.",
@@ -271,7 +271,7 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   },
   structuredStability: {
     hu: {
-      strong: "Kiszámítható, strukturált működés, ahol magas minőséget lehet fenntartható tempóban hozni.",
+      strong: "Kiszámítható, rendezett munka, ahol tartósan is tartható tempóban lehet jó minőséget elérni.",
       medium: "Változékonyabb környezetben is jól működhetsz, ha a prioritások és a határidők világosak és kellően állandók.",
       watchOut: "Nehéz lehet, ha az elvárások magasak, de a működés tartósan kiszámíthatatlan. Segít, ha rövid szakaszokban dolgozol, egyértelmű lezárási pontokkal és előre meghatározott terhelési határral.",
     },
@@ -295,9 +295,9 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   },
   deepCollaboration: {
     hu: {
-      strong: "Kis létszámú, bizalmi együttműködés, ahol mély szakmai kapcsolat és stabil csapatritmus épülhet.",
+      strong: "Kis létszámú, bizalmi együttműködés, ahol szoros szakmai kapcsolatok és kiszámítható munkarend alakulhat ki.",
       medium: "Nagyobb csapatban is eredményes lehetsz, ha vannak állandó kisebb munkacsoportok és világos kommunikációs csatornák.",
-      watchOut: "Nehéz lehet olyan közegben, ahol a kommunikáció felszínes és széttartó marad. Segít, ha stabil páros vagy kis csoportos együttműködéseket alakítotok ki.",
+      watchOut: "Nehéz lehet olyan közegben, ahol a kommunikáció felszínes és széttartó marad. Segít, ha stabil páros vagy kiscsoportos együttműködéseket alakítotok ki.",
     },
     en: {
       strong: "Small, trust-based collaboration where deep professional relationships and steady team rhythm can form.",
@@ -308,7 +308,7 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   solitaryInnovator: {
     hu: {
       strong: "Elmélyült, önálló munkát és hosszabb gondolkodási időt adó feladatok, amelyekben egyedi megoldásokat dolgozhatsz ki.",
-      medium: "Csapatban is jól működhetsz, ha van védett fókuszidőd, és az együttműködés nem kíván mindenkitől folyamatos, egyidejű jelenlétet.",
+      medium: "Csapatban is jól működhetsz, ha van időd zavartalanul dolgozni, és az együttműködés nem kíván mindenkitől folyamatos, egyidejű jelenlétet.",
       watchOut: "Megterhelő lehet, ha a munka ritmusát folyamatos megbeszélések törik meg. Érdemes előre rögzíteni a zavartalan munka időszakait, a döntések előkészítését pedig írásban is lehetővé tenni.",
     },
     en: {
@@ -343,8 +343,8 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   },
   structuredInnovator: {
     hu: {
-      strong: "Komplex problémák, ahol egyszerre kell újítani és rendszerben tartani a megvalósítást.",
-      medium: "Gyorsabb, kreatívabb közegben is jól működhetsz, ha vannak minimális folyamatkeretek és döntési pontok.",
+      strong: "Összetett problémák, amelyeknél egyszerre van szükség új ötletekre és a megvalósítás gondos megszervezésére.",
+      medium: "Gyorsabb, kreatívabb közegben is jól működhetsz, ha vannak közösen elfogadott munkafolyamatok és döntési pontok.",
       watchOut: "Nehéz lehet, ha egyszerre túl sok irány marad nyitva, és a kivitelezés elveszíti a fókuszt. Segít, ha minden munkaszakasznak rögzített kerete, fontossági sorrendbe tett feladatlistája és világos lezárási feltétele van.",
     },
     en: {
@@ -367,7 +367,7 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   },
   calmExecution: {
     hu: {
-      strong: "Összetett, hosszú futamidejű projektek, amelyekhez kitartás és érzelmi állóképesség is kell: üzemeltetés, programvezetés vagy minőségbiztosítás.",
+      strong: "Összetett, hosszú távú projektek, amelyekhez kitartás és érzelmi állóképesség is kell: üzemeltetés, programvezetés vagy minőségbiztosítás.",
       medium: "Szabályozói, megfelelőségi vagy szakértői szerepek, ahol különösen értékes a megbízható, egyenletes teljesítmény.",
       watchOut: "Előfordulhat, hogy a precizitás és a nyugalom másokban azt a benyomást kelti, hogy nem érzékeled az érzelmi jeleket. Érdemes aktívan visszajelzést kérni a csapattól.",
     },
@@ -379,7 +379,7 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
   },
   exploratoryAnalyst: {
     hu: {
-      strong: "Kutató, stratégiai elemző, innovátor szerepek, ahol az ismeretlen felfedezése mély, kitartó fókuszt igényel.",
+      strong: "Kutatói, stratégiai elemzői és újítással járó szerepek, ahol az ismeretlen feltárásához elmélyült, tartós figyelemre van szükség.",
       medium: "Feltáró jellegű tanácsadói vagy termékstratégiai munkák is jól illeszkednek, ha van tér a mély gondolkodásra.",
       watchOut: "Megterhelő lehet, ha már azelőtt eredményt várnak, hogy az elemzés kellő mélységűvé válhatna. Érdemes a munkaszakasz elején rögzíteni az elvárt mélységet és a határidőt.",
     },
@@ -417,7 +417,7 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
     hu: {
       strong: "Eredményalapú, versengő közegek: értékesítés, üzletfejlesztés, növekedés vagy teljesítményközpontú vezetői szerep.",
       medium: "Tárgyalási, stratégiai, vállalkozói szerepek is jól illeszkednek, ha a célok mérhetőek és a siker egyértelmű.",
-      watchOut: "Az eredményfókusz időnként háttérbe szoríthatja a csapatdinamikát. Érdemes tudatosan fenntartani a kapcsolatokat, és rendszeres visszajelzési kultúrát kialakítani.",
+      watchOut: "Az eredményfókusz időnként háttérbe szoríthatja a csapatdinamikát. Érdemes tudatosan fenntartani a kapcsolatokat, és rendszeresen visszajelzést kérni és adni.",
     },
     en: {
       strong: "Results-driven, competitive environments – sales, business development, growth, performance-oriented leadership.",
@@ -429,7 +429,7 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
     hu: {
       strong: "A bevett megoldásokat megkérdőjelező szerepek: innovációs vezetés, vállalkozás vagy stratégiai tanácsadás, ahol értéket teremt a konvenciók felülvizsgálata.",
       medium: "Szakértői, tanácsadói és kutatói szerepekben is jól működhetsz, ha van elegendő önállóságod, és elvárás a kritikus gondolkodás.",
-      watchOut: "Nehéz lehet, ha a csapat mindenáron a harmóniát keresi, vagy ha a konfrontáció rontja az összetartást. Érdemes a visszajelzést úgy keretezni, hogy az ne a személy ellen, hanem a jobb megoldás mellett szóljon.",
+      watchOut: "Nehéz lehet, ha a csapat mindenáron a harmóniát keresi, vagy ha a konfrontáció rontja az összetartást. Érdemes a visszajelzést úgy megfogalmazni, hogy az ne a személy ellen, hanem a jobb megoldás mellett szóljon.",
     },
     en: {
       strong: "Disruption-oriented roles – innovation leader, entrepreneur, strategic advisor, where challenging convention creates value.",
@@ -738,7 +738,7 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
     en: "Your responses suggest emotional sensitivity is one of your defining traits: you register the charge of a situation early, and it stays with you for a while. That brings you a lot of early information – and a lot of load, which is why the setting you work in matters.",
   },
   E_low: {
-    hu: "Válaszaid kifejezett érzelmi stabilitást jeleznek. Nyomás és bizonytalanság alatt is jellemzően megőrzöd az egyensúlyodat – cserébe mások érzelmi jelzései ritkábban jutnak el hozzád, és a nyugalmadat távolságtartásnak is olvashatják.",
+    hu: "Válaszaid kifejezett érzelmi stabilitást jeleznek. Nyomás alatt és bizonytalan helyzetekben is jellemzően megőrzöd az egyensúlyodat. Ugyanakkor mások érzelmi jelzéseit ritkábban veheted észre, és a nyugalmadat távolságtartásként is értelmezhetik.",
     en: "Your responses point to marked emotional stability. You typically keep your balance under pressure and uncertainty – in exchange, others' emotional signals reach you less often, and your calm can be read as distance.",
   },
   X_high: {
@@ -746,11 +746,11 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
     en: "Your responses show a strongly extraverted pattern – you draw energy from relationships and interactions. Social space is likely your natural element, where you actively shape the dynamics.",
   },
   X_low: {
-    hu: "A válaszaid introvertáltabb beállítottságra utalnak: jellemzően önállóan vagy kisebb csoportban tudsz feltöltődni. A mély fókusz és az önállóság kedvezhet a legjobb teljesítményednek.",
+    hu: "A válaszaid introvertáltabb beállítottságra utalnak: jellemzően önállóan vagy kisebb csoportban tudsz feltöltődni. Az elmélyült, önálló munka segíthet kihozni magadból a legtöbbet.",
     en: "Your responses suggest an introverted disposition – you typically recharge through independent or small-group work. Deep focus and autonomy are where your strengths unfold.",
   },
   A_high: {
-    hu: "A válaszaid együttműködő, alkalmazkodó, kapcsolatorientált működésre utalnak. A csapatkohézió és a harmónia jellemzően fontos értéked – aktívan dolgozol a jó kapcsolatok fenntartásán.",
+    hu: "A válaszaid együttműködő, alkalmazkodó, az emberi kapcsolatokat előtérbe helyező viselkedésre utalnak. A csapat összetartása és a harmónia jellemzően fontos neked – aktívan dolgozol a jó kapcsolatok fenntartásán.",
     en: "Your responses point to a cooperative, adaptable, relationship-oriented way of working. Team cohesion and harmony tend to be important values for you – you actively work at maintaining good relationships.",
   },
   A_low: {
@@ -783,7 +783,7 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
 
 export const SOLO_DIM_SUMMARIES: Record<string, LocalizedText> = {
   H_high: {
-    hu: "Erőforrásod a kiszámíthatóság és a nyílt kommunikáció: mások gyorsan tudják, hányadán állnak veled. Figyeld meg, hogy nehezebb helyzetekben nem maradsz-e túl sokáig engedékeny ott, ahol már határt kellene húznod.",
+    hu: "Erőforrásod a kiszámíthatóság és a nyílt kommunikáció: mások hamar megtudják, hányadán állnak veled. Figyeld meg, hogy nehezebb helyzetekben nem maradsz-e túl sokáig engedékeny ott, ahol már határt kellene húznod.",
     en: "Your asset is predictability and open communication – people quickly know where they stand with you. Worth watching: in tougher settings you may stay accommodating a beat too long where a firm boundary is needed.",
   },
   H_low: {
@@ -795,19 +795,19 @@ export const SOLO_DIM_SUMMARIES: Record<string, LocalizedText> = {
   // egyik pólusa sem erőforrás-állítás, hanem jellemző. A műfaj (egy
   // megfigyelés + egy figyelő-pont) ugyanaz marad.
   E_high: {
-    hu: "Jellemződ a korai ráhangolódás: hamarabb érzed meg a feszültséget, mint hogy kimondanák. Figyeld meg, hogyan változik a terhelhetőséged tartós nyomás alatt; egy bevált stresszkezelési rutin nálad alapvető támasz lehet.",
+    hu: "Jellemző rád, hogy korán érzékeled a feszültséget, még mielőtt bárki szóvá tenné. Figyeld meg, hogyan változik a terhelhetőséged tartós nyomás alatt; egy bevált stresszkezelési rutin nálad alapvető támasz lehet.",
     en: "A defining trait of yours is early attunement: you register tension before it's said out loud. Worth watching: sustained pressure may drain you faster – a stress routine is core equipment for you, not an extra.",
   },
   E_low: {
-    hu: "Jellemződ a nyugalom nyomás alatt. Figyeld meg, hogy mások nem élik-e meg ezt távolságtartásként; a támogató visszajelzést néha ki is kell mondanod, nem elég érezni.",
+    hu: "Jellemzően nyomás alatt is nyugodt maradsz. Figyeld meg, hogy mások nem élik-e meg ezt távolságtartásként; a támogató visszajelzést néha ki is kell mondanod, nem elég érezni.",
     en: "A defining trait of yours is calm under pressure. Worth watching: others may read it as distance – supportive feedback sometimes needs to be said out loud, not just felt.",
   },
   X_high: {
-    hu: "Erőforrásod az energia és a társas jelenlét. Figyeld meg, hogy a csendesebb résztvevők nem szorulnak-e háttérbe melletted; érdemes tudatosan teret nyitnod nekik.",
+    hu: "Erőforrásod az energia és a társas jelenlét. Figyeld meg, hogy a csendesebb résztvevők nem szorulnak-e háttérbe melletted; érdemes tudatosan lehetőséget adnod nekik a megszólalásra.",
     en: "Your asset is energy and social presence. Worth watching: quieter voices can fade around you – opening space for them takes intention.",
   },
   X_low: {
-    hu: "Erőforrásod a mély fókusz és az önállóság. Figyeld meg, hogy a kisebb láthatóság miatt nem maradnak-e észrevétlenek az eredményeid; néha neked kell láthatóvá tenned őket.",
+    hu: "Erősséged az elmélyült figyelem és az önállóság. Figyeld meg, hogy a kisebb láthatóság miatt nem maradnak-e észrevétlenek az eredményeid; néha neked kell láthatóvá tenned őket.",
     en: "Your asset is deep focus and autonomy. Worth watching: low visibility can lead to being undervalued – results sometimes need a voice.",
   },
   A_high: {
@@ -823,7 +823,7 @@ export const SOLO_DIM_SUMMARIES: Record<string, LocalizedText> = {
     en: "Your asset is dependable execution. Worth watching: the need for structure can turn rigid when the terrain changes faster than the plan.",
   },
   C_low: {
-    hu: "Erőforrásod az improvizáció és az alkalmazkodóképesség. Figyeld meg, hogy nem csúsznak-e könnyebben a részletek és a határidők; egy külső rendszer vagy egy rendezettebben dolgozó társ sokat segíthet.",
+    hu: "Erőforrásod az improvizáció és az alkalmazkodóképesség. Figyeld meg, hogy nem kerülnek-e háttérbe a részletek, és nem csúsznak-e a határidők; egy külső rendszer vagy egy rendezettebben dolgozó társ sokat segíthet.",
     en: "Your asset is improvisation and adaptivity. Worth watching: details and deadlines slip more easily – external structure (a system or a partner) helps a lot.",
   },
   O_high: {
@@ -853,7 +853,7 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   H_high: {
     hu: {
       stress: "Nyomás alatt még szigorúbban ragaszkodhatsz az elvekhez, és nehezebben köthetsz gyakorlati kompromisszumot.",
-      blindspot: "Mások rugalmasabb megoldásait elvtelenségként olvashatod, pedig gyakran csak más a prioritásuk.",
+      blindspot: "Mások rugalmasabb megoldásait elvtelenségként értelmezheted, pedig gyakran csak más a prioritásuk.",
     },
     en: {
       stress: "Under pressure you may hold to principles even more rigidly and find practical compromise harder.",
@@ -933,7 +933,7 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   C_high: {
     hu: {
       stress: "Nyomás alatt nőhet az ellenőrzési igényed: újra és újra átnézheted a munkát, nehezebben adhatsz át feladatokat, és merevebben ragaszkodhatsz a tervekhez.",
-      blindspot: "A tökéletesítés eltolhatja a lezárást akkor is, amikor a megoldás már megfelelő lenne.",
+      blindspot: "A tökéletesítés késleltetheti a befejezést akkor is, amikor a megoldás már megfelelő lenne.",
     },
     en: {
       stress: "Under pressure the need for control can grow: more checking, harder delegation, stiffer plans.",
@@ -942,7 +942,7 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   },
   C_low: {
     hu: {
-      stress: "Nyomás alatt még nehezebbé válhat a rendezettség megtartása: a határidők és a részletek könnyebben csúszhatnak.",
+      stress: "Nyomás alatt még nehezebbé válhat a rendezettség megtartása: a határidők könnyebben csúszhatnak, a részletek pedig elkerülhetik a figyelmedet.",
       blindspot: "A környezeted megbízhatósági problémának láthatja azt, ami számodra csupán fontossági sorrend kérdése.",
     },
     en: {
@@ -963,7 +963,7 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   O_low: {
     hu: {
       stress: "Nyomás alatt a bevált módszerekhez való ragaszkodás felerősödhet – akkor is, ha a helyzet újfajta választ kívánna.",
-      blindspot: "A „mindig így csináltuk” biztonsága lassú reakciót adhat gyors változásban.",
+      blindspot: "A „mindig így csináltuk” biztonsága miatt lassabban reagálhatsz a gyors változásokra.",
     },
     en: {
       stress: "Under pressure reliance on proven methods can intensify – even when the situation calls for a new kind of answer.",
@@ -981,7 +981,7 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
 
 export const ARCHETYPE_STORY_NOUN: Record<string, LocalizedText> = {
   H: {
-    hu: "Az értékőr ritkán a leghangosabb ember a szobában – inkább az, akiben a többiek ösztönösen megbíznak. Számára a nyílt lapok és a kapcsolatok minősége többet ér, mint a gyors győzelem.",
+    hu: "Az értékőr ritkán a leghangosabb a társaságban, de a többiek gyakran ösztönösen megbíznak benne. Többre tartja az őszinteséget és a jó kapcsolatokat, mint a gyors győzelmet.",
     en: "The Value Guardian is rarely the loudest person in the room – more often the one others instinctively trust. Open cards and the quality of relationships matter more to them than a quick win.",
   },
   // 2026-08-11, valencia-revízió: a MEGFIGYELÉS marad (korán észreveszi a
@@ -990,19 +990,19 @@ export const ARCHETYPE_STORY_NOUN: Record<string, LocalizedText> = {
   // nem empátiát mérnek. A második mondat ezért az árát is kimondja, nem
   // erényt tulajdonít.
   E: {
-    hu: "A Ráhangolódó gyakran előbb észleli a feszültséget, mint hogy bárki kimondaná. Ez sok információt adhat, de terhet is jelenthet: a környezet feszültsége nála is tovább maradhat.",
+    hu: "A ráhangolódó gyakran előbb észleli a feszültséget, mint hogy bárki kimondaná. Ez sok információt adhat, de terhet is jelenthet: a környezete feszültsége rá is hosszan hathat.",
     en: "The Signal Reader notices tension before anyone says it out loud. That yields a lot of information – and a lot of load: what's in the room stays with them too.",
   },
   X: {
-    hu: "A Hajtóerő körül gyorsan mozgásba lendülnek a dolgok. Az energiája átragadhat másokra is, a csapat pedig gyakran az ő tempójához igazodik.",
+    hu: "A hajtóerő körül gyorsan mozgásba lendülnek a dolgok. Az energiája átragadhat másokra is, a csapat pedig gyakran az ő tempójához igazodik.",
     en: "The Driving Force is the person things start moving around: where they are, there is tempo. Their energy is contagious – teams often take their rhythm from them.",
   },
   A: {
-    hu: "A hídépítő ott dolgozik, ahol mások falakat látnak: emberek és álláspontok között. Ritkán övé a színpad – de nélküle sok megállapodás létre sem jönne.",
+    hu: "A hídépítő abban segít, hogy az eltérő álláspontot képviselő emberek is megtalálják a közös hangot. Ritkán kerül a figyelem középpontjába, de sok megállapodás létrejöttéhez hozzájárul.",
     en: "The Bridge-Builder works where others see walls: between people and positions. The stage is rarely theirs – but without them many agreements would never happen.",
   },
   C: {
-    hu: "A Rendszerépítő mellett a dolgok nem vesznek el: elkészülnek. Ahol ő dolgozik, ott a káoszból folyamat, a folyamatból pedig eredmény lesz.",
+    hu: "A rendszerépítő számon tartja a feladatokat, és gondoskodik arról, hogy elkészüljenek. Átlátható folyamatokat alakít ki, amelyek segítik a közös munkát.",
     en: "The Architect is the one with whom things don't get lost – they get done. Where they work, chaos becomes process, and process becomes results.",
   },
   O: {
@@ -1032,7 +1032,7 @@ export const ARCHETYPE_STORY_ADJ: Record<string, LocalizedText> = {
     en: "In you this is typically paired with a patient, collaborative style: finding common ground isn't a concession, it's a method.",
   },
   C: {
-    hu: "Ehhez nálad jellemzően módszeresség társul: amit elkezdesz, annak szerkezete és vége is van.",
+    hu: "Ehhez nálad jellemzően módszeresség társul: megtervezed és végigviszed, amibe belekezdesz.",
     en: "In you this typically comes with method: what you start has structure – and an ending.",
   },
   O: {
@@ -1092,7 +1092,7 @@ export const COLLAB_CLICK: Record<string, LocalizedText> = {
     en: "You're in your element where collaboration has tempo: workshops, quick alignments, shared spaces. Quieter, deep-focus colleagues pair well with you – they carry the long-concentration threads while you keep momentum and connections.",
   },
   X_low: {
-    hu: "Azokkal dolgozhatsz jól, akikkel ritkábbak, de tartalmasak az egyeztetések, és akik önállóan, írásban is hatékonyan működnek. Egy társasabb partner jól kiegészíthet: ő tarthatja a kapcsolatot a szervezet többi részével, te pedig az elmélyült munkát viheted.",
+    hu: "Azokkal dolgozhatsz jól, akikkel ritkábbak, de tartalmasak az egyeztetések, és akik önállóan, írásban is hatékonyan működnek. Egy társasabb partner jól kiegészíthet: ő tarthatja a kapcsolatot a szervezet többi részével, te pedig az elmélyült munkára összpontosíthatsz.",
     en: "Your best pairings are people with whom alignment is infrequent but substantive – colleagues who work well in writing and independently. A more social partner complements you: they maintain organisation-facing connections, you bring the depth.",
   },
   A_high: {
@@ -1108,7 +1108,7 @@ export const COLLAB_CLICK: Record<string, LocalizedText> = {
     en: "You work well alongside people who keep their commitments: with structured, deadline-honouring colleagues mutual trust forms quickly. An improvisational partner also does you good – they bring the twist, you bring the follow-through, as long as roles are explicit.",
   },
   C_low: {
-    hu: "Rugalmas, menet közben alakuló munkában lehetsz jó társ, és a hasonlóan alkalmazkodó kollégákkal könnyen megtalálhatjátok a közös ritmust. Egy rendszerezettebb partner jól kiegészíthet: ő összefogja a részleteket, te pedig mozgékonyságot hozol.",
+    hu: "Rugalmas, menet közben alakuló munkában lehetsz jó társ, és a hasonlóan alkalmazkodó kollégákkal könnyen megtalálhatjátok a közös ritmust. Egy rendszerezettebb partner jól kiegészíthet: ő összefogja a részleteket, te pedig segítesz rugalmasan alkalmazkodni.",
     en: "You're a good partner in flexible, evolving work – with similarly adaptive colleagues you find rhythm easily. A more systematic partner adds a lot: they hold the threads, you bring the agility.",
   },
   O_high: {
@@ -1128,7 +1128,7 @@ export const COLLAB_FRICTION: Record<string, LocalizedText> = {
     en: "Your most likely friction is around tempo and quality: looser planners can feel unreliable to you, while your hold on order can feel rigid to them. It defuses a lot to agree on shared deadlines and a quality minimum, rather than policing the method.",
   },
   C_low: {
-    hu: "Súrlódás ott keletkezhet, ahol a struktúra maga az elvárás: a rendszerezett kollégáknak a csúszó részletek bizalmi kérdéssé válhatnak, számodra az ő folyamataik fölösleges féknek tűnhetnek. Segíthet egy közös, minimális keret – kevés, de tényleg tartott vállalás.",
+    hu: "Súrlódás ott keletkezhet, ahol a struktúra maga az elvárás: a rendszerezett kollégáknak az elmaradt részfeladatok a bizalmat is megingathatják, számodra az ő folyamataik fölösleges féknek tűnhetnek. Segíthet egy közös, minimális keret – kevés, de tényleg tartott vállalás.",
     en: "Friction can arise where structure itself is the expectation: to systematic colleagues slipping details can become a trust issue, while their processes can feel like needless brakes to you. A shared minimal frame helps – few commitments, but truly kept.",
   },
   A_high: {
@@ -1156,7 +1156,7 @@ export const COLLAB_FRICTION: Record<string, LocalizedText> = {
     en: "To more emotionally intense colleagues your calm can read as distance, while their reactions can look like overreaction to you. The dispute is rarely the content itself – more often the intensity gap; naming that helps.",
   },
   X_high: {
-    hu: "A csendesebb kollégákkal kialakuló súrlódás ritkán látványos: könnyen kivonódhatnak a beszélgetésből, ha minden gyorsan és szóban történik. Sokat segít, ha nem kell mindenkinek azonnal szóban reagálnia, és írásban is van lehetőség hozzászólni.",
+    hu: "A csendesebb kollégákkal kialakuló súrlódás ritkán látványos: könnyen visszahúzódhatnak a beszélgetésben, ha minden gyorsan és szóban történik. Sokat segít, ha nem kell mindenkinek azonnal szóban reagálnia, és írásban is van lehetőség hozzászólni.",
     en: "Your friction next to quieter colleagues is rarely loud: they simply disengage when everything happens verbally and fast. Asynchronous space helps a lot – when input can come in writing, their best thinking arrives too.",
   },
   X_low: {
@@ -1164,7 +1164,7 @@ export const COLLAB_FRICTION: Record<string, LocalizedText> = {
     en: "A fast, meeting-driven environment drains you, while to more social colleagues your withdrawal can look like distance. An explicit working agreement can help: when you're available live, and what goes in writing.",
   },
   O_high: {
-    hu: "A pragmatikus végrehajtókkal ott súrlódhatsz, ahol az ötleteid az ő stabil folyamataikat borítják – számukra a gyakori irányváltás kockázat, számodra az állandóság stagnálás. Segít a kettéválasztás: kísérleti sáv az újnak, védett sáv a működőnek.",
+    hu: "A gyakorlatias kollégákkal akkor alakulhat ki nézeteltérésed, ha az ötleteid felborítják a bevált munkafolyamataikat. Számukra a gyakori irányváltás kockázatot jelenthet, míg számodra az állandóság a fejlődés hiányát. Segíthet, ha úgy hagytok teret a kísérletezésnek, hogy közben a jól működő folyamatok is megmaradnak.",
     en: "You may grate against pragmatic executors where your ideas upset their stable processes – to them frequent pivots are risk, to you constancy is stagnation. Separating lanes helps: an experimental track for the new, a protected track for what works.",
   },
   O_low: {
@@ -1188,7 +1188,7 @@ export const COLLAB_NEEDS: Record<string, LocalizedText> = {
     en: "You're at your best when mistakes don't come with shaming: a safe, predictable climate isn't comfort for you, it's a performance condition. For many with a similar profile, regular short feedback moments work best – even under pressure.",
   },
   E_low: {
-    hu: "Neked a bizalom jele az önállóság: akkor működsz jól, ha nem kell folyamatos érzelmi visszaigazolást adnod vagy kapnod. Sokat segíthet, ha a környezeted tudja: a nyugalmad nem közöny – így nem olvassák félre.",
+    hu: "Neked a bizalom jele az önállóság: akkor működsz jól, ha nem kell folyamatos érzelmi visszaigazolást adnod vagy kapnod. Sokat segíthet, ha a környezeted tudja: a nyugalmad nem közöny – így elkerülhetitek a félreértéseket.",
     en: "For you, autonomy is the signal of trust: you work well when constant emotional reassurance isn't required in either direction. It helps when those around you know your calm isn't indifference – so it doesn't get misread.",
   },
   X_high: {
@@ -1196,7 +1196,7 @@ export const COLLAB_NEEDS: Record<string, LocalizedText> = {
     en: "Your energy comes from shared space: you thrive with live collaboration, a visible role, and fast feedback. For many with this profile it helps when their leader gives stage room – while also recognising quiet work, not just the loud kind.",
   },
   X_low: {
-    hu: "A mély fókusz a természetes üzemmódod: akkor teljesítesz jól, ha vannak megszakításmentes időszakaid, és nem a folyamatos jelenlét, hanem az eredmény számít. Sokat segíthet, ha kisebb társas terheléssel is láthatóvá teheted a munkádat, például írásos összefoglalóval.",
+    hu: "Az elmélyült munka természetes számodra: akkor teljesítesz jól, ha vannak megszakításmentes időszakaid, és nem a folyamatos jelenlét, hanem az eredmény számít. Sokat segíthet, ha kisebb társas terheléssel is láthatóvá teheted a munkádat, például írásos összefoglalóval.",
     en: "Deep focus is your operating mode: you perform when you have uninterrupted stretches and results count over presence. It helps when visibility comes in low-threshold forms – a written summary, not a stage.",
   },
   A_high: {
@@ -1265,9 +1265,9 @@ export const DIMENSION_GROWTH_TIPS: Record<string, Record<Locale, GrowthPlan>> =
   // állítson.
   E: {
     hu: {
-      behavior: "Zárj le hetente egy beszélgetést egy kimondott elismeréssel („örülök, hogy…”, „köszönöm, hogy…”).",
+      behavior: "Zárj le hetente egy beszélgetést azzal, hogy elismered a másik munkáját („örülök, hogy…”, „köszönöm, hogy…”).",
       reflection: "Kinek jelezted vissza utoljára, hogy számít neked a munkája?",
-      challenge: "Két héten át heti egy kimondott elismerés – és figyeld meg, változik-e, ahogyan hozzád fordulnak.",
+      challenge: "Két héten át hetente egyszer mondd el valakinek, mit értékelsz a munkájában. Figyeld meg, változik-e, ahogyan hozzád fordulnak.",
     },
     en: {
       behavior: "Once a week, close a conversation with an explicit acknowledgement (\"I'm glad that…\", \"thank you for…\").",
@@ -1349,11 +1349,11 @@ export const SOLO_DIM_ROLE_MODIFIERS: Record<string, LocalizedText> = {
     en: "Thanks to your emotional stability, high-stakes, high-pressure variants of these roles can also work well for you.",
   },
   X_high: {
-    hu: "A magas társas energiád miatt inkább a látható, sok emberi kapcsolódással járó szerepváltozatok illenek hozzád; a hosszan tartó, elszigetelt munka kevésbé tölt fel.",
+    hu: "Mivel a társas helyzetek feltöltenek, inkább a szerepléssel és sok emberi kapcsolattal járó feladatok illenek hozzád; a hosszan tartó, elszigetelt munka kevésbé tölt fel.",
     en: "Your high extraversion tilts this toward visible, people-facing variants – long isolated work feeds you less.",
   },
   X_low: {
-    hu: "Az alacsonyabb társas energia miatt jobban illenek hozzád az elmélyült, önálló munkát engedő szerepváltozatok, mint azok, amelyek folyamatos nyilvános jelenlétet kívánnak.",
+    hu: "Mivel kevésbé igényled a társas helyzeteket, jobban illenek hozzád az elmélyült, önálló munkát engedő feladatok, mint azok, amelyek folyamatos nyilvános jelenlétet kívánnak.",
     en: "With lower extraversion, variants that allow deep, independent focus fit better than constant representation.",
   },
   A_high: {
@@ -1377,7 +1377,7 @@ export const SOLO_DIM_ROLE_MODIFIERS: Record<string, LocalizedText> = {
     en: "Your high openness pulls toward variants offering novelty and learning – purely routine-based roles can feel narrow quickly.",
   },
   O_low: {
-    hu: "A bevált módszerek iránti preferenciád a kiszámítható, stabil működésű szerepváltozatokban lehet erőforrás.",
+    hu: "A bevált módszerek iránti bizalmad a kiszámítható feladatokkal és állandó munkafolyamatokkal járó szerepekben lehet előny.",
     en: "Your preference for proven methods is an asset in predictable, stable variants of these roles.",
   },
 };
@@ -1387,7 +1387,7 @@ export const SOLO_DIM_ROLE_MODIFIERS: Record<string, LocalizedText> = {
 export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium: string; watchOut: string }>> = {
   H_high: {
     hu: {
-      strong: "Magas bizalmi elvárású, átláthatóságra épülő területek: megfelelőség, etikai tanácsadás, szabályozás, közszféra vagy nonprofit szektor.",
+      strong: "Bizalomra és átláthatóságra épülő területek: megfelelőség, etikai tanácsadás, szabályozás, közszféra vagy nonprofit szektor.",
       medium: "Bármely vezetői vagy szakértői szerep, ahol az átláthatóság és a feddhetetlenség tényleges elvárás.",
       watchOut: "Fárasztó lehet, ha a kimondott értékek és a napi gyakorlat eltér. Már az elején érdemes tisztázni a határokat és alapelveket.",
     },
@@ -1401,7 +1401,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
     hu: {
       strong: "Versengő, eredményorientált közegek: üzletfejlesztés, értékesítés, növekedés, vállalkozás vagy sok tárgyalással járó szerepek.",
       medium: "Vezetői, projekt- vagy stratégiai szerepek, ahol az ambíció és az önbizalom húzóerő.",
-      watchOut: "Ha a verseny „ember ellen” megy, romolhat a csapatdinamika. Tartsd fókuszban a közös célokat és játékszabályokat.",
+      watchOut: "Ha a versengés személyeskedésbe fordul, romolhat a csapat együttműködése. Összpontosíts a közös célokra és a megállapodott szabályokra.",
     },
     en: {
       strong: "Competitive, outcome-driven settings: business development, sales, growth, entrepreneurship, negotiation-heavy roles.",
@@ -1423,7 +1423,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
   },
   E_low: {
     hu: {
-      strong: "Nagy nyomású döntési és krízishelyzetek, ahol a nyugalom versenyelőny.",
+      strong: "Nagy nyomással járó döntési és válsághelyzetek, ahol a nyugalom versenyelőny.",
       medium: "Változások vezetése, szervezeti átalakítás, induló vállalkozások: olyan területek, ahol a bizonytalanság a munka része.",
       watchOut: "A stabilitásod néha ridegségnek tűnhet. Mondd ki a szándékaidat is, ne csak a tényeket – a nyugalmadból magától nem derül ki, hogyan látod a másik helyzetét.",
     },
@@ -1436,8 +1436,8 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
   X_high: {
     hu: {
       strong: "Kapcsolati és „látható” szerepek: vezetés, értékesítés, ügyfélmunka, facilitáció, közösségépítés.",
-      medium: "Projekt- és változásvezetés, ahol a mozgósítás és a motiválás kulcs.",
-      watchOut: "Túl sok izolált, egyedüli munka lemeríthet. Építs be rendszeres, minőségi emberi kapcsolatot a munkanapokba.",
+      medium: "Projekt- és változásvezetés, ahol a mozgósítás és a motiválás meghatározó.",
+      watchOut: "A túl sok elszigetelt, önálló munka lemeríthet. Hagyj időt a munkanapjaidban rendszeres, tartalmas beszélgetésekre.",
     },
     en: {
       strong: "Visible, relationship-driven roles: leadership, sales, client-facing work, facilitation, community building.",
@@ -1447,8 +1447,8 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
   },
   X_low: {
     hu: {
-      strong: "Mély fókuszt adó, önálló szerepek: elemzés, fejlesztés, kutatás, stratégia, technikai szakértői munka.",
-      medium: "Kis csapatban vagy olyan együttműködésben is jól működhetsz, ahol nem kell mindenkinek egyszerre jelen lennie, és marad elegendő védett fókuszidőd.",
+      strong: "Elmélyült figyelmet igénylő, önálló szerepek: elemzés, fejlesztés, kutatás, stratégia, technikai szakértői munka.",
+      medium: "Kis csapatban vagy olyan együttműködésben is jól működhetsz, ahol nem kell mindenkinek egyszerre jelen lennie, és marad elegendő időd a zavartalan munkára.",
       watchOut: "Sok szerepléssel és állandó kapcsolatépítéssel járó szerepek kimeríthetnek. Legyenek határaid a megbeszélések és a nyilvános jelenlét körül.",
     },
     en: {
@@ -1497,7 +1497,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
     hu: {
       strong: "Gyors, kísérletező közegek: induló vállalkozás, kreatív ipar, agilis csapatok vagy prototípuskészítés.",
       medium: "Felfedező, ötletelő szerepek, amelyekben érték a gyors kipróbálás és az irányváltás.",
-      watchOut: "Hosszú, részletes kivitelezés megterhelő lehet. Jó párosítás egy strukturáltabb társ vagy egy erős folyamatkeret.",
+      watchOut: "Hosszú, részletes kivitelezés megterhelő lehet. Segíthet egy rendszerezettebben dolgozó társ vagy egy világos munkafolyamat.",
     },
     en: {
       strong: "Fast-moving, experimental environments: startups, creative teams, agile product work, prototyping.",
@@ -1508,7 +1508,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
   O_high: {
     hu: {
       strong: "Új ötleteket és összetett gondolkodást igénylő szerepek: kutatás, stratégia, tervezés, termékfejlesztés, innováció vagy vállalkozás.",
-      medium: "Oktatás, tanácsadás, coaching, ahol a perspektívaváltás és kíváncsiság hozza a pluszt.",
+      medium: "Oktatás, tanácsadás, coaching, ahol a nézőpontváltás és a kíváncsiság segíti az eredményes munkát.",
       watchOut: "A lezárás néha nehezebb lehet, mint a felfedezés. Segít, ha előre rögzíted az időkeretet és azt, hogy mi számít késznek.",
     },
     en: {
@@ -1520,7 +1520,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
   O_low: {
     hu: {
       strong: "Stabil, végrehajtás- és megbízhatóság-központú szerepek: üzemeltetés, bevezetés, folyamatműködtetés.",
-      medium: "Optimalizálás és rendszerszintű problémamegoldás, ahol a tapasztalatból jön a minőség.",
+      medium: "Optimalizálás és rendszerszintű problémamegoldás, ahol a tapasztalat segít jó minőségű munkát végezni.",
       watchOut: "Jelentősen új irányoknál könnyen nőhet a feszültség. Kérj fokozatos bevezetést: kis léptékű próba, mérföldkövek és ellenőrzött kockázat.",
     },
     en: {

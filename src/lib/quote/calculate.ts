@@ -16,7 +16,7 @@ import { derivePublicLadder, ladderPrice } from "@/lib/pricing/team-ladder";
 //
 // Az ár a publikus árlétrából jön (team-ladder.ts): minimum projektár,
 // létszám és csapatszám, plusz
-// a szint tartalmán felüli tételek (extra workshop-nap, extra mérési kör,
+// a szint tartalmán felüli tételek (extra workshopnap, extra mérési kör,
 // havi kísérés, egyéb, kiszállás). Ugyanaz a szám, amit a vevő a
 // /pricing oldalon lát — az ajánlat nem lehet más.
 
@@ -24,7 +24,7 @@ export interface QuoteInput {
   headcount: number;
   teams: number;
   tier: QuoteTier;
-  /** További helyszíni workshop-napok a szint tartalmán felül. */
+  /** További helyszíni workshopnapok a szint tartalmán felül. */
   extraWorkshopDays: number;
   travelDays: number;
   /** További utánkövető mérési körök a szint tartalmán felül. */
@@ -142,7 +142,7 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
       label: `Résztvevők · ${price.firstHeads} fő × ${tierRate.perHead.toLocaleString("hu-HU")} Ft`,
       amount: price.firstHeadsFee,
     },
-    { key: "extraWorkshop", label: `További workshop-nap (${input.extraWorkshopDays})`, amount: extraWorkshop },
+    { key: "extraWorkshop", label: `További workshopnap (${input.extraWorkshopDays})`, amount: extraWorkshop },
     { key: "extraWaves", label: `További mérési kör (${input.extraWaves})`, amount: extraWaves },
     { key: "retainer", label: `Havi kísérés (${input.retainerMonths} hó)`, amount: retainer },
     { key: "other", label: input.otherFeeLabel.trim() || "Egyéb díj", amount: otherFee },

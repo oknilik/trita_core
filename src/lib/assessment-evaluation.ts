@@ -7,7 +7,7 @@ export const MIN_EVALUATION_SCREEN_MS = 3000;
 const PHASE_MESSAGES: Record<Locale, readonly [string, string, string]> = {
   hu: [
     "Megnézzük, hogyan kapcsolódsz másokhoz…",
-    "Összekötjük a döntési és munkastílusod jelzéseit…",
+    "Összegezzük, mi jellemzi a döntéseidet és a munkastílusodat…",
     "Megfogalmazzuk, mire érdemes építened…",
   ],
   en: [
@@ -50,8 +50,8 @@ export function buildEvaluationViewModel(progress: number, locale: Locale) {
       ? "A személyes eredményed készül"
       : "Your personal result is taking shape",
     body: locale === "hu"
-      ? "Nem csak pontszámokat, hanem használható összefüggéseket keresünk."
+      ? "A válaszaid alapján összeállítjuk a pontszámaidat és a hozzájuk tartozó magyarázatokat."
       : "We look beyond scores to find patterns you can actually use.",
-    status: locale === "hu" ? "Mintázatok összekapcsolása" : "Connecting patterns",
+    status: locale === "hu" ? "Eredmények összegzése" : "Connecting patterns",
   };
 }

@@ -190,7 +190,7 @@ export function CrmInboxPanel({
 
                 {row.openDealMatch && (
                   <p className="mt-2 rounded-lg bg-state-info-bg px-3 py-2 text-xs text-state-info-fg">
-                    Ehhez az email-címhez már tartozik aktív ügy:{" "}
+                    Ehhez az e-mail-címhez már tartozik aktív ügy:{" "}
                     <Link
                       href={`/admin/crm/${row.openDealMatch.id}`}
                       className="font-semibold underline underline-offset-2"

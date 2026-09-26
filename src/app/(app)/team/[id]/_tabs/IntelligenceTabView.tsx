@@ -62,12 +62,12 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           </h1>
           <p className="mt-2 max-w-3xl text-caption leading-relaxed text-ink-body">
             {isHu
-              ? "A stabil értelmezéshez legalább 3 kitöltött önértékelés szükséges. Addig a nézet inkább adatgyűjtési fókuszban marad."
+              ? "Az értelmezhető csapatképhez legalább 3 kitöltött önértékelés szükséges. Addig itt a kitöltések haladását követheted."
               : "At least 3 completed self-assessments are required for stable interpretation. Until then, this view stays in data-collection mode."}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-              {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
+              {isHu ? "Kitöltött önértékelések" : "Completed assessments"}:{" "}
               <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
             </span>
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
@@ -75,7 +75,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               <span className="font-semibold text-ink">{missingForStableIntelligence}</span>
             </span>
             <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-              {isHu ? "Observer kör" : "Observer round"}:{" "}
+              {isHu ? "Visszajelzési kör" : "Observer round"}:{" "}
               <span className="font-semibold text-ink">
                 {teamData.activeCampaign ? (isHu ? "aktív" : "active") : (isHu ? "nincs" : "none")}
               </span>
@@ -93,7 +93,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
                 href={`/org/${teamData.orgId}?tab=campaigns`}
                 className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
               >
-                {isHu ? "Observer kör indítása" : "Start observer round"}
+                {isHu ? "Visszajelzési kör indítása" : "Start observer round"}
               </Link>
             ) : null}
           </div>
@@ -117,7 +117,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           ) : (
             <p className="mt-2 text-xs text-ink-body">
               {isHu
-                ? "Minden tagnak van legalább részleges adatpontja, de még nincs elég kitöltés a stabil csapatképre."
+                ? "Minden tagnál van már legalább részleges eredmény, de az értelmezhető csapatképhez további kitöltések szükségesek."
                 : "All members have partial data points, but there are still not enough completions for stable team intelligence."}
             </p>
           )}
@@ -170,7 +170,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-            {isHu ? "Kitöltött assessmentek" : "Completed assessments"}:{" "}
+            {isHu ? "Kitöltött önértékelések" : "Completed assessments"}:{" "}
             <span className="font-semibold text-ink">{assessedCount}/{totalCount}</span>
           </span>
           <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
@@ -178,7 +178,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
             <span className="font-semibold text-ink">{intelligenceQualityLabel}</span>
           </span>
           <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note font-medium text-ink-body">
-            {isHu ? "Dinamika nézet" : "Dynamics view"}:{" "}
+            {isHu ? "Kapcsolati nézet" : "Dynamics view"}:{" "}
             <span className="font-semibold text-ink">{dynamicsStateLabel}</span>
           </span>
         </div>
@@ -214,7 +214,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         </p>
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
-            <p className="text-note text-ink-body">{isHu ? "Assessment készültség" : "Assessment readiness"}</p>
+            <p className="text-note text-ink-body">{isHu ? "A felmérés kitöltöttsége" : "Assessment readiness"}</p>
             <p className="mt-1 font-fraunces text-title text-ink">{Math.round((assessedCount / Math.max(totalCount, 1)) * 100)}%</p>
             <p className="text-note text-muted">{assessedCount}/{totalCount}</p>
           </div>
@@ -222,7 +222,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               (UX-audit #28): az „Aktív"/„Elérhető" állapot, nem mennyiség. */}
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-note text-ink-body">{isHu ? "Observer kör státusz" : "Observer round status"}</p>
+              <p className="text-note text-ink-body">{isHu ? "A visszajelzési kör állapota" : "Observer round status"}</p>
               <span
                 className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
                   teamData.activeCampaign ? "bg-sage/15 text-sage-dark" : "bg-sand text-ink-body"
@@ -234,12 +234,12 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
             <p className="mt-2 text-note text-muted">
               {teamData.activeCampaign
                 ? (isHu ? "Visszajelzések gyűjtése folyamatban" : "Feedback collection in progress")
-                : (isHu ? "A dinamika adatokhoz szükséges" : "Required for dynamics data")}
+                : (isHu ? "A kapcsolati adatok megismeréséhez szükséges" : "Required for dynamics data")}
             </p>
           </div>
           <div className="rounded-xl border border-sand bg-cream/60 p-3">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-note text-ink-body">{isHu ? "Csapatminta státusz" : "Pattern status"}</p>
+              <p className="text-note text-ink-body">{isHu ? "A csapatmintázat állapota" : "Pattern status"}</p>
               <span
                 className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
                   pattern.status === "descriptive" ? "bg-sage/15 text-sage-dark" : "bg-state-warning-bg text-state-warning-fg"
@@ -278,7 +278,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         noDataCtaHref={`/team/${teamId}?tab=members`}
         noDataCtaLabel={isHu ? "Tagok és kitöltések megnyitása" : "Open members and completions"}
         deepDiveHref="#team-roles"
-        deepDiveLabel={isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
+        deepDiveLabel={isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
       />
 
       <section id="team-roles" className="scroll-mt-6 space-y-8">

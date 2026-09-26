@@ -16,7 +16,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: locale === "hu" ? "Email-beállítások | trita" : "Email preferences | trita",
+    title: locale === "hu" ? "E-mail-beállítások | trita" : "Email preferences | trita",
     robots: { index: false },
   };
 }

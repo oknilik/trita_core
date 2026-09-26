@@ -115,7 +115,7 @@
           "ingyenes, 60 állításból álló, hozzávetőleg 10 perces egyéni személyiségfelmérés;",
           "az eredményhez kapcsolódó személyiség-, munkastílus- és csapatszerep-értelmezések;",
           "fiókhoz kapcsolódó eredménymegőrzés, profil-, megosztási és exportfunkciók a mindenkori felület szerint;",
-          "observer-meghívók és összesített külső visszajelzés, ha a funkció elérhető;",
+          "ismerősök és kollégák meghívása visszajelzésre, valamint a kapott értékelések összesítése, ha a funkció elérhető;",
           "a Platform biztonságos működéséhez szükséges értesítések és ügyféltámogatás."
         ]
       },
@@ -165,7 +165,7 @@
       },
       {
         "kind": "p",
-        "text": "7.3. Observer-visszajelzésnél a meghívó személy köteles a címzett e-mail-címét jogszerűen használni, és nem küldhet kéretlen, ismétlődő vagy megtévesztő meghívást."
+        "text": "7.3. Ismerőstől vagy kollégától kért visszajelzésnél a meghívó személy köteles a címzett e-mail-címét jogszerűen használni, és nem küldhet kéretlen, ismétlődő vagy megtévesztő meghívást."
       },
       {
         "kind": "heading",
@@ -175,7 +175,7 @@
       },
       {
         "kind": "p",
-        "text": "8.1. A jelen Feltételek szerinti egyéni szolgáltatás díjmentes. A Platform nem kér bankkártyaadatot, és nem végez önkiszolgáló fizetést. A díjmentesség nem teszi a B2B szolgáltatásokat ingyenessé."
+        "text": "8.1. A jelen Feltételek szerinti egyéni szolgáltatás díjmentes. A Platform nem kér bankkártyaadatot, és nem biztosít online fizetési lehetőséget. A díjmentesség nem teszi a B2B szolgáltatásokat ingyenessé."
       },
       {
         "kind": "p",
@@ -329,7 +329,7 @@
       },
       {
         "kind": "p",
-        "text": "1.3. A szerződés dokumentumainak elsőbbségi sorrendje eltérés esetén: (i) aláírt egyedi szerződés vagy megrendelőlap; (ii) egyedi ajánlat és szolgáltatásleírás; (iii) Adatfeldolgozási Megállapodás; (iv) e B2B Feltételek; (v) szakmai playbook vagy ütemterv. Adatvédelmi tárgyban a DPA élvez elsőbbséget."
+        "text": "1.3. A szerződés dokumentumainak elsőbbségi sorrendje eltérés esetén: (i) aláírt egyedi szerződés vagy megrendelőlap; (ii) egyedi ajánlat és szolgáltatásleírás; (iii) Adatfeldolgozási Megállapodás; (iv) e B2B Feltételek; (v) szakmai útmutató vagy ütemterv. Adatvédelmi tárgyban a DPA élvez elsőbbséget."
       },
       {
         "kind": "p",
@@ -350,7 +350,7 @@
           ],
           [
             "Team Scan v1",
-            "Rögzített mérési kör: friss 60 itemes self-felmérés, mért bizalmi háló és 8 itemes, névtelen pszichológiai biztonság pulse."
+            "Rögzített mérési kör: friss, 60 állításból álló önértékelő felmérés, mért bizalmi háló és 8 állításból álló, névtelen felmérés a pszichológiai biztonságról."
           ],
           [
             "Kampány",
@@ -370,7 +370,7 @@
           ],
           [
             "Egyedi Dokumentum",
-            "Ajánlat, megrendelőlap vagy szerződés, amely a konkrét scope-ot, díjat és időzítést rögzíti."
+            "Ajánlat, megrendelőlap vagy szerződés, amely a szolgáltatás pontos tartalmát, díját és időzítését rögzíti."
           ]
         ]
       },
@@ -382,11 +382,11 @@
       },
       {
         "kind": "p",
-        "text": "3.1. A szolgáltatás kizárólag az Egyedi Dokumentumban rögzített csapatokra, létszámra, kampányokra, workshopokra, beszélgetésekre, riportokra és időszakra terjed ki. Observer-, peer-, jelölti vagy más kiegészítő mérés csak kifejezett írásbeli megrendelés esetén része a szolgáltatásnak."
+        "text": "3.1. A szolgáltatás kizárólag az Egyedi Dokumentumban rögzített csapatokra, létszámra, kampányokra, workshopokra, beszélgetésekre, riportokra és időszakra terjed ki. Ismerősöktől, kollégáktól vagy csapattársaktól kért visszajelzés, jelölti vagy más kiegészítő mérés csak kifejezett írásbeli megrendelés esetén része a szolgáltatásnak."
       },
       {
         "kind": "p",
-        "text": "3.2. A Team Scan v1 tipikus elemei: setup és adatkezelési egyeztetés; személyes kickoff; baseline mérés; tanácsadó által validált riport; vezetői debrief; 1–3 célmutatóhoz kötött akció; kísérés; visszamérési kör; záró értékelés. A pilot alapértelmezett időtartama 90 nap, de az Egyedi Dokumentum az irányadó."
+        "text": "3.2. A Team Scan v1 tipikus elemei: előkészítés és adatkezelési egyeztetés; személyes indító megbeszélés; kiinduló mérés; tanácsadó által ellenőrzött riport; az eredmények megbeszélése a vezetővel; 1–3 célmutatóhoz kötött intézkedés; a megvalósítás kísérése; visszamérési kör; záró értékelés. A pilot alapértelmezett időtartama 90 nap, de az Egyedi Dokumentum az irányadó."
       },
       {
         "kind": "p",
@@ -408,7 +408,7 @@
       },
       {
         "kind": "p",
-        "text": "4.3. A Megrendelő olyan vezetői kommunikációt biztosít, amely fejlesztési célt közöl, nem ígér olyan anonimitást, amelyet a Platform nem tud biztosítani, és nem kéri egyéni válasz, képernyőkép vagy részvételi bizonyíték átadását az anonim pulse-ról."
+        "text": "4.3. A Megrendelő olyan vezetői kommunikációt biztosít, amely fejlesztési célt közöl, nem ígér olyan anonimitást, amelyet a Platform nem tud biztosítani, és nem kéri egyéni válasz, képernyőkép vagy részvételi bizonyíték átadását a pszichológiai biztonság névtelen felméréséről."
       },
       {
         "kind": "p",
@@ -429,29 +429,29 @@
             "Teljesítési jel"
           ],
           [
-            "Setup",
-            "Szervezet, csapat, névsor, jogosultságok, kickoff és kampányterv.",
-            "Kampány indításra kész / aktivált."
+            "Előkészítés",
+            "Szervezet, csapat, névsor, jogosultságok, indító megbeszélés és kampányterv.",
+            "A kampány indításra kész vagy aktivált."
           ],
           [
-            "Baseline",
-            "Self → trust → pulse lépések, emlékeztetési renddel.",
-            "Kampány lezárva."
+            "Kiinduló mérés",
+            "Önértékelés → bizalmi kör → pszichológiai biztonság felmérése, az emlékeztetők ütemezésével.",
+            "A kampány lezárva."
           ],
           [
             "Riport",
-            "Adatminőség-ellenőrzés, tanácsadói narratíva, publikálás.",
-            "A konkrét kampányhoz kötött riport PUBLISHED."
+            "Az adatminőség ellenőrzése, tanácsadói értelmezés, a riport közzététele.",
+            "Az adott kampányhoz tartozó riport közzétéve (PUBLISHED)."
           ],
           [
-            "Akció",
-            "Vezetői debrief és 1–3 vállalás, legalább egy célmutatóval.",
-            "Akciók rögzítve."
+            "Intézkedés",
+            "Az eredmények megbeszélése a vezetővel és 1–3 vállalás, legalább egy célmutatóval.",
+            "Az intézkedések rögzítve."
           ],
           [
-            "Follow-up",
-            "Új, összehasonlítható kör és kompozíciós/mérési kapu.",
-            "Follow-up riport publikálva."
+            "Visszamérés",
+            "Új, összehasonlítható mérési kör, a csapatösszetételi és mérési feltételek ellenőrzésével.",
+            "A visszamérési riport közzétéve."
           ]
         ]
       },
@@ -501,7 +501,7 @@
       },
       {
         "kind": "p",
-        "text": "7.2. Egyéni válasz nem jelenik meg csapat- vagy szervezeti nézetben. Összesített eredmény csak legalább 3 értékelő vagy kitöltő válasza esetén jelenhet meg. A pszichológiai biztonság pulse válaszait a Platform felhasználói azonosító nélkül rögzíti; név szerinti válaszlista nem képezhető."
+        "text": "7.2. Egyéni válasz nem jelenik meg csapat- vagy szervezeti nézetben. Összesített eredmény csak legalább 3 értékelő vagy kitöltő válasza esetén jelenhet meg. A pszichológiai biztonság felmérésére adott válaszokat a Platform felhasználói azonosító nélkül rögzíti; név szerinti válaszlista nem képezhető."
       },
       {
         "kind": "p",
@@ -527,15 +527,15 @@
       },
       {
         "kind": "p",
-        "text": "8.1. A Team Scan nem klinikai diagnózis, nem alkalmassági vizsgálat, nem validált csapattipológia és nem ígér meghatározott üzleti eredményt. A 16 minta és más elnevezések értelmezési nyelvet adnak; a közvetlenül mért trust- és pulse-adatok külön evidenciát képeznek."
+        "text": "8.1. A Team Scan nem klinikai diagnózis, nem alkalmassági vizsgálat, nem validált csapattipológia és nem ígér meghatározott üzleti eredményt. A 16 minta és a többi elnevezés az értelmezést segíti; a közvetlenül mért bizalmi kapcsolatok és a pszichológiai biztonság felmérésének adatai külön bizonyítékot jelentenek."
       },
       {
         "kind": "p",
-        "text": "8.2. A stabil személyiségprofil a visszamérésben kontroll, nem fejlődési címke. Összetételváltozásnál vagy mérési bizonytalanságnál a riport korlátozást vagy warningot alkalmaz; kézi delta nem helyettesíti a Platform összehasonlító logikáját."
+        "text": "8.2. A stabil személyiségprofil a visszamérésben ellenőrzési alapként szolgál, nem fejlődési mutató. Ha változik a csapat összetétele, vagy mérési bizonytalanság áll fenn, a riport korlátozást vagy figyelmeztetést jelenít meg; kézzel számított különbség nem helyettesíti a Platform összehasonlító logikáját."
       },
       {
         "kind": "p",
-        "text": "8.3. A tanácsadói debrief szakmai értelmezés, nem jogi, munkajogi, egészségügyi vagy pszichoterápiás tanácsadás."
+        "text": "8.3. Az eredmények tanácsadóval történő megbeszélése szakmai értelmezés, nem jogi, munkajogi, egészségügyi vagy pszichoterápiás tanácsadás."
       },
       {
         "kind": "heading",
@@ -589,7 +589,7 @@
       },
       {
         "kind": "p",
-        "text": "11.2. Pilotidőszakban a Szolgáltató bejelentett, érdemi működési hibára munkanapon 24 órán belül megkezdi a reakciót. Ez első válaszra és triázsra vonatkozó cél, nem megoldási határidő. Kritikus hiba prioritást kap."
+        "text": "11.2. Pilotidőszakban a Szolgáltató a bejelentett, érdemi működési hiba kezelését munkanapon 24 órán belül megkezdi. Ez az első válaszra és a hiba kezdeti értékelésére vonatkozó cél, nem megoldási határidő. Kritikus hiba prioritást kap."
       },
       {
         "kind": "p",
@@ -607,11 +607,11 @@
       },
       {
         "kind": "p",
-        "text": "12.1. A scope, csapatszám, résztvevői kör, extra mérési réteg, workshop vagy határidő módosítása írásbeli change request alapján történik. A Szolgáltató közli a díj- és időhatást; a változás csak elfogadás után kötelező."
+        "text": "12.1. A szolgáltatás tartalmának, a csapatok számának, a résztvevők körének, a kiegészítő méréseknek, a workshopnak vagy a határidőnek a módosítása írásbeli módosítási kérelem alapján történik. A Szolgáltató közli, hogy a változás hogyan érinti a díjat és az időzítést; a változás csak elfogadás után kötelező."
       },
       {
         "kind": "p",
-        "text": "12.2. Jogszabályi, adatbiztonsági vagy szolgáltatói változás miatt szükséges, arányos technikai módosítás nem minősül scope-bővítésnek, ha a lényeges üzleti funkciót nem csökkenti. Lényeges hátrány esetén a felek jóhiszeműen egyeztetnek."
+        "text": "12.2. Jogszabályi, adatbiztonsági vagy szolgáltatói változás miatt szükséges, arányos technikai módosítás nem minősül a szolgáltatás bővítésének, ha a lényeges üzleti funkciót nem csökkenti. Lényeges hátrány esetén a felek jóhiszeműen egyeztetnek."
       },
       {
         "kind": "heading",
@@ -643,7 +643,7 @@
       },
       {
         "kind": "p",
-        "text": "14.1. A Szolgáltató szavatolja, hogy a szolgáltatást szakmailag gondosan, a leírt módszertani és adatvédelmi korlátokkal nyújtja. Nem szavatol megszakításmentes működést, meghatározott részvételi arányt, pszichometriai vagy üzleti eredményt, illetve a Megrendelő akcióinak végrehajtását."
+        "text": "14.1. A Szolgáltató szavatolja, hogy a szolgáltatást szakmailag gondosan, a leírt módszertani és adatvédelmi korlátokkal nyújtja. Nem szavatol megszakításmentes működést, meghatározott részvételi arányt, pszichometriai vagy üzleti eredményt, illetve a Megrendelő intézkedéseinek végrehajtását."
       },
       {
         "kind": "p",
@@ -669,7 +669,7 @@
       },
       {
         "kind": "p",
-        "text": "15.2. A Szolgáltató igénybe vehet megfelelően kötelezett alvállalkozót és adatfeldolgozót; adatfeldolgozásnál a DPA szabályai irányadók."
+        "text": "15.2. A Szolgáltató igénybe vehet a megfelelő kötelezettségeket vállaló alvállalkozót és adatfeldolgozót; adatfeldolgozásnál a DPA szabályai irányadók."
       },
       {
         "kind": "p",
@@ -691,7 +691,7 @@
       },
       {
         "kind": "p",
-        "text": "16.3. Értesítésnek minősül az Egyedi Dokumentumban megadott kapcsolattartói e-mailre küldött üzenet. Felmondás és lényeges szerződésmódosítás esetén visszaigazolható kézbesítés szükséges."
+        "text": "16.3. Értesítésnek minősül az Egyedi Dokumentumban megadott kapcsolattartói e-mail-címre küldött üzenet. Felmondás és lényeges szerződésmódosítás esetén visszaigazolható kézbesítés szükséges."
       },
       {
         "kind": "p",
@@ -703,7 +703,7 @@
         "kind": "heading",
         "level": 1,
         "id": "1-felek-es-beepules",
-        "text": "1. Felek és beépülés"
+        "text": "1. A felek és a megállapodás helye a szerződésben"
       },
       {
         "kind": "p",
@@ -822,7 +822,7 @@
       },
       {
         "kind": "p",
-        "text": "6.3. Az alapfunkciókhoz tartozó keresés, export, helyesbítés vagy törlés támogatása a szolgáltatás része. Rendkívüli, aránytalan fejlesztést vagy manuális munkát igénylő segítség észszerű díjazású change request lehet, ha ez nem csorbít kötelező jogot."
+        "text": "6.3. Az alapfunkciókhoz tartozó keresés, export, helyesbítés vagy törlés támogatása a szolgáltatás része. Rendkívüli, aránytalan fejlesztést vagy kézi munkát igénylő segítség módosítási kérelem alapján, észszerű díjazás mellett nyújtható, ha ez nem csorbít kötelező jogot."
       },
       {
         "kind": "heading",
@@ -836,7 +836,7 @@
       },
       {
         "kind": "p",
-        "text": "7.2. Az értesítés — amennyiben ismert — tartalmazza az incidens jellegét, az érintetti és adatrekord-kategóriákat és becsült számot, a várható következményeket, a megtett vagy tervezett intézkedéseket és a kapcsolattartót. Az információ részletekben is megadható."
+        "text": "7.2. Az értesítés — amennyiben ismert — tartalmazza az incidens jellegét, az érintettek és az adatrekordok kategóriáit és becsült számát, a várható következményeket, a megtett vagy tervezett intézkedéseket és a kapcsolattartót. Az információ részletekben is megadható."
       },
       {
         "kind": "p",
@@ -886,7 +886,7 @@
       },
       {
         "kind": "p",
-        "text": "10.2. Az Adatfeldolgozó dokumentálja az alkalmazott transzfermechanizmust, és az Adatkezelő észszerű kérésére megadja a lényeges információt. Megfelelőségi határozat elvesztése vagy lényeges jogi változás esetén alternatív garanciát vezet be vagy felfüggeszti az érintett továbbítást."
+        "text": "10.2. Az Adatfeldolgozó dokumentálja az alkalmazott adattovábbítási mechanizmust, és az Adatkezelő észszerű kérésére megadja a lényeges információt. Megfelelőségi határozat elvesztése vagy lényeges jogi változás esetén alternatív garanciát vezet be vagy felfüggeszti az érintett továbbítást."
       },
       {
         "kind": "p",
@@ -936,7 +936,7 @@
       },
       {
         "kind": "p",
-        "text": "13.3. A már ténylegesen anonimizált, személyhez és Megrendelőhöz ésszerűen vissza nem vezethető aggregátum nem személyes adat; kezelésére az alapul szolgáló szerződés rendelkezései irányadók."
+        "text": "13.3. A már ténylegesen anonimizált, személyhez és Megrendelőhöz észszerűen vissza nem vezethető aggregátum nem személyes adat; kezelésére az alapul szolgáló szerződés rendelkezései irányadók."
       },
       {
         "kind": "heading",
@@ -976,7 +976,7 @@
         "kind": "ul",
         "items": [
           "a Megrendelő munkavállalói, vezetői, csapattagjai és szervezeti adminisztrátorai;",
-          "a Megrendelő által meghívott observerek, peer értékelők vagy — külön scope esetén — jelöltek;",
+          "a Megrendelő által visszajelzésre meghívott ismerősök, kollégák és csapattársak, illetve — ha a szolgáltatás külön kiterjed rájuk — jelöltek;",
           "a Megrendelő kapcsolattartói és a szolgáltatás működtetésében részt vevő felhasználók."
         ]
       },
@@ -994,28 +994,28 @@
             "Példák / korlát"
           ],
           [
-            "Azonosító és kapcsolat",
-            "Név, e-mail, felhasználói és szervezeti azonosító, meghívó- és hozzáférési állapot."
+            "Azonosító és kapcsolattartási adatok",
+            "Név, e-mail-cím, felhasználói és szervezeti azonosító, meghívó- és hozzáférési állapot."
           ],
           [
             "Szervezeti metaadat",
-            "Szervezet, csapat, szerepkör, vezetői/admin jogosultság, kampánytagság."
+            "Szervezet, csapat, szerepkör, vezetői vagy adminisztrátori jogosultság, kampánytagság."
           ],
           [
             "Felmérési adat",
-            "Self-válaszok és pontszámok; trust-kérdések válaszai és aggregátumai; observer/peer válaszok, ha megrendelt."
+            "Önértékelési válaszok és pontszámok; a bizalmi kérdésekre adott válaszok és összesítéseik; ismerősöktől, kollégáktól és csapattársaktól kapott válaszok, ha ezeket megrendelték."
           ],
           [
-            "Anonim pulse",
-            "A pszichológiai biztonság válaszai user-referencia nélkül; n≥3 alatt nincs aggregátum. Újraazonosítás tilos."
+            "Névtelen felmérés a pszichológiai biztonságról",
+            "A pszichológiai biztonság felmérésére adott válaszok felhasználói azonosító nélkül; összesítés csak n≥3 esetén készül. Az újraazonosítás tilos."
           ],
           [
-            "Riport és akció",
-            "Aggregált mutatók, tanácsadói narratíva, adatminőségi jelzés, akció, célmutató, státusz."
+            "Riport és intézkedés",
+            "Összesített mutatók, tanácsadói értelmezés, adatminőségi jelzés, intézkedés, célmutató, állapot."
           ],
           [
             "Technikai adat",
-            "Munkamenet-, esemény-, biztonsági és hibalog; IP vagy álnévi technikai azonosító korlátozott ideig."
+            "Munkamenet-, esemény-, biztonsági és hibanapló; IP-cím vagy álnévi technikai azonosító korlátozott ideig."
           ],
           [
             "Különleges adat",
@@ -1049,14 +1049,14 @@
             "Jogosultság"
           ],
           [
-            "Adatkezelő kapcsolattartó",
+            "Az Adatkezelő kapcsolattartója",
             "Az Egyedi Dokumentumban megjelölt kapcsolattartó",
-            "Az Egyedi Dokumentumban megadott e-mail",
+            "Az Egyedi Dokumentumban megadott e-mail-cím",
             "Utasítás, érintetti kérelem, incidens"
           ],
           [
-            "Adatfeldolgozó kapcsolattartó",
-            "OKNILIK Kft. adatvédelmi kapcsolattartó",
+            "Az Adatfeldolgozó kapcsolattartója",
+            "Az OKNILIK Kft. adatvédelmi kapcsolattartója",
             "hello@trita.io",
             "DPA, biztonság, incidens"
           ]
@@ -1073,11 +1073,11 @@
         "rows": [
           [
             "Terület",
-            "Jelenlegi kontroll / vállalás"
+            "Jelenlegi intézkedés / vállalás"
           ],
           [
             "Átvitel és tárolás",
-            "HTTPS/TLS minden hálózati kérésnél; adatbázis-szintű titkosított tárolás; EU adatbázis-régió."
+            "HTTPS/TLS minden hálózati kérésnél; adatbázis-szintű titkosított tárolás; az adatbázis az EU-ban található."
           ],
           [
             "Hitelesítés",
@@ -1085,23 +1085,23 @@
           ],
           [
             "Hozzáférés",
-            "Szerepkör- és szervezet-alapú jogosultság, least privilege, admin/tanácsadó korlátozás, hozzáférési felülvizsgálat."
+            "Szerepkör és szervezet alapján megadott jogosultságok; a szükséges legkisebb jogosultság elve; adminisztrátori és tanácsadói korlátozások; a hozzáférések felülvizsgálata."
           ],
           [
-            "Tenant-szeparáció",
-            "Szervezeti és csapatszintű hozzáférési ellenőrzések alkalmazási rétegben; jogosulatlan kereszt-hozzáférés tesztelése."
+            "A szervezetek adatainak elkülönítése",
+            "Szervezeti és csapatszintű hozzáférési ellenőrzések az alkalmazásban; a más szervezethez vagy csapathoz tartozó adatok jogosulatlan elérésének tesztelése."
           ],
           [
             "Anonimitás",
-            "Egyéni csapatválasz nem jelenik meg; n≥3 aggregációs küszöb; pulse user-azonosító nélkül; trust csak aggregált formában."
+            "Egyéni csapatválasz nem jelenik meg; az összesítés küszöbe n≥3; a pszichológiai biztonság felmérése felhasználói azonosító nélkül; a bizalmi kör eredménye csak összesített formában."
           ],
           [
             "Tokenek",
-            "Megosztó és observer linkek egyedi, lejáró és visszavonható tokennel; tokenek és titkok környezeti konfigurációban."
+            "Megosztási és visszajelzési linkek egyedi, lejáró és visszavonható tokennel; a tokenek és titkos adatok tárolása a környezeti beállításokban."
           ],
           [
             "Naplózás",
-            "Biztonsági és üzemeltetési események korlátozott megőrzéssel; felhasználói kérdőív-tartalom nem kerülhet hiba-riasztásba."
+            "Biztonsági és üzemeltetési események korlátozott megőrzéssel; a felhasználók kérdőívre adott válaszai nem kerülhetnek hibariasztásba."
           ],
           [
             "Mentés/törlés",
@@ -1109,11 +1109,11 @@
           ],
           [
             "Fejlesztés",
-            "Kódreview, tesztelés, környezeti titokkezelés, függőségfrissítés és változáskövetés."
+            "Kódellenőrzés, tesztelés, a környezeti titkos adatok kezelése, függőségfrissítés és változáskövetés."
           ],
           [
             "Incidens",
-            "Hiba-riasztás felhasználói tartalom nélkül; incidens-triázs, dokumentálás, értesítés és helyreállítási lépések."
+            "Hibariasztás felhasználói tartalom nélkül; az incidens kezdeti értékelése, dokumentálás, értesítés és helyreállítási lépések."
           ],
           [
             "Üzletmenet",
@@ -1121,7 +1121,7 @@
           ],
           [
             "Személyzet",
-            "Titoktartás, szerepkör szerinti hozzáférés, offboarding és hozzáférés-visszavonás; adatbiztonsági tájékoztatás a hozzáférés megadása előtt."
+            "Titoktartás, szerepkör szerinti hozzáférés, a kilépés kezelése és a hozzáférés visszavonása; adatbiztonsági tájékoztatás a hozzáférés megadása előtt."
           ]
         ]
       },
@@ -1145,14 +1145,14 @@
           [
             "Szolgáltató",
             "Cél / adatkör",
-            "Hely / transzfer",
+            "Hely / adattovábbítás",
             "Státusz"
           ],
           [
             "Clerk",
-            "Hitelesítés, munkamenet; e-mail és auth azonosítók.",
+            "Hitelesítés, munkamenet; e-mail-cím és hitelesítési azonosítók.",
             "USA/EGT; DPF vagy SCC.",
-            "Aktív — jogi entitás ellenőrzendő"
+            "Aktív — a szerződő jogi személy ellenőrzendő"
           ],
           [
             "Neon",
@@ -1162,19 +1162,19 @@
           ],
           [
             "Vercel",
-            "Alkalmazáshosztolás, szerverfunkciók, teljesítmény-analitika.",
+            "Az alkalmazás üzemeltetése, szerverfunkciók, teljesítménymérés.",
             "EU/USA; DPA és SCC/DPF szerint.",
-            "Aktív — entitás és log-régió ellenőrzendő"
+            "Aktív — a szerződő jogi személy és a naplók tárolási régiója ellenőrzendő"
           ],
           [
             "Resend",
-            "Tranzakciós e-mail; cím, név, üzenet/meta.",
+            "Tranzakciós e-mail; cím, név, üzenet és metaadatok.",
             "USA; SCC/DPF szerint.",
-            "Aktív — retention ellenőrzendő"
+            "Aktív — a megőrzési idő ellenőrzendő"
           ],
           [
             "Upstash",
-            "Rate limiting; álnévi kulcsok és technikai meta.",
+            "A kérések gyakoriságának korlátozása; álnévi kulcsok és technikai metaadatok.",
             "USA/EGT; szolgáltatói DPA és SCC vagy más megfelelő garancia szerint.",
             "Aktív komponens — adatáramlás ellenőrzendő"
           ]

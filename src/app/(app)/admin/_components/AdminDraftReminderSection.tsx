@@ -159,7 +159,7 @@ export function AdminDraftReminderSection({ drafts }: Props) {
     return (
       <div className="mt-8 rounded-xl border border-sand/70 bg-surface-card p-6 md:p-8">
         <h2 className="font-fraunces text-heading text-ink">Félbehagyott tesztek</h2>
-        <p className="mt-4 text-sm text-muted">Nincs 1+ napja félbehagyott teszt.</p>
+        <p className="mt-4 text-sm text-muted">Nincs legalább egy napja félbehagyott teszt.</p>
       </div>
     );
   }
@@ -170,7 +170,7 @@ export function AdminDraftReminderSection({ drafts }: Props) {
         <div>
           <h2 className="font-fraunces text-heading text-ink">Félbehagyott tesztek</h2>
           <p className="mt-1 text-sm text-muted">
-            1+ napja félbehagyott kitöltők ({drafts.length} db · {activeCount} kiküldendő)
+            Legalább egy napja félbehagyott kitöltések ({drafts.length} db · {activeCount} kiküldendő)
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">

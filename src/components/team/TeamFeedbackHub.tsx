@@ -28,7 +28,7 @@ export function TeamFeedbackHub({ teamId, members, locale, initialView = "overvi
         eyebrow: "visszajelzés",
         overviewTitle: "Mit szeretnél tenni?",
         overviewHint:
-          "Indíts egy konkrét gesztust vagy fejlődési beszélgetést. A beérkezett visszajelzéseidet is innen éred el.",
+          "Mondj köszönetet egy csapattársadnak, vagy kérj visszajelzést a munkádról. A neked érkezett visszajelzéseket is itt találod.",
         kudosTitle: "Köszönetet küldök",
         kudosScreenTitle: "Kinek mondanál köszönetet?",
         kudosHint: "Személyes elismerés egy konkrét helyzetért vagy viselkedésért.",

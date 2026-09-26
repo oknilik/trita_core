@@ -105,7 +105,7 @@ export function TeamReportMemberView({
               </div>
             </div>
             <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-sage-dark shadow-sm ring-1 ring-sage/25">
-              {isHu ? "Tag-nézet" : "Member view"}
+              {isHu ? "Csapattagok nézete" : "Member view"}
             </span>
           </div>
         </div>
@@ -212,7 +212,7 @@ export function TeamReportMemberView({
                 </span>
                 <p className="text-sm leading-relaxed text-ink-body">
                   <span className="font-semibold text-ink">
-                    {isHu ? "Ahol a leginkább kiegészíted a csapatot: " : "Where you complement the team most: "}
+                    {isHu ? "Ezeken a területeken egészíted ki leginkább a csapatot: " : "Where you complement the team most: "}
                   </span>
                   {vm.complementLabels.join(isHu ? " és " : " and ")}
                   {isHu
@@ -316,7 +316,7 @@ export function TeamReportMemberView({
                 ) : vm.roleFit === "shared" ? (
                   <p className="mt-2 text-sm leading-relaxed text-ink-body">
                     {isHu
-                      ? "Ezt a szerepet többen is viszitek – jó a lefedettség, oszthatjátok a terhet és támogathatjátok egymást."
+                      ? "Ezt a szerepet többen is betöltitek. Megoszthatjátok a feladatokat, és segíthetitek egymást."
                       : "Several of you carry this role – good coverage, you can share the load and support each other."}
                   </p>
                 ) : null}
@@ -361,7 +361,7 @@ export function TeamReportMemberView({
       {vm.tips.length > 0 && (
         <section>
           <DashboardSectionHeader
-            label={isHu ? "Hogyan hozd ki a legtöbbet magadból itt" : "How to get the most out of yourself here"}
+            label={isHu ? "Hogyan kamatoztasd az erősségeidet a csapatban?" : "How to get the most out of yourself here"}
             className="mb-4"
           />
           <DashboardPanel className="p-6">

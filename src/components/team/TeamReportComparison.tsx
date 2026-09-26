@@ -65,13 +65,13 @@ function actionOutcomeGate(
 ): string {
   if (outcome.gate === "unavailable") return isHu ? "nincs adat" : "no data";
   if (outcome.gate === "categorical") {
-    return isHu ? "kategorikus állapot" : "categorical state";
+    return isHu ? "kategória szerinti állapot" : "categorical state";
   }
   if (outcome.gate === "descriptive") {
-    return isHu ? "nincs még kalibrált kapu" : "no calibrated gate yet";
+    return isHu ? "még nincs meghatározott mérési küszöb" : "no calibrated gate yet";
   }
   return outcome.significant
-    ? isHu ? "igen · mérési kapun túl" : "yes · beyond measurement gate"
+    ? isHu ? "igen · meghaladja a mérési küszöböt" : "yes · beyond measurement gate"
     : isHu ? "nem · mérési hibán belül" : "no · within measurement error";
 }
 
@@ -83,8 +83,8 @@ function actionOutcomeDirection(
     improved: isHu ? "kedvező irány" : "favourable direction",
     worsened: isHu ? "kedvezőtlen irány" : "unfavourable direction",
     unchanged: isHu ? "változatlan" : "unchanged",
-    no_clear_change: isHu ? "nincs védhető elmozdulás" : "no defensible movement",
-    context_only: isHu ? "csak összetételi kontextus" : "composition context only",
+    no_clear_change: isHu ? "nem igazolható elmozdulás" : "no defensible movement",
+    context_only: isHu ? "csak az összetétel értelmezését segíti" : "composition context only",
     unavailable: isHu ? "nem mérhető" : "not measurable",
   } as const;
   return labels[direction];
@@ -132,7 +132,7 @@ export function TeamReportComparison({
           role="status"
         >
           {isHu
-            ? "A régebbi riport nem tartalmaz hozzájáruló-pillanatképet. Az összetétel nem ellenőrizhető; a relációs és szerep-mutatók csak két leíró pillanatképként olvashatók, a profilkontroll nem értelmezhető."
+            ? "A régebbi riportban nem rögzítettük, kiknek az eredményeiből készült. Ezért nem ellenőrizhető, mennyire egyezik a két kör résztvevőinek összetétele. A kapcsolati és szerepmutatók külön-külön értelmezhetők; a személyiségprofil változása nem ellenőrizhető."
             : "The older report has no contributor snapshot. Composition cannot be verified; relationship and role metrics are descriptive snapshots only, and the profile control is not interpretable."}
         </div>
       ) : comparison.composition.status === "changed" ? (
@@ -142,7 +142,7 @@ export function TeamReportComparison({
         >
           <p className="font-semibold">
             {isHu
-              ? "A két kör összetétele nem elég hasonló a csapatváltozás állításához."
+              ? "A két kör résztvevőinek összetétele túlságosan eltér ahhoz, hogy az eredményekből a csapat változására következtessünk."
               : "Round composition is not similar enough to claim team change."}
           </p>
           <p className="mt-1">
@@ -157,13 +157,13 @@ export function TeamReportComparison({
           role="status"
         >
           {isHu
-            ? `Stabil mag: ${comparison.composition.common} közös kitöltő · új ebben a körben: ${comparison.composition.joined} · kimaradt: ${comparison.composition.left}. A profilkontroll csak a közös tagokból készül.`
+            ? `Stabil mag: ${comparison.composition.common} közös kitöltő · új ebben a körben: ${comparison.composition.joined} · kimaradt: ${comparison.composition.left}. A személyiségprofil változását csak a mindkét körben részt vevő tagok adatai alapján ellenőrizzük.`
             : `Stable core: ${comparison.composition.common} common contributors · new this round: ${comparison.composition.joined} · absent: ${comparison.composition.left}. Profile control uses common members only.`}
         </div>
       )}
 
       <h3 className="mt-5 font-fraunces text-lg text-ink">
-        {isHu ? "Változékony, beavatkozás-érzékeny rétegek" : "Mutable, intervention-sensitive layers"}
+        {isHu ? "A közös munka alakításával változtatható területek" : "Mutable, intervention-sensitive layers"}
       </h3>
       <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
         <DashboardPanel className="p-4">
@@ -172,7 +172,7 @@ export function TeamReportComparison({
           </p>
           {comparison.psychSafetyDelta === null ? (
             <p className="mt-2 text-xs text-muted">
-              {isHu ? "Nincs két összevethető pulse." : "Two comparable pulses are not available."}
+              {isHu ? "Nincs két összevethető pulzusmérés." : "Two comparable pulses are not available."}
             </p>
           ) : (
             <>
@@ -208,7 +208,7 @@ export function TeamReportComparison({
               ) : (
                 <p className="mt-2 text-xs text-muted">
                   {isHu
-                    ? "Nincs item-szintű, mérési kapun túli elmozdulás."
+                    ? "Egyik állításnál sem látszik a mérési küszöböt meghaladó változás."
                     : "No item-level movement exceeds the measurement gate."}
                 </p>
               )}
@@ -253,7 +253,7 @@ export function TeamReportComparison({
               ) : null}
               {comparison.trustNetwork.isolatedCount ? (
                 <p>
-                  {isHu ? "Beágyazatlan tagok" : "Isolated members"}: {transitionLabel(
+                  {isHu ? "Erős bizalmi kapcsolat nélküli tagok" : "Isolated members"}: {transitionLabel(
                     comparison.trustNetwork.isolatedCount,
                     "",
                     compositionComparable,
@@ -307,7 +307,7 @@ export function TeamReportComparison({
           ) : (
             <p className="mt-2 text-xs text-muted">
               {isHu
-                ? "Nincs két összevethető szerep-pillanatkép."
+                ? "Nincs két összevethető csapatszerepmérés."
                 : "Two comparable role snapshots are not available."}
             </p>
           )}
@@ -322,28 +322,28 @@ export function TeamReportComparison({
               {comparison.externalPerspective ? (
                 <div>
                   <p className="font-semibold text-ink">
-                    {isHu ? "Személyiség-kép" : "Personality view"}: {transitionLabel(
+                    {isHu ? "Személyiségkép" : "Personality view"}: {transitionLabel(
                       comparison.externalPerspective.gapSharePct,
                       "%",
                       compositionComparable,
                     )}
                   </p>
                   <p className="mt-0.5 text-muted">
-                    {isHu ? "Érdemi eltérésű tagok" : "Members with a material gap"}: {comparison.externalPerspective.gapCount.current}/{comparison.externalPerspective.coveredCount.current}
+                    {isHu ? "Tagok, akiknél érdemi eltérés látszik" : "Members with a material gap"}: {comparison.externalPerspective.gapCount.current}/{comparison.externalPerspective.coveredCount.current}
                   </p>
                 </div>
               ) : null}
               {comparison.peerRolePerspective ? (
                 <div className="border-t border-sand pt-2">
                   <p className="font-semibold text-ink">
-                    {isHu ? "Szerep-önkép és peer-kép" : "Role self-view and peer view"}: {transitionLabel(
+                    {isHu ? "Saját és csapattársi szerepértékelés" : "Role self-view and peer view"}: {transitionLabel(
                       comparison.peerRolePerspective.mismatchSharePct,
                       "%",
                       compositionComparable,
                     )}
                   </p>
                   <p className="mt-0.5 text-muted">
-                    {isHu ? "Eltérő top-3 kép" : "Different top-three view"}: {comparison.peerRolePerspective.mismatchCount.current}/{comparison.peerRolePerspective.comparedCount.current}
+                    {isHu ? "Eltérés a három vezető szerepben" : "Different top-three view"}: {comparison.peerRolePerspective.mismatchCount.current}/{comparison.peerRolePerspective.comparedCount.current}
                   </p>
                 </div>
               ) : null}
@@ -351,7 +351,7 @@ export function TeamReportComparison({
           ) : (
             <p className="mt-2 text-xs text-muted">
               {isHu
-                ? "Nincs két, anonimitási padló feletti külső kép."
+                ? "Nincs két olyan összesített visszajelzés, amely eléri a névtelenséget védő minimális válaszszámot."
                 : "Two external-view snapshots above the anonymity floor are not available."}
             </p>
           )}
@@ -361,7 +361,7 @@ export function TeamReportComparison({
       {comparison.actionOutcomes.length > 0 ? (
         <div className="mt-5">
           <h3 className="font-fraunces text-lg text-ink">
-            {isHu ? "Vállalt akció → mért kimenet" : "Committed action → measured outcome"}
+            {isHu ? "Vállalt lépés → mért eredmény" : "Committed action → measured outcome"}
           </h3>
           <div className="mt-3 overflow-x-auto rounded-xl border border-sand">
             <table className="min-w-full border-collapse text-left text-xs">
@@ -370,7 +370,7 @@ export function TeamReportComparison({
                   <th className="px-3 py-2 font-semibold">{isHu ? "Akció" : "Action"}</th>
                   <th className="px-3 py-2 font-semibold">{isHu ? "Célmutató" : "Target"}</th>
                   <th className="px-3 py-2 font-semibold">{isHu ? "Kimenet" : "Outcome"}</th>
-                  <th className="px-3 py-2 font-semibold">{isHu ? "Mérési kapu" : "Measurement gate"}</th>
+                  <th className="px-3 py-2 font-semibold">{isHu ? "Mérési küszöb" : "Measurement gate"}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-sand bg-surface-card">
@@ -436,7 +436,7 @@ export function TeamReportComparison({
             <>
               <p className="mt-2 text-xs font-semibold text-state-warning-fg">
                 {isHu
-                  ? "A stabilnak várt profilban kontroll-eltérés látszik:"
+                  ? "Az ellenőrzés eltérést mutat a várhatóan stabil személyiségprofilban:"
                   : "A control difference appears in the expected-stable profile:"}
               </p>
               <ul className="mt-2 space-y-1.5">
@@ -454,7 +454,7 @@ export function TeamReportComparison({
           ) : (
             <p className="mt-2 text-xs text-ink-body">
               {isHu
-                ? "Stabil: nincs mérési hibán túli profil-eltérés."
+                ? "A profil stabil: nincs a mérési hibát meghaladó eltérés."
                 : "Stable: no profile difference exceeds measurement error."}
             </p>
           )}
@@ -464,13 +464,13 @@ export function TeamReportComparison({
       {withinErrorCount > 0 ? (
         <p className="mt-2 text-micro text-muted">
           {isHu
-            ? `${withinErrorCount} profil-dimenzió eltérése a mérési hibán belül maradt, ezért nem rangsoroljuk.`
+            ? `${withinErrorCount} személyiségdimenzióban az eltérés a mérési hibán belül maradt, ezért ezeket nem rangsoroljuk.`
             : `${withinErrorCount} profile dimension difference${withinErrorCount === 1 ? "" : "s"} remained within measurement error and is not ranked.`}
         </p>
       ) : null}
       <p className="mt-2 text-micro text-muted">
         {isHu
-          ? "A pulse ismételt anonim keresztmetszet; az itemeket konzervatív mérési kapu védi. A háló-, szerep- és külsőkép-mutatók leíró előtte–utána jelek, nem önmagukban oksági bizonyítékok. Összetétel-változásnál a nyilak kizárólag kontextust adnak."
+          ? "A pulzusmérés minden alkalommal névtelen pillanatképet ad a csapatról. Az állításoknál csak az óvatosan meghatározott mérési küszöböt meghaladó eltérést emeljük ki. A kapcsolatok, a szerepek és a másoktól kapott visszajelzések mutatói a két időpontot írják le; önmagukban nem bizonyítják a változás okát. Ha a résztvevők köre változott, a nyilak csak az értelmezést segítik."
           : "The pulse is a repeated anonymous cross-section; a conservative measurement gate protects item claims. Network, role and external-view metrics are descriptive before–after signals, not causal evidence on their own. When composition changes, arrows provide context only."}
       </p>
     </section>

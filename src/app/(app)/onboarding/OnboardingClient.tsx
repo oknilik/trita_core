@@ -266,7 +266,7 @@ export function OnboardingClient({
               <strong className="block font-fraunces text-base font-medium text-[var(--color-accent-self-deep)]">
                 {locale === "hu" ? "Te rendelkezel az adataiddal." : "You stay in control of your data."}
               </strong>
-              {locale === "hu" ? "Szerkeszthető és törölhető bármikor." : "Edit or delete it whenever you want."}
+              {locale === "hu" ? "Bármikor módosíthatod vagy törölheted." : "Edit or delete it whenever you want."}
             </p>
           </div>
         </aside>
@@ -283,7 +283,7 @@ export function OnboardingClient({
               <p className="mt-1 text-xs text-muted">
                 {isClaimActivation
                   ? t("onboarding.claimOptionalHint", locale)
-                  : locale === "hu" ? "Ismerkedjünk meg néhány alapadaton keresztül." : "Let's start with a few basic details."}
+                  : locale === "hu" ? "Adj meg néhány alapadatot magadról." : "Let's start with a few basic details."}
               </p>
             </div>
             <span className="shrink-0 rounded-full bg-[var(--color-surface-chip-warm)] px-3 py-2 text-micro font-semibold text-[var(--color-accent-earth-strong)]">

@@ -465,7 +465,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     blindSpots: [
       "A struktúra hiánya kaotikus végrehajtáshoz vezethet",
       "Nehéz lehet fontossági sorrendet kialakítani – minden ötlet egyformán vonzónak tűnhet",
-      "A határidők jellemzően nem a legfontosabb értékük",
+      "A határidők betartása könnyen háttérbe szorulhat",
       "A harmonikus légkör miatt nehéz lehet kritikus visszajelzést adni",
     ],
     communicationStyle:
@@ -475,7 +475,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     riskSituations:
       "Összetett, többlépéses projekt szoros határidővel; szabályozott feladatok; olyan helyzetek, ahol a befejezés fontosabb az ötletelésnél.",
     leaderActions: [
-      "Vezess be könnyű kereteket: hetente egyszer tekintsétek át a prioritásokat, de ne szabályozd túl a működést",
+      "Vezess be néhány egyszerű keretet: hetente egyszer tekintsétek át a prioritásokat, de ne szabályozd túl a működést",
       "Használj „ötletparkolót” – az ötleteket rögzítsd, de ne fusson mind egyszerre",
       "A megvalósítási szakaszban szervezz közös munkát egy szervezettebben működő csapattal",
     ],
@@ -499,7 +499,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "A rugalmasság néha tervezetlenséget jelenthet",
     ],
     communicationStyle:
-      "Közvetlen, személyes, néha informális a kelleténél. A döntések gyakran a folyosón születnek.",
+      "Közvetlen, személyes, néha a kelleténél kötetlenebb. A döntések gyakran a folyosón születnek.",
     idealTasks:
       "Ügyfélkapcsolat, értékesítés, operatív működés és gyors problémamegoldás – minden olyan feladat, ahol számít a személyes kapcsolat és a gyors reagálás.",
     riskSituations:
@@ -538,7 +538,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Hosszan tartó, szoros együttműködést igénylő projektek; mentorálás; csapatépítés.",
     leaderActions: [
       "Az egyéni mutatók mellett vezess be közös, csapatszintű teljesítménymutatókat is",
-      "Strukturálj páros feladatokat, ahol a siker kölcsönös",
+      "Szervezz olyan páros feladatokat, amelyekben a sikerhez mindkét fél munkájára szükség van",
       "Figyelj a kiégés jeleire – a nagy energia mögött gyakran kimerülés van",
     ],
   },
@@ -582,7 +582,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Nagy kreatív energia és lendület",
       "Bátor, konvenciókon túllépő ötletek",
       "Gyors alkalmazkodás",
-      "Vonzó kreatív tehetségek számára",
+      "Vonzó környezet a kreatív szakemberek számára",
     ],
     blindSpots: [
       "A fontossági sorrend kialakítása jellemzően nehéz",
@@ -598,7 +598,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Minden olyan feladat, amely tartós, szervezett együttműködést és fegyelmezett végrehajtást igényel.",
     leaderActions: [
       "Adj egyértelmű keretet: „ezen a héten ezt fejezzük be” – a megvalósítás módját bízd rájuk",
-      "Párosíts minden projektet egy végrehajtó partnerrel",
+      "Minden projekthez jelölj ki valakit, aki segít végigvinni a megvalósítást",
       "Hetente kérdezzétek meg: „mi az az egy dolog, amelyet közösen eldöntöttünk és végig is vittünk?”",
     ],
   },
@@ -607,7 +607,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Farkasfalka",
     subtitle: "Energikus · Versengő · Rugalmas · Pragmatikus",
     description:
-      "Erős egyéniségek laza szövetségben, akik a saját területükön vadásznak, de szükség esetén összezárnak.",
+      "Önállóan dolgozó, határozott egyéniségek, akik a saját területükön keresik a lehetőségeket, de szükség esetén összefognak.",
     strengths: [
       "Gyorsan alkalmazkodnak",
       "Erős egyéni teljesítmény és felelősségvállalás",
@@ -679,7 +679,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     blindSpots: [
       "Ellenállás a változással szemben – „eddig is így csináltuk”",
       "Kívülről könnyen láthatatlanok maradnak",
-      "A csapat zárt lehet kívülállók felé",
+      "A csapat nehezen nyithat a kívülállók felé",
       "Az innováció háttérbe szorulhat",
     ],
     communicationStyle:
@@ -743,7 +743,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Az újítás háttérbe szorulhat, ha a gyakorlatias szemlélet a megszokotthoz való ragaszkodássá válik",
     ],
     communicationStyle:
-      "Meleg, személyes, támogató. Sok informális beszélgetés, kevés formális megbeszélés.",
+      "Barátságos, személyes, támogató. Sok kötetlen beszélgetés, kevés formális megbeszélés.",
     idealTasks:
       "HR, ügyfélszolgálat, belső támogatás és mentorálás.",
     riskSituations:
@@ -769,7 +769,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Jelentős tér a szakterületen belüli újításra",
     ],
     blindSpots: [
-      "Silók alakulhatnak ki – a tudásmegosztás akadozhat",
+      "A szakterületek elszigetelődhetnek egymástól, és akadozhat a tudásmegosztás",
       "Rejtett rivalizálás",
       "Nehéz lehet közös döntést hozni",
       "Kívülről hidegnek, elérhetetlennek tűnhetnek",

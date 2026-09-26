@@ -24,7 +24,7 @@ export interface MembershipJoinApiResponse {
 }
 
 const DEFAULT_SUBMIT_ERROR: Record<Locale, string> = {
-  hu: "Hiba történt, kérjük próbáld újra.",
+  hu: "Hiba történt. Kérlek, próbáld újra.",
   en: "Something went wrong. Please try again.",
 };
 
@@ -82,7 +82,7 @@ export function validateMembershipProfileForm(
   }
 
   if (!input.gender) {
-    errors.gender = locale === "hu" ? "Kérjük válassz" : "Please choose one";
+    errors.gender = locale === "hu" ? "Válassz egy lehetőséget" : "Please choose one";
   }
 
   const year = Number(input.birthYear);
@@ -176,7 +176,7 @@ export function getMembershipSubmitErrorMessage(
 ): string {
   if (errorCode === "PROFILE_INCOMPLETE") {
     return locale === "hu"
-      ? "Előbb töltsd ki a profil adataidat a csatlakozáshoz."
+      ? "A csatlakozáshoz előbb add meg a profiladataidat."
       : "Complete your profile details before joining.";
   }
   if (errorCode === "INVITE_NOT_FOUND") {
@@ -191,7 +191,7 @@ export function getMembershipSubmitErrorMessage(
   }
   if (errorCode === "INVITE_EMAIL_MISMATCH") {
     return locale === "hu"
-      ? "Ez a meghívó egy másik email-címre szól. Jelentkezz be azzal a fiókkal, amelyre a meghívót kaptad."
+      ? "Ez a meghívó egy másik e-mail-címre szól. Jelentkezz be azzal a fiókkal, amelyre a meghívót kaptad."
       : "This invitation was sent to a different email address. Sign in with the account it was sent to.";
   }
   return DEFAULT_SUBMIT_ERROR[locale];

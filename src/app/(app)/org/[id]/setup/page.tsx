@@ -43,11 +43,11 @@ export default async function OrgSetupPage({
           <OrgSubscriptionBanner state={bannerState} locale={locale} />
           <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
             <h1 className="font-fraunces text-2xl text-ink">
-              {isHu ? "A setup ideiglenesen szünetel" : "Setup is temporarily paused"}
+              {isHu ? "A beállítás ideiglenesen szünetel" : "Setup is temporarily paused"}
             </h1>
             <p className="mt-2 text-sm text-ink-body">
               {isHu
-                ? "Az org aktiválási lépések reaktiválás után folytathatók."
+                ? "A szervezet beállítása az újraaktiválás után folytatható."
                 : "Organization activation steps can continue after subscription reactivation."}
             </p>
           </div>

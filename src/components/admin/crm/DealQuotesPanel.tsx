@@ -114,7 +114,7 @@ export function DealQuotesPanel({
                 <p className="mt-1 text-xs text-muted">
                   {quote.sentAt ? `Kiküldve: ${formatDay(quote.sentAt)} · ` : ""}
                   {quote.validUntil
-                    ? `Érvényes: ${formatDay(quote.validUntil)}-ig`
+                    ? `Érvényesség vége: ${formatDay(quote.validUntil)}`
                     : "Nincs érvényességi dátum"}
                 </p>
                 {quote.status === "DECLINED" && quote.declineReason && (

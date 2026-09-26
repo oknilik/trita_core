@@ -19,7 +19,7 @@ describe("client report reading flow", () => {
     expect(within(main).getAllByRole("img", { name: /A pont az átlagot jelöli/ })).toHaveLength(4);
     expect(within(main).getByRole("img", { name: "Vegyes csapatkép – különböző absztrakt karakterek" })).toBeVisible();
     expect(within(main).getByText("4/5", { exact: false })).toBeVisible();
-    expect(within(main).getAllByText(/eltérő válaszolói körből/)).toHaveLength(2);
+    expect(within(main).getAllByText(/eltérő válaszadói kör adataiból/)).toHaveLength(2);
     expect(within(main).queryByText("Információáramlás × Fegyelem")).not.toBeInTheDocument();
     expect(within(main).queryByText("Szórás")).not.toBeInTheDocument();
     expect(within(main).getByText(/Javasolt műhelylépés/)).toBeVisible();

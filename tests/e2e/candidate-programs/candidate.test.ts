@@ -358,7 +358,7 @@ test("consultant reviews and shares only the approved candidate summary", async 
   await expect(explanation).toHaveAttribute("href", "/character-glyphs");
   const guide = await context.newPage();
   await guide.goto("/character-glyphs");
-  await expect(guide.getByRole("heading", { level: 1 })).toHaveText(/A karakterábrák nyelve|The language of character illustrations/);
+  await expect(guide.getByRole("heading", { level: 1 })).toHaveText(/Hogyan olvasd a karakterábrákat\?|The language of character illustrations/);
   await expect(guide.locator("main svg")).toHaveCount(6);
   await guide.close();
   await page.screenshot({

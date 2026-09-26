@@ -11,7 +11,7 @@ export function OrgOverviewNextAction({
 }) {
   return (
     <section
-      aria-label={isHu ? "Szervezeti következő lépés" : "Organization next step"}
+      aria-label={isHu ? "A szervezet következő lépése" : "Organization next step"}
       className="flex flex-col gap-4 rounded-2xl bg-state-success-bg px-5 py-4 sm:flex-row sm:items-center sm:justify-between"
     >
       <div>

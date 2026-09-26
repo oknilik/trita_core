@@ -5,8 +5,8 @@ export const commonTranslations = {
   // opcionális digest-hibakód a support-azonosításhoz.
   errors: {
     eyebrow: { hu: "hiba történt", en: "something went wrong" },
-    genericTitle: { hu: "Valami félrement", en: "Something went wrong" },
-    dashboardTitle: { hu: "Hiba a betöltés közben", en: "Error while loading" },
+    genericTitle: { hu: "Hiba történt", en: "Something went wrong" },
+    dashboardTitle: { hu: "Hiba történt betöltés közben", en: "Error while loading" },
     teamTitle: {
       hu: "Nem sikerült betölteni a csapat adatait",
       en: "Couldn't load the team data",
@@ -20,7 +20,7 @@ export const commonTranslations = {
       en: "Error loading the assessment",
     },
     body: {
-      hu: "Próbáld újra – ha a hiba megmarad, írj nekünk a Kapcsolat oldalról.",
+      hu: "Próbáld újra. Ha továbbra sem sikerül, írj nekünk a Kapcsolat oldalon.",
       en: "Try again – if the problem persists, reach us via the Contact page.",
     },
     retry: { hu: "Újrapróbálás", en: "Try again" },
@@ -79,7 +79,7 @@ export const commonTranslations = {
       en: "We couldn't send it. Please try again.",
     },
     emailMissing: {
-      hu: "Ehhez a felhasználóhoz nincs email-cím beállítva.",
+      hu: "Ehhez a felhasználóhoz nincs e-mail-cím beállítva.",
       en: "This user doesn't have an email address yet.",
     },
     invitationNotPending: {
@@ -182,7 +182,7 @@ export const commonTranslations = {
     reference: { hu: "Hivatkozási azonosító", en: "Reference ID" },
   },
   footer: {
-    tagline: { hu: "Személyiség és csapatintelligencia platform.", en: "Personality and team intelligence platform." },
+    tagline: { hu: "Önismeret és a csapatműködés megértése.", en: "Personality and team intelligence platform." },
     colProduct: { hu: "Termék", en: "Product" },
     colExplore: { hu: "Felfedezés", en: "Explore" },
     colAbout: { hu: "A tritáról", en: "About trita" },
@@ -211,7 +211,7 @@ export const commonTranslations = {
   common: {
     or: { hu: "vagy", en: "or" },
     emailMissing: {
-      hu: "Email cím nincs beállítva.",
+      hu: "E-mail-cím nincs beállítva.",
       en: "No email address set.",
     },
     anonymous: { hu: "anonim", en: "anonymous" },
@@ -247,8 +247,8 @@ export const commonTranslations = {
     delete: { hu: "Törlés", en: "Delete" },
     openFill: { hu: "Kitöltés megnyitása", en: "Open assessment" },
     generate: { hu: "Generálás...", en: "Generating..." },
-    newInviteLink: { hu: "Új meghívó link", en: "New invite link" },
-    emailInvite: { hu: "Meghívás emailben", en: "Invite by email" },
+    newInviteLink: { hu: "Új meghívólink", en: "New invite link" },
+    emailInvite: { hu: "Meghívás e-mailben", en: "Invite by email" },
     signOut: { hu: "Kijelentkezés", en: "Sign out" },
     saveShort: { hu: "Mentés", en: "Save" },
     deleting: { hu: "Törlés...", en: "Deleting..." },
@@ -280,12 +280,12 @@ export const commonTranslations = {
       en: "You cannot invite yourself.",
     },
     INVALID_TOKEN: {
-      hu: "Érvénytelen meghívó link.",
+      hu: "Érvénytelen meghívólink.",
       en: "Invalid invite link.",
     },
-    CAMPAIGN_CLOSED: { hu: "Ez a mérési kör már lezárult. A válaszokat nem küldtük be; egyeztess a meghívóval.", en: "This measurement round has closed. Your answers were not submitted; please contact the person who invited you." },
+    CAMPAIGN_CLOSED: { hu: "Ez a mérési kör már lezárult. A válaszokat nem küldtük be. Egyeztess azzal, aki meghívott.", en: "This measurement round has closed. Your answers were not submitted; please contact the person who invited you." },
     ALREADY_USED: {
-      hu: "Ez a meghívó már fel lett használva.",
+      hu: "Ezt a meghívót már felhasználták.",
       en: "This invite has already been used.",
     },
     INVITE_CANCELED: {
@@ -325,11 +325,11 @@ export const commonTranslations = {
       en: "Invalid Likert answer.",
     },
     EMAIL_SEND_FAILED: {
-      hu: "A meghívó létrejött, de az email küldése nem sikerült. Másold ki a linket.",
+      hu: "A meghívó létrejött, de az e-mail küldése nem sikerült. Másold ki a linket.",
       en: "Invitation created, but we couldn't send the email. Copy the link instead.",
     },
     DUPLICATE_INVITE_EMAIL: {
-      hu: "Erre az email címre már van aktív meghívód. Előbb töröld a meglévőt, ha újat szeretnél küldeni.",
+      hu: "Erre az e-mail-címre már van aktív meghívód. Előbb töröld a meglévőt, ha újat szeretnél küldeni.",
       en: "You already have an active invite for this email address. Delete the existing one first if you want to send a new one.",
     },
     INVALID_DIMENSION_CODE: {
@@ -341,32 +341,32 @@ export const commonTranslations = {
     profileFallback: { hu: "Profil", en: "Profile" },
     profile: { hu: "Profilom", en: "My profile" },
     greetingPrefix: { hu: "Szia, ", en: "Hi, " },
-    coach: { hu: "HR & Csapat", en: "HR & Team" },
-    coachDashboard: { hu: "HR & Csapat felület", en: "HR & Team dashboard" },
+    coach: { hu: "HR és csapatok", en: "HR & Team" },
+    coachDashboard: { hu: "HR- és csapatkezelő felület", en: "HR & Team dashboard" },
     teams: { hu: "Csapataim", en: "My Teams" },
     settings: { hu: "Beállítások", en: "Settings" },
     closePanel: { hu: "Panel bezárása", en: "Close panel" },
-    becomeCoach: { hu: "Csatlakozz coachként", en: "Become a coach" },
+    becomeCoach: { hu: "Csatlakozz tanácsadóként", en: "Become a coach" },
   },
   becomeCoach: {
-    tag: { hu: "Coach program", en: "Coach program" },
-    title: { hu: "Csatlakozz coachként", en: "Become a coach on trita" },
+    tag: { hu: "Tanácsadói program", en: "Coach program" },
+    title: { hu: "Csatlakozz tanácsadóként", en: "Become a coach on trita" },
     subtitle: {
-      hu: "Segíts ügyfeleidnek mélyebben megismerni önmagukat érvényes személyiségadatok és AI-támogatott kiértékelés segítségével.",
+      hu: "Segíts ügyfeleidnek jobban megismerni önmagukat a személyiségfelmérés eredményeivel és a mesterséges intelligencia támogatásával készült kiértékeléssel.",
       en: "Help your clients understand themselves more deeply with validated personality data and AI-powered debriefs.",
     },
     featuresTitle: { hu: "Mit kapsz?", en: "What you get" },
     feature1Title: { hu: "Ügyfélkezelés", en: "Client management" },
     feature1Body: {
-      hu: "Áttekintheted ügyfeleid személyiségprofilját, önértékeléseit és a mások visszajelzéseivel való összevetést egyetlen felületen.",
+      hu: "Egy helyen tekintheted át ügyfeleid személyiségprofilját, és vetheted össze az önértékelésüket mások visszajelzéseivel.",
       en: "View your clients' personality profiles, self-assessments, and observer comparisons in one place.",
     },
-    feature2Title: { hu: "AI-generált kiértékelés", en: "AI-generated debrief" },
+    feature2Title: { hu: "Kiértékelés mesterséges intelligenciával", en: "AI-generated debrief" },
     feature2Body: {
-      hu: "Minden ügyfélhez egy személyre szabott coaching összefoglaló készül, amely az erősségeket, fejlesztési területeket és konkrét kérdéseket tartalmaz.",
+      hu: "Minden ügyfélhez személyre szabott tanácsadói összefoglaló készül az erősségeiről és a fejlődési lehetőségeiről, a beszélgetést segítő kérdésekkel.",
       en: "A personalized coaching debrief is generated for each client, covering strengths, development areas, and targeted coaching questions.",
     },
-    feature3Title: { hu: "Önismeret vs. mások képe", en: "Self-image vs. how others see them" },
+    feature3Title: { hu: "Önértékelés és mások visszajelzései", en: "Self-image vs. how others see them" },
     feature3Body: {
       hu: "Az ügyfeleid a platformon keresztül kérhetnek visszajelzést az ismerőseiktől – az eredményt te is látod.",
       en: "Your clients can request feedback from people they know through the platform – and you see the results too.",
@@ -383,32 +383,32 @@ export const commonTranslations = {
     },
     nameLabel: { hu: "Neved", en: "Your name" },
     namePlaceholder: { hu: "Kovács Anna", en: "Jane Smith" },
-    emailLabel: { hu: "Email cím", en: "Email address" },
+    emailLabel: { hu: "E-mail-cím", en: "Email address" },
     emailPlaceholder: { hu: "nev@email.hu", en: "name@email.com" },
     backgroundLabel: { hu: "Szakmai háttér", en: "Professional background" },
     backgroundPlaceholder: {
-      hu: "Pl. 5 éve dolgozom coaching területen, ICF ACC tanúsítással rendelkezem, főként leadership és karrierváltás témában dolgozom...",
+      hu: "Pl. 5 éve dolgozom tanácsadóként, ICF ACC minősítéssel rendelkezem. Főként vezetőfejlesztéssel és karrierváltással foglalkozom.",
       en: "E.g. I have been working in coaching for 5 years, hold ICF ACC certification, mainly focused on leadership and career transitions...",
     },
     motivationLabel: { hu: "Motiváció", en: "Motivation" },
     motivationPlaceholder: {
-      hu: "Miért szeretnél coachként csatlakozni a tritához? Hogyan tudnád hasznosítani a platformot az ügyfeleid számára?",
+      hu: "Miért szeretnél tanácsadóként csatlakozni a tritához? Hogyan segítenéd ügyfeleidet a platform használatával?",
       en: "Why do you want to join trita as a coach? How would you use the platform with your clients?",
     },
     specializationsLabel: { hu: "Szakterületek (opcionális)", en: "Specializations (optional)" },
     specializationsPlaceholder: {
-      hu: "Pl. leadership, karrierváltás, csapatdinamika, stresszkezelés",
+      hu: "Pl. vezetőfejlesztés, karrierváltás, csapatdinamika, stresszkezelés",
       en: "E.g. leadership, career transitions, team dynamics, stress management",
     },
     submitButton: { hu: "Jelentkezés beküldése", en: "Submit application" },
     submitting: { hu: "Küldés...", en: "Submitting..." },
     successTitle: { hu: "Köszönjük a jelentkezést!", en: "Thank you for applying!" },
     successBody: {
-      hu: "Megkaptuk a kérelmedet. Hamarosan felvesszük veled a kapcsolatot az általad megadott email-címen.",
+      hu: "Megkaptuk a kérelmedet. Hamarosan felvesszük veled a kapcsolatot az általad megadott e-mail-címen.",
       en: "We received your application. We will get back to you shortly at the email address you provided.",
     },
     errorGeneric: {
-      hu: "Nem sikerült elküldeni. Kérlek próbáld újra.",
+      hu: "Nem sikerült elküldeni. Kérlek, próbáld újra.",
       en: "Could not submit. Please try again.",
     },
   },
@@ -436,10 +436,10 @@ export const commonTranslations = {
     sectionEyebrow: { hu: "Kapcsolatfelvétel", en: "Get in touch" },
     sectionTitle: { hu: "Miben segíthetünk?", en: "How can we help?" },
     sectionLead: {
-      hu: "Válassz témát, hogy rögtön a megfelelő emberhez kerüljön.",
+      hu: "Válassz témát, hogy az üzeneted rögtön a megfelelő munkatársunkhoz kerüljön.",
       en: "Choose a topic so your message reaches the right person straight away.",
     },
-    emailStripTitle: { hu: "Inkább emailt írnál?", en: "Prefer email?" },
+    emailStripTitle: { hu: "Inkább e-mailt írnál?", en: "Prefer email?" },
     emailStripBody: {
       hu: "Ugyanahhoz a csapathoz érkezik, és ugyanúgy egy munkanapon belül válaszolunk.",
       en: "It reaches the same team, and we still reply within one business day.",
@@ -447,7 +447,7 @@ export const commonTranslations = {
 
     // Info cards
     infoTitle: { hu: "Mi történik beküldés után?", en: "What happens next?" },
-    infoBody: { hu: "Az üzeneted közvetlenül a csapathoz érkezik, a válasz emailben jön.", en: "Your message goes to the team directly. We reply by email." },
+    infoBody: { hu: "Az üzeneted közvetlenül a csapathoz érkezik, a válasz e-mailben jön.", en: "Your message goes to the team directly. We reply by email." },
     responseTitle: { hu: "Válaszidő", en: "Response time" },
     responseBody: { hu: "Munkanapokon jellemzően 24 órán belül.", en: "Usually within 24 hours on business days." },
     legalTitle: { hu: "Adatkezelés", en: "Data handling" },
@@ -455,7 +455,7 @@ export const commonTranslations = {
 
     // Form fields
     name: { hu: "Név", en: "Name" },
-    email: { hu: "Email", en: "Email" },
+    email: { hu: "E-mail", en: "Email" },
     company: { hu: "Cég (opcionális)", en: "Company (optional)" },
     topic: { hu: "Téma", en: "Topic" },
     topicPrompt: { hu: "Mivel kapcsolatban írsz?", en: "What are you writing about?" },
@@ -465,15 +465,15 @@ export const commonTranslations = {
     requiredHint: { hu: "* kötelező mező", en: "* required field" },
     successTitle: { hu: "Megkaptuk az üzeneted.", en: "We received your message." },
     successBody: {
-      hu: "1 munkanapon belül visszajelzünk a megadott email címen.",
+      hu: "1 munkanapon belül visszajelzünk a megadott e-mail-címen.",
       en: "We will get back to you within 1 business day.",
     },
     sendAnother: { hu: "Új üzenet írása", en: "Send another message" },
     errorGeneric: {
-      hu: "Nem sikerült elküldeni az üzenetet. Kérlek próbáld újra.",
+      hu: "Nem sikerült elküldeni az üzenetet. Kérlek, próbáld újra.",
       en: "We could not send your message. Please try again.",
     },
-    topicDemo: { hu: "Demó igény", en: "Demo request" },
+    topicDemo: { hu: "Bemutató kérése", en: "Demo request" },
     topicPricing: { hu: "Árazás", en: "Pricing" },
     topicSupport: { hu: "Terméktámogatás", en: "Product support" },
     topicPartnership: { hu: "Partnerség", en: "Partnership" },
