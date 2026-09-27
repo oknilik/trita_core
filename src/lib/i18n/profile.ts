@@ -53,6 +53,13 @@ export const profileTranslations = {
     sectionAboutSub: { hu: "Ezeket az adatokat a profilod és az eredményeid személyre szabásához használjuk.", en: "We use this data to personalize your profile and results." },
     sectionLanguage: { hu: "Megjelenés és nyelv", en: "Appearance & language" },
     sectionLanguageSub: { hu: "Ezen a nyelven jelenik meg az oldal és az eredményed.", en: "Your pages and results will appear in this language." },
+    sectionEmails: { hu: "E-mail-beállítások", en: "Email preferences" },
+    sectionEmailsSub: {
+      hu: "Válaszd ki, hogy kérsz-e kitöltési emlékeztetőket, értesítőt az új blogcikkekről vagy hírlevelet. Mindhárom külön beállítható.",
+      en: "Choose whether to receive assessment reminders, new blog post notifications, or newsletters. You can manage each separately.",
+    },
+    openEmailPreferences: { hu: "Levelek beállítása", en: "Manage emails" },
+    backToProfile: { hu: "Vissza a profilbeállításokhoz", en: "Back to profile settings" },
     saveNoChanges: { hu: "Minden módosítást mentettél", en: "No unsaved changes" },
     saveUnsaved: { hu: "Még nem mentetted a módosításaidat", en: "You have unsaved changes" },
     saveSaved: { hu: "Mentve", en: "Saved" },
