@@ -42,8 +42,10 @@ export function AppendixObserverPage({ model }: { model: ProfileReportViewModel 
       .slice(0, 2);
     if (bigGaps.length === 0) return t("pdf.toplineAligned", locale);
     const joiner = locale === "hu" ? " és " : " and ";
-    const namesRaw = bigGaps.map((d) => d.name.toLowerCase()).join(joiner);
-    const names = locale === "hu" ? withHuArticle(namesRaw) : namesRaw;
+    const names = bigGaps.map((d) => {
+      const name = d.name.toLowerCase();
+      return locale === "hu" ? withHuArticle(name) : name;
+    }).join(joiner);
     return tf("pdf.toplineGapPrefix", locale, { names });
   })();
 

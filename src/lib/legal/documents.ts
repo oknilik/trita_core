@@ -41,7 +41,7 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
     },
     shortTitle: { hu: "Platformfeltételek", en: "Platform terms" },
     description: {
-      hu: "A trita.io ingyenes egyéni személyiségfelmérésének, eredményeinek és observer-visszajelzéseinek használati feltételei.",
+      hu: "A trita.io ingyenes egyéni személyiségfelmérésének, eredményeinek és az ismerősöktől kért visszajelzéseinek használati feltételei.",
       en: "Terms for the free individual assessment, results and observer feedback available on trita.io. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
@@ -73,18 +73,18 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
     },
     shortTitle: { hu: "B2B feltételek", en: "B2B terms" },
     description: {
-      hu: "A Team Scan és a kapcsolódó felmérési, riport-, workshop- és tanácsadási szolgáltatások szerződéses kerete.",
+      hu: "A Team Scan, a kapcsolódó felmérések, riportok, workshopok és tanácsadás szerződéses feltételei.",
       en: "Contractual framework for Team Scan and related assessment, reporting, workshop and advisory services. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
-      hu: "Csak akkor válik a szerződés részévé, ha az egyedi ajánlat, megrendelőlap vagy szerződés kifejezetten hivatkozik rá. Nincs online checkout.",
+      hu: "Csak akkor válik a szerződés részévé, ha az egyedi ajánlat, megrendelőlap vagy szerződés kifejezetten hivatkozik rá. Online megrendelésre és fizetésre nincs lehetőség.",
       en: "It becomes part of a contract only when an individual offer, order form or agreement expressly incorporates it. There is no online checkout.",
     },
     highlights: {
       hu: [
-        "A konkrét scope-ot, díjat, időzítést és résztvevői kört mindig az Egyedi Dokumentum rögzíti.",
+        "A szolgáltatás pontos tartalmát, díját, időzítését és a résztvevők körét mindig az Egyedi Dokumentum rögzíti.",
         "A Team Scan v1 rögzített mérési körre és dokumentált anonimitási minimumokra épül.",
-        "A riportot tanácsadó validálja és publikálja; az egyéni válaszok nem jelennek meg csapatszinten.",
+        "A riportot tanácsadó ellenőrzi és teszi elérhetővé. Az egyéni válaszok nem jelennek meg csapatszinten.",
         "Adatfeldolgozási kérdésben a külön DPA az irányadó.",
       ],
       en: [
@@ -109,7 +109,7 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
       en: "Article 28 GDPR data-processing framework for organisational services, including schedules and a subprocessors list. The Hungarian document is controlling; this English summary is informational only.",
     },
     scope: {
-      hu: "A B2B-szerződés elválaszthatatlan része. Adatfeldolgozási eltérésben elsőbbséget élvez a B2B Feltételekkel szemben.",
+      hu: "A B2B-szerződés elválaszthatatlan része. Ha adatfeldolgozási kérdésben eltér a B2B Feltételektől, ez a megállapodás az irányadó.",
       en: "An integral part of the B2B agreement. It takes precedence over the B2B Terms for data-processing conflicts.",
     },
     highlights: {
@@ -117,7 +117,7 @@ export const LEGAL_DOCUMENTS: readonly LegalDocument[] = [
         "Dokumentált utasítások, titoktartás, szerepkör-alapú hozzáférés és GDPR 32. cikk szerinti biztonság.",
         "Érintetti kérelmek, incidensek, DPIA és hatósági együttműködés támogatása.",
         "Alfeldolgozói értesítési és kifogási folyamat, valamint nemzetközi adattovábbítási garanciák.",
-        "A megszűnés utáni visszaadás/törlés és a technikai-szervezési intézkedések mellékletei.",
+        "Mellékletek az adatok visszaadásáról vagy törléséről a szerződés megszűnése után, valamint a technikai és szervezési intézkedésekről.",
       ],
       en: [
         "Documented instructions, confidentiality, role-based access and Article 32 GDPR security.",

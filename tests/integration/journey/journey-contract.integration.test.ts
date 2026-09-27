@@ -85,12 +85,14 @@ test("journey integration: self not started contract resolves to assessment star
 
   const resolution = await resolveJourney(profile.id, {
     entryPoint: "integration_test_entrypoint",
+    locale: "hu",
   });
 
   assert.equal(resolution.stage, "SELF_NOT_STARTED");
   assert.equal(resolution.destination, "/assessment");
   assert.equal(resolution.activeSurface, "personal");
   assert.equal(resolution.nextBestAction.primary.id, "START_SELF_ASSESSMENT");
+  assert.equal(resolution.nextBestAction.explanation, "Töltsd ki az első kérdőívet, hogy megismerhesd a személyes eredményedet.");
   assert.equal(resolution.home.primaryAction?.id, "START_SELF_ASSESSMENT");
   assert.equal(resolution.scopeProgress.scope, "personal");
   assert.equal(resolution.scopeProgress.scopeProgress, 0);

@@ -110,12 +110,12 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
     const topicLabel = INQUIRY_TOPIC_LABELS[params.topic] ?? params.topic;
     const sourceLabel =
       params.source === "in_app"
-        ? "in-app kérdés"
+        ? "kérdés a felületről"
         : params.source === "pilot_form"
-          ? "pilot jelentkezés"
+          ? "jelentkezés a pilotprogramba"
           : params.source === "advisory_request"
-            ? "konzultáció-kérés"
-            : "kapcsolat űrlap";
+            ? "konzultációs kérés"
+            : "kapcsolatfelvételi űrlap";
     const text = [
       `Új megkeresés érkezett (${sourceLabel}).`,
       "",

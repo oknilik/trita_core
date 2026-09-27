@@ -55,7 +55,7 @@ export async function generateMetadata({
   return {
     title,
     description: isHu
-      ? "Személyiségprofil a trita platformról – önértékelés és külső visszajelzés, tudományos alapon."
+      ? "Megosztott trita személyiségprofil: hat dimenzió és a pontszámokhoz tartozó magyarázatok."
       : "A personality profile from the trita platform – self-assessment and external feedback, on a scientific basis.",
     robots: { index: false },
   };

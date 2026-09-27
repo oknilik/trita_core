@@ -9,7 +9,7 @@
       "key": "vezetes",
       "hu": "Vezetés és üzletirányítás",
       "en": "Leadership and business management",
-      "defHu": "Emberekért és eredményért felel: dönt, irányt ad, felelősséget visel.",
+      "defHu": "Célokat határoz meg, döntéseket hoz, és összehangolja a munkatársak feladatait.",
       "defEn": "Accountable for people and results: decides, sets direction, carries responsibility.",
       "anchors": [
         "Ügyvezető",
@@ -30,7 +30,7 @@
       "key": "penzugy",
       "hu": "Pénzügy és számvitel",
       "en": "Finance and accounting",
-      "defHu": "Számokkal és szabályokkal dolgozik, ő a pénzügyi biztonság őre.",
+      "defHu": "Pénzügyi adatokat kezel és elemez, nyilvántartásokat vezet, vagy pénzügyi döntéseket készít elő.",
       "defEn": "Works with numbers and rules; the guardian of financial safety.",
       "anchors": [
         "Könyvelő",
@@ -49,7 +49,7 @@
       "key": "jog",
       "hu": "Jog és hatósági munka",
       "en": "Law and regulatory work",
-      "defHu": "Szabályt értelmez és érvényesít – az ő döntése másokra nézve kötelező.",
+      "defHu": "Jogi kérdéseket értelmez, tanácsot ad, képviseletet lát el vagy hatósági eljárásokban dolgozik.",
       "defEn": "Interprets and enforces rules; their decision binds others.",
       "anchors": [
         "Ügyvéd",
@@ -72,7 +72,7 @@
       "key": "admin",
       "hu": "Adminisztráció és ügyvitel",
       "en": "Administration and office support",
-      "defHu": "Háttérből tartja működésben a folyamatokat, hogy másnak menjen a dolga.",
+      "defHu": "Iratokat, adatokat és határidőket kezel, és megszervezi a mindennapi ügyintézést.",
       "defEn": "Keeps processes running from the background so others can work.",
       "anchors": [
         "Irodai adminisztrátor",
@@ -91,7 +91,7 @@
       "key": "it",
       "hu": "Informatika és adat",
       "en": "IT and data",
-      "defHu": "Rendszereket épít, és adatból választ keres.",
+      "defHu": "Informatikai rendszereket tervez, fejleszt és üzemeltet, vagy adatok elemzésével keres választ kérdésekre.",
       "defEn": "Builds systems and finds answers in data.",
       "anchors": [
         "Szoftverfejlesztő",
@@ -108,7 +108,7 @@
       "key": "muszaki",
       "hu": "Mérnöki és műszaki fejlesztés",
       "en": "Engineering and technical development",
-      "defHu": "Fizikai rendszereket tervez, mér és működésben tart.",
+      "defHu": "Műszaki rendszereket és berendezéseket tervez, vizsgál és fejleszt.",
       "defEn": "Designs, measures and maintains physical systems.",
       "anchors": [
         "Gépészmérnök",
@@ -125,7 +125,7 @@
       "key": "tudomany",
       "hu": "Tudomány és labor",
       "en": "Science and laboratory",
-      "defHu": "Kísérletez, mér, bizonyít – a válasz nála az adatból jön.",
+      "defHu": "Kutatási kérdéseket vizsgál, kísérleteket és méréseket végez, majd értelmezi az eredményeket.",
       "defEn": "Experiments, measures, proves; answers come from evidence.",
       "anchors": [
         "Vegyész",
@@ -142,7 +142,7 @@
       "key": "gyogyitas",
       "hu": "Gyógyítás",
       "en": "Medicine",
-      "defHu": "Diagnosztizál és dönt egy ember egészségéről, szakmai felelősséggel.",
+      "defHu": "Betegségeket ismer fel, kezelést tervez és végez, vagy a megelőzésben segít.",
       "defEn": "Diagnoses and decides on a person's health, with professional responsibility.",
       "anchors": [
         "Háziorvos",
@@ -158,7 +158,7 @@
       "key": "apolas",
       "hu": "Ápolás és gondozás",
       "en": "Nursing and care",
-      "defHu": "Napi jelenléttel kíséri azt, aki nem boldogul egyedül.",
+      "defHu": "Ápolási és gondozási feladatokkal segíti azokat, akiknek támogatásra van szükségük a mindennapokban.",
       "defEn": "Accompanies, day by day, those who cannot manage alone.",
       "anchors": [
         "Szakápoló",
@@ -176,7 +176,7 @@
       "key": "oktatas",
       "hu": "Oktatás és képzés",
       "en": "Education and training",
-      "defHu": "Tud valamit, és át tudja adni úgy, hogy a másik is tudja.",
+      "defHu": "Tanulást tervez és támogat: magyaráz, gyakoroltat, és visszajelzést ad a haladásról.",
       "defEn": "Knows something and can pass it on so others know it too.",
       "anchors": [
         "Középiskolai tanár",
@@ -192,7 +192,7 @@
       "key": "segito",
       "hu": "Segítő és társadalmi szakmák",
       "en": "Social and helping professions",
-      "defHu": "Nehéz élethelyzetben lévő emberrel dolgozik, hosszú távon.",
+      "defHu": "Nehéz élethelyzetben lévő embereket és közösségeket támogat, és segít megtalálni az elérhető segítséget.",
       "defEn": "Works with people in hard situations, over the long run.",
       "anchors": [
         "Családsegítő szociális munkás",
@@ -208,7 +208,7 @@
       "key": "alkotas",
       "hu": "Alkotás, média, kommunikáció",
       "en": "Creative, media and communication",
-      "defHu": "Formát ad gondolatnak, üzenetnek, terméknek.",
+      "defHu": "Szöveget, képet, előadást vagy más alkotást készít, és üzeneteket fogalmaz meg a közönség számára.",
       "defEn": "Gives form to ideas, messages and products.",
       "anchors": [
         "Grafikus",
@@ -226,7 +226,7 @@
       "key": "ertekesites",
       "hu": "Értékesítés és ügyfélkapcsolat",
       "en": "Sales and client relations",
-      "defHu": "Emberekkel találkozik, meggyőz, kiszolgál.",
+      "defHu": "Ügyfelekkel egyeztet, termékeket vagy szolgáltatásokat mutat be, értékesít vagy kérdésekre válaszol.",
       "defEn": "Meets people, persuades, serves.",
       "anchors": [
         "Bolti eladó",
@@ -245,7 +245,7 @@
       "key": "epites",
       "hu": "Építés és szerelés",
       "en": "Construction and installation",
-      "defHu": "Kézzel épít és szerel, a helyszínen, látható eredménnyel.",
+      "defHu": "Épületeket és szerkezeteket készít, szerel, alakít át vagy javít.",
       "defEn": "Builds and installs by hand, on site, with visible results.",
       "anchors": [
         "Kőműves",
@@ -263,7 +263,7 @@
       "key": "gyartas",
       "hu": "Gyártás és karbantartás",
       "en": "Manufacturing and maintenance",
-      "defHu": "Gépet kezel, alkatrészt készít, hibát javít.",
+      "defHu": "Termékeket és alkatrészeket készít, gépeket kezel, vagy berendezéseket tart karban és javít.",
       "defEn": "Operates machines, makes parts, fixes faults.",
       "anchors": [
         "Hegesztő",
@@ -282,7 +282,7 @@
       "key": "logisztika",
       "hu": "Szállítás és logisztika",
       "en": "Transport and logistics",
-      "defHu": "Mozgatja az árut és az embereket, időre.",
+      "defHu": "Áruk vagy emberek szállítását, illetve az áruk tárolását és elosztását végzi vagy szervezi.",
       "defEn": "Moves goods and people, on time.",
       "anchors": [
         "Kamionsofőr",
@@ -299,7 +299,7 @@
       "key": "vendeglatas",
       "hu": "Vendéglátás és élelmiszer",
       "en": "Hospitality and food",
-      "defHu": "Ételt készít és vendéget lát el, tempóban.",
+      "defHu": "Ételeket és italokat készít, vendégeket szolgál ki, vagy ezekhez kapcsolódó feladatokat szervez.",
       "defEn": "Prepares food and serves guests, at pace.",
       "anchors": [
         "Szakács",
@@ -317,7 +317,7 @@
       "key": "szepsegipar",
       "hu": "Szépségipar",
       "en": "Beauty services",
-      "defHu": "Egy ember külsejével dolgozik, kézzel és ízléssel.",
+      "defHu": "Haj-, bőr- vagy körömápolási szolgáltatásokat nyújt a vendég igényeihez igazítva.",
       "defEn": "Works on a person's appearance, by hand and with taste.",
       "anchors": [
         "Fodrász",
@@ -333,7 +333,7 @@
       "key": "szolgaltatas",
       "hu": "Kiszolgálás és üzemeltetés",
       "en": "Service and facilities",
-      "defHu": "Jelen van, hogy másnak gördülékeny legyen a napja.",
+      "defHu": "Mindennapi szolgáltatásokat és üzemeltetési feladatokat végez, például takarít, felügyel vagy kiszolgál.",
       "defEn": "Is there so someone else's day runs smoothly.",
       "anchors": [
         "Háztartási takarító",
@@ -356,7 +356,7 @@
       "key": "vedelem",
       "hu": "Védelem és biztonság",
       "en": "Protection and safety",
-      "defHu": "Mások testi épségéért felel, kiszámíthatatlan helyzetben is.",
+      "defHu": "Az emberek, a vagyon és a környezet védelmével, veszélyhelyzetek megelőzésével vagy elhárításával foglalkozik.",
       "defEn": "Responsible for others' safety, even when things are unpredictable.",
       "anchors": [
         "Tűzoltó",
@@ -374,7 +374,7 @@
       "key": "agrar",
       "hu": "Kertészet és zöldterület",
       "en": "Horticulture and green spaces",
-      "defHu": "Élő anyaggal dolgozik, a szabadban, évszakok szerint.",
+      "defHu": "Növényeket termeszt és gondoz, kerteket vagy zöldterületeket tart fenn.",
       "defEn": "Works with living material, outdoors, by the seasons.",
       "anchors": [
         "Parkgondozó",

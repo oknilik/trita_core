@@ -56,7 +56,7 @@ export function AdminLegalSection({ stats }: { stats: AdminLegalStats }) {
       } else {
         setMessage(
           `Az elfogadási kérés ${data.recipients ?? 0} felhasználónál aktiválódott. `
-          + `${data.emailAccepted ?? 0} emailt átvett a szolgáltató`
+          + `${data.emailAccepted ?? 0} e-mailt átvett a szolgáltató`
           + `${data.emailFailed ? `, ${data.emailFailed} küldés hibás volt` : ""}.`,
         );
         setConfirming(false);
@@ -64,7 +64,7 @@ export function AdminLegalSection({ stats }: { stats: AdminLegalStats }) {
         router.refresh();
       }
     } catch {
-      setMessage("A művelet nem sikerült – nézd meg a szerver-naplót.");
+      setMessage("A művelet nem sikerült – nézd meg a szervernaplót.");
     } finally {
       setBusy(false);
     }
@@ -77,9 +77,9 @@ export function AdminLegalSection({ stats }: { stats: AdminLegalStats }) {
       </p>
       <h2 className="mt-2 font-fraunces text-xl text-ink">Aktuális dokumentumverziók</h2>
       <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-body">
-        Új dokumentumverzió telepítése után innen aktiválható a kötelező újbóli elfogadás.
-        A kiküldés alkalmazáson belüli értesítést és tranzakcionális emailt készít, a következő
-        belépéskor pedig az elfogadásig lezárja az alkalmazás felületét.
+        Az új dokumentumverzió telepítése után itt kérheted a felhasználóktól az újbóli elfogadást.
+        Alkalmazáson belüli értesítést és e-mailt kapnak. A következő belépéskor
+        az elfogadás után használhatják tovább az alkalmazást.
       </p>
 
       <dl className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">

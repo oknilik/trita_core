@@ -19,7 +19,9 @@
 import { t, tf, type Locale } from "@/lib/i18n";
 import { ALTRUISM_CODE, HEXACO_ORDER, hexLetter, type HexacoCode } from "@/lib/hexaco";
 import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
-import { buildArchetypeStory } from "@/lib/profile-content";
+import { DIMENSION_SUMMARY_INSIGHTS_HU } from "@/lib/dimension-insights";
+import { getDimensionTier } from "@/lib/dimension-utils";
+import { buildArchetypeStory, DIMENSION_GROWTH_TIPS } from "@/lib/profile-content";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
@@ -281,17 +283,23 @@ export function buildProfileSummaryInsights(
     .filter((d) => deficitSlotEligible(d.code) && d.score < 40)
     .sort((a, b) => a.score - b.score)[0];
 
-  const mainText = strongest?.insight ?? plusContent?.howYouWorkParts.main ?? "";
+  const shortInsight = (dimension: ReportInputDimension | undefined): string | undefined =>
+    locale === "hu" && dimension
+      ? DIMENSION_SUMMARY_INSIGHTS_HU[dimension.code]?.[getDimensionTier(dimension.score)]
+      : undefined;
+  const mainText = shortInsight(strongest) ?? strongest?.insight ?? plusContent?.howYouWorkParts.main ?? "";
   const attentionText =
     plusContent?.howYouWorkParts.watch ??
+    shortInsight(attention) ??
     attention?.insight ??
     t("results.summaryBalancedAttention", locale);
+  // A kipróbálható lépés helyére nem kerülhet dimenziómagyarázat.
+  // A rövid riportban is elérhető az alacsony dimenzió saját gyakorlata;
+  // ilyen dimenzió nélkül önmegfigyelést javaslunk, nem feltételezünk hiányt.
   const growthText =
-    plusContent?.growthTip ??
-    attention?.description ??
-    strongest?.description ??
-    strongest?.insight ??
-    "";
+    plusContent?.growthTip?.trim() ||
+    (attention && DIMENSION_GROWTH_TIPS[attention.code]?.[locale].behavior) ||
+    t("results.summaryGrowthExperiment", locale);
 
   return [
     { label: t("results.summaryNatural", locale), text: mainText, tone: "strength" },

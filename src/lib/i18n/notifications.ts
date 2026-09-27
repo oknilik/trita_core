@@ -1,45 +1,49 @@
 export const notificationTranslations = {
   notifications: {
+    lifecycle: {
+      title: { hu: "{titleHu}", en: "{titleEn}" },
+      body: { hu: "{bodyHu}", en: "{bodyEn}" },
+    },
     peerFeedbackRequested: {
       title: { hu: "Visszajelzést kérnek tőled", en: "Feedback requested from you" },
       body: { hu: "{name} visszajelzést kér tőled: „{topic}”. Pár percet vesz igénybe.", en: "{name} is asking for your feedback: \"{topic}\". It only takes a few minutes." },
     },
     peerFeedbackResponse: {
       title: { hu: "Válasz érkezett a kérésedre", en: "A response to your request arrived" },
-      body: { hu: "Új válasz érkezett a visszajelzés-kérésedre a csapatban: „{team}”.", en: "A new response arrived to your feedback request in the {team} team." },
+      body: { hu: "Új választ kaptál a visszajelzéskérésedre. Csapat: „{team}”.", en: "A new response arrived to your feedback request in the {team} team." },
     },
     peerKudosReceived: {
       title: { hu: "Köszönetet kaptál", en: "You received kudos" },
-      body: { hu: "{name} köszönetet küldött neked a csapatban: „{team}”.", en: "{name} sent you kudos in the {team} team." },
+      body: { hu: "{name} köszönetet mondott neked. Csapat: „{team}”.", en: "{name} sent you kudos in the {team} team." },
     },
     observerCompleted: {
       // Anonim üzenet — az értékelő neve szándékosan nem szerepel (a névvel a
       // futó átlagból beazonosítható lenne az utolsó értékelő).
-      title: { hu: "Megfigyelői visszajelzés érkezett", en: "Observer feedback received" },
-      body: { hu: "Egy külső értékelés beérkezett.", en: "A new observer assessment was received." },
+      title: { hu: "Visszajelzés érkezett rólad", en: "Observer feedback received" },
+      body: { hu: "Új visszajelzés érkezett a felmérésedhez.", en: "A new observer assessment was received." },
     },
     observerSubmitted: {
       title: { hu: "Értékelés elküldve", en: "Assessment submitted" },
-      body: { hu: "Sikeresen kitöltötted {inviterName} értékelését. Köszönjük!", en: "You successfully completed {inviterName}'s assessment. Thank you!" },
+      body: { hu: "Elküldted a visszajelzésedet. Az értékelést kérte: {inviterName}. Köszönjük!", en: "You successfully completed {inviterName}'s assessment. Thank you!" },
     },
     resultReady: {
       title: { hu: "Az eredményed elkészült", en: "Your results are ready" },
-      body: { hu: "A személyiségteszted kiértékelése megtekinthető.", en: "Your personality assessment results are now available." },
+      body: { hu: "Most már megnézheted a személyiségteszted eredményét.", en: "Your personality assessment results are now available." },
     },
     // Páros összehasonlítás: a meghívó értesül, amikor a partner elfogadta.
     compareAccepted: {
       title: { hu: "Elfogadták az összehasonlítást", en: "Your comparison was accepted" },
       body: {
-        hu: "{name} elfogadta a páros összehasonlítást – nézzétek meg, hogyan működnétek együtt.",
+        hu: "{name} elfogadta a páros összehasonlítást. Nézzétek meg, mi segítheti az együttműködéseteket.",
         en: "{name} accepted the pair comparison – see how the two of you would work together.",
       },
     },
     // Reflexiós utókövetés (D1): egyetlen, jól célzott érintés a kitöltés
     // után ~1 héttel — a "mi történik két hét múlva" rés első lépése.
     reflectionPrompt: {
-      title: { hu: "Egy hét telt el – mit láttál magadból?", en: "A week has passed – what did you notice?" },
+      title: { hu: "Egy hét telt el. Mire ismertél rá magadban?", en: "A week has passed – what did you notice?" },
       body: {
-        hu: "A legmagasabb pontszámú dimenziód: {dimLabelHu}. Figyeld meg tudatosan egy helyzetben ezen a héten – és ha kíváncsi vagy, hogyan működnétek együtt valakivel, nézd meg a páros összehasonlítást.",
+        hu: "Ebben a dimenzióban kaptad a legmagasabb pontszámot: {dimLabelHu}. Mikor segítettek az ehhez kapcsolódó tulajdonságaid az elmúlt héten? A páros összehasonlítással azt is megnézheted, mi segítheti a közös munkát valakivel.",
         en: "Your highest-scoring dimension: {dimLabelEn}. Observe it deliberately in one situation this week – and if you're curious how you'd work with someone, try the pair comparison.",
       },
     },
@@ -53,47 +57,47 @@ export const notificationTranslations = {
     },
     campaignLaunched: {
       title: { hu: "Mérés elindítva", en: "Measurement launched" },
-      body: { hu: "Elindult a kampány: „{campaignName}”.", en: "The \"{campaignName}\" campaign is now active." },
+      body: { hu: "Elindult a mérés: „{campaignName}”.", en: "The \"{campaignName}\" campaign is now active." },
     },
     stepOpened: {
       title: { hu: "Új mérés vár rád", en: "A new measurement is ready for you" },
       body: {
-        hu: "Megnyílt a következő méréslépésed a kampányban: „{campaignName}”. Pár perc az egész – kattints és töltsd ki.",
+        hu: "Elérhető a következő feladatod ebben a mérésben: „{campaignName}”. Nyisd meg a kitöltéshez.",
         en: "Your next measurement step in \"{campaignName}\" is now open – it only takes a few minutes.",
       },
     },
     observerColleagueInvited: {
       title: { hu: "Kollégád visszajelzést kér tőled", en: "A colleague asked for your feedback" },
       body: {
-        hu: "{inviterName} arra kér, hogy adj visszajelzést a személyiségképéhez – ~10 perc, a válaszaid név nélkül, összesítve jelennek meg.",
+        hu: "{inviterName} visszajelzést kér tőled a személyiségfelméréséhez. A kitöltés körülbelül 10 perc. A válaszaid név nélkül, összesítve jelennek meg.",
         en: "{inviterName} asked you for feedback on their personality picture – ~10 minutes; your answers appear anonymously, aggregated.",
       },
     },
     observerApprovalRequested: {
-      title: { hu: "Külső értékelő-meghívó vár jóváhagyásra", en: "External observer invite awaits approval" },
+      title: { hu: "Külső értékelő meghívása vár jóváhagyásra", en: "External observer invite awaits approval" },
       body: {
         hu: "{inviterName} külső értékelőt hívna meg ({targetLabel}) – a mérés szabálya szerint ehhez jóváhagyás kell.",
         en: "{inviterName} wants to invite an external observer ({targetLabel}) – the campaign requires approval for this.",
       },
     },
     observerInviteApproved: {
-      title: { hu: "Külső meghívód jóváhagyva", en: "Your external invite was approved" },
+      title: { hu: "Jóváhagyták a külső értékelő meghívását", en: "Your external invite was approved" },
       body: {
-        hu: "Jóváhagyták az értékelő-meghívódat – a meghívó e-mail kiment erre a címre: {targetLabel}.",
+        hu: "Jóváhagyták a külső értékelő meghívását. A meghívót e-mailben elküldtük erre a címre: {targetLabel}.",
         en: "Your observer invite to {targetLabel} was approved – the invitation email has been sent.",
       },
     },
     observerInviteDeclined: {
-      title: { hu: "Külső meghívód elutasítva", en: "Your external invite was declined" },
+      title: { hu: "Nem hagyták jóvá a meghívásodat", en: "Your external invite was declined" },
       body: {
-        hu: "A vezetőd nem hagyta jóvá az értékelő-meghívódat erre a címre: {targetLabel}. Kérdés esetén egyeztess vele.",
+        hu: "A vezetőd nem hagyta jóvá, hogy visszajelzést kérj erről a címről: {targetLabel}. Egyeztess vele, ha kérdésed van.",
         en: "Your observer invite to {targetLabel} was not approved by your manager. Please check with them if needed.",
       },
     },
     candidateCompleted: {
-      title: { hu: "Jelölt-felmérés elkészült", en: "Candidate assessment completed" },
+      title: { hu: "Elkészült a jelölt felmérése", en: "Candidate assessment completed" },
       body: {
-        hu: "{name} kitöltötte a felmérést{position} – az eredmény és a csapat-illesztés megnyitható.",
+        hu: "{name} kitöltötte a felmérést{position}. Megtekintheted az eredményét és a csapattal való összehasonlítást.",
         en: "{name} completed the assessment{position} – the result and team fit are ready to review.",
       },
     },
@@ -106,7 +110,7 @@ export const notificationTranslations = {
     },
     campaignClosed: {
       title: { hu: "Mérés lezárva", en: "Measurement closed" },
-      body: { hu: "Lezárult a kampány: „{campaignName}”.", en: "The \"{campaignName}\" campaign has closed." },
+      body: { hu: "Lezárult a mérés: „{campaignName}”.", en: "The \"{campaignName}\" campaign has closed." },
     },
     teamReportPublished: {
       title: { hu: "A csapatkép elkészült", en: "Team picture ready" },
@@ -141,28 +145,28 @@ export const notificationTranslations = {
     },
     lowCandidateCredits: {
       title: { hu: "Alacsony jelöltkeret", en: "Low candidate credits" },
-      body: { hu: "Már csak {remaining} jelöltkeret maradt.", en: "Only {remaining} candidate credits remaining." },
+      body: { hu: "Még {remaining} jelölt felmérésére van lehetőséged.", en: "Only {remaining} candidate credits remaining." },
     },
     memberCompletedAssessment: {
-      title: { hu: "Tag elvégezte az értékelést", en: "Member completed assessment" },
+      title: { hu: "Egy csapattag kitöltötte az önértékelést", en: "Member completed assessment" },
       body: { hu: "{name} elvégezte az önértékelést.", en: "{name} completed their self-assessment." },
     },
     campaignMilestone: {
-      title: { hu: "Mérés mérföldkő", en: "Measurement milestone" },
-      body: { hu: "Elérte a {percent}%-os kitöltöttséget a kampány: „{campaignName}”.", en: "Campaign \"{campaignName}\" reached {percent}% completion." },
+      title: { hu: "A mérés újabb szakaszhoz ért", en: "Measurement milestone" },
+      body: { hu: "A résztvevők {percent}%-a már minden feladatát kitöltötte ebben a mérésben: „{campaignName}”.", en: "Campaign \"{campaignName}\" reached {percent}% completion." },
     },
     // CRM (admin-only felület, de a kulcskészlet HU+EN a hub-konvenció szerint)
     crmNextActionDue: {
       title: { hu: "Esedékes következő lépés", en: "Next action due" },
       body: {
-        hu: "„{deal}” – a kitűzött következő lépés esedékes ({date}). Nézz rá a CRM-ben.",
+        hu: "Elérkezett a következő lépés időpontja: {date}. Ügylet: „{deal}”. A részleteket a CRM-ben találod.",
         en: "\"{deal}\" – the scheduled next action is due ({date}). Review it in the CRM.",
       },
     },
     crmQuoteExpiring: {
       title: { hu: "Ajánlat hamarosan lejár", en: "Quote expiring soon" },
       body: {
-        hu: "{quoteNo} – „{deal}”: az ajánlat érvényessége {date}-ig tart. Érdemes követni.",
+        hu: "Hamarosan lejár ez az ajánlat: {quoteNo}. Ügylet: „{deal}”. Érvényesség vége: {date}. Egyeztess az ügyféllel a folytatásról.",
         en: "{quoteNo} – \"{deal}\": the quote is valid until {date}. Time to follow up.",
       },
     },
@@ -178,7 +182,7 @@ export const notificationTranslations = {
     markAllRead: { hu: "Összes olvasottnak jelölése", en: "Mark all as read" },
     noNotifications: { hu: "Nincs új értesítés", en: "No new notifications" },
     emptyHint: {
-      hu: "Új visszajelzésért hívj meg egy ismerőst observernek, vagy indíts páros összehasonlítást.",
+      hu: "Kérj visszajelzést egy ismerősödtől, vagy indíts páros összehasonlítást.",
       en: "For fresh feedback, invite someone as an observer or start a pair comparison.",
     },
     bellLabel: { hu: "Értesítések", en: "Notifications" },

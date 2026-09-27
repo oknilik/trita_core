@@ -19,7 +19,10 @@ import type { ProfileReportViewModel } from "@/lib/profile-report-view-model";
 // félüres oldal, és nem is préselődik minden egyetlen lapra (P1/12).
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel }) {
+export function ChapterWorkStylePage({ model, onPageNumber }: {
+  model: ProfileReportViewModel;
+  onPageNumber?: (pageNumber: number) => void;
+}) {
   const { locale, identity, workstyle } = model;
   const chapter = model.chapters[2];
   const planLabel = model.plan === "plus" ? "Plus" : "Start";
@@ -36,6 +39,7 @@ export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel 
 
       <View style={s.body}>
         <PdfChapterHeader
+          onPageNumber={onPageNumber}
           number={chapter.number}
           question={chapter.question}
           title={chapter.title}
@@ -91,7 +95,7 @@ export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel 
                 marginBottom: growth ? 10 : 0,
               }}
             >
-              {growth ? t("results.growthIntro", locale) : workstyle.growthTip}
+              {growth ? t("pdf.growthPlanIntro", locale) : workstyle.growthTip}
             </Text>
             {growth
               ? (
@@ -130,13 +134,6 @@ export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel 
               : null}
           </PdfCard>
         ) : null}
-
-        {/* Módszertani jegyzet: önjellemzés, tendencia nem címke */}
-        <PdfCard eyebrow={t("pdf.methodNoteTitle", locale)} tone="muted">
-          <Text style={{ ...s.caption, color: colors.ink500 }}>
-            {t("pdf.methodNoteBody", locale)}
-          </Text>
-        </PdfCard>
 
         {model.plan === "start" ? (
           <PdfCard eyebrow="Plus · €9" title={t("pdf.wantToGoDeeper", locale)} tone="muted">

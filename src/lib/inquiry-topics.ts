@@ -3,12 +3,12 @@
 // next/navigation) nélkül. A lib/inquiries változatlanul re-exportálja.
 
 export const INQUIRY_TOPIC_LABELS: Record<string, string> = {
-  demo: "Demó igény",
+  demo: "Bemutató kérése",
   pricing: "Árazás",
   support: "Terméktámogatás",
   partnership: "Partnerség",
   question: "Felhasználói kérdés",
-  pilot: "Pilot jelentkezés",
+  pilot: "Jelentkezés a pilotprogramba",
   advisory: "Tanácsadói konzultáció",
   other: "Egyéb",
 };

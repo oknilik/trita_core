@@ -120,7 +120,7 @@ describe("invitation creation feedback", () => {
       fireEvent.change(screen.getByRole("textbox"), { target: { value: "new@example.com" } });
       fireEvent.click(screen.getByRole("button", { name: /Létrehozás/i }));
       await waitFor(() => expect(screen.getByText("new@example.com")).toBeInTheDocument());
-      expect(screen.getByRole("status")).toHaveTextContent(deliveryFailed ? "email küldése nem sikerült" : "emailt elküldtük");
+      expect(screen.getByRole("status")).toHaveTextContent(deliveryFailed ? "e-mail küldése nem sikerült" : "e-mailt elküldtük");
       expect(refresh).toHaveBeenCalledOnce();
       expect(screen.getByRole("textbox")).toHaveValue("");
     });

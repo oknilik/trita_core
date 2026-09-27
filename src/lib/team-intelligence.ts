@@ -136,7 +136,7 @@ export function buildTeamIntelligenceEvidence({
       confidence: resolveTeamIntelligenceConfidence(mapQuality),
       note: tr(
         locale,
-        "A pozíciók az önértékelésen alapuló személyiségtesztből számolt becslések.",
+        "Az ábrán látható elhelyezkedést az önértékelések pontszámaiból becsüljük.",
         "Positions are estimated from self-assessment data.",
       ),
     },
@@ -150,7 +150,7 @@ export function buildTeamIntelligenceEvidence({
           ? "A kapcsolati minta részben a bizalmi körben gyűjtött adatokból épül."
           : hasDynamicsData
             ? "A kapcsolati minta a profilok alapján készült becslés – mért adatokhoz bizalmi körre van szükség."
-            : "A kapcsolati nézethez observer-visszajelzésekből vagy csapattársaktól származó kapcsolati adatokra van szükség.",
+            : "A kapcsolati nézethez a visszajelzőktől vagy csapattársaktól származó kapcsolati adatokra van szükség.",
         hasMeasuredDynamics
           ? "The relationship map partly builds on measured trust-round data."
           : hasDynamicsData
@@ -164,7 +164,7 @@ export function buildTeamIntelligenceEvidence({
       confidence: roleQuality === "sufficient" ? "medium" : "low",
       note: tr(
         locale,
-        "A csapatszerepek illeszkedése a személyiségprofilból számolt becslés.",
+        "A csapatszerepeket a személyiségprofilokból becsüljük.",
         "Role fit is a personality-based estimate.",
       ),
     },
@@ -191,7 +191,7 @@ export function buildTeamIntelligencePriorities({
       title: tr(locale, "Hiányzó kitöltések", "Missing completions"),
       reason: tr(
         locale,
-        `A megbízható csapatképhez legalább ${MIN_INTELLIGENCE_ASSESSMENTS} kitöltés szükséges. Jelenleg még ${Math.max(MIN_INTELLIGENCE_ASSESSMENTS - completedCount, 0)} hiányzik.`,
+        `A csapatkép megjelenítéséhez legalább ${MIN_INTELLIGENCE_ASSESSMENTS} kitöltés szükséges. Jelenleg még ${Math.max(MIN_INTELLIGENCE_ASSESSMENTS - completedCount, 0)} hiányzik.`,
         `At least ${MIN_INTELLIGENCE_ASSESSMENTS} completions are needed for a stable team view. ${Math.max(MIN_INTELLIGENCE_ASSESSMENTS - completedCount, 0)} still missing.`,
       ),
       ctaLabel: tr(locale, "Tagok és állapot megnyitása", "Open members and status"),
@@ -211,7 +211,7 @@ export function buildTeamIntelligencePriorities({
       title: tr(locale, "Visszajelzési kör indítása", "Start feedback round"),
       reason: tr(
         locale,
-        "A csapatdinamika feltárásához observer-visszajelzésekre van szükség; ez a kör még nem aktív.",
+        "A csapat együttműködésének feltárásához mások visszajelzéseire is szükség van. Ez a visszajelzési kör még nem aktív.",
         "Observer feedback is needed for team dynamics, and it is not active yet.",
       ),
       ctaLabel: tr(locale, "Visszajelzési kör indítása", "Start feedback round"),
@@ -291,10 +291,10 @@ export function buildTeamIntelligencePriorities({
       priorities.push({
         id: "cohesion_risk",
         tone: "rose",
-        title: tr(locale, "Kohéziós kockázat", "Cohesion risk"),
+        title: tr(locale, "Az együttműködési hajlam becslése", "Cohesion risk"),
         reason: tr(
           locale,
-          `A kohézió közelítő értéke ${Math.round(clamp(cohesionAverage, 0, 100))}%. Ez a barátságosság és a becsületesség-alázat átlagából számolt becslés.`,
+          `A becsült együttműködési hajlam ${Math.round(clamp(cohesionAverage, 0, 100))}/100. Ezt a barátságosság és a becsületesség-alázat pontszámaiból számítjuk; a csapat tényleges összetartását nem méri.`,
           `The cohesion proxy averages ${Math.round(clamp(cohesionAverage, 0, 100))}% – an estimate computed from the agreeableness and honesty-humility averages.`,
         ),
         ctaLabel: tr(locale, "Személyiségprofil megnyitása", "Open personality profile"),
@@ -330,7 +330,7 @@ export function buildTeamIntelligencePriorities({
         // „(N pont)" kikerül a szövegből.
         reason: tr(
           locale,
-          `${withHuArticle(HEXACO_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} – ezen a tengelyen nagy a csapaton belüli eltérés, ami eltérő munkastílusokra utalhat.`,
+          `${withHuArticle(HEXACO_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} területén nagyok az egyéni pontszámok közötti különbségek. Beszéljétek át, hogyan jelenik meg ez a közös munkában.`,
           `${HEXACO_DIMENSIONS[maxSpread.dim].en} – this axis shows a wide spread within the team, which may point to differing work styles.`,
         ),
         ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),
@@ -369,13 +369,13 @@ export function buildTeamIntelligencePriorities({
           tone: "amber",
           title: tr(
             locale,
-            "Eltérhet a vezető és a csapat értékrendje",
+            "Eltérés a vezető és a csapat profilja között",
             "Leader-team value mismatch",
           ),
           // 2026-08-11 termékdöntés: a delta SZÁMKÉNT nem jelenik meg a UI-n.
           reason: tr(
             locale,
-            `A vezető Becsületesség–Alázat és a Barátságosság dimenzióban elért értékei láthatóan eltérnek a csapatátlagtól. Ez becslés – érdemes beszélgetésben ellenőrizni.`,
+            `A vezető pontszámai a Becsületesség-Alázat és a Barátságosság dimenzióban eltérnek a csapatátlagtól. Beszéljétek át, észrevehető-e ez a döntésekben vagy az egyeztetéseken. A pontszámok önmagukban nem mutatják meg az okát.`,
             `The leader's honesty-humility and agreeableness scores visibly differ from the team average. This is an estimate – worth validating in conversation.`,
           ),
           ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
@@ -389,10 +389,10 @@ export function buildTeamIntelligencePriorities({
     priorities.push({
       id: "healthy_baseline",
       tone: "sage",
-      title: tr(locale, "Jó kiinduló helyzet", "Healthy baseline"),
+      title: tr(locale, "Most nincs kiemelt teendő", "Healthy baseline"),
       reason: tr(
         locale,
-        "A jelenlegi adatok alapján nincs kritikus teendő; érdemes a következő visszajelzési körre készülni.",
+        "A jelenlegi adatok alapján a rendszer nem jelzett kiemelt teendőt. Nézzétek át a csapatprofilt, és készüljetek a következő visszajelzési körre.",
         "No critical action detected from current data; plan the next observer round.",
       ),
       ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),

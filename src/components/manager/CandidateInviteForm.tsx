@@ -254,7 +254,7 @@ export function CandidateInviteForm({ baselines = [], locale, teams, orgId, pres
       {createdInvite && (
         <div className="rounded-2xl border border-sage/20 bg-[var(--color-sage-ghost)] p-4 sm:p-5">
           <p className="mb-1 text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
-            {isHu ? "Sikeres meghívó" : "Invite created"}
+            {isHu ? "A meghívó elkészült" : "Invite created"}
           </p>
           <p className="mb-2 text-body font-semibold text-sage-dark">
             {t("manager.candidateInvite.inviteCreated", loc)}

@@ -64,7 +64,7 @@ function computePersonalScopeProgress(context: JourneyContextSnapshot): JourneyS
         {
           id: "self_assessment",
           label: {
-            hu: "Self assessment kész",
+            hu: "Önértékelés kitöltve",
             en: "Self assessment completed",
           },
           done: context.assessment.completed,
@@ -90,7 +90,7 @@ function computePersonalScopeProgress(context: JourneyContextSnapshot): JourneyS
       {
         id: "self_assessment",
         label: {
-          hu: "Self assessment kész",
+          hu: "Önértékelés kitöltve",
           en: "Self assessment completed",
         },
         done: context.assessment.completed,
@@ -98,7 +98,7 @@ function computePersonalScopeProgress(context: JourneyContextSnapshot): JourneyS
       {
         id: "observer_feedback",
         label: {
-          hu: "Observer visszajelzések beérkeztek",
+          hu: "Visszajelzések beérkeztek",
           en: "Observer feedback collected",
         },
         done: self.sentInvites > 0 && self.pendingInvites === 0,
@@ -117,7 +117,7 @@ function computeTeamScopeProgress(context: JourneyContextSnapshot): JourneyScope
   return {
     scope: "team",
     label: {
-      hu: "Csapat haladás",
+      hu: "A csapat haladása",
       en: "Team progress",
     },
     scopeProgress: clampProgress(joinedScore + coverageScore + readyScore),
@@ -141,7 +141,7 @@ function computeTeamScopeProgress(context: JourneyContextSnapshot): JourneyScope
       {
         id: "team_insight_ready",
         label: {
-          hu: "Csapat insight elérhető",
+          hu: "Csapateredmények elérhetők",
           en: "Team insight available",
         },
         done: team.ready,
@@ -172,7 +172,7 @@ function computeOrgScopeProgress(context: JourneyContextSnapshot): JourneyScopeP
       {
         id: "org_teams_active",
         label: {
-          hu: "Aktív csapatstruktúra",
+          hu: "Csapatok létrehozva",
           en: "Active team structure",
         },
         done: org.teamCount > 0,
@@ -180,7 +180,7 @@ function computeOrgScopeProgress(context: JourneyContextSnapshot): JourneyScopeP
       {
         id: "org_team_insight_coverage",
         label: {
-          hu: "Csapat insight lefedettség",
+          hu: "Elérhető csapateredmények",
           en: "Team insight coverage",
         },
         done: org.teamCount > 0 && estimatedReadyTeamCount >= org.teamCount,
@@ -188,7 +188,7 @@ function computeOrgScopeProgress(context: JourneyContextSnapshot): JourneyScopeP
       {
         id: "org_campaign_active",
         label: {
-          hu: "Aktív szervezeti kampány",
+          hu: "Szervezeti mérés folyamatban",
           en: "Active organization campaign",
         },
         done: org.activeCampaignCount > 0,
@@ -196,7 +196,7 @@ function computeOrgScopeProgress(context: JourneyContextSnapshot): JourneyScopeP
       {
         id: "org_insight_ready",
         label: {
-          hu: "Szervezeti insight kész",
+          hu: "Szervezeti eredmények elkészültek",
           en: "Organization insight ready",
         },
         done: org.ready,

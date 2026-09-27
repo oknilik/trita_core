@@ -24,11 +24,11 @@ export function LegalHubContent() {
         </p>
         <div className="mt-8 max-w-[860px] rounded-lg border border-bronze/40 bg-surface-card px-5 py-4">
           <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
-            {hu ? "Dokumentumstátusz" : "Document status"}
+            {hu ? "A dokumentumok állapota" : "Document status"}
           </p>
           <p className="mt-2 text-body leading-relaxed text-ink-body">
             {hu
-              ? "A Platform Feltételek, a B2B Feltételek és a DPA 2026. augusztus 29-től hatályos. Az Adatvédelmi tájékoztató külön érhető el."
+              ? "A Platform Feltételek, a B2B Feltételek és az Adatfeldolgozási Megállapodás (DPA) 2026. augusztus 29-től hatályosak. Az Adatvédelmi tájékoztató külön érhető el."
               : "The Platform Terms, B2B Terms and DPA are effective from 29 August 2026. The Privacy Notice is available separately."}
           </p>
         </div>

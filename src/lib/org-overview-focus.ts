@@ -42,7 +42,7 @@ export function resolveOrgOverviewFocus(input: {
     return {
       title: hu ? "Hozd létre az első csapatot" : "Create the first team",
       description: hu
-        ? "A szervezeti mérés és a vezetői riport aktív csapatstruktúrára épül."
+        ? "A szervezeti méréshez és a vezetői riporthoz először létre kell hozni a csapatokat."
         : "Organization measurements and leadership reports require an active team structure.",
       primary: { label: hu ? "Csapat létrehozása" : "Create team", href: teamsHref },
       secondary: canInviteMembers
@@ -53,9 +53,9 @@ export function resolveOrgOverviewFocus(input: {
 
   if (pendingInviteCount > 0) {
     return {
-      title: hu ? "Kövesd a függő meghívásokat" : "Follow up pending invitations",
+      title: hu ? "Tekintsd át a függőben lévő meghívásokat" : "Follow up pending invitations",
       description: hu
-        ? `${pendingInviteCount} meghívás még elfogadásra vár. A résztvevők csatlakozása után indulhat stabilan a következő mérési kör.`
+        ? `${pendingInviteCount} meghívást még nem fogadtak el. Ellenőrizd, kikre vártok még a következő mérési kör indításához.`
         : `${pendingInviteCount} invitation(s) are still pending. The next measurement can start reliably once participants join.`,
       primary: { label: hu ? "Meghívások áttekintése" : "Review invitations", href: membersHref },
       secondary: { label: hu ? "Csapatok megnyitása" : "Open teams", href: teamsHref },
@@ -68,7 +68,7 @@ export function resolveOrgOverviewFocus(input: {
       completedMemberCount < MIN_MEMBERS_FOR_ORG_INSIGHTS)
   ) {
     return {
-      title: hu ? "Növeld az aktív részvételt" : "Increase active participation",
+      title: hu ? "Kövesd a hiányzó kitöltéseket" : "Increase active participation",
       description: hu
         ? `${completedMemberCount}/${Math.max(memberCount, MIN_MEMBERS_FOR_ORG_INSIGHTS)} tag rendelkezik kész önértékeléssel. Legalább ${MIN_MEMBERS_FOR_ORG_INSIGHTS} kész kitöltés kell a szervezeti összképhez.`
         : `${completedMemberCount}/${Math.max(memberCount, MIN_MEMBERS_FOR_ORG_INSIGHTS)} members have a completed self-assessment. At least ${MIN_MEMBERS_FOR_ORG_INSIGHTS} completions are needed for organization-level insight.`,
@@ -81,7 +81,7 @@ export function resolveOrgOverviewFocus(input: {
     return {
       title: hu ? "Indítsd el a következő mérési kört" : "Launch the next measurement round",
       description: hu
-        ? "A csapatstruktúra és a minimális részvétel rendelkezésre áll; most egy közös mérési kör ad következő szervezeti pillanatképet."
+        ? "A csapatok létrejöttek, és elegendő tag vett részt a felmérésben. Új közös mérési körrel friss képet kaphatsz a szervezetről."
         : "The team structure and minimum participation are ready; a shared measurement round can now create the next organization snapshot.",
       primary: {
         label: hu ? "Új mérés indítása" : "Start measurement",
@@ -110,7 +110,7 @@ export function resolveOrgOverviewFocus(input: {
   return {
     title: hu ? "Tekintsd át a csapatok állapotát" : "Review team status",
     description: hu
-      ? "A szervezeti alapok rendben vannak. A következő döntést a csapatok aktuális részvételi és riportállapota alapján hozd meg."
+      ? "Nézd meg, melyik csapat vár még kitöltésekre, és hol készült már el a riport. Ez alapján válaszd ki a következő teendőt."
       : "The organization foundations are in place. Base the next decision on current team participation and report status.",
     primary: { label: hu ? "Csapatok megnyitása" : "Open teams", href: teamsHref },
     secondary: null,

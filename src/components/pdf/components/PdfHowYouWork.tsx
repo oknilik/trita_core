@@ -20,6 +20,7 @@ function Block({
   textColor,
   background,
   border,
+  inRow = false,
 }: {
   label: string;
   text: string;
@@ -27,11 +28,15 @@ function Block({
   textColor: string;
   background: string;
   border: string;
+  inRow?: boolean;
 }) {
   return (
     <View
       style={{
-        flex: 1,
+        // Only the side-by-side blocks share the row width. A column block
+        // must keep its natural height, otherwise its text escapes the card.
+        flex: inRow ? 1 : undefined,
+        flexShrink: 0,
         backgroundColor: background,
         borderRadius: 10,
         padding: "12 14",
@@ -68,6 +73,7 @@ export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
     <View>
       <View style={{ flexDirection: "row", gap: 8 }}>
         <Block
+          inRow
           label={t("pdf.keyPattern", locale)}
           text={parts.main}
           labelColor={colors.sageDark}
@@ -77,6 +83,7 @@ export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
         />
         {watch ? (
           <Block
+            inRow
             label={t("pdf.watchArea", locale)}
             text={watch}
             labelColor={colors.bronzeDark}

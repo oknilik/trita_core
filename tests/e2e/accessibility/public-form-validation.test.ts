@@ -29,7 +29,7 @@ test("contact: HU keyboard validation, API error and successful Enter retry", as
 
   const form = page.locator("#contact-form form");
   const name = form.getByRole("textbox", { name: "Név" });
-  const email = form.getByRole("textbox", { name: "Email" });
+  const email = form.getByRole("textbox", { name: "E-mail" });
   const company = form.getByRole("textbox", { name: "Cég (opcionális)" });
   const message = form.getByRole("textbox", { name: "Üzenet" });
   const submit = form.getByRole("button", { name: "Üzenet küldése" });

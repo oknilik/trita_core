@@ -66,7 +66,7 @@ export function DealLinksPanel({
               type="button"
               disabled={busy}
               onClick={() => void patch({ action: "unlink_org" })}
-              title="Org-link oldása"
+              title="Szervezet leválasztása"
               className="-my-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted transition hover:text-state-error-fg"
             >
               ×
@@ -81,7 +81,7 @@ export function DealLinksPanel({
                 void patch({ action: "link_org", organizationId: event.target.value });
               }
             }}
-            aria-label="Szervezet hozzákötése"
+            aria-label="Szervezet hozzárendelése"
             className="mt-1 min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink-body"
           >
             <option value="">Szervezet kiválasztása…</option>
@@ -93,7 +93,7 @@ export function DealLinksPanel({
           </select>
         )}
         <p className="mt-1 text-xs text-muted">
-          A hozzáférés aktiválásakor a rendszer ezen a kapcsolaton találja meg az ügyet.
+          A szervezeti hozzáférés aktiválásakor ennek az ügynek az állapota frissül.
         </p>
       </div>
 
@@ -109,7 +109,7 @@ export function DealLinksPanel({
               type="button"
               disabled={busy}
               onClick={() => void patch({ action: "unlink_user" })}
-              title="User-link oldása"
+              title="Felhasználó leválasztása"
               className="-my-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted transition hover:text-state-error-fg"
             >
               ×
@@ -128,7 +128,7 @@ export function DealLinksPanel({
           </Button>
         ) : (
           <p className="mt-1 text-xs text-muted">
-            Nincs a kapcsolattartó email-címéhez tartozó fiók.
+            Nincs a kapcsolattartó e-mail-címéhez tartozó fiók.
           </p>
         )}
       </div>
@@ -168,7 +168,7 @@ export function DealLinksPanel({
       {/* Belső jegyzet */}
       <div className="mt-4 border-t border-sand/60 pt-3">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-label uppercase text-muted">Háttér-jegyzet</p>
+          <p className="text-label uppercase text-muted">Háttérjegyzet</p>
           <button
             type="button"
             onClick={() => {
@@ -187,8 +187,8 @@ export function DealLinksPanel({
               onChange={(event) => setNoteDraft(event.target.value)}
               rows={4}
               maxLength={4000}
-              placeholder="Döntéshozó, motiváció, kontextus – csak admin látja."
-              aria-label="Háttér-jegyzet"
+              placeholder="Ki dönt, mit szeretne elérni, mit kell még tudnunk? Csak az admin látja."
+              aria-label="Háttérjegyzet"
               className="w-full rounded-lg border border-sand bg-cream px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
             />
             <Button
@@ -213,7 +213,7 @@ export function DealLinksPanel({
           </p>
         ) : (
           <p className="mt-1 text-xs text-muted">
-            Döntéshozó, motiváció, kontextus – ide érdemes felírni.
+            Írd fel, ki dönt az ügyben, mit szeretne elérni, és mit kell még tudnunk.
           </p>
         )}
       </div>

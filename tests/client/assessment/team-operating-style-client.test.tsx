@@ -44,7 +44,7 @@ describe("Operating Style participant flow", () => {
     await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("Nem sikerült"));
     expect(screen.getAllByRole("radio", { checked: true })).toHaveLength(1);
     await userEvent.click(screen.getByRole("button", { name: "Befejezés" }));
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elkészült"));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Köszönjük, kitöltötted a csapatműködési kérdőívet."));
     expect(JSON.parse(fetchMock.mock.calls[1][1].body).answers).toEqual(answers);
     expect(refresh).toHaveBeenCalledTimes(1);
   });
@@ -56,7 +56,7 @@ describe("Operating Style participant flow", () => {
       expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", String(i + 1));
       await userEvent.click(screen.getByRole("button", { name: i === 23 ? "Befejezés" : "Következő" }));
     }
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("elkészült"));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Köszönjük, kitöltötted a csapatműködési kérdőívet."));
     const body = JSON.parse(vi.mocked(fetch).mock.calls[0][1]!.body as string);
     expect(Object.keys(body.answers)).toHaveLength(24);
     expect(body.intent).toBe("submit");
@@ -90,7 +90,7 @@ it("shows measured axes and coverage while keeping exact values in native disclo
     referenceStart: "2026-08-19", referenceEnd: "2026-09-16" }, composition: null, sameRespondents: null, comparison: null }} />);
   expect(screen.getAllByRole("img")).toHaveLength(5);
   expect(screen.getAllByText((_, element) => element?.tagName === "SPAN" && element.textContent === "Értékelhető válasz: 3/3")).toHaveLength(4);
-  expect(screen.getByText("Nincs erős eltolódás egyik pólus felé sem.")).toBeVisible();
+  expect(screen.getByText("Egyik működésmód sem emelkedik ki egyértelműen.")).toBeVisible();
   const summary = screen.getAllByText("Pontos értékek és a mérés háttere")[0];
   const disclosure = summary.closest("details")!;
   expect(disclosure.open).toBe(false);

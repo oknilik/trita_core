@@ -33,31 +33,31 @@ interface GrowthFocusProps {
 // hint biztonsági háló, ha E-tétel mégis ide kerülne.
 const GROWTH_HINT: Record<string, Record<"hu" | "en", string>> = {
   H: {
-    hu: "Tudatos értékek mentén való döntéshozatal és átlátható kommunikáció.",
+    hu: "Egy megállapodás előtt mondd el világosan, mit vállalsz, és mit vársz a másiktól.",
     en: "Value-aligned decision-making and transparent communication.",
   },
   E: {
-    hu: "A támogatás és elismerés kimondása – pl. hetente egy beszélgetés zárása kimondott visszajelzéssel.",
+    hu: "Mondd ki, miben támogatod a másikat, és mit értékelsz a munkájában. Például zárj így hetente egy beszélgetést.",
     en: "Expressing support and acknowledgement – e.g. closing one conversation a week with explicit appreciation.",
   },
   X: {
-    hu: "Társas jelenlét és láthatóság tudatos növelése.",
+    hu: "A következő megbeszélésre készülj egy kérdéssel vagy javaslattal, és mondd is el.",
     en: "Consciously building social presence and visibility.",
   },
   A: {
-    hu: "Együttműködési és konfliktuskezelési készségek fejlesztése.",
+    hu: "Egy nézeteltérésnél először kérdezd meg, mi fontos a másiknak. Ezután mondd el a saját szempontodat.",
     en: "Developing collaboration and conflict resolution skills.",
   },
   C: {
-    hu: "Szervezettség, tervezés és következetes végrehajtás fejlesztése.",
+    hu: "Válassz ki egy feladatot, írd le a következő lépést és a határidőt, majd ellenőrizd, elkészültél-e vele.",
     en: "Building organization, planning, and consistent execution.",
   },
   O: {
-    hu: "Kíváncsiság, tanulási kedv és kreatív gondolkodás ösztönzése.",
+    hu: "Próbálj ki egy új módszert egy kis tétű feladatnál, és nézd meg, miben segített.",
     en: "Encouraging curiosity, a learning mindset, and creative thinking.",
   },
   I: {
-    hu: "Mások iránt való figyelem és altruista viselkedés erősítése.",
+    hu: "Kérdezd meg valakitől, miben jönne jól neki segítség, és vállalj belőle annyit, amennyit teljesíteni tudsz.",
     en: "Strengthening attention to others and altruistic behavior.",
   },
 };
@@ -69,7 +69,7 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
     return (
       <p className="text-sm text-ink-body">
         {isHu
-          ? "Kiváló eredmények – nincs kiemelt fejlődési terület."
+          ? "A pontszámaid alapján most nem emelünk ki külön gyakorlási területet."
           : "Excellent results – no highlighted growth areas."}
       </p>
     );

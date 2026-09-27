@@ -15,7 +15,7 @@ import { assessmentPrimaryActionClass } from "@/components/assessment/Assessment
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Bizalmi háló kör | trita", robots: { index: false } };
+  return { title: "Bizalmi kapcsolatok felmérése | trita", robots: { index: false } };
 }
 
 // Bizalmi háló kitöltő — a bejelentkezett tag azon aktív kampányát keresi

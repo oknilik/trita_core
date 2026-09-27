@@ -13,8 +13,8 @@ const dimensions: SerializedDimension[] = [
     label: "Becsületesség-Alázat",
     color: "var(--color-dim-h-base)",
     score: 58,
-    insight: "Fontos neked a tiszta működés, miközben a helyzethez is tudsz alkalmazkodni.",
-    description: "Következetes döntések és reális önérvényesítés jellemezhet.",
+    insight: "Fontos neked, hogy egyenesen beszélj és tisztességesen járj el.",
+    description: "A saját érdekeidet is képviseled, miközben mérlegeled, mi méltányos a másikkal szemben.",
     insights: { low: "", mid: "", high: "" },
     facets: [
       { code: "sincerity", label: "Őszinteség", score: 61 },
@@ -26,8 +26,8 @@ const dimensions: SerializedDimension[] = [
     label: "Emocionalitás",
     color: "var(--color-dim-e-base)",
     score: 46,
-    insight: "Nyomás alatt is képes vagy megőrizni a nyugodt, tárgyilagos jelenlétet.",
-    description: "A stabilitás mellett fontos lehet tudatosan jelezni, amikor támogatásra van szükséged.",
+    insight: "Nyomás alatt is könnyebben megőrizheted a nyugalmadat.",
+    description: "Érdemes jelezned, ha mégis támogatásra van szükséged; a nyugodt viselkedésedből ez nem feltétlenül látszik.",
     insights: { low: "", mid: "", high: "" },
     facets: [
       { code: "anxiety", label: "Aggodalmaskodás", score: 42 },
@@ -39,8 +39,8 @@ const dimensions: SerializedDimension[] = [
     label: "Extraverzió",
     color: "var(--color-dim-x-base)",
     score: 72,
-    insight: "Könnyen teremtesz kapcsolatot, és energiát adhatsz a közös gondolkodásnak.",
-    description: "Aktív csapatmunka és látható kezdeményezés állhat közel hozzád.",
+    insight: "Szívesen beszélgetsz, és könnyen kezdeményezhetsz közös feladatokat.",
+    description: "Közel állhat hozzád, ha a munkádban másokkal is rendszeresen egyeztetsz.",
     insights: { low: "", mid: "", high: "" },
     facets: [
       { code: "social-boldness", label: "Társas magabiztosság", score: 75 },
@@ -52,8 +52,8 @@ const dimensions: SerializedDimension[] = [
     label: "Barátságosság",
     color: "var(--color-dim-a-base)",
     score: 34,
-    insight: "Konfliktusban egyenes és határozott vagy; gyorsan kimondod, mi nem működik.",
-    description: "A fejlődési lehetőség a határozottság megtartása mellett több tér adása más nézőpontoknak.",
+    insight: "Vitában jellemzően kitartasz az álláspontod mellett, és hamar jelzed, ha valamit kifogásolsz.",
+    description: "Segíthet, ha a saját érveid előtt meghallgatod, mi fontos a másiknak.",
     insights: { low: "", mid: "", high: "" },
     facets: [
       { code: "flexibility", label: "Rugalmasság", score: 31 },
@@ -65,8 +65,8 @@ const dimensions: SerializedDimension[] = [
     label: "Lelkiismeretesség",
     color: "var(--color-dim-c-base)",
     score: 61,
-    insight: "Megbízhatóan viszed végig, amit valóban fontosnak ítélsz.",
-    description: "A sok párhuzamos lehetőség mellett a látható befejezési pontok segíthetnek.",
+    insight: "Általában megtervezed a fontos feladataidat, és igyekszel végigvinni, amit vállaltál.",
+    description: "Ha sok mindennel foglalkozol egyszerre, jelöld ki, melyik feladatot mikorra fejezed be.",
     insights: { low: "", mid: "", high: "" },
     facets: [
       { code: "organization", label: "Szervezettség", score: 57 },
@@ -78,8 +78,8 @@ const dimensions: SerializedDimension[] = [
     label: "Nyitottság",
     color: "var(--color-dim-o-base)",
     score: 79,
-    insight: "Gyorsan észreveszed az új összefüggéseket, és szeretsz még ki nem próbált irányokat felfedezni.",
-    description: "Ötletgazdag, kísérletező környezetben tudsz könnyen lendületbe kerülni.",
+    insight: "Szívesen keresel új összefüggéseket és próbálsz ki ismeretlen megoldásokat.",
+    description: "Közel állhat hozzád az olyan munka, amelyben van idő ötletelni és kísérletezni.",
     insights: { low: "", mid: "", high: "" },
     facets: [
       { code: "inquisitiveness", label: "Kíváncsiság", score: 82 },
@@ -131,34 +131,34 @@ export default async function ResultsExperiencePreviewPage({
           clarityFeedbackSubmitted
           personalityType="Újító"
           interactionEntry={{ state: "new" }}
-          heroInsight="Új összefüggéseket találsz és könnyen bevonsz másokat – a lehetőségek tudatos lezárása adhat még több fókuszt."
+          heroInsight="Szívesen keresel új megoldásokat és vonsz be másokat a gondolkodásba. Segíthet, ha előre eldöntöd, melyik ötletedet viszed végig."
           shareToken={null}
           plusContent={{
             introText: "",
             howYouWorkParts: {
-              main: "Új ötletek összekapcsolása és mások bevonása a gondolkodásba természetesen mehet neked.",
-              watch: "A lehetőségek gyorsabban szaporodhatnak, mint amilyen gyorsan lezárod őket.",
+              main: "Szívesen keresel kapcsolatot az ötletek között, és kérdezed meg mások véleményét.",
+              watch: "Könnyen előfordulhat, hogy új feladatba kezdesz, mielőtt befejeznéd a korábbit.",
               notes: [],
               context: [],
             },
-            growthTip: "Válassz kevesebb párhuzamos irányt, és adj mindegyiknek előre látható befejezési pontot.",
+            growthTip: "Válassz kevesebb párhuzamos feladatot, és írd le, mikor tekinted őket késznek.",
             growthPlan: {
-              behavior: "Hetente jelölj ki egyetlen olyan eredményt, amelyet valóban lezársz.",
-              reflection: "Figyeld meg, mikor nyitsz új irányt azért, hogy elkerüld a lezárást.",
-              challenge: "Kérj egy kollégától rövid visszajelzést a prioritásaid egyértelműségéről.",
+              behavior: "Hetente jelölj ki egy feladatot, amelyet befejezel.",
+              reflection: "Figyeld meg, miért kezdesz új feladatba, amikor egy korábbi még nincs kész.",
+              challenge: "Kérj egy kollégától visszajelzést: egyértelmű-e számára, min dolgozol először.",
             },
             envItems: [
-              { label: "Tér az alakításra", value: "Szabadon kereshetsz megoldást egy világos célhoz." },
-              { label: "Élő kapcsolódás", value: "Van lehetőség közösen gondolkodni és gyorsan visszajelzést kapni." },
+              { label: "Önálló megoldások", value: "Szabadon kereshetsz megoldást egy világos célhoz." },
+              { label: "Közös gondolkodás", value: "Van lehetőség közösen gondolkodni és gyorsan visszajelzést kapni." },
             ],
             roleFit: {
               strong: "Innovációs, termék- és stratégiai szerepek, ahol új irányokat kell felismerni.",
               might: "Stabil keretek között is jól működhetsz, ha marad mozgástér a megoldásban.",
-              prep: "A tartósan ismétlődő, szűken szabályozott feladatok több tudatos energiamenedzsmentet kérhetnek.",
+              prep: "A tartósan ismétlődő, szigorúan szabályozott feladatok könnyebben fáraszthatnak.",
             },
             takeaways: [
-              "Az újdonságok felismerése és a kapcsolódás egyszerre adhat lendületet.",
-              "A fókusz nem az ötletek csökkentését, hanem a lezárási pontok kijelölését jelenti.",
+              "Az új ötletek és a közös gondolkodás is érdekelhet.",
+              "Ha sok ötleted van, válassz egyet, és tervezd meg a megvalósítását.",
             ],
           }}
         />

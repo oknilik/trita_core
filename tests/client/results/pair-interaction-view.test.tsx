@@ -144,7 +144,7 @@ describe("PairInteractionView", () => {
     // a „megnéztük, és nincs róla mit mondani" eset hibának látszana.
     render(<PairInteractionView self={self} other={other} otherName="Anna" sim={sim} />);
     expect(screen.getByText("Mind a hat dimenzió")).toBeInTheDocument();
-    expect(screen.getByText("Azonos címke, más működés")).toBeInTheDocument();
+    expect(screen.getByText("Hasonló összpontszám, eltérő részletek")).toBeInTheDocument();
     expect(screen.getByText("Türelem")).toBeInTheDocument();
   });
 
@@ -194,7 +194,7 @@ describe("PairInteractionView", () => {
     // csak apparátus — kevesebbnek MUTATJA a tartalmat, mint amennyi.
     renderView(singleAtomSim);
 
-    expect(screen.queryByRole("button", { name: /Ami magától megy/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Ami segítheti a közös munkát/ })).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: /Mit beszéljetek meg előre/ }),
     ).not.toBeInTheDocument();
@@ -208,25 +208,25 @@ describe("PairInteractionView", () => {
     ).toBeInTheDocument();
   });
 
-  it("kimondja, ha a pár egyetlen markáns ponton tér el", () => {
+  it("kimondja, ha a pár egyetlen ponton tér el számottevően", () => {
     renderView(singleAtomSim);
 
     // A karakter-prototípus maximálisan pólusos, egy valódi ember nem —
     // enélkül a rövid kép hibának látszik a karakter-úthoz képest.
     expect(
-      screen.getByText(/egyetlen markáns ponton tér el/),
+      screen.getByText(/egyetlen ponton tér el számottevően/),
     ).toBeInTheDocument();
   });
 
   it("két markáns pont felett viszont accordiont épít, sorszámmal", () => {
     renderView();
 
-    const easy = screen.getByRole("button", { name: /Ami magától megy/ });
+    const easy = screen.getByRole("button", { name: /Ami segítheti a közös munkát/ });
     expect(easy).toHaveTextContent("1");
     expect(easy).toHaveAttribute("aria-expanded", "true");
     // Rövid képre szánt magyarázat itt nem jelenik meg.
     expect(
-      screen.queryByText(/egyetlen markáns ponton tér el/),
+      screen.queryByText(/egyetlen ponton tér el számottevően/),
     ).not.toBeInTheDocument();
   });
 
@@ -234,9 +234,9 @@ describe("PairInteractionView", () => {
     const user = userEvent.setup();
     renderView();
 
-    const easy = screen.getByRole("button", { name: /Ami magától megy/ });
+    const easy = screen.getByRole("button", { name: /Ami segítheti a közös munkát/ });
     const friction = screen.getByRole("button", {
-      name: /Ahol súrlódás várható/,
+      name: /Ami nézeteltérést okozhat/,
     });
 
     expect(easy).toHaveAttribute("aria-expanded", "true");

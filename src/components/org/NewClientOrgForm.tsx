@@ -39,7 +39,7 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
         setError(
           data.error === "NOT_CONSULTANT"
             ? isHu
-              ? "Nincs tanácsadói kijelölésed – a platform admin tud hozzárendelni."
+              ? "Még nem kaptál tanácsadói jogosultságot. Ezt a platform adminisztrátora állíthatja be."
               : "You are not an assigned consultant – the platform admin can assign you."
             : isHu
               ? "Nem sikerült létrehozni a szervezetet."

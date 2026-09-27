@@ -71,7 +71,7 @@ export function ObserverApprovalCard({
       <Card spacing="lg" className="@container">
         <p className="max-w-3xl text-caption text-muted">
           {isHu
-            ? "A futó mérés-kör szabálya szerint a szervezeten kívüli értékelő-meghívókhoz jóváhagyás kell. Jóváhagyáskor a meghívó e-mail azonnal kimegy."
+            ? "Ebben a mérési körben jóváhagyás szükséges a szervezeten kívüli értékelők meghívásához. Jóváhagyás után azonnal elküldjük a meghívót e-mailben."
             : "Per the running measurement round's rules, observer invites outside the organization need approval. On approval the invitation email goes out immediately."}
         </p>
         <ul className="mt-5 divide-y divide-border-default border-t border-border-default">

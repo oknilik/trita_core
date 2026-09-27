@@ -3,7 +3,7 @@ import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Visszajelzések admin-nézet: szerep-kalibráció (RoleFitFeedback aggregát)
-// + érdeklődés-jelzések (FeatureInterest). Szerver-komponens, csak megjelenít.
+// + érdeklődési jelzések (FeatureInterest). Szerver-komponens, csak megjelenít.
 
 export interface RoleFitAggregate {
   /** O*NET-SOC kód (v2), vagy a régi „iparág:szerep" kulcs */
@@ -82,7 +82,7 @@ export function AdminFeedbackSection({
           </div>
           <div className="rounded-lg border border-sand bg-cream p-4">
             <p className="font-mono text-xs uppercase tracking-widest text-muted">
-              Observer-visszajelzés haszna (átl.)
+              Mások visszajelzéseinek haszna (átl.)
             </p>
             <p className="mt-2 text-2xl font-bold text-ink">
               {satisfactionSummary.avgObserverUsefulness}/5
@@ -100,7 +100,7 @@ export function AdminFeedbackSection({
 
         <div className="mt-6">
           <h3 className="mb-4 font-mono text-xs uppercase tracking-widest text-muted">
-            Dimenzió-pontosság – HEXACO
+            A dimenzióleírások pontossága
           </h3>
           <div className="space-y-2">
             {dimensionAverages.length > 0 ? (
@@ -129,11 +129,11 @@ export function AdminFeedbackSection({
             szerep-kalibráció
           </SectionEyebrow>
           <h2 className="mt-1 font-fraunces text-xl text-ink">
-            Karrier-iránytű visszajelzések ({totalVotes} szavazat)
+            Karrieriránytű visszajelzések ({totalVotes} szavazat)
           </h2>
           <p className="mt-1 text-xs text-ink-body">
             „Dolgoztál hasonló szerepben – találó?” válaszok foglalkozásonként. Ahol a
-            nem-találó arány magas, ott a katalógus cél-profilját érdemes
+            nem találónak ítélt ajánlások aránya magas, ott a katalógus célprofilját érdemes
             felülvizsgálni (src/lib/career/catalog/). A „régi katalógus” jelölésű
             sorok a v1 motor idejéből valók, más azonosító-térrel.
           </p>
@@ -168,7 +168,7 @@ export function AdminFeedbackSection({
                       </td>
                       <td
                         className="py-2 pr-4 font-mono text-ink-body"
-                        title="A találati arány 95%-os alsó korlátja – kis mintánál ez a becsületes szám."
+                        title="A találati arány 95%-os konfidenciaintervallumának alsó határa. Kis mintánál óvatosabb becslést ad."
                       >
                         {row.wilsonLow === null ? "–" : `${row.wilsonLow}%`}
                       </td>
@@ -187,13 +187,13 @@ export function AdminFeedbackSection({
       {fakedoorActive ? (
         <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <SectionEyebrow>
-            érdeklődés-jelzések
+            érdeklődési jelzések
           </SectionEyebrow>
           <h2 className="mt-1 font-fraunces text-xl text-ink">
-            Lead-ek és javaslatok ({interests.length})
+            Érdeklődők és javaslatok ({interests.length})
           </h2>
           <p className="mt-1 text-xs text-ink-body">
-            A szöveges üzenetek emailben mentek ({process.env.CONTACT_FORM_TO ?? "info@trita.io"})
+            A szöveges üzenetek e-mailben mentek ({process.env.CONTACT_FORM_TO ?? "info@trita.io"})
             – itt a ki/mit/mikor látszik.
           </p>
 

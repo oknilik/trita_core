@@ -9,10 +9,10 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/blog",
   title: "Blog – csapatdinamika, személyiség, tudatos HR | trita",
   description:
-    "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről: hogyan olvasd a csapatod működését, mit mérnek a személyiségdimenziók, és mikor téved az önértékelés.",
+    "Cikkek a személyiségről és a közös munkáról: mit mutat meg egy felmérés, hogyan egészítik ki mások az önértékelésedet, és miről érdemes beszélgetni a csapatban.",
   ogTitle: "trita blog – csapatdinamika és személyiség",
   ogDescription:
-    "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.",
+    "Cikkek a személyiségről, a közös munkáról és a csapatvezetésről.",
 });
 
 // Statikus oldal: a posztlista mindkét nyelven build-time készül, a nyelvet
@@ -39,7 +39,7 @@ export default function BlogListPage() {
           buildBlogJsonLd({
             name: "trita blog",
             description:
-              "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.",
+              "Cikkek a személyiségről, a közös munkáról és a csapatvezetésről.",
             path: "/blog",
             posts: publishedHuPosts.map((post) => ({
               title: post.title,

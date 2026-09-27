@@ -8,7 +8,7 @@ export function reportAttentionSignals(agg: TeamReportAggregates | null, isHu: b
     ? `A pszichológiai biztonság mért eredménye alacsony (${agg.psychSafety.index}/100, ${agg.psychSafety.count} névtelen válasz). Beszéljétek át, mi nehezíti a kérdezést és a problémák jelzését.`
     : `Measured psychological safety is low (${agg.psychSafety.index}/100, ${agg.psychSafety.count} anonymous responses). Discuss what makes asking questions and raising problems difficult.`);
   if (agg?.trustHighlights?.source === "trust_round" && agg.trustHighlights.isolated.length > 0) signals.push(isHu
-    ? `A mért bizalmi kör ${agg.trustHighlights.isolated.length} tagnál jelez gyenge beágyazottságot. Tisztázzátok, hogyan lehet könnyebb kapcsolódni a közös munkához.`
+    ? `A megmért kapcsolatok között ${agg.trustHighlights.isolated.length} tag esetében nem látszik erős bizalmi kapcsolat. Beszéljétek át, mi segítheti a közös munkát.`
     : `The measured trust round flags weak integration for ${agg.trustHighlights.isolated.length} member(s). Discuss how to make joining the shared work easier.`);
   return signals;
 }
@@ -18,7 +18,7 @@ export function reportNextStep(report: SerializedTeamReport, isHu: boolean) {
   if (action) return {
     kind: "recorded" as const, title: action.title, description: action.description,
     owner: action.owner || (isHu ? "Még nincs kijelölve" : "Not assigned yet"),
-    when: action.dueDate || `${action.timeframe} ${isHu ? "napos fókusz" : "day focus"}`,
+    when: action.dueDate || (isHu ? `Tervezett időtáv: ${action.timeframe} nap` : `${action.timeframe} day focus`),
   };
   if (report.actionItems?.length) return {
     kind: "review" as const,

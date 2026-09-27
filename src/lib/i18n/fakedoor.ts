@@ -12,52 +12,52 @@ export const fakeDoorTranslations = {
     // ── Hero (T6) ─────────────────────────────────────────────────────
     badge: { hu: "Készülő funkció", en: "In development" },
     badgeNote: {
-      hu: "Ez a funkció még nem létezik – azt mérjük, érdemes-e megépíteni.",
+      hu: "Ez a funkció még nem létezik – azt mérjük, érdemes-e elkészíteni.",
       en: "This feature doesn't exist yet – we're measuring whether it's worth building.",
     },
-    eyebrow: { hu: "Karrier-iránytű", en: "Career compass" },
+    eyebrow: { hu: "Karrieriránytű", en: "Career compass" },
     heroTitle: {
-      hu: "Lehet, hogy nem veled van a baj. Csak rossz szerepben vagy.",
+      hu: "Milyen munkakörben éreznéd jól magad?",
       en: "Maybe nothing's wrong with you. You're just in the wrong role.",
     },
     heroLead: {
-      hu: "Már látjuk, hogyan működsz. Most azt mutatnánk meg, hol lennél ebben erős – és hol húzna le a szerep.",
+      hu: "A személyiségprofilod alapján megmutatnánk, milyen munkákban támaszkodhatnál az erősségeidre, és mely feladatok jelenthetnének nehézséget.",
       en: "We can already see how you work. Next we'd show where that makes you strong – and where the role would drag you down.",
     },
     /** T10: a fő pozicionálás a hero alá emelve, nem kártya-végi lábjegyzetbe. */
     heroPositioning: {
-      hu: "Nem jóslat, hanem kiindulópont.",
+      hu: "Támpontok a pályád tervezéséhez.",
       en: "A starting point, not a prediction.",
     },
     heroPersonal: {
-      hu: "A te mintázatod: {pattern}. Ebből indulna.",
+      hu: "A személyiségmintázatod: {pattern}. Ebből indulnának ki a javaslatok.",
       en: "Your pattern: {pattern}. That's where it would start.",
     },
 
     // ── „Wow" blokk (T9) ──────────────────────────────────────────────
     wow: {
-      hu: "Ugyanaz az ember lehet kiváló termékfejlesztő, közepes projektvezető és gyenge értékesítő. Nem azért, mert az egyikhez kevésbé tehetséges – hanem mert a három szerep teljesen mást követel tőle.",
-      en: "The same person can be an excellent product developer, a mediocre project lead and a weak salesperson. Not because they're less talented at one – but because the three roles demand completely different things of them.",
+      hu: "Aki termékfejlesztőként jól érzi magát, projektvezetőként vagy értékesítőként egészen más nehézségekkel találkozhat. Ezek a szerepek más feladatokat és elvárásokat jelentenek. Érdemes azt is végiggondolni, melyik áll közel a személyiségéhez.",
+      en: "Someone who enjoys product development may encounter very different challenges as a project lead or salesperson. These roles involve different tasks and expectations. It is also worth considering which feels closer to their personality.",
     },
 
     // ── Kártyák (T10) ─────────────────────────────────────────────────
     whatTitle: { hu: "Mit kapnál", en: "What you'd get" },
     card1Lead: { hu: "Hol lennél a helyeden", en: "Where you'd be in your element" },
     card1Body: {
-      hu: "Munka-területek, ahol a mintázatod előny lehet – mindegyikhez néhány példa-szerep, és jelölve, mi elérhető most, és mihez kellene képzés.",
+      hu: "Olyan munkaterületek, ahol előnyt jelenthetnek az erősségeid. Mindegyikhez munkaköröket is ajánlanánk, és jeleznénk, melyekhez lehet szükséged további képzésre.",
       en: "Areas of work where your pattern could be an advantage – each with example roles, marked for what's reachable now and what would need training.",
     },
     card2Lead: { hu: "Miért éppen ott", en: "Why exactly there" },
     card2Body: {
-      hu: "Melyik vonásod húz arra, és hol feszülhet. Minden állítás mellé odatesszük, mennyire biztos.",
+      hu: "Megmutatnánk, mely tulajdonságaid segíthetnek az adott munkában, és mi okozhat nehézséget. Azt is jeleznénk, mennyire megalapozottak az egyes javaslatok.",
       en: "Which trait pulls you there, and where it might strain. Every claim comes with how certain it is.",
     },
     card3Lead: { hu: "Kis, kipróbálható lépések", en: "Small steps you can try" },
     card3Body: {
-      hu: "Nem kell azonnal váltanod: néhány alacsony kockázatú lépés, és álláshirdetés-kulcsszavak – mit keress, és mi legyen gyanús.",
+      hu: "Kisebb, kipróbálható lépéseket javasolnánk. Kulcsszavakat is adnánk az álláskereséshez, és segítenénk felismerni a hirdetésekben a neked kedvező feltételeket és az intő jeleket.",
       en: "No need to switch anything right away: a few low-risk steps, plus job-ad keywords – what to look for and what should raise a flag.",
     },
-    card4Lead: { hu: "Vihető összefoglaló", en: "A summary you can take along" },
+    card4Lead: { hu: "Letölthető összefoglaló", en: "A summary you can take along" },
     card4Body: {
       hu: "Egy letölthető oldal, amit elvihetsz egy beszélgetésre – vezetőhöz, mentorhoz vagy tanácsadóhoz.",
       en: "A downloadable page you can bring to a conversation – with a manager, mentor or advisor.",
@@ -69,29 +69,29 @@ export const fakeDoorTranslations = {
     trustItem2: { hu: "munkahelyi illeszkedés-kutatások", en: "workplace fit research" },
     trustItem3: { hu: "csapatszerep-modellek", en: "team role models" },
     trustItem4: {
-      hu: "saját mintánk 189 kitöltő adatán validálva",
-      en: "validated on our own sample of 189 respondents",
+      hu: "az egyes javaslatoknál jeleznénk, mennyire megalapozottak",
+      en: "each suggestion would indicate how well it is supported",
     },
 
     // ── Ár (T11) ──────────────────────────────────────────────────────
     priceLabel: { hu: "Tervezett ár", en: "Planned price" },
     priceFraming: {
-      hu: "Egyszeri díj – nagyjából egy coaching óra ára.",
+      hu: "Egyszeri díj, nagyjából egy tanácsadói konzultáció ára.",
       en: "A one-off fee – about the price of a single coaching hour.",
     },
     // Kiemelt sor, nem szürke lábjegyzet: ez az oldal legfontosabb ígérete.
     // NINCS pénzvisszafizetési ígéret: a funkció nem létezik, fizetési
     // folyamat sincs — egy visszatérítés-ígéret valótlan állítás lenne.
     priceNoCard: {
-      hu: "Most nem fizetsz, és bankkártya-adatot sem kérünk. Ha megépítjük, újra döntesz.",
+      hu: "Most nem fizetsz, és bankkártyaadatokat sem kérünk. Ha elkészül, újra eldöntheted, kéred-e.",
       en: "You're not paying now, and we don't collect card details. If we build it, you decide again.",
     },
 
     // ── Döntés ───────────────────────────────────────────────────────
     askTitle: { hu: "Megvennéd ezt ennyiért?", en: "Would you buy this at that price?" },
     askNote: {
-      hu: "A válaszod dönti el, megépül-e. A „nem” ugyanolyan hasznos, mint az „igen”.",
-      en: "Your answer decides whether it gets built. A “no” is just as useful as a “yes”.",
+      hu: "A válaszok segítenek eldönteni, elkészítsük-e. A „nem” ugyanolyan hasznos, mint az „igen”.",
+      en: "Your answers help us decide whether to build it. A “no” is just as useful as a “yes”.",
     },
     yes: { hu: "Igen, megvenném", en: "Yes, I'd buy it" },
     no: { hu: "Nem venném meg", en: "No, I wouldn't" },
@@ -121,7 +121,7 @@ export const fakeDoorTranslations = {
     // Ár-csúszka: a „drága" önmagában nem mond semmit arról, MENNYI lenne jó.
     priceAskTitle: { hu: "Mennyit fizetnél érte szívesen?", en: "What would you happily pay for it?" },
     priceAskNote: {
-      hu: "Húzd oda, ahol már megérné neked. A nulla is válasz: azt jelenti, ezért a funkcióért nem fizetnél.",
+      hu: "A csúszkán állítsd be azt az összeget, amennyit fizetnél érte. A nulla is válasz: azt jelenti, ezért a funkcióért nem fizetnél.",
       en: "Drag it to where it would be worth it to you. Zero is an answer too: it means you wouldn't pay for this feature.",
     },
     priceZero: { hu: "Ezért nem fizetnék", en: "I wouldn't pay for this" },
@@ -129,9 +129,9 @@ export const fakeDoorTranslations = {
     // ── Közös ────────────────────────────────────────────────────────
     submit: { hu: "Elküldöm", en: "Send it" },
     skip: { hu: "Kihagyom", en: "Skip this" },
-    thanksTitle: { hu: "Köszönjük – ez ugyanolyan hasznos.", en: "Thank you – that's just as useful." },
+    thanksTitle: { hu: "Köszönjük a visszajelzésedet.", en: "Thank you – that's just as useful." },
     thanksNote: {
-      hu: "Nem ígérünk határidőt: ha nem lesz elég érdeklődés, ez a modul nem épül meg.",
+      hu: "Határidőt még nem tudunk mondani. Ha kevesen érdeklődnek iránta, nem készítjük el ezt a funkciót.",
       en: "We're not promising a date: if there isn't enough interest, this module won't be built.",
     },
     thanksEmail: {
@@ -144,11 +144,11 @@ export const fakeDoorTranslations = {
 
     // ── Átvezető a riport aljáról ────────────────────────────────────
     ctaTitle: {
-      hu: "Lehet, hogy nem veled van a baj – csak rossz szerepben vagy.",
+      hu: "Milyen munkakörben éreznéd jól magad?",
       en: "Maybe nothing's wrong with you – you're just in the wrong role.",
     },
     ctaBody: {
-      hu: "Karrier-iránytű készül a profilodra. Nézd meg, mit tudna – és mondd meg, megvennéd-e.",
+      hu: "A személyiségprofilodra épülő karrieriránytűt tervezünk. Nézd meg, miben segítene, és jelezd, megvennéd-e.",
       en: "A career compass is in the works for your profile. See what it would do – and tell us if you'd buy it.",
     },
     ctaButton: { hu: "Megnézem, mit tudna", en: "See what it would do" },

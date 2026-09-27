@@ -11,7 +11,7 @@ const ROWS = {
     {
       role: "A csapat és a vezető",
       description:
-        "A tanácsadó által jóváhagyott, aggregált csapatriporttal dolgozik. Más csapattag egyéni eredményét nem látják.",
+        "A tanácsadó által jóváhagyott, összesített csapatriportot látják. A csapattagok egyéni eredményeihez nem férnek hozzá.",
     },
     {
       role: "A tanácsadó",

@@ -39,8 +39,8 @@ describe("TypeGlyphPlate", () => {
 
     const explanation = screen.getByText(/A nagy forma a legmagasabb pontszámú dimenziód/);
     // Névelő a hu-grammar.ts-ből; a sablonban nincs „a(z)” műtermék
-    expect(explanation).toHaveTextContent("a Nyitottság: a szem");
-    expect(explanation).toHaveTextContent("a Lelkiismeretesség: a létrafokok");
+    expect(explanation).toHaveTextContent("a Nyitottság (a szem)");
+    expect(explanation).toHaveTextContent("a Lelkiismeretesség (a létrafokok)");
     expect(explanation.textContent).not.toContain("a(z)");
     expect(screen.getByRole("button", { expanded: true })).toBeInTheDocument();
   });
@@ -48,7 +48,7 @@ describe("TypeGlyphPlate", () => {
   it("az ábrának szöveges leírása van (nem puszta dekoráció)", () => {
     render(<TypeGlyphPlate dimensions={DIMENSIONS} locale="hu" defaultOpen />);
 
-    const glyphs = screen.getAllByRole("img", { name: /absztrakt típus-ábra/ });
+    const glyphs = screen.getAllByRole("img", { name: /absztrakt típusábra/ });
     expect(glyphs.length).toBeGreaterThan(0);
     expect(glyphs[0]).toHaveAccessibleName(/szem alapforma \(O\) létrafokok motívummal \(C\)/);
   });
@@ -58,11 +58,11 @@ describe("TypeGlyphPlate", () => {
     render(<TypeGlyphPlate dimensions={DIMENSIONS} locale="hu" mode="heroTab" />);
 
     const tab = screen.getByRole("button", { expanded: false });
-    expect(tab).toHaveTextContent("Mit jelent a karakter-ábrám?");
+    expect(tab).toHaveTextContent("Mit jelent a karakterábrám?");
 
     await user.click(tab);
     expect(screen.getByRole("button", { expanded: true })).toHaveTextContent(
-      "Mit jelent a karakter-ábrám?",
+      "Mit jelent a karakterábrám?",
     );
     expect(screen.getByText(/A nagy forma a legmagasabb pontszámú dimenziód/)).toBeInTheDocument();
   });

@@ -35,7 +35,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     expect(within(preview as HTMLElement).getByText("Péter")).toBeInTheDocument();
     expect(within(preview as HTMLElement).getByText("Hídépítő")).toBeInTheDocument();
     expect(within(preview as HTMLElement).getByText("Valószínű csapatszerepeid")).toBeInTheDocument();
-    expect(within(preview as HTMLElement).getByText("A pontos képhez külön csapatszerep-kérdőív tartozik.")).toBeInTheDocument();
+    expect(within(preview as HTMLElement).getByText("A csapatszerepeidről külön kérdőívvel kaphatsz pontosabb képet.")).toBeInTheDocument();
 
     // Az elsődleges és a másodlagos szerep eltérő színt kap.
     const primaryRole = container.querySelector('[data-role-rank="primary"]');
@@ -119,7 +119,7 @@ describe("főoldal – egy ígéret, egy oldal", () => {
     for (const layer of ["Egyéni személyiségprofilok", "Mért bizalmi háló", "Pszichológiai biztonság", "Közösen értelmezett csapatkép"]) {
       expect(within(pathway).getByText(layer)).toBeInTheDocument();
     }
-    expect(within(pathway).getByText(/~30 perc tagonkénti kitöltés/)).toBeInTheDocument();
+    expect(within(pathway).getByText(/~30 perc kitöltési idő fejenként/)).toBeInTheDocument();
 
     // A csapatkép-előnézet NEM a főoldalon él (a /team-dynamics hero-jában
     // igen): helyén a szerkesztői „kapcsolódás" rajz, dekorációként.

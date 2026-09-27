@@ -14,7 +14,10 @@ import type { ProfileReportViewModel } from "@/lib/profile-report-view-model";
 // Az archetípust és a hero-insightot NEM ismétli: az a borító dolga (P0/6).
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function ChapterOverviewPage({ model }: { model: ProfileReportViewModel }) {
+export function ChapterOverviewPage({ model, onPageNumber }: {
+  model: ProfileReportViewModel;
+  onPageNumber?: (pageNumber: number) => void;
+}) {
   const { locale, identity, overview } = model;
   const chapter = model.chapters[0];
   const planLabel = model.plan === "plus" ? "Plus" : "Start";
@@ -34,6 +37,7 @@ export function ChapterOverviewPage({ model }: { model: ProfileReportViewModel }
 
       <View style={s.body}>
         <PdfChapterHeader
+          onPageNumber={onPageNumber}
           number={chapter.number}
           question={chapter.question}
           title={chapter.title}

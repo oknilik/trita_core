@@ -155,7 +155,7 @@ export async function markQuoteAccepted(quoteId: string) {
       tx,
       deal.id,
       wonNow
-        ? `Ajánlat elfogadva (${quoteLabel(quote)}) – deal megnyerve`
+        ? `Ajánlat elfogadva (${quoteLabel(quote)}) – ügylet megnyerve`
         : `Ajánlat elfogadva (${quoteLabel(quote)})`,
     );
     return updated;

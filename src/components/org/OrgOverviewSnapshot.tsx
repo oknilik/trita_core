@@ -35,7 +35,7 @@ export function OrgOverviewSnapshot({
         title: complete ? "Mindenki készen áll" : "A szervezeti kép épül",
         body: complete
           ? `Mind a ${memberCount} személyiségprofil elkészült. Most a csapatok riportállapota mutatja, hol érdemes továbblépni.`
-          : `${completedMemberCount} / ${memberCount} személyiségprofil elkészült. A közös kép minden új kitöltéssel pontosabbá válik.`,
+          : `${completedMemberCount} / ${memberCount} személyiségprofil elkészült. Minden új kitöltéssel több tag véleménye jelenik meg a közös képben.`,
         assessment: "Személyiségprofil",
         teams: "Csapatok",
         active: "Aktív mérési kör",

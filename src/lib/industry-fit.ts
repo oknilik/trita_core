@@ -110,7 +110,7 @@ export const INTEREST_TAGS: InterestTag[] = [
   { key: "teaching", emoji: "📚", hu: "Tanítás / tudásátadás", en: "Teaching / sharing knowledge", letters: ["S", "A"], industries: ["education"] },
   { key: "business", emoji: "💼", hu: "Üzlet / tárgyalás", en: "Business / negotiation", letters: ["E", "C"], industries: ["sales", "finance", "operations"] },
   { key: "research", emoji: "🧪", hu: "Kutatás / kísérletezés", en: "Research / experimenting", letters: ["I"], industries: ["science", "tech", "health"] },
-  { key: "stage", emoji: "🎭", hu: "Színpad / megjelenés", en: "Stage / performing", letters: ["A", "E"], industries: ["media", "creative", "hospitality"] },
+  { key: "stage", emoji: "🎭", hu: "Színpad / előadás", en: "Stage / performing", letters: ["A", "E"], industries: ["media", "creative", "hospitality"] },
   { key: "logic", emoji: "🧩", hu: "Logika / problémamegoldás", en: "Logic / problem-solving", letters: ["I", "C"], industries: ["tech", "engineering", "finance"] },
   { key: "caring", emoji: "❤️", hu: "Gondoskodás / egészség", en: "Caring / health", letters: ["S"], industries: ["health", "services", "public"] },
   { key: "society", emoji: "🌍", hu: "Társadalmi ügyek", en: "Social causes", letters: ["S", "E"], industries: ["public", "people", "education"] },

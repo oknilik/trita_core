@@ -14,7 +14,7 @@ describe("team-pattern evidence contract", () => {
     assert.equal(TEAM_PATTERN_EVIDENCE_STATUS.status, "interpretive_language");
     assert.equal(TEAM_PATTERN_EVIDENCE_STATUS.validatedTypology, false);
     assert.equal(TEAM_PATTERN_EVIDENCE_STATUS.calibrationUnit, "team");
-    assert.match(TEAM_PATTERN_EVIDENCE_STATUS.framing.hu, /nem validált/);
+    assert.match(TEAM_PATTERN_EVIDENCE_STATUS.framing.hu, /tudományosan igazolt csapattípusokat nem határoz meg/);
     assert.match(TEAM_PATTERN_EVIDENCE_STATUS.framing.en, /not a validated/);
   });
 });

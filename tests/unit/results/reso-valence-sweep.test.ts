@@ -409,13 +409,14 @@ test("A akkordeon-verdikt: mindkét pólus kétoldalú (hozadék ÉS ár)", () =
   const adapDim = tritanConfig.dimensions.find((d) => d.code === "A");
   const byLocale = adapDim?.insightsByLocale;
   assert.ok(byLocale, "nincs lokalizált A insight-hármas");
-  const both = /Cserébe|In exchange/;
+  const benefit = { hu: { low: /kitartasz az álláspontod/, high: /könnyen megbocsátasz/ }, en: { low: /In exchange/, high: /In exchange/ } };
+  const cost = { hu: { low: /el(?: is )?fogyhat a türelmed/, high: /ne mindig te engedj/ }, en: { low: /In exchange/, high: /In exchange/ } };
   for (const locale of ["hu", "en"] as const) {
     const bands = byLocale[locale];
     assert.ok(bands, `hiányzik a(z) ${locale} A insight-hármas`);
     for (const band of ["low", "high"] as const) {
       assert.ok(
-        both.test(bands[band]),
+        benefit[locale][band].test(bands[band]) && cost[locale][band].test(bands[band]),
         `tritan.A.insightsByLocale.${locale}.${band}: hiányzik a másik oldal – "${bands[band]}"`,
       );
     }

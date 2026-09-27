@@ -35,7 +35,7 @@ describe("NewsletterForm", () => {
 
     render(<NewsletterForm source="blog_post" />);
 
-    await userEvent.type(screen.getByLabelText(/email/i), "olvaso@example.com");
+    await userEvent.type(screen.getByLabelText(/e-mail-cím/i), "olvaso@example.com");
     await userEvent.click(screen.getByRole("button", { name: t("newsletter.submit", "hu") }));
 
     await waitFor(() => {
@@ -60,7 +60,7 @@ describe("NewsletterForm", () => {
 
     render(<NewsletterForm source="footer" variant="inline" />);
 
-    const email = screen.getByLabelText(/email/i);
+    const email = screen.getByLabelText(/e-mail-cím/i);
     await userEvent.type(email, "olvaso@example.com");
     await userEvent.click(screen.getByRole("button", { name: t("newsletter.submit", "hu") }));
 
@@ -76,7 +76,7 @@ describe("NewsletterForm", () => {
 
     render(<NewsletterForm source="footer" variant="inline" onInverse />);
 
-    const email = screen.getByLabelText(/email/i);
+    const email = screen.getByLabelText(/e-mail-cím/i);
     await userEvent.type(email, "olvaso@example.com");
     await userEvent.click(screen.getByRole("button", { name: t("newsletter.submit", "hu") }));
 
@@ -92,7 +92,7 @@ describe("NewsletterForm", () => {
 
     render(<NewsletterForm source="blog_index" />);
 
-    await userEvent.type(screen.getByLabelText(/email/i), "olvaso@example.com");
+    await userEvent.type(screen.getByLabelText(/e-mail-cím/i), "olvaso@example.com");
     const submit = screen.getByRole("button", { name: t("newsletter.submit", "hu") });
     await userEvent.click(submit);
 

@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: locale === "hu" ? "Tag-dossié | trita" : "Member dossier | trita",
+    title: locale === "hu" ? "Tagi dosszié | trita" : "Member dossier | trita",
     robots: { index: false },
   };
 }
@@ -53,7 +53,7 @@ export default async function MemberDossierPage({
       <EditorialBackHeader
         href={`/org/${orgId}?tab=members`}
         backLabel={isHu ? "Vissza a tagokhoz" : "Back to members"}
-        eyebrow={isHu ? "tag-dossié · bizalmas" : "member dossier · confidential"}
+        eyebrow={isHu ? "tagi dosszié · bizalmas" : "member dossier · confidential"}
         title={dossier.header.displayName}
         description={dossier.header.email}
       />

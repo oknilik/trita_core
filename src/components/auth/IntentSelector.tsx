@@ -15,14 +15,14 @@ const OPTIONS: { value: AuthIntent; label: string; labelEn: string; desc: string
     value: "explore",
     label: "Önismeret",
     labelEn: "Self-awareness",
-    desc: "Saját működésed és természetes csapatszerepeid megértéséhez",
+    desc: "Jobban megismerném magamat és a helyemet a csapatban",
     descEn: "To understand how you work and the team roles that come naturally to you",
   },
   {
     value: "team",
     label: "Csapatfejlesztés",
     labelEn: "Team development",
-    desc: "Csapatdinamika és közös működés megértéséhez",
+    desc: "Jobban megérteném, hogyan dolgozunk együtt",
     descEn: "To understand team dynamics and collaboration",
   },
 ];

@@ -225,7 +225,7 @@ export async function createDeal(input: CreateDealInput) {
         nextActionNote: input.nextActionAt ? (input.nextActionNote?.trim() || null) : null,
       },
     });
-    await createSystemActivity(tx, deal.id, "Deal létrehozva");
+    await createSystemActivity(tx, deal.id, "Ügylet létrehozva");
     // Friss olvasat: a SYSTEM-activity már beállította a lastActivityAt-ot.
     return tx.deal.findUniqueOrThrow({ where: { id: deal.id } });
   });
@@ -278,7 +278,7 @@ export async function createDealFromInquiry(
     await createSystemActivity(
       tx,
       deal.id,
-      `Deal létrehozva a beérkező megkeresésből (${topicLabel})`,
+      `Ügylet létrehozva a beérkező megkeresésből (${topicLabel})`,
       inquiry.message.slice(0, 500),
     );
     // Friss olvasat: a SYSTEM-activity már beállította a lastActivityAt-ot.
@@ -363,7 +363,7 @@ export async function setDealStage(dealId: string, stage: OpenDealStage) {
     await createSystemActivity(
       tx,
       dealId,
-      `Stage-váltás: ${stageLabel(deal.stage)} → ${stageLabel(stage)}`,
+      `Szakaszváltás: ${stageLabel(deal.stage)} → ${stageLabel(stage)}`,
     );
     return tx.deal.findUniqueOrThrow({ where: { id: dealId } });
   });
@@ -407,7 +407,7 @@ export async function closeDeal(dealId: string, params: CloseDealParams) {
     await createSystemActivity(
       tx,
       dealId,
-      params.outcome === "WON" ? "Deal lezárva: megnyert" : "Deal lezárva: elveszett",
+      params.outcome === "WON" ? "Ügylet lezárva: megnyert" : "Ügylet lezárva: elveszett",
       params.outcomeNote?.trim() || null,
     );
     return tx.deal.findUniqueOrThrow({ where: { id: dealId } });
@@ -430,7 +430,7 @@ export async function reopenDeal(dealId: string, stage: OpenDealStage) {
     await createSystemActivity(
       tx,
       dealId,
-      `Deal újranyitva (${stageLabel(stage)})`,
+      `Ügylet újranyitva (${stageLabel(stage)})`,
     );
     return tx.deal.findUniqueOrThrow({ where: { id: dealId } });
   });
@@ -457,9 +457,9 @@ export async function handleOrgAccessGranted(
   months?: number,
 ): Promise<OrgAccessGrantedResult | null> {
   const summaryByAction: Record<OrgAccessAction, string> = {
-    activate: `Org-hozzáférés aktiválva${months ? ` (${months} hónap)` : ""}`,
-    trial: "Org-próbaidőszak elindítva",
-    extend: `Org-hozzáférés meghosszabbítva${months ? ` (${months} hónap)` : ""}`,
+    activate: `Szervezeti hozzáférés aktiválva${months ? ` (${months} hónap)` : ""}`,
+    trial: "Szervezeti próbaidőszak elindítva",
+    extend: `Szervezeti hozzáférés meghosszabbítva${months ? ` (${months} hónap)` : ""}`,
     set_credits: "Jelöltkeret módosítva",
   };
 

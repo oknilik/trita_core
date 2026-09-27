@@ -31,7 +31,7 @@ function componentsFor(source: string, overrides: Record<string, unknown>) {
 
 describe("TeamReportFigure MDX contract", () => {
   it.each([
-    ["amikor-a-csapatriport-beszelgetest-indit.mdx", "Aggregált csapatprofil", "Csapatátlag"],
+    ["amikor-a-csapatriport-beszelgetest-indit.mdx", "Összesített csapatprofil", "Csapatátlag"],
     ["when-a-team-report-starts-a-conversation.mdx", "Aggregate team profile", "Team average"],
   ])("prerendereli a %s cikk beágyazott aggregált riportábráját", async (file, title, averageLabel) => {
     const raw = fs.readFileSync(path.join(process.cwd(), "content/blog", file), "utf8");

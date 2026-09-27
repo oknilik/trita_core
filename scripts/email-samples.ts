@@ -89,6 +89,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
   // Dinamikus import: a hívó a modul betöltése ELŐTT állíthatja a
   // NEXT_PUBLIC_APP_URL-t (az előnézet helyi eszköz-útvonalakat kér).
   const m = await import("../src/lib/emails");
+  const { prepareFollowupEmail } = await import("../src/lib/lifecycle/templates");
   // A borító-URL-t a VALÓDI építővel kérjük, nem kézzel másolt stringgel: így
   // a guardrail-teszt azt az URL-t látja, ami élesben kimenne.
   const { blogImageUrl } = await import("../src/lib/newsletter");
@@ -117,6 +118,20 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
   }
 
   for (const locale of locales) {
+    for (const rule of ["START_SELF", "RESUME_SELF", "INVITE_FIRST_OBSERVERS", "REFLECTION"] as const) {
+      const id = `lifecycle_${rule.toLowerCase()}`;
+      await capture(id, locale, () => m.sendEmailDetailed({
+        template: id,
+        to: "user@example.com",
+        ...prepareFollowupEmail({
+          rule,
+          locale,
+          opportunityId: rule === "REFLECTION" ? undefined : "preview-goal",
+          unsubscribeToken: "unsub-token",
+        }),
+      }));
+    }
+
     await capture("observer_invite", locale, () =>
       m.sendObserverInviteEmail({
         to: "nezopont@example.com",

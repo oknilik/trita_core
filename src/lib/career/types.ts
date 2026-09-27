@@ -141,6 +141,10 @@ export interface OccupationContent {
   id: string;
   desc: string;
   descLang: "hu" | "en";
+  /** Az eredeti importált leírás forrásjelölése. */
+  descSource?: string;
+  /** A megjelenő leírás későbbi szerkesztésének forrása; a régi jelölést megőrizzük. */
+  descRevisionSource?: string;
   aliases: string[];
   eduHu: string | null;
   eduShare: number | null;

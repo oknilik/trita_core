@@ -11,11 +11,11 @@ test("az eredménykészítő magyar nézete együtt mozgatja a progresszt és a 
   const finish = buildEvaluationViewModel(88.4, "hu");
 
   assert.equal(start.roundedProgress, 12);
-  assert.match(start.phaseMessage, /kapcsolódsz/);
-  assert.match(middle.phaseMessage, /döntési és munkastílusod/);
-  assert.match(finish.phaseMessage, /építened/);
+  assert.match(start.phaseMessage, /Összesítjük a válaszaidat/);
+  assert.match(middle.phaseMessage, /hat dimenzió pontszámát/);
+  assert.match(finish.phaseMessage, /pontszámaidhoz tartozó magyarázatokat/);
   assert.equal(finish.roundedProgress, 88);
-  assert.equal(finish.status, "Mintázatok összekapcsolása");
+  assert.equal(finish.status, "Eredmények összegzése");
 });
 
 test("az angol nézet ugyanazokat a fázisokat lokalizált szöveggel adja", () => {

@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
@@ -7,16 +8,17 @@ import { EmailPreferencesClient } from "./EmailPreferencesClient";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 import { getAccountSubscriptionTopics } from "@/lib/newsletter";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
 
-// Életciklus-email beállítások — a reflexiós (és jövőbeni hasonló) emailek
-// leiratkozó-linkje ide hoz. Auth-oldal: a címzett a termék belépett usere.
+// Közös levélbeállítások a profilból és a levelekből érkező felhasználóknak.
+// A mentéshez bejelentkezés szükséges.
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: locale === "hu" ? "Email-beállítások | trita" : "Email preferences | trita",
+    title: locale === "hu" ? "E-mail-beállítások | trita" : "Email preferences | trita",
     robots: { index: false },
   };
 }
@@ -53,6 +55,9 @@ export default async function EmailPreferencesPage() {
             initialNewsletterTopics={newsletterTopics}
           />
         </div>
+        <Link href="/profile#emails" className={getButtonClassName({ variant: "ghost", className: "mt-6 w-full" })}>
+          {t("profile.backToProfile", locale)}
+        </Link>
       </div>
     </main>
   );

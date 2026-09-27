@@ -59,9 +59,9 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
 
   return (
     <DashboardPanel tone="warm" className="p-5 md:p-6">
-      <SectionEyebrow>mai követések</SectionEyebrow>
+      <SectionEyebrow>mai teendők</SectionEyebrow>
       <h2 className="mt-1 font-fraunces text-xl text-ink">
-        Ami ma figyelmet kér {deals.length > 0 ? `(${deals.length})` : ""}
+        Ami ma figyelmet igényel {deals.length > 0 ? `(${deals.length})` : ""}
       </h2>
       <p className="mt-1 text-xs text-ink-body">
         Itt találod a lejárt és a mára vállalt teendőket. Ha elkészültél,
@@ -78,7 +78,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
         <EmptyState
           data-testid="crm-today-empty"
           className="mt-4"
-          title="Minden esedékes lépés megvan mára."
+          title="Minden mai teendőt elvégeztél."
           description="Új teendőt az Aktív ügyek között, az adott ügy megnyitása után tudsz kitűzni."
         />
       ) : (

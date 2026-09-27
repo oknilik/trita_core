@@ -2,14 +2,14 @@ import { AXES, AXIS_LABELS, type Localized } from "@/lib/team-operating-style/qu
 import type { Locale } from "@/lib/i18n";
 
 const descriptions: Record<string, Localized> = {
-  S: { hu: "A tudás rendezett, a fontos információk visszakereshetők.", en: "Knowledge is organized and important information can be retrieved." },
-  I: { hu: "Az információ közvetlen beszélgetéseken és kötetlen üzeneteken keresztül áramlik.", en: "Information flows through direct conversations and informal messages." },
-  E: { hu: "Kimondott felelősségek és egyeztetett átadások hangolják össze a munkát.", en: "Explicit responsibilities and agreed handovers coordinate the work." },
-  O: { hu: "Kialakult szokások és egymás munkájának követése hangolják össze a munkát.", en: "Shared routines and awareness of each other's progress coordinate the work." },
-  C: { hu: "A fő döntések egy központi ponton születnek meg.", en: "Key decisions are made at a central point." },
-  D: { hu: "A döntések több ponton, a csapattagok saját hatáskörében születnek.", en: "Decisions are made across the team within members' own authority." },
-  P: { hu: "A megvalósítás előre egyeztetett lépések és ütemezés mentén halad.", en: "Work follows steps and a schedule agreed in advance." },
-  A: { hu: "A megvalósítás menet közben, a helyzethez igazodva alakul.", en: "Implementation adapts to the situation as work progresses." },
+  S: { hu: "A csapat közös, visszakereshető formában rögzíti a fontos információkat.", en: "Knowledge is organized and important information can be retrieved." },
+  I: { hu: "A tagok közvetlen beszélgetésekben és kötetlen üzenetekben osztják meg az információkat.", en: "Information flows through direct conversations and informal messages." },
+  E: { hu: "A tagok előre tisztázzák, ki miért felel, és mikor adja át a munkát.", en: "Explicit responsibilities and agreed handovers coordinate the work." },
+  O: { hu: "A tagok a közös szokásokból és egymás haladásából tudják, mikor kapcsolódjanak be a feladatba.", en: "Shared routines and awareness of each other's progress coordinate the work." },
+  C: { hu: "A fő döntéseket egy kijelölt vezető hozza meg.", en: "Key decisions are made at a central point." },
+  D: { hu: "A csapattagok a saját hatáskörükben hozzák meg a döntéseket.", en: "Decisions are made across the team within members' own authority." },
+  P: { hu: "A csapat az előre egyeztetett lépéseket és ütemezést követi.", en: "Work follows steps and a schedule agreed in advance." },
+  A: { hu: "A csapat a tapasztalatai alapján menet közben változtat a munka lépésein.", en: "Implementation adapts to the situation as work progresses." },
 };
 const tones = [
   "bg-bronze-soft text-bronze-dark",

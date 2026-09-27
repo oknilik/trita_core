@@ -1,6 +1,7 @@
 # Blog — írásszabály
 
 > Érvényes: 2026-09-01 óta. A `content/blog/*.mdx` cikkekre vonatkozik.
+> A közös magyar nyelvi alapelveket a [magyar stíluskalauz](hungarian-style-guide.md) rögzíti.
 > Ütközés esetén a `CLAUDE.md` termékszabályai előbbre valók (ld. lentebb).
 
 ## Kinek írunk
@@ -15,19 +16,27 @@ Magyar kkv- és csapatvezetők, HR-esek, valamint önmegismerés iránt
   intézményi többes szám („a mérésünk").
 - Ne bújj passzív szerkezetek mögé. „Megállapítható, hogy" helyett mondd
   meg, ki állapította meg.
-- Könnyed, de nem laza. A mérce: egy 45 éves ügyvezető is elolvassa, és
-  egy pszichológus se fintorogjon rajta.
+- Írj közvetlenül, természetes beszédritmussal. Az olvasó szakmai
+  háttér nélkül is követhesse a gondolatmenetet; a pontosságot a világos
+  állítás és annak alátámasztása adja.
 - Ne oktass felülről. Ne írd le, hogy „fontos megérteni" vagy „ne feledd".
 
 ## Mondat és bekezdés
 
-- Átlagos mondathossz 15-20 szó. Minden bekezdésben legyen legalább egy
-  rövid, 8 szó alatti mondat.
-- Bekezdés maximum 4 mondat. Ha hosszabb lenne, vágd ketté.
-- Kerüld a gondolatjeles közbevetést. Amit közbevetnél, tedd külön
-  mondatba. Pontosvesszővel se fűzz össze két gondolatot.
-- Kerüld a „nem X, hanem Y" szerkezetet és a kettőspont utáni csattanót
-  („A válasz egyszerű: …").
+- A mondat hossza a gondolathoz igazodjon. A több állítást vagy sok
+  közbevetést tartalmazó mondatot bontsd fel, ha így könnyebb követni.
+- Egy bekezdés egy gondolatot fejtsen ki. Új témánál vagy az érvelés új
+  lépésénél kezdj új bekezdést. Ne írj elő kötelező szószámot vagy
+  mondatszámot, és ne tördeld mesterségesen a szöveget.
+- A közbevetések és az írásjelek a megértést segítsék. Ha az olvasónak
+  vissza kell keresnie az alanyt vagy a mondat elejét, fogalmazz egyszerűbben.
+- Az ellentétet akkor használd, ha pontosítja az állítást. Kerüld a
+  visszatérő „nem X, hanem Y" fordulatot és a mesterséges csattanókat.
+- A jelenetet követő magyarázat adjon új szempontot. Ne mondd el újra
+  a tanulságot a bekezdés végén, kiemelésben és a cikk zárásában is.
+- A szerkesztett [teljes blogminta és a hozzá tartozó példák](hungarian-style-samples.md)
+  mutatják a közös hangot. Új történet részleteit ne találjuk ki pusztán
+  azért, hogy élőbb legyen a szöveg.
 
 ## Alátámasztás
 
@@ -69,23 +78,25 @@ Magyar kkv- és csapatvezetők, HR-esek, valamint önmegismerés iránt
 
 ### Narratív cikk (jelenség-elemző, vezetői gyakorlat)
 
-- Egy cikk = egy állítás. Írd le magadnak egy mondatban, mielőtt kezded.
-  Minden szakasz ugyanazt az állítást világítja meg más oldalról.
+- Legyen egy központi kérdés vagy gondolat. Írd le magadnak egy mondatban,
+  mielőtt kezded. Minden szakasz ennek megértéséhez adjon hozzá.
 - Nyiss jelenettel: konkrét szervezet, konkrét helyzet, konkrét emberek.
   Ne általánosítással.
-- Építs a cikk közepére egy ellentétpárt, ami rendezi az egészet.
-- Ismételd a kulcsmondatot 2-3 alkalommal, szó szerint.
-- A záró szakasznak vissza kell térnie a nyitó jelenethez. Nem
-  megoldásként, hanem másik megvilágításban. Ha nem tudsz visszatérni
-  hozzá, rossz jelenetet választottál.
-- Két-három H2, hogy az ív ne szakadjon szét.
+- A jelenetből derüljön ki a kérdés vagy nehézség, amelyet a cikk körüljár.
+  Ellentétpárt csak akkor építs be, ha a történetből következik.
+- A fő állítást az eset és az érvelés tegye világossá. Ne ismételj
+  szó szerint mondatokat pusztán a ritmus vagy a hangsúly kedvéért.
+- A zárás mutassa meg, mire jutottak a szereplők, és mi maradt nyitott.
+  Visszatérhet a nyitó jelenethez, ha ez segít érzékeltetni a változást.
+- Az alcímek a történet fordulópontjait kövessék. Annyit használj,
+  amennyi a gondolatmenet áttekintéséhez szükséges.
 
 ### Referenciacikk (fogalommagyarázó, módszertani)
 
 - A cél a visszakereshetőség, nem az ív. Beszédes H2-k.
 - Ne jelentsd be, mit fogsz csinálni. Kezdd a legerősebb állítással.
-- Párhuzamos elemeknél a lista indokolt, a lenti hosszkorlát nem
-  érvényes.
+- Párhuzamos elemeket felsorolásban is bemutathatsz, ha így könnyebb
+  visszakeresni őket.
 - Minden absztrakt leírás mellé egy fél mondat konkrétum arról, hol
   bukkan fel a gyakorlatban.
 - Zárás: a korlátok őszinte megnevezése, majd egy továbbvezető link.
@@ -93,22 +104,28 @@ Magyar kkv- és csapatvezetők, HR-esek, valamint önmegismerés iránt
 ### Mindkét típusnál
 
 - H2 alcímek beszédesek legyenek. Ne „Bevezetés", ne „Összefoglalás".
-- Felsorolást csak párhuzamos elemekre. Narratív cikkben legfeljebb egy
-  lista, 5 pontnál nem hosszabb.
-- Nagy, ellenőrizhetetlen kijelentésből legfeljebb egy férjen el
-  cikkenként, és az is legyen alátámasztva.
+- Felsorolást párhuzamos elemekre használj, ha így könnyebb áttekinteni
+  őket. Az összefüggő történetet bekezdésekben vidd tovább.
+- A nagyobb következtetéseknél is legyen világos, milyen adat vagy
+  tapasztalat támasztja alá őket, és mire nem ad választ a példa.
 
-## Tiltólista
+## Üres fordulatok helyett konkrét állítás
 
-Soha ne használd: forradalmasítja, letisztult, kulcsfontosságú,
-izgalmas, valóban, őszintén szólva, mélyre ásunk, a mai rohanó világban,
-egyre inkább, nem véletlen, hogy; leegyszerűsítve; ahogy említettük;
-fontos megjegyezni, hogy; „Nézzük meg közelebbről"; „Merüljünk el";
-„Ebben a cikkben megvizsgáljuk / megmutatjuk"; emojik; felkiáltójel.
+Az olyan bevezetők, mint „a mai rohanó világban”, „Merüljünk el” vagy
+„Ebben a cikkben megvizsgáljuk”, rendszerint késleltetik az érdemi mondatot.
+Kezdj a helyzettel vagy a megállapítással.
+
+A „forradalmasítja”, „kulcsfontosságú” és hasonló nyomatékosítás helyett
+mondd el, mi változik és kinek jelent ez segítséget. A „valóban” vagy az
+„egyre inkább” maradhat, ha pontosítja az állítást; puszta hangsúlyozásként
+húzd ki. A felkiáltójel illeszkedjen a mondat hangjához, például egy idézett
+megszólaláshoz. A szöveg lendületét a tartalom és a mondatok ritmusa adja.
 
 ## Hossz
 
-800-1400 szó.
+A hosszt a téma és az olvasó kérdése határozza meg. A teljes gondolatmenet,
+a szükséges magyarázatok és a források férjenek el benne; szószám miatt ne
+ismételjünk, és ne hagyjunk ki fontos feltételt.
 
 ## Formátum és technikai kötöttségek
 

@@ -133,7 +133,7 @@ export function CommercialDocumentGenerator({
             <Field label="Adószám" value={form.taxNumber} onChange={(value) => patch("taxNumber", value)} />
             <Field label="Képviselő neve" value={form.representativeName} required onChange={(value) => patch("representativeName", value)} />
             <Field label="Képviselő beosztása" value={form.representativeTitle} onChange={(value) => patch("representativeTitle", value)} />
-            <Field label="Kapcsolattartási e-mail" type="email" value={form.contactEmail} required onChange={(value) => patch("contactEmail", value)} />
+            <Field label="Kapcsolattartó e-mail-címe" type="email" value={form.contactEmail} required onChange={(value) => patch("contactEmail", value)} />
             <label className="flex flex-col gap-1">
               <span className={CRM_FIELD_LABEL_CLASS}>Elfogadás módja</span>
               <select
@@ -253,8 +253,8 @@ export function CommercialDocumentGenerator({
         <DashboardPanel className="p-5">
           <SectionEyebrow>generálás</SectionEyebrow>
           <p className="mt-2 text-sm leading-relaxed text-ink-body">
-            Minden generálás új, immutábilis verziót készít. A PDF a mentett
-            ajánlati pillanatképből számol, nem az aktuális díjtáblából.
+            Minden alkalommal új, utólag nem módosítható dokumentumváltozat készül.
+            A PDF-ben az ajánlat mentésekor rögzített díjak szerepelnek.
           </p>
           <div className="mt-4 flex flex-col gap-2">
             <Button
@@ -262,7 +262,7 @@ export function CommercialDocumentGenerator({
               loading={busy === "PROPOSAL"}
               onClick={() => void generate("PROPOSAL")}
             >
-              Ajánlat PDF generálása
+              Ajánlat készítése PDF-ben
             </Button>
             <Button
               type="button"
@@ -271,12 +271,12 @@ export function CommercialDocumentGenerator({
               disabled={quoteStatus !== "ACCEPTED"}
               onClick={() => void generate("ORDER_FORM")}
             >
-              Egyedi Megrendelőlap generálása
+              Egyedi Megrendelőlap készítése
             </Button>
           </div>
           {quoteStatus !== "ACCEPTED" && (
             <p className="mt-2 text-xs text-muted">
-              A megrendelőlap az ajánlat elfogadása után generálható.
+              A megrendelőlapot az ajánlat elfogadása után készítheted el.
             </p>
           )}
           {error && (
@@ -289,7 +289,7 @@ export function CommercialDocumentGenerator({
         <DashboardPanel className="p-5">
           <SectionEyebrow>elkészült dokumentumok</SectionEyebrow>
           {documents.length === 0 ? (
-            <p className="mt-3 text-sm text-muted">Még nincs generált dokumentum.</p>
+            <p className="mt-3 text-sm text-muted">Még nem készült dokumentum.</p>
           ) : (
             <div className="mt-3 flex flex-col gap-3">
               {documents.map((document) => (

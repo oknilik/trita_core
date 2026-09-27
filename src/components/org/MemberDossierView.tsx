@@ -20,17 +20,17 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 const CARD = "rounded-[22px] border border-sand bg-surface-card p-5 shadow-sm md:p-6";
 
 const MEASUREMENT_LABELS: Record<DossierMeasurementKey, { hu: string; en: string }> = {
-  self: { hu: "Önfelmérés", en: "Self-assessment" },
-  observer: { hu: "Külső (observer) kép", en: "Observer feedback" },
+  self: { hu: "Önértékelés", en: "Self-assessment" },
+  observer: { hu: "Mások visszajelzései", en: "Observer feedback" },
   teamRoleSelf: { hu: "Csapatszerep – önkép", en: "Team role – self" },
-  teamRolePeer: { hu: "Csapatszerep – peer", en: "Team role – peer" },
+  teamRolePeer: { hu: "Csapatszerep – a csapattársak szerint", en: "Team role – peer" },
   trustGiven: { hu: "Adott bizalmi értékelés", en: "Trust given" },
   peerFeedback: { hu: "Kapott visszajelzés", en: "Feedback received" },
 };
 
 const FEEDBACK_KIND_LABELS: Record<string, { hu: string; en: string }> = {
   appreciation: { hu: "Elismerés", en: "Appreciation" },
-  feedforward: { hu: "Feedforward", en: "Feedforward" },
+  feedforward: { hu: "Fejlesztő javaslat", en: "Feedforward" },
 };
 
 const EDGE_STYLES: Record<DossierEdgeType, string> = {
@@ -42,7 +42,7 @@ const EDGE_STYLES: Record<DossierEdgeType, string> = {
 const EDGE_LABELS: Record<DossierEdgeType, { hu: string; en: string }> = {
   aligned: { hu: "hasonló", en: "aligned" },
   complementary: { hu: "kiegészítő", en: "complementary" },
-  friction: { hu: "súrlódás", en: "friction" },
+  friction: { hu: "lehetséges súrlódás", en: "friction" },
 };
 
 // Szerep-címke a nyers enum helyett (UX-audit #21b) — az OrgMembersTab
@@ -147,7 +147,7 @@ export function MemberDossierView({
         {participation.activeCampaigns.length > 0 ? (
           <div className="mt-4">
             <SectionEyebrow variant="clean" tone="org">
-              {isHu ? "aktív mérés-sorozatok" : "active campaigns"}
+              {isHu ? "aktív méréssorozatok" : "active campaigns"}
             </SectionEyebrow>
             <div className="mt-2 flex flex-col gap-1.5">
               {participation.activeCampaigns.map((c) => {
@@ -179,7 +179,7 @@ export function MemberDossierView({
       {/* ═══ 2. ÖNKÉP vs. KÜLSŐ KÉP ═══ */}
       <section className={CARD}>
         <SectionEyebrow variant="clean" tone="org">
-          {isHu ? "önkép vs. külső kép" : "self vs. external"}
+          {isHu ? "önkép és mások visszajelzései" : "self vs. external"}
         </SectionEyebrow>
 
         {!sx.hasSelf ? (
@@ -194,8 +194,8 @@ export function MemberDossierView({
               <thead>
                 <tr className="text-micro uppercase tracking-wide text-muted">
                   <th className="py-1.5 text-left font-medium">{isHu ? "Dimenzió" : "Dimension"}</th>
-                  <th className="py-1.5 text-right font-medium">{isHu ? "Ön" : "Self"}</th>
-                  <th className="py-1.5 text-right font-medium">{isHu ? "Külső" : "External"}</th>
+                  <th className="py-1.5 text-right font-medium">{isHu ? "Önértékelés" : "Self"}</th>
+                  <th className="py-1.5 text-right font-medium">{isHu ? "Mások szerint" : "External"}</th>
                   <th className="py-1.5 text-right font-medium">Δ</th>
                 </tr>
               </thead>
@@ -251,7 +251,7 @@ export function MemberDossierView({
             {sx.facets.length === 0 ? (
               <p className="mt-2 text-micro text-muted">
                 {isHu
-                  ? "Ehhez a kitöltéshez nem érhető el facet-szintű bontás."
+                  ? "Ehhez a kitöltéshez nem érhető el alskálánkénti bontás."
                   : "Facet-level breakdown is not available for this assessment."}
               </p>
             ) : null}
@@ -259,10 +259,10 @@ export function MemberDossierView({
             <p className="mt-2 text-micro text-muted">
               {sx.observerShown
                 ? isHu
-                  ? `${sx.observerCount} értékelő aggregált átlaga – egyéni válasz nem jelenik meg.`
+                  ? `${sx.observerCount} értékelő válaszainak átlaga – egyéni válasz nem jelenik meg.`
                   : `Aggregated average of ${sx.observerCount} raters – no individual response is shown.`
                 : isHu
-                  ? `Külső oszlophoz legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} lezárt observer-értékelés kell (jelenleg: ${sx.observerCount}).`
+                  ? `A másoktól kapott visszajelzések megjelenítéséhez legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} befejezett visszajelzés kell (jelenleg: ${sx.observerCount}).`
                   : `The external column needs at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} completed observer ratings (currently: ${sx.observerCount}).`}
             </p>
 
@@ -278,7 +278,7 @@ export function MemberDossierView({
             {sx.topGaps.length > 0 ? (
               <div className="mt-4 rounded-xl border border-state-warning-border bg-state-warning-bg p-3.5">
                 <p className="text-micro font-semibold uppercase tracking-wide text-state-warning-fg">
-                  {isHu ? "Debrief-belépőpontok" : "Debrief entry points"}
+                  {isHu ? "Témák az eredményfeldolgozáshoz" : "Debrief entry points"}
                 </p>
                 <ul className="mt-1.5 flex flex-col gap-1">
                   {sx.topGaps.map((g) => (
@@ -304,7 +304,7 @@ export function MemberDossierView({
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="text-micro font-semibold uppercase tracking-wide text-muted">
-                  {isHu ? "Csapatszerep – önkép (top 3)" : "Team role – self (top 3)"}
+                  {isHu ? "Csapatszerep – a három vezető szerep az önértékelésben" : "Team role – self (top 3)"}
                 </p>
                 {sx.teamRole.selfTop && sx.teamRole.selfTop.length > 0 ? (
                   <ul className="mt-1.5 flex flex-col gap-1">
@@ -323,7 +323,7 @@ export function MemberDossierView({
               </div>
               <div>
                 <p className="text-micro font-semibold uppercase tracking-wide text-muted">
-                  {isHu ? "Csapatszerep – peer (top 3)" : "Team role – peer (top 3)"}
+                  {isHu ? "A csapattársak szerinti három fő szerep" : "Team role – peer (top 3)"}
                 </p>
                 {sx.teamRole.peerTop.length > 0 ? (
                   <ul className="mt-1.5 flex flex-col gap-1">
@@ -337,7 +337,7 @@ export function MemberDossierView({
                 ) : (
                   <p className="mt-1.5 text-caption text-muted">
                     {isHu
-                      ? `Peer-képhez legalább ${TEAM_ROLE_PEER_MIN_RATERS} értékelő kell (jelenleg: ${sx.teamRole.peerRaterCount}).`
+                      ? `A csapattársak összesített visszajelzéséhez legalább ${TEAM_ROLE_PEER_MIN_RATERS} értékelő kell (jelenleg: ${sx.teamRole.peerRaterCount}).`
                       : `Peer picture needs at least ${TEAM_ROLE_PEER_MIN_RATERS} raters (currently: ${sx.teamRole.peerRaterCount}).`}
                   </p>
                 )}
@@ -350,7 +350,7 @@ export function MemberDossierView({
       {/* ═══ 3. KAPCSOLATI BEÁGYAZOTTSÁG ═══ */}
       <section className={CARD}>
         <SectionEyebrow variant="clean" tone="org">
-          {isHu ? "kapcsolati beágyazottság" : "relational embeddedness"}
+          {isHu ? "kapcsolatok a csapatban" : "relational embeddedness"}
         </SectionEyebrow>
 
         {embeddedness.length === 0 ? (
@@ -376,14 +376,14 @@ export function MemberDossierView({
                     ) : null}
                     {t.isIsolated ? (
                       <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-state-warning-fg">
-                        {isHu ? "beágyazatlan" : "isolated"}
+                        {isHu ? "nincs erős bizalmi kapcsolata" : "isolated"}
                       </span>
                     ) : null}
                   </div>
                   <span className="text-micro text-muted">
                     {t.inboundMean !== null
                       ? isHu
-                        ? `befelé irányuló bizalom: ${t.inboundMean}/100 (${t.inboundCount} értékelő, mért)`
+                        ? `A tag iránt jelzett bizalom: ${t.inboundMean}/100 (${t.inboundCount} értékelő, mért)`
                         : `inbound trust: ${t.inboundMean}/100 (${t.inboundCount} raters, measured)`
                       : isHu
                         ? `bizalmi képhez legalább ${TRUST_MIN_RATERS} értékelő kell (jelenleg: ${t.inboundCount})`
@@ -418,7 +418,7 @@ export function MemberDossierView({
 
         <p className="mt-4 text-micro text-muted">
           {isHu
-            ? "A kapcsolatok pár-szintű aggregátumok – egyéni (irányított) bizalmi válasz soha nem jelenik meg."
+            ? "A kapcsolatokat páronként összesítve mutatjuk. Nem jelenik meg, hogy egy-egy tag hogyan értékelte a másikat."
             : "Relationships are pair-level aggregates – no individual (directed) trust response is ever shown."}
         </p>
       </section>
@@ -469,7 +469,7 @@ export function MemberDossierView({
 
       <p className="text-micro text-muted">
         {isHu
-          ? `Dossié generálva: ${fmtDate(dossier.generatedAt, isHu)} · csak tanácsadó látja.`
+          ? `Dosszié készült: ${fmtDate(dossier.generatedAt, isHu)} · csak tanácsadó látja.`
           : `Dossier generated: ${fmtDate(dossier.generatedAt, isHu)} · visible to consultants only.`}
       </p>
     </div>

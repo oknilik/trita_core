@@ -115,19 +115,19 @@ test("prefill: rich aggregates produce every narrative field + action items", ()
   const prefill = buildDraftNarrativePrefill(richAggregates);
   assert.ok(prefill);
   // A szám ÉL-darabszám (felmért kapcsolat), nem tagpár — a copy őszinte.
-  assert.ok(prefill!.summary.includes("6 felmért kapcsolatból"));
+  assert.ok(prefill!.summary.includes("6 párt foglal össze"));
   assert.ok(!prefill!.summary.includes("tagpár"));
   assert.ok(prefill!.strengths.startsWith("• "));
   // friction 50% → norma-kockázat + ajánlás
-  assert.ok(prefill!.risks.includes("munkastílusbeli különbség"));
-  assert.ok(prefill!.recommendations.includes("működési normák"));
+  assert.ok(prefill!.risks.includes("sok párnál jelez lehetséges súrlódást"));
+  assert.ok(prefill!.recommendations.includes("Egyezzetek meg néhány közös szabályban"));
   // szerep-hiány bekerül név szerint
   assert.ok(prefill!.risks.includes("Ötletgazda"));
   // mért kapcsolati adat hiányzik → bizalmi kör ajánlás + akció
   assert.ok(prefill!.recommendations.includes("bizalmi kör"));
   const titles = prefill!.actionItems.map((item) => item.title);
   assert.ok(titles.includes("A csapatkép közös átbeszélése"));
-  assert.ok(titles.includes("Működési normák rögzítése"));
+  assert.ok(titles.includes("Közös munkaszabályok kialakítása"));
   assert.ok(titles.includes("Szerepek tisztázása"));
   assert.ok(titles.includes("Mért bizalmi kör"));
   assert.ok(titles.includes("Utánkövetés és a riport frissítése"));
@@ -181,9 +181,9 @@ test("prefill: high aligned share from TRUST data does NOT claim homogeneity (D2
   // A magas bizalom NEM homogenitás — a vakfolt/hasonló-profil szöveg kimarad.
   assert.ok(!prefill!.risks.includes("hasonló profilok"));
   assert.ok(!prefill!.strengths.includes("hasonló munkastílus"));
-  assert.ok(!prefill!.recommendations.includes("Külső visszajelzés"));
+  assert.ok(!prefill!.recommendations.includes("Kérjetek visszajelzést egy másik csapattól"));
   // Helyette a mért bizalmat pozitívan nevezi meg.
-  assert.ok(prefill!.strengths.includes("bizalmi kapcsolat"));
+  assert.ok(prefill!.strengths.includes("A bizalmi kör válaszaiban sok erős, kölcsönös kapcsolat látszik"));
 });
 
 test("prefill: high aligned share from PROFILE estimate keeps the homogeneity note (D2)", () => {
@@ -204,7 +204,7 @@ test("prefill: high aligned share from PROFILE estimate keeps the homogeneity no
   assert.ok(prefill!.risks.includes("hasonló profilok"));
   assert.ok(prefill!.strengths.includes("hasonló munkastílus"));
   // Becslésből nem állítunk mért bizalmat.
-  assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
+  assert.ok(!prefill!.strengths.includes("A bizalmi kör válaszaiban sok erős, kölcsönös kapcsolat látszik"));
 });
 
 test("prefill: MIXED-source dynamics claims neither homogeneity nor measured-trust strength (FIX 3)", () => {
@@ -226,9 +226,9 @@ test("prefill: MIXED-source dynamics claims neither homogeneity nor measured-tru
   assert.ok(prefill);
   assert.ok(!prefill!.risks.includes("hasonló profilok"));
   assert.ok(!prefill!.strengths.includes("hasonló munkastílus"));
-  assert.ok(!prefill!.recommendations.includes("Külső visszajelzés"));
+  assert.ok(!prefill!.recommendations.includes("Kérjetek visszajelzést egy másik csapattól"));
   // A „mért bizalmi kör alapján…" erősség-mondat is csak tiszta trust_round-nál jár.
-  assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
+  assert.ok(!prefill!.strengths.includes("A bizalmi kör válaszaiban sok erős, kölcsönös kapcsolat látszik"));
 });
 
 test("prefill: E legalacsonyabb átlagnál sem kerül a figyelendő (deficit) slotba – score-valence kapu", () => {
@@ -240,8 +240,8 @@ test("prefill: E legalacsonyabb átlagnál sem kerül a figyelendő (deficit) sl
   assert.ok(prefill);
   // Az érzelmi stabilitás nem kockázat — a E figyelendő-szövege kimarad,
   // a legalacsonyabb ELIGIBLE dimenzió (O) figyelendője kerül be.
-  assert.ok(!prefill!.risks.includes("Érzelmileg ráhangolódóbb"));
-  assert.ok(prefill!.risks.includes("gyakorlatias szemlélet"));
+  assert.ok(!prefill!.risks.includes("A csapattagok érzékenyebben reagálhatnak egymás érzelmeire"));
+  assert.ok(prefill!.risks.includes("közelebb állhatnak hozzátok a bevált megoldások"));
 });
 
 test("prefill: több-csapatos futó pulse mellett nincs 'pulse indítása' javaslat (FIX 2)", () => {
@@ -252,13 +252,13 @@ test("prefill: több-csapatos futó pulse mellett nincs 'pulse indítása' javas
   };
   const prefill = buildDraftNarrativePrefill(multiTeamPulse);
   assert.ok(prefill);
-  assert.ok(!prefill!.recommendations.includes("pulse indítása"));
+  assert.ok(!prefill!.recommendations.includes("Indítsatok rövid felmérést a pszichológiai biztonságról"));
 });
 
 test("prefill: se pulse-adat, se lefedő kör → marad a pulse-indítás javaslat", () => {
   const prefill = buildDraftNarrativePrefill(richAggregates);
   assert.ok(prefill);
-  assert.ok(prefill!.recommendations.includes("Pszichológiai biztonsági pulzusmérés indítása"));
+  assert.ok(prefill!.recommendations.includes("Indítsatok rövid felmérést a pszichológiai biztonságról"));
 });
 
 test("prefill: no dimension averages returns null", () => {

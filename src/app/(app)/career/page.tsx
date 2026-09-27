@@ -31,7 +31,7 @@ import type { DecisionInitialState } from "@/components/career/fakedoor/Decision
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 
-// Karrier-iránytű — ÖNÁLLÓ oldal (korábban a /profile/results egyik füle).
+// Karrieriránytű — ÖNÁLLÓ oldal (korábban a /profile/results egyik füle).
 //
 // KÉT ARCA VAN, a `CAREER_MODULE_READY` kapcsolótól függően:
 //  · false (ma): a modul nincs kész, az oldal a kereslet-mérő fake door —
@@ -47,7 +47,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
   return {
-    title: locale === "hu" ? "Karrier-iránytű | trita" : "Career compass | trita",
+    title: locale === "hu" ? "Karrieriránytű | trita" : "Career compass | trita",
     robots: { index: false },
   };
 }

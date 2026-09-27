@@ -186,7 +186,7 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
     }
     setSavedKey(formKey(form));
     resetPreview();
-    setMessage("Piszkozat mentve. Most készíthetsz tényleges e-mail-előnézetet.");
+    setMessage("A piszkozatot mentettük. Most elkészítheted a levél előnézetét.");
     refreshList(true);
   };
 
@@ -228,7 +228,7 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
     patchRow(editingId, { status, recipients: accepted, failures: failed });
 
     if (status === "SENT") {
-      setMessage(`A szolgáltató ${accepted} címzett levelét átvette. A szám lezárva.`);
+      setMessage(`A szolgáltató átvette a ${accepted} címzettnek szánt leveleket. A hírlevél kiküldése lezárult.`);
       pendingRefresh.current = true;
       closeEditor();
       return;
@@ -259,17 +259,17 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
     <section className="mb-8 rounded-2xl border border-sand bg-surface-card p-6">
       <div className="flex flex-wrap items-center gap-3">
         <p className="font-dm-mono text-micro font-semibold uppercase tracking-widest text-muted">
-          Szerkesztett szám
+          Szerkesztett hírlevél
         </p>
         <Button size="sm" variant="secondary" onClick={startNew} disabled={busy}>
-          Új szám
+          Új hírlevél
         </Button>
       </div>
 
       <p className="mt-2 text-micro leading-relaxed text-muted">
-        Biztonságos munkamenet: mentés → valódi HTML-előnézet → címzett- és
-        tárgyellenőrzés → küldés. Részleges hiba után csak a kimaradt címzettek
-        kapják meg a változtathatatlan számot.
+        Előbb mentsd el a hírlevelet, majd nézd meg az előnézetét, és ellenőrizd a tárgyát
+        és a címzetteket. Ezután küldheted el. Ha a küldés részben sikertelen,
+        újrapróbáláskor csak a kimaradt címzettek kapják meg ugyanazt a hírlevelet.
       </p>
 
       {rows.length > 0 ? (
@@ -309,7 +309,7 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
         <div className="mt-5 flex flex-col gap-3 rounded-xl border border-sand bg-cream/40 p-4">
           {readOnly ? (
             <p className="rounded-lg bg-sage/10 px-3 py-2 text-xs text-sage-dark">
-              Ennek a számnak a küldése már megkezdődött, ezért a tartalma nem módosítható.
+              A hírlevél küldése már megkezdődött, ezért a tartalma nem módosítható.
             </p>
           ) : null}
 
@@ -342,7 +342,7 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
             value={form.intro}
             disabled={readOnly}
             onChange={(event) => updateForm({ ...form, intro: event.target.value })}
-            helpText="Sima szöveg; üres sor = új bekezdés. A sablon nem tesz elé külön köszönést."
+            helpText="Formázás nélküli szöveg. Az új bekezdést üres sorral jelöld. Ha köszönést is szeretnél, azt itt írd bele."
           />
 
           <div>
@@ -396,13 +396,13 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
           </div>
 
           {dirty ? (
-            <p className="text-xs text-state-warning-fg">Nem mentett módosítás – az előnézet és a küldés le van tiltva.</p>
+            <p className="text-xs text-state-warning-fg">Előbb mentsd el a módosításokat, hogy előnézetet készíthess és elküldhesd a hírlevelet.</p>
           ) : null}
 
           {previewData ? (
             <div className="mt-2 overflow-hidden rounded-xl border border-sand bg-surface-card">
               <div className="border-b border-sand bg-cream px-4 py-3 text-xs text-ink-body">
-                Valódi e-mail HTML · {previewData.recipients} hátralévő címzett
+                A kiküldendő levél előnézete · {previewData.recipients} hátralévő címzett
               </div>
               <iframe
                 title="Hírlevél HTML-előnézet"
@@ -447,9 +447,9 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
 function statusLabel(status: IssueStatus): string {
   return {
     DRAFT: "Piszkozat",
-    READY: "Előnézett",
+    READY: "Előnézet elkészült",
     SENDING: "Küldés alatt",
-    PARTIAL: "Részleges",
+    PARTIAL: "Részben elküldve",
     SENT: "Kiküldve",
     FAILED: "Sikertelen",
   }[status];
@@ -466,24 +466,24 @@ function statusTone(status: IssueStatus): string {
 function errorText(code: string): string {
   switch (code) {
     case "ALREADY_SENT":
-      return "Ez a szám már lezárult.";
+      return "Ennek a hírlevélnek a kiküldése már lezárult.";
     case "ISSUE_IMMUTABLE":
-      return "A részben vagy teljesen kiküldött szám tartalma már nem módosítható.";
+      return "A részben vagy teljesen kiküldött hírlevél tartalma már nem módosítható.";
     case "PREVIEW_REQUIRED":
     case "PREVIEW_UNAVAILABLE":
-      return "A mentett tartalomról új HTML-előnézet szükséges.";
+      return "Készíts új HTML-előnézetet a mentett tartalomról.";
     case "SENDING":
-      return "Ezt a számot egy másik folyamat már küldi.";
+      return "A hírlevelet egy másik folyamat már küldi.";
     case "EMPTY":
-      return "Üres szám: kell bele legalább egy bevezető vagy egy cikk.";
+      return "A hírlevél üres. Adj hozzá legalább egy bevezetőt vagy egy cikket.";
     case "INVALID_ARTICLES":
-      return "A kiválasztott cikkek egyike már nem publikus, vagy nem ezen a nyelven érhető el.";
+      return "A kiválasztott cikkek egyike már nem nyilvános, vagy nem ezen a nyelven érhető el.";
     case "NO_RECIPIENTS":
-      return "Nincs hátralévő, erre a témára feliratkozott címzett.";
+      return "Nincs olyan feliratkozó, akinek ezt a hírlevelet még el kellene küldeni.";
     case "NOT_FOUND":
-      return "Nincs ilyen szám.";
+      return "A hírlevél nem található.";
     case "INVALID_PAYLOAD":
-      return "Hiányzó vagy hibás mező (a tárgy min. 3, a bevezető min. 10 karakter).";
+      return "Egy mező hiányzik vagy hibás. A tárgy legalább 3, a bevezető legalább 10 karakter legyen.";
     default:
       return "A művelet nem sikerült.";
   }

@@ -47,8 +47,8 @@ export type ManualActivityKind = (typeof MANUAL_ACTIVITY_KINDS)[number];
 
 export const ACTIVITY_KIND_LABELS: Record<ActivityKind, string> = {
   CALL: "Hívás",
-  EMAIL_OUT: "Kimenő email",
-  EMAIL_IN: "Bejövő email",
+  EMAIL_OUT: "Kimenő e-mail",
+  EMAIL_IN: "Bejövő e-mail",
   MEETING: "Találkozó",
   NOTE: "Jegyzet",
   SYSTEM: "Rendszer",

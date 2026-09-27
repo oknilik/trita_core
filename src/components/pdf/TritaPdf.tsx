@@ -4,8 +4,6 @@ import { t } from "@/lib/i18n";
 import {
   buildProfileReportViewModel,
   type ProfileReportInput,
-  type ProfileReportViewModel,
-  type ReportChapterId,
 } from "@/lib/profile-report-view-model";
 import { CoverPage } from "./pages/CoverPage";
 import { QuickOverviewPage } from "./pages/QuickOverviewPage";
@@ -15,6 +13,7 @@ import { ChapterWorkStylePage } from "./pages/ChapterWorkStylePage";
 import { AppendixRelationalPage } from "./pages/AppendixRelationalPage";
 import { AppendixObserverPage } from "./pages/AppendixObserverPage";
 import { AppendixCareerPage } from "./pages/AppendixCareerPage";
+import { createChapterPageNumbers } from "./chapter-page-numbers";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // A riport dokumentum-szerkezete. A TARTALMI source of truth a webes
@@ -34,25 +33,9 @@ export type PdfData = ProfileReportInput;
 
 export { type ProfileReportInput };
 
-/**
- * A tartalomjegyzék oldalszámai. A szerkezet determinisztikus: a Gyors összkép
- * és a 01 fejezet egy-egy lap, a 02 fejezet lapjainak száma a dimenziók
- * számából adódik (3 / lap), így a 03 fejezet kezdő oldala előre ismert.
- * A borító számozáson kívül van, ezért az első tartalmi oldal az 1.
- */
-export function chapterStartPages(
-  model: ProfileReportViewModel,
-): Record<ReportChapterId, number> {
-  const dimensionPages = chunkDimensions(model.dimensionsChapter.dimensions).length;
-  return {
-    overview: 2,
-    dimensions: 3,
-    workstyle: 3 + dimensionPages,
-  };
-}
-
 export function TritaReportDocument({ data }: { data: PdfData }) {
   const model = buildProfileReportViewModel(data);
+  const chapterPages = createChapterPageNumbers();
   const dimensionChunks = chunkDimensions(model.dimensionsChapter.dimensions);
   const hasAppendix = (id: "observer" | "career" | "relational") =>
     model.appendices.some((a) => a.id === id);
@@ -72,9 +55,9 @@ export function TritaReportDocument({ data }: { data: PdfData }) {
         bookmark={{ title: model.identity.personalityType || model.identity.userName, expanded: true }}
       />
 
-      <QuickOverviewPage model={model} chapterStartPages={chapterStartPages(model)} />
+      <QuickOverviewPage model={model} chapterPages={chapterPages} />
 
-      <ChapterOverviewPage model={model} />
+      <ChapterOverviewPage model={model} onPageNumber={(page) => chapterPages.record("overview", page)} />
 
       {dimensionChunks.map((dims, i) => (
         <ChapterDimensionsPage
@@ -83,10 +66,11 @@ export function TritaReportDocument({ data }: { data: PdfData }) {
           dims={dims}
           isFirst={i === 0}
           isLast={i === dimensionChunks.length - 1}
+          onPageNumber={(page) => chapterPages.record("dimensions", page)}
         />
       ))}
 
-      <ChapterWorkStylePage model={model} />
+      <ChapterWorkStylePage model={model} onPageNumber={(page) => chapterPages.record("workstyle", page)} />
 
       {/* Opcionális mellékletek – a riport VÉGÉN, világosan megnevezve */}
       {hasAppendix("observer") ? <AppendixObserverPage model={model} /> : null}

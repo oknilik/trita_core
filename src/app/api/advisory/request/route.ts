@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
   const userEmail = profile.email ?? "";
 
   const message = [
-    `Tanácsadói konzultáció igény a platformról.`,
+    `Tanácsadói konzultáció iránti kérés a platformról.`,
     `Szervezet: ${orgName}`,
     "",
     teamsSummary.length > 0

@@ -17,7 +17,7 @@ describe("ResultAccessFigure", () => {
     expect(screen.getByText("A résztvevő")).toBeInTheDocument();
     expect(screen.getByText("A csapat és a vezető")).toBeInTheDocument();
     expect(screen.getByText("A tanácsadó")).toBeInTheDocument();
-    expect(screen.getByText(/Más csapattag egyéni eredményét nem látják/)).toBeInTheDocument();
+    expect(screen.getByText(/A csapattagok egyéni eredményeihez nem férnek hozzá/)).toBeInTheDocument();
   });
 
   it.each([

@@ -97,7 +97,7 @@ export function CampaignPacingTile({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <p className="font-mono text-micro uppercase tracking-widest text-sage-dark">
-            {isHu ? "Futó mérés-sorozat" : "Running measurement series"}
+            {isHu ? "Futó méréssorozat" : "Running measurement series"}
           </p>
           <p className="mt-1 truncate text-sm font-semibold text-ink">
             {data.campaignName}
@@ -118,7 +118,7 @@ export function CampaignPacingTile({
           ) : data.scheduledCount > 0 ? (
             <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
               {isHu
-                ? `Most nincs nyitott kérdőív – a következő ${data.scheduledCount} tagnak ütemezve.`
+                ? `Most nincs kitölthető kérdőív. A következőt ${data.scheduledCount} tag számára már beütemeztük.`
                 : `No questionnaire open right now – the next is scheduled for ${data.scheduledCount} member(s).`}
             </p>
           ) : (
@@ -172,7 +172,7 @@ export function CampaignPacingTile({
                       { action: "interval", stepIntervalHours: h },
                       `int${h}`,
                       isHu
-                        ? `Ütem átállítva (${h === 0 ? "azonnal" : `${h}h`}) – a függő lépések újraütemezve.`
+                        ? `Az ütemezést módosítottuk (${h === 0 ? "azonnal" : `${h} óra`}), és a még hátralévő lépéseket ehhez igazítottuk.`
                         : `Pace updated (${h === 0 ? "immediate" : `${h}h`}) – pending steps rescheduled.`,
                     )
                   }
@@ -191,7 +191,7 @@ export function CampaignPacingTile({
             {/* Kontextus a kapcsolósorhoz (UX-audit #19): mit állít az ütem. */}
             <p className="max-w-[260px] text-left text-label font-normal leading-snug tracking-normal text-muted sm:text-right">
               {isHu
-                ? "A teljesített kérdőív után ennyivel nyílik (és értesít) a következő lépés."
+                ? "Az előző kérdőív befejezése után ennyi idővel válik elérhetővé a következő. A résztvevő ekkor értesítést is kap róla."
                 : "The next step opens (and notifies) this long after the previous one is completed."}
             </p>
             {saved ? (

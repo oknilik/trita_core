@@ -177,7 +177,7 @@ export default async function ShareOpengraphImage({
             }}
           >
             <div style={{ fontFamily: "DM Sans", fontSize: 24, color: COLORS.inkBody }}>
-              Önértékelés + külső visszajelzés, tudományos alapon
+              Személyiségprofil hat dimenzióban
             </div>
             <div
               style={{

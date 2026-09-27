@@ -383,12 +383,12 @@ export function glyphDescription(
   if (!primary || !secondary) return typeLabel;
   if (uncertain) {
     if (locale === "hu") {
-      return `${typeLabel} – absztrakt típus-ábra a két legerősebb, közel azonos erősségű dimenzióból: ${primary.formName.hu} (${primary.hexaco}) és ${secondary.motifName.hu} (${secondary.hexaco}); a sorrendjük nem egyértelmű.`;
+      return `${typeLabel} – absztrakt típusábra a két legmagasabb, közel azonos pontszámú dimenzióból: ${primary.formName.hu} (${primary.hexaco}) és ${secondary.motifName.hu} (${secondary.hexaco}); a sorrendjük nem egyértelmű.`;
     }
     return `${typeLabel} – abstract type glyph of the two strongest, closely matched dimensions: ${primary.formName.en} (${primary.hexaco}) and ${secondary.motifName.en} (${secondary.hexaco}); their order isn't clear-cut.`;
   }
   if (locale === "hu") {
-    return `${typeLabel} – absztrakt típus-ábra: ${primary.formName.hu} alapforma (${primary.hexaco}) ${secondary.motifName.hu} motívummal (${secondary.hexaco}).`;
+    return `${typeLabel} – absztrakt típusábra: ${primary.formName.hu} alapforma (${primary.hexaco}) ${secondary.motifName.hu} motívummal (${secondary.hexaco}).`;
   }
   return `${typeLabel} – abstract type glyph: ${primary.formName.en} form (${primary.hexaco}) with ${secondary.motifName.en} motif (${secondary.hexaco}).`;
 }

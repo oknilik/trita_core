@@ -1,5 +1,10 @@
 import { StyleSheet, Font } from "@react-pdf/renderer";
 
+// A renderer alapértelmezett angol elválasztása magyar szavakat is szétszed
+// (például „figyel-sz”). A riportokban szóhatáron törjünk sort, ugyanúgy,
+// ahogy a szerveroldali PDF-fontregisztrációban.
+Font.registerHyphenationCallback((word) => [word]);
+
 // ─── Font registration (local TTF files) ─────────────────────────────────────
 
 // A forrásfájlok VARIABLE fontok — a react-pdf a default (400-as)

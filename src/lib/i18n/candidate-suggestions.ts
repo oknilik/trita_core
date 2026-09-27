@@ -5,7 +5,7 @@ export const candidateSuggestionTranslations = {
       hu: "Megfigyelések a közös munkához",
       en: "Observations for working together",
     },
-    journey: { hu: "A személyestől a közösig", en: "From personal to shared" },
+    journey: { hu: "Az egyéni profiltól a közös munkáig", en: "From personal to shared" },
     selfStep: { hu: "Önértékelés", en: "Self-assessment" },
     roleStep: {
       hu: "Csapatszerepek",
@@ -18,15 +18,15 @@ export const candidateSuggestionTranslations = {
       en: "Consultant text suggestions",
     },
     notice: {
-      hu: "Szerkeszthető felvetések, nem alkalmassági ítéletek. Beillesztés után mentsd és hagyd jóvá a visszajelzést. Az újragenerálás a jegyzeteidet nem írja felül.",
+      hu: "Ezeket a felvetéseket a profilból állítjuk össze; szerkeszd őket a beszélgetés tapasztalatai alapján. Alkalmassági minősítésre nem használhatók. Beillesztés után mentsd és hagyd jóvá a visszajelzést. Az újragenerálás a jegyzeteidet nem írja felül.",
       en: "Editable hypotheses, not suitability judgments. Save and review the feedback after insertion. Regeneration never overwrites your notes.",
     },
     profile: {
-      hu: "A jelölt működési képe",
+      hu: "A jelölt lehetséges munkastílusa",
       en: "Candidate working preferences",
     },
     connection: {
-      hu: "Kapcsolódások a csapathoz",
+      hu: "Hasonlóságok a csapatprofilhoz",
       en: "Connections with the team",
     },
     difference: { hu: "Eltérő nézőpontok", en: "Different perspectives" },
@@ -59,47 +59,47 @@ export const candidateSuggestionTranslations = {
       en: "Candidate role questionnaire: completed; no separate completion timestamp is recorded.",
     },
     hypothesis: {
-      hu: "A személyes profil alapján ellenőrizendő felvetés:",
+      hu: "A profil alapján felmerülő kérdés, amelyet érdemes megbeszélni:",
       en: "A hypothesis to explore from the personal profile:",
     },
     balanced: {
-      hu: "A profil alapján nem emelünk ki markáns pólust. Konkrét munkahelyi példákkal érdemes feltárni, mikor melyik működés jelenik meg.",
+      hu: "A profilban nincs egyértelműen kiemelhető szélső érték. Beszéljetek át konkrét munkahelyi példákat: melyik helyzetben mi segítette a jelölt munkáját?",
       en: "No pronounced pole is highlighted. Explore concrete work examples to understand which preferences appear in different situations.",
     },
     close: {
-      hu: "{dimensions}: a jelölt és a csapatátlag pontértékei közeliek. Ez nem bizonyít azonos működést vagy jó illeszkedést; beszéljetek át közös munkapéldákat.",
+      hu: "Ezekben a dimenziókban közel van a jelölt pontszáma a csapatátlaghoz: {dimensions}. Ettől még eltérhet, hogyan dolgoznak. Konkrét munkahelyi példákon beszéljétek át, miben hasonlítanak, és mire lenne szükségük az együttműködéshez.",
       en: "{dimensions}: candidate and team-mean scores are close. This does not establish identical behavior or good fit; discuss concrete shared work situations.",
     },
     noClose: {
-      hu: "Nem emelünk ki közeli pontértékeket. Ez önmagában nem jelent együttműködési nehézséget.",
+      hu: "Egyik dimenzióban sem emelünk ki a csapatátlaghoz közeli pontszámot. Ez önmagában nem jelent együttműködési nehézséget.",
       en: "No close scores are highlighted. This alone does not imply collaboration difficulties.",
     },
     gap: {
-      hu: "{dimension}: jelölt {candidate}, csapatátlag {team}, csapatszórás {sd}. A nagyobb leíró eltérés eltérő munkamódok megbeszélését indokolhat; nem teljesítménykülönbség.",
+      hu: "{dimension}: a jelölt pontszáma {candidate}, a csapatátlag {team}, a csapaton belüli szórás {sd}. A nagyobb eltérés miatt érdemes átbeszélni a különböző munkamódokat. Ez az adat nem teljesítménykülönbséget jelez.",
       en: "{dimension}: candidate {candidate}, team mean {team}, team SD {sd}. This larger descriptive difference may warrant discussing different work preferences; it is not a performance difference.",
     },
     noGap: {
-      hu: "Nem emelünk ki a konzervatív megjelenítési küszöböt meghaladó eltérést. Ez nem bizonyít azonosságot.",
+      hu: "Egyik eltérés sem haladja meg a kiemeléshez használt küszöböt. Ebből még nem következik, hogy a jelölt és a csapat tagjai ugyanúgy dolgoznak.",
       en: "No difference exceeds the conservative display threshold. This does not establish equivalence.",
     },
     noSpread: {
-      hu: "A rögzített csapatriportból hiányzik a teljes dimenziónkénti szórás; ezért nem generálunk eltérésállítást pusztán az átlagból.",
+      hu: "A rögzített csapatriportban nem minden dimenzióhoz tartozik szórásadat. Pusztán az átlagok alapján ezért nem fogalmazunk meg állítást az eltérésekről.",
       en: "The frozen team report lacks complete dimension spreads, so no difference claims are generated from means alone.",
     },
     method: {
-      hu: "Megjelenítési szabály: a különbség meghaladja az egyéni rövid forma 1,96 × SEM hibasávját és a csapat egy szórását. Ez óvatos szerkesztési szabály, nem szignifikanciateszt. A csapatátlag nem ír le minden tagot.",
+      hu: "Akkor emelünk ki eltérést, ha a különbség a rövid kérdőív egyéni mérési hibasávját (1,96 × SEM) és a csapaton belüli szórást is meghaladja. Ez óvatos szerkesztési szabály, nem statisztikai szignifikanciateszt. A csapatátlag nem jellemzi külön-külön az összes tagot.",
       en: "Display rule: the gap exceeds both 1.96 × individual short-form SEM and one team SD. This is a conservative editorial rule, not a significance test. A team mean does not describe every member.",
     },
     roleOwn: {
-      hu: "A jelölt szerepkérdőíve alapján előtérbe kerülő preferenciák: {roles}. Ezek nem igazolt képességek vagy teljesítményeredmények.",
+      hu: "A szerepkérdőív válaszaiban ezek a szerepek a leghangsúlyosabbak: {roles}. Azt jelzik, milyen feladatokat vállal szívesen a jelölt; képességet vagy teljesítményt nem igazolnak.",
       en: "Preferences highlighted by the candidate role questionnaire: {roles}. These do not establish ability or performance.",
     },
     noRole: {
-      hu: "Nincs érvényes, kitöltött jelölti szerepkérdőív. A személyiségből nem helyettesítjük becsléssel.",
+      hu: "Nincs érvényes, kitöltött jelölti szerepkérdőív. A hiányzó eredményt nem pótoljuk a személyiségprofilból készült becsléssel.",
       en: "No valid completed candidate role questionnaire is available. Personality estimates are not substituted.",
     },
     mixedRoles: {
-      hu: "A csapat szerepadata hiányos, becsült vagy vegyes forrású; ebből nem állítunk szerephiányt vagy lefedettséget.",
+      hu: "A csapat szerepadatai hiányosak, becslésből származnak, vagy mért és becsült eredményeket is tartalmaznak. Ezekből nem állapítjuk meg, mely szerepek vannak jelen vagy hiányoznak.",
       en: "Team role evidence is missing, estimated or mixed; no role gaps or coverage are inferred from it.",
     },
     overlap: {
@@ -107,11 +107,11 @@ export const candidateSuggestionTranslations = {
       en: "Also represented in the team's frozen questionnaire evidence: {roles}. Clarify how responsibilities would be shared.",
     },
     complement: {
-      hu: "A csapat rögzített elsődleges és másodlagos szerepei között nem jelenik meg: {roles}. Vizsgáljátok meg, van-e igény erre a hozzájárulásra; ez nem bizonyított hiány.",
+      hu: "A csapat rögzített elsődleges és másodlagos szerepei között nem jelenik meg: {roles}. Beszéljétek át, szükség van-e ezekre a szerepekre a közös munkában. Az eredmény önmagában nem bizonyít hiányt.",
       en: "Not represented among the team's frozen primary and secondary roles: {roles}. Explore whether this contribution is needed; this is not a proven deficit.",
     },
     question: {
-      hu: "Milyen konkrét helyzetben segített, és mikor nehezítette az együttműködésedet a(z) {dimension} kapcsán leírt működés? Mit kérnél a csapattól az első hónapban?",
+      hu: "A profilban leírt jellemző: {dimension}. Mondj egy példát arra, amikor segítette a közös munkát, és egyet arra, amikor nehézséget okozott. Mit kérnél a csapattól az első hónapban?",
       en: "When has the preference described for {dimension} helped or complicated collaboration? What support would you ask from the team in your first month?",
     },
     roleQuestion: {
@@ -119,7 +119,7 @@ export const candidateSuggestionTranslations = {
       en: "When have you voluntarily taken these roles? Give an example of the outcome and another of handing the responsibility to someone else.",
     },
     genericQuestion: {
-      hu: "Mesélj egy közös feladatról, ahol eltérő munkamódokat kellett összehangolnod. Milyen elvárásokat és visszajelzési rendet egyeztetnél az első hónapban?",
+      hu: "Mesélj egy közös feladatról, amelyben másként dolgoztatok a társaiddal. Hogyan hangoltátok össze a munkát? Az első hónapban miben szeretnél megállapodni, és miről kérnél visszajelzést?",
       en: "Describe a task where you had to reconcile different working preferences. Which expectations and feedback routines would you agree on in your first month?",
     },
   },

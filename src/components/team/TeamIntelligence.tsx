@@ -236,8 +236,8 @@ export function TeamIntelligence({
                     <p className="text-caption font-semibold text-ink">{member.name}</p>
                     <p className="text-note text-muted">
                       {hasMeasuredRoles
-                        ? isHu ? "Csapatszerep profil" : "Team-role profile"
-                        : isHu ? "Becsült csapatszerep profil" : "Estimated team-role profile"}
+                        ? isHu ? "Csapatszerepprofil" : "Team-role profile"
+                        : isHu ? "Becsült csapatszerepprofil" : "Estimated team-role profile"}
                     </p>
                   </div>
                   {/* Forrás-jelölés a mért/becsült konvencióval (sage = mért, amber = becsült) */}
@@ -284,7 +284,7 @@ export function TeamIntelligence({
           {membersWithData.length === 0 ? (
             <div className="rounded-xl border border-dashed border-sand bg-cream/45 p-4 text-xs text-ink-body">
               {isHu
-                ? "Még nincs elég kitöltött felmérés az erőforrás-térképhez."
+                ? "A csapatprofil megjelenítéséhez még további kitöltések szükségesek."
                 : "No completed assessment data yet for the resource map."}
             </div>
           ) : null}
@@ -298,7 +298,7 @@ export function TeamIntelligence({
             <p className="mt-1 text-note text-ink-body">
               {membersWithoutData.length}{" "}
               {isHu
-                ? "tag még nem rendelkezik értelmezhető assessment adattal."
+                ? "tagnál még nincs értékelhető felmérési eredmény."
                 : "members still do not have usable assessment data."}
             </p>
             <div className="mt-2 flex flex-wrap gap-1.5">
@@ -353,7 +353,7 @@ export function TeamIntelligence({
                   {isHu ? "Kiegészítő" : "Complementary"}: {dynamicsCounts.complementary}
                 </span>
                 <span className="rounded-full border border-state-warning-border bg-state-warning-bg px-2 py-0.5 text-note text-bronze-700">
-                  {isHu ? "Potenciális súrlódás" : "Potential friction"}: {dynamicsCounts.friction}
+                  {isHu ? "Lehetséges súrlódás" : "Potential friction"}: {dynamicsCounts.friction}
                 </span>
               </div>
               <p className="mt-2 text-note text-ink-body/60">
@@ -361,14 +361,14 @@ export function TeamIntelligence({
                     mindent profil-becslésnek nevezni. */}
                 {measuredEdgeCount === 0
                   ? isHu
-                    ? "A becslés a személyiségprofil-eltérésekből számolódik. A tényleges kapcsolati dinamikához 360°-os bizalmi kör szükséges."
+                    ? "A becslés a személyiségprofilok közötti eltéréseken alapul. A tényleges kapcsolatok megismeréséhez 360°-os bizalmi kör szükséges."
                     : "Estimates are based on personality profile gaps. Actual relationship dynamics require a 360° trust round."
                   : measuredEdgeCount === edges.length
                     ? isHu
                       ? "A kapcsolati kép mért bizalmi körből (360°) származik."
                       : "The relationship picture comes from a measured trust round (360°)."
                     : isHu
-                      ? `A kapcsolatok egy része mért bizalmi körből származik (${measuredEdgeCount}/${edges.length}), a többi személyiségprofil-eltérésből becsült.`
+                      ? `${measuredEdgeCount}/${edges.length} kapcsolatot a bizalmi kör válaszaiból mutatunk meg. A többit a személyiségprofilok közötti különbségekből becsüljük.`
                       : `Some connections come from a measured trust round (${measuredEdgeCount}/${edges.length}); the rest are estimated from personality-profile gaps.`}
               </p>
               <div className="mt-3">
@@ -386,15 +386,15 @@ export function TeamIntelligence({
       <section className="rounded-[24px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
         <div className="mb-3 flex items-center justify-between gap-3">
           <p className="font-dm-sans text-sm font-semibold text-ink">
-            {isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
+            {isHu ? "Részletes csapatszerep-elemzés" : "Detailed team-role analysis"}
           </p>
           <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
-            {isHu ? "deep-dive tulajdonos" : "deep-dive owner"}
+            {isHu ? "részletes elemzés" : "deep-dive owner"}
           </span>
         </div>
         <p className="text-xs leading-relaxed text-ink-body">
           {isHu
-            ? "Ez az áttekintő nézet. A részletes ábrák és a szerep-eloszlás a Csapatszerepek felületen érhető el."
+            ? "Itt az összefoglalót látod. A részletes ábrákat és a szerepek megoszlását a Csapatszerepek oldalon találod."
             : "This is the overview. Detailed charts and the role distribution live on the Team roles surface."}
         </p>
         {deepDiveHref ? (
@@ -403,7 +403,7 @@ export function TeamIntelligence({
               href={deepDiveHref}
               className="inline-flex min-h-[36px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-ink transition-colors hover:bg-cream"
             >
-              {deepDiveLabel ?? (isHu ? "Részletes csapatszerep elemzés megnyitása" : "Open detailed team-role analysis")}
+              {deepDiveLabel ?? (isHu ? "Részletes csapatszerep-elemzés megnyitása" : "Open detailed team-role analysis")}
             </Link>
           </div>
         ) : null}

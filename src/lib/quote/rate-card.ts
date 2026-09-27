@@ -49,9 +49,9 @@ export const QUOTE_TIER_INCLUDES: Record<QuoteTier, readonly string[]> = {
     "A csapatban betöltött szerepek felmérése",
     "A csapaton belüli bizalmi kapcsolatok feltérképezése: ki kihez fordul, kivel lehet nyíltan beszélni",
     "Annak felmérése, mennyire biztonságos a csapatban kérdezni, hibát jelezni vagy más véleményt mondani",
-    "Névtelen visszajelzés a résztvevő kollégáitól és ismerőseitől ugyanarról a személyiségfelmérésről",
+    "A résztvevő személyiségéről adott, névtelenül összesített visszajelzés a kollégáitól és ismerőseitől",
     "Tanácsadó által ellenőrzött összefoglaló a csapat eredményeiről, külön megbeszéléssel a vezető számára",
-    "Az eredmények közös átbeszélése a csapattal: 90 perc, online",
+    "Az eredmények közös átbeszélése a csapattal, 90 perces online alkalmon",
   ],
   prog: [
     "Minden, ami a Csapatképben",

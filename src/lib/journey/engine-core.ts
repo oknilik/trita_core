@@ -42,7 +42,7 @@ const STAGE_LABELS: Record<JourneyStage, JourneyProgressLabel> = {
     en: "Not part of a team yet",
   },
   TEAM_PENDING_MEMBERS: {
-    hu: "Csapattagok aktiválása folyamatban",
+    hu: "Várjuk a csapattagok csatlakozását",
     en: "Team member activation in progress",
   },
   TEAM_PARTIAL: {

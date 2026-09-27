@@ -87,7 +87,7 @@ export function DealDetail({
       return {
         label: "Válasz rögzítése",
         href: "#ajanlatok",
-        message: "Az ajánlat kint van, most az ügyfél döntésére vársz.",
+        message: "Az ajánlatot elküldted, most az ügyfél döntésére vársz.",
       };
     }
     return {
@@ -507,15 +507,15 @@ export function DealDetail({
         title={closeOutcome === "WON" ? "Ügy megnyerve" : "Ügy lezárása"}
         description={
           closeOutcome === "WON"
-            ? "Az ügy lekerül a napi teendők közül. A tanulság rögzítése opcionális."
-            : "Mi volt a döntő ok? A rövid tanulság később segít jobb döntéseket hozni."
+            ? "Az ügy lekerül a napi teendők közül. Ha szeretnéd, feljegyezheted, mit tanultál belőle."
+            : "Miért zárult eredmény nélkül az ügy? Jegyezd fel, hogy később visszanézhesd."
         }
       >
         <div className="flex flex-col gap-3">
           {closeOutcome === "WON" && !deal.organization && (
             <p className="rounded-lg bg-state-warning-bg px-3 py-2 text-sm text-state-warning-fg">
-              Nincs szervezet linkelve – az org-hozzáférés aktiválása így nem
-              találja meg automatikusan ezt az ügyet. Egyéni ügynél ez rendben van.
+              Nincs szervezet az ügyhöz kapcsolva. A szervezeti hozzáférés aktiválásakor
+              ezért az ügy állapota nem frissül automatikusan. Egyéni ügyhöz nem szükséges szervezet.
             </p>
           )}
           <label className="flex flex-col gap-1">

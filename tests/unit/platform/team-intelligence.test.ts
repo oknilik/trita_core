@@ -129,7 +129,7 @@ test("cohesion risk reason shows the average but no ± spread number (2026-08-11
 
     const cohesion = priorities.find((priority) => priority.id === "cohesion_risk");
     assert.ok(cohesion, `hiányzó cohesion_risk (${locale})`);
-    assert.ok(cohesion.reason.includes("40%"), `hiányzó átlag-szám (${locale})`);
+    assert.ok(cohesion.reason.includes(locale === "hu" ? "40/100" : "40%"), `hiányzó átlag-szám (${locale})`);
     assert.ok(!cohesion.reason.includes("±"), `± maradt a szövegben (${locale})`);
   }
 });

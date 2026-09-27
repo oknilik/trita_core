@@ -11,12 +11,12 @@ const OPS_CARDS = [
   {
     href: "/admin?tab=feedback",
     title: "Visszajelzések",
-    desc: "Szerep-kalibráció, érdeklődés-jelzések és elégedettség-aggregátumok.",
+    desc: "A szerepajánlások ellenőrzése, érdeklődési jelzések és összesített elégedettségi adatok.",
   },
   {
     href: "/admin?tab=reminders",
     title: "Emlékeztetők",
-    desc: "Kitöltési emlékeztetők és piszkozat-követés.",
+    desc: "Emlékeztetők a megkezdett kérdőívek befejezésére.",
   },
 ];
 

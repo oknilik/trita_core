@@ -26,7 +26,11 @@ test("a teljes Team Scan nem kap félrevezető per-fő időígéretet", () => {
   }
 });
 
-test("a csapatszerepek opcionális modulként jelennek meg", () => {
-  assert.match(t("pilot.benefit1Desc", "hu"), /külön kiegészítő/);
-  assert.match(t("pilot.benefit1Desc", "en"), /separate add-ons/);
+test("a pilotban a csapatszerepek a felmérést egészítik ki, nem külön díjas csomagelemek", () => {
+  const hu = t("pilot.benefit1Desc", "hu");
+  const en = t("pilot.benefit1Desc", "en");
+  assert.match(hu, /csapatszerepek felmérése/);
+  assert.match(en, /team-role assessment/);
+  assert.doesNotMatch(hu, /külön kiegészítő/);
+  assert.doesNotMatch(en, /separate add-ons/);
 });

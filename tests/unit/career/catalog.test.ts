@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { INDUSTRIES, INTEREST_TAGS, normalizedEduFields } from "@/lib/industry-fit";
 import { INDUSTRY_ISCO } from "@/lib/career/industries";
-import { getOccupations, getOccupation } from "@/lib/career/catalog";
+import { getOccupations, getOccupation, getContentMap } from "@/lib/career/catalog";
 import { interestsFromTags, estimateInterests } from "@/lib/career/interests";
 import { RIASEC_LETTERS, VETO_TAGS } from "@/lib/career/types";
 
@@ -139,10 +139,25 @@ test("személyiség-alapú érdeklődés-becslés: minden betű azonos skálán 
   assert.ok((social.S ?? 0) > (flat.S ?? 0), "a társas profil nem emelte az S-t");
 });
 
-test("katalógus-azonosító feloldás: létező SOC igen, kitalált nem", () => {
-  const first = getOccupations()[0];
+test("katalógus-azonosító feloldás: minden aktív SOC-hoz magyar leírás tartozik", async () => {
+  const occupations = getOccupations();
+  const first = occupations[0];
   assert.equal(getOccupation(first.id)?.hu, first.hu);
   assert.equal(getOccupation("00-0000.00"), undefined);
+
+  const content = await getContentMap();
+  assert.equal(content.size, occupations.length, "az aktív katalógus és a leírások készlete eltér");
+  for (const occupation of occupations) {
+    const description = content.get(occupation.id);
+    assert.ok(description, `${occupation.id}: hiányzó leírás`);
+    assert.equal(description.descLang, "hu", `${occupation.id}: angol fallback maradt`);
+    assert.ok(description.desc.trim(), `${occupation.id}: üres leírás`);
+  }
+
+  // A későbbi magyar szerkesztés forrása külön meta; a betöltő mindkettőt megőrzi.
+  const revised = content.get(first.id);
+  assert.ok(revised?.descSource, "az eredeti import forrása elveszett");
+  assert.match(revised?.descRevisionSource ?? "", /O\*NET 30\.3.*magyar szerkesztés/);
 });
 
 test("normalizedEduFields: az örökölt egyértékű mező is tömbként jön vissza", () => {

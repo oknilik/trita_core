@@ -44,7 +44,7 @@ import { ChapterOverviewPage } from "../src/components/pdf/pages/ChapterOverview
 import { ChapterDimensionsPage, chunkDimensions } from "../src/components/pdf/pages/ChapterDimensionsPage";
 import { ChapterWorkStylePage } from "../src/components/pdf/pages/ChapterWorkStylePage";
 import { AppendixRelationalPage } from "../src/components/pdf/pages/AppendixRelationalPage";
-import { chapterStartPages } from "../src/components/pdf/TritaPdf";
+import { createChapterPageNumbers } from "../src/components/pdf/chapter-page-numbers";
 import { colors } from "../src/components/pdf/styles";
 
 // ─── Fontok: a styles.ts /fonts/-ra regisztrál (böngésző-origin) — node-ban
@@ -275,9 +275,10 @@ async function main() {
     const model = buildProfileReportViewModel(buildReportInput(p, locale, plan));
     const bookmark = { title: `${p.label} · ${p.slug}`, expanded: false } as const;
     const dimensionChunks = chunkDimensions(model.dimensionsChapter.dimensions);
+    const chapterPages = createChapterPageNumbers();
     // A dosszié minden persona-riportot EGY dokumentumba fűz, ezért a
-    // riporton belüli oldalszámozás itt nem értelmezhető — a lábléc a
-    // dokumentum-szintű számot mutatja, a lapozás a könyvjelzőkkel megy.
+    // lábléc és a tartalomjegyzék is a dokumentum szintjén számoz. A kezdőlapot
+    // a renderer adja meg; a persona helye nem becsülhető fix lapszámból.
     const pages: React.ReactElement[] = [
       <CoverPage key={`${p.slug}-cover`} model={model} bookmark={bookmark} />,
     ];
@@ -286,11 +287,11 @@ async function main() {
         <QuickOverviewPage
           key={`${p.slug}-quick`}
           model={model}
-          chapterStartPages={chapterStartPages(model)}
+          chapterPages={chapterPages}
         />,
       );
     }
-    pages.push(<ChapterOverviewPage key={`${p.slug}-ch1`} model={model} />);
+    pages.push(<ChapterOverviewPage key={`${p.slug}-ch1`} model={model} onPageNumber={(page) => chapterPages.record("overview", page)} />);
     dimensionChunks.forEach((dims, i) => {
       pages.push(
         <ChapterDimensionsPage
@@ -299,10 +300,11 @@ async function main() {
           dims={dims}
           isFirst={i === 0}
           isLast={i === dimensionChunks.length - 1}
+          onPageNumber={(page) => chapterPages.record("dimensions", page)}
         />,
       );
     });
-    pages.push(<ChapterWorkStylePage key={`${p.slug}-ch3`} model={model} />);
+    pages.push(<ChapterWorkStylePage key={`${p.slug}-ch3`} model={model} onPageNumber={(page) => chapterPages.record("workstyle", page)} />);
     if (model.appendices.some((a) => a.id === "relational")) {
       pages.push(<AppendixRelationalPage key={`${p.slug}-appx`} model={model} />);
     }

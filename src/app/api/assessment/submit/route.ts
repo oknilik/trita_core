@@ -133,7 +133,7 @@ async function submitRequest(req: Request) {
   for (const answer of relevantAnswers) {
     if (typeof answer.value !== "number" || Number.isNaN(answer.value)) {
       return NextResponse.json(
-        { error: "Érvénytelen Likert válasz." },
+        { error: "Érvénytelen válasz a skálán." },
         { status: 400 }
       );
     }

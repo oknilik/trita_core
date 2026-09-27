@@ -13,14 +13,17 @@
  */
 
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ComparisonTab } from "@/components/results/ComparisonTab";
 import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import { diffStandardError } from "@/lib/psychometrics";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 
+const localeState = vi.hoisted(() => ({ value: "hu" as "hu" | "en" }));
+afterEach(() => { localeState.value = "hu"; });
+
 vi.mock("@/components/LocaleProvider", () => ({
-  useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
+  useLocale: () => ({ locale: localeState.value, setLocale: vi.fn(), isChanging: false }),
 }));
 
 function dim(
@@ -70,6 +73,29 @@ function renderTab() {
 }
 
 describe("ComparisonTab – mérési-hiba kapu (DIFF_MIN_GAP)", () => {
+  it.each([["hu", "pont"], ["en", "points"]] as const)(
+    "%s – az átlagos pontkülönbség nem százalék",
+    (locale, unit) => {
+      localeState.value = locale;
+      renderTab();
+      // (10 + 16 + 25) / 6 = 8,5, egész pontra kerekítve 9.
+      expect(screen.getByText(`9 ${unit}`)).toBeInTheDocument();
+      expect(screen.queryByText("9%")).toBeNull();
+    },
+  );
+
+  it.each([["hu", /legalább 3 külső visszajelzés/i], ["en", /at least 3 observer responses/i]] as const)(
+    "%s – az üres nézet a tényleges visszajelzési küszöböt mutatja",
+    (locale, expected) => {
+      localeState.value = locale;
+      const { container } = render(
+        <ComparisonTab dimensions={DIMENSIONS} hasObserverData={false} observerCount={2} />,
+      );
+      expect(screen.getByText(expected)).toBeInTheDocument();
+      expect(container.textContent).not.toContain("{min}");
+    },
+  );
+
   it("az új observer-fejléc mobilon egymás alá, asztalon két oszlopba rendeződik", () => {
     renderTab();
     expect(screen.getByTestId("observer-comparison-surface")).toBeInTheDocument();
@@ -104,7 +130,7 @@ describe("ComparisonTab – mérési-hiba kapu (DIFF_MIN_GAP)", () => {
   it("az összegzés a kapuval konzisztens: a 10-es gap nem szerepel eltérés-sorként", () => {
     renderTab();
     // 4 egyező dimenzió (0,0,0 + a 10-es) → „szinte azonos" összegző pont.
-    expect(screen.getByText(/4 dimenzióban az önképed/)).toBeInTheDocument();
+    expect(screen.getByText(/4 dimenzióban közel áll egymáshoz/)).toBeInTheDocument();
     // Eltérés-sor csak a 16-os és 25-ös gap-re.
     expect(screen.getByText(/\(16 pont eltérés\)/)).toBeInTheDocument();
     expect(screen.getByText(/\(25 pont eltérés\)/)).toBeInTheDocument();

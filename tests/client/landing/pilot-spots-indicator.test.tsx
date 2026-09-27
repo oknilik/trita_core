@@ -20,7 +20,7 @@ it.each(["hu", "en"] as const)("shows joined capacity and accessible values in %
   expect(bar).toHaveAttribute("aria-valuemin", "0");
   expect(bar).toHaveAttribute("aria-valuemax", "20");
   expect(bar).toHaveAttribute("aria-valuenow", "3");
-  expect(bar).toHaveAttribute("aria-valuetext", locale === "hu" ? "3 csapat csatlakozott a 20 helyből" : "3 of 20 team spots taken");
+  expect(bar).toHaveAttribute("aria-valuetext", locale === "hu" ? "A 20 helyből 3 már foglalt" : "3 of 20 team spots taken");
   expect(bar.firstElementChild).toHaveStyle({ width: "15%" });
   expect(screen.getByText(locale === "hu" ? "3 csapat már csatlakozott" : "Teams already joined: 3")).toBeVisible();
   expect(screen.getByText(locale === "hu" ? "20 hely összesen" : "20 spots in total")).toBeVisible();

@@ -27,26 +27,26 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
   // P5.1: viselkedési preferencia, nem erkölcsi ítélet — a „manipulációmentes"
   // implicit módon morálisan minősítette az alacsonyabb pólust.
   H: {
-    hu: "Jellemzően nyíltan és egyenesen működsz",
+    hu: "Jellemzően nyíltan és egyenesen viselkedsz",
     en: "You tend to work with open cards and direct means",
   },
   // Jellemző-keretezés, nem erősség-keretezés (ld. fejléc): a mondat leír,
   // nem dicsér, és a hozadék mellett az árát is kimondja — így a hero nem
   // mond ellent a lentebbi facet-bontásnak (Szorongás/Félelem).
   E: {
-    hu: "Többnyire hamar megérzed a helyzetek érzelmi töltetét, és sokáig viszed magaddal a hatásukat",
+    hu: "Többnyire hamar megérzed a feszültséget, és az érzelmileg nehéz helyzetek tartósan is megterhelhetnek",
     en: "You tend to pick up a situation's emotional charge early, and carry a lot of it with you",
   },
   X: {
-    hu: "Jellemzően energiát és lendületet viszel a közös munkába",
+    hu: "Jellemzően szívesen kezdeményezel a közös munkában",
     en: "You typically bring energy and inspiration to your interactions",
   },
   A: {
-    hu: "Többnyire rugalmasan és türelmesen kezeled a helyzeteket",
+    hu: "Többnyire türelmesen keresed a megegyezést",
     en: "You tend to handle situations with flexibility and patience",
   },
   C: {
-    hu: "Jellemzően rendszerben és felelősen működsz",
+    hu: "Jellemzően rendszerezetten és felelősen dolgozol",
     en: "You tend to work systematically and responsibly",
   },
   O: {
@@ -67,7 +67,7 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
  */
 export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
   H: {
-    hu: "a verseny és az önérvényesítés természetesebb tereped",
+    hu: "könnyebben képviseled a saját érdekeidet, versenyhelyzetben is",
     en: "status and positioning come more naturally to you",
   },
   E: {
@@ -75,7 +75,7 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
     en: "staying level comes more naturally than reading others' emotional signals",
   },
   X: {
-    hu: "a társas láthatóság kevésbé természetes tereped",
+    hu: "kevésbé érzed magad otthonosan, ha a társaság figyelme rád irányul",
     en: "social visibility is less natural for you",
   },
   A: {
@@ -83,7 +83,7 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
     en: "you tend to react more sharply in conflict",
   },
   C: {
-    hu: "a strukturált végrehajtás kevésbé természetes tereped",
+    hu: "kevésbé áll közel hozzád a kötött munkafolyamatok követése",
     en: "structured execution is less natural for you",
   },
   O: {
@@ -105,16 +105,16 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
  * ugyanaz a fordulat („hiteles… / hiteles…").
  */
 export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = {
-  H: { hu: "nyílt működés, kiszámíthatóság, bizalomépítés", en: "open dealing, predictability, trust-building" },
+  H: { hu: "egyenes beszéd, tisztességes eljárás", en: "open dealing, predictability, trust-building" },
   // A E-sor a valencia-kapu (score-valence.strengthSlotEligible) miatt
   // NEM kerül erősség-bulletbe. Aligned marad, mert a térkép dim-kód
   // szerinti — a korábbi „érzelmi mélység, törődő jelenlét" erény-keretezés
   // volt (és empátiát ígért, amit ez a skála nem mér).
-  E: { hu: "korán érzékeli a feszültséget, és sokat visz magával belőle", en: "registers tension early, and carries a lot of it" },
+  E: { hu: "korán érzékeli a feszültséget, amely tartósan meg is terhelheti", en: "registers tension early, and carries a lot of it" },
   X: { hu: "lendület, társas magabiztosság", en: "momentum, social confidence" },
   A: { hu: "megbocsátás, higgadtság, kompromisszumkészség", en: "forgiveness, composure, willingness to compromise" },
   C: { hu: "szervezettség, kitartás, pontosság", en: "organized, persistent, precise" },
-  O: { hu: "felfedező szemlélet, komplex gondolkodás", en: "explorer mindset, complex thinking" },
+  O: { hu: "kíváncsiság, új ötletek és összefüggések keresése", en: "explorer mindset, complex thinking" },
 };
 
 /**
@@ -122,12 +122,26 @@ export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = 
  * szókinccsel (P3.2). Ugyanúgy jelenleg nem renderelődik, ld. a párját fent.
  */
 export const DIMENSION_WATCH_DESCS: Record<string, Record<Locale, string>> = {
-  H: { hu: "erős versenyszellem, státusz-tudatosság", en: "strong competitive drive, status awareness" },
+  H: { hu: "erős versenyszellem, a társadalmi helyzet fontossága", en: "strong competitive drive, status awareness" },
   // Szintén nem érhető el (deficitSlotEligible kizárja) — kétoldalúra írva:
   // nyomás alatti higgadtság ÉS a jelzések elkerülésének kockázata.
   E: { hu: "nyomás alatt higgadt, mások érzelmi jelzéseit ritkábban veszi észre", en: "steady under pressure, less likely to register others' emotional signals" },
-  X: { hu: "háttérben marad, ritkábban lép színre", en: "stays in the background, steps forward less often" },
+  X: { hu: "szívesebben marad a háttérben", en: "stays in the background, steps forward less often" },
   A: { hu: "gyorsabban éleződő viták, kevesebb kompromisszum", en: "debates sharpen quickly, fewer compromises" },
-  C: { hu: "lazább struktúra, improvizatívabb munkamód", en: "looser structure, more improvised workflow" },
+  C: { hu: "rugalmas munkaszervezés, több rögtönzés", en: "looser structure, more improvised workflow" },
   O: { hu: "az ismert utakat választja, ritkábban kísérletezik", en: "chooses familiar paths, experiments less" },
+};
+
+/**
+ * Rövid összképhez szerkesztett magyar változatok. A részletes dimenziószöveg
+ * külön fejezetben marad; a pilotban átdolgozott sávok itt kapnak rövid
+ * bevezetést. A többi sávnál a teljes értelmezés a változatlan tartalék.
+ */
+export const DIMENSION_SUMMARY_INSIGHTS_HU: Record<string, Partial<Record<"low" | "mid" | "high", string>>> = {
+  H: {
+    high: "Fontos neked az egyenes beszéd és a tisztességes eljárás. Mások így könnyebben tudhatják, mire számíthatnak tőled.",
+  },
+  O: {
+    low: "A bevált módszerek biztonságot adhatnak. Arra érdemes figyelned, mikor változik meg annyira a helyzet, hogy már új megoldásra van szükség.",
+  },
 };

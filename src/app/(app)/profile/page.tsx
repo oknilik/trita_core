@@ -347,6 +347,7 @@ export default function ProfilePage() {
       <nav aria-label={locale === "hu" ? "Profilbeállítások" : "Profile settings"} className="-mb-1 flex gap-6 overflow-x-auto border-b border-border-default px-1 text-xs text-text-muted">
         <a href="#about" className={`shrink-0 border-b-2 border-[var(--color-action-primary-bg)] pb-3 font-semibold text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}>{t("profile.sectionAbout", locale)}</a>
         <a href="#language" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionLanguage", locale)}</a>
+        <a href="#emails" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionEmails", locale)}</a>
         {orgInfo && orgInfo.memberships.length > 0 ? <a href="#organization" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.orgSectionTitle", locale)}</a> : null}
         <a href="#career-background" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{locale === "hu" ? "Háttér" : "Background"}</a>
         <a href="#account" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionAccount", locale)}</a>
@@ -443,8 +444,16 @@ export default function ProfilePage() {
             </div>
           </Card>
 
+          <Card id="emails" as="section" spacing="lg" className="scroll-mt-24">
+            <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">{t("profile.sectionEmails", locale)}</h2>
+            <p className="mb-4 mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">{t("profile.sectionEmailsSub", locale)}</p>
+            <Link href="/email-preferences" className={getButtonClassName({ variant: "secondary" })}>
+              {t("profile.openEmailPreferences", locale)}
+            </Link>
+          </Card>
+
           <div className="rounded-2xl bg-[var(--color-surface-soft-warm)] p-4 text-xs leading-relaxed text-[var(--color-accent-earth-strong)]">
-            <strong className="font-fraunces text-base font-medium">{locale === "hu" ? "Az adataid nálad maradnak." : "Your data stays yours."}</strong><br />
+            <strong className="font-fraunces text-base font-medium">{locale === "hu" ? "Te kezeled a profiladataidat." : "Your data stays yours."}</strong><br />
             {locale === "hu" ? "A profilod adatai bármikor módosíthatók vagy törölhetők." : "Your profile data can be edited or deleted at any time."}
           </div>
         </div>
@@ -455,7 +464,7 @@ export default function ProfilePage() {
           {locale === "hu" ? "Tanulmányok és szakmai háttér" : "Education and professional background"}
         </h2>
         <p className="mb-5 mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
-          {locale === "hu" ? "Ezekkel pontosabban tudjuk személyre szabni a későbbi eredményeidet." : "These details help us tailor your future results more precisely."}
+          {locale === "hu" ? "Ezeket az adatokat a későbbi eredményeid értelmezéséhez használjuk." : "These details help us tailor your future results more precisely."}
         </p>
         <div className="grid gap-4 md:grid-cols-3">
           <PickerTrigger
@@ -512,7 +521,7 @@ export default function ProfilePage() {
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </Button>
       </section>
-      {saveState === "saved" ? <p role="status" className="text-note text-[var(--color-state-success-text)]">{locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}</p> : saveState === "error" ? <p role="alert" className="text-note text-[var(--color-state-error-text)]">{locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak; próbáld újra." : "Save failed. Your changes are preserved; please try again."}</p> : null}
+      {saveState === "saved" ? <p role="status" className="text-note text-[var(--color-state-success-text)]">{locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}</p> : saveState === "error" ? <p role="alert" className="text-note text-[var(--color-state-error-text)]">{locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak. Próbáld újra." : "Save failed. Your changes are preserved; please try again."}</p> : null}
 
         <Card
           id="account"

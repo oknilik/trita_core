@@ -99,13 +99,13 @@ export function TeamReportMemberView({
                 </h2>
                 <p className="mt-1 text-xs text-muted">
                   {isHu
-                    ? "A saját eredményed a csapat tanácsadó által jóváhagyott, összesített képéhez mérve. Másokról egyéni adatot nem mutatunk."
+                    ? "Itt a saját eredményedet vetheted össze a csapat jóváhagyott, összesített adataival. Más tagok egyéni eredményei nem jelennek meg."
                     : "Your own result measured against the team's consultant-approved aggregate picture. We don't show individual data about others."}
                 </p>
               </div>
             </div>
             <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-sage-dark shadow-sm ring-1 ring-sage/25">
-              {isHu ? "Tag-nézet" : "Member view"}
+              {isHu ? "Csapattagok nézete" : "Member view"}
             </span>
           </div>
         </div>
@@ -212,11 +212,11 @@ export function TeamReportMemberView({
                 </span>
                 <p className="text-sm leading-relaxed text-ink-body">
                   <span className="font-semibold text-ink">
-                    {isHu ? "Ahol a leginkább kiegészíted a csapatot: " : "Where you complement the team most: "}
+                    {isHu ? "Ezeken a területeken vagy leginkább a csapatátlag fölött: " : "Where you complement the team most: "}
                   </span>
                   {vm.complementLabels.join(isHu ? " és " : " and ")}
                   {isHu
-                    ? " – ezekben te viszed előre a csapatot. A többi dimenzióban közel vagy a csapat átlagához."
+                    ? ". A magasabb pontszám önmagában nem jelent jobb teljesítményt. Beszéljétek át saját példákon, mit jelentenek ezek az eltérések a közös munkában."
                     : " – you lead the team here. In the other dimensions you're close to the team average."}
                 </p>
               </div>
@@ -232,7 +232,7 @@ export function TeamReportMemberView({
           <DashboardPanel tone="cream" className="p-6">
             <p className="text-sm text-ink-body">
               {isHu
-                ? "Ahhoz, hogy magadat is lásd a csapat tükrében, töltsd ki a saját felmérésedet."
+                ? "A saját és a csapat eredményeinek összevetéséhez előbb töltsd ki a személyiségfelmérést."
                 : "To see yourself in the team's mirror too, complete your own assessment."}
             </p>
             <Link
@@ -260,11 +260,11 @@ export function TeamReportMemberView({
                 </div>
                 {vm.roleFit === "rare" ? (
                   <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-warning-fg ring-1 ring-state-warning-border">
-                    {isHu ? "kulcsszerep" : "key role"}
+                    {isHu ? "ritkább szerep" : "key role"}
                   </span>
                 ) : vm.roleFit === "shared" ? (
                   <span className="rounded-full bg-state-info-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-layer-org-bright ring-1 ring-state-info-border">
-                    {isHu ? "közös erő" : "shared strength"}
+                    {isHu ? "több tagnál is megjelenik" : "shared strength"}
                   </span>
                 ) : null}
               </div>
@@ -305,18 +305,18 @@ export function TeamReportMemberView({
                 )}
                 {vm.roleFit === "rare" ? (
                   <p className="mt-2 text-sm leading-relaxed text-ink-body">
-                    {isHu ? "Ez a szerep a csapatban ritka – " : "This role is rare in the team – "}
+                    {isHu ? "Az összesített eredményekben ez a szerep " : "This role is rare in the team – "}
                     <span className="font-semibold text-sage-dark">
-                      {isHu ? "rád ebben különösen számítanak" : "they especially rely on you here"}
+                      {isHu ? "ritkán jelenik meg elsődlegesként" : "they especially rely on you here"}
                     </span>
                     {isHu
-                      ? ": te vagy az, aki ezt behozza a közös munkába."
+                      ? ". Beszéljétek át, szívesen vállalnád-e a hozzá tartozó feladatokat."
                       : ": you're the one bringing it into the shared work."}
                   </p>
                 ) : vm.roleFit === "shared" ? (
                   <p className="mt-2 text-sm leading-relaxed text-ink-body">
                     {isHu
-                      ? "Ezt a szerepet többen is viszitek – jó a lefedettség, oszthatjátok a terhet és támogathatjátok egymást."
+                      ? "Ez a szerep több tagnál is megjelenik az eredményekben. Beszéljétek át, hogyan osztanátok meg az ehhez kapcsolódó feladatokat."
                       : "Several of you carry this role – good coverage, you can share the load and support each other."}
                   </p>
                 ) : null}
@@ -361,7 +361,7 @@ export function TeamReportMemberView({
       {vm.tips.length > 0 && (
         <section>
           <DashboardSectionHeader
-            label={isHu ? "Hogyan hozd ki a legtöbbet magadból itt" : "How to get the most out of yourself here"}
+            label={isHu ? "Mit próbálhatsz ki a közös munkában?" : "How to get the most out of yourself here"}
             className="mb-4"
           />
           <DashboardPanel className="p-6">

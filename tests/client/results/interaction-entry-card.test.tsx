@@ -23,8 +23,8 @@ describe("InteractionEntryCard", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Mi történik, amikor két profil találkozik?" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Összehasonlítok valakivel" })).toHaveAttribute(
+    expect(screen.getByRole("heading", { name: "Mire utal a két profil az együttműködésetekről?" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Összehasonlítom a profilomat valakiével" })).toHaveAttribute(
       "href",
       "/interaction?mode=real",
     );

@@ -643,7 +643,7 @@ export function ProfileTabs({
                 })),
                 developNote: firstGap
                   ? isHu
-                    ? `A top irányaidnál a leggyakoribb eltérés: ${dimLabel(firstGap.dim)} – a tipikus sáv ${firstGap.position === "under" ? "alatt" : "fölött"}.`
+                    ? `A hozzád leginkább illő irányokban a leggyakoribb eltérés: ${dimLabel(firstGap.dim)} – a tipikus sáv ${firstGap.position === "under" ? "alatt" : "fölött"}.`
                     : `The most common gap across your top directions: ${dimLabel(firstGap.dim)} – ${firstGap.position === "under" ? "below" : "above"} the typical range.`
                   : undefined,
               };

@@ -26,25 +26,25 @@ interface TeamRolesProps {
 const ROLE_SUBTITLES: Record<TeamRoleCode, { hu: string; en: string }> = {
   OG: { hu: "Kreatív ötletgazda a csapatban", en: "Creative ideas person in the team" },
   KE: { hu: "Lelkes networker a csapatban", en: "Enthusiastic networker in the team" },
-  KO: { hu: "Érett koordinátor a csapatban", en: "Mature coordinator in the team" },
+  KO: { hu: "A közös munkát összehangoló koordinátor", en: "Mature coordinator in the team" },
   HA: { hu: "Dinamikus hajtóerő a csapatban", en: "Dynamic driver in the team" },
   ER: { hu: "Stratégiai elemző a csapatban", en: "Strategic analyst in the team" },
   CS: { hu: "Együttműködő támasz a csapatban", en: "Cooperative support in the team" },
   MV: { hu: "Megbízható végrehajtó a csapatban", en: "Reliable implementer in the team" },
   MI: { hu: "Aprólékos tökéletesítő a csapatban", en: "Painstaking finisher in the team" },
-  SZ: { hu: "Szaktudású specialista a csapatban", en: "Expert specialist in the team" },
+  SZ: { hu: "Elmélyült tudású szakértő a csapatban", en: "Expert specialist in the team" },
 };
 
 const ROLE_DESCRIPTIONS: Record<TeamRoleCode, { hu: string; en: string }> = {
-  OG: { hu: "Eredeti gondolkodó, aki új megoldásokat hoz – de néha elszakad a gyakorlati megvalósítástól.", en: "Original thinker who brings new solutions – but can lose touch with practical implementation." },
-  KE: { hu: "Könnyen teremt kapcsolatokat és hoz külső lehetőségeket – de az utánkövetés nem az erőssége.", en: "Easily builds connections and brings external opportunities – but follow-through isn't their strength." },
-  KO: { hu: "Természetes facilitátor, aki célra fókuszálja a csapatot – de delegálhat túl sokat.", en: "Natural facilitator who focuses the team on goals – but may over-delegate." },
-  HA: { hu: "Hajtott, kihívásokat kereső típus. Nyomás alatt is teljesít, előre viszi a csapatot – de néha türelmetlenül.", en: "Driven, challenge-seeking type. Performs under pressure, pushes the team forward – but sometimes impatiently." },
-  ER: { hu: "Tárgyilagosan elemez, jó döntéseket hoz – de lassú reagálású és túl kritikus lehet.", en: "Analyzes objectively, makes good decisions – but can be slow to react and overly critical." },
-  CS: { hu: "Segítőkész és diplomata, enyhíti a feszültséget – de döntéshelyzetben határozatlan lehet.", en: "Helpful and diplomatic, eases tension – but can be indecisive in decision moments." },
-  MV: { hu: "Rendszeres és megbízható, terveket valósít meg – de rugalmatlan lehet új helyzetekben.", en: "Systematic and reliable, turns plans into action – but can be inflexible in new situations." },
-  MI: { hu: "Precíz és alapos, hibákat kiszűr a végén – de aggódhat a határidők miatt.", en: "Precise and thorough, catches errors at the end – but may worry about deadlines." },
-  SZ: { hu: "Mélyreható szaktudás, nélkülözhetetlen egy területen – de szűk fókuszú lehet.", en: "Deep expertise, indispensable in one area – but can have a narrow focus." },
+  OG: { hu: "Új ötleteket és szokatlan megoldásokat javasolhat. A gyakorlati részletek kidolgozásához mások segítségére is szüksége lehet.", en: "Original thinker who brings new solutions – but can lose touch with practical implementation." },
+  KE: { hu: "Könnyen teremt kapcsolatokat és fedez fel új lehetőségeket, de a megkezdett ügyek követése nehezebb lehet számára.", en: "Easily builds connections and brings external opportunities – but follow-through isn't their strength." },
+  KO: { hu: "Segíthet tisztázni a közös célt és elosztani a feladatokat. Arra érdemes figyelnie, hogy a saját részét is vállalja a munkából.", en: "Natural facilitator who focuses the team on goals – but may over-delegate." },
+  HA: { hu: "Szívesen ösztönözheti cselekvésre a csapatot, és nehéz helyzetben is sürgetheti a haladást. Közben türelmetlenné válhat a lassabb tempóval szemben.", en: "Driven, challenge-seeking type. Performs under pressure, pushes the team forward – but sometimes impatiently." },
+  ER: { hu: "Alaposan mérlegelheti a lehetőségeket és a kockázatokat. A döntéshez több időt kérhet, és előfordulhat, hogy főként a kifogásait mondja el.", en: "Analyzes objectively, makes good decisions – but can be slow to react and overly critical." },
+  CS: { hu: "Meghallgathatja a többieket, és segíthet rendezni a nézeteltéréseket. Nehezebb lehet döntenie, ha az valakinek csalódást okozna.", en: "Helpful and diplomatic, eases tension – but can be indecisive in decision moments." },
+  MV: { hu: "Megtervezheti a teendőket, és követheti a megvalósításukat. Nehezebben válthat módszert, ha a helyzet menet közben megváltozik.", en: "Systematic and reliable, turns plans into action – but can be inflexible in new situations." },
+  MI: { hu: "Gondosan ellenőrizheti a részleteket, és észreveheti a hibákat. A pontosítás elhúzódhat, a közelgő határidő pedig feszültséget okozhat neki.", en: "Precise and thorough, catches errors at the end – but may worry about deadlines." },
+  SZ: { hu: "Szaktudásával segítheti a csapatot egy-egy részlet megoldásában. Arra érdemes figyelnie, hogyan kapcsolódik a saját területe a többiek munkájához.", en: "Deep expertise, indispensable in one area – but can have a narrow focus." },
 };
 
 const RANK_LABELS = [

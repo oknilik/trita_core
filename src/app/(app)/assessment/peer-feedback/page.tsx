@@ -15,7 +15,7 @@ import { assessmentPrimaryActionClass } from "@/components/assessment/Assessment
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Elismerés-kör | trita", robots: { index: false } };
+  return { title: "Elismerési kör | trita", robots: { index: false } };
 }
 
 // Kollégai visszajelzés kör kitöltő (peer feedback F3) — a bejelentkezett

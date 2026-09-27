@@ -14,8 +14,8 @@ import type { ProfileReportViewModel, ReportDimensionView } from "@/lib/profile-
 //
 // Oldalanként legfeljebb HÁROM részletes dimenzió (P1/12): a korábbi egyetlen,
 // mindent egy lapra préselő alskála-oldal zsúfolt volt, miközben az áttekintő
-// oldal alsó fele üresen maradt. A bontás determinisztikus, ezért a
-// tartalomjegyzék oldalszámai is stabilak maradnak.
+// oldal alsó fele üresen maradt. A hosszabb szöveg további folytatáslapra
+// kerülhet; a tartalomjegyzék ezért a renderer tényleges oldalszámát használja.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const DIMENSIONS_PER_PAGE = 3;
@@ -35,9 +35,10 @@ interface Props {
   isFirst: boolean;
   /** Az utolsó lap zárja a fejezetet: kiegészítő skála + kulcstanulságok. */
   isLast: boolean;
+  onPageNumber?: (pageNumber: number) => void;
 }
 
-export function ChapterDimensionsPage({ model, dims, isFirst, isLast }: Props) {
+export function ChapterDimensionsPage({ model, dims, isFirst, isLast, onPageNumber }: Props) {
   const { locale, identity, dimensionsChapter } = model;
   const chapter = model.chapters[1];
   const planLabel = model.plan === "plus" ? "Plus" : "Start";
@@ -58,6 +59,7 @@ export function ChapterDimensionsPage({ model, dims, isFirst, isLast }: Props) {
       <View style={s.body}>
         {isFirst ? (
           <PdfChapterHeader
+            onPageNumber={onPageNumber}
             number={chapter.number}
             question={chapter.question}
             title={chapter.title}

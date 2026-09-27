@@ -15,7 +15,7 @@ describe("PsychSafetyFigure", () => {
   it("a csapatindexet és a sávot mutatja, egyéni válasz nélkül", () => {
     const { container } = render(<PsychSafetyFigure locale="hu" />);
 
-    expect(screen.getByText("Pszichológiai biztonság pulse")).toBeInTheDocument();
+    expect(screen.getByText("A pszichológiai biztonság felmérése")).toBeInTheDocument();
     expect(screen.getByText("68")).toBeInTheDocument();
     expect(screen.getByText(/közepes/)).toBeInTheDocument();
     // Az itemek SZÖVEGE sosem kerül ki: az ábra területcímkéket mutat.
@@ -27,7 +27,7 @@ describe("PsychSafetyFigure", () => {
   it("kimondja az anonimitási küszöböt, a termékből vett értékkel", () => {
     render(<PsychSafetyFigure locale="hu" />);
     expect(
-      screen.getByText(new RegExp(`csak ${PSYCH_SAFETY_MIN_RESPONSES} választól`)),
+      screen.getByText(new RegExp(`legalább ${PSYCH_SAFETY_MIN_RESPONSES} válasz beérkezése után`)),
     ).toBeInTheDocument();
   });
 
@@ -40,7 +40,7 @@ describe("PsychSafetyFigure", () => {
   });
 
   it.each([
-    ["merheto-e-a-pszichologiai-biztonsag.mdx", "Pszichológiai biztonság pulse"],
+    ["merheto-e-a-pszichologiai-biztonsag.mdx", "A pszichológiai biztonság felmérése"],
     ["can-psychological-safety-be-measured.mdx", "Psychological safety pulse"],
   ])("prerendereli a %s cikk riport-szeletét", async (file, title) => {
     const raw = fs.readFileSync(path.join(process.cwd(), "content/blog", file), "utf8");

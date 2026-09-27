@@ -6,7 +6,7 @@ import type { ReportRoleFit } from "@/lib/profile-report-view-model";
 const TIERS = [
   {
     key: "strong" as const,
-    label: { hu: "Erős illeszkedés", en: "Strong fit" },
+    labelKey: "results.roleFitStrong" as const,
     color: colors.sage,
     bg: colors.sage100,
     labelColor: colors.sageDark,
@@ -15,7 +15,7 @@ const TIERS = [
   },
   {
     key: "might" as const,
-    label: { hu: "Működhet, ha készülsz", en: "May work with preparation" },
+    labelKey: "results.roleFitMight" as const,
     color: colors.bronze,
     bg: colors.bronze100,
     labelColor: colors.bronzeDark,
@@ -24,7 +24,7 @@ const TIERS = [
   },
   {
     key: "prep" as const,
-    label: { hu: "Ahol segít a felkészülés", en: "Where preparation helps" },
+    labelKey: "results.roleFitPrep" as const,
     color: colors.ink300,
     bg: colors.cream300,
     labelColor: colors.ink300,
@@ -91,7 +91,7 @@ export function PdfRoleFit({
                 marginBottom: 4,
               }}
             >
-              {tier.label[locale]}
+              {t(tier.labelKey, locale)}
             </Text>
             <Text
               style={{

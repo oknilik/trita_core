@@ -17,7 +17,7 @@ describe("operating catalogue and layered report", () => {
     render(<OperatingPatternExplorer />);
     const catalogue = screen.getByText("Felfedezem a 16 mintát").closest("details")!;
     expect(catalogue).not.toHaveAttribute("open");
-    expect(screen.getByRole("heading", { name: "Miben segíthet a megismert csapatmintázat?" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "Mit kezdhettek az eredményekkel?" })).toBeVisible();
     expect(screen.getByText("Nincs egyetlen ideális csapatminta.")).toBeVisible();
     await userEvent.click(screen.getByRole("button", { name: "A minták érdekelnek" }));
     expect(catalogue).toHaveAttribute("open");
@@ -77,7 +77,7 @@ describe("operating catalogue and layered report", () => {
     snapshot.operating!.axes.execution.pole = "mixed";
     snapshot.operating!.axes.execution.flags = ["near_midpoint"];
     render(<TeamOperatingStyleReport snapshot={snapshot} locale="hu" mode="overview" />);
-    expect(screen.getByText(/Tájékozódó besorolás:/)).toBeVisible();
+    expect(screen.getByText(/A besorolás egyelőre tájékoztató jellegű/)).toBeVisible();
     expect(screen.getByText(/Lehetséges alternatívák: Navigátorok/)).toBeVisible();
     expect(screen.getByText(/nincs egyértelmű pólus ezen a tengelyen/)).toBeVisible();
     expect(screen.queryByText(OPERATING_CATALOGUE["0000"].description.hu)).not.toBeInTheDocument();

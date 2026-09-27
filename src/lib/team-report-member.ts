@@ -35,27 +35,27 @@ export const MEMBER_DIM_LABELS: Record<string, { hu: string; en: string }> = {
 // Tag-szemszögű „hogyan kamatoztasd" tipp dimenziónként — pozitív keret.
 const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
   C: {
-    hu: "Építs a lelkiismeretességedre: sokat tehetsz azért, hogy a csapat ötleteiből határidőre kézzelfogható eredmény szülessen – vállald tudatosan ezt a szerepet.",
+    hu: "A profilodban hangsúlyos a lelkiismeretesség. Ha a közös munkában is szívesen tervezel, vállald el egy feladat lépéseinek és határidejének egyeztetését.",
     en: "Use your conscientiousness: you can turn the team's ideas into on-time, finished results – deliberately take on that role.",
   },
   H: {
-    hu: "Az egyenes, kiszámítható működésed bizalmat épít – támaszkodj rá a nehéz beszélgetéseknél és a döntéseknél.",
+    hu: "A profilodban hangsúlyos a becsületesség-alázat. Egy nehezebb döntésnél beszéljétek át, kinek mit jelentene a méltányos megoldás, és milyen szempontokat érdemes figyelembe venni.",
     en: "Your straightforward, dependable style builds trust – lean on it in tough conversations and decisions.",
   },
   A: {
-    hu: "A rugalmasságod hidat épít az eltérő stílusok között – vállalj közvetítő szerepet, ahol feszül a helyzet.",
+    hu: "A profilodban hangsúlyos a barátságosság. Egy nézeteltérésnél segíthet, ha türelmesen végighallgatod mindkét felet, majd összefoglalod, miben értenek egyet, és mi maradt nyitva.",
     en: "Your agreeableness bridges different styles – take a connecting role where things get tense.",
   },
   E: {
-    hu: "Érzékenyen reagálsz a feszültebb helyzetekre – korán észlelheted, ha valaki elakad; ilyenkor érdemes megszólalnod.",
+    hu: "A profilodban hangsúlyos az emocionalitás. Egy feszültebb időszakban mondd el, téged mi terhel, és kérdezd meg a többieket is, ők hogyan élik meg a helyzetet.",
     en: "You sense how others are doing – you often notice first when someone is stuck; speak up then.",
   },
   X: {
-    hu: "A lendületed viszi a csapatot – te tudod beindítani a közös munkát és tartani a tempót.",
+    hu: "A profilodban hangsúlyos az extraverzió. Ha szívesen indítasz beszélgetést, kezdeményezz rövid egyeztetést egy közös feladatról. Hagyj időt a csendesebb társak válaszaira is.",
     en: "Your energy drives the team – you can kick off shared work and keep up the pace.",
   },
   O: {
-    hu: "Az új iránti nyitottságod új lendületet adhat a csapat működésének – hozz be tudatosan külső nézőpontokat és új ötleteket.",
+    hu: "A profilodban hangsúlyos a nyitottság. Hozz egy új ötletet a következő közös feladathoz, és beszéljétek meg, hogyan tudnátok kis lépésben kipróbálni.",
     en: "Your openness to new things refreshes the team – deliberately bring in outside perspectives and ideas.",
   },
 };
@@ -177,19 +177,19 @@ export function buildMemberReportViewModel(
   if (primaryRole && roleFit === "rare") {
     tips.push(
       loc === "hu"
-        ? `A csapatban ${withHuArticle(primaryRole.label)} szerep ritka – rád ebben különösen számítanak, vállald fel tudatosan.`
+        ? `Az összesített eredményekben ${withHuArticle(primaryRole.label)} ritkán jelenik meg elsődleges szerepként. Beszéljétek át, szívesen vállalnád-e a hozzá tartozó feladatokat.`
         : `The ${primaryRole.label} role is rare in this team – they especially rely on you here; own it deliberately.`,
     );
   } else if (primaryRole && roleFit === "shared") {
     tips.push(
       loc === "hu"
-        ? `${withHuArticle(primaryRole.label, { capitalize: true })} szerepet többen is viszitek – osszátok meg a tudást és a terhet, támogassátok egymást.`
+        ? `${withHuArticle(primaryRole.label, { capitalize: true })} több tagnál is elsődleges szerepként jelenik meg. Beszéljétek át, hogyan osztanátok meg az ehhez kapcsolódó feladatokat.`
         : `Several of you carry the ${primaryRole.label} role – share the knowledge and the load, support each other.`,
     );
   }
   tips.push(
     loc === "hu"
-      ? "Építs tudatosan az erősségeidre a közös munkában, és vonj be külső nézőpontot a közös vakfoltok ellensúlyozására."
+      ? "Válassz egy közös feladatot, és kérj konkrét visszajelzést a többiektől: mi segítette a munkájukat abból, amit tettél, és min változtatnának?"
       : "Build deliberately on your strengths in shared work, and bring in an outside perspective to guard against shared blind spots.",
   );
 

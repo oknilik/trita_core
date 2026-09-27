@@ -56,7 +56,7 @@ export type EmailSendResult =
       message: string;
     };
 
-type EmailSendParams = {
+export type EmailSendParams = {
   template: string;
   to: string;
   subject: string;
@@ -92,7 +92,7 @@ function alertEmailFailure(template: string, code: string, message: string): voi
  * (Az első kör hosztolt URL-eket használt; élesben nem töltődtek be. Ld.
  * `email-layout.ts` → `emailArtAttachments`.)
  */
-async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResult> {
+export async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResult> {
   if (
     process.env.VERCEL_ENV === "preview" &&
     !/@(?:example\.com|test\.trita\.app)$/i.test(params.to.trim())
@@ -138,7 +138,7 @@ async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResu
       alertEmailFailure(params.template, code, String(error.message ?? code));
       return {
         ok: false,
-        uncertain: false,
+        uncertain: ["application_error", "internal_server_error", "concurrent_idempotent_requests"].includes(code),
         retryable,
         code,
         message: String(error.message ?? code),
@@ -210,7 +210,7 @@ async function sendEmailOrThrow(params: EmailSendParams): Promise<EmailSendResul
  * ugyanannak a feladónak. A szójel kisbetűs, az aláírás ezt követi.
  *
  * Egyetlen dokumentált kivétel a `Leinad · trita` a pilot- és advisory-
- * visszaigazoláson: azok SZEMÉLYES követő levelek („24 órán belül személyesen
+ * visszaigazoláson: azok SZEMÉLYES követő levelek („személyesen
  * kereslek"), ott a csapat-aláírás rendszerüzenetté hűtené a hangot.
  */
 const SIGN_OFF: Record<Locale, { thanks: string; team: string }> = {
@@ -240,13 +240,13 @@ const translations = {
       kind: "Meghívó",
       eyebrow: "Külső nézőpont",
       heading: (inviter: string) => `${inviter} a te nézőpontodra kíváncsi`,
-      preheader: "Néhány perc, és a válaszaid anonimak maradnak.",
+      preheader: "Mondd el, milyennek látod őt. A válaszaid név nélkül jelennek meg.",
       greeting: (_name: string) => "Szia,",
       body: (inviter: string) =>
-        `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet, hogy képet kapjon arról, hogyan látják őt mások.\n\nA te nézőpontod nagyon fontos. A válaszaid anonimak maradnak, és az eredmények csak összesítve (több értékelés átlaga alapján) jelennek meg.`,
+        `${inviter} arra kér, hogy töltsd ki róla ezt a rövid kérdőívet. Válaszolj a közös élményeitek alapján: milyennek látod őt a hétköznapokban?\n\nA válaszaid név nélkül jelennek meg. Az eredmény több értékelés átlagából készül.`,
       cta: "Visszajelzés kitöltése",
       footer:
-        "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+        "Ha nem ismered azt, aki meghívott, nyugodtan hagyd figyelmen kívül ezt az e-mailt.",
     },
     en: {
       subject: "Invitation to a personality assessment – trita",
@@ -270,7 +270,7 @@ const translations = {
       heading: "Megérkezett egy visszajelzés rólad",
       preheader: "Az egyik meghívottad kitöltötte a kérdőívet.",
       greeting: (name: string) => `Szia, ${name}!`,
-      body: "Jó hír: az egyik meghívottad kitöltötte a kérdőívet. Nézd meg, hogyan látnak téged mások!",
+      body: "Az egyik meghívottad kitöltötte a kérdőívet. Az eredményoldalon követheted a beérkező visszajelzéseket.",
       cta: "Megnézem az eredményeket",
     },
     en: {
@@ -286,14 +286,14 @@ const translations = {
   },
   candidateCompleted: {
     hu: {
-      subject: "Jelölt-felmérés elkészült – trita",
+      subject: "Elkészült a jelölt felmérése – trita",
       kind: "Jelölt",
-      eyebrow: "Jelölt-felmérés",
-      heading: "Elkészült egy jelölt-felmérés",
-      preheader: "Az eredmény és a csapat-illesztés megnyitható.",
+      eyebrow: "Jelöltfelmérés",
+      heading: "Elkészült egy jelölt felmérése",
+      preheader: "Megtekinthető az eredmény és a csapattal való összehasonlítás.",
       greeting: "Szia,",
       body: (name: string, position: string | null) =>
-        `${name}${position ? ` (${position})` : ""} kitöltötte a jelölt-felmérést. Az eredmény és a csapat-illesztés megnyitható a jelölt-részletezőn.`,
+        `${name}${position ? ` (${position})` : ""} kitöltötte a felmérést. Az eredményt és a csapattal való összehasonlítást a jelölt adatlapján találod.`,
       cta: "Eredmény megnyitása",
     },
     en: {
@@ -314,10 +314,10 @@ const translations = {
       kind: "Megosztás",
       eyebrow: "Megosztott profil",
       heading: (sender: string) => `${sender} megosztotta veled a profilját`,
-      preheader: "Fő dimenziók, munkastílus és valószínű csapatszerepek.",
+      preheader: "Személyiségjellemzők, munkastílus és a profilból becsült csapatszerepek.",
       greeting: "Szia,",
       body: (sender: string) =>
-        `${sender} megosztotta veled a személyiségprofilját a tritán. A profil bemutatja a fő dimenzióit, a munkastílusát és a valószínű csapatszerepeit.`,
+        `${sender} megosztotta veled a személyiségprofilját a tritán. A profilban a személyiségjellemzőiről és a munkastílusáról olvashatsz. A lehetséges csapatszerepeket a személyiségpontokból becsüljük.`,
       cta: "Profil megnyitása",
       qrAlt: "QR-kód a megosztott profilhoz",
       qrHint:
@@ -326,7 +326,7 @@ const translations = {
         "A csatolt QR-kódot (qr-kod.png) telefonnal beolvasva a profil azonnal megnyílik.",
       qrFilename: "qr-kod.png",
       footer:
-        "A linket a küldő bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+        "A linket a küldő bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az e-mailt.",
     },
     en: {
       subject: "A personality profile was shared with you – trita",
@@ -350,18 +350,18 @@ const translations = {
   },
   reflectionPrompt: {
     hu: {
-      subject: "Egy hét telt el – mit láttál magadból?",
+      subject: "Egy hét telt el. Mire ismertél rá magadban?",
       kind: "Emlékeztető",
       eyebrow: "Egy hét telt el",
-      heading: "Mit láttál magadból ezen a héten?",
-      preheader: "Figyeld meg a legerősebb dimenziódat egy konkrét helyzetben.",
+      heading: "Mire ismertél rá magadban ezen a héten?",
+      preheader: "Figyeld meg, hogyan jelennek meg a tulajdonságaid a hétköznapokban.",
       greeting: "Szia,",
       body: (dimLabel: string) =>
-        `Egy hete készült el a személyiségprofilod. A legerősebb dimenziód ${withHuArticle(dimLabel)} volt – figyeld meg tudatosan egy konkrét helyzetben ezen a héten: mikor segített, és mikor pörgött túl?`,
+        `Egy hete készült el a személyiségprofilod. A legmagasabb pontszámot ebben a dimenzióban kaptad: ${dimLabel}. Gondold át, mikor segítettek az elmúlt héten az ehhez kapcsolódó tulajdonságaid, és mikor jelentettek nehézséget.`,
       body2:
         "Ha kíváncsi vagy, hogyan működnétek együtt valakivel, a páros összehasonlítással meg is nézhetitek.",
       cta: "Páros összehasonlítás megnyitása",
-      optOut: "Nem kérsz több ilyen emailt? Leiratkozás itt:",
+      optOut: "Nem kérsz több ilyen e-mailt? Leiratkozás itt:",
     },
     en: {
       subject: "A week has passed – what did you notice?",
@@ -387,10 +387,10 @@ const translations = {
       preheader: "A számszerű pontszámaid nem jelennek meg a másik félnek.",
       greeting: "Szia,",
       body: (sender: string) =>
-        `${sender} meghívott egy páros összehasonlításra a tritán: a saját kitöltésed után mindketten látjátok, mi menne köztetek magától, hol várható súrlódás, és mit érdemes előre megbeszélni. A számszerű pontszámaid nem jelennek meg neki.`,
+        `${sender} meghívott egy páros összehasonlításra a tritán. Miután te is kitöltötted a tesztet, mindketten elolvashatjátok, mi segítheti az együttműködéseteket, és miről érdemes előre beszélgetni. Az összehasonlítás a személyiségprofilokból készül. A számszerű pontszámaidat a másik fél nem látja.`,
       cta: "Meghívó megnyitása",
       footer:
-        "A meghívó 30 napig él, és bármelyik fél bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+        "A meghívó 30 napig él, és bármelyik fél bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az e-mailt.",
     },
     en: {
       subject: "How would you work together? – an invite on trita",
@@ -417,7 +417,7 @@ const translations = {
       ttl: (minutes?: number) =>
         minutes ? `A kód ${minutes} percig érvényes.` : "A kód rövid ideig érvényes.",
       footer:
-        "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+        "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az e-mailt.",
     },
     en: {
       subject: "Your verification code – trita",
@@ -443,7 +443,7 @@ const translations = {
       ttl: (minutes?: number) =>
         minutes ? `A kód ${minutes} percig érvényes.` : "A kód rövid ideig érvényes.",
       footer:
-        "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+        "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az e-mailt.",
     },
     en: {
       subject: "Your sign-in code – trita",
@@ -468,7 +468,7 @@ const translations = {
       body: "Kattints az alábbi gombra a bejelentkezéshez. A link 10 percig érvényes.",
       cta: "Bejelentkezés",
       footer:
-        "Ha nem te kérted ezt a linket, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+        "Ha nem te kérted ezt a linket, nyugodtan hagyd figyelmen kívül ezt az e-mailt.",
     },
     en: {
       subject: "Your sign-in link – trita",
@@ -484,14 +484,14 @@ const translations = {
   },
   assessmentDraftReminder: {
     hu: {
-      subject: "Már majdnem kész vagy a teszttel – folytasd itt",
+      subject: "Folytasd a megkezdett tesztet – trita",
       kind: "Emlékeztető",
       eyebrow: "Félbehagyott kitöltés",
-      heading: "Már majdnem kész vagy",
-      preheader: "Néhány kérdés, és látod a részletes eredményedet.",
+      heading: "Folytasd ott, ahol abbahagytad",
+      preheader: "A kitöltés végén megmutatjuk az eredményedet.",
       greeting: (name: string) => `Szia, ${name}!`,
       body: (testName: string, answeredCount: number, totalCount: number) =>
-        `Láttuk, hogy elkezdted ${withHuArticle(testName)} kitöltését a tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a fő személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
+        `Elkezdted ${withHuArticle(testName)} kitöltését a tritán. Eddig ${answeredCount} kérdésre válaszoltál az összesen ${totalCount} kérdésből. A válaszaid megvannak, ott folytathatod, ahol abbahagytad.\n\nA végén megmutatjuk az eredményedet és a hozzá tartozó magyarázatokat. Később ismerősöktől is kérhetsz visszajelzést, és összevetheted, hogyan látod magad, és ők hogyan látnak téged.`,
       cta: "Folytatom a tesztet",
       footer: "Ha már befejezted a tesztet, nyugodtan hagyd figyelmen kívül ezt az üzenetet.",
     },
@@ -547,7 +547,7 @@ function buildObserverInviteHtml(params: {
   });
 }
 
-export async function sendObserverInviteEmail(params: {
+export function prepareObserverInviteEmail(params: {
   to: string;
   inviterName: string;
   token: string;
@@ -582,13 +582,17 @@ export async function sendObserverInviteEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  await sendEmailOrThrow({
+  return {
     template: "observer_invite",
     to: params.to,
     subject,
     html,
     text,
-  });
+  };
+}
+
+export async function sendObserverInviteEmail(params: Parameters<typeof prepareObserverInviteEmail>[0]) {
+  await sendEmailOrThrow(prepareObserverInviteEmail(params));
 }
 
 export async function sendCandidateCompletedEmail(params: {
@@ -1148,16 +1152,16 @@ const teamInviteTranslations = {
     kind: "Meghívó",
     eyebrow: "Csapat",
     heading: (teamName: string) => `Meghívást kaptál: ${teamName}`,
-    body: "Személyiségprofilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a tritára, és automatikusan hozzáadunk!",
+    body: "Nyisd meg a meghívót, és regisztrálj a tritára. Ezután megerősítheted a csatlakozásodat a csapathoz.",
     cta: "Regisztráció és csatlakozás",
-    footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
+    footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az e-mailt.",
   },
   en: {
     subject: (teamName: string) => `You've been invited to join ${teamName} – trita`,
     kind: "Invitation",
     eyebrow: "Team",
     heading: (teamName: string) => `You've been invited to join ${teamName}`,
-    body: "Share your personality profile with your team by joining trita. Register and you'll be added automatically!",
+    body: "Open the invitation and register with trita. You can then confirm that you want to join the team.",
     cta: "Register and join",
     footer: "If you don't want to join, simply ignore this email.",
   },
@@ -1172,7 +1176,7 @@ const candidateInviteTranslations = {
         ? `Meghívó személyiségfelmérésre – ${position} pozíció`
         : "Meghívó személyiségfelmérésre",
     kind: "Meghívó",
-    eyebrow: "Jelölt-felmérés",
+    eyebrow: "Jelöltfelmérés",
     preheader: "Körülbelül 10–15 perc, regisztráció nélkül elvégezhető.",
     heading: (position?: string) =>
       position ? `Személyiségfelmérés – ${position}` : "Személyiségfelmérés",
@@ -1180,7 +1184,7 @@ const candidateInviteTranslations = {
       `${managerName} meghívott, hogy töltsd ki az alábbi személyiségfelmérést. A teszt körülbelül 10–15 percet vesz igénybe, és regisztráció nélkül elvégezhető.`,
     cta: "Felmérés megkezdése",
     footer:
-      "Ha nem számítottál erre az emailre, egyszerűen hagyd figyelmen kívül.",
+      "Ha nem számítottál erre az e-mailre, egyszerűen hagyd figyelmen kívül.",
   },
   en: {
     subject: (position?: string) =>
@@ -1289,20 +1293,20 @@ export async function sendTeamInviteEmail(params: {
 
 const orgInviteTranslations = {
   hu: {
-    subject: (orgName: string) => `Meghívtak ${withHuArticle(orgName)} szervezetbe – trita`,
+    subject: (orgName: string) => `Szervezeti meghívó: ${orgName} – trita`,
     kind: "Meghívó",
     eyebrow: "Szervezet",
-    heading: (orgName: string) => `Meghívtak ${withHuArticle(orgName)} szervezetbe`,
-    body: "Regisztrálj a tritára, és automatikusan csatlakozol a szervezethez. Kitöltheted a személyiségtesztet, és láthatod, hogyan illesz a csapatba.",
+    heading: (orgName: string) => `Meghívó a szervezetbe: ${orgName}`,
+    body: "Nyisd meg a meghívót, és regisztrálj a tritára. Ezután megerősítheted a csatlakozásodat a szervezethez, és kitöltheted a személyiségtesztet.",
     cta: "Regisztráció és csatlakozás",
-    footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
+    footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az e-mailt.",
   },
   en: {
     subject: (orgName: string) => `You've been invited to join ${orgName} – trita`,
     kind: "Invitation",
     eyebrow: "Organization",
     heading: (orgName: string) => `You've been invited to join ${orgName}`,
-    body: "Register on trita and you'll automatically join the organization. Complete the personality assessment to see how you fit with your team.",
+    body: "Open the invitation and register with trita. You can then confirm that you want to join the organization and complete the personality assessment.",
     cta: "Register and join",
     footer: "If you don't want to join, simply ignore this email.",
   },
@@ -1356,12 +1360,12 @@ const consultantInviteTranslations = {
     headingExisting: "Tanácsadói hozzáférést kaptál",
     headingNew: "Meghívtak a tritára tanácsadóként",
     bodyExisting:
-      "A fiókodhoz tanácsadói hozzáférést kapcsoltunk a trita platformon. Belépés után eléred a hozzád rendelt szervezetek tanácsadói felületeit.",
+      "Tanácsadói hozzáférést kaptál a tritán. Belépés után megnyithatod a hozzád rendelt szervezetek tanácsadói felületét.",
     bodyNew:
-      "Tanácsadói hozzáférést kaptál a trita platformon. Regisztrálj ezzel az email-címmel, és a hozzáférés automatikusan aktiválódik az első belépéskor.",
+      "Tanácsadóként hívtak meg a tritára. Regisztrálj ezzel az e-mail-címmel; az első belépéskor automatikusan megkapod a hozzáférést.",
     ctaExisting: "Belépés",
     ctaNew: "Regisztráció",
-    footer: "Ha nem számítottál erre a meghívóra, hagyd figyelmen kívül ezt az emailt.",
+    footer: "Ha nem számítottál erre a meghívóra, hagyd figyelmen kívül ezt az e-mailt.",
   },
   en: {
     subject: "Consultant access on trita",
@@ -1426,18 +1430,18 @@ const measurementStepTranslations = {
   hu: {
     openedSubject: (campaignName: string) => `Új lépés vár rád – ${campaignName}`,
     kind: "Mérés",
-    openedEyebrow: "Kampány-lépés",
+    openedEyebrow: "Mérési feladat",
     reminderEyebrow: "Emlékeztető",
-    openedHeading: "Kinyílt a következő lépésed",
+    openedHeading: "Elérhető a következő feladatod",
     openedBody: (campaignName: string) =>
-      `A(z) „${campaignName}" mérésben kinyílt a következő lépésed. Néhány perc az egész – a többiek eredménye is akkor áll össze, ha mindenki kitölt.`,
+      `Elérhető a következő feladatod ebben a mérésben: „${campaignName}”. A válaszaiddal segítesz, hogy teljesebb képet kapjunk a csapatról.`,
     reminderSubject: (campaignName: string) => `Emlékeztető: kitöltés vár rád – ${campaignName}`,
     reminderHeading: "Egy kitöltés még vár rád",
     reminderBody: (campaignName: string) =>
-      `A(z) „${campaignName}" mérésben még nyitott lépésed van. Néhány perc az egész – a csapat eredménye csak akkor áll össze, ha mindenki kitölt.`,
+      `Még van kitöltésre váró feladatod ebben a mérésben: „${campaignName}”. A válaszaiddal segítesz, hogy teljesebb képet kapjunk a csapatról.`,
     cta: "Kitöltés megnyitása",
     footer:
-      "Ezt az emailt azért kaptad, mert a szervezeted mérési körének résztvevője vagy.",
+      "Ezt az e-mailt azért kaptad, mert a szervezeted mérési körének résztvevője vagy.",
   },
   en: {
     openedSubject: (campaignName: string) => `A new step is waiting for you – ${campaignName}`,
@@ -1516,14 +1520,14 @@ const welcomeTranslations = {
     subject: "Üdvözlünk a tritán!",
     kind: "Üdvözlet",
     eyebrow: "Első lépés",
-    preheader: "Az első lépés egy ~10 perces kitöltés – utána azonnal látod az eredményed.",
+    preheader: "Körülbelül 10 perc alatt kitöltheted a felmérést, és rögtön megnézheted az eredményed.",
     heading: "Üdvözlünk a tritán!",
     body1:
-      "Örülünk, hogy itt vagy. A trita hat személyiségdimenzió mentén mutatja meg, hogyan működsz – és ha csapatban dolgozol, azt is, hogyan működtök együtt.",
+      "A tritán először a saját személyiségjellemzőidet ismerheted meg. Később mások visszajelzéseivel is összevetheted az eredményedet, csapatprogramban pedig a közös munkátokat is áttekinthetitek.",
     body2:
-      "Az első lépés egy rövid, ~10 perces kitöltés. A válaszaid alapján azonnal megkapod a részletes eredményedet.",
+      "Kezdd a körülbelül 10 perces személyiségfelméréssel. A végén rögtön megmutatjuk a hat dimenzióban elért pontszámaidat és a hozzájuk tartozó magyarázatokat.",
     cta: "Kezdés",
-    optOut: "Ha nem szeretnél ilyen emaileket kapni:",
+    optOut: "Ha nem szeretnél ilyen e-maileket kapni:",
   },
   en: {
     subject: "Welcome to trita!",
@@ -1580,12 +1584,12 @@ const legalAcceptanceTranslations = {
     subject: "Frissültek a trita jogi feltételei",
     kind: "Fontos",
     eyebrow: "Jogi feltételek",
-    heading: "Új elfogadás szükséges",
+    heading: "Tekintsd át a frissített feltételeket",
     preheader: "A trita használatának folytatásához fogadd el a frissített feltételeket.",
     body1: "Frissítettük a Platform ÁSZF-et és az Adatkezelési tájékoztatót.",
-    body2: "A következő belépéskor áttekintheted a dokumentumokat, és egy lépésben rögzítheted az elfogadásodat.",
+    body2: "A következő belépéskor elolvashatod a dokumentumokat, elfogadhatod az ÁSZF-et, és jelezheted, hogy tudomásul vetted az Adatkezelési tájékoztatót.",
     cta: "Dokumentumok áttekintése",
-    footer: "Ezt a működési emailt azért kaptad, mert trita-fiókkal rendelkezel, és az új feltételek elfogadása szükséges.",
+    footer: "Azért küldtük ezt a levelet, mert van trita-fiókod, és a további használathoz el kell fogadnod a frissített feltételeket.",
   },
   en: {
     subject: "The trita legal terms have been updated",
@@ -1647,11 +1651,11 @@ const teamReportPublishedTranslations = {
     subject: (teamName: string) => `Elkészült a csapatriport – ${teamName}`,
     kind: "Eredmény",
     eyebrow: "Csapatriport",
-    heading: (teamName: string) => `Elkészült ${withHuArticle(teamName)} csapat riportja`,
+    heading: (teamName: string) => `Elkészült a csapatriport: ${teamName}`,
     body1:
-      "A tanácsadó által validált csapatriport mostantól elérhető a platformon. A riport külön jelöli, mi mért, mi becsült és mi értelmezési nyelv.",
+      "A tanácsadó átnézte a csapatriportot, most már elolvashatod. A megállapítások mellett jelöljük, mi származik mérésből, és mit becsülünk. A magyarázatok segítenek közösen értelmezni az eredményeket.",
     cta: "Riport megnyitása",
-    footer: "Ezt az emailt azért kaptad, mert a csapat riportjának címzettje vagy.",
+    footer: "Ezt az e-mailt azért kaptad, mert a csapat riportjának címzettje vagy.",
   },
   en: {
     subject: (teamName: string) => `Your team report is ready – ${teamName}`,
@@ -1707,22 +1711,22 @@ const pilotApplyConfirmationTranslations = {
     kind: "Visszaigazolás",
     eyebrow: "Pilotprogram",
     heading: "Megkaptuk a jelentkezésed",
-    preheader: "24 órán belül személyesen kereslek a részletekkel.",
+    preheader: "Egy munkanapon belül személyesen kereslek a részletekkel.",
     greeting: (name: string) => `Kedves ${name},`,
     body1: "Köszönjük, hogy jelentkeztél a trita Pilotprogramba!",
     body2:
-      "24 órán belül személyesen kereslek, hogy megbeszéljük a részleteket és egyeztessünk egy rövid, kötelezettségmentes bevezető beszélgetést.",
+      "Egy munkanapon belül kereslek. Megbeszéljük a részleteket, és időpontot egyeztetünk egy rövid, kötelezettségmentes beszélgetésre.",
   },
   en: {
     subject: "We received your application – trita Pilot Program",
     kind: "Confirmation",
     eyebrow: "Pilot program",
     heading: "We received your application",
-    preheader: "I will personally reach out within 24 hours.",
+    preheader: "I will personally reach out within one business day.",
     greeting: (name: string) => `Dear ${name},`,
     body1: "Thank you for applying to the trita Pilot Program!",
     body2:
-      "I will personally reach out within 24 hours to discuss the details and set up a short, no-obligation intro conversation.",
+      "I will personally reach out within one business day to discuss the details and set up a short, no-obligation intro conversation.",
   },
 };
 
@@ -1733,7 +1737,6 @@ export async function sendPilotApplyConfirmationEmail(params: {
 }): Promise<boolean> {
   const locale = normalizeLocale(params.locale);
   const t = pilotApplyConfirmationTranslations[locale];
-  const firstName = params.name.split(" ")[0] ?? params.name;
 
   const html = buildEmailLayout({
     locale,
@@ -1742,7 +1745,7 @@ export async function sendPilotApplyConfirmationEmail(params: {
     heading: t.heading,
     preheader: t.preheader,
     bodyContent: `
-    <p style="${EMAIL_P}">${t.greeting(escapeHtml(firstName))}</p>
+    <p style="${EMAIL_P}">${t.greeting(escapeHtml(params.name))}</p>
     <p style="${EMAIL_P}">${t.body1}</p>
     <p style="${EMAIL_P};margin-bottom:0">${t.body2}</p>`,
     signOff: PERSONAL_SIGN_OFF[locale],
@@ -1753,7 +1756,7 @@ export async function sendPilotApplyConfirmationEmail(params: {
     to: params.to,
     subject: t.subject,
     html,
-    text: `${t.greeting(firstName)}\n\n${t.body1}\n\n${t.body2}\n\n${PERSONAL_SIGN_OFF[locale].thanks}\n${PERSONAL_SIGN_OFF[locale].team}`,
+    text: `${t.greeting(params.name)}\n\n${t.body1}\n\n${t.body2}\n\n${PERSONAL_SIGN_OFF[locale].thanks}\n${PERSONAL_SIGN_OFF[locale].team}`,
   });
 
   return ok;
@@ -1763,16 +1766,16 @@ export async function sendPilotApplyConfirmationEmail(params: {
 
 const advisoryConfirmationTranslations = {
   hu: {
-    subject: "Megkaptuk a konzultáció-igényed – trita Advisory",
+    subject: "Megkaptuk a konzultációs kérésedet – trita Advisory",
     kind: "Visszaigazolás",
     eyebrow: "trita Advisory",
-    heading: "Megkaptuk a konzultáció-igényed",
-    preheader: "24 órán belül személyesen kereslek az időpont-egyeztetéssel.",
+    heading: "Megkaptuk a konzultációs kérésedet",
+    preheader: "24 órán belül személyesen kereslek, hogy időpontot egyeztessünk.",
     greeting: (name: string) => `Kedves ${name},`,
     body1:
-      "Megkaptuk a jelentkezésedet a tanácsadói konzultációra! 24 órán belül személyesen kereslek az időpont-egyeztetéssel.",
+      "Megkaptuk a konzultációs kérésedet. 24 órán belül kereslek, hogy időpontot egyeztessünk.",
     body2:
-      "A konzultáción a csapataid aktuális mintázataiból indulunk ki – nem kell semmit előkészítened.",
+      "A beszélgetésen a csapataid aktuális eredményeiből indulunk ki. Nem kell előre készülnöd.",
   },
   en: {
     subject: "We received your consultation request – trita Advisory",
@@ -1836,13 +1839,13 @@ export async function sendHiringCreditsRequestEmail(params: {
   const html = buildEmailLayout({
     locale: "hu",
     kind: "Rendszer",
-    eyebrow: "Kredit-igénylés",
-    heading: "Elfogyott a jelölt-kreditkeret",
-    preheader: `${params.requesterName} krediteket kér a(z) ${params.orgName} szervezethez.`,
+    eyebrow: "Felmérési keret bővítése",
+    heading: "Elfogyott a jelöltek felmérésére használható keret",
+    preheader: `${params.requesterName} a jelöltfelmérési keret bővítését kéri. Szervezet: ${params.orgName}`,
     bodyContent: `
     <p style="${EMAIL_P}">
-      <strong>${escapeHtml(params.requesterName)}</strong> jelölt értékelési krediteket kér
-      a(z) <strong>${escapeHtml(params.orgName)}</strong> szervezethez.
+      <strong>${escapeHtml(params.requesterName)}</strong> a jelöltek felmérésére használható keret bővítését kéri.<br />
+      Szervezet: <strong>${escapeHtml(params.orgName)}</strong>
     </p>
     <p style="${EMAIL_P};margin-bottom:26px">
       A jelenlegi kreditkeret üres. Tölts fel krediteket, hogy a csapat folytathassa
@@ -1856,9 +1859,9 @@ export async function sendHiringCreditsRequestEmail(params: {
   const ok = await sendEmail({
     template: "hiring_credits_request",
     to: params.to,
-    subject: `Jelölt kredit igénylés – ${params.orgName}`,
+    subject: `Jelöltfelmérési keret bővítése – ${params.orgName}`,
     html,
-    text: `${params.requesterName} jelölt értékelési krediteket kér a(z) ${params.orgName} szervezethez.\n\nKreditek feltöltése: ${ctaLink}\n\n${SIGN_OFF.hu.thanks}\n${SIGN_OFF.hu.team}`,
+    text: `${params.requesterName} a jelöltek felmérésére használható keret bővítését kéri.\nSzervezet: ${params.orgName}\n\nKreditek feltöltése: ${ctaLink}\n\n${SIGN_OFF.hu.thanks}\n${SIGN_OFF.hu.team}`,
   });
 
   return ok;
@@ -1894,13 +1897,13 @@ const newsletterConfirmTranslations = {
     subject: "Erősítsd meg a feliratkozásod – trita",
     kind: "Megerősítés",
     eyebrow: "Feliratkozás",
-    heading: "Erősítsd meg a kérésed",
+    heading: "Erősítsd meg a feliratkozásod",
     preheader: "Nyisd meg a megerősítő oldalt, és hagyd jóvá a feliratkozást.",
     greeting: "Szia,",
-    body: "Valaki (feltehetően te) feliratkozott a trita értesítőjére ezzel az email címmel. Az alábbi gomb megnyitja a megerősítő oldalt, ahol jóváhagyhatod a kérést – enélkül nem küldünk semmit.",
-    what: "Ezután új blogbejegyzésnél és időnként egy-egy gyakorlati összefoglalónál keresünk meg. Nem gyakran, és bármikor leiratkozhatsz.",
+    body: "Ezzel az e-mail-címmel feliratkoztak a trita értesítőjére. Ha te voltál, nyisd meg az alábbi gombbal a megerősítő oldalt, és hagyd jóvá a feliratkozást. Csak ezután küldünk értesítőket.",
+    what: "Ezután az új blogcikkekről értesítünk, és időnként gyakorlati összefoglalót küldünk. Ritkán jelentkezünk, és bármikor leiratkozhatsz.",
     cta: "Megerősítő oldal megnyitása",
-    quiet: "Ha nem te kérted, nincs teendőd – a link 7 nap múlva magától lejár, és addig sem küldünk semmit.",
+    quiet: "Ha nem te kérted, nincs teendőd. A link 7 nap múlva lejár. Jóváhagyás nélkül nem küldünk értesítőket.",
   },
   en: {
     subject: "Confirm your subscription – trita",

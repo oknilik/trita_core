@@ -21,7 +21,7 @@ interface RoleFitSectionProps {
 const TIERS = [
   {
     key: "strong" as const,
-    i18nKey: "content.roleFitStrong",
+    i18nKey: "results.roleFitStrong",
     bg: "bg-[var(--color-surface-self-accent-soft)]",
     borderColor: "var(--color-action-primary-bg)",
     labelColor: "text-[var(--color-accent-self-deep)]",
@@ -29,7 +29,7 @@ const TIERS = [
   },
   {
     key: "might" as const,
-    i18nKey: "content.roleFitMaybe",
+    i18nKey: "results.roleFitMight",
     bg: "bg-[var(--color-surface-highlight-warm)]",
     borderColor: "var(--color-accent-primary)",
     labelColor: "text-[var(--color-accent-primary-strong)]",
@@ -37,7 +37,7 @@ const TIERS = [
   },
   {
     key: "prep" as const,
-    i18nKey: "content.roleFitPrep",
+    i18nKey: "results.roleFitPrep",
     bg: "bg-[var(--color-surface-subtle)]",
     borderColor: "var(--color-text-muted)",
     labelColor: "text-[var(--color-text-muted)]",

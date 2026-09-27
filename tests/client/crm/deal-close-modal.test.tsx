@@ -120,7 +120,7 @@ describe("DealDetail – lezárás", () => {
 
     await user.click(screen.getByRole("button", { name: "Megnyertként lezárás" }));
     expect(
-      await screen.findByText(/Nincs szervezet linkelve/),
+      await screen.findByText(/Nincs szervezet az ügyhöz kapcsolva/),
     ).toBeInTheDocument();
 
     await user.click(screen.getByTestId("crm-close-submit"));

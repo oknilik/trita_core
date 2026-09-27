@@ -12,7 +12,7 @@ import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Új ügyfél-szervezet | trita", robots: { index: false } };
+  return { title: "Új ügyfélszervezet | trita", robots: { index: false } };
 }
 
 // Tanácsadói ügyfél-org létrehozás — csak consulting-led módban, csak
@@ -50,10 +50,10 @@ export default async function NewClientOrgPage() {
           href="/dashboard"
           backLabel={isHu ? "Vissza a vezérlőre" : "Back to dashboard"}
           eyebrow={isHu ? "tanácsadói felület" : "consultant workspace"}
-          title={isHu ? "Új ügyfél-szervezet" : "New client organization"}
+          title={isHu ? "Új ügyfélszervezet" : "New client organization"}
           description={
             isHu
-              ? "A szervezetbe tanácsadóként lépsz be. Ezután te hívod meg a tagokat, sorolod őket csapatokba és indítod a méréseket – az ügyfél admin később is csatlakozhat."
+              ? "A szervezetbe tanácsadóként lépsz be. Ezután te hívod meg a tagokat, sorolod őket csapatokba és indítod a méréseket – az ügyfél adminisztrátora később is csatlakozhat."
               : "You join the organization as its consultant. You then invite members, assign them to teams and launch measurements – the client admin can join later."
           }
           className="mb-8"

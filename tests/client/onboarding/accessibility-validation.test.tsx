@@ -52,8 +52,8 @@ describe("OnboardingClient accessibility and validation", () => {
     expect(genderGroup).toHaveAttribute("aria-invalid", "true");
     expect(country).toHaveAttribute("aria-invalid", "true");
     expect(consent).toHaveAttribute("aria-invalid", "true");
-    expect(screen.getByText("A névnek 2-20 karakter hosszúnak kell lennie")).toBeInTheDocument();
-    expect(screen.getByText("Az életkornak 16-100 év közé kell esnie")).toBeInTheDocument();
+    expect(screen.getByText("A neved 2–20 karakterből állhat")).toBeInTheDocument();
+    expect(screen.getByText("Ellenőrizd a születési évedet: az életkorodnak 16 és 100 év közé kell esnie")).toBeInTheDocument();
     expect(screen.getByText("Válassz egy lehetőséget")).toBeInTheDocument();
     expect(screen.getByText("Válassz országot")).toBeInTheDocument();
     expect(screen.getByText("A folytatáshoz fogadd el az adatvédelmi tájékoztatót")).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe("OnboardingClient accessibility and validation", () => {
 
     fireEvent.change(username, { target: { value: "Anna" } });
     expect(username).not.toHaveAttribute("aria-invalid");
-    expect(screen.queryByText("A névnek 2-20 karakter hosszúnak kell lennie")).not.toBeInTheDocument();
+    expect(screen.queryByText("A neved 2–20 karakterből állhat")).not.toBeInTheDocument();
     expect(screen.getByText("Válassz országot")).toBeInTheDocument();
   });
 

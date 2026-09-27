@@ -41,7 +41,7 @@ function scoreZone(score: number | null, locale: Locale): { label: string; textC
 
 const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
   H: {
-    hu: "Becsületesség, igazságosság, szerénység – mennyire kerüli a manipulációt és az önérdek-érvényesítést",
+    hu: "A méltányossághoz, az egyenes beszédhez, a szerénységhez és a személyes előnyökhöz való viszony",
     en: "Honesty, fairness, modesty – tendency to avoid manipulation and self-promotion",
   },
   // A skála-leírás a MÉRT facetekhez igazodik (Félelem · Szorongás ·
@@ -52,23 +52,23 @@ const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
     en: "Emotional sensitivity, tendency toward worry, strong emotional attachments",
   },
   X: {
-    hu: "Szociabilitás, magabiztosság, energikusság – mennyire tölt fel a társas közeg",
+    hu: "Társas kezdeményezés, magabiztosság és élénkség; mennyire keresi valaki mások társaságát",
     en: "Sociability, confidence, energy – degree to which social settings are energizing",
   },
   A: {
-    hu: "Türelem, együttműködés, megbocsátás – mennyire kerüli a konfliktust és törekszik harmóniára",
+    hu: "Türelem, megbocsátás és engedékenység; hogyan reagál valaki a nézeteltérésekre",
     en: "Patience, cooperation, forgiveness – tendency to avoid conflict and seek harmony",
   },
   C: {
-    hu: "Szervezettség, kitartás, fegyelmezettség – mennyire megbízható és célirányos a munkavégzés",
+    hu: "Szervezettség, kitartás és megfontoltság; mennyi figyelmet fordít valaki a tervezésre és a részletekre",
     en: "Organization, diligence, self-discipline – reliability and goal-directedness at work",
   },
   O: {
-    hu: "Nyitottság, kreativitás, intellektuális kíváncsiság – mennyire keresi az újszerű megközelítéseket",
+    hu: "Kíváncsiság, képzelőerő és az új ötletek iránti érdeklődés; mennyire keresi valaki a szokatlan megközelítéseket",
     en: "Openness, creativity, intellectual curiosity – tendency to seek novel ideas and approaches",
   },
   N: {
-    hu: "Érzelmi instabilitás, stressz-érzékenység – reakció nyomáshelyzetre",
+    hu: "Érzelmi ingadozás és a feszültségre való érzékenység; hogyan reagál valaki nyomás alatt",
     en: "Emotional instability, stress sensitivity – response to pressure situations",
   },
 };

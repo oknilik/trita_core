@@ -177,7 +177,7 @@ export function OrgMembersTab({
                         href={`${dossierBaseHref}/${member.userId}`}
                         className="inline-flex min-h-9 items-center rounded-lg border border-sand bg-surface-card px-3 text-note font-semibold text-ink-body transition hover:border-[var(--color-layer-org-accent)]/30 hover:text-ink"
                       >
-                        {isHu ? "Dossié" : "Dossier"}
+                        {isHu ? "Dosszié" : "Dossier"}
                       </Link>
                     ) : null}
                     {isAdmin && member.userId !== profileId ? (
@@ -202,7 +202,7 @@ export function OrgMembersTab({
           <details className="mt-5 rounded-xl border border-sand bg-surface-card">
             <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-ink-body">
               {isHu
-                ? `Függő meghívók (${pendingInvites.length})`
+                ? `Függőben lévő meghívók (${pendingInvites.length})`
                 : `Pending invites (${pendingInvites.length})`}
             </summary>
             <div className="flex flex-col divide-y divide-sand border-t border-sand px-4">

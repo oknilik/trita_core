@@ -47,7 +47,7 @@ function measurementDescription(stepType: CampaignStepType, locale: Locale): str
       return hu ? "24 állítás a közös munkátokról; körülbelül 5 perc." : "24 statements about your shared work; about 5 minutes.";
     case "PSYCH_SAFETY":
       return hu
-        ? "8 rövid, névtelen állítás; körülbelül 2 perc."
+        ? "8 rövid állítás, névtelen válaszadás; körülbelül 2 perc."
         : "8 short, anonymous statements; about 2 minutes.";
     case "TRUST_360":
       return hu
@@ -59,11 +59,11 @@ function measurementDescription(stepType: CampaignStepType, locale: Locale): str
         : "Select the statements that best describe your teammates.";
     case "TEAM_ROLE":
       return hu
-        ? "Rövid kérdőív arról, milyen szerepeket viszel a csapatban."
+        ? "Rövid kérdőív arról, milyen szerepeket töltesz be a csapatban."
         : "A short questionnaire about the roles you play in the team.";
     case "PEER_FEEDBACK":
       return hu
-        ? "Adj rövid, jövőorientált visszajelzést a csapattársaidnak."
+        ? "Adj rövid visszajelzést a csapattársaidnak arról, mit érdemes folytatniuk vagy legközelebb kipróbálniuk."
         : "Give your teammates short, future-focused feedback.";
     case "SELF_ASSESSMENT":
     case "OBSERVER_360":
@@ -146,7 +146,7 @@ export function resolveTeamOverviewFocus(input: {
       kind: "feedback",
       eyebrow: hu ? "Következő teendőd" : "Your next task",
       title: hu
-        ? `Adj visszajelzést ${feedbackRequest.inviterName} számára`
+        ? `Visszajelzést kér tőled: ${feedbackRequest.inviterName}`
         : `Give feedback to ${feedbackRequest.inviterName}`,
       description:
         feedbackRequest.answered > 0
@@ -175,7 +175,7 @@ export function resolveTeamOverviewFocus(input: {
     return {
       kind: "observer",
       eyebrow: hu ? "Következő teendőd" : "Your next task",
-      title: hu ? "Zárd le a külső visszajelzési köröd" : "Complete your external feedback round",
+      title: hu ? "Gyűjtsd össze a szükséges visszajelzéseket" : "Complete your external feedback round",
       description: hu
         ? `${observerGathering.campaignName}: ${observerGathering.received}/${observerGathering.min} visszajelzés érkezett, ${observerGathering.sent} meghívó ment ki.`
         : `${observerGathering.campaignName}: ${observerGathering.received}/${observerGathering.min} responses received, ${observerGathering.sent} invites sent.`,

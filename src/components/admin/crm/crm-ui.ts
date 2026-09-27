@@ -97,13 +97,13 @@ const CRM_ERROR_TEXT: Record<string, string> = {
   LOST_REASON_REQUIRED: "Az eredmény nélküli lezáráshoz kötelező okot választani.",
   QUOTE_NOT_DRAFT: "Csak piszkozat állapotú ajánlat szerkeszthető.",
   ORDER_FORM_REQUIRES_ACCEPTED_QUOTE:
-    "Az Egyedi Megrendelőlap csak elfogadott ajánlatból generálható.",
+    "Az Egyedi Megrendelőlapot az ajánlat elfogadása után készítheted el.",
   TEAM_HEADCOUNT_MISMATCH:
     "A csapatok száma vagy összlétszáma nem egyezik az ajánlattal.",
   QUOTE_SNAPSHOT_MISMATCH:
     "A régi ajánlat számítása eltér a jelenlegi modelltől. Készíts belőle új piszkozatot.",
-  ONLY_DRAFT_DELETABLE: "Csak piszkozat törölhető – kiment ajánlat nyom marad.",
-  NOT_EDITABLE: "Rendszer-bejegyzés nem módosítható és nem törölhető.",
+  ONLY_DRAFT_DELETABLE: "Csak piszkozat törölhető. Az elküldött ajánlatot megőrizzük.",
+  NOT_EDITABLE: "Rendszerbejegyzés nem módosítható és nem törölhető.",
   INQUIRY_ALREADY_LINKED: "Ez a megkeresés már egy ügyhöz kapcsolódik.",
   VALIDATION_ERROR: "Érvénytelen adat – ellenőrizd a mezőket.",
   UNAUTHORIZED: "Nincs jogosultság a művelethez.",

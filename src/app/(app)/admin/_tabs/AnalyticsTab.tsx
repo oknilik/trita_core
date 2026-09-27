@@ -127,7 +127,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
           </p>
           <p className="mt-2 text-xs text-muted">
             A beállítás napján a látogató-álnevek megváltoznak, ezért az aznapi
-            egyedi látogató szám felfelé torzul. Részletek:
+            egyedi látogatók száma felfelé torzul. Részletek:
             docs/development/launch-checklist.md
           </p>
         </div>
@@ -155,7 +155,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         <AdminStatCard
           title="Napi egyedi látogató (össz.)"
           value={traffic.totalVisitors}
-          subtitle="A látogató-azonosító naponta rotál – ez a napi értékek összege, nem havi egyedi ember."
+          subtitle="A látogatói azonosító naponta változik. A szám a napi értékek összege, ezért ugyanaz a látogató több napon is beleszámíthat."
         />
         <AdminStatCard
           title="Oldalletöltés"
@@ -166,7 +166,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
 
       <Panel
         title="Forgalom időben"
-        description="Eseményből számolt érték – ad-blocker és nyomkövetés-tiltás miatt alulmér."
+        description="Az érték a rögzített eseményekből készül. A reklámblokkolók és a nyomkövetés tiltása miatt egyes látogatások kimaradhatnak."
       >
         {traffic.hasData ? (
           <AdminTrendChart
@@ -189,10 +189,10 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         )}
       </Panel>
 
-      {/* ── Akvizíciós tölcsér ─────────────────────────────────────── */}
+      {/* ── A látogatástól a megkeresésig ─────────────────────────────────────── */}
       <Panel
-        title="Akvizíciós tölcsér"
-        description="Bal oldalon az eseményből számolt (lossy), jobb oldalon a DB-ből számolt (pontos) érték. Ahol mindkettő van, az eltérés a mérési veszteség."
+        title="A látogatástól a megkeresésig"
+        description="Bal oldalon a rögzített eseményekből, jobb oldalon az adatbázisból számolt érték látható. A kettő eltérése mutatja, mennyi adat hiányzik az eseménymérésből."
       >
         <div className="space-y-3">
           {funnel.map((step) => {
@@ -242,7 +242,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
             ]}
           />
         ) : (
-          <EmptyHint>Még nincs kérdés-szintű adat.</EmptyHint>
+          <EmptyHint>Még nincs kérdésszintű adat.</EmptyHint>
         )}
       </Panel>
 
@@ -255,7 +255,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         />
         <AdminTableSection
           title="Hivatkozó források"
-          description="Csak a hivatkozó host; teljes URL soha."
+          description="Csak a hivatkozó webhely neve látszik, a teljes cím nem."
           rows={referrers.map((row) => ({ label: row.label, value: row.value }))}
         />
       </div>
@@ -269,7 +269,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       )}
 
       <AdminTableSection
-        title="Esemény-volumen"
+        title="Események száma"
         description="Melyik esemény hányszor keletkezett az időszakban."
         rows={volume.map((row) => ({ label: row.label, value: row.value }))}
       />
@@ -277,7 +277,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       {/* ── Nyers események (hibakeresés) ──────────────────────────── */}
       <Panel
         title="Legutóbbi események"
-        description="Hibakereséshez: megérkezik-e egyáltalán, amit vársz."
+        description="Itt ellenőrizheted, hogy megérkeznek-e a várt események."
       >
         {recent.length === 0 ? (
           <EmptyHint>Nincs rögzített esemény.</EmptyHint>
@@ -330,16 +330,17 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         </h2>
         <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-ink-body">
           <li>
-            · Nincs süti és nincs semmilyen eszköz-oldali tárolás. A látogató-azonosító napi
-            rotáló pszeudonim (IP + böngésző hash), az IP-t nem tároljuk.
+            · Nem helyezünk el sütit vagy más azonosítót az eszközön. A látogatót naponta
+            változó álnév azonosítja, amely az IP-cím és a böngészőadatok kivonatából készül.
+            Magát az IP-címet nem tároljuk.
           </li>
           <li>
             · A GPC / Do Not Track jelzést tiszteletben tartjuk – az így jelző látogatóktól
             semmit nem mérünk.
           </li>
           <li>
-            · Esemény-tulajdonságban nincs e-mail, név, szabad szöveg, kérdőív-válasz, pontszám
-            vagy meghívó-token; a katalógus zárt sémákkal dolgozik.
+            · Az események adatai között nincs e-mail-cím, név, szabad szöveg, kérdőívre adott
+            válasz, pontszám vagy meghívóhoz tartozó token. Csak az előre meghatározott mezőket fogadjuk el.
           </li>
           <li>
             · Megőrzés: {ANALYTICS_RETENTION_MONTHS} hónap, utána automatikus törlés. Jelenleg{" "}

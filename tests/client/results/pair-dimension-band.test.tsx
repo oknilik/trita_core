@@ -107,11 +107,11 @@ describe("PairFacetNuances", () => {
     expect(screen.getByText(NUANCE_TITLE)).toBeInTheDocument();
   });
 
-  it("kimondja, hogy ez a legbizonytalanabb réteg", () => {
+  it("kimondja, hogy ez a alskálák becslése bizonytalanabb", () => {
     // A becsült/mért megkülönböztetés a termék hitelességi alapelve: a
     // gyenge mérést jelölni kell, nem elrejteni.
     render(<PairFacetNuances rows={NUANCES} />);
-    expect(screen.getByText(/legbizonytalanabb réteg/)).toBeInTheDocument();
+    expect(screen.getByText(/alskálák becslése bizonytalanabb/)).toBeInTheDocument();
   });
 
   it("nüansz nélkül nem renderel szekciót", () => {

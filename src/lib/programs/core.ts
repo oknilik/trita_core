@@ -225,11 +225,11 @@ export const PROGRAM_LABELS = {
 };
 export const PROGRAM_DESCRIPTIONS = {
   TEAM_SCAN: {
-    hu: "Személyiség, külső visszajelzés, csapatműködés, pszichológiai biztonság és tanácsadó által jóváhagyott riport.",
+    hu: "A személyiségprofilok, mások visszajelzései, a közös munkaszokások és a pszichológiai biztonság felmérése. Az eredményeket tanácsadó által jóváhagyott riport foglalja össze.",
     en: "Personality, observer feedback, operating style, psychological safety and a consultant-reviewed report.",
   },
   FOLLOW_UP: {
-    hu: "Csapatműködés és pszichológiai biztonság újramérése, összehasonlítva egy korábbi Team Scannel. Nem kér új személyiségtesztet vagy observert.",
+    hu: "Újra felmérjük a közös munkaszokásokat és a pszichológiai biztonságot, majd az eredményeket összevetjük egy korábbi Team Scan-méréssel. Ebben a körben nincs új személyiségteszt, és másoktól sem kérünk új személyiségértékelést.",
     en: "Remeasure operating style and psychological safety against a previous Team Scan, without repeating personality or observer assessments.",
   },
 };

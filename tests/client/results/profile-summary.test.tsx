@@ -6,6 +6,8 @@ import {
   buildProfileSummaryInsights,
 } from "@/components/results/ProfileSummary";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
+import { DIMENSION_GROWTH_TIPS } from "@/lib/profile-content";
+import { t } from "@/lib/i18n";
 
 const DIMENSIONS: SerializedDimension[] = [
   { code: "H", label: "Becsületesség-Alázat", color: "#000", score: 82, insight: "Erős értékrend.", description: "Következetes döntések.", insights: { low: "", mid: "", high: "" }, facets: [] },
@@ -21,11 +23,12 @@ describe("ProfileSummary", () => {
     const insights = buildProfileSummaryInsights(DIMENSIONS, undefined, "hu");
     expect(insights.map((item) => item.label)).toEqual([
       "Ami természetesen megy",
-      "Ami több figyelmet kérhet",
-      "Ahol a legtöbbet fejlődhetsz",
+      "Amire érdemes odafigyelned",
+      "Amit érdemes kipróbálnod",
     ]);
-    expect(insights[0].text).toBe("Erős értékrend.");
+    expect(insights[0].text).toBe("Fontos neked az egyenes beszéd és a tisztességes eljárás. Mások így könnyebben tudhatják, mire számíthatnak tőled.");
     expect(insights[1].text).toBe("Egyenes vitahelyzetek.");
+    expect(insights[2].text).toBe(DIMENSION_GROWTH_TIPS.A.hu.behavior);
   });
 
   it("a rövid nézetben csak az értelmezést és két egyértelmű továbblépést mutat", async () => {
@@ -45,13 +48,35 @@ describe("ProfileSummary", () => {
       />,
     );
 
-    expect(screen.getByRole("heading", { name: "Ezt érdemes elvinned az eredményedből." })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Mi történik, amikor két profil találkozik?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Az eredményed röviden" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Mire utal a két profil az együttműködésetekről?" })).toBeInTheDocument();
     expect(screen.queryAllByRole("meter")).toHaveLength(0);
     expect(document.body.textContent).not.toContain("82%");
+    expect(screen.getByText(DIMENSION_GROWTH_TIPS.A.hu.behavior)).toBeInTheDocument();
+    expect(screen.queryByText(DIMENSIONS[3].description)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Külső nézőpont/ })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: /Minden részlet/ }));
     expect(onOpenDetails).toHaveBeenCalledOnce();
+  });
+
+  it("kiemelt gyakorlási terület nélkül önmegfigyelési feladatot jelenít meg", () => {
+    const dimensions = DIMENSIONS.map((dim) => ({ ...dim, score: dim.code === "O" ? 85 : 55 }));
+    render(
+      <ProfileSummary
+        dimensions={dimensions}
+        sentInvitations={[]}
+        observerCount={0}
+        hasObserverData={false}
+        interactionEntry={{ state: "new" }}
+        personalityType="Újító"
+        clarityFeedbackSubmitted={false}
+        onOpenDetails={vi.fn()}
+        onOpenComparison={vi.fn()}
+        locale="hu"
+      />,
+    );
+    expect(screen.getByText(t("results.summaryGrowthExperiment", "hu"))).toBeInTheDocument();
+    expect(screen.queryByText(DIMENSIONS[5].description)).not.toBeInTheDocument();
   });
 });

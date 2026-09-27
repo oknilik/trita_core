@@ -14,7 +14,8 @@ import {
 import { getDimensionTier } from "@/lib/dimension-utils";
 import { rankDimensionScores } from "@/lib/hexaco";
 import { deficitSlotEligible } from "@/lib/score-valence";
-import type { Locale } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n";
+import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 
 // A fordított dimenzió kódja a kanonikus valencia-kapuból (score-valence.ts)
 // — a korábbi helyi literál kivezetve; az örökség-importok kedvéért innen is
@@ -102,15 +103,15 @@ export interface WorkstyleContent {
 // Minden TENSION_PAIRS contentKey-hez kell bejegyzés (guardrail-teszt őrzi).
 export const ROLE_TAGS: Record<string, Record<string, { strong: string[]; might: string[]; prep: string[] }>> = {
   hu: {
-    resilientLeader: { strong: ["Vezető", "Értékesítési vezető", "Kríziskoordinátor", "Változásmenedzsment"], might: ["Projektvezetés", "Ügyfélkapcsolat"], prep: ["Hosszan tartó önálló fókusz", "Elszigetelt munkakörök"] },
+    resilientLeader: { strong: ["Vezető", "Értékesítési vezető", "Kríziskoordinátor", "Változásmenedzsment"], might: ["Projektvezetés", "Ügyfélkapcsolat"], prep: ["Hosszan tartó, elmélyült munka", "Elszigetelt munkakörök"] },
     supportedVisibility: { strong: ["Ügyfélkapcsolat", "Tréning", "HR"], might: ["Prezentáció", "Facilitáció"], prep: ["Elszigetelt munka", "Nagy nyomás"] },
     structuredStability: { strong: ["Minőségbiztosítás", "Adminisztráció", "Megfelelőség"], might: ["Projektmenedzsment", "Tanácsadás"], prep: ["Induló vállalkozás", "Változékony környezet"] },
     safeExperimentation: { strong: ["Tervezői gondolkodás", "Prototípuskészítés", "Innováció"], might: ["Tanácsadás", "Stratégia"], prep: ["Szoros határidejű végrehajtás"] },
-    deepCollaboration: { strong: ["Kiscsapatos kutatás", "Mentorálás", "Páros munka"], might: ["Tanácsadás", "Szakértő"], prep: ["Vállalati kapcsolatépítés"] },
+    deepCollaboration: { strong: ["Kis csapatban végzett kutatás", "Mentorálás", "Páros munka"], might: ["Tanácsadás", "Szakértő"], prep: ["Vállalati kapcsolatépítés"] },
     solitaryInnovator: { strong: ["Kutató", "Elemző", "Rendszertervező"], might: ["Tanácsadás", "Tervezés"], prep: ["Csapatmunka", "Gyakori megbeszélések"] },
-    facilitatedInnovation: { strong: ["Műhelyvezetés", "Tervezői gondolkodás", "Változásmenedzsment"], might: ["Projektmenedzsment", "Oktatás"], prep: ["Felülről vezérelt döntéshozatal"] },
+    facilitatedInnovation: { strong: ["Műhelymunkák vezetése", "Tervezői gondolkodás", "Változásmenedzsment"], might: ["Projektmenedzsment", "Oktatás"], prep: ["Felülről vezérelt döntéshozatal"] },
     responsibleInnovator: { strong: ["Fenntarthatóság", "K+F", "Társadalmi innováció"], might: ["Stratégia", "Termékfejlesztés"], prep: ["Gyors kompromisszum"] },
-    ethicalLeader: { strong: ["Értékvezérelt vezetés", "Megfelelőség", "Közszféra", "Nonprofit"], might: ["Tanácsadás", "HR"], prep: ["Erős politikai játszmák"] },
+    ethicalLeader: { strong: ["Értékvezérelt vezetés", "Megfelelőség", "Közszféra", "Nonprofit"], might: ["Tanácsadás", "HR"], prep: ["Szervezeti hatalmi játszmák"] },
     principledConfronter: { strong: ["Audit", "Minőségbiztosítás", "Jog", "Szabályozás"], might: ["Vezetés", "Tárgyalás"], prep: ["Diplomáciai közvetítés"] },
     structuredCompetitor: { strong: ["Értékesítés", "Üzletfejlesztés", "Teljesítménymenedzsment"], might: ["Projektvezetés", "Operatív működés"], prep: ["Konszenzusos kultúra"] },
     structuredInnovator: { strong: ["Termékfejlesztés", "K+F-vezetés", "Rendszertervezés"], might: ["Stratégia", "Tanácsadás"], prep: ["Improvizációra épülő közeg"] },
@@ -183,9 +184,9 @@ export const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; m
 // generikus, de értelmes szerep-illeszkedési szöveg üres szekció helyett.
 const DEFAULT_ROLE_FIT: Record<Locale, { strong: string; medium: string; watchOut: string }> = {
   hu: {
-    strong: "Kiegyensúlyozott profiloddal sokféle szerepben megállhatod a helyed, különösen az általános, koordináló és összekötő munkakörökben, ahol az alkalmazkodóképesség és a stabilitás érték.",
-    medium: "Az egyetlen erős vonásra épülő, szakosodott szerepek is működhetnek; ezeknél inkább a motivációd és a tapasztalatod dönt, nem a személyiségprofilod.",
-    watchOut: "A nagyon nagy nyomással, tartós elszigeteltséggel vagy folyamatos szerepléssel járó közegek kevésbé építenek a kiegyensúlyozottságodra. Ezekhez tudatos felkészülésre lehet szükséged.",
+    strong: "A pontszámaid alapján nem emelkedik ki egyetlen munkastílus sem. A koordinálást és egyeztetést igénylő szerepeket is érdemes megismerned, majd a saját tapasztalataid alapján mérlegelned.",
+    medium: "Ha egy szakosodott szerep érdekel, nézd meg, milyen tudást és gyakorlatot kíván. A személyiségpontszámaidból önmagukban nem derül ki, mennyire illene hozzád.",
+    watchOut: "A tartós nyomás, az elszigetelt munka vagy a gyakori szereplés más-más felkészülést igényelhet. Idézz fel ilyen helyzeteket: melyikben érezted jól magad, és melyik fárasztott el?",
   },
   en: {
     strong: "With a balanced profile you can thrive in many roles: generalist, coordinating, and bridge positions where flexibility and stability are the value.",
@@ -595,4 +596,21 @@ export function selectHeroInsightDims<T extends { code: string; score: number }>
     return { strongest, weakest: null, flat: true };
   }
   return { strongest, weakest, flat: false };
+}
+
+/** A felület és a riportminták ugyanazt a pontszámalapú bevezetést használják. */
+export function buildHeroInsight(
+  mainDimensions: ReadonlyArray<{ code: string; score: number; label: string }>,
+  dimSem: number,
+  locale: Locale,
+): string {
+  const pick = selectHeroInsightDims(mainDimensions, dimSem);
+  if (!pick) return "";
+  if (pick.flat) return t("results.heroBalancedInsight", locale);
+  const strength = DIMENSION_STRENGTH_VERBS[pick.strongest.code]?.[locale] ?? pick.strongest.label;
+  if (!pick.weakest) return `${strength}.`;
+  const weak = DIMENSION_WEAK_VERBS[pick.weakest.code]?.[locale] ?? pick.weakest.label.toLowerCase();
+  return locale === "hu"
+    ? `${strength}. ${weak.charAt(0).toLocaleUpperCase("hu")}${weak.slice(1)}.`
+    : `${strength} – ${weak}.`;
 }
