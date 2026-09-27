@@ -14,6 +14,7 @@ import type { SerializedTeamReport } from "@/lib/team-report";
 import { TritaReportDocument } from "@/components/pdf/TritaPdf";
 import { t } from "@/lib/i18n";
 import { chrome } from "@/components/pdf/styles";
+import { buildProfileReportViewModel } from "@/lib/profile-report-view-model";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // „Üresen lebegő lap" — éles riport-visszajelzés, 2026-08-18.
@@ -54,6 +55,13 @@ describe("riport-PDF tördelés", () => {
       expect(overviewStart).toBeGreaterThan(0);
       expect(firstChapter).toBeGreaterThan(overviewStart);
       const overviewText = pages.slice(overviewStart, firstChapter).map(renderedText).join("");
+      const growth = buildProfileReportViewModel(scenario.input).quickOverview.insights[2];
+      expect(overviewText).toContain(growth.label);
+      expect(overviewText).toContain(growth.text);
+      for (const dim of scenario.input.dimensions) {
+        expect(growth.text).not.toBe(dim.description);
+        expect(growth.text).not.toBe(dim.insight);
+      }
       const methodBody = t("pdf.methodNoteBody", scenario.input.locale);
       expect(overviewText).toContain(methodBody);
       expect(renderedText(layout!).split(methodBody)).toHaveLength(2);

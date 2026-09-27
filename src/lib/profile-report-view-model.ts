@@ -21,7 +21,7 @@ import { ALTRUISM_CODE, HEXACO_ORDER, hexLetter, type HexacoCode } from "@/lib/h
 import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 import { DIMENSION_SUMMARY_INSIGHTS_HU } from "@/lib/dimension-insights";
 import { getDimensionTier } from "@/lib/dimension-utils";
-import { buildArchetypeStory } from "@/lib/profile-content";
+import { buildArchetypeStory, DIMENSION_GROWTH_TIPS } from "@/lib/profile-content";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
@@ -293,12 +293,13 @@ export function buildProfileSummaryInsights(
     shortInsight(attention) ??
     attention?.insight ??
     t("results.summaryBalancedAttention", locale);
+  // A kipróbálható lépés helyére nem kerülhet dimenziómagyarázat.
+  // A rövid riportban is elérhető az alacsony dimenzió saját gyakorlata;
+  // ilyen dimenzió nélkül önmegfigyelést javaslunk, nem feltételezünk hiányt.
   const growthText =
-    plusContent?.growthTip ??
-    attention?.description ??
-    strongest?.description ??
-    strongest?.insight ??
-    "";
+    plusContent?.growthTip?.trim() ||
+    (attention && DIMENSION_GROWTH_TIPS[attention.code]?.[locale].behavior) ||
+    t("results.summaryGrowthExperiment", locale);
 
   return [
     { label: t("results.summaryNatural", locale), text: mainText, tone: "strength" },
