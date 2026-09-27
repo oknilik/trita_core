@@ -1131,16 +1131,16 @@ export const resultsTranslations = {
       en: "What emails would you like from us?",
     },
     emailPrefsBody: {
-      hu: "Itt állíthatod be, hogy kérsz-e leveleket, amelyek segítenek átgondolni és használni az eredményeidet. A meghívókat és az eredményekről szóló értesítéseket ettől függetlenül megkapod.",
-      en: "This switch controls non-transactional, lifecycle emails (e.g. the post-assessment reflection touch). Operational emails – invites, result notifications – are unaffected.",
+      hu: "Itt állíthatod be, hogy kérsz-e emlékeztetőt a kérdőív elkezdéséhez és folytatásához, a visszajelzések kéréséhez és az eredményeid átgondolásához. A meghívókat és az eredményekről szóló értesítéseket ettől függetlenül megkapod.",
+      en: "This switch controls assessment reminders, suggestions to ask for colleague feedback, and reflection emails. Operational emails – invites, result notifications – are unaffected.",
     },
     emailPrefsToggleLabel: {
-      hu: "Az eredményeim feldolgozását segítő levelek",
-      en: "Allow lifecycle emails",
+      hu: "Emlékeztetők a kitöltéshez és az eredményeim átgondolásához",
+      en: "Assessment reminders and reflection emails",
     },
     emailPrefsToggleHint: {
-      hu: "Kikapcsolva csak a működéshez szükséges e-maileket kapod.",
-      en: "When off, you only receive operational emails.",
+      hu: "A meghívókat és az eredményekről szóló értesítéseket kikapcsolás után is megkapod. A hírlevelekről külön dönthetsz.",
+      en: "Invitations and result notifications still reach you when this is off. Newsletter preferences are separate.",
     },
     emailPrefsSaved: { hu: "Elmentve.", en: "Saved." },
     // Hírlevél-kapcsoló ugyanezen az oldalon (2026-08-21). A fiókos

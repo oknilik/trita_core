@@ -45,7 +45,10 @@ const HU_ONLY = new Set(["hiring_credits_request"]);
  * tartoznak ide — azokról nem a platform, hanem a szervezet vagy a másik fél
  * dönt (ld. az `/email-preferences` ígéretét).
  */
-const LIFECYCLE = new Set(["welcome", "reflection_prompt", "draft_reminder"]);
+const LIFECYCLE = new Set([
+  "welcome", "reflection_prompt", "draft_reminder",
+  "lifecycle_start_self", "lifecycle_resume_self", "lifecycle_invite_first_observers", "lifecycle_reflection",
+]);
 
 /** A dokumentált személyes aláírás — ld. `PERSONAL_SIGN_OFF` az emails.ts-ben. */
 const PERSONAL_SIGN_OFF_TEMPLATES = new Set([
@@ -283,7 +286,7 @@ test("a személyes visszaigazolás a megadott teljes nevet őrzi meg mindkét le
 test("minden életciklus-levél láblécében ott a leiratkozó-link", async () => {
   const samples = await samplesPromise;
   for (const s of samples) {
-    const hasOptOut = s.html.includes("/email-preferences");
+    const hasOptOut = /\/(?:email-preferences|follow-up\/unsubscribe\?token=)/.test(s.html);
     assert.equal(
       hasOptOut,
       LIFECYCLE.has(s.id),
@@ -293,7 +296,7 @@ test("minden életciklus-levél láblécében ott a leiratkozó-link", async () 
       // Linkként, nem nyers URL-ként a törzsben (2026-08-19 előtti minta).
       assert.match(
         s.html,
-        /class="em-foot-link"[^>]*>(Levélbeállítások|Email preferences)</,
+        /class="em-foot-link"[^>]*>(Levélbeállítások|Email preferences|Leiratkozás az emlékeztető[^<]*|Unsubscribe from reminder[^<]*)</,
         `${s.id}: a leiratkozás nem a lábléc-slotban van`,
       );
     }
@@ -367,14 +370,16 @@ test("külső kép csak a hírlevél trita.io-s cikkborítója lehet", async () 
   }
 });
 
-test("a hírlevél látható leiratkozása megerősítő oldal, a fejlécé RFC 8058 POST", async () => {
+test("a hírlevél és az új emlékeztetők leiratkozása megerősítő oldal, a fejlécé RFC 8058 POST", async () => {
   const samples = await samplesPromise;
   for (const s of samples.filter((sample) =>
-    ["newsletter_blog_post", "newsletter_issue"].includes(sample.id))) {
-    assert.match(s.html, /\/newsletter\/unsubscribe\?token=/, `${s.id}: nincs látható leiratkozás`);
+    ["newsletter_blog_post", "newsletter_issue"].includes(sample.id) || sample.id.startsWith("lifecycle_"))) {
+    const path = s.id.startsWith("lifecycle_") ? "lifecycle" : "newsletter";
+    const visiblePath = s.id.startsWith("lifecycle_") ? "follow-up" : "newsletter";
+    assert.ok(s.html.includes(`/${visiblePath}/unsubscribe?token=`), `${s.id}: nincs látható leiratkozás`);
     assert.equal(
       s.headers["List-Unsubscribe"],
-      "<https://trita.io/api/newsletter/unsubscribe?token=unsub-token>",
+      `<https://trita.io/api/${path}/unsubscribe?token=unsub-token>`,
       `${s.id}: rossz List-Unsubscribe cél`,
     );
     assert.equal(s.headers["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click");

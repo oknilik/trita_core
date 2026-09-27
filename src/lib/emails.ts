@@ -56,7 +56,7 @@ export type EmailSendResult =
       message: string;
     };
 
-type EmailSendParams = {
+export type EmailSendParams = {
   template: string;
   to: string;
   subject: string;
@@ -92,7 +92,7 @@ function alertEmailFailure(template: string, code: string, message: string): voi
  * (Az első kör hosztolt URL-eket használt; élesben nem töltődtek be. Ld.
  * `email-layout.ts` → `emailArtAttachments`.)
  */
-async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResult> {
+export async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResult> {
   if (
     process.env.VERCEL_ENV === "preview" &&
     !/@(?:example\.com|test\.trita\.app)$/i.test(params.to.trim())
@@ -138,7 +138,7 @@ async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResu
       alertEmailFailure(params.template, code, String(error.message ?? code));
       return {
         ok: false,
-        uncertain: false,
+        uncertain: ["application_error", "internal_server_error", "concurrent_idempotent_requests"].includes(code),
         retryable,
         code,
         message: String(error.message ?? code),
@@ -547,7 +547,7 @@ function buildObserverInviteHtml(params: {
   });
 }
 
-export async function sendObserverInviteEmail(params: {
+export function prepareObserverInviteEmail(params: {
   to: string;
   inviterName: string;
   token: string;
@@ -582,13 +582,17 @@ export async function sendObserverInviteEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  await sendEmailOrThrow({
+  return {
     template: "observer_invite",
     to: params.to,
     subject,
     html,
     text,
-  });
+  };
+}
+
+export async function sendObserverInviteEmail(params: Parameters<typeof prepareObserverInviteEmail>[0]) {
+  await sendEmailOrThrow(prepareObserverInviteEmail(params));
 }
 
 export async function sendCandidateCompletedEmail(params: {

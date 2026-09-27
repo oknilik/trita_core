@@ -399,7 +399,9 @@ test("CRM flow", async (t) => {
 
     const result = await runNotificationSweep();
     assert.ok(result.crm, "a sweep-eredmény tartalmazza a CRM-statisztikát");
-    assert.ok(result.crm.autoExpiredQuotes >= 1);
+    // A reflection teszt párhuzamosan ugyanezt a teljes sweepet futtatja,
+    // és már lejárathatta a fixture ajánlatát. A saját futás számlálója
+    // ezért lehet 0; a tényleges állapotot és SYSTEM-activityt lent ellenőrizzük.
     assert.ok(result.crm.nextActionDeals >= 1);
     assert.ok(result.crm.expiringQuotes >= 1);
 

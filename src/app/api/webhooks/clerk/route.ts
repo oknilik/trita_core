@@ -19,6 +19,7 @@ const clerkUserSchema = z.object({
       z.object({
         email_address: z.string().email(),
         id: z.string(),
+        verification: z.object({ status: z.string() }).optional().nullable(),
       })
     )
     .optional(),
@@ -94,6 +95,7 @@ export async function POST(req: Request) {
     )?.email_address;
     const fallbackEmail = user.email_addresses?.[0]?.email_address;
     const email = primaryEmail ?? fallbackEmail ?? null;
+    const verifiedEmail = user.email_addresses?.find(e => e.email_address === email && e.verification?.status === "verified")?.email_address ?? null;
     const registrationLegalAcceptance = registrationLegalAcceptanceSchema.safeParse(
       user.unsafe_metadata?.legalAcceptance,
     );
@@ -106,6 +108,7 @@ export async function POST(req: Request) {
       create: {
         clerkId: user.id,
         email,
+        verifiedEmail,
         username: user.username ?? null,
         ...(acceptedAt
           ? {
@@ -118,6 +121,7 @@ export async function POST(req: Request) {
       },
       update: {
         email,
+        verifiedEmail,
         ...(user.username ? { username: user.username } : {}),
       },
       select: { id: true },

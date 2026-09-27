@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { recordLifecycleEmailEvent } from "@/lib/lifecycle/events";
 import { Webhook } from "svix";
 import { z } from "zod";
 import { getRequestLogger } from "@/lib/logger.server";
@@ -132,6 +133,7 @@ export async function POST(req: Request) {
     ?? null;
 
   try {
+    await recordLifecycleEmailEvent({ id: svixId, providerEmailId: data.email_id, email: recipient, kind });
     const applied = await applyProviderDeliveryEvent({
       providerEmailId: data.email_id,
       email: recipient,
